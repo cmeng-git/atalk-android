@@ -37,7 +37,7 @@ import static javax.xml.XMLConstants.XML_NS_URI;
 public class XMLUtils
 {
     /**
-     * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
+     * The string identifying the <code>DocumentBuilderFactory</code>feature which controls whether
      * inclusion of external general entities is allowed. See
      * {@link "https://xerces.apache.org/xerces-j/features.html#external-general-entities"} and
      * {@link "https://xerces.apache.org/xerces2-j/features.html#external-general-entities"}
@@ -46,7 +46,7 @@ public class XMLUtils
             = "http://xml.org/sax/features/external-general-entities";
 
     /**
-     * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
+     * The string identifying the <code>DocumentBuilderFactory</code>feature which controls whether
      * inclusion of external parameter entities is allowed. See
      * {@link "https://xerces.apache.org/xerces-j/features.html#external-parameter-entities"} and
      * {@link "https://xerces.apache.org/xerces2-j/features.html#external-parameter-entities"}
@@ -55,7 +55,7 @@ public class XMLUtils
             = "http://xml.org/sax/features/external-parameter-entities";
 
     /**
-     * The string identifying the <tt>DocumentBuilderFactory</tt>feature which controls whether
+     * The string identifying the <code>DocumentBuilderFactory</code>feature which controls whether
      * DOCTYPE declaration is allowed. See
      * {@link "https://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl"}
      */
@@ -156,7 +156,7 @@ public class XMLUtils
      * Returns element's TEXT child node (if it has one).
      *
      * @param element the element whose TEXT we need to get.
-     * @return a <tt>Text</tt> object containing the specified element's text content.
+     * @return a <code>Text</code> object containing the specified element's text content.
      */
     public static Text getTextNode(Element element)
     {
@@ -164,11 +164,11 @@ public class XMLUtils
     }
 
     /**
-     * Returns first of the <tt>element</tt>'s child nodes that is of type <tt>nodeType</tt>.
+     * Returns first of the <code>element</code>'s child nodes that is of type <code>nodeType</code>.
      *
      * @param element the element whose child we need.
      * @param nodeType the type of the child we need.
-     * @return a child of the specified <tt>nodeType</tt> or null if none was found.
+     * @return a child of the specified <code>nodeType</code> or null if none was found.
      */
     public static Node getChildByType(Element element, short nodeType)
     {
@@ -497,7 +497,7 @@ public class XMLUtils
     /**
      * Gets the node namespace.
      *
-     * @param node the <tt>Element</tt> or <tt>Attr</tt> node to analyze.
+     * @param node the <code>Element</code> or <code>Attr</code> node to analyze.
      * @return the node namespace or null.
      */
     public static String getNamespaceUri(Node node)
@@ -647,7 +647,7 @@ public class XMLUtils
     }
 
     /**
-     * Creates and returns a new <tt>DocumentBuilderFactory</tt> instance, and sets the default
+     * Creates and returns a new <code>DocumentBuilderFactory</code> instance, and sets the default
      * set of features.
      *
      * @return the created factory
@@ -660,7 +660,7 @@ public class XMLUtils
     }
 
     /**
-     * Creates and returns a new <tt>DocumentBuilderFactory</tt> instance, and sets the default
+     * Creates and returns a new <code>DocumentBuilderFactory</code> instance, and sets the default
      * set of features.
      *
      * @param allowExternalEntities whether parsing of XML external entities and DOCTYPE declarations should be allowed.

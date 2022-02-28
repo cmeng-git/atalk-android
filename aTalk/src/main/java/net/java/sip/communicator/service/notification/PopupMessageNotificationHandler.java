@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.notification;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
 
 /**
- * The <tt>PopupMessageNotificationHandler</tt> interface is meant to be implemented by the notification
+ * The <code>PopupMessageNotificationHandler</code> interface is meant to be implemented by the notification
  * bundle in order to provide handling of popup message actions.
  *
  * @author Yana Stamcheva
@@ -17,22 +17,22 @@ import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListen
 public interface PopupMessageNotificationHandler extends NotificationHandler
 {
     /**
-     * Shows the given <tt>PopupMessage</tt>
+     * Shows the given <code>PopupMessage</code>
      *
      * @param action the action to act upon
-     * @param data <tt>NotificationData</tt> that contains the name/key, icon and extra info for popup notification
+     * @param data <code>NotificationData</code> that contains the name/key, icon and extra info for popup notification
      */
     void popupMessage(PopupMessageNotificationAction action, NotificationData data);
 
     /**
-     * Adds a listener for <tt>SystrayPopupMessageEvent</tt>s posted when user clicks on the system tray popup message.
+     * Adds a listener for <code>SystrayPopupMessageEvent</code>s posted when user clicks on the system tray popup message.
      *
      * @param listener the listener to add
      */
     void addPopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
-     * Removes a listener previously added with <tt>addPopupMessageListener</tt>.
+     * Removes a listener previously added with <code>addPopupMessageListener</code>.
      *
      * @param listener the listener to remove
      */

@@ -14,7 +14,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 /**
- * Activity controls authentication dialog for <tt>AuthenticationWindowService</tt>.
+ * Activity controls authentication dialog for <code>AuthenticationWindowService</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -33,7 +33,7 @@ public class AuthWindowActivity extends OSGiActivity
     private View contentView;
 
     /**
-     * Changes will be stored only if flag is set to <tt>false</tt>.
+     * Changes will be stored only if flag is set to <code>false</code>.
      */
     private boolean cancelled = true;
 
@@ -94,7 +94,7 @@ public class AuthWindowActivity extends OSGiActivity
     /**
      * Fired when the ok button is clicked.
      *
-     * @param v ok button's <tt>View</tt>
+     * @param v ok button's <code>View</code>
      */
     public void onOkClicked(View v)
     {
@@ -115,7 +115,7 @@ public class AuthWindowActivity extends OSGiActivity
     /**
      * Fired when the cancel button is clicked.
      *
-     * @param v cancel button's <tt>View</tt>
+     * @param v cancel button's <code>View</code>
      */
     public void onCancelClicked(View v)
     {

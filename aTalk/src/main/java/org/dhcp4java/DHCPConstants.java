@@ -240,7 +240,7 @@ public final class DHCPConstants {
      * Converts a DHCP option name into the option code.
      * @param name user-readable option name
      * @return the option code
-     * @throws NullPointerException name is <tt>null</t>.
+     * @throws NullPointerException name is <code>null</t>.
      */
     public static final Byte getDhoNamesReverse(String name) {
     	if (name == null) {

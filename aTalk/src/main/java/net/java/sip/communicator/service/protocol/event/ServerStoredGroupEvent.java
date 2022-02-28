@@ -85,7 +85,7 @@ public class ServerStoredGroupEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>ContactGroup</tt> that this event is pertaining to.
+	 * Returns a reference to the <code>ContactGroup</code> that this event is pertaining to.
 	 * 
 	 * @return a reference to the ContactGroup that caused the event.
 	 */
@@ -128,8 +128,8 @@ public class ServerStoredGroupEvent extends EventObject
 	/**
 	 * Returns the group containing the event source group
 	 * 
-	 * @return a reference to the <tt>ContactGroup</tt> instance that is parent of the
-	 *         <tt>ContactGroup</tt> which is the source of this event.
+	 * @return a reference to the <code>ContactGroup</code> instance that is parent of the
+	 *         <code>ContactGroup</code> which is the source of this event.
 	 */
 	public ContactGroup getParentGroup()
 	{

@@ -78,7 +78,7 @@ import java.util.regex.Pattern;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatFragment</tt> working in conjunction with ChatActivity, ChatPanel, ChatController
+ * The <code>ChatFragment</code> working in conjunction with ChatActivity, ChatPanel, ChatController
  * etc is providing the UI for all the chat messages/info receive and display.
  *
  * @author Yana Stamcheva
@@ -89,12 +89,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         FileTransferStatusListener, CryptoModeChangeListener, ReceiptReceivedListener
 {
     /**
-     * The session adapter for the contained <tt>ChatPanel</tt>.
+     * The session adapter for the contained <code>ChatPanel</code>.
      */
     private ChatListAdapter chatListAdapter;
 
     /**
-     * The corresponding <tt>ChatPanel</tt>.
+     * The corresponding <code>ChatPanel</code>.
      */
     private ChatPanel chatPanel;
 
@@ -342,10 +342,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Creates new parametrized instance of <tt>ChatFragment</tt>.
+     * Creates new parametrized instance of <code>ChatFragment</code>.
      *
      * @param chatId optional phone number that will be filled.
-     * @return new parametrized instance of <tt>ChatFragment</tt>.
+     * @return new parametrized instance of <code>ChatFragment</code>.
      */
     public static ChatFragment newInstance(String chatId)
     {
@@ -409,7 +409,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         /*
          * Indicates that this fragment is no longer in focus, because of this call parent
-         * <tt>Activities don't have to call it in onPause().
+         * <code>Activities don't have to call it in onPause().
          */
         initChatController(false);
         super.onPause();
@@ -441,11 +441,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * This method must be called by parent <tt>Activity</tt> or <tt>Fragment</tt> in order to
+     * This method must be called by parent <code>Activity</code> or <code>Fragment</code> in order to
      * register the ChatController. Setting of primarySelected must solely be performed by
      * chatPagerAdapter only to ensure both the chatFragment and chatController are in sync.
      *
-     * @param isSelected <tt>true</tt> if the fragment is now the primary selected page.
+     * @param isSelected <code>true</code> if the fragment is now the primary selected page.
      * @see ChatController #initChatController()
      */
     public void setPrimarySelected(boolean isSelected)
@@ -456,7 +456,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Checks for <tt>ChatController</tt> initialization. To init/activate the controller fragment
+     * Checks for <code>ChatController</code> initialization. To init/activate the controller fragment
      * must be visible and its View must be created.
      *
      * Non-focus chatFragment causing non-sync between chatFragment and chatController i.e.
@@ -861,9 +861,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     };
 
     /**
-     * Returns the corresponding <tt>ChatPanel</tt>.
+     * Returns the corresponding <code>ChatPanel</code>.
      *
-     * @return the corresponding <tt>ChatPanel</tt>
+     * @return the corresponding <code>ChatPanel</code>
      */
     public ChatPanel getChatPanel()
     {
@@ -970,13 +970,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         private final Html.ImageGetter imageGetter = new HtmlImageGetter();
 
         /**
-         * Pass the message to the <tt>ChatListAdapter</tt> for processing; appends it at the
+         * Pass the message to the <code>ChatListAdapter</code> for processing; appends it at the
          * end or merge it with the last consecutive message.
          *
          * addMessageImpl method must only be processed on UI thread.
          *
          * It creates a new message view holder if this is first message or if this is a new
-         * message received i.e. non-consecutive. NotifyDataChanged for update if <tt>true</tt>
+         * message received i.e. non-consecutive. NotifyDataChanged for update if <code>true</code>
          */
         private void addMessageImpl(ChatMessage newMessage)
         {
@@ -1028,13 +1028,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Inserts given <tt>CopyOnWriteArrayList</tt> of <tt>ChatMessage</tt> at the beginning of the list.
+         * Inserts given <code>CopyOnWriteArrayList</code> of <code>ChatMessage</code> at the beginning of the list.
          * synchronized to avoid java.util.ConcurrentModificationException on receive history messages
          * - seems still happen so use CopyOnWriteArrayList at ChanPanel#LoadHistory()
          *
          * List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>() to avoid ConcurrentModificationException
          *
-         * @param chatMessages the CopyOnWriteArrayList of <tt>ChatMessage</tt> to prepend.
+         * @param chatMessages the CopyOnWriteArrayList of <code>ChatMessage</code> to prepend.
          */
         private synchronized void prependMessages(List<ChatMessage> chatMessages)
         {
@@ -1055,12 +1055,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Finds index of the message that will handle <tt>newMessage</tt> merging process (usually just the last one).
-         * If the <tt>newMessage</tt> is a correction message, then the last message of the same type will be returned.
+         * Finds index of the message that will handle <code>newMessage</code> merging process (usually just the last one).
+         * If the <code>newMessage</code> is a correction message, then the last message of the same type will be returned.
          *
          * @param newMessage the next message to be merged into the adapter.
-         * @return index of the message that will handle <tt>newMessage</tt> merging process. If
-         * <tt>newMessage</tt> is a correction message, then the last message of the same type will be returned.
+         * @return index of the message that will handle <code>newMessage</code> merging process. If
+         * <code>newMessage</code> is a correction message, then the last message of the same type will be returned.
          */
         private int getLastMessageIdx(ChatMessage newMessage)
         {
@@ -1303,7 +1303,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Hack required to capture TextView(message body) clicks, when <tt>LinkMovementMethod</tt> is set.
+         * Hack required to capture TextView(message body) clicks, when <code>LinkMovementMethod</code> is set.
          */
         private final OnClickListener msgClickAdapter = new OnClickListener()
         {
@@ -1577,9 +1577,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Updates status and avatar views on given <tt>MessageViewHolder</tt>.
+         * Updates status and avatar views on given <code>MessageViewHolder</code>.
          *
-         * @param viewHolder the <tt>MessageViewHolder</tt> to update.
+         * @param viewHolder the <code>MessageViewHolder</code> to update.
          */
         private void updateStatusAndAvatarView(MessageViewHolder viewHolder, String jabberID)
         {
@@ -1748,13 +1748,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             private Object fileXfer;
 
             /**
-             * Save File name</tt>
+             * Save File name</code>
              */
 
             private File sFile;
 
             /**
-             * Displayed <tt>ChatMessage</tt>
+             * Displayed <code>ChatMessage</code>
              */
 
             private ChatMessage msg;
@@ -1781,10 +1781,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             protected double longitude;
 
             /**
-             * Creates a new instance of <tt>MessageDisplay</tt> that will be used for displaying
-             * given <tt>ChatMessage</tt>.
+             * Creates a new instance of <code>MessageDisplay</code> that will be used for displaying
+             * given <code>ChatMessage</code>.
              *
-             * @param msg the <tt>ChatMessage</tt> that will be displayed by this instance.
+             * @param msg the <code>ChatMessage</code> that will be displayed by this instance.
              */
             MessageDisplay(ChatMessage msg)
             {
@@ -1879,7 +1879,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * @return <tt>true</tt> if the message has LatLng information
+             * @return <code>true</code> if the message has LatLng information
              */
             private boolean hasLatLng()
             {
@@ -1902,9 +1902,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             }
 
             /**
-             * Returns formatted date string for the <tt>ChatMessage</tt>.
+             * Returns formatted date string for the <code>ChatMessage</code>.
              *
-             * @return formatted date string for the <tt>ChatMessage</tt>.
+             * @return formatted date string for the <code>ChatMessage</code>.
              */
             private String getDateStr()
             {
@@ -1931,10 +1931,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
             /**
              * Process HTML tags with image src as async task, populate the given msgView and return null;
-             * Else Returns <tt>Spanned</tt> message body processed for HTML tags.
+             * Else Returns <code>Spanned</code> message body processed for HTML tags.
              *
              * @param msgView the message view container to be populated
-             * @return <tt>Spanned</tt> message body if contains no "<img" tag.
+             * @return <code>Spanned</code> message body if contains no "<img" tag.
              */
             public Spanned getBody(TextView msgView)
             {
@@ -2369,7 +2369,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Adds the given file transfer <tt>id</tt> to the list of active file transfers.
+     * Adds the given file transfer <code>id</code> to the list of active file transfers.
      *
      * @param id the identifier of the file transfer to add
      * @param fileTransfer the descriptor of the file transfer
@@ -2393,7 +2393,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     }
 
     /**
-     * Removes the given file transfer <tt>id</tt> from the list of active file transfers.
+     * Removes the given file transfer <code>id</code> from the list of active file transfers.
      *
      * @param fileTransfer the identifier of the file transfer to remove
      */

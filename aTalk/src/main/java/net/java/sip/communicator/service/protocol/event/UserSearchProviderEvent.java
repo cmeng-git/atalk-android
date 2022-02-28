@@ -18,7 +18,7 @@ import java.util.EventObject;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * Notifies <tt>UserSearchProviderListener</tt> that a provider that supports user search is added
+ * Notifies <code>UserSearchProviderListener</code> that a provider that supports user search is added
  * or removed.
  * 
  * @author Hristo Terezov
@@ -46,7 +46,7 @@ public class UserSearchProviderEvent extends EventObject
 	private final int type;
 
 	/**
-	 * Constructs new <tt>UserSearchProviderEvent</tt> event.
+	 * Constructs new <code>UserSearchProviderEvent</code> event.
 	 * 
 	 * @param provider
 	 *        the provider.

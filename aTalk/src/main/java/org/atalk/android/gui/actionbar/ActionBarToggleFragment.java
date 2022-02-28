@@ -18,8 +18,8 @@ import org.atalk.service.osgi.OSGiFragment;
 
 /**
  * Fragment adds a toggle button to the action bar with text description to the right of it.
- * Button is handled through the <tt>ActionBarToggleModel</tt> which must be implemented by
- * parent <tt>Activity</tt>.
+ * Button is handled through the <code>ActionBarToggleModel</code> which must be implemented by
+ * parent <code>Activity</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -42,7 +42,7 @@ public class ActionBarToggleFragment extends OSGiFragment
     private CompoundButton mToggleCB;
 
     /**
-     * Creates new instance of <tt>ActionBarToggleFragment</tt>
+     * Creates new instance of <code>ActionBarToggleFragment</code>
      */
     public ActionBarToggleFragment()
     {
@@ -50,11 +50,11 @@ public class ActionBarToggleFragment extends OSGiFragment
     }
 
     /**
-     * Creates new instance of <tt>ActionBarToggleFragment</tt> with given description(can be
-     * empty but not <tt>null</tt>).
+     * Creates new instance of <code>ActionBarToggleFragment</code> with given description(can be
+     * empty but not <code>null</code>).
      *
-     * @param labelText toggle button's description(can be empty, but not <tt>null</tt>).
-     * @return new instance of <tt>ActionBarToggleFragment</tt> parametrized with description argument.
+     * @param labelText toggle button's description(can be empty, but not <code>null</code>).
+     * @return new instance of <code>ActionBarToggleFragment</code> parametrized with description argument.
      */
     static public ActionBarToggleFragment newInstance(String labelText)
     {
@@ -116,21 +116,21 @@ public class ActionBarToggleFragment extends OSGiFragment
     }
 
     /**
-     * Toggle button's model that has to be implemented by parent <tt>Activity</tt>.
+     * Toggle button's model that has to be implemented by parent <code>Activity</code>.
      */
     public interface ActionBarToggleModel
     {
         /**
-         * Return <tt>true</tt> if button's model is currently in checked state.
+         * Return <code>true</code> if button's model is currently in checked state.
          *
-         * @return <tt>true</tt> if button's model is currently in checked state.
+         * @return <code>true</code> if button's model is currently in checked state.
          */
         boolean isChecked();
 
         /**
          * Method fired when the button is clicked.
          *
-         * @param isChecked <tt>true</tt> if new button's state is checked.
+         * @param isChecked <code>true</code> if new button's state is checked.
          */
         void setChecked(boolean isChecked);
     }

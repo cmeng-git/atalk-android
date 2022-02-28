@@ -17,7 +17,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 /**
- * Abstract base implementation of <tt>MediaStream</tt> to ease the implementation of the interface.
+ * Abstract base implementation of <code>MediaStream</code> to ease the implementation of the interface.
  *
  * @author Lyubomir Marinov
  */
@@ -29,7 +29,7 @@ public abstract class AbstractMediaStream implements MediaStream
     private String name;
 
     /**
-     * The opaque properties of this <tt>MediaStream</tt>.
+     * The opaque properties of this <code>MediaStream</code>.
      */
     private final Map<String, Object> properties = Collections.synchronizedMap(new HashMap<>());
 
@@ -41,16 +41,16 @@ public abstract class AbstractMediaStream implements MediaStream
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     /**
-     * The <tt>RTPTranslator</tt>, if any, which forwards RTP and RTCP traffic between this and
-     * other <tt>MediaStream</tt>s.
+     * The <code>RTPTranslator</code>, if any, which forwards RTP and RTCP traffic between this and
+     * other <code>MediaStream</code>s.
      */
     protected RTPTranslator rtpTranslator;
 
     /**
-     * Adds a <tt>PropertyChangeListener</tt> to this stream which is to be notified upon property
+     * Adds a <code>PropertyChangeListener</code> to this stream which is to be notified upon property
      * changes such as a SSRC ID which becomes known.
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to register for <tt>PropertyChangeEvent</tt>s
+     * @param listener the <code>PropertyChangeListener</code> to register for <code>PropertyChangeEvent</code>s
      * @see MediaStream#addPropertyChangeListener(PropertyChangeListener)
      */
     @Override
@@ -61,17 +61,17 @@ public abstract class AbstractMediaStream implements MediaStream
 
     /**
      * Asserts that the state of this instance will remain consistent if a specific
-     * <tt>MediaDirection</tt> (i.e. <tt>direction</tt>) and a <tt>MediaDevice</tt> with a specific
-     * <tt>MediaDirection</tt> (i.e. <tt>deviceDirection</tt>) are both set on this instance.
+     * <code>MediaDirection</code> (i.e. <code>direction</code>) and a <code>MediaDevice</code> with a specific
+     * <code>MediaDirection</code> (i.e. <code>deviceDirection</code>) are both set on this instance.
      *
-     * @param direction the <tt>MediaDirection</tt> to validate against the specified <tt>deviceDirection</tt>
-     * @param deviceDirection the <tt>MediaDirection</tt> of a <tt>MediaDevice</tt> to validate against the
-     * specified <tt>direction</tt>
-     * @param illegalArgumentExceptionMessage the message of the <tt>IllegalArgumentException</tt> to be thrown if the state of this
-     * instance would've been compromised if <tt>direction</tt> and the <tt>MediaDevice</tt>
-     * associated with <tt>deviceDirection</tt> were both set on this instance
-     * @throws IllegalArgumentException if the state of this instance would've been compromised were both <tt>direction</tt>
-     * and the <tt>MediaDevice</tt> associated with <tt>deviceDirection</tt> set on this instance
+     * @param direction the <code>MediaDirection</code> to validate against the specified <code>deviceDirection</code>
+     * @param deviceDirection the <code>MediaDirection</code> of a <code>MediaDevice</code> to validate against the
+     * specified <code>direction</code>
+     * @param illegalArgumentExceptionMessage the message of the <code>IllegalArgumentException</code> to be thrown if the state of this
+     * instance would've been compromised if <code>direction</code> and the <code>MediaDevice</code>
+     * associated with <code>deviceDirection</code> were both set on this instance
+     * @throws IllegalArgumentException if the state of this instance would've been compromised were both <code>direction</code>
+     * and the <code>MediaDevice</code> associated with <code>deviceDirection</code> set on this instance
      */
     protected void assertDirection(MediaDirection direction, MediaDirection deviceDirection,
             String illegalArgumentExceptionMessage)
@@ -82,7 +82,7 @@ public abstract class AbstractMediaStream implements MediaStream
     }
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
+     * Fires a new <code>PropertyChangeEvent</code> to the <code>PropertyChangeListener</code>s registered
      * with this instance in order to notify about a change in the value of a specific property
      * which had its old value modified to a specific new value.
      *
@@ -96,11 +96,11 @@ public abstract class AbstractMediaStream implements MediaStream
     }
 
     /**
-     * Returns the name of this stream or <tt>null</tt> if no name has been set. A stream name is
+     * Returns the name of this stream or <code>null</code> if no name has been set. A stream name is
      * used by some protocols, for diagnostic purposes mostly. In XMPP for example this is the name
      * of the content element that describes a stream.
      *
-     * @return the name of this stream or <tt>null</tt> if no name has been set.
+     * @return the name of this stream or <code>null</code> if no name has been set.
      */
     @Override
     public String getName()
@@ -118,10 +118,10 @@ public abstract class AbstractMediaStream implements MediaStream
     }
 
     /**
-     * Handles attributes contained in <tt>MediaFormat</tt>.
+     * Handles attributes contained in <code>MediaFormat</code>.
      *
-     * @param format the <tt>MediaFormat</tt> to handle the attributes of
-     * @param attrs the attributes <tt>Map</tt> to handle
+     * @param format the <code>MediaFormat</code> to handle the attributes of
+     * @param attrs the attributes <code>Map</code> to handle
      */
     protected void handleAttributes(MediaFormat format, Map<String, String> attrs)
     {
@@ -141,10 +141,10 @@ public abstract class AbstractMediaStream implements MediaStream
     }
 
     /**
-     * Removes the specified <tt>PropertyChangeListener</tt> from this stream so that it won't
+     * Removes the specified <code>PropertyChangeListener</code> from this stream so that it won't
      * receive further property change events.
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to remove
+     * @param listener the <code>PropertyChangeListener</code> to remove
      * @see MediaStream#removePropertyChangeListener(PropertyChangeListener)
      */
     @Override
@@ -157,7 +157,7 @@ public abstract class AbstractMediaStream implements MediaStream
      * Sets the name of this stream. Stream names are used by some protocols, for diagnostic purposes mostly.
 	 * In XMPP for example this is the name of the content element that describes a stream.
      *
-     * @param name the name of this stream or <tt>null</tt> if no name has been set.
+     * @param name the name of this stream or <code>null</code> if no name has been set.
      */
     @Override
     public void setName(String name)

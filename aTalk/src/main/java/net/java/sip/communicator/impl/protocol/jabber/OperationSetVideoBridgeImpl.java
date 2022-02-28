@@ -21,7 +21,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import java.util.Iterator;
 
 /**
- * Implements <tt>OperationSetVideoBridge</tt> for Jabber.
+ * Implements <code>OperationSetVideoBridge</code> for Jabber.
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
@@ -31,7 +31,7 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
         implements OperationSetVideoBridge, RegistrationStateChangeListener
 {
     /**
-     * The <tt>ProtocolProviderService</tt> implementation which initialized this instance, owns it
+     * The <code>ProtocolProviderService</code> implementation which initialized this instance, owns it
      * and is often referred to as its parent.
      */
     private final ProtocolProviderServiceJabberImpl protocolProvider;
@@ -45,8 +45,8 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
             new StanzaExtensionFilter(ColibriConferenceIQ.ELEMENT, ColibriConferenceIQ.NAMESPACE));
 
     /**
-     * Creates an instance of <tt>OperationSetVideoBridgeImpl</tt> by specifying the parent
-     * <tt>ProtocolProviderService</tt> announcing this operation set.
+     * Creates an instance of <code>OperationSetVideoBridgeImpl</code> by specifying the parent
+     * <code>ProtocolProviderService</code> announcing this operation set.
      *
      * @param protocolProvider the parent Jabber protocol provider
      */
@@ -95,7 +95,7 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
      * Indicates if there's an active video bridge available at this moment. The Jabber provider may
      * announce support for video bridge, but it should not be used for calling until it becomes actually active.
      *
-     * @return <tt>true</tt> to indicate that there's currently an active available video bridge, <tt>false</tt> - otherwise
+     * @return <code>true</code> to indicate that there's currently an active available video bridge, <code>false</code> - otherwise
      */
     public boolean isActive()
     {
@@ -104,9 +104,9 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
     }
 
     /**
-     * Notifies this instance that a specific <tt>ColibriConferenceIQ</tt> has been received.
+     * Notifies this instance that a specific <code>ColibriConferenceIQ</code> has been received.
      *
-     * @param conferenceIQ the <tt>ColibriConferenceIQ</tt> which has been received
+     * @param conferenceIQ the <code>ColibriConferenceIQ</code> which has been received
      */
     private void processColibriConferenceIQ(ColibriConferenceIQ conferenceIQ)
     {
@@ -161,9 +161,9 @@ public class OperationSetVideoBridgeImpl extends AbstractIqRequestHandler
      * {@inheritDoc}
      *
      * Implements {@link RegistrationStateChangeListener}. Notifies this instance that there has
-     * been a change in the <tt>RegistrationState</tt> of {@link #protocolProvider}. Subscribes this
-     * instance to {@link ColibriConferenceIQ}s as soon as <tt>protocolProvider</tt> is registered
-     * and unSubscribes it as soon as <tt>protocolProvider</tt> is unregistered.
+     * been a change in the <code>RegistrationState</code> of {@link #protocolProvider}. Subscribes this
+     * instance to {@link ColibriConferenceIQ}s as soon as <code>protocolProvider</code> is registered
+     * and unSubscribes it as soon as <code>protocolProvider</code> is unregistered.
      */
     public void registrationStateChanged(RegistrationStateChangeEvent ev)
     {

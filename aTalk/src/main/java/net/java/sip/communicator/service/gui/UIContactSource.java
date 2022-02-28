@@ -24,37 +24,37 @@ public interface UIContactSource
     public UIGroup getUIGroup();
 
     /**
-     * Returns the <tt>UIContact</tt> corresponding to the given
-     * <tt>sourceContact</tt>.
+     * Returns the <code>UIContact</code> corresponding to the given
+     * <code>sourceContact</code>.
      *
-     * @param sourceContact the <tt>SourceContact</tt>, for which we search a
-     * corresponding <tt>UIContact</tt>
-     * @return the <tt>UIContact</tt> corresponding to the given
-     * <tt>sourceContact</tt>
+     * @param sourceContact the <code>SourceContact</code>, for which we search a
+     * corresponding <code>UIContact</code>
+     * @return the <code>UIContact</code> corresponding to the given
+     * <code>sourceContact</code>
      */
     public UIContact createUIContact(SourceContact sourceContact);
 
     /**
-     * Removes the <tt>UIContact</tt> from the given <tt>sourceContact</tt>.
-     * @param sourceContact the <tt>SourceContact</tt>, which corresponding UI
+     * Removes the <code>UIContact</code> from the given <code>sourceContact</code>.
+     * @param sourceContact the <code>SourceContact</code>, which corresponding UI
      * contact we would like to remove
      */
     public void removeUIContact(SourceContact sourceContact);
 
     /**
-     * Returns the <tt>UIContact</tt> corresponding to the given
-     * <tt>SourceContact</tt>.
-     * @param sourceContact the <tt>SourceContact</tt>, which corresponding UI
+     * Returns the <code>UIContact</code> corresponding to the given
+     * <code>SourceContact</code>.
+     * @param sourceContact the <code>SourceContact</code>, which corresponding UI
      * contact we're looking for
-     * @return the <tt>UIContact</tt> corresponding to the given
-     * <tt>MetaContact</tt>
+     * @return the <code>UIContact</code> corresponding to the given
+     * <code>MetaContact</code>
      */
     public UIContact getUIContact(SourceContact sourceContact);
 
     /**
-     * Returns the corresponding <tt>ContactSourceService</tt>.
+     * Returns the corresponding <code>ContactSourceService</code>.
      *
-     * @return the corresponding <tt>ContactSourceService</tt>
+     * @return the corresponding <code>ContactSourceService</code>
      */
     public ContactSourceService getContactSourceService();
     

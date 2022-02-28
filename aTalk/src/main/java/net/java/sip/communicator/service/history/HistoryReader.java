@@ -20,7 +20,7 @@ public interface HistoryReader
 {
 
     /**
-     * Searches the history for all records with timestamp after <tt>startDate</tt>.
+     * Searches the history for all records with timestamp after <code>startDate</code>.
      *
      * @param startDate the date after all records will be returned
      * @return the found records
@@ -31,7 +31,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records with timestamp before <tt>endDate</tt>.
+     * Searches the history for all records with timestamp before <code>endDate</code>.
      *
      * @param endDate the date before which all records will be returned
      * @return the found records
@@ -42,8 +42,8 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records with timestamp between <tt>startDate</tt> and
-     * <tt>endDate</tt>.
+     * Searches the history for all records with timestamp between <code>startDate</code> and
+     * <code>endDate</code>.
      *
      * @param startDate start of the interval in which we search
      * @param endDate end of the interval in which we search
@@ -55,7 +55,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records containing the <tt>keyword</tt>.
+     * Searches the history for all records containing the <code>keyword</code>.
      *
      * @param keyword the keyword to search for
      * @param field the field where to look for the keyword
@@ -67,7 +67,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records containing the <tt>keyword</tt>.
+     * Searches the history for all records containing the <code>keyword</code>.
      *
      * @param keyword the keyword to search for
      * @param field the field where to look for the keyword
@@ -81,7 +81,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records containing all <tt>keywords</tt>.
+     * Searches the history for all records containing all <code>keywords</code>.
      *
      * @param keywords array of keywords we search for
      * @param field the field where to look for the keyword
@@ -93,7 +93,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches the history for all records containing all <tt>keywords</tt>.
+     * Searches the history for all records containing all <code>keywords</code>.
      *
      * @param keywords array of keywords we search for
      * @param field the field where to look for the keyword
@@ -107,9 +107,9 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Searches for all history records containing all <tt>keywords</tt>, with timestamp between
-     * <tt>startDate</tt> and
-     * <tt>endDate</tt>.
+     * Searches for all history records containing all <code>keywords</code>, with timestamp between
+     * <code>startDate</code> and
+     * <code>endDate</code>.
      *
      * @param startDate start of the interval in which we search
      * @param endDate end of the interval in which we search
@@ -124,9 +124,9 @@ public interface HistoryReader
             throws UnsupportedOperationException;
 
     /**
-     * Searches for all history records containing all <tt>keywords</tt>, with timestamp between
-     * <tt>startDate</tt> and
-     * <tt>endDate</tt>.
+     * Searches for all history records containing all <code>keywords</code>, with timestamp between
+     * <code>startDate</code> and
+     * <code>endDate</code>.
      *
      * @param startDate start of the interval in which we search
      * @param endDate end of the interval in which we search
@@ -152,7 +152,7 @@ public interface HistoryReader
             throws RuntimeException;
 
     /**
-     * Returns the supplied number of recent messages containing all <tt>keywords</tt>.
+     * Returns the supplied number of recent messages containing all <code>keywords</code>.
      *
      * @param count messages count
      * @param keywords array of keywords we search for

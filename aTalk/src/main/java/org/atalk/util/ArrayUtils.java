@@ -27,12 +27,12 @@ public final class ArrayUtils
      * Adds a specific element to a specific array with a specific component
      * type if the array does not contain the element yet.
      *
-     * @param array the array to add <tt>element</tt> to
-     * @param componentType the component type of <tt>array</tt>
-     * @param element the element to add to <tt>array</tt>
-     * @return an array with the specified <tt>componentType</tt> and
-     * containing <tt>element</tt>. If <tt>array</tt> contained <tt>element</tt>
-     * already, returns <tt>array</tt>.
+     * @param array the array to add <code>element</code> to
+     * @param componentType the component type of <code>array</code>
+     * @param element the element to add to <code>array</code>
+     * @return an array with the specified <code>componentType</code> and
+     * containing <code>element</code>. If <code>array</code> contained <code>element</code>
+     * already, returns <code>array</code>.
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] add(T[] array, Class<T> componentType, T element)

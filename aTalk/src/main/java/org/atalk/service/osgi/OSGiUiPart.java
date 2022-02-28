@@ -8,8 +8,8 @@ package org.atalk.service.osgi;
 import org.osgi.framework.BundleContext;
 
 /**
- * Interface should be implemented by all <tt>Fragments</tt> that want to make use of OSGi and live inside
- * <tt>OSGiActivities</tt>. Methods {@link #start(BundleContext)} and {@link #stop(BundleContext)} are fired
+ * Interface should be implemented by all <code>Fragments</code> that want to make use of OSGi and live inside
+ * <code>OSGiActivities</code>. Methods {@link #start(BundleContext)} and {@link #stop(BundleContext)} are fired
  * automatically when OSGI context is available.
  *
  * @author Pawel Domas
@@ -17,7 +17,7 @@ import org.osgi.framework.BundleContext;
 public interface OSGiUiPart
 {
     /**
-     * Fired when OSGI is started and the <tt>bundleContext</tt> is available.
+     * Fired when OSGI is started and the <code>bundleContext</code> is available.
      *
      * @param bundleContext the OSGI bundle context.
      */
@@ -25,7 +25,7 @@ public interface OSGiUiPart
             throws Exception;
 
     /**
-     * Fired when parent <tt>OSGiActivity</tt> is being stopped or this fragment is being detached.
+     * Fired when parent <code>OSGiActivity</code> is being stopped or this fragment is being detached.
      *
      * @param bundleContext the OSGI bundle context.
      */

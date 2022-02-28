@@ -120,7 +120,7 @@ public final class DTMFTone
 	/**
 	 * Returns the string representation of this DTMF tone.
 	 *
-	 * @return the <tt>String</tt> representation of this DTMF tone.
+	 * @return the <code>String</code> representation of this DTMF tone.
 	 */
 	public String getValue()
 	{
@@ -134,7 +134,7 @@ public final class DTMFTone
 	 * @param target
 	 *        the reference object with which to compare.
 	 *
-	 * @return <tt>true</tt> if target represents the same tone as this object.
+	 * @return <code>true</code> if target represents the same tone as this object.
 	 */
 	@Override
 	public boolean equals(Object target)
@@ -162,11 +162,11 @@ public final class DTMFTone
 	}
 
 	/**
-	 * Parses input <tt>value</tt> and return the corresponding tone. If unknown will return null;
+	 * Parses input <code>value</code> and return the corresponding tone. If unknown will return null;
 	 * 
 	 * @param value
 	 *        the input value.
-	 * @return the corresponding tone, <tt>null</tt> for unknown.
+	 * @return the corresponding tone, <code>null</code> for unknown.
 	 */
 	public static DTMFTone getDTMFTone(String value)
 	{

@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import timber.log.Timber;
 
 /**
- * The OtrContactManager is used for accessing <tt>OtrContact</tt>s in a static way.
+ * The OtrContactManager is used for accessing <code>OtrContact</code>s in a static way.
  * <p/>
- * The <tt>OtrContact</tt> class is just a wrapper of [Contact, ContactResource]
+ * The <code>OtrContact</code> class is just a wrapper of [Contact, ContactResource]
  * pairs. Its purpose is for the otr plugin to be able to create different
- * <tt>Session</tt>s for every ContactResource that a Contact has.
+ * <code>Session</code>s for every ContactResource that a Contact has.
  * <p/>
  * Currently, only the Jabber protocol supports ContactResources.
  *
@@ -36,13 +36,13 @@ public class OtrContactManager implements ServiceListener
     private static final Map<Contact, List<OtrContact>> contactsMap = new ConcurrentHashMap<>();
 
     /**
-     * Gets the <tt>OtrContact</tt> that represents this
+     * Gets the <code>OtrContact</code> that represents this
      * [Contact, ContactResource] pair from the cache. If such pair does not
      * still exist it is then created and cached for further usage.
      *
-     * @param contact the <tt>Contact</tt> that the returned OtrContact represents.
-     * @param resource the <tt>ContactResource</tt> that the returned OtrContact represents.
-     * @return The <tt>OtrContact</tt> that represents this [Contact, ContactResource] pair.
+     * @param contact the <code>Contact</code> that the returned OtrContact represents.
+     * @param resource the <code>ContactResource</code> that the returned OtrContact represents.
+     * @return The <code>OtrContact</code> that represents this [Contact, ContactResource] pair.
      */
     public static OtrContact getOtrContact(Contact contact, ContactResource resource)
     {
@@ -99,9 +99,9 @@ public class OtrContactManager implements ServiceListener
     }
 
     /**
-     * The <tt>OtrContact</tt> class is just a wrapper of
+     * The <code>OtrContact</code> class is just a wrapper of
      * [Contact, ContactResource] pairs. Its purpose is for the otr plugin to be
-     * able to create different <tt>Session</tt>s for every ContactResource that
+     * able to create different <code>Session</code>s for every ContactResource that
      * a Contact has.
      *
      * @author Marin Dzhigarov

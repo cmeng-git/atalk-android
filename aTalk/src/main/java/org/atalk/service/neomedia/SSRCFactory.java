@@ -18,10 +18,10 @@ public interface SSRCFactory
 	 * session, the method will be invoked again.
 	 *
 	 * @param cause
-	 *        a <tt>String</tt> which specified the cause of the invocation of the method
-	 * @return a randomly chosen <tt>int</tt> value which is to be utilized as a new synchronization
+	 *        a <code>String</code> which specified the cause of the invocation of the method
+	 * @return a randomly chosen <code>int</code> value which is to be utilized as a new synchronization
 	 *         source (SSRC) identifier should it be found to be globally unique within the
-	 *         associated RTP session or <tt>Long.MAX_VALUE</tt> if this <tt>SSRCFactory</tt> has
+	 *         associated RTP session or <code>Long.MAX_VALUE</code> if this <code>SSRCFactory</code> has
 	 *         cancelled the operation
 	 */
 	public long generateSSRC(String cause);

@@ -21,7 +21,7 @@ import java.util.HashSet;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>CandidateHarvester</tt> which gathers <tt>Candidate</tt>s for a specified
+ * Implements a <code>CandidateHarvester</code> which gathers <code>Candidate</code>s for a specified
  * {@link Component} using Jingle Nodes as defined in XEP 278 "Jingle Relay Nodes".
  *
  * @author Sebastien Vincent
@@ -49,7 +49,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
     /**
      * Constructor.
      *
-     * @param serviceNode the <tt>SmackServiceNode</tt>
+     * @param serviceNode the <code>SmackServiceNode</code>
      */
     public JingleNodesHarvester(SmackServiceNode serviceNode)
     {
@@ -57,13 +57,13 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
     }
 
     /**
-     * Gathers Jingle Nodes candidates for all host <tt>Candidate</tt>s that are already present in
-     * the specified <tt>component</tt>. This method relies on the specified <tt>component</tt> to
+     * Gathers Jingle Nodes candidates for all host <code>Candidate</code>s that are already present in
+     * the specified <code>component</code>. This method relies on the specified <code>component</code> to
      * already contain all its host candidates so that it would resolve them.
      *
      * @param component the {@link Component} that we'd like to gather candidate Jingle Nodes
-     * <tt>Candidate</tt>s for
-     * @return the <tt>LocalCandidate</tt>s gathered by this <tt>CandidateHarvester</tt>
+     * <code>Candidate</code>s for
+     * @return the <code>LocalCandidate</code>s gathered by this <code>CandidateHarvester</code>
      */
     @Override
     public synchronized Collection<LocalCandidate> harvest(Component component)
@@ -140,14 +140,14 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
     }
 
     /**
-     * Creates a new <tt>JingleNodesRelayedCandidate</tt> instance which is to represent a specific
-     * <tt>TransportAddress</tt>.
+     * Creates a new <code>JingleNodesRelayedCandidate</code> instance which is to represent a specific
+     * <code>TransportAddress</code>.
      *
-     * @param transportAddress the <tt>TransportAddress</tt> allocated by the relay
-     * @param component the <tt>Component</tt> for which the candidate will be added
-     * @param localEndPoint <tt>TransportAddress</tt> of the Jingle Nodes relay where we will send our packet.
-     * @return a new <tt>JingleNodesRelayedCandidate</tt> instance which represents the specified
-     * <tt>TransportAddress</tt>
+     * @param transportAddress the <code>TransportAddress</code> allocated by the relay
+     * @param component the <code>Component</code> for which the candidate will be added
+     * @param localEndPoint <code>TransportAddress</code> of the Jingle Nodes relay where we will send our packet.
+     * @return a new <code>JingleNodesRelayedCandidate</code> instance which represents the specified
+     * <code>TransportAddress</code>
      */
     protected JingleNodesCandidate createJingleNodesCandidate(TransportAddress transportAddress,
             Component component, TransportAddress localEndPoint)

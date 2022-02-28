@@ -524,10 +524,10 @@ public class GlobalStatusMenu extends OSGiActivity
     }
 
     /**
-     * Implements the <tt>ServiceListener</tt> method. Verifies whether the received event concerning
-     * a <tt>ProtocolProviderService</tt> and take the necessary action.
+     * Implements the <code>ServiceListener</code> method. Verifies whether the received event concerning
+     * a <code>ProtocolProviderService</code> and take the necessary action.
      *
-     * @param event The <tt>ServiceEvent</tt> object.
+     * @param event The <code>ServiceEvent</code> object.
      */
     public void serviceChanged(ServiceEvent event)
     {

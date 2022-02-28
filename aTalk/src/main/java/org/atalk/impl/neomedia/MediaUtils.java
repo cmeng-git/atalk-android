@@ -39,39 +39,39 @@ import timber.log.Timber;
 public class MediaUtils
 {
     /**
-     * An empty array with <tt>MediaFormat</tt> element type. Explicitly defined in order to reduce
+     * An empty array with <code>MediaFormat</code> element type. Explicitly defined in order to reduce
      * unnecessary allocations, garbage collection.
      */
     public static final MediaFormat[] EMPTY_MEDIA_FORMATS = new MediaFormat[0];
 
     /**
-     * The <tt>Map</tt> of JMF-specific encodings to well-known encodings as defined in RFC 3551.
+     * The <code>Map</code> of JMF-specific encodings to well-known encodings as defined in RFC 3551.
      */
     private static final Map<String, String> jmfEncodingToEncodings = new HashMap<>();
 
     /**
-     * The maximum number of channels for audio that is available through <tt>MediaUtils</tt>.
+     * The maximum number of channels for audio that is available through <code>MediaUtils</code>.
      */
     public static final int MAX_AUDIO_CHANNELS;
 
     /**
-     * The maximum sample rate for audio that is available through <tt>MediaUtils</tt>.
+     * The maximum sample rate for audio that is available through <code>MediaUtils</code>.
      */
     public static final double MAX_AUDIO_SAMPLE_RATE;
 
     /**
-     * The maximum sample size in bits for audio that is available through <tt>MediaUtils</tt>.
+     * The maximum sample size in bits for audio that is available through <code>MediaUtils</code>.
      */
     public static final int MAX_AUDIO_SAMPLE_SIZE_IN_BITS;
 
     /**
-     * The <tt>MediaFormat</tt>s which do not have RTP payload types assigned by RFC 3551 and are
+     * The <code>MediaFormat</code>s which do not have RTP payload types assigned by RFC 3551 and are
      * thus referred to as having dynamic RTP payload types.
      */
     private static final List<MediaFormat> rtpPayloadTypelessMediaFormats = new ArrayList<>();
 
     /**
-     * The <tt>Map</tt> of RTP payload types (expressed as <tt>String</tt>s) to <tt>MediaFormat</tt>s.
+     * The <code>Map</code> of RTP payload types (expressed as <code>String</code>s) to <code>MediaFormat</code>s.
      */
     private static final Map<String, MediaFormat[]> rtpPayloadTypeStrToMediaFormats = new HashMap<>();
 
@@ -390,19 +390,19 @@ public class MediaUtils
     }
 
     /**
-     * Adds a new mapping of a specific RTP payload type to a list of <tt>MediaFormat</tt>s
-     * of a specific <tt>MediaType</tt>, with a specific JMF encoding and, optionally, with
+     * Adds a new mapping of a specific RTP payload type to a list of <code>MediaFormat</code>s
+     * of a specific <code>MediaType</code>, with a specific JMF encoding and, optionally, with
      * specific clock rates.
      *
-     * @param rtpPayloadType the RTP payload type to be associated with a list of <tt>MediaFormat</tt>s
-     * @param encoding the well-known encoding (name) corresponding to <tt>rtpPayloadType</tt> (in
-     * contrast to the JMF-specific encoding specified by <tt>jmfEncoding</tt>)
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
-     * @param jmfEncoding the JMF encoding of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
-     * @param clockRates the optional list of clock rates of the <tt>MediaFormat</tt>s to be associated
-     * with <tt>rtpPayloadType</tt>
+     * @param rtpPayloadType the RTP payload type to be associated with a list of <code>MediaFormat</code>s
+     * @param encoding the well-known encoding (name) corresponding to <code>rtpPayloadType</code> (in
+     * contrast to the JMF-specific encoding specified by <code>jmfEncoding</code>)
+     * @param mediaType the <code>MediaType</code> of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
+     * @param jmfEncoding the JMF encoding of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
+     * @param clockRates the optional list of clock rates of the <code>MediaFormat</code>s to be associated
+     * with <code>rtpPayloadType</code>
      */
 
     private static void addMediaFormats(
@@ -423,24 +423,24 @@ public class MediaUtils
     }
 
     /**
-     * Adds a new mapping of a specific RTP payload type to a list of <tt>MediaFormat</tt>s of a
-     * specific <tt>MediaType</tt>, with a specific JMF encoding and, optionally, with specific
+     * Adds a new mapping of a specific RTP payload type to a list of <code>MediaFormat</code>s of a
+     * specific <code>MediaType</code>, with a specific JMF encoding and, optionally, with specific
      * clock rates.
      *
-     * @param rtpPayloadType the RTP payload type to be associated with a list of <tt>MediaFormat</tt>s
-     * @param encoding the well-known encoding (name) corresponding to <tt>rtpPayloadType</tt> (in contrast
-     * to the JMF-specific encoding specified by <tt>jmfEncoding</tt>)
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
-     * @param jmfEncoding the JMF encoding of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
+     * @param rtpPayloadType the RTP payload type to be associated with a list of <code>MediaFormat</code>s
+     * @param encoding the well-known encoding (name) corresponding to <code>rtpPayloadType</code> (in contrast
+     * to the JMF-specific encoding specified by <code>jmfEncoding</code>)
+     * @param mediaType the <code>MediaType</code> of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
+     * @param jmfEncoding the JMF encoding of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
      * @param channels number of channels
-     * @param formatParameters the set of format-specific parameters of the <tt>MediaFormat</tt>s to be associated
-     * with <tt>rtpPayloadType</tt>
-     * @param advancedAttributes the set of advanced attributes of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayload</tt>
-     * @param clockRates the optional list of clock rates of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
+     * @param formatParameters the set of format-specific parameters of the <code>MediaFormat</code>s to be associated
+     * with <code>rtpPayloadType</code>
+     * @param advancedAttributes the set of advanced attributes of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayload</code>
+     * @param clockRates the optional list of clock rates of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
      */
     @SuppressWarnings("unchecked")
     private static void addMediaFormats(
@@ -525,23 +525,23 @@ public class MediaUtils
     }
 
     /**
-     * Adds a new mapping of a specific RTP payload type to a list of <tt>MediaFormat</tt>s of a
-     * specific <tt>MediaType</tt>, with a specific JMF encoding and, optionally, with specific
+     * Adds a new mapping of a specific RTP payload type to a list of <code>MediaFormat</code>s of a
+     * specific <code>MediaType</code>, with a specific JMF encoding and, optionally, with specific
      * clock rates.
      *
-     * @param rtpPayloadType the RTP payload type to be associated with a list of <tt>MediaFormat</tt>s
-     * @param encoding the well-known encoding (name) corresponding to <tt>rtpPayloadType</tt> (in contrast
-     * to the JMF-specific encoding specified by <tt>jmfEncoding</tt>)
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
-     * @param jmfEncoding the JMF encoding of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
-     * @param formatParameters the set of format-specific parameters of the <tt>MediaFormat</tt>s to be associated
-     * with <tt>rtpPayloadType</tt>
-     * @param advancedAttributes the set of advanced attributes of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayload</tt>
-     * @param clockRates the optional list of clock rates of the <tt>MediaFormat</tt>s to be associated with
-     * <tt>rtpPayloadType</tt>
+     * @param rtpPayloadType the RTP payload type to be associated with a list of <code>MediaFormat</code>s
+     * @param encoding the well-known encoding (name) corresponding to <code>rtpPayloadType</code> (in contrast
+     * to the JMF-specific encoding specified by <code>jmfEncoding</code>)
+     * @param mediaType the <code>MediaType</code> of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
+     * @param jmfEncoding the JMF encoding of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
+     * @param formatParameters the set of format-specific parameters of the <code>MediaFormat</code>s to be associated
+     * with <code>rtpPayloadType</code>
+     * @param advancedAttributes the set of advanced attributes of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayload</code>
+     * @param clockRates the optional list of clock rates of the <code>MediaFormat</code>s to be associated with
+     * <code>rtpPayloadType</code>
      */
     private static void addMediaFormats(
             byte rtpPayloadType,
@@ -630,14 +630,14 @@ public class MediaUtils
     }
 
     /**
-     * Gets a <tt>MediaFormat</tt> predefined in <tt>MediaUtils</tt> which represents a specific
-     * JMF <tt>Format</tt>. If there is no such representing <tt>MediaFormat</tt> in
-     * <tt>MediaUtils</tt>, returns <tt>null</tt>.
+     * Gets a <code>MediaFormat</code> predefined in <code>MediaUtils</code> which represents a specific
+     * JMF <code>Format</code>. If there is no such representing <code>MediaFormat</code> in
+     * <code>MediaUtils</code>, returns <code>null</code>.
      *
-     * @param format the JMF <tt>Format</tt> to get the <tt>MediaFormat</tt> representation for
-     * @return a <tt>MediaFormat</tt> predefined in <tt>MediaUtils</tt> which represents
-     * <tt>format</tt> if any; <tt>null</tt> if there is no such representing
-     * <tt>MediaFormat</tt> in <tt>MediaUtils</tt>
+     * @param format the JMF <code>Format</code> to get the <code>MediaFormat</code> representation for
+     * @return a <code>MediaFormat</code> predefined in <code>MediaUtils</code> which represents
+     * <code>format</code> if any; <code>null</code> if there is no such representing
+     * <code>MediaFormat</code> in <code>MediaUtils</code>
      */
     @SuppressWarnings("unchecked")
     public static MediaFormat getMediaFormat(Format format)
@@ -664,13 +664,13 @@ public class MediaUtils
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt> known to <tt>MediaUtils</tt> and having the specified
-     * well-known <tt>encoding</tt> (name) and <tt>clockRate</tt>.
+     * Gets the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
+     * well-known <code>encoding</code> (name) and <code>clockRate</code>.
      *
-     * @param encoding the well-known encoding (name) of the <tt>MediaFormat</tt> to get
-     * @param clockRate the clock rate of the <tt>MediaFormat</tt> to get
-     * @return the <tt>MediaFormat</tt> known to <tt>MediaUtils</tt> and having the specified
-     * <tt>encoding</tt> and <tt>clockRate</tt>
+     * @param encoding the well-known encoding (name) of the <code>MediaFormat</code> to get
+     * @param clockRate the clock rate of the <code>MediaFormat</code> to get
+     * @return the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
+     * <code>encoding</code> and <code>clockRate</code>
      */
     public static MediaFormat getMediaFormat(String encoding, double clockRate)
     {
@@ -678,14 +678,14 @@ public class MediaUtils
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt> known to <tt>MediaUtils</tt> and having the specified
-     * well-known <tt>encoding</tt> (name), <tt>clockRate</tt> and matching format parameters.
+     * Gets the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
+     * well-known <code>encoding</code> (name), <code>clockRate</code> and matching format parameters.
      *
-     * @param encoding the well-known encoding (name) of the <tt>MediaFormat</tt> to get
-     * @param clockRate the clock rate of the <tt>MediaFormat</tt> to get
-     * @param fmtps the format parameters of the <tt>MediaFormat</tt> to get
-     * @return the <tt>MediaFormat</tt> known to <tt>MediaUtils</tt> and having the specified
-     * <tt>encoding</tt> (name), <tt>clockRate</tt> and matching format parameters
+     * @param encoding the well-known encoding (name) of the <code>MediaFormat</code> to get
+     * @param clockRate the clock rate of the <code>MediaFormat</code> to get
+     * @param fmtps the format parameters of the <code>MediaFormat</code> to get
+     * @return the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
+     * <code>encoding</code> (name), <code>clockRate</code> and matching format parameters
      */
     public static MediaFormat getMediaFormat(String encoding, double clockRate, Map<String, String> fmtps)
     {
@@ -697,15 +697,15 @@ public class MediaUtils
     }
 
     /**
-     * Gets the index of a specific <tt>MediaFormat</tt> instance within the internal storage of
-     * <tt>MediaUtils</tt>. Since the index is in the internal storage which may or may not be one
-     * and the same for the various <tt>MediaFormat</tt> instances and which may or may not be
+     * Gets the index of a specific <code>MediaFormat</code> instance within the internal storage of
+     * <code>MediaUtils</code>. Since the index is in the internal storage which may or may not be one
+     * and the same for the various <code>MediaFormat</code> instances and which may or may not be
      * searched for the purposes of determining the index, the index is not to be used as a way to
-     * determine whether <tt>MediaUtils</tt> knows the specified <tt>mediaFormat</tt>
+     * determine whether <code>MediaUtils</code> knows the specified <code>mediaFormat</code>
      *
-     * @param mediaFormat the <tt>MediaFormat</tt> to determine the index of
-     * @return the index of the specified <tt>mediaFormat</tt> in the internal storage of
-     * <tt>MediaUtils</tt>
+     * @param mediaFormat the <code>MediaFormat</code> to determine the index of
+     * @return the index of the specified <code>mediaFormat</code> in the internal storage of
+     * <code>MediaUtils</code>
      */
     public static int getMediaFormatIndex(MediaFormat mediaFormat)
     {
@@ -713,11 +713,11 @@ public class MediaUtils
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt>s (expressed as an array) corresponding to a specific RTP
+     * Gets the <code>MediaFormat</code>s (expressed as an array) corresponding to a specific RTP
      * payload type.
      *
-     * @param rtpPayloadType the RTP payload type to retrieve the corresponding <tt>MediaFormat</tt>s for
-     * @return an array of <tt>MediaFormat</tt>s corresponding to the specified RTP payload type
+     * @param rtpPayloadType the RTP payload type to retrieve the corresponding <code>MediaFormat</code>s for
+     * @return an array of <code>MediaFormat</code>s corresponding to the specified RTP payload type
      */
     public static MediaFormat[] getMediaFormats(byte rtpPayloadType)
     {
@@ -727,12 +727,12 @@ public class MediaUtils
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt>s known to <tt>MediaUtils</tt> and being of the specified
-     * <tt>MediaType</tt>.
+     * Gets the <code>MediaFormat</code>s known to <code>MediaUtils</code> and being of the specified
+     * <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaFormat</tt>s to get
-     * @return the <tt>MediaFormat</tt>s known to <tt>MediaUtils</tt> and being of the specified
-     * <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the <code>MediaFormat</code>s to get
+     * @return the <code>MediaFormat</code>s known to <code>MediaUtils</code> and being of the specified
+     * <code>mediaType</code>
      */
     public static MediaFormat[] getMediaFormats(MediaType mediaType)
     {
@@ -752,12 +752,12 @@ public class MediaUtils
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt>s predefined in <tt>MediaUtils</tt> with a specific well-known
+     * Gets the <code>MediaFormat</code>s predefined in <code>MediaUtils</code> with a specific well-known
      * encoding (name) as defined by RFC 3551
      * "RTP Profile for Audio and Video Conferences with Minimal Control".
      *
-     * @param encoding the well-known encoding (name) to get the corresponding <tt>MediaFormat</tt>s of
-     * @return a <tt>List</tt> of <tt>MediaFormat</tt>s corresponding to the specified encoding (name)
+     * @param encoding the well-known encoding (name) to get the corresponding <code>MediaFormat</code>s of
+     * @return a <code>List</code> of <code>MediaFormat</code>s corresponding to the specified encoding (name)
      */
     @SuppressWarnings("unchecked")
     public static List<MediaFormat> getMediaFormats(String encoding)
@@ -796,8 +796,8 @@ public class MediaUtils
      * Gets the RTP payload type corresponding to a specific JMF encoding and clock rate.
      *
      * @param jmfEncoding the JMF encoding as returned by
-     * {@link Format#getEncoding()} or the respective <tt>AudioFormat</tt> and
-     * <tt>VideoFormat</tt> encoding constants to get the corresponding RTP payload type of
+     * {@link Format#getEncoding()} or the respective <code>AudioFormat</code> and
+     * <code>VideoFormat</code> encoding constants to get the corresponding RTP payload type of
      * @param clockRate the clock rate to be taken into account in the search for the RTP payload type if the
      * JMF encoding does not uniquely identify it
      * @return the RTP payload type corresponding to the specified JMF encoding and clock rate if
@@ -870,7 +870,7 @@ public class MediaUtils
      * @param jmfEncoding the JMF encoding to get the corresponding well-known encoding of
      * @return the well-known encoding (name) as defined in RFC 3551
      * "RTP Profile for Audio and Video Conferences with Minimal Control" corresponding to
-     * <tt>jmfEncoding</tt> if any; otherwise, <tt>null</tt>
+     * <code>jmfEncoding</code> if any; otherwise, <code>null</code>
      */
     public static String jmfEncodingToEncoding(String jmfEncoding)
     {

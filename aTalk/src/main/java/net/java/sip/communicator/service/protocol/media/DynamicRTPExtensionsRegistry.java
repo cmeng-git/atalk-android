@@ -11,8 +11,8 @@ import org.atalk.service.neomedia.RTPExtension;
 
 /**
  * RFC [RFC 5285] defines a mechanism for attaching multiple extensions to RTP packets. Part of this
- * mechanism consists in negotiating their identifiers using <tt>extmap</tt> attributes pretty much
- * the same way one would negotiate payload types with <tt>rtpmap</tt> attributes.
+ * mechanism consists in negotiating their identifiers using <code>extmap</code> attributes pretty much
+ * the same way one would negotiate payload types with <code>rtpmap</code> attributes.
  * <p>
  * Mappings of extension IDs are handled with SDP. They are created for a particular session and
  * remain the same for its entire lifetime. They may however change in following sessions.
@@ -50,20 +50,20 @@ public class DynamicRTPExtensionsRegistry
 	private byte nextExtensionMapping = MIN_HEADER_ID;
 
 	/**
-	 * A table mapping <tt>RTPExtension</tt> instances to the dynamically allocated ID they have
+	 * A table mapping <code>RTPExtension</code> instances to the dynamically allocated ID they have
 	 * obtained for the lifetime of this registry.
 	 */
 	private Map<RTPExtension, Byte> extMap = new Hashtable<RTPExtension, Byte>();
 
 	/**
-	 * Returns the ID that has been allocated for <tt>extension</tt>. A mapping for the specified
-	 * <tt>extension</tt> would be created even if it did not previously exist. The method is meant
+	 * Returns the ID that has been allocated for <code>extension</code>. A mapping for the specified
+	 * <code>extension</code> would be created even if it did not previously exist. The method is meant
 	 * for use primarily during generation of SDP descriptions.
 	 *
 	 * @param extension
-	 *        the <tt>RTPExtension</tt> instance that we'd like to obtain a dynamic ID for.
+	 *        the <code>RTPExtension</code> instance that we'd like to obtain a dynamic ID for.
 	 *
-	 * @return the (possibly newly allocated) ID corresponding to the specified <tt>extension</tt>
+	 * @return the (possibly newly allocated) ID corresponding to the specified <code>extension</code>
 	 *         and valid for the lifetime of the media session.
 	 *
 	 * @throws IllegalStateException
@@ -84,14 +84,14 @@ public class DynamicRTPExtensionsRegistry
 	}
 
 	/**
-	 * Returns the ID that has been allocated for <tt>extension</tt> or <tt>-1</tt> if no extension
+	 * Returns the ID that has been allocated for <code>extension</code> or <code>-1</code> if no extension
 	 * exists.
 	 *
 	 * @param extension
-	 *        the <tt>RTPExtension</tt> instance whose ID we'd like to find.
+	 *        the <code>RTPExtension</code> instance whose ID we'd like to find.
 	 *
-	 * @return the ID corresponding to the specified <tt>extension</tt> or <tt>-1</tt> if
-	 *         <tt>extension</tt> is not registered with this registry.
+	 * @return the ID corresponding to the specified <code>extension</code> or <code>-1</code> if
+	 *         <code>extension</code> is not registered with this registry.
 	 */
 	public byte getExtensionMapping(RTPExtension extension)
 	{
@@ -106,18 +106,18 @@ public class DynamicRTPExtensionsRegistry
 	}
 
 	/**
-	 * Adds the specified <tt>extension</tt> to <tt>extID</tt> mapping to the list of mappings known
+	 * Adds the specified <code>extension</code> to <code>extID</code> mapping to the list of mappings known
 	 * to this registry. The method is meant for use primarily when handling incoming media
-	 * descriptions, methods generating local SDP should use the <tt>obtainExtensionMapping</tt>
+	 * descriptions, methods generating local SDP should use the <code>obtainExtensionMapping</code>
 	 * instead.
 	 *
 	 * @param extID
-	 *        the extension ID that we'd like to allocated to <tt>extension</tt>.
+	 *        the extension ID that we'd like to allocated to <code>extension</code>.
 	 * @param extension
-	 *        the <tt>RTPExtension</tt> that we'd like to create a dynamic mapping for.
+	 *        the <code>RTPExtension</code> that we'd like to create a dynamic mapping for.
 	 *
 	 * @throws IllegalArgumentException
-	 *         in case <tt>extID</tt> has already been assigned to another <tt>RTPExtension</tt>.
+	 *         in case <code>extID</code> has already been assigned to another <code>RTPExtension</code>.
 	 */
 	public void addMapping(RTPExtension extension, byte extID)
 		throws IllegalArgumentException
@@ -138,14 +138,14 @@ public class DynamicRTPExtensionsRegistry
 	}
 
 	/**
-	 * Returns a reference to the <tt>RTPExtension</tt> with the specified mapping or <tt>null</tt>
-	 * if the number specified by <tt>extID</tt> has not been allocated yet.
+	 * Returns a reference to the <code>RTPExtension</code> with the specified mapping or <code>null</code>
+	 * if the number specified by <code>extID</code> has not been allocated yet.
 	 *
 	 * @param extID
-	 *        the ID whose <tt>RTPExtension</tt> we are trying to discover.
+	 *        the ID whose <code>RTPExtension</code> we are trying to discover.
 	 *
-	 * @return the <tt>RTPExtension</tt> that has been mapped to <tt>extID</tt> in this registry or
-	 *         <tt>null</tt> if it hasn't been allocated yet.
+	 * @return the <code>RTPExtension</code> that has been mapped to <code>extID</code> in this registry or
+	 *         <code>null</code> if it hasn't been allocated yet.
 	 */
 	public RTPExtension findExtension(byte extID)
 	{

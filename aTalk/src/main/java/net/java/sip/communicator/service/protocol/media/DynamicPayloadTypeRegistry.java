@@ -35,7 +35,7 @@ public class DynamicPayloadTypeRegistry
     private byte nextDynamicPayloadType = MediaFormat.MIN_DYNAMIC_PAYLOAD_TYPE;
 
     /**
-     * The mappings of <tt>MediaFormat</tt> instances to the dynamic payload type numbers they have
+     * The mappings of <code>MediaFormat</code> instances to the dynamic payload type numbers they have
      * obtained for the lifetime of this registry.
      */
     private final Map<MediaFormat, Byte> payloadTypeMappings = new HashMap<>();
@@ -47,12 +47,12 @@ public class DynamicPayloadTypeRegistry
     private final Map<Byte, Byte> payloadTypeOverrides = new HashMap<>();
 
     /**
-     * An override mappings of <tt>MediaFormat</tt> instances to the dynamic payload type numbers.
+     * An override mappings of <code>MediaFormat</code> instances to the dynamic payload type numbers.
      */
     private Map<Byte, String> localPayloadTypePreferences = null;
 
     /**
-     * Payload types mapping from <tt>MediaService</tt>.
+     * Payload types mapping from <code>MediaService</code>.
      */
     private Map<MediaFormat, Byte> mediaMappings = null;
 
@@ -67,13 +67,13 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Returns the dynamic payload type that has been allocated for <tt>format</tt>. A mapping for
-     * the specified <tt>format</tt> would be created even if it did not previously exist. The
+     * Returns the dynamic payload type that has been allocated for <code>format</code>. A mapping for
+     * the specified <code>format</code> would be created even if it did not previously exist. The
      * method is meant for use primarily during generation of SDP descriptions.
      *
-     * @param format the <tt>MediaFormat</tt> instance that we'd like to obtain a payload type number for.
+     * @param format the <code>MediaFormat</code> instance that we'd like to obtain a payload type number for.
      * @return the (possibly newly allocated) payload type number corresponding to the specified
-     * <tt>format</tt> instance for the lifetime of the media session.
+     * <code>format</code> instance for the lifetime of the media session.
      * @throws IllegalStateException if we have already registered more dynamic formats than allowed for by RTP.
      */
     public byte obtainPayloadTypeNumber(MediaFormat format)
@@ -164,12 +164,12 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Returns the payload type number that <tt>format</tt> would like to use if possible and
-     * <tt>null</tt> if there is no such preference.
+     * Returns the payload type number that <code>format</code> would like to use if possible and
+     * <code>null</code> if there is no such preference.
      *
      * @param format the {@link MediaFormat} whose preferred dynamic PT number we are trying to obtain.
-     * @return the payload type number that <tt>format</tt> would like to use if possible and
-     * <tt>null</tt> if there is no such preference.
+     * @return the payload type number that <code>format</code> would like to use if possible and
+     * <code>null</code> if there is no such preference.
      */
     private Byte getPreferredDynamicPayloadType(MediaFormat format)
     {
@@ -179,16 +179,16 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Adds the specified <tt>format</tt> to <tt>payloadType</tt> mapping to the list of mappings
+     * Adds the specified <code>format</code> to <code>payloadType</code> mapping to the list of mappings
      * known to this registry. If the mapping already exists in the registry then we will use the
      * new value to create an overriding mapping. This basically means that we will expect packets
      * to be streamed to us with the original PT but we will be streaming with The method is meant
      * for use primarily when handling incoming media descriptions, methods generating local SDP
-     * should use the <tt>obtainPayloadTypeNumber</tt> instead.
+     * should use the <code>obtainPayloadTypeNumber</code> instead.
      *
-     * @param payloadType the payload type number that we'd like to allocated to <tt>format</tt>.
-     * @param format the <tt>MediaFormat</tt> that we'd like to create a dynamic mapping for.
-     * @throws IllegalArgumentException in case <tt>payloadType</tt> has already been assigned to another format.
+     * @param payloadType the payload type number that we'd like to allocated to <code>format</code>.
+     * @param format the <code>MediaFormat</code> that we'd like to create a dynamic mapping for.
+     * @throws IllegalArgumentException in case <code>payloadType</code> has already been assigned to another format.
      */
     public void addMapping(MediaFormat format, byte payloadType)
             throws IllegalArgumentException
@@ -239,12 +239,12 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Return s a reference to the <tt>MediaFormat</tt> with the specified mapping or <tt>null</tt>
-     * if the number specified by <tt>payloadType</tt> has not been allocated yet.
+     * Return s a reference to the <code>MediaFormat</code> with the specified mapping or <code>null</code>
+     * if the number specified by <code>payloadType</code> has not been allocated yet.
      *
      * @param payloadType the number of the payload type that we are trying to get a format for.
-     * @return the <tt>MediaFormat</tt> that has been mapped to <tt>payloadType</tt> in this
-     * registry or <tt>null</tt> if it hasn't been allocated yet.
+     * @return the <code>MediaFormat</code> that has been mapped to <code>payloadType</code> in this
+     * registry or <code>null</code> if it hasn't been allocated yet.
      */
     public MediaFormat findFormat(byte payloadType)
     {
@@ -287,12 +287,12 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Returns the {@link MediaFormat} with the specified <tt>payloadTypePreference</tt> or
-     * <tt>null</tt> if no {@link MediaFormat} has claimed this payload type number as preferred.
+     * Returns the {@link MediaFormat} with the specified <code>payloadTypePreference</code> or
+     * <code>null</code> if no {@link MediaFormat} has claimed this payload type number as preferred.
      *
      * @param payloadTypePreference the dynamic payload type number that we are trying to determine as being claimed as
      * preferred or not by a media format.
-     * @return the {@link MediaFormat} with the null <tt>payloadTypePreference</tt> or <tt>null</tt>
+     * @return the {@link MediaFormat} with the null <code>payloadTypePreference</code> or <code>null</code>
      * if no {@link MediaFormat} has claimed this payload type number as preferred.
      */
     private MediaFormat findFormatWithPreference(byte payloadTypePreference)
@@ -327,11 +327,11 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Returns the payload type that is currently mapped to <tt>format</tt> or <tt>null</tt> if
+     * Returns the payload type that is currently mapped to <code>format</code> or <code>null</code> if
      * there is currently no such payload type.
      *
      * @param format the {@link MediaFormat} whose mapping we are looking for
-     * @return the payload type that is currently mapped to <tt>format</tt> or <tt>null</tt> if
+     * @return the payload type that is currently mapped to <code>format</code> or <code>null</code> if
      * there is currently no such payload type.
      */
     public Byte getPayloadType(MediaFormat format)
@@ -340,11 +340,11 @@ public class DynamicPayloadTypeRegistry
     }
 
     /**
-     * Iterates through <tt>formatMap</tt> and returns the payload type that it maps to
-     * <tt>format</tt> or <tt>null</tt> if there is currently no such payload type.
+     * Iterates through <code>formatMap</code> and returns the payload type that it maps to
+     * <code>format</code> or <code>null</code> if there is currently no such payload type.
      *
      * @param format the {@link MediaFormat} whose mapping we are looking for
-     * @return the payload type that is currently mapped to <tt>format</tt> or <tt>null</tt> if
+     * @return the payload type that is currently mapped to <code>format</code> or <code>null</code> if
      * there is currently no such payload type.
      */
     private static Byte getPayloadTypeFromMap(Map<MediaFormat, Byte> formatMap, MediaFormat format)

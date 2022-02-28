@@ -37,11 +37,11 @@ import static org.dhcp4java.DHCPConstants.DHCPREQUEST;
 /**
  * General Interface for a "DHCP Servlet"
  *
- * <p>Normal use is to override the <tt>doXXX()</tt> or <tt>service()</tt> method
+ * <p>Normal use is to override the <code>doXXX()</code> or <code>service()</code> method
  * to provide your own application logic.
  *
  * <p>For simple servers or test purpose, it as also a good idea to provide
- * a <tt>main()</tt> method so you can easily launch the server by running the servlet.
+ * a <code>main()</code> method so you can easily launch the server by running the servlet.
  *
  * @author Stephan Hadinger
  * @author Eng Chong Meng
@@ -62,7 +62,7 @@ public class DHCPServlet
      *
      * <p>There is no default behaviour.
      *
-     * @param props a Properties containing parameters, as passed to <tt>DHCPCoreServer</tt>
+     * @param props a Properties containing parameters, as passed to <code>DHCPCoreServer</code>
      */
     public void init(Properties props)
     {
@@ -73,13 +73,13 @@ public class DHCPServlet
      * Low-level method for receiving a UDP Daragram and sending one back.
      *
      * <p>This methode normally does not need to be overriden and passes control
-     * to <tt>service()</tt> for DHCP packets handling. Howerever the <tt>service()</tt>
+     * to <code>service()</code> for DHCP packets handling. Howerever the <code>service()</code>
      * method is not called if the DHCP request is invalid (i.e. could not be parsed).
      * So overriding this method gives you control on every datagram received, not
      * only valid DHCP packets.
      *
      * @param requestDatagram the datagram received from the client
-     * @return response the datagram to send back, or <tt>null</tt> if no answer
+     * @return response the datagram to send back, or <code>null</code> if no answer
      */
     public DatagramPacket serviceDatagram(DatagramPacket requestDatagram)
     {
@@ -140,10 +140,10 @@ public class DHCPServlet
      * <p>Returns the DHCPPacket to send back to the client, or null if we
      * silently ignore the request.
      *
-     * <p>Default behaviour: ignore BOOTP packets, and dispatch to <tt>doXXX()</tt> methods.
+     * <p>Default behaviour: ignore BOOTP packets, and dispatch to <code>doXXX()</code> methods.
      *
      * @param request DHCP request from the client
-     * @return response DHCP response to send back to client, <tt>null</tt> if no response
+     * @return response DHCP response to send back to client, <code>null</code> if no response
      */
     protected DHCPPacket service(DHCPPacket request)
     {
@@ -197,7 +197,7 @@ public class DHCPServlet
      * Process DISCOVER request.
      *
      * @param request DHCP request received from client
-     * @return DHCP response to send back, or <tt>null</tt> if no response.
+     * @return DHCP response to send back, or <code>null</code> if no response.
      */
     protected DHCPPacket doDiscover(DHCPPacket request)
     {
@@ -209,7 +209,7 @@ public class DHCPServlet
      * Process REQUEST request.
      *
      * @param request DHCP request received from client
-     * @return DHCP response to send back, or <tt>null</tt> if no response.
+     * @return DHCP response to send back, or <code>null</code> if no response.
      */
     protected DHCPPacket doRequest(DHCPPacket request)
     {
@@ -221,7 +221,7 @@ public class DHCPServlet
      * Process INFORM request.
      *
      * @param request DHCP request received from client
-     * @return DHCP response to send back, or <tt>null</tt> if no response.
+     * @return DHCP response to send back, or <code>null</code> if no response.
      */
     protected DHCPPacket doInform(DHCPPacket request)
     {
@@ -233,7 +233,7 @@ public class DHCPServlet
      * Process DECLINE request.
      *
      * @param request DHCP request received from client
-     * @return DHCP response to send back, or <tt>null</tt> if no response.
+     * @return DHCP response to send back, or <code>null</code> if no response.
      */
     protected DHCPPacket doDecline(DHCPPacket request)
     {
@@ -245,7 +245,7 @@ public class DHCPServlet
      * Process RELEASE request.
      *
      * @param request DHCP request received from client
-     * @return DHCP response to send back, or <tt>null</tt> if no response.
+     * @return DHCP response to send back, or <code>null</code> if no response.
      */
     protected DHCPPacket doRelease(DHCPPacket request)
     {

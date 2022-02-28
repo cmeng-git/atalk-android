@@ -10,7 +10,7 @@ import java.io.StringWriter;
 import java.util.logging.LogRecord;
 
 /**
- * Slightly modified <tt>ScLogFormatter</tt> to Android specifics.
+ * Slightly modified <code>ScLogFormatter</code> to Android specifics.
  *
  * @author Pawel Domas
  */

@@ -25,7 +25,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import java.beans.PropertyChangeListener;
 
 /**
- * The <tt>ChatRoomWrapper</tt> is the representation of the <tt>ChatRoom</tt> in the GUI. It
+ * The <code>ChatRoomWrapper</code> is the representation of the <code>ChatRoom</code> in the GUI. It
  * stores the information for the chat room even when the corresponding protocol provider is not connected.
  *
  * @author Yana Stamcheva
@@ -76,9 +76,9 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     String JOIN_UNKNOWN_ERROR_PROP = "UnknownError";
 
     /**
-     * Returns the <tt>ChatRoom</tt> that this wrapper represents.
+     * Returns the <code>ChatRoom</code> that this wrapper represents.
      *
-     * @return the <tt>ChatRoom</tt> that this wrapper represents.
+     * @return the <code>ChatRoom</code> that this wrapper represents.
      */
     ChatRoom getChatRoom();
 
@@ -90,7 +90,7 @@ public interface ChatRoomWrapper extends Comparable<ChatRoomWrapper>
     EntityBareJid getEntityBareJid();
 
     /**
-     * Sets the <tt>ChatRoom</tt> that this wrapper represents.
+     * Sets the <code>ChatRoom</code> that this wrapper represents.
      *
      * @param chatRoom the chat room
      */

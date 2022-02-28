@@ -75,8 +75,8 @@ public class MclStorageManager implements MetaContactListListener
      * Initializes the storage manager to perform the initial loading and parsing of the
      * contacts and groups in the database
      *
-     * @param bc a reference to the currently valid OSGI <tt>BundleContext</tt>
-     * @param mclServiceImpl a reference to the currently valid instance of the <tt>MetaContactListServiceImpl</tt>
+     * @param bc a reference to the currently valid OSGI <code>BundleContext</code>
+     * @param mclServiceImpl a reference to the currently valid instance of the <code>MetaContactListServiceImpl</code>
      * that we could use to pass parsed contacts and contact groups.
      */
     void start(BundleContext bc, MetaContactListServiceImpl mclServiceImpl)
@@ -88,8 +88,8 @@ public class MclStorageManager implements MetaContactListListener
 
     /**
      * Parses the contacts in childContacts table and calls corresponding "add" methods belonging
-     * to <tt>mclServiceImpl</tt> for every metaContact and metaContactGroup stored in the
-     * tables that correspond to a provider caring the specified <tt>accountID</tt>.
+     * to <code>mclServiceImpl</code> for every metaContact and metaContactGroup stored in the
+     * tables that correspond to a provider caring the specified <code>accountID</code>.
      *
      * @param accountUuid the identifier of the account whose contacts we're interested in.
      */
@@ -140,12 +140,12 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Parses <tt>RootMetaContactGroup</tt> and all of its proto-groups, subgroups, and
-     * child-contacts creating corresponding instances through <tt>mclServiceImpl</tt> as
-     * children of each <tt>parentGroup</tt>
+     * Parses <code>RootMetaContactGroup</code> and all of its proto-groups, subgroups, and
+     * child-contacts creating corresponding instances through <code>mclServiceImpl</code> as
+     * children of each <code>parentGroup</code>
      *
      * RootMetaContactGroup: starting point where all the group we're parsing.
-     * parentGroup:　the <tt>MetaContactGroupImpl</tt> where we should be creating children.
+     * parentGroup:　the <code>MetaContactGroupImpl</code> where we should be creating children.
      * parentProtoGroups a Map containing all proto groups that could be parents of any groups
      * parsed from the specified groupNode. The map binds UIDs to group references and may be
      * null for the top-level groups.
@@ -253,7 +253,7 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Creates a <tt>MetaContactGroup</tt> and its decedents
+     * Creates a <code>MetaContactGroup</code> and its decedents
      *
      * A metaGroup may contain:
      * a. proto-groups
@@ -290,7 +290,7 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Creates a new <tt>protoGroup</tt> entry in the table
+     * Creates a new <code>protoGroup</code> entry in the table
      *
      * @param protoGroup the {@code ContactGroup} which is to be created for
      * @param metaGroup the parent of the protoGroup
@@ -334,7 +334,7 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Creates a <tt>metaContact</tt> entry in the table
+     * Creates a <code>metaContact</code> entry in the table
      *
      * @param metaContact the MetaContact that the new entry is to be created for
      */
@@ -501,7 +501,7 @@ public class MclStorageManager implements MetaContactListListener
      * Change of the protoContactGroup name/UID is allowed if it is the only defined protoGroup;
      * If permitted, change its child contacts to the new ContactGroup Name are also required.
      *
-     * <tt>MetaContactGroup</tt>s contain multiple protocol groups and their name cannot change
+     * <code>MetaContactGroup</code>s contain multiple protocol groups and their name cannot change
      * each time one of them is renamed.
      *
      * @param evt the MetaContactListEvent containing the corresponding contactGroup and other info.
@@ -805,12 +805,12 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> instance has been added to the list of
-     * protocol specific buddies in this <tt>MetaContact</tt>
+     * Indicates that a protocol specific <code>Contact</code> instance has been added to the list of
+     * protocol specific buddies in this <code>MetaContact</code>
      *
-     * Creates a table entry corresponding to <tt>Contact</tt>.
+     * Creates a table entry corresponding to <code>Contact</code>.
      *
-     * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
+     * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
     public void protoContactAdded(ProtoContactEvent evt)
     {
@@ -928,10 +928,10 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> instance has been moved from within one
-     * <tt>MetaContact</tt> to another.
+     * Indicates that a protocol specific <code>Contact</code> instance has been moved from within one
+     * <code>MetaContact</code> to another.
      *
-     * @param evt a reference to the <tt>ProtoContactMovedEvent</tt> instance.
+     * @param evt a reference to the <code>ProtoContactMovedEvent</code> instance.
      */
     public void protoContactMoved(ProtoContactEvent evt)
     {
@@ -966,7 +966,7 @@ public class MclStorageManager implements MetaContactListListener
      * Note: Both the contact chatSession and its associated chat messages are left in the DB
      * User may remove this in ChatSessionFragment when an invalid entity is selected.
      *
-     * @param evt a reference to the corresponding <tt>ProtoContactEvent</tt>
+     * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
     public void protoContactRemoved(ProtoContactEvent evt)
     {
@@ -1125,10 +1125,10 @@ public class MclStorageManager implements MetaContactListListener
          * particular contact is already in a descriptor list and thus eliminate duplicates.
          *
          * @param contactAddress the address of the contact whose descriptor we are looking for.
-         * @param list the <tt>List</tt> of <tt>StoredProtoContactDescriptor</tt> that we are supposed to
-         * search for <tt>contactAddress</tt>
-         * @return a <tt>StoredProtoContactDescriptor</tt> corresponding to
-         * <tt>contactAddress</tt> or <tt>null</tt> if no such descriptor exists.
+         * @param list the <code>List</code> of <code>StoredProtoContactDescriptor</code> that we are supposed to
+         * search for <code>contactAddress</code>
+         * @return a <code>StoredProtoContactDescriptor</code> corresponding to
+         * <code>contactAddress</code> or <code>null</code> if no such descriptor exists.
          */
         private static StoredProtoContactDescriptor findContactInList(String contactAddress,
                 List<StoredProtoContactDescriptor> list)
@@ -1146,7 +1146,7 @@ public class MclStorageManager implements MetaContactListListener
     /**
      * We simply ignore - we're not interested in this kind of events.
      *
-     * @param evt the <tt>MetaContactGroupEvent</tt> containing details of this event.
+     * @param evt the <code>MetaContactGroupEvent</code> containing details of this event.
      */
     public void childContactsReordered(MetaContactGroupEvent evt)
     {
@@ -1154,9 +1154,9 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     /**
-     * Indicates that a new avatar is available for a <tt>MetaContact</tt>.
+     * Indicates that a new avatar is available for a <code>MetaContact</code>.
      *
-     * @param evt the <tt>MetaContactAvatarUpdateEvent</tt> containing details of this event
+     * @param evt the <code>MetaContactAvatarUpdateEvent</code> containing details of this event
      */
     public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt)
     {

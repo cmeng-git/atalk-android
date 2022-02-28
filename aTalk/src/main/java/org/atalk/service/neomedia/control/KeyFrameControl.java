@@ -8,104 +8,104 @@ package org.atalk.service.neomedia.control;
 import java.util.*;
 
 /**
- * Represents a control over the key frame-related logic of a <tt>VideoMediaStream</tt>.
+ * Represents a control over the key frame-related logic of a <code>VideoMediaStream</code>.
  *
  * @author Lyubomir Marinov
  */
 public interface KeyFrameControl
 {
 	/**
-	 * Adds a <tt>KeyFrameRequestee</tt> to be made available through this <tt>KeyFrameControl</tt>.
+	 * Adds a <code>KeyFrameRequestee</code> to be made available through this <code>KeyFrameControl</code>.
 	 *
 	 * @param index
-	 *        the zero-based index at which <tt>keyFrameRequestee</tt> is to be added to the list of
-	 *        <tt>KeyFrameRequestee</tt>s made available or <tt>-1</tt> to have this
-	 *        <tt>KeyFrameControl</tt> choose at which index it is to be added in accord with its
-	 *        internal logic through this <tt>KeyFrameControl</tt>
+	 *        the zero-based index at which <code>keyFrameRequestee</code> is to be added to the list of
+	 *        <code>KeyFrameRequestee</code>s made available or <code>-1</code> to have this
+	 *        <code>KeyFrameControl</code> choose at which index it is to be added in accord with its
+	 *        internal logic through this <code>KeyFrameControl</code>
 	 * @param keyFrameRequestee
-	 *        the <tt>KeyFrameRequestee</tt> to be added to this <tt>KeyFrameControl</tt> so that it
+	 *        the <code>KeyFrameRequestee</code> to be added to this <code>KeyFrameControl</code> so that it
 	 *        is made available through it
 	 */
 	public void addKeyFrameRequestee(int index, KeyFrameRequestee keyFrameRequestee);
 
 	/**
-	 * Adds a <tt>KeyFrameRequester</tt> to be made available through this <tt>KeyFrameControl</tt>.
+	 * Adds a <code>KeyFrameRequester</code> to be made available through this <code>KeyFrameControl</code>.
 	 *
 	 * @param index
-	 *        the zero-based index at which <tt>keyFrameRequester</tt> is to be added to the list of
-	 *        <tt>KeyFrameRequester</tt>s made available or <tt>-1</tt> to have this
-	 *        <tt>KeyFrameControl</tt> choose at which index it is to be added in accord with its
-	 *        internal logic through this <tt>KeyFrameControl</tt>
+	 *        the zero-based index at which <code>keyFrameRequester</code> is to be added to the list of
+	 *        <code>KeyFrameRequester</code>s made available or <code>-1</code> to have this
+	 *        <code>KeyFrameControl</code> choose at which index it is to be added in accord with its
+	 *        internal logic through this <code>KeyFrameControl</code>
 	 * @param keyFrameRequester
-	 *        the <tt>KeyFrameRequester</tt> to be added to this <tt>KeyFrameControl</tt> so that it
+	 *        the <code>KeyFrameRequester</code> to be added to this <code>KeyFrameControl</code> so that it
 	 *        is made available through it
 	 */
 	public void addKeyFrameRequester(int index, KeyFrameRequester keyFrameRequester);
 
 	/**
-	 * Gets the <tt>KeyFrameRequestee</tt>s made available through this <tt>KeyFrameControl</tt>.
+	 * Gets the <code>KeyFrameRequestee</code>s made available through this <code>KeyFrameControl</code>.
 	 *
-	 * @return an unmodifiable list of <tt>KeyFrameRequestee</tt>s made available through this
-	 *         <tt>KeyFrameControl</tt>
+	 * @return an unmodifiable list of <code>KeyFrameRequestee</code>s made available through this
+	 *         <code>KeyFrameControl</code>
 	 */
 	public List<KeyFrameRequestee> getKeyFrameRequestees();
 
 	/**
-	 * Gets the <tt>KeyFrameRequester</tt>s made available through this <tt>KeyFrameControl</tt>.
+	 * Gets the <code>KeyFrameRequester</code>s made available through this <code>KeyFrameControl</code>.
 	 *
-	 * @return an unmodifiable list of <tt>KeyFrameRequester</tt>s made available through this
-	 *         <tt>KeyFrameControl</tt>
+	 * @return an unmodifiable list of <code>KeyFrameRequester</code>s made available through this
+	 *         <code>KeyFrameControl</code>
 	 */
 	public List<KeyFrameRequester> getKeyFrameRequesters();
 
 	/**
-	 * Notifies this <tt>KeyFrameControl</tt> that the remote peer of the associated
-	 * <tt>VideoMediaStream</tt> has requested a key frame from the local peer.
+	 * Notifies this <code>KeyFrameControl</code> that the remote peer of the associated
+	 * <code>VideoMediaStream</code> has requested a key frame from the local peer.
 	 *
-	 * @return <tt>true</tt> if the local peer has honored the request from the remote peer for a
-	 *         key frame; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the local peer has honored the request from the remote peer for a
+	 *         key frame; otherwise, <code>false</code>
 	 */
 	public boolean keyFrameRequest();
 
 	/**
-	 * Removes a <tt>KeyFrameRequestee</tt> to no longer be made available through this
-	 * <tt>KeyFrameControl</tt>.
+	 * Removes a <code>KeyFrameRequestee</code> to no longer be made available through this
+	 * <code>KeyFrameControl</code>.
 	 *
 	 * @param keyFrameRequestee
-	 *        the <tt>KeyFrameRequestee</tt> to be removed from this <tt>KeyFrameControl</tt> so
+	 *        the <code>KeyFrameRequestee</code> to be removed from this <code>KeyFrameControl</code> so
 	 *        that it is no longer made available through it
-	 * @return <tt>true</tt> if <tt>keyFrameRequestee</tt> was found in this
-	 *         <tt>KeyFrameControl</tt>; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if <code>keyFrameRequestee</code> was found in this
+	 *         <code>KeyFrameControl</code>; otherwise, <code>false</code>
 	 */
 	public boolean removeKeyFrameRequestee(KeyFrameRequestee keyFrameRequestee);
 
 	/**
-	 * Removes a <tt>KeyFrameRequester</tt> to no longer be made available through this
-	 * <tt>KeyFrameControl</tt>.
+	 * Removes a <code>KeyFrameRequester</code> to no longer be made available through this
+	 * <code>KeyFrameControl</code>.
 	 *
 	 * @param keyFrameRequester
-	 *        the <tt>KeyFrameRequester</tt> to be removed from this <tt>KeyFrameControl</tt> so
+	 *        the <code>KeyFrameRequester</code> to be removed from this <code>KeyFrameControl</code> so
 	 *        that it is no longer made available through it
-	 * @return <tt>true</tt> if <tt>keyFrameRequester</tt> was found in this
-	 *         <tt>KeyFrameControl</tt>; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if <code>keyFrameRequester</code> was found in this
+	 *         <code>KeyFrameControl</code>; otherwise, <code>false</code>
 	 */
 	public boolean removeKeyFrameRequester(KeyFrameRequester keyFrameRequester);
 
 	/**
-	 * Requests a key frame from the remote peer of the associated <tt>VideoMediaStream</tt>.
+	 * Requests a key frame from the remote peer of the associated <code>VideoMediaStream</code>.
 	 *
 	 * @param urgent
-	 *        <tt>true</tt> if the caller has determined that the need for a key frame is urgent and
+	 *        <code>true</code> if the caller has determined that the need for a key frame is urgent and
 	 *        should not obey all constraints with respect to time between two subsequent requests
 	 *        for key frames
-	 * @return <tt>true</tt> if a key frame was indeed requested from the remote peer of the
-	 *         associated <tt>VideoMediaStream</tt> in response to the call; otherwise,
-	 *         <tt>false</tt>
+	 * @return <code>true</code> if a key frame was indeed requested from the remote peer of the
+	 *         associated <code>VideoMediaStream</code> in response to the call; otherwise,
+	 *         <code>false</code>
 	 */
 	public boolean requestKeyFrame(boolean urgent);
 
 	/**
-	 * Represents a way for the remote peer of a <tt>VideoMediaStream</tt> to request a key frame
+	 * Represents a way for the remote peer of a <code>VideoMediaStream</code> to request a key frame
 	 * from its local peer.
 	 *
 	 * @author Lyubomir Marinov
@@ -113,52 +113,52 @@ public interface KeyFrameControl
 	public interface KeyFrameRequestee
 	{
 		/**
-		 * Notifies this <tt>KeyFrameRequestee</tt> that the remote peer of the associated
-		 * <tt>VideoMediaStream</tt> requests a key frame from the local peer.
+		 * Notifies this <code>KeyFrameRequestee</code> that the remote peer of the associated
+		 * <code>VideoMediaStream</code> requests a key frame from the local peer.
 		 *
-		 * @return <tt>true</tt> if this <tt>KeyFrameRequestee</tt> has honored the request for a
-		 *         key frame; otherwise, <tt>false</tt>
+		 * @return <code>true</code> if this <code>KeyFrameRequestee</code> has honored the request for a
+		 *         key frame; otherwise, <code>false</code>
 		 */
 		public boolean keyFrameRequest();
 	}
 
 	/**
-	 * Represents a way for a <tt>VideoMediaStream</tt> to request a key frame from its remote peer.
+	 * Represents a way for a <code>VideoMediaStream</code> to request a key frame from its remote peer.
 	 *
 	 * @author Lyubomir Marinov
 	 */
 	public interface KeyFrameRequester
 	{
 		/**
-		 * The name of the <tt>ConfigurationService</tt> property which specifies the preferred
-		 * <tt>KeyFrameRequester</tt> to be used.
+		 * The name of the <code>ConfigurationService</code> property which specifies the preferred
+		 * <code>KeyFrameRequester</code> to be used.
 		 */
 		public static final String PREFERRED_PNAME
 				= "neomedia.codec.video.h264.preferredKeyFrameRequester";
 
 		/**
-		 * The value of the {@link #PREFERRED_PNAME} <tt>ConfigurationService</tt> property which
-		 * indicates that the RTCP <tt>KeyFrameRequester</tt> is preferred.
+		 * The value of the {@link #PREFERRED_PNAME} <code>ConfigurationService</code> property which
+		 * indicates that the RTCP <code>KeyFrameRequester</code> is preferred.
 		 */
 		public static final String RTCP = "rtcp";
 
 		/**
-		 * The value of the {@link #PREFERRED_PNAME} <tt>ConfigurationService</tt> property which
-		 * indicates that the signaling/protocol <tt>KeyFrameRequester</tt> is preferred.
+		 * The value of the {@link #PREFERRED_PNAME} <code>ConfigurationService</code> property which
+		 * indicates that the signaling/protocol <code>KeyFrameRequester</code> is preferred.
 		 */
 		public static final String SIGNALING = "signaling";
 
 		/**
-		 * The default value of the {@link #PREFERRED_PNAME} <tt>ConfigurationService</tt> property.
+		 * The default value of the {@link #PREFERRED_PNAME} <code>ConfigurationService</code> property.
 		 */
 		public static final String DEFAULT_PREFERRED = RTCP;
 
 		/**
-		 * Requests a key frame from the remote peer of the associated <tt>VideoMediaStream</tt>.
+		 * Requests a key frame from the remote peer of the associated <code>VideoMediaStream</code>.
 		 *
-		 * @return <tt>true</tt> if this <tt>KeyFrameRequester</tt> has indeed requested a key frame
-		 *         from the remote peer of the associated <tt>VideoMediaStream</tt> in response to
-		 *         the call; otherwise, <tt>false</tt>
+		 * @return <code>true</code> if this <code>KeyFrameRequester</code> has indeed requested a key frame
+		 *         from the remote peer of the associated <code>VideoMediaStream</code> in response to
+		 *         the call; otherwise, <code>false</code>
 		 */
 		public boolean requestKeyFrame();
 	}

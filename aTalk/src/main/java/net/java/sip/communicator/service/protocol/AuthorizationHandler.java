@@ -11,7 +11,7 @@ package net.java.sip.communicator.service.protocol;
  * our presence status, or whenever a subscription request has failed for a particular contact
  * because we need to first generate an authorization request demanding permission to subscribe.
  *
- * The <tt>AuthorizationHandler</tt> is to be implemented by the User Interface as all its methods
+ * The <code>AuthorizationHandler</code> is to be implemented by the User Interface as all its methods
  * would require user intervention.
  *
  * Note that some protocols do not support authorizations or allow them to be turned off. In such
@@ -52,8 +52,8 @@ public interface AuthorizationHandler
      * Note that some protocols do not support authorizations or allow them to be turned off. In
      * such cases the method will never be called.
      *
-     * @param contact the <tt>Contact</tt> whose authorization we'll be requesting.
-     * @return the <tt>AuthorizationRequest</tt> instance that the user interface has created, and
+     * @param contact the <code>Contact</code> whose authorization we'll be requesting.
+     * @return the <code>AuthorizationRequest</code> instance that the user interface has created, and
      * which contains a reason phrase and/or a pre-request authorization grant.
      */
     public AuthorizationRequest createAuthorizationRequest(Contact contact);
@@ -63,7 +63,7 @@ public interface AuthorizationHandler
      * method will be called any whenever someone acts upone an authorization request that we have
      * previously sent.
      *
-     * @param response the <tt>AuthorizationResponse</tt> that we have received.
+     * @param response the <code>AuthorizationResponse</code> that we have received.
      * @param sourceContact a reference to the Contact demanding authorization
      */
     public void processAuthorizationResponse(AuthorizationResponse response, Contact sourceContact);

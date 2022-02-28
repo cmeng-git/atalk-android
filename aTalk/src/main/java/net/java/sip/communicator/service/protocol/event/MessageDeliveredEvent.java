@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>MessageDeliveredEvent</tt>s confirm successful delivery of an instant message.
+ * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
  *
  * @author Emil Ivov
  */
@@ -30,7 +30,7 @@ public class MessageDeliveredEvent extends EventObject
     private Contact to = null;
 
     /**
-     * The <tt>ContactResource</tt>, to which the message was sent.
+     * The <code>ContactResource</code>, to which the message was sent.
      */
     private ContactResource toResource = null;
 
@@ -67,11 +67,11 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-     * to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+     * to the specified <code>to</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
+     * @param source the <code>IMessage</code> whose delivery this event represents.
+     * @param to the <code>Contact</code> that this message was sent to.
      * @param correctedMessageUID The ID of the message being corrected.
      */
     public MessageDeliveredEvent(IMessage source, Contact to, String correctedMessageUID)
@@ -81,11 +81,11 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-     * to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+     * to the specified <code>to</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
+     * @param source the <code>IMessage</code> whose delivery this event represents.
+     * @param to the <code>Contact</code> that this message was sent to.
      * @param timestamp a date indicating the exact moment when the event occurred
      */
     public MessageDeliveredEvent(IMessage source, Contact to, Date timestamp)
@@ -96,11 +96,11 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-     * to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+     * to the specified <code>to</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
+     * @param source the <code>IMessage</code> whose delivery this event represents.
+     * @param to the <code>Contact</code> that this message was sent to.
      * @param timestamp a date indicating the exact moment when the event occurred
      */
     public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource, Date timestamp)
@@ -112,12 +112,12 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-     * to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+     * to the specified <code>to</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
-     * @param toResource the <tt>Contact</tt> resource that this message was sent to
+     * @param source the <code>IMessage</code> whose delivery this event represents.
+     * @param to the <code>Contact</code> that this message was sent to.
+     * @param toResource the <code>Contact</code> resource that this message was sent to
      */
     public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource)
     {
@@ -126,9 +126,9 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that <tt>IMessage</tt> was sent to.
+     * Returns a reference to the <code>Contact</code> that <code>IMessage</code> was sent to.
      *
-     * @return a reference to the <tt>Contact</tt> that has send the <tt>IMessage</tt> whose
+     * @return a reference to the <code>Contact</code> that has send the <code>IMessage</code> whose
      * reception this event represents.
      */
     public Contact getDestinationContact()
@@ -139,7 +139,7 @@ public class MessageDeliveredEvent extends EventObject
     /**
      * Returns the message that triggered this event
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getSourceMessage()
     {
@@ -210,10 +210,10 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
+     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>ContactResource</tt> that has sent the <tt>IMessage</tt> whose
+     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      */
     public ContactResource getContactResource()
@@ -222,9 +222,9 @@ public class MessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns <tt>true</tt> if the message is encrypted and <tt>false</tt> if not.
+     * Returns <code>true</code> if the message is encrypted and <code>false</code> if not.
      *
-     * @return <tt>true</tt> if the message is encrypted and <tt>false</tt> if not.
+     * @return <code>true</code> if the message is encrypted and <code>false</code> if not.
      */
     public boolean isMessageEncrypted()
     {

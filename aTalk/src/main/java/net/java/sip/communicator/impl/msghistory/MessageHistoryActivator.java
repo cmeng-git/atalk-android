@@ -26,30 +26,30 @@ import timber.log.Timber;
 public class MessageHistoryActivator implements BundleActivator
 {
     /**
-     * The <tt>BundleContext</tt> of the service.
+     * The <code>BundleContext</code> of the service.
      */
     static BundleContext bundleContext;
     /**
-     * The <tt>MessageHistoryService</tt> reference.
+     * The <code>MessageHistoryService</code> reference.
      */
     private static MessageHistoryServiceImpl msgHistoryService = null;
     /**
-     * The <tt>ResourceManagementService</tt> reference.
+     * The <code>ResourceManagementService</code> reference.
      */
     private static ResourceManagementService resourcesService;
     /**
-     * The <tt>MetaContactListService</tt> reference.
+     * The <code>MetaContactListService</code> reference.
      */
     private static MetaContactListService metaCListService;
     /**
-     * The <tt>ConfigurationService</tt> reference.
+     * The <code>ConfigurationService</code> reference.
      */
     private static ConfigurationService configService;
 
     /**
-     * Returns the <tt>MetaContactListService</tt> obtained from the bundle context.
+     * Returns the <code>MetaContactListService</code> obtained from the bundle context.
      *
-     * @return the <tt>MetaContactListService</tt> obtained from the bundle context
+     * @return the <code>MetaContactListService</code> obtained from the bundle context
      */
     public static MetaContactListService getContactListService()
     {
@@ -60,9 +60,9 @@ public class MessageHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>MessageHistoryService</tt> registered to the bundle context.
+     * Returns the <code>MessageHistoryService</code> registered to the bundle context.
      *
-     * @return the <tt>MessageHistoryService</tt> registered to the bundle context
+     * @return the <code>MessageHistoryService</code> registered to the bundle context
      */
     public static MessageHistoryServiceImpl getMessageHistoryService()
     {
@@ -70,9 +70,9 @@ public class MessageHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
@@ -83,9 +83,9 @@ public class MessageHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -121,7 +121,7 @@ public class MessageHistoryActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)

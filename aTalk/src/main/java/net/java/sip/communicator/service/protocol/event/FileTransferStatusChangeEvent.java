@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.FileTransfer;
 import java.util.EventObject;
 
 /**
- * The <tt>FileTransferStatusChangeEvent</tt> is the event indicating of a change in the state of a file transfer.
+ * The <code>FileTransferStatusChangeEvent</code> is the event indicating of a change in the state of a file transfer.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -73,8 +73,8 @@ public class FileTransferStatusChangeEvent extends EventObject
     private String reason;
 
     /**
-     * Creates a <tt>FileTransferStatusChangeEvent</tt> by specifying the source
-     * <tt>fileTransfer</tt>, the old transfer status and the new status.
+     * Creates a <code>FileTransferStatusChangeEvent</code> by specifying the source
+     * <code>fileTransfer</code>, the old transfer status and the new status.
      *
      * @param fileTransfer the source file transfer, for which this status change occured
      * @param oldStatus the old status
@@ -91,9 +91,9 @@ public class FileTransferStatusChangeEvent extends EventObject
     }
 
     /**
-     * Returns the source <tt>FileTransfer</tt> that triggered this event.
+     * Returns the source <code>FileTransfer</code> that triggered this event.
      *
-     * @return the source <tt>FileTransfer</tt> that triggered this event
+     * @return the source <code>FileTransfer</code> that triggered this event
      */
     public FileTransfer getFileTransfer()
     {

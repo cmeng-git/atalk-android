@@ -45,7 +45,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
     }
 
     /**
-     * Parse an extension sub-packet and create a <tt>EE</tt> instance. At the beginning of the
+     * Parse an extension sub-packet and create a <code>EE</code> instance. At the beginning of the
      * method call, the xml parser will be positioned on the opening element of the packet extension
      * and at the end of the method call it will be on the closing element of the packet extension.
      *
@@ -57,7 +57,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
             throws IOException, XmlPullParserException, SmackParsingException
     {
-        EE stanzaExtension = null;
+        EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.newInstance();
         } catch (IllegalAccessException | InstantiationException ignore) {
@@ -85,16 +85,22 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 // Timber.d("<%s %s/> class: %s", elementName, namespace, packetExtension.getClass().getSimpleName());
 
-                ExtensionElementProvider provider = ProviderManager.getExtensionProvider(elementName, namespace);
+                ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(elementName, namespace);
                 if (provider == null) {
                     // Extension element provider may not have added properly if null
                     Timber.w("No provider for <%s %s/>", elementName, namespace);
                 }
                 else {
-                    ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
+                    ExtensionElement childExtension = provider.parse(parser);
                     if (namespace != null) {
                         if (childExtension instanceof AbstractExtensionElement) {
                             ((AbstractExtensionElement) childExtension).setNamespace(namespace);
+                        }
+                        else if (childExtension instanceof AbstractXmlElement) {
+                            Timber.d("AbstractXmlElement: <%s, %s>",
+                                    childExtension.getElementName(), childExtension.getNamespace());
+                        } else {
+                            Timber.d("Invalid AbstractExtensionElement: <%s, %s>", elementName, namespace);
                         }
                     }
                     stanzaExtension.addChildExtension(childExtension);

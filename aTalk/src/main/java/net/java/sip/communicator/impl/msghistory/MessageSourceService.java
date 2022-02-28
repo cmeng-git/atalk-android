@@ -87,7 +87,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     private static final String ORDER_ASC = MessageSourceService.TIME_STAMP + " ASC";
 
     /**
-     * The maximum number of recent messages to store in the history, but will retrieve just <tt>numberOfMessages</tt>
+     * The maximum number of recent messages to store in the history, but will retrieve just <code>numberOfMessages</code>
      */
     private static final int NUMBER_OF_MSGS_IN_HISTORY = 100;
 
@@ -566,7 +566,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * @param evt the <tt>MessageFailedEvent</tt>
+     * @param evt the <code>MessageFailedEvent</code>
      */
     @Override
     public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
@@ -596,7 +596,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt>
+     * @param evt the <code>ChatRoomMessageDeliveryFailedEvent</code>
      */
     @Override
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
@@ -616,7 +616,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * @param evt the <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt>
+     * @param evt the <code>AdHocChatRoomMessageDeliveryFailedEvent</code>
      */
     @Override
     public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
@@ -715,7 +715,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * If a contact is renamed update the locally stored message if any.
      *
-     * @param evt the <tt>ContactPropertyChangeEvent</tt> containing the source
+     * @param evt the <code>ContactPropertyChangeEvent</code> containing the source
      */
     @Override
     public void contactModified(ContactPropertyChangeEvent evt)
@@ -852,7 +852,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Creates query for the given <tt>searchString</tt>.
+     * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
      * @return the created query
@@ -865,7 +865,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     }
 
     /**
-     * Creates query for the given <tt>searchString</tt>.
+     * Creates query for the given <code>searchString</code>.
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
@@ -923,7 +923,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         }
 
         /**
-         * Extract values from <tt>EventObject</tt>.
+         * Extract values from <code>EventObject</code>.
          *
          * @param source the eventObject to retrieve information
          */
@@ -1049,10 +1049,10 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
         /**
          * Checks if equals, and if this event object is used to create a MessageSourceContact, if
-         * the supplied <tt>Object</tt> is instance of MessageSourceContact.
+         * the supplied <code>Object</code> is instance of MessageSourceContact.
          *
          * @param o the object to check.
-         * @return <tt>true</tt> if equals.
+         * @return <code>true</code> if equals.
          */
         @Override
         public boolean equals(Object o)

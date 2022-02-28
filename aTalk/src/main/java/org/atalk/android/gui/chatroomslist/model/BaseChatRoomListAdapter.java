@@ -81,7 +81,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     /**
      * Creates the chatRoom list adapter.
      *
-     * @param crlFragment the parent <tt>ChatRoomListFragment</tt>
+     * @param crlFragment the parent <code>ChatRoomListFragment</code>
      */
     public BaseChatRoomListAdapter(ChatRoomListFragment crlFragment)
     {
@@ -97,25 +97,25 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     public abstract void initModelData();
 
     /**
-     * Filter the chatRoom list with given <tt>queryString</tt>
+     * Filter the chatRoom list with given <code>queryString</code>
      *
      * @param queryString the query string we want to match.
      */
     public abstract void filterData(String queryString);
 
     /**
-     * Returns the <tt>UIChatRoomRenderer</tt> for chatRoom of group at given <tt>groupIndex</tt>.
+     * Returns the <code>UIChatRoomRenderer</code> for chatRoom of group at given <code>groupIndex</code>.
      *
      * @param groupIndex index of the chatRoomWrapper group.
-     * @return the <tt>UIChatRoomRenderer</tt> for chatRoom of group at given <tt>groupIndex</tt>.
+     * @return the <code>UIChatRoomRenderer</code> for chatRoom of group at given <code>groupIndex</code>.
      */
     protected abstract UIChatRoomRenderer getChatRoomRenderer(int groupIndex);
 
     /**
-     * Returns the <tt>UIGroupRenderer</tt> for group at given <tt>groupPosition</tt>.
+     * Returns the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      *
      * @param groupPosition index of the chatRoom group.
-     * @return the <tt>UIGroupRenderer</tt> for group at given <tt>groupPosition</tt>.
+     * @return the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      */
     protected abstract UIGroupRenderer getGroupRenderer(int groupPosition);
 
@@ -219,11 +219,11 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the flat list index for the given <tt>groupIndex</tt> and <tt>chatRoomIndex</tt>.
+     * Returns the flat list index for the given <code>groupIndex</code> and <code>chatRoomIndex</code>.
      *
      * @param groupIndex the index of the group
      * @param chatRoomIndex the index of the child chatRoom
-     * @return an int representing the flat list index for the given <tt>groupIndex</tt> and <tt>chatRoomIndex</tt>
+     * @return an int representing the flat list index for the given <code>groupIndex</code> and <code>chatRoomIndex</code>
      */
     public int getListIndex(int groupIndex, int chatRoomIndex)
     {
@@ -243,11 +243,11 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the identifier of the child contained on the given <tt>groupPosition</tt> and <tt>childPosition</tt>.
+     * Returns the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>.
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
-     * @return the identifier of the child contained on the given <tt>groupPosition</tt> and <tt>childPosition</tt>
+     * @return the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
     public long getChildId(int groupPosition, int childPosition)
@@ -256,7 +256,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the child view for the given <tt>groupPosition</tt>, <tt>childPosition</tt>.
+     * Returns the child view for the given <code>groupPosition</code>, <code>childPosition</code>.
      *
      * @param groupPosition the group position of the desired view
      * @param childPosition the child position of the desired view
@@ -346,7 +346,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the group view for the given <tt>groupPosition</tt>.
+     * Returns the group view for the given <code>groupPosition</code>.
      *
      * @param groupPosition the group position of the desired view
      * @param isExpanded indicates if the view is currently expanded
@@ -384,7 +384,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     /**
-     * Returns the identifier of the group given by <tt>groupPosition</tt>.
+     * Returns the identifier of the group given by <code>groupPosition</code>.
      *
      * @param groupPosition the index of the group, which identifier we're looking for
      */

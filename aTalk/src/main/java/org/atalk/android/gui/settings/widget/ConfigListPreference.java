@@ -16,7 +16,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 
 /**
- * List preference that stores its value through the <tt>ConfigurationService</tt>. It also supports
+ * List preference that stores its value through the <code>ConfigurationService</code>. It also supports
  * "disable dependents value" attribute.
  *
  * @author Pawel Domas
@@ -29,7 +29,7 @@ public class ConfigListPreference extends ListPreference
      */
     private String dependentValue;
     /**
-     * Disables dependents when current value is different than <tt>dependentValue</tt>.
+     * Disables dependents when current value is different than <code>dependentValue</code>.
      */
     private boolean disableOnNotEqual;
 

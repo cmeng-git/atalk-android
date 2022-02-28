@@ -24,7 +24,7 @@ import org.atalk.service.osgi.OSGiActivity;
 import timber.log.Timber;
 
 /**
- * The <tt>ReceivedCallActivity</tt> is the activity that corresponds to the screen shown on incoming call.
+ * The <code>ReceivedCallActivity</code> is the activity that corresponds to the screen shown on incoming call.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -140,7 +140,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     }
 
     /**
-     * Hangs up the call and finishes this <tt>Activity</tt>.
+     * Hangs up the call and finishes this <code>Activity</code>.
      */
     private void hangupCall()
     {
@@ -165,7 +165,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     /**
      * Indicates that a new call peer has joined the source call.
      *
-     * @param evt the <tt>CallPeerEvent</tt> containing the source call and call peer.
+     * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
     public void callPeerAdded(CallPeerEvent evt)
     {
@@ -175,7 +175,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     /**
      * Indicates that a call peer has left the source call.
      *
-     * @param evt the <tt>CallPeerEvent</tt> containing the source call and call peer.
+     * @param evt the <code>CallPeerEvent</code> containing the source call and call peer.
      */
     public void callPeerRemoved(CallPeerEvent evt)
     {
@@ -185,7 +185,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     /**
      * Indicates that a change has occurred in the state of the source call.
      *
-     * @param evt the <tt>CallChangeEvent</tt> instance containing the source calls and its old and new state.
+     * @param evt the <code>CallChangeEvent</code> instance containing the source calls and its old and new state.
      */
     public void callStateChanged(CallChangeEvent evt)
     {

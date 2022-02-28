@@ -21,7 +21,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The Jabber implementation of the <tt>ChatRoomConfigurationForm</tt> interface.
+ * The Jabber implementation of the <code>ChatRoomConfigurationForm</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -44,7 +44,7 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
     private MultiUserChat smackMultiUserChat;
 
     /**
-     * Creates an instance of <tt>ChatRoomConfigurationFormJabberImpl</tt> by specifying the
+     * Creates an instance of <code>ChatRoomConfigurationFormJabberImpl</code> by specifying the
      * corresponding smack multi-user chat and smack configuration form.
      *
      * @param multiUserChat the smack multi-user chat, to which we'll send the configuration form once filled out
@@ -58,9 +58,9 @@ public class ChatRoomConfigurationFormJabberImpl implements ChatRoomConfiguratio
     }
 
     /**
-     * Returns an Iterator over a list of <tt>ChatRoomConfigurationFormFields</tt>.
+     * Returns an Iterator over a list of <code>ChatRoomConfigurationFormFields</code>.
      *
-     * @return an Iterator over a list of <tt>ChatRoomConfigurationFormFields</tt>
+     * @return an Iterator over a list of <code>ChatRoomConfigurationFormFields</code>
      */
     public Iterator<ChatRoomConfigurationFormField> getConfigurationSet()
     {

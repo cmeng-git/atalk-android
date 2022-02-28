@@ -9,7 +9,7 @@ package net.java.sip.communicator.service.systray;
 import net.java.sip.communicator.service.systray.event.*;
 
 /**
- * The <tt>SystrayService</tt> manages the system tray icon, menu and messages.
+ * The <code>SystrayService</code> manages the system tray icon, menu and messages.
  * It is meant to be used by all bundles that want to show a system tray message.
  *
  * @author Yana Stamcheva
@@ -88,14 +88,14 @@ public interface SystrayService
     int ENVELOPE_IMG_TYPE = 1;
 
     /**
-     * Shows the given <tt>PopupMessage</tt>
+     * Shows the given <code>PopupMessage</code>
      *
      * @param popupMessage the message to show
      */
     void showPopupMessage(PopupMessage popupMessage);
 
     /**
-     * Adds a listener for <tt>SystrayPopupMessageEvent</tt>s posted when user
+     * Adds a listener for <code>SystrayPopupMessageEvent</code>s posted when user
      * clicks on the system tray popup message.
      *
      * @param listener the listener to add
@@ -103,7 +103,7 @@ public interface SystrayService
     void addPopupMessageListener(SystrayPopupMessageListener listener);
 
     /**
-     * Removes a listener previously added with <tt>addPopupMessageListener</tt>.
+     * Removes a listener previously added with <code>addPopupMessageListener</code>.
      *
      * @param listener the listener to remove
      */

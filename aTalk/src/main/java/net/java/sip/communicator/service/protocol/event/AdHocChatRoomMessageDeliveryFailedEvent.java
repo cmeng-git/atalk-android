@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>AdHocChatRoomMessageDeliveredEvent</tt>s confirm successful delivery of an instant message.
+ * <code>AdHocChatRoomMessageDeliveredEvent</code>s confirm successful delivery of an instant message.
  *
  * @author Valentin Martinet
  */
@@ -67,24 +67,24 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	private Date timestamp = null;
 
 	/**
-	 * The received <tt>IMessage</tt>.
+	 * The received <code>IMessage</code>.
 	 */
 	private IMessage message = null;
 
 	/**
-	 * Creates a <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt> indicating failure of delivery of
-	 * a message to the specified <tt>Contact</tt> in the specified <tt>AdHocChatRoom</tt>.
+	 * Creates a <code>AdHocChatRoomMessageDeliveryFailedEvent</code> indicating failure of delivery of
+	 * a message to the specified <code>Contact</code> in the specified <code>AdHocChatRoom</code>.
 	 *
 	 * @param source
-	 *        the <tt>AdHocChatRoom</tt> in which the message was sent
+	 *        the <code>AdHocChatRoom</code> in which the message was sent
 	 * @param to
-	 *        the <tt>Contact</tt> that this message was sent to.
+	 *        the <code>Contact</code> that this message was sent to.
 	 * @param errorCode
 	 *        an errorCode indicating the reason of the failure.
 	 * @param timestamp
 	 *        the exact Date when it was determined that delivery had failed.
 	 * @param message
-	 *        the received <tt>IMessage</tt>.
+	 *        the received <code>IMessage</code>.
 	 */
 	public AdHocChatRoomMessageDeliveryFailedEvent(AdHocChatRoom source, Contact to, int errorCode,
 		Date timestamp, IMessage message)
@@ -98,10 +98,10 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>IMessage</tt> was
+	 * Returns a reference to the <code>Contact</code> that the source (failed) <code>IMessage</code> was
 	 * sent to.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that the source failed <tt>IMessage</tt> was sent
+	 * @return a reference to the <code>Contact</code> that the source failed <code>IMessage</code> was sent
 	 *         to.
 	 */
 	public Contact getDestinationParticipant()
@@ -112,7 +112,7 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	/**
 	 * Returns the received message.
 	 * 
-	 * @return the <tt>IMessage</tt> that triggered this event.
+	 * @return the <code>IMessage</code> that triggered this event.
 	 */
 	public IMessage getMessage()
 	{
@@ -141,9 +141,9 @@ public class AdHocChatRoomMessageDeliveryFailedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt> that triggered this event.
+	 * Returns the <code>AdHocChatRoom</code> that triggered this event.
 	 * 
-	 * @return the <tt>AdHocChatRoom</tt> that triggered this event.
+	 * @return the <code>AdHocChatRoom</code> that triggered this event.
 	 */
 	public AdHocChatRoom getSourceChatRoom()
 	{

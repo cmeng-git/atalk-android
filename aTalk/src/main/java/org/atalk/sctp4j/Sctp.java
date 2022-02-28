@@ -48,7 +48,7 @@ public class Sctp
     private static int sctpEngineCount;
 
     /**
-     * List of instantiated <tt>SctpSockets</tt> mapped by native pointer.
+     * List of instantiated <code>SctpSockets</code> mapped by native pointer.
      */
     private static final Map<Long, SctpSocket> sockets = new ConcurrentHashMap<>();
 
@@ -78,11 +78,11 @@ public class Sctp
     }
 
     /**
-     * Creates new <tt>SctpSocket</tt> for given SCTP port. Allocates native resources bound to
+     * Creates new <code>SctpSocket</code> for given SCTP port. Allocates native resources bound to
      * the socket.
      *
      * @param localPort local SCTP socket port.
-     * @return new <tt>SctpSocket</tt> for given SCTP port.
+     * @return new <code>SctpSocket</code> for given SCTP port.
      */
     public static SctpSocket createSocket(int localPort)
     {
@@ -259,14 +259,14 @@ public class Sctp
      *
      * @param ptr native socket pointer.
      * @param remotePort remote SCTP port.
-     * @return <tt>true</tt> if the socket has been successfully connected.
+     * @return <code>true</code> if the socket has been successfully connected.
      */
     static native boolean usrsctp_connect(long ptr, int remotePort);
 
     /**
      * Disposes of the resources held by native counterpart.
      *
-     * @return <tt>true</tt> if stack successfully released resources.
+     * @return <code>true</code> if stack successfully released resources.
      */
     native private static boolean usrsctp_finish();
 
@@ -274,7 +274,7 @@ public class Sctp
      * Initializes native SCTP counterpart.
      *
      * @param port UDP encapsulation port.
-     * @return <tt>true</tt> on success.
+     * @return <code>true</code> on success.
      */
     private static native boolean usrsctp_init(int port);
 
@@ -286,7 +286,7 @@ public class Sctp
     static native void usrsctp_listen(long ptr);
 
     /**
-     * Sends given <tt>data</tt> on selected SCTP stream using given payload
+     * Sends given <code>data</code> on selected SCTP stream using given payload
      * protocol identifier.
      * FIXME add offset and length buffer parameters.
      *
@@ -297,7 +297,7 @@ public class Sctp
      * @param ordered should we care about message order ?
      * @param sid SCTP stream identifier
      * @param ppid payload protocol identifier
-     * @return sent bytes count or <tt>-1</tt> in case of an error.
+     * @return sent bytes count or <code>-1</code> in case of an error.
      */
     static native int usrsctp_send(
             long ptr, byte[] data, int off, int len, boolean ordered, int sid, int ppid);

@@ -16,12 +16,12 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>OperationSetContactCapabilities</tt> which attempts to
+ * Represents a default implementation of <code>OperationSetContactCapabilities</code> which attempts to
  * make it easier for implementers to provide complete solutions while focusing on
  * implementation-specific functionality.
  *
- * @param <T> the type of the <tt>ProtocolProviderService</tt> implementation providing the
- * <tt>AbstractOperationSetContactCapabilities</tt> implementation
+ * @param <T> the type of the <code>ProtocolProviderService</code> implementation providing the
+ * <code>AbstractOperationSetContactCapabilities</code> implementation
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -30,21 +30,21 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
         implements OperationSetContactCapabilities
 {
     /**
-     * The list of <tt>ContactCapabilitiesListener</tt>s registered to be notified about changes in
-     * the list of <tt>OperationSet</tt> capabilities of <tt>Contact</tt>s.
+     * The list of <code>ContactCapabilitiesListener</code>s registered to be notified about changes in
+     * the list of <code>OperationSet</code> capabilities of <code>Contact</code>s.
      */
     private final List<ContactCapabilitiesListener> contactCapabilitiesListeners = new LinkedList<>();
 
     /**
-     * The <tt>ProtocolProviderService</tt> which provides this <tt>OperationSetContactCapabilities</tt>.
+     * The <code>ProtocolProviderService</code> which provides this <code>OperationSetContactCapabilities</code>.
      */
     protected final T parentProvider;
 
     /**
-     * Initializes a new <tt>AbstractOperationSetContactCapabilities</tt> instance which is to be
-     * provided by a specific <tt>ProtocolProviderService</tt> implementation.
+     * Initializes a new <code>AbstractOperationSetContactCapabilities</code> instance which is to be
+     * provided by a specific <code>ProtocolProviderService</code> implementation.
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> implementation which will provide the new instance
+     * @param parentProvider the <code>ProtocolProviderService</code> implementation which will provide the new instance
      */
     protected AbstractOperationSetContactCapabilities(T parentProvider)
     {
@@ -55,12 +55,12 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Registers a specific <tt>ContactCapabilitiesListener</tt> to be notified about changes in
-     * the list of <tt>OperationSet</tt> capabilities of <tt>Contact</tt>s. If the specified
-     * <tt>listener</tt> has already been registered, adding it again has no effect.
+     * Registers a specific <code>ContactCapabilitiesListener</code> to be notified about changes in
+     * the list of <code>OperationSet</code> capabilities of <code>Contact</code>s. If the specified
+     * <code>listener</code> has already been registered, adding it again has no effect.
      *
-     * @param listener the <tt>ContactCapabilitiesListener</tt> which is to be notified about changes in the
-     * list of <tt>OperationSet</tt> capabilities of <tt>Contact</tt>s
+     * @param listener the <code>ContactCapabilitiesListener</code> which is to be notified about changes in the
+     * list of <code>OperationSet</code> capabilities of <code>Contact</code>s
      * @see OperationSetContactCapabilities#addContactCapabilitiesListener (ContactCapabilitiesListener)
      */
     public void addContactCapabilitiesListener(ContactCapabilitiesListener listener)
@@ -75,10 +75,10 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Fires a new <tt>ContactCapabilitiesEvent</tt> to notify the registered <tt>ContactCapabilitiesListener</tt>s
-     * that a specific <tt>Contact</tt> has changed its list of <tt>OperationSet</tt> capabilities.
+     * Fires a new <code>ContactCapabilitiesEvent</code> to notify the registered <code>ContactCapabilitiesListener</code>s
+     * that a specific <code>Contact</code> has changed its list of <code>OperationSet</code> capabilities.
      *
-     * @param sourceContact the <tt>Contact</tt> which is the source/cause of the event to be fired
+     * @param sourceContact the <code>Contact</code> which is the source/cause of the event to be fired
      * @param jid the contact fullJid
      * @param opSets the new operation sets for the given source contact
      */
@@ -103,26 +103,26 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Gets the <tt>OperationSet</tt> corresponding to the specified <tt>Class</tt> and
-     * supported by the specified <tt>Contact</tt>. If the returned value is non-<tt>null</tt>,
-     * it indicates  that the <tt>Contact</tt> is considered by the associated protocol provider
-     * to possess the <tt>opsetClass</tt> capability. Otherwise, the associated protocol provider
-     * considers <tt>contact</tt> to not have the <tt>opsetClass</tt> capability.
-     * <tt>AbstractOperationSetContactCapabilities</tt> looks for the name of the specified
-     * <tt>opsetClass</tt> in the <tt>Map</tt> returned by
-     * {@link #getSupportedOperationSets(Contact)} and returns the associated <tt>OperationSet</tt>.
-     * Since the implementation is suboptimal due to the temporary <tt>Map</tt> allocations and
+     * Gets the <code>OperationSet</code> corresponding to the specified <code>Class</code> and
+     * supported by the specified <code>Contact</code>. If the returned value is non-<code>null</code>,
+     * it indicates  that the <code>Contact</code> is considered by the associated protocol provider
+     * to possess the <code>opsetClass</code> capability. Otherwise, the associated protocol provider
+     * considers <code>contact</code> to not have the <code>opsetClass</code> capability.
+     * <code>AbstractOperationSetContactCapabilities</code> looks for the name of the specified
+     * <code>opsetClass</code> in the <code>Map</code> returned by
+     * {@link #getSupportedOperationSets(Contact)} and returns the associated <code>OperationSet</code>.
+     * Since the implementation is suboptimal due to the temporary <code>Map</code> allocations and
      * lookups, extenders are advised to override
      * {@link #getOperationSet(Contact, Class, boolean)}.
      *
-     * @param <U> the type extending <tt>OperationSet</tt> for which the specified <tt>contact</tt> is
+     * @param <U> the type extending <code>OperationSet</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param contact the <tt>Contact</tt> for which the <tt>opsetClass</tt> capability is to be queried
-     * @param opsetClass the <tt>OperationSet</tt> <tt>Class</tt> for which the specified <tt>contact</tt> is
+     * @param contact the <code>Contact</code> for which the <code>opsetClass</code> capability is to be queried
+     * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @return the <tt>OperationSet</tt> corresponding to the specified <tt>opsetClass</tt>
+     * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
-     * the specified <tt>contact</tt>; otherwise, <tt>null</tt>
+     * the specified <code>contact</code>; otherwise, <code>null</code>
      * @see OperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
     public <U extends OperationSet> U getOperationSet(Contact contact, Class<U> opsetClass)
@@ -131,26 +131,26 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Gets the <tt>OperationSet</tt> corresponding to the specified <tt>Class</tt> and
-     * supported by the specified <tt>Contact</tt>. If the returned value is non-<tt>null</tt>,
-     * it indicates that the <tt>Contact</tt> is considered by the associated protocol provider
-     * to possess the <tt>opsetClass</tt> capability. Otherwise, the associated protocol provider
-     * considers <tt>contact</tt> to not have the <tt>opsetClass</tt> capability.
-     * <tt>AbstractOperationSetContactCapabilities</tt> looks for the name of the specified
-     * <tt>opsetClass</tt> in the <tt>Map</tt> returned by
-     * {@link #getSupportedOperationSets(Contact)} and returns the associated <tt>OperationSet</tt>.
-     * Since the implementation is suboptimal due to the temporary <tt>Map</tt> allocations and
+     * Gets the <code>OperationSet</code> corresponding to the specified <code>Class</code> and
+     * supported by the specified <code>Contact</code>. If the returned value is non-<code>null</code>,
+     * it indicates that the <code>Contact</code> is considered by the associated protocol provider
+     * to possess the <code>opsetClass</code> capability. Otherwise, the associated protocol provider
+     * considers <code>contact</code> to not have the <code>opsetClass</code> capability.
+     * <code>AbstractOperationSetContactCapabilities</code> looks for the name of the specified
+     * <code>opsetClass</code> in the <code>Map</code> returned by
+     * {@link #getSupportedOperationSets(Contact)} and returns the associated <code>OperationSet</code>.
+     * Since the implementation is suboptimal due to the temporary <code>Map</code> allocations and
      * lookups, extenders are advised to override.
      *
-     * @param <U> the type extending <tt>OperationSet</tt> for which the specified <tt>contact</tt> is
+     * @param <U> the type extending <code>OperationSet</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param contact the <tt>Contact</tt> for which the <tt>opsetClass</tt> capability is to be queried
-     * @param opsetClass the <tt>OperationSet</tt> <tt>Class</tt> for which the specified <tt>contact</tt> is
+     * @param contact the <code>Contact</code> for which the <code>opsetClass</code> capability is to be queried
+     * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return the <tt>OperationSet</tt> corresponding to the specified <tt>opsetClass</tt>
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
-     * the specified <tt>contact</tt>; otherwise, <tt>null</tt>
+     * the specified <code>contact</code>; otherwise, <code>null</code>
      * @see OperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
     @SuppressWarnings("unchecked")
@@ -168,20 +168,20 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Gets the <tt>OperationSet</tt>s supported by a specific <tt>Contact</tt>. The returned
-     * <tt>OperationSet</tt>s are considered by the associated protocol provider to capabilities
-     * possessed by the specified <tt>contact</tt>. The default implementation returns the
+     * Gets the <code>OperationSet</code>s supported by a specific <code>Contact</code>. The returned
+     * <code>OperationSet</code>s are considered by the associated protocol provider to capabilities
+     * possessed by the specified <code>contact</code>. The default implementation returns the
      * result of calling {@link ProtocolProviderService#getSupportedOperationSets()} on the
-     * associated <tt>ProtocolProviderService</tt> implementation. Extenders have to override the
+     * associated <code>ProtocolProviderService</code> implementation. Extenders have to override the
      * default implementation of {@link #getSupportedOperationSets(Contact, boolean)} in order to
-     * provide actual capability detection for the specified <tt>contact</tt>.
+     * provide actual capability detection for the specified <code>contact</code>.
      *
-     * @param contact the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to be retrieved
-     * @return a <tt>Map</tt> listing the <tt>OperationSet</tt>s considered by the associated
-     * protocol provider to be supported by the specified <tt>contact</tt> (i.e. to be
-     * possessed as capabilities). Each supported <tt>OperationSet</tt> capability is
-     * represented by a <tt>Map.Entry</tt> with key equal to the <tt>OperationSet</tt> class
-     * name and value equal to the respective <tt>OperationSet</tt> instance
+     * @param contact the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to be retrieved
+     * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
+     * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
+     * possessed as capabilities). Each supported <code>OperationSet</code> capability is
+     * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
+     * name and value equal to the respective <code>OperationSet</code> instance
      * @see OperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
     public Map<String, OperationSet> getSupportedOperationSets(Contact contact)
@@ -190,21 +190,21 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Gets the <tt>OperationSet</tt>s supported by a specific <tt>Contact</tt>. The returned
-     * <tt>OperationSet</tt>s are considered by the associated protocol provider to capabilities
-     * possessed by the specified <tt>contact</tt>. The default implementation returns the
+     * Gets the <code>OperationSet</code>s supported by a specific <code>Contact</code>. The returned
+     * <code>OperationSet</code>s are considered by the associated protocol provider to capabilities
+     * possessed by the specified <code>contact</code>. The default implementation returns the
      * result of calling {@link ProtocolProviderService#getSupportedOperationSets()} on the
-     * associated <tt>ProtocolProviderService</tt> implementation. Extenders have to override the
-     * default implementation in order to provide actual capability detection for the specified <tt>contact</tt>.
+     * associated <code>ProtocolProviderService</code> implementation. Extenders have to override the
+     * default implementation in order to provide actual capability detection for the specified <code>contact</code>.
      *
-     * @param contact the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to
+     * @param contact the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to
      * be retrieved
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return a <tt>Map</tt> listing the <tt>OperationSet</tt>s considered by the associated
-     * protocol provider to be supported by the specified <tt>contact</tt> (i.e. to be
-     * possessed as capabilities). Each supported <tt>OperationSet</tt> capability is
-     * represented by a <tt>Map.Entry</tt> with key equal to the <tt>OperationSet</tt> class
-     * name and value equal to the respective <tt>OperationSet</tt> instance
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
+     * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
+     * possessed as capabilities). Each supported <code>OperationSet</code> capability is
+     * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
+     * name and value equal to the respective <code>OperationSet</code> instance
      * @see OperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
     protected Map<String, OperationSet> getSupportedOperationSets(Contact contact, boolean online)
@@ -213,10 +213,10 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Determines whether a specific <tt>Contact</tt> is online (in contrast to offline).
+     * Determines whether a specific <code>Contact</code> is online (in contrast to offline).
      *
-     * @param contact the <tt>Contact</tt> which is to be determines whether it is online
-     * @return <tt>true</tt> if the specified <tt>contact</tt> is online; otherwise, <tt>false</tt>
+     * @param contact the <code>Contact</code> which is to be determines whether it is online
+     * @return <code>true</code> if the specified <code>contact</code> is online; otherwise, <code>false</code>
      */
     protected boolean isOnline(Contact contact)
     {
@@ -258,12 +258,12 @@ public abstract class AbstractOperationSetContactCapabilities<T extends Protocol
     }
 
     /**
-     * Unregisters a specific <tt>ContactCapabilitiesListener</tt> to no longer be notified about
-     * changes in the list of <tt>OperationSet</tt> capabilities of <tt>Contact</tt>s. If the specified
-     * <tt>listener</tt> has already been unregistered or has never been registered, removing it has no effect.
+     * Unregisters a specific <code>ContactCapabilitiesListener</code> to no longer be notified about
+     * changes in the list of <code>OperationSet</code> capabilities of <code>Contact</code>s. If the specified
+     * <code>listener</code> has already been unregistered or has never been registered, removing it has no effect.
      *
-     * @param listener the <tt>ContactCapabilitiesListener</tt> which is to no longer be notified about
-     * changes in the list of <tt>OperationSet</tt> capabilities of <tt>Contact</tt>s
+     * @param listener the <code>ContactCapabilitiesListener</code> which is to no longer be notified about
+     * changes in the list of <code>OperationSet</code> capabilities of <code>Contact</code>s
      * @see OperationSetContactCapabilities#removeContactCapabilitiesListener (ContactCapabilitiesListener)
      */
     public void removeContactCapabilitiesListener(ContactCapabilitiesListener listener)

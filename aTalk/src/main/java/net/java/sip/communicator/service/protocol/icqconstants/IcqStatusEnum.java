@@ -26,7 +26,7 @@ import timber.log.Timber;
  * ICQ (Oscar) protocol. Implementations may support other forms of PresenceStatus but they MUST ALL
  * support those enumerated here.
  * <p>
- * For testing purposes, this class also provides a <tt>List</tt> containing all of the status
+ * For testing purposes, this class also provides a <code>List</code> containing all of the status
  * fields.
  *
  * @author Emil Ivov

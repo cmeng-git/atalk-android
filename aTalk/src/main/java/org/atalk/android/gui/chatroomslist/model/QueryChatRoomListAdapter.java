@@ -67,7 +67,7 @@ public class QueryChatRoomListAdapter extends BaseChatRoomListAdapter
     private List<ContactQuery> queries = new ArrayList<ContactQuery>();
 
     /**
-     * Creates new instance of <tt>QueryContactListAdapter</tt>.
+     * Creates new instance of <code>QueryContactListAdapter</code>.
      *
      * @param fragment parent fragment.
      * @param chatRoomListModel meta contact list model used as a base data model

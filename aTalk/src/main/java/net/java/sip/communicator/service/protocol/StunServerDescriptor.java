@@ -19,7 +19,7 @@ import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_USERNAME;
 
 /**
- * A <tt>StunServerDescriptor</tt> stores information necessary to create a STUN or TURN candidate
+ * A <code>StunServerDescriptor</code> stores information necessary to create a STUN or TURN candidate
  * harvester that we could use with ICE4J. Descriptors are normally initialized by protocol wizards.
  * They are then used to convert the data into a {@link String} form suitable for storage in an
  * accounts properties Map.
@@ -77,17 +77,17 @@ public class StunServerDescriptor implements Serializable
     private boolean isTurnSupported;
 
     /**
-     * If TURN version supported by this <tt>StunServerDescriptor</tt> is not the RFC 5766.
+     * If TURN version supported by this <code>StunServerDescriptor</code> is not the RFC 5766.
      */
     private boolean isOldTurn = false;
 
     /**
-     * The username that we need to use with the server or <tt>null</tt> if this server does not require a user name.
+     * The username that we need to use with the server or <code>null</code> if this server does not require a user name.
      */
     private byte[] username;
 
     /**
-     * The password that we need to use when authenticating with the server or <tt>null</tt> if no password is necessary.
+     * The password that we need to use when authenticating with the server or <code>null</code> if no password is necessary.
      */
     private byte[] password;
 
@@ -97,7 +97,7 @@ public class StunServerDescriptor implements Serializable
     private String protocol;
 
     /**
-     * Creates an instance of <tt>StunServer</tt> by specifying all parameters.
+     * Creates an instance of <code>StunServer</code> by specifying all parameters.
      *
      * @param address the IP address or FQDN of the STUN server
      * @param port the port of the server
@@ -158,7 +158,7 @@ public class StunServerDescriptor implements Serializable
     /**
      * Indicates if TURN is supported by this server.
      *
-     * @return <tt>true</tt> if TURN is supported by this server, otherwise - returns <tt>false</tt>
+     * @return <code>true</code> if TURN is supported by this server, otherwise - returns <code>false</code>
      */
     public boolean isTurnSupported()
     {
@@ -168,7 +168,7 @@ public class StunServerDescriptor implements Serializable
     /**
      * Specifies whether this server can also act as a TURN relay.
      *
-     * @param turnSupported <tt>true</tt> to indicate that TURN is supported, <tt>false</tt> - otherwise
+     * @param turnSupported <code>true</code> to indicate that TURN is supported, <code>false</code> - otherwise
      */
     public void setTurnSupported(boolean turnSupported)
     {
@@ -326,9 +326,9 @@ public class StunServerDescriptor implements Serializable
     }
 
     /**
-     * Returns a <tt>String</tt> representation of this descriptor
+     * Returns a <code>String</code> representation of this descriptor
      *
-     * @return a <tt>String</tt> representation of this descriptor.
+     * @return a <code>String</code> representation of this descriptor.
      */
     @Override
     public String toString()

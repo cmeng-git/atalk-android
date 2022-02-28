@@ -38,7 +38,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatRoomsList</tt> is the list containing all chat rooms.
+ * The <code>ChatRoomsList</code> is the list containing all chat rooms.
  *
  * @author Yana Stamcheva
  * @author Hristo Terezov
@@ -57,14 +57,14 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     private final List<ChatRoomProviderWrapperListener> providerChangeListeners = new ArrayList<>();
 
     /**
-     * A list of all <tt>ChatRoomListChangeListener</tt>-s.
+     * A list of all <code>ChatRoomListChangeListener</code>-s.
      */
     private final Vector<ChatRoomListChangeListener> listChangeListeners = new Vector<>();
 
     private SQLiteDatabase mDB;
 
     /**
-     * Constructs and initializes new <tt>ChatRoomListImpl</tt> objects. Adds the created object
+     * Constructs and initializes new <code>ChatRoomListImpl</code> objects. Adds the created object
      * as service lister to the bundle context.
      */
     public ChatRoomListImpl()
@@ -100,7 +100,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Adds the given <tt>ChatRoomListChangeListener</tt> that will listen for all changes of the
+     * Adds the given <code>ChatRoomListChangeListener</code> that will listen for all changes of the
      * chat room list data model.
      *
      * @param l the listener to add.
@@ -113,7 +113,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Removes the given <tt>ChatRoomListChangeListener</tt>.
+     * Removes the given <code>ChatRoomListChangeListener</code>.
      *
      * @param l the listener to remove.
      */
@@ -141,7 +141,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Adds a chat server which is registered and all its existing chat rooms (local & on server)
      *
-     * @param pps the <tt>ProtocolProviderService</tt> corresponding to the chat server
+     * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
     ChatRoomProviderWrapper addRegisteredChatProvider(ProtocolProviderService pps)
     {
@@ -171,7 +171,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
      * Adds a listener to wait for provider to be registered or unregistered.
      * Only take action on unregistered to remove chatRoomWrapperProvider
      *
-     * @param pps the <tt>ProtocolProviderService</tt> corresponding to the chat server
+     * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
     private void addChatProvider(ProtocolProviderService pps)
     {
@@ -184,7 +184,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Removes the corresponding server and all related chat rooms from this list.
      *
-     * @param pps the <tt>ProtocolProviderService</tt> corresponding to the server to remove
+     * @param pps the <code>ProtocolProviderService</code> corresponding to the server to remove
      */
     private void removeChatProvider(ProtocolProviderService pps)
     {
@@ -196,7 +196,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Removes the corresponding server and all related chatRooms from this list.
      *
-     * @param chatRoomProvider the <tt>ChatRoomProviderWrapper</tt> corresponding to the server to remove
+     * @param chatRoomProvider the <code>ChatRoomProviderWrapper</code> corresponding to the server to remove
      * @param permanently whether to remove any listener and stored configuration
      */
     private void removeChatProvider(ChatRoomProviderWrapper chatRoomProvider, boolean permanently)
@@ -233,7 +233,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Adds a chat room to this list.
      *
-     * @param chatRoomWrapper the <tt>ChatRoom</tt> to add
+     * @param chatRoomWrapper the <code>ChatRoom</code> to add
      */
     public void addChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
@@ -249,9 +249,9 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Removes the given <tt>ChatRoom</tt> from the list of all chat rooms and bookmark on server
+     * Removes the given <code>ChatRoom</code> from the list of all chat rooms and bookmark on server
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to remove
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to remove
      */
     public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
@@ -280,11 +280,11 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Returns the <tt>ChatRoomWrapper</tt> that correspond to the given <tt>ChatRoom</tt>. If the
+     * Returns the <code>ChatRoomWrapper</code> that correspond to the given <code>ChatRoom</code>. If the
      * list of chat rooms doesn't contain a corresponding wrapper - returns null.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> that we're looking for
-     * @return the <tt>ChatRoomWrapper</tt> object corresponding to the given <tt>ChatRoom</tt>
+     * @param chatRoom the <code>ChatRoom</code> that we're looking for
+     * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
     public ChatRoomWrapper findChatRoomWrapperFromChatRoom(ChatRoom chatRoom)
     {
@@ -318,12 +318,12 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Returns the <tt>ChatRoomWrapper</tt> that correspond to the given id of chat room and
+     * Returns the <code>ChatRoomWrapper</code> that correspond to the given id of chat room and
      * provider. If the list of chat rooms doesn't contain a corresponding wrapper - returns null.
      *
-     * @param chatRoomID the id of <tt>ChatRoom</tt> that we're looking for
+     * @param chatRoomID the id of <code>ChatRoom</code> that we're looking for
      * @param pps the protocol provider associated with the chat room.
-     * @return the <tt>ChatRoomWrapper</tt> object corresponding to the given id of the chat room
+     * @return the <code>ChatRoomWrapper</code> object corresponding to the given id of the chat room
      */
     public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps)
     {
@@ -348,11 +348,11 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Returns the <tt>ChatRoomProviderWrapper</tt> that correspond to the given
-     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper - returns null.
+     * Returns the <code>ChatRoomProviderWrapper</code> that correspond to the given
+     * <code>ProtocolProviderService</code>. If the list doesn't contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
-     * @return the <tt>ChatRoomProvider</tt> object corresponding to the given <tt>ProtocolProviderService</tt>
+     * @return the <code>ChatRoomProvider</code> object corresponding to the given <code>ProtocolProviderService</code>
      */
     public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider)
     {
@@ -425,7 +425,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     /**
      * Listens for changes of providers registration state, as we can use only registered providers.
      *
-     * @param evt a <tt>RegistrationStateChangeEvent</tt> which describes the event that occurred.
+     * @param evt a <code>RegistrationStateChangeEvent</code> which describes the event that occurred.
      */
     @Override
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
@@ -469,10 +469,10 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     }
 
     /**
-     * Returns existing chatRooms in store for the given <tt>ProtocolProviderService</tt>.
+     * Returns existing chatRooms in store for the given <code>ProtocolProviderService</code>.
      *
-     * @param pps the <tt>ProtocolProviderService</tt>, whom chatRooms we're looking for
-     * @return existing chatRooms in store for the given <tt>ProtocolProviderService</tt>
+     * @param pps the <code>ProtocolProviderService</code>, whom chatRooms we're looking for
+     * @return existing chatRooms in store for the given <code>ProtocolProviderService</code>
      */
     public List<String> getExistingChatRooms(ProtocolProviderService pps)
     {

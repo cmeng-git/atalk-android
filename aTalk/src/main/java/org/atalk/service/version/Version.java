@@ -14,16 +14,16 @@ package org.atalk.service.version;
 public interface Version extends Comparable<Version>
 {
 	/**
-	 * The name of the <tt>System</tt> property the value of which is equal to the value of
+	 * The name of the <code>System</code> property the value of which is equal to the value of
 	 * {@link #getApplicationName()}. Expected to be set by implementers of the
-	 * <tt>VersionService</tt> and <tt>Version</tt> interfaces.
+	 * <code>VersionService</code> and <code>Version</code> interfaces.
 	 */
 	public static final String PNAME_APPLICATION_NAME = "sip-communicator.application.name";
 
 	/**
-	 * The name of the <tt>System</tt> property the value of which is equal to the value of
-	 * {@link #toString()}. Expected to be set by implementers of the <tt>VersionService</tt> and
-	 * <tt>Version</tt>  interfaces.
+	 * The name of the <code>System</code> property the value of which is equal to the value of
+	 * {@link #toString()}. Expected to be set by implementers of the <code>VersionService</code> and
+	 * <code>Version</code>  interfaces.
 	 */
 	public static final String PNAME_APPLICATION_VERSION = "sip-communicator.version";
 
@@ -73,7 +73,7 @@ public interface Version extends Comparable<Version>
 	/**
 	 * Returns the version pre-release ID of the current Jitsi version and null if this version is
 	 * not a pre-release. Version pre-release id-s exist only for pre-release versions and are
-	 * <tt>null<tt/> otherwise. Note that pre-release versions are not used by Jitsi's current
+	 * <code>null<tt/> otherwise. Note that pre-release versions are not used by Jitsi's current
 	 * versioning convention
 	 *
 	 * @return a String containing the version pre-release ID.
@@ -81,20 +81,20 @@ public interface Version extends Comparable<Version>
 	public String getPreReleaseID();
 
 	/**
-	 * Compares another <tt>Version</tt> object to this one and returns a negative, zero or a
+	 * Compares another <code>Version</code> object to this one and returns a negative, zero or a
 	 * positive integer if this version instance represents respectively an earlier, same, or
-	 * later version as the one indicated by the <tt>version</tt> parameter.
+	 * later version as the one indicated by the <code>version</code> parameter.
 	 *
 	 * @param version
-	 * 		the <tt>Version</tt> instance that we'd like to compare to this one.
+	 * 		the <code>Version</code> instance that we'd like to compare to this one.
 	 * @return a negative integer, zero, or a positive integer as this object represents a version
-	 * that is earlier, same, or more recent than the one referenced by the <tt>version</tt>
+	 * that is earlier, same, or more recent than the one referenced by the <code>version</code>
 	 * parameter.
 	 */
 	public int compareTo(Version version);
 
 	/**
-	 * Compares the <tt>version</tt> parameter to this version and returns true if and only if
+	 * Compares the <code>version</code> parameter to this version and returns true if and only if
 	 * both reference the same Jitsi version and false otherwise.
 	 *
 	 * @param version

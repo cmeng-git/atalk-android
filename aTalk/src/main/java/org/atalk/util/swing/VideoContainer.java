@@ -22,9 +22,9 @@ import javax.swing.SwingUtilities;
 import java.beans.*;
 
 /**
- * Implements a <tt>Container</tt> for video/visual <tt>Component</tt>s.
- * <tt>VideoContainer</tt> uses {@link VideoLayout} to layout the video/visual
- * <tt>Component</tt>s it contains. A specific <tt>Component</tt> can be
+ * Implements a <code>Container</code> for video/visual <code>Component</code>s.
+ * <code>VideoContainer</code> uses {@link VideoLayout} to layout the video/visual
+ * <code>Component</code>s it contains. A specific <code>Component</code> can be
  * displayed by default at {@link VideoLayout#CENTER_REMOTE}.
  *
  * @author Lyubomir Marinov
@@ -38,15 +38,15 @@ public class VideoContainer extends TransparentPanel
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The default background color of <tt>VideoContainer</tt> when it contains
-	 * <tt>Component</tt> instances other than {@link #noVideoComponent}.
+	 * The default background color of <code>VideoContainer</code> when it contains
+	 * <code>Component</code> instances other than {@link #noVideoComponent}.
 	 */
 	public static final Color DEFAULT_BACKGROUND_COLOR = Color.BLACK;
 
 	private static final String PREFERRED_SIZE_PROPERTY_NAME = "preferredSize";
 
 	/**
-	 * The number of times that <tt>add</tt> or <tt>remove</tt> methods are
+	 * The number of times that <code>add</code> or <code>remove</code> methods are
 	 * currently being executed on this instance. Decreases the number of
 	 * unnecessary invocations to {@link #doLayout()}, {@link #repaint()} and
 	 * {@link #validate()}.
@@ -54,8 +54,8 @@ public class VideoContainer extends TransparentPanel
 	private int inAddOrRemove;
 
 	/**
-	 * The <tt>Component</tt> to be displayed by this <tt>VideoContainer</tt>
-	 * at {@link VideoLayout#CENTER_REMOTE} when no other <tt>Component</tt> has
+	 * The <code>Component</code> to be displayed by this <code>VideoContainer</code>
+	 * at {@link VideoLayout#CENTER_REMOTE} when no other <code>Component</code> has
 	 * been added to it to be displayed there. For example, the avatar of the
 	 * remote peer may be displayed in place of the remote video when the remote
 	 * video is not available.
@@ -81,15 +81,15 @@ public class VideoContainer extends TransparentPanel
 	private boolean validateAndRepaint;
 
 	/**
-	 * Initializes a new <tt>VideoContainer</tt> with a specific
-	 * <tt>Component</tt> to be displayed when no remote video is available.
+	 * Initializes a new <code>VideoContainer</code> with a specific
+	 * <code>Component</code> to be displayed when no remote video is available.
 	 *
 	 * @param noVideoComponent
 	 * 		the component to be displayed when no remote
 	 * 		video is available
 	 * @param conference
-	 * 		<tt>true</tt> to dedicate the new instance to a
-	 * 		telephony conferencing user interface; otherwise, <tt>false</tt>
+	 * 		<code>true</code> to dedicate the new instance to a
+	 * 		telephony conferencing user interface; otherwise, <code>false</code>
 	 */
 	public VideoContainer(Component noVideoComponent, boolean conference)
 	{
@@ -207,12 +207,12 @@ public class VideoContainer extends TransparentPanel
 	}
 
 	/**
-	 * Notifies this instance that a specific <tt>Component</tt> has been added
-	 * to or removed from this <tt>Container</tt>.
+	 * Notifies this instance that a specific <code>Component</code> has been added
+	 * to or removed from this <code>Container</code>.
 	 *
 	 * @param ev
-	 * 		a <tt>ContainerEvent</tt> which details the specifics of the
-	 * 		notification such as the <tt>Component</tt> that has been added or
+	 * 		a <code>ContainerEvent</code> which details the specifics of the
+	 * 		notification such as the <code>Component</code> that has been added or
 	 * 		removed
 	 */
 	private void onContainerEvent(ContainerEvent ev)
@@ -256,17 +256,17 @@ public class VideoContainer extends TransparentPanel
 
 	/**
 	 * Notifies this instance about a change in the value of a property of a
-	 * <tt>Component</tt> contained by this <tt>Container</tt>. Since the
-	 * <tt>VideoLayout</tt> of this <tt>Container</tt> sizes the contained
-	 * <tt>Component</tt>s based on their <tt>preferredSize</tt>s, this
-	 * <tt>Container</tt> invokes {@link #doLayout()}, {@link #repaint()} and/or
+	 * <code>Component</code> contained by this <code>Container</code>. Since the
+	 * <code>VideoLayout</code> of this <code>Container</code> sizes the contained
+	 * <code>Component</code>s based on their <code>preferredSize</code>s, this
+	 * <code>Container</code> invokes {@link #doLayout()}, {@link #repaint()} and/or
 	 * {@link #validate()} upon changes in the values of the property in
 	 * question.
 	 *
 	 * @param ev
-	 * 		a <tt>PropertyChangeEvent</tt> which details the specifics of
+	 * 		a <code>PropertyChangeEvent</code> which details the specifics of
 	 * 		the notification such as the name of the property whose value changed and
-	 * 		the <tt>Component</tt> which fired the notification
+	 * 		the <code>Component</code> which fired the notification
 	 */
 	private void propertyChange(PropertyChangeEvent ev)
 	{

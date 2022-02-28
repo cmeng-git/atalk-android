@@ -36,7 +36,7 @@ import java.io.File;
 import java.util.Date;
 
 /**
- * The <tt>SendFileConversationComponent</tt> is the component added in the chat conversation
+ * The <code>SendFileConversationComponent</code> is the component added in the chat conversation
  * when user sends a file either via legacy file transfer or httpFileUpload protocol.
  *
  * @author Eng Chong Meng
@@ -53,7 +53,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Creates a <tt>SendFileConversationComponent</tt> by specifying the parent chat panel, where
+     * Creates a <code>SendFileConversationComponent</code> by specifying the parent chat panel, where
      * this component is added, the destination contact of the transfer and file to transfer.
      *
      * @param cPanel the parent chat panel, where this view component is added
@@ -206,10 +206,10 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Sets the <tt>FileTransfer</tt> object received from the protocol and corresponding to the
+     * Sets the <code>FileTransfer</code> object received from the protocol and corresponding to the
      * file transfer process associated with this panel.
      *
-     * @param fileTransfer the <tt>FileTransfer</tt> object associated with this panel
+     * @param fileTransfer the <code>FileTransfer</code> object associated with this panel
      */
     public void setProtocolFileTransfer(FileTransfer fileTransfer)
     {

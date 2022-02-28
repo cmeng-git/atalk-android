@@ -65,14 +65,14 @@ public class CallEvent extends EventObject
     private boolean isDesktopStreaming = false;
 
     /**
-     * Initializes a new <tt>CallEvent</tt> instance which is to represent an event fired by a
-     * specific <tt>Call</tt> as its source.
+     * Initializes a new <code>CallEvent</code> instance which is to represent an event fired by a
+     * specific <code>Call</code> as its source.
      *
      * @param call the call that triggered this event.
      * @param eventID determines whether the new instance represents an event notifying that:
-     * a. an outgoing <tt>Call</tt> was initiated, or
-     * b. an incoming <tt>Call</tt> was received, or
-     * c. a <tt>Call</tt> has ended
+     * a. an outgoing <code>Call</code> was initiated, or
+     * b. an incoming <code>Call</code> was received, or
+     * c. a <code>Call</code> has ended
      * @param mediaDirections Media Direction.
      */
     public CallEvent(Call call, int eventID, Map<MediaType, MediaDirection> mediaDirections)
@@ -120,9 +120,9 @@ public class CallEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>Call</tt> that triggered this event.
+     * Returns the <code>Call</code> that triggered this event.
      *
-     * @return the <tt>Call</tt> that triggered this event.
+     * @return the <code>Call</code> that triggered this event.
      */
     public Call getSourceCall()
     {
@@ -130,9 +130,9 @@ public class CallEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>CallConference</tt> that triggered this event.
+     * Returns the <code>CallConference</code> that triggered this event.
      *
-     * @return the <tt>CallConference</tt> that triggered this event.
+     * @return the <code>CallConference</code> that triggered this event.
      */
     public CallConference getCallConference()
     {

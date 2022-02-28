@@ -15,7 +15,7 @@ public interface QueryResultSet<T> extends BidirectionalIterator<T>
 {
 
 	/**
-	 * A strongly-typed variant of <tt>next()</tt>.
+	 * A strongly-typed variant of <code>next()</code>.
 	 *
 	 * @return the next history record.
 	 *
@@ -26,7 +26,7 @@ public interface QueryResultSet<T> extends BidirectionalIterator<T>
 		throws NoSuchElementException;
 
 	/**
-	 * A strongly-typed variant of <tt>prev()</tt>.
+	 * A strongly-typed variant of <code>prev()</code>.
 	 *
 	 * @return the previous history record.
 	 *

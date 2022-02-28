@@ -39,7 +39,7 @@ import timber.log.Timber;
 
 
 /**
- * The <tt>ConferenceChatManager</tt> is the one that manages both chat room and ad-hoc chat rooms invitations.
+ * The <code>ConferenceChatManager</code> is the one that manages both chat room and ad-hoc chat rooms invitations.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -60,12 +60,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     private final ConferenceChatManager multiUserChatManager;
 
     /**
-     * A list of all <tt>AdHocChatRoomListChangeListener</tt>-s.
+     * A list of all <code>AdHocChatRoomListChangeListener</code>-s.
      */
     private final Vector<AdHocChatRoomListChangeListener> adHoclistChangeListeners = new Vector<>();
 
     /**
-     * Creates an instance of <tt>ConferenceChatManager</tt>.
+     * Creates an instance of <code>ConferenceChatManager</code>.
      */
     public ConferenceChatManager()
     {
@@ -134,10 +134,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>ChatRoomMessageListener.messageDelivered</tt> method. <br>
+     * Implements the <code>ChatRoomMessageListener.messageDelivered</code> method. <br>
      * Shows the message in the conversation area and clears the write message area.
      *
-     * @param evt the <tt>ChatRoomMessageDeliveredEvent</tt> that notified us that the message was
+     * @param evt the <code>ChatRoomMessageDeliveredEvent</code> that notified us that the message was
      * delivered to its destination
      */
     public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
@@ -159,10 +159,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>ChatRoomMessageListener.messageReceived</tt> method. <br>
-     * Obtains the corresponding <tt>ChatPanel</tt> and process the message there.
+     * Implements the <code>ChatRoomMessageListener.messageReceived</code> method. <br>
+     * Obtains the corresponding <code>ChatPanel</code> and process the message there.
      *
-     * @param evt the <tt>ChatRoomMessageReceivedEvent</tt> that notified us that a message has been received
+     * @param evt the <code>ChatRoomMessageReceivedEvent</code> that notified us that a message has been received
      */
     public void messageReceived(ChatRoomMessageReceivedEvent evt)
     {
@@ -239,10 +239,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>ChatRoomMessageListener.messageDeliveryFailed</tt> method. <br>
+     * Implements the <code>ChatRoomMessageListener.messageDeliveryFailed</code> method. <br>
      * In the conversation area shows an error message, explaining the problem.
      *
-     * @param evt the <tt>ChatRoomMessageDeliveryFailedEvent</tt> that notified us of a delivery failure
+     * @param evt the <code>ChatRoomMessageDeliveryFailedEvent</code> that notified us of a delivery failure
      */
     public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
     {
@@ -318,9 +318,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</tt> method
+     * Implements the <code>LocalUserAdHocChatRoomPresenceListener.localUserPresenceChanged</code> method
      *
-     * @param evt the <tt>LocalUserAdHocChatRoomPresenceChangeEvent</tt> that notified us of a presence change
+     * @param evt the <code>LocalUserAdHocChatRoomPresenceChangeEvent</code> that notified us of a presence change
      */
     public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
     {
@@ -365,9 +365,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>LocalUserChatRoomPresenceListener.localUserPresenceChanged</tt> method.
+     * Implements the <code>LocalUserChatRoomPresenceListener.localUserPresenceChanged</code> method.
      *
-     * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> that notified us
+     * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> that notified us
      */
     public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt)
     {
@@ -484,7 +484,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param protocolProvider the parent protocol provider.
      * @param contacts the contacts invited when creating the chat room.
      * @param reason the reason for this invitation
-     * @return the <tt>AdHocChatRoomWrapper</tt> corresponding to the created ad hoc chat room
+     * @return the <code>AdHocChatRoomWrapper</code> corresponding to the created ad hoc chat room
      */
     public AdHocChatRoomWrapper createAdHocChatRoom(ProtocolProviderService protocolProvider,
             Collection<String> contacts, String reason)
@@ -576,9 +576,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Leaves the given <tt>ChatRoom</tt>.
+     * Leaves the given <code>ChatRoom</code>.
      *
-     * @param chatRoomWrapper the <tt>ChatRoom</tt> to leave.
+     * @param chatRoomWrapper the <code>ChatRoom</code> to leave.
      */
     public void leaveChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
@@ -589,9 +589,9 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Leaves the given <tt>ChatRoom</tt>.
+     * Leaves the given <code>ChatRoom</code>.
      *
-     * @param chatRoomWrapper the <tt>ChatRoom</tt> to leave.
+     * @param chatRoomWrapper the <code>ChatRoom</code> to leave.
      */
     public void leaveChatRoom(AdHocChatRoomWrapper chatRoomWrapper)
     {
@@ -607,7 +607,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Adds the given <tt>AdHocChatRoomListChangeListener</tt> that will listen for all changes of
+     * Adds the given <code>AdHocChatRoomListChangeListener</code> that will listen for all changes of
      * the chat room list data model.
      *
      * @param l the listener to add.
@@ -620,7 +620,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Removes the given <tt>AdHocChatRoomListChangeListener</tt>.
+     * Removes the given <code>AdHocChatRoomListChangeListener</code>.
      *
      * @param l the listener to remove.
      */
@@ -660,7 +660,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Handles <tt>ServiceEvent</tt>s triggered by adding or removing a ProtocolProviderService.
+     * Handles <code>ServiceEvent</code>s triggered by adding or removing a ProtocolProviderService.
      * Updates the list of available chat rooms
      * and chat room servers.
      *
@@ -782,7 +782,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     /**
      * Indicates that an invitation has been received and opens the invitation dialog to notify the user.
      *
-     * @param evt the <tt>AdHocChatRoomInvitationReceivedEvent</tt> that notified us
+     * @param evt the <code>AdHocChatRoomInvitationReceivedEvent</code> that notified us
      */
     public void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt)
     {
@@ -802,10 +802,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>AdHocChatRoomMessageListener.messageDelivered</tt> method. <br>
+     * Implements the <code>AdHocChatRoomMessageListener.messageDelivered</code> method. <br>
      * Shows the message in the conversation area and clears the write message area.
      *
-     * @param evt the <tt>AdHocChatRoomMessageDeliveredEvent</tt> that notified us
+     * @param evt the <code>AdHocChatRoomMessageDeliveredEvent</code> that notified us
      */
     public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
     {
@@ -830,10 +830,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements <tt>AdHocChatRoomMessageListener.messageDeliveryFailed</tt> method. <br>
+     * Implements <code>AdHocChatRoomMessageListener.messageDeliveryFailed</code> method. <br>
      * In the conversation area shows an error message, explaining the problem.
      *
-     * @param evt the <tt>AdHocChatRoomMessageDeliveryFailedEvent</tt> that notified us
+     * @param evt the <code>AdHocChatRoomMessageDeliveryFailedEvent</code> that notified us
      */
     public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
     {
@@ -874,10 +874,10 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     /**
-     * Implements the <tt>AdHocChatRoomMessageListener.messageReceived</tt> method. <br>
-     * Obtains the corresponding <tt>ChatPanel</tt> and process the message there.
+     * Implements the <code>AdHocChatRoomMessageListener.messageReceived</code> method. <br>
+     * Obtains the corresponding <code>ChatPanel</code> and process the message there.
      *
-     * @param evt the <tt>AdHocChatRoomMessageReceivedEvent</tt> that notified us
+     * @param evt the <code>AdHocChatRoomMessageReceivedEvent</code> that notified us
      */
     public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
     {

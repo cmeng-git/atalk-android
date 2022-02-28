@@ -34,7 +34,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Implements a base <tt>FragmentActivity</tt> which employs OSGi.
+ * Implements a base <code>FragmentActivity</code> which employs OSGi.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
@@ -56,7 +56,7 @@ public class OSGiActivity extends AppCompatActivity
     public final static Handler uiHandler = new Handler(Looper.getMainLooper());
 
     /**
-     * EXIT action listener that triggers closes the <tt>Activity</tt>
+     * EXIT action listener that triggers closes the <code>Activity</code>
      */
     private final ExitActionListener exitListener = new ExitActionListener();
 
@@ -256,7 +256,7 @@ public class OSGiActivity extends AppCompatActivity
     /**
      * Starts this osgi activity.
      *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @param bundleContext the osgi <code>BundleContext</code>
      * @throws Exception
      */
     private void internalStart(BundleContext bundleContext)
@@ -276,7 +276,7 @@ public class OSGiActivity extends AppCompatActivity
     /**
      * Stops this osgi activity.
      *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @param bundleContext the osgi <code>BundleContext</code>
      * @throws Exception
      */
     private void internalStop(BundleContext bundleContext)
@@ -316,9 +316,9 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Registers child <tt>OSGiUiPart</tt> to be notified on startup.
+     * Registers child <code>OSGiUiPart</code> to be notified on startup.
      *
-     * @param fragment child <tt>OSGiUiPart</tt> contained in this <tt>Activity</tt>.
+     * @param fragment child <code>OSGiUiPart</code> contained in this <code>Activity</code>.
      */
     public void registerOSGiFragment(OSGiUiPart fragment)
     {
@@ -335,9 +335,9 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Unregisters child <tt>OSGiUiPart</tt>.
+     * Unregisters child <code>OSGiUiPart</code>.
      *
-     * @param fragment the <tt>OSGiUiPart</tt> that will be unregistered.
+     * @param fragment the <code>OSGiUiPart</code> that will be unregistered.
      */
     public void unregisterOSGiFragment(OSGiUiPart fragment)
     {
@@ -352,7 +352,7 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Convenience method which starts a new activity for given <tt>activityClass</tt> class
+     * Convenience method which starts a new activity for given <code>activityClass</code> class
      *
      * @param activityClass the activity class
      */
@@ -393,7 +393,7 @@ public class OSGiActivity extends AppCompatActivity
     /**
      * Convenience method that switches from one activity to another.
      *
-     * @param activityIntent the next activity <tt>Intent</tt>
+     * @param activityIntent the next activity <code>Intent</code>
      */
     protected void switchActivity(Intent activityIntent)
     {
@@ -428,9 +428,9 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Returns OSGI <tt>BundleContext</tt>.
+     * Returns OSGI <code>BundleContext</code>.
      *
-     * @return OSGI <tt>BundleContext</tt>.
+     * @return OSGI <code>BundleContext</code>.
      */
     protected BundleContext getBundleContext()
     {
@@ -438,9 +438,9 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Returns the content <tt>View</tt>.
+     * Returns the content <code>View</code>.
      *
-     * @return the content <tt>View</tt>.
+     * @return the content <code>View</code>.
      */
     protected View getContentView()
     {
@@ -448,10 +448,10 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Checks if the OSGi is started and if not eventually triggers <tt>LauncherActivity</tt>
-     * that will restore current activity from its <tt>Intent</tt>.
+     * Checks if the OSGi is started and if not eventually triggers <code>LauncherActivity</code>
+     * that will restore current activity from its <code>Intent</code>.
      *
-     * @return <tt>true</tt> if restore <tt>Intent</tt> has been posted.
+     * @return <code>true</code> if restore <code>Intent</code> has been posted.
      */
     protected boolean postRestoreIntent()
     {
@@ -467,7 +467,7 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     /**
-     * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this <tt>Activity</tt>
+     * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this <code>Activity</code>
      */
     class ExitActionListener extends BroadcastReceiver
     {

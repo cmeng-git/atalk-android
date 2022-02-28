@@ -8,8 +8,8 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * Represents a listener of changes in the conference-related information of <tt>CallPeer</tt>
- * delivered in the form of <tt>CallPeerConferenceEvent</tt>s.
+ * Represents a listener of changes in the conference-related information of <code>CallPeer</code>
+ * delivered in the form of <code>CallPeerConferenceEvent</code>s.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -19,41 +19,41 @@ public interface CallPeerConferenceListener extends EventListener
 
     /**
      * Notifies this listener about a change in the characteristic of being a conference focus of a
-     * specific <tt>CallPeer</tt>.
+     * specific <code>CallPeer</code>.
      *
-     * @param conferenceEvent a <tt>CallPeerConferenceEvent</tt> with ID
-     * <tt>CallPeerConferenceEvent#CONFERENCE_FOCUS_CHANGED</tt> and no associated
-     * <tt>ConferenceMember</tt>
+     * @param conferenceEvent a <code>CallPeerConferenceEvent</code> with ID
+     * <code>CallPeerConferenceEvent#CONFERENCE_FOCUS_CHANGED</code> and no associated
+     * <code>ConferenceMember</code>
      */
     void conferenceFocusChanged(CallPeerConferenceEvent conferenceEvent);
 
     /**
-     * Notifies this listener about the addition of a specific <tt>ConferenceMember</tt> to the list
-     * of <tt>ConferenceMember</tt>s of a specific <tt>CallPeer</tt> acting as a conference focus.
+     * Notifies this listener about the addition of a specific <code>ConferenceMember</code> to the list
+     * of <code>ConferenceMember</code>s of a specific <code>CallPeer</code> acting as a conference focus.
      *
-     * @param conferenceEvent a <tt>CallPeerConferenceEvent</tt> with ID
-     * <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_ADDED</tt> and <tt>conferenceMember</tt>
-     * property specifying the <tt>ConferenceMember</tt> which was added
+     * @param conferenceEvent a <code>CallPeerConferenceEvent</code> with ID
+     * <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_ADDED</code> and <code>conferenceMember</code>
+     * property specifying the <code>ConferenceMember</code> which was added
      */
     void conferenceMemberAdded(CallPeerConferenceEvent conferenceEvent);
 
     /**
-     * Notifies this listener about an error packet received from specific <tt>CallPeer</tt>.
+     * Notifies this listener about an error packet received from specific <code>CallPeer</code>.
      *
-     * @param conferenceEvent a <tt>CallPeerConferenceEvent</tt> with ID
-     * <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_ERROR_RECEIVED</tt> and the error
+     * @param conferenceEvent a <code>CallPeerConferenceEvent</code> with ID
+     * <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_ERROR_RECEIVED</code> and the error
      * message associated with the packet.
      */
     void conferenceMemberErrorReceived(CallPeerConferenceEvent conferenceEvent);
 
     /**
-     * Notifies this listener about the removal of a specific <tt>ConferenceMember</tt> from the
-     * list of <tt>ConferenceMember</tt>s of a specific <tt>CallPeer</tt> acting as a conference
+     * Notifies this listener about the removal of a specific <code>ConferenceMember</code> from the
+     * list of <code>ConferenceMember</code>s of a specific <code>CallPeer</code> acting as a conference
      * focus.
      *
-     * @param conferenceEvent a <tt>CallPeerConferenceEvent</tt> with ID
-     * <tt>CallPeerConferenceEvent#CONFERENCE_MEMBER_REMOVED</tt> and
-     * <tt>conferenceMember</tt> property specifying the <tt>ConferenceMember</tt> which was
+     * @param conferenceEvent a <code>CallPeerConferenceEvent</code> with ID
+     * <code>CallPeerConferenceEvent#CONFERENCE_MEMBER_REMOVED</code> and
+     * <code>conferenceMember</code> property specifying the <code>ConferenceMember</code> which was
      * removed
      */
     void conferenceMemberRemoved(CallPeerConferenceEvent conferenceEvent);

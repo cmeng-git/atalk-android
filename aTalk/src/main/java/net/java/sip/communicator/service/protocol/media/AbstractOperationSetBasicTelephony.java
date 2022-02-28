@@ -20,11 +20,11 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>OperationSetBasicTelephony</tt> in order to make it
+ * Represents a default implementation of <code>OperationSetBasicTelephony</code> in order to make it
  * easier for implementers to provide complete solutions while focusing on implementation-specific
  * details.
  *
- * @param <T> the implementation specific provider class like for example <tt>ProtocolProviderServiceSipImpl</tt>.
+ * @param <T> the implementation specific provider class like for example <code>ProtocolProviderServiceSipImpl</code>.
  * @author Lyubomir Marinov
  * @author Emil Ivov
  * @author Dmitri Melnikov
@@ -42,7 +42,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * {@inheritDoc}
      *
      * Forwards to {@link OperationSetBasicTelephony#createCall(Contact, CallConference)} with
-     * <tt>null</tt> as the <tt>CallConference</tt> argument.
+     * <code>null</code> as the <code>CallConference</code> argument.
      */
     public Call createCall(Contact callee)
             throws OperationFailedException
@@ -54,7 +54,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * {@inheritDoc}
      *
      * Forwards to {@link OperationSetBasicTelephony#createCall(String, CallConference)} with
-     * {@link Contact#getAddress()} as the <tt>String</tt> argument.
+     * {@link Contact#getAddress()} as the <code>String</code> argument.
      */
     public Call createCall(Contact callee, CallConference conference)
             throws OperationFailedException
@@ -70,7 +70,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
      * {@inheritDoc}
      *
      * Forwards to {@link OperationSetBasicTelephony#createCall(String, CallConference)} with
-     * <tt>null</tt> as the <tt>CallConference</tt> argument.
+     * <code>null</code> as the <code>CallConference</code> argument.
      */
     public Call createCall(String uri)
             throws OperationFailedException, ParseException
@@ -92,8 +92,8 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered listeners that an event with
-     * id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
+     * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
@@ -104,8 +104,8 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered listeners that an event with
-     * id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
+     * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred.
@@ -117,8 +117,8 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered listeners that an event with
-     * id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered listeners that an event with
+     * id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
      * @param event the event to dispatch
      */
@@ -148,7 +148,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Registers <tt>listener</tt> with this provider, so that it could be notified when incoming calls are received.
+     * Registers <code>listener</code> with this provider, so that it could be notified when incoming calls are received.
      *
      * @param listener the listener to register with this provider.
      */
@@ -161,7 +161,7 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Removes the <tt>listener</tt> from the list of call listeners.
+     * Removes the <code>listener</code> from the list of call listeners.
      *
      * @param listener the listener to unregister.
      */
@@ -173,13 +173,13 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Sets the mute state of the <tt>Call</tt>.
+     * Sets the mute state of the <code>Call</code>.
      *
      * Muting audio streams sent from the call is implementation specific and one of the possible
      * approaches to it is sending silence.
      *
-     * @param call the <tt>Call</tt> whose mute state is to be set
-     * @param mute <tt>true</tt> to mute the call streams being sent to <tt>peers</tt>; otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> whose mute state is to be set
+     * @param mute <code>true</code> to mute the call streams being sent to <code>peers</code>; otherwise, <code>false</code>
      */
     public void setMute(Call call, boolean mute)
     {
@@ -195,19 +195,19 @@ public abstract class AbstractOperationSetBasicTelephony<T extends ProtocolProvi
     }
 
     /**
-     * Creates a new <tt>Recorder</tt> which is to record the specified <tt>Call</tt> (into a file
-     * which is to be specified when starting the returned <tt>Recorder</tt>).
+     * Creates a new <code>Recorder</code> which is to record the specified <code>Call</code> (into a file
+     * which is to be specified when starting the returned <code>Recorder</code>).
      *
-     * <tt>AbstractOperationSetBasicTelephony</tt> implements the described functionality for
-     * <tt>MediaAwareCall</tt> only; otherwise, does nothing and just returns <tt>null</tt>.
+     * <code>AbstractOperationSetBasicTelephony</code> implements the described functionality for
+     * <code>MediaAwareCall</code> only; otherwise, does nothing and just returns <code>null</code>.
      * </p>
      *
-     * @param call the <tt>Call</tt> which is to be recorded by the returned <tt>Recorder</tt> when the
+     * @param call the <code>Call</code> which is to be recorded by the returned <code>Recorder</code> when the
      * latter is started
-     * @return a new <tt>Recorder</tt> which is to record the specified <tt>call</tt> (into a file
-     * which is to be specified when starting the returned <tt>Recorder</tt>)
-     * @throws OperationFailedException if anything goes wrong while creating the new <tt>Recorder</tt> for the specified
-     * <tt>call</tt>
+     * @return a new <code>Recorder</code> which is to record the specified <code>call</code> (into a file
+     * which is to be specified when starting the returned <code>Recorder</code>)
+     * @throws OperationFailedException if anything goes wrong while creating the new <code>Recorder</code> for the specified
+     * <code>call</code>
      * @see OperationSetBasicTelephony#createRecorder(Call)
      */
     public Recorder createRecorder(Call call)

@@ -18,7 +18,7 @@ import java.util.EventListener;
 /**
  * This listener receives events whenever a contact has sent us a chat state notification. The
  * source contact and the exact type of the notification are indicated in
- * <tt>TypingNotificationEvent</tt> instances.
+ * <code>TypingNotificationEvent</code> instances.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -26,9 +26,9 @@ import java.util.EventListener;
 public interface ChatStateNotificationsListener extends EventListener
 {
     /**
-     * Called to indicate that a remote <tt>Contact</tt> has sent us a chat state notification.
+     * Called to indicate that a remote <code>Contact</code> has sent us a chat state notification.
      *
-     * @param event a <tt>ChatStateNotificationEvent</tt> containing the sender of the
+     * @param event a <code>ChatStateNotificationEvent</code> containing the sender of the
      * notification and its type.
      */
     void chatStateNotificationReceived(ChatStateNotificationEvent event);
@@ -36,7 +36,7 @@ public interface ChatStateNotificationsListener extends EventListener
     /**
      * Called to indicate that sending chat state notification has failed.
      *
-     * @param event a <tt>ChatStateNotificationEvent</tt> containing the sender of the
+     * @param event a <code>ChatStateNotificationEvent</code> containing the sender of the
      * notification and its type.
      */
     void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent event);

@@ -135,23 +135,23 @@ public interface OperationSetGeolocation extends OperationSet
 	public final static String URI = "uri";
 
 	/**
-	 * Publish the location contained in the <tt>geolocation</tt> map to all contacts in our contact
+	 * Publish the location contained in the <code>geolocation</code> map to all contacts in our contact
 	 * list.
 	 *
 	 * @param geolocation
-	 *        a <tt>java.uil.Map</tt> containing the geolocation details of the position we'd like
+	 *        a <code>java.uil.Map</code> containing the geolocation details of the position we'd like
 	 *        to publish.
 	 */
 	public void publishGeolocation(Map<String, String> geolocation);
 
 	/**
-	 * Retrieve the geolocation of the contact corresponding to <tt>contactIdentifier</tt>.
+	 * Retrieve the geolocation of the contact corresponding to <code>contactIdentifier</code>.
 	 *
 	 * @param contactIdentifier
-	 *        the address of the <tt>Contact</tt> whose geolocation details we'd like to retrieve.
+	 *        the address of the <code>Contact</code> whose geolocation details we'd like to retrieve.
 	 *
-	 * @return a <tt>java.util.Map</tt> containing the geolocation details of the contact with
-	 *         address <tt>contactIdentifier</tt>.
+	 * @return a <code>java.util.Map</code> containing the geolocation details of the contact with
+	 *         address <code>contactIdentifier</code>.
 	 */
 	public Map<String, String> queryContactGeolocation(String contactIdentifier);
 
@@ -160,7 +160,7 @@ public interface OperationSetGeolocation extends OperationSet
 	 * geolocation.
 	 *
 	 * @param listener
-	 *        the <tt>GeolocationListener</tt> to register
+	 *        the <code>GeolocationListener</code> to register
 	 */
 	public void addGeolocationListener(GeolocationListener listener);
 
@@ -169,7 +169,7 @@ public interface OperationSetGeolocation extends OperationSet
 	 * geolocation details.
 	 *
 	 * @param listener
-	 *        the <tt>GeolocationListener</tt> to unregister
+	 *        the <code>GeolocationListener</code> to unregister
 	 */
 	public void removeGeolocationListener(GeolocationListener listener);
 }

@@ -27,7 +27,7 @@ import java.io.File;
 import timber.log.Timber;
 
 /**
- * The Jabber protocol extension of the <tt>AbstractFileTransfer</tt>.
+ * The Jabber protocol extension of the <code>AbstractFileTransfer</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -51,9 +51,9 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     private BoBInfo bobInfo;
 
     /**
-     * Creates an <tt>OutgoingFileTransferJabberImpl</tt> by specifying the <tt>receiver</tt>
-     * contact, the <tt>file</tt> , the <tt>jabberTransfer</tt>, that would be used to send the file
-     * through Jabber and the <tt>protocolProvider</tt>.
+     * Creates an <code>OutgoingFileTransferJabberImpl</code> by specifying the <code>receiver</code>
+     * contact, the <code>file</code> , the <code>jabberTransfer</code>, that would be used to send the file
+     * through Jabber and the <code>protocolProvider</code>.
      *
      * @param receiver the destination contact
      * @param file the file to send
@@ -165,7 +165,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     }
 
     /**
-     * Listens for all <tt>Si</tt> stanzas and adds a thumbnail element to it if a thumbnail preview is enabled.
+     * Listens for all <code>Si</code> stanzas and adds a thumbnail element to it if a thumbnail preview is enabled.
      *
      * @see StanzaListener#processStanza(Stanza)
      */

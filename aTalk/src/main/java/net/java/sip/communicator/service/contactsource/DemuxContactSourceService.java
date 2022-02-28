@@ -16,8 +16,8 @@
 package net.java.sip.communicator.service.contactsource;
 
 /**
- * The <tt>DemuxContactSourceService</tt> provides a de-multiplexed copy of
- * the given <tt>ContactSourceService</tt>, where each contact detail like
+ * The <code>DemuxContactSourceService</code> provides a de-multiplexed copy of
+ * the given <code>ContactSourceService</code>, where each contact detail like
  * telephone number or protocol contact address is represented as a single entry
  * in the query result set.
  *
@@ -26,12 +26,12 @@ package net.java.sip.communicator.service.contactsource;
 public abstract class DemuxContactSourceService
 {
     /**
-     * Creates a de-multiplexed copy of the given <tt>ContactSourceService</tt>,
+     * Creates a de-multiplexed copy of the given <code>ContactSourceService</code>,
      * where each contact detail like telephone number or protocol contact
      * address is represented as a single entry in the query result set.
      *
-     * @param contactSourceService the original <tt>ContactSourceService</tt> to be de-multiplexed
-     * @return a de-multiplexed copy of the given <tt>ContactSourceService</tt>
+     * @param contactSourceService the original <code>ContactSourceService</code> to be de-multiplexed
+     * @return a de-multiplexed copy of the given <code>ContactSourceService</code>
      */
     public abstract ContactSourceService createDemuxContactSource(
         ContactSourceService contactSourceService);

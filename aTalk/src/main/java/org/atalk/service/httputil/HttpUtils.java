@@ -90,7 +90,7 @@ public class HttpUtils
     private static PoolingHttpClientConnectionManager connectionManager = null;
 
     /**
-     * Opens a connection to the <tt>uri</tt>.
+     * Opens a connection to the <code>uri</code>.
      *
      * @param uri the HTTP uri to contact.
      * @return the result if any or null if connection was not possible or canceled by user.
@@ -101,7 +101,7 @@ public class HttpUtils
     }
 
     /**
-     * Opens a connection to the <tt>uri</tt>.
+     * Opens a connection to the <code>uri</code>.
      *
      * @param uri the HTTP uri to contact.
      * @param headerParamNames additional header name to include
@@ -114,7 +114,7 @@ public class HttpUtils
     }
 
     /**
-     * Opens a connection to the <tt>uri</tt>.
+     * Opens a connection to the <code>uri</code>.
      *
      * @param uri the HTTP uri to contact.
      * @param usernamePropertyName the property uses to retrieve/store username value
@@ -229,7 +229,7 @@ public class HttpUtils
     }
 
     /**
-     * Posts a <tt>file</tt> to the <tt>uri</tt>.
+     * Posts a <code>file</code> to the <code>uri</code>.
      *
      * @param uri the HTTP uri to post the form to.
      * @param fileParamName the name of the param for the file.
@@ -242,7 +242,7 @@ public class HttpUtils
     }
 
     /**
-     * Posts a <tt>file</tt> to the <tt>uri</tt>.
+     * Posts a <code>file</code> to the <code>uri</code>.
      *
      * @param uri the HTTP uri to post the form to.
      * @param fileParamName the name of the param for the file.
@@ -287,7 +287,7 @@ public class HttpUtils
     }
 
     /**
-     * Posting form to HTTP <tt>uri</tt>. For submission we use POST method
+     * Posting form to HTTP <code>uri</code>. For submission we use POST method
      * which is "application/x-www-form-urlencoded" encoded.
      *
      * @param uri HTTP uri.
@@ -298,9 +298,9 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
     public static HTTPResponseResult postForm(String uri, String usernamePropertyName, String passwordPropertyName,
@@ -312,7 +312,7 @@ public class HttpUtils
     }
 
     /**
-     * Posting form to <tt>uri</tt>. For submission we use POST method
+     * Posting form to <code>uri</code>. For submission we use POST method
      * which is "application/x-www-form-urlencoded" encoded.
      *
      * @param uri HTTP uri.
@@ -323,9 +323,9 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param redirectHandler handles redirection, should we redirect and the actual redirect.
      * @return the result or null if send was not possible or credentials ask if any was canceled.
      */
@@ -339,7 +339,7 @@ public class HttpUtils
     }
 
     /**
-     * Posting form to <tt>uri</tt>. For submission we use POST method
+     * Posting form to <code>uri</code>. For submission we use POST method
      * which is "application/x-www-form-urlencoded" encoded.
      *
      * @param uri HTTP uri.
@@ -355,7 +355,7 @@ public class HttpUtils
     }
 
     /**
-     * Posting form to <tt>uri</tt>. For submission we use POST method
+     * Posting form to <code>uri</code>. For submission we use POST method
      * which is "application/x-www-form-urlencoded" encoded.
      *
      * @param uri HTTP uri.
@@ -366,9 +366,9 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param redirectHandler handles redirection, should we redirect and the actual redirect.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
@@ -462,7 +462,7 @@ public class HttpUtils
     }
 
     /**
-     * Posting form to HTTP <tt>uri</tt>. For submission we use POST method
+     * Posting form to HTTP <code>uri</code>. For submission we use POST method
      * which is "application/x-www-form-urlencoded" encoded.
      *
      * @param httpClient the http client
@@ -471,9 +471,9 @@ public class HttpUtils
      * @param formParamNames the parameter names to include in post.
      * @param formParamValues the corresponding parameter values to use.
      * @param usernameParamIx the index of the username parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param passwordParamIx the index of the password parameter in the
-     * <tt>formParamNames</tt> and <tt>formParamValues</tt> if any, otherwise -1.
+     * <code>formParamNames</code> and <code>formParamValues</code> if any, otherwise -1.
      * @param headerParamNames additional header name to include
      * @param headerParamValues corresponding header value to include
      * @return the result or null if send was not possible or credentials ask if any was canceled.
@@ -1004,11 +1004,11 @@ public class HttpUtils
         boolean handleRedirect(String location, List<NameValuePair> parameters);
 
         /**
-         * Do the new location has params that need to be filled, return <tt>true</tt> will cause it to handle redirect.
+         * Do the new location has params that need to be filled, return <code>true</code> will cause it to handle redirect.
          *
          * @param location the new location.
-         * @return <tt>true</tt> if we need to redirect in the handler or
-         * <tt>false</tt> if we will continue with default redirect handling.
+         * @return <code>true</code> if we need to redirect in the handler or
+         * <code>false</code> if we will continue with default redirect handling.
          */
         boolean hasParams(String location);
     }

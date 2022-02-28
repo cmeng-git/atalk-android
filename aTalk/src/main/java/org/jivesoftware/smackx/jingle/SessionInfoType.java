@@ -6,45 +6,45 @@
 package org.jivesoftware.smackx.jingle;
 
 /**
- * Contains an enumeration of all possible <tt>session-info</tt> element.
+ * Contains an enumeration of all possible <code>session-info</code> element.
  *
  * @author Emil Ivov
  */
 public enum SessionInfoType
 {
     /**
-     * The <tt>active</tt> payload indicates that the principal or device is again actively
+     * The <code>active</code> payload indicates that the principal or device is again actively
      * participating in the session after having been on mute or having put the other party on hold.
-     * The <tt>active</tt> element applies to all aspects of the session, and thus does not possess
+     * The <code>active</code> element applies to all aspects of the session, and thus does not possess
      * a 'name' attribute.
      */
     active,
 
     /**
-     * The <tt>hold</tt> payload indicates that the principal is temporarily not listening for media
+     * The <code>hold</code> payload indicates that the principal is temporarily not listening for media
      * from the other party
      */
     hold,
 
     /**
-     * The <tt>mute</tt> payload indicates that the principal is temporarily not sending media to
+     * The <code>mute</code> payload indicates that the principal is temporarily not sending media to
      * the other party but continuing to accept media from the other party.
      */
     mute,
 
     /**
-     * The <tt>ringing</tt> payload indicates that the device is ringing but the principal has not
+     * The <code>ringing</code> payload indicates that the device is ringing but the principal has not
      * yet interacted with it to answer (this maps to the SIP 180 response code).
      */
     ringing,
 
     /**
-     * Ends a <tt>hold</tt> state.
+     * Ends a <code>hold</code> state.
      */
     unhold,
 
     /**
-     * Ends a <tt>mute</tt> state.
+     * Ends a <code>mute</code> state.
      */
-    unmute
+    unmute;
 }

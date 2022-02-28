@@ -14,7 +14,7 @@ package net.java.sip.communicator.service.gui;
 public interface AuthenticationWindowService
 {
     /**
-     * Creates an instance of the <tt>AuthenticationWindow</tt> implementation.
+     * Creates an instance of the <code>AuthenticationWindow</code> implementation.
      *
      * @param server the server name
      * @param isUserNameEditable indicates if the user name is editable
@@ -55,7 +55,7 @@ public interface AuthenticationWindowService
         /**
          * Indicates if this window has been canceled.
          *
-         * @return <tt>true</tt> if this window has been canceled, <tt>false</tt> - otherwise.
+         * @return <code>true</code> if this window has been canceled, <code>false</code> - otherwise.
          */
         boolean isCanceled();
 
@@ -76,13 +76,13 @@ public interface AuthenticationWindowService
         /**
          * Indicates if the password should be remembered.
          *
-         * @return <tt>true</tt> if the password should be remembered, <tt>false</tt> - otherwise.
+         * @return <code>true</code> if the password should be remembered, <code>false</code> - otherwise.
          */
         boolean isRememberPassword();
 
         /**
          * Shows or hides the "save password" checkbox.
-         * @param allow the checkbox is shown when allow is <tt>true</tt>
+         * @param allow the checkbox is shown when allow is <code>true</code>
          */
         void setAllowSavePassword(boolean allow);
     }

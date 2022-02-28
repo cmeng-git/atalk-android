@@ -9,7 +9,7 @@ package net.java.sip.communicator.service.systray.event;
 import java.util.*;
 
 /**
- * Listens for <tt>SystrayPopupMessageEvent</tt>s posted when user clicks on the system tray popup message.
+ * Listens for <code>SystrayPopupMessageEvent</code>s posted when user clicks on the system tray popup message.
  *
  * @author Yana Stamcheva
  */

@@ -49,11 +49,11 @@ public class AccountPreferenceActivity extends OSGiActivity
     private String userUniqueID;
 
     /**
-     * Creates new <tt>Intent</tt> for starting account preferences activity.
+     * Creates new <code>Intent</code> for starting account preferences activity.
      *
      * @param ctx the context.
-     * @param accountID <tt>AccountID</tt> for which preferences will be opened.
-     * @return <tt>Intent</tt> for starting account preferences activity parametrized with given <tt>AccountID</tt>.
+     * @param accountID <code>AccountID</code> for which preferences will be opened.
+     * @return <code>Intent</code> for starting account preferences activity parametrized with given <code>AccountID</code>.
      */
     public static Intent getIntent(Context ctx, AccountID accountID)
     {
@@ -106,7 +106,7 @@ public class AccountPreferenceActivity extends OSGiActivity
      *
      * @param userUniqueID the account unique ID identifying edited account.
      * @param protocolName protocol name for which the impl fragment will be created.
-     * @return impl preference fragment for given <tt>userUniqueID</tt> and <tt>protocolName</tt>.
+     * @return impl preference fragment for given <code>userUniqueID</code> and <code>protocolName</code>.
      */
     private AccountPreferenceFragment createPreferencesFragment(String userUniqueID, String protocolName)
     {

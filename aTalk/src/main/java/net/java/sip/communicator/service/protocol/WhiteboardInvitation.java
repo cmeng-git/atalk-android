@@ -22,10 +22,10 @@ package net.java.sip.communicator.service.protocol;
 public interface WhiteboardInvitation
 {
 	/**
-	 * Returns the <tt>WhiteboardSession</tt>, which is the target of this invitation. The
+	 * Returns the <code>WhiteboardSession</code>, which is the target of this invitation. The
 	 * whiteboard returned by this method will be the one to which the user is invited to join to.
 	 *
-	 * @return the <tt>WhiteboardSession</tt>, which is the target of this invitation
+	 * @return the <code>WhiteboardSession</code>, which is the target of this invitation
 	 */
 	public WhiteboardSession getTargetWhiteboard();
 
@@ -37,9 +37,9 @@ public interface WhiteboardInvitation
 	public byte[] getWhiteboardPassword();
 
 	/**
-	 * Returns the <tt>WhiteboardParticipant</tt> that sent this invitation.
+	 * Returns the <code>WhiteboardParticipant</code> that sent this invitation.
 	 *
-	 * @return the <tt>WhiteboardParticipant</tt> that sent this invitation.
+	 * @return the <code>WhiteboardParticipant</code> that sent this invitation.
 	 */
 	public String getInviter();
 

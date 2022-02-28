@@ -18,8 +18,8 @@ public interface ViewAccessor
     /**
      * Gets the {@link View} provided by this instance which is to be used in a specific {@link Context}.
      *
-     * @param context the <tt>Context</tt> in which the provided <tt>View</tt> will be used
-     * @return the <tt>View</tt> provided by this instance which is to be used in a specific <tt>Context</tt>
+     * @param context the <code>Context</code> in which the provided <code>View</code> will be used
+     * @return the <code>View</code> provided by this instance which is to be used in a specific <code>Context</code>
      */
     public View getView(Context context);
 }

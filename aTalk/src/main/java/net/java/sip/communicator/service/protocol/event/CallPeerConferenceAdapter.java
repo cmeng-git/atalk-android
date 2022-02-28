@@ -6,11 +6,11 @@
 package net.java.sip.communicator.service.protocol.event;
 
 /**
- * An abstract implementation of <tt>CallPeerConferenceListener</tt> which exists only as a
+ * An abstract implementation of <code>CallPeerConferenceListener</code> which exists only as a
  * convenience to extenders. Additionally, provides a means to receive the
- * <tt>CallPeerConferenceEvent</tt>s passed to the various <tt>CallPeerConferenceListener</tt>
+ * <code>CallPeerConferenceEvent</code>s passed to the various <code>CallPeerConferenceListener</code>
  * methods into a single method because their specifics can be determined based on their
- * <tt>eventID</tt>.
+ * <code>eventID</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -56,14 +56,14 @@ public class CallPeerConferenceAdapter implements CallPeerConferenceListener
 	}
 
 	/**
-	 * Notifies this listener about a specific <tt>CallPeerConferenceEvent</tt> provided to one of
-	 * the <tt>CallPeerConferenceListener</tt> methods. The <tt>CallPeerConferenceListener</tt>
+	 * Notifies this listener about a specific <code>CallPeerConferenceEvent</code> provided to one of
+	 * the <code>CallPeerConferenceListener</code> methods. The <code>CallPeerConferenceListener</code>
 	 * method which was originally invoked on this listener can be determined based on the
-	 * <tt>eventID</tt> of the specified <tt>CallPeerConferenceEvent</tt>. The implementation of
-	 * <tt>CallPeerConferenceAdapter</tt> does nothing.
+	 * <code>eventID</code> of the specified <code>CallPeerConferenceEvent</code>. The implementation of
+	 * <code>CallPeerConferenceAdapter</code> does nothing.
 	 *
 	 * @param ev
-	 *        the <tt>CallPeerConferenceEvent</tt> this listener is being notified about
+	 *        the <code>CallPeerConferenceEvent</code> this listener is being notified about
 	 */
 	protected void onCallPeerConferenceEvent(CallPeerConferenceEvent ev)
 	{

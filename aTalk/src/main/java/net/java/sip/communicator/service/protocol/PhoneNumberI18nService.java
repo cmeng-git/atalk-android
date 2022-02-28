@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * Implements <tt>PhoneNumberI18nService</tt> which aids the parsing, formatting
+ * Implements <code>PhoneNumberI18nService</code> which aids the parsing, formatting
  * and validating of international phone numbers.
  *
  * @author Lyubomir Marinov
@@ -17,12 +17,12 @@ package net.java.sip.communicator.service.protocol;
 public interface PhoneNumberI18nService
 {
     /**
-     * Normalizes a <tt>String</tt> which may be a phone number or a identifier by removing useless
+     * Normalizes a <code>String</code> which may be a phone number or a identifier by removing useless
      * characters and, if necessary, replacing the alpahe characters in corresponding dial pad
      * numbers.
      *
-     * @param possibleNumber a <tt>String</tt> which may represents a phone number or an identifier to normalize.
-     * @return a <tt>String</tt> which is a normalized form of the specified <tt>possibleNumber</tt>
+     * @param possibleNumber a <code>String</code> which may represents a phone number or an identifier to normalize.
+     * @return a <code>String</code> which is a normalized form of the specified <code>possibleNumber</code>
      * .
      */
     String normalize(String possibleNumber);
@@ -38,12 +38,12 @@ public interface PhoneNumberI18nService
     String formatForDisplay(String phoneNumber);
 
     /**
-     * Determines whether two <tt>String</tt> phone numbers match.
+     * Determines whether two <code>String</code> phone numbers match.
      *
-     * @param aPhoneNumber a <tt>String</tt> which represents a phone number to match to <tt>bPhoneNumber</tt>
-     * @param bPhoneNumber a <tt>String</tt> which represents a phone number to match to <tt>aPhoneNumber</tt>
-     * @return <tt>true</tt> if the specified <tt>String</tt>s match as phone numbers; otherwise,
-     * <tt>false</tt>
+     * @param aPhoneNumber a <code>String</code> which represents a phone number to match to <code>bPhoneNumber</code>
+     * @param bPhoneNumber a <code>String</code> which represents a phone number to match to <code>aPhoneNumber</code>
+     * @return <code>true</code> if the specified <code>String</code>s match as phone numbers; otherwise,
+     * <code>false</code>
      */
     public boolean phoneNumbersMatch(String aPhoneNumber, String bPhoneNumber);
 
@@ -51,7 +51,7 @@ public interface PhoneNumberI18nService
      * Indicates if the given string is possibly a phone number.
      *
      * @param possibleNumber the string to be verified
-     * @return <tt>true</tt> if the possibleNumber is a phone number, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the possibleNumber is a phone number, <code>false</code> - otherwise
      */
     boolean isPhoneNumber(String possibleNumber);
 }

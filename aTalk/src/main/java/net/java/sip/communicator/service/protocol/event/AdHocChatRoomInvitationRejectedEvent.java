@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>AdHocChatRoomInvitationRejectedEvent</tt>s indicates the reception of a rejection of an
+ * <code>AdHocChatRoomInvitationRejectedEvent</code>s indicates the reception of a rejection of an
  * invitation.
  *
  * @author Valentin Martinet
@@ -27,7 +27,7 @@ import net.java.sip.communicator.service.protocol.*;
 public class AdHocChatRoomInvitationRejectedEvent extends EventObject
 {
 	/**
-	 * The <tt>AdHocChatRoom</tt> for which the initial invitation was.
+	 * The <code>AdHocChatRoom</code> for which the initial invitation was.
 	 */
 	private AdHocChatRoom adHocChatRoom;
 
@@ -47,13 +47,13 @@ public class AdHocChatRoomInvitationRejectedEvent extends EventObject
 	private Date timestamp;
 
 	/**
-	 * Creates a <tt>AdHocChatRoomInvitationRejectedEvent</tt> representing the rejection of an
-	 * invitation, rejected by the given <tt>invitee</tt>.
+	 * Creates a <code>AdHocChatRoomInvitationRejectedEvent</code> representing the rejection of an
+	 * invitation, rejected by the given <code>invitee</code>.
 	 *
 	 * @param source
-	 *        the <tt>OperationSetAdHocMultiUserChat</tt> that dispatches this event
+	 *        the <code>OperationSetAdHocMultiUserChat</code> that dispatches this event
 	 * @param adHocChatRoom
-	 *        the <tt>AdHocChatRoom</tt> for which the initial invitation was
+	 *        the <code>AdHocChatRoom</code> for which the initial invitation was
 	 * @param invitee
 	 *        the name of the invitee that rejected the invitation
 	 * @param reason
@@ -83,9 +83,9 @@ public class AdHocChatRoomInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt> for which the initial invitation was.
+	 * Returns the <code>AdHocChatRoom</code> for which the initial invitation was.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt> for which the initial invitation was
+	 * @return the <code>AdHocChatRoom</code> for which the initial invitation was
 	 */
 	public AdHocChatRoom getChatRoom()
 	{
@@ -103,9 +103,9 @@ public class AdHocChatRoomInvitationRejectedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the reason for which the <tt>AdHocChatRoomInvitation</tt> is rejected.
+	 * Returns the reason for which the <code>AdHocChatRoomInvitation</code> is rejected.
 	 *
-	 * @return the reason for which the <tt>AdHocChatRoomInvitation</tt> is rejected.
+	 * @return the reason for which the <code>AdHocChatRoomInvitation</code> is rejected.
 	 */
 	public String getReason()
 	{

@@ -19,10 +19,10 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * A representation of a call. <tt>Call</tt> instances must only be created by users (i.e. telephony
+ * A representation of a call. <code>Call</code> instances must only be created by users (i.e. telephony
  * protocols) of the PhoneUIService such as a SIP protocol implementation. Extensions of this class
- * might have names like <tt>CallSipImpl</tt>, <tt>CallJabberImpl</tt>, or
- * <tt>CallAnyOtherTelephonyProtocolImpl</tt>. Call is DataObject, this way it will be able to store
+ * might have names like <code>CallSipImpl</code>, <code>CallJabberImpl</code>, or
+ * <code>CallAnyOtherTelephonyProtocolImpl</code>. Call is DataObject, this way it will be able to store
  * custom data and carry it to various parts of the project.
  *
  * @author Emil Ivov
@@ -34,13 +34,13 @@ import timber.log.Timber;
 public abstract class Call extends DataObject
 {
     /**
-     * The name of the <tt>Call</tt> property which represents its telephony conference-related state.
+     * The name of the <code>Call</code> property which represents its telephony conference-related state.
      */
     public static final String CONFERENCE = "conference";
 
     /**
-     * The name of the <tt>Call</tt> property which indicates whether the local peer/user
-     * represented by the respective <tt>Call</tt> is acting as a conference focus.
+     * The name of the <code>Call</code> property which indicates whether the local peer/user
+     * represented by the respective <code>Call</code> is acting as a conference focus.
      */
     public static final String CONFERENCE_FOCUS = "conferenceFocus";
 
@@ -50,7 +50,7 @@ public abstract class Call extends DataObject
     private final String callId;
 
     /**
-     * A list of all listeners currently registered for <tt>CallChangeEvent</tt>s
+     * A list of all listeners currently registered for <code>CallChangeEvent</code>s
      */
     private final List<CallChangeListener> callListeners = new Vector<>();
 
@@ -77,15 +77,15 @@ public abstract class Call extends DataObject
     private CallState callState = CallState.CALL_INITIALIZATION;
 
     /**
-     * The telephony conference-related state of this <tt>Call</tt>. Since a non-conference
-     * <tt>Call</tt> may be converted into a conference <tt>Call</tt> at any time, every
-     * <tt>Call</tt> instance maintains a <tt>CallConference</tt> instance regardless of whether
-     * the <tt>Call</tt> in question is participating in a telephony conference.
+     * The telephony conference-related state of this <code>Call</code>. Since a non-conference
+     * <code>Call</code> may be converted into a conference <code>Call</code> at any time, every
+     * <code>Call</code> instance maintains a <code>CallConference</code> instance regardless of whether
+     * the <code>Call</code> in question is participating in a telephony conference.
      */
     private CallConference conference;
 
     /**
-     * The flag that specifies whether incoming calls into this <tt>Call</tt> should be
+     * The flag that specifies whether incoming calls into this <code>Call</code> should be
      * auto-answered.
      */
     private boolean isAutoAnswer = false;
@@ -176,7 +176,7 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Removes <tt>listener</tt> to this call so that it won't receive further <tt>CallChangeEvent</tt>s.
+     * Removes <code>listener</code> to this call so that it won't receive further <code>CallChangeEvent</code>s.
      *
      * @param listener the listener to register
      */
@@ -188,9 +188,9 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Returns a reference to the <tt>ProtocolProviderService</tt> instance that created this call.
+     * Returns a reference to the <code>ProtocolProviderService</code> instance that created this call.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this call.
+     * @return a reference to the <code>ProtocolProviderService</code> instance that created this call.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -198,11 +198,11 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Creates a <tt>CallPeerEvent</tt> with <tt>sourceCallPeer</tt> and <tt>eventID</tt> and
+     * Creates a <code>CallPeerEvent</code> with <code>sourceCallPeer</code> and <code>eventID</code> and
      * dispatches it on all currently registered listeners.
      *
-     * @param sourceCallPeer the source <tt>CallPeer</tt> for the newly created event.
-     * @param eventID the ID of the event to create (see constants defined in <tt>CallPeerEvent</tt>)
+     * @param sourceCallPeer the source <code>CallPeer</code> for the newly created event.
+     * @param eventID the ID of the event to create (see constants defined in <code>CallPeerEvent</code>)
      */
     protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID)
     {
@@ -210,13 +210,13 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Creates a <tt>CallPeerEvent</tt> with <tt>sourceCallPeer</tt> and <tt>eventID</tt> and
+     * Creates a <code>CallPeerEvent</code> with <code>sourceCallPeer</code> and <code>eventID</code> and
      * dispatches it on all currently registered listeners.
      *
-     * @param sourceCallPeer the source <tt>CallPeer</tt> for the newly created event.
-     * @param eventID the ID of the event to create (see constants defined in <tt>CallPeerEvent</tt>)
-     * @param delayed <tt>true</tt> if the adding/removing of the peer from the GUI should be delayed and
-     * <tt>false</tt> if not.
+     * @param sourceCallPeer the source <code>CallPeer</code> for the newly created event.
+     * @param eventID the ID of the event to create (see constants defined in <code>CallPeerEvent</code>)
+     * @param delayed <code>true</code> if the adding/removing of the peer from the GUI should be delayed and
+     * <code>false</code> if not.
      */
     protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID, boolean delayed)
     {
@@ -254,8 +254,8 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Creates a <tt>CallChangeEvent</tt> with this class as <tt>sourceCall</tt>, and the specified
-     * <tt>eventID</tt> and old and new values and dispatches it on all currently registered
+     * Creates a <code>CallChangeEvent</code> with this class as <code>sourceCall</code>, and the specified
+     * <code>eventID</code> and old and new values and dispatches it on all currently registered
      * listeners.
      *
      * @param type the type of the event to create (see CallChangeEvent member ints)
@@ -268,8 +268,8 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Creates a <tt>CallChangeEvent</tt> with this class as <tt>sourceCall</tt>, and the specified
-     * <tt>eventID</tt> and old and new values and dispatches it on all currently registered listeners.
+     * Creates a <code>CallChangeEvent</code> with this class as <code>sourceCall</code>, and the specified
+     * <code>eventID</code> and old and new values and dispatches it on all currently registered listeners.
      *
      * @param type the type of the event to create (see CallChangeEvent member ints)
      * @param oldValue the value of the call property that changed, before the event had occurred.
@@ -292,7 +292,7 @@ public abstract class Call extends DataObject
     /**
      * Returns the state that this call is currently in.
      *
-     * @return a reference to the <tt>CallState</tt> instance that the call is currently in.
+     * @return a reference to the <code>CallState</code> instance that the call is currently in.
      */
     public CallState getCallState()
     {
@@ -302,7 +302,7 @@ public abstract class Call extends DataObject
     /**
      * Sets the state of this call and fires a call change event notifying registered listeners for the change.
      *
-     * @param newState a reference to the <tt>CallState</tt> instance that the call is to enter.
+     * @param newState a reference to the <code>CallState</code> instance that the call is to enter.
      */
     protected void setCallState(CallState newState)
     {
@@ -310,12 +310,12 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the state of this <tt>Call</tt> and fires a new <tt>CallChangeEvent</tt> notifying the
-     * registered <tt>CallChangeListener</tt>s about the change of the state.
+     * Sets the state of this <code>Call</code> and fires a new <code>CallChangeEvent</code> notifying the
+     * registered <code>CallChangeListener</code>s about the change of the state.
      *
-     * @param newState the <tt>CallState</tt> into which this <tt>Call</tt> is to enter
-     * @param cause the <tt>CallPeerChangeEvent</tt> which is the cause for the request to have this
-     * <tt>Call</tt> enter the specified <tt>CallState</tt>
+     * @param newState the <code>CallState</code> into which this <code>Call</code> is to enter
+     * @param cause the <code>CallPeerChangeEvent</code> which is the cause for the request to have this
+     * <code>Call</code> enter the specified <code>CallState</code>
      */
     protected void setCallState(CallState newState, CallPeerChangeEvent cause)
     {
@@ -362,44 +362,44 @@ public abstract class Call extends DataObject
     /**
      * Returns the number of peers currently associated with this call.
      *
-     * @return an <tt>int</tt> indicating the number of peers currently associated with this call.
+     * @return an <code>int</code> indicating the number of peers currently associated with this call.
      */
     public abstract int getCallPeerCount();
 
     /**
-     * Gets the indicator which determines whether the local peer represented by this <tt>Call</tt>
+     * Gets the indicator which determines whether the local peer represented by this <code>Call</code>
      * is acting as a conference focus. In the case of SIP, for example, it determines whether the
      * local peer should send the &quot;isfocus&quot; parameter in the Contact headers of its
      * outgoing SIP signaling.
      *
-     * @return <tt>true</tt> if the local peer represented by this <tt>Call</tt> is acting as a
-     * conference focus; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the local peer represented by this <code>Call</code> is acting as a
+     * conference focus; otherwise, <code>false</code>
      */
     public abstract boolean isConferenceFocus();
 
     /**
-     * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in local sound level information.
      *
-     * @param l the <tt>SoundLevelListener</tt> to add
+     * @param l the <code>SoundLevelListener</code> to add
      */
     public abstract void addLocalUserSoundLevelListener(SoundLevelListener l);
 
     /**
-     * Removes a specific <tt>SoundLevelListener</tt> from the list of listeners interested in and
+     * Removes a specific <code>SoundLevelListener</code> from the list of listeners interested in and
      * notified about changes in local sound level information.
      *
-     * @param l the <tt>SoundLevelListener</tt> to remove
+     * @param l the <code>SoundLevelListener</code> to remove
      */
     public abstract void removeLocalUserSoundLevelListener(SoundLevelListener l);
 
     /**
-     * Creates a new <tt>CallConference</tt> instance which is to represent the telephony
-     * conference-related state of this <tt>Call</tt>. Allows extenders to override and customize
-     * the runtime type of the <tt>CallConference</tt> to used by this <tt>Call</tt>.
+     * Creates a new <code>CallConference</code> instance which is to represent the telephony
+     * conference-related state of this <code>Call</code>. Allows extenders to override and customize
+     * the runtime type of the <code>CallConference</code> to used by this <code>Call</code>.
      *
-     * @return a new <tt>CallConference</tt> instance which is to represent the telephony
-     * conference-related state of this <tt>Call</tt>
+     * @return a new <code>CallConference</code> instance which is to represent the telephony
+     * conference-related state of this <code>Call</code>
      */
     protected CallConference createConference()
     {
@@ -407,13 +407,13 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Gets the telephony conference-related state of this <tt>Call</tt>. Since a non-conference
-     * <tt>Call</tt> may be converted into a conference <tt>Call</tt> at any time, every
-     * <tt>Call</tt> instance maintains a <tt>CallConference</tt> instance regardless of whether
-     * the <tt>Call</tt> in question is participating in a telephony conference.
+     * Gets the telephony conference-related state of this <code>Call</code>. Since a non-conference
+     * <code>Call</code> may be converted into a conference <code>Call</code> at any time, every
+     * <code>Call</code> instance maintains a <code>CallConference</code> instance regardless of whether
+     * the <code>Call</code> in question is participating in a telephony conference.
      *
-     * @return a <tt>CallConference</tt> instance which represents the telephony conference-related
-     * state of this <tt>Call</tt>.
+     * @return a <code>CallConference</code> instance which represents the telephony conference-related
+     * state of this <code>Call</code>.
      */
     public CallConference getConference()
     {
@@ -436,12 +436,12 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the telephony conference-related state of this <tt>Call</tt>. If the invocation modifies
-     * this instance, it adds this <tt>Call</tt> to the newly set <tt>CallConference</tt> and fires
-     * a <tt>PropertyChangeEvent</tt> for the <tt>CONFERENCE</tt> property to its listeners.
+     * Sets the telephony conference-related state of this <code>Call</code>. If the invocation modifies
+     * this instance, it adds this <code>Call</code> to the newly set <code>CallConference</code> and fires
+     * a <code>PropertyChangeEvent</code> for the <code>CONFERENCE</code> property to its listeners.
      *
-     * @param conference the <tt>CallConference</tt> instance to represent the telephony conference-related
-     * state of this <tt>Call</tt>
+     * @param conference the <code>CallConference</code> instance to represent the telephony conference-related
+     * state of this <code>Call</code>
      */
     public void setConference(CallConference conference)
     {
@@ -462,39 +462,39 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners interested in and
-     * notified about changes in the values of the properties of this <tt>Call</tt>.
+     * Adds a specific <code>PropertyChangeListener</code> to the list of listeners interested in and
+     * notified about changes in the values of the properties of this <code>Call</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to be notified about changes in the values of the
-     * properties of this <tt>Call</tt>. If the specified listener is already in the list of
+     * @param listener a <code>PropertyChangeListener</code> to be notified about changes in the values of the
+     * properties of this <code>Call</code>. If the specified listener is already in the list of
      * interested listeners (i.e. it has been previously added), it is not added again.
      */
     public abstract void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
-     * with this <tt>Call</tt> in order to notify about a change in the value of a specific
+     * Fires a new <code>PropertyChangeEvent</code> to the <code>PropertyChangeListener</code>s registered
+     * with this <code>Call</code> in order to notify about a change in the value of a specific
      * property which had its old value modified to a specific new value.
      *
-     * @param property the name of the property of this <tt>Call</tt> which had its value changed
+     * @param property the name of the property of this <code>Call</code> which had its value changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
      */
     protected abstract void firePropertyChange(String property, Object oldValue, Object newValue);
 
     /**
-     * Removes a specific <tt>PropertyChangeListener</tt> from the list of listeners interested in
-     * and notified about changes in the values of the properties of this <tt>Call</tt>.
+     * Removes a specific <code>PropertyChangeListener</code> from the list of listeners interested in
+     * and notified about changes in the values of the properties of this <code>Call</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to no longer be notified about changes in the values
-     * of the properties of this <tt>Call</tt>
+     * @param listener a <code>PropertyChangeListener</code> to no longer be notified about changes in the values
+     * of the properties of this <code>Call</code>
      */
     public abstract void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * Returns <tt>true</tt> iff incoming calls into this <tt>Call</tt> should be auto-answered.
+     * Returns <code>true</code> iff incoming calls into this <code>Call</code> should be auto-answered.
      *
-     * @return <tt>true</tt> iff incoming calls into this <tt>Call</tt> should be auto-answered.
+     * @return <code>true</code> iff incoming calls into this <code>Call</code> should be auto-answered.
      */
     public boolean isAutoAnswer()
     {
@@ -502,9 +502,9 @@ public abstract class Call extends DataObject
     }
 
     /**
-     * Sets the flag that specifies whether incoming calls into this <tt>Call</tt> should be auto-answered.
+     * Sets the flag that specifies whether incoming calls into this <code>Call</code> should be auto-answered.
      *
-     * @param autoAnswer whether incoming calls into this <tt>Call</tt> should be auto-answered.
+     * @param autoAnswer whether incoming calls into this <code>Call</code> should be auto-answered.
      */
     public void setAutoAnswer(boolean autoAnswer)
     {

@@ -10,7 +10,7 @@ import java.util.*;
 import org.atalk.service.neomedia.DTMFTone;
 
 /**
- * <tt>DTMFReceivedEvent</tt>s indicate reception of a DTMF tone.
+ * <code>DTMFReceivedEvent</code>s indicate reception of a DTMF tone.
  *
  * @author Damian Minkov
  * @author Boris Grozev
@@ -33,24 +33,24 @@ public class DTMFReceivedEvent extends EventObject
 	private final long duration;
 
 	/**
-	 * Whether this <tt>DTMFReceivedEvent</tt> represents the start of reception of a tone (if
-	 * <tt>true</tt>), the end of reception of a tone (if <tt>false</tt>), or the reception of a
-	 * tone with a given duration (if <tt>null</tt>).
+	 * Whether this <code>DTMFReceivedEvent</code> represents the start of reception of a tone (if
+	 * <code>true</code>), the end of reception of a tone (if <code>false</code>), or the reception of a
+	 * tone with a given duration (if <code>null</code>).
 	 */
 	private final Boolean start;
 
 	/**
-	 * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-	 * received from the specified <tt>from</tt> contact.
+	 * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+	 * received from the specified <code>from</code> contact.
 	 *
 	 * @param source
 	 *        the source of the event.
 	 * @param value
 	 *        dmtf tone value.
 	 * @param start
-	 *        whether this event represents the start of reception (if <tt>true</tt>), the end of
-	 *        reception (if <tt>false</tt>) or the reception of a tone with a given direction (if
-	 *        <tt>null</tt>).
+	 *        whether this event represents the start of reception (if <code>true</code>), the end of
+	 *        reception (if <code>false</code>) or the reception of a tone with a given direction (if
+	 *        <code>null</code>).
 	 */
 	public DTMFReceivedEvent(Object source, DTMFTone value, boolean start)
 	{
@@ -58,8 +58,8 @@ public class DTMFReceivedEvent extends EventObject
 	}
 
 	/**
-	 * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-	 * received from the specified <tt>from</tt> contact.
+	 * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+	 * received from the specified <code>from</code> contact.
 	 *
 	 * @param source
 	 *        the source of the event.
@@ -74,8 +74,8 @@ public class DTMFReceivedEvent extends EventObject
 	}
 
 	/**
-	 * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-	 * received from the specified <tt>from</tt> contact.
+	 * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+	 * received from the specified <code>from</code> contact.
 	 *
 	 * @param source
 	 *        the source of the event.
@@ -84,9 +84,9 @@ public class DTMFReceivedEvent extends EventObject
 	 * @param duration
 	 *        duration of the DTMF tone.
 	 * @param start
-	 *        whether this event represents the start of reception (if <tt>true</tt>), the end of
-	 *        reception (if <tt>false</tt>) or the reception of a tone with a given direction (if
-	 *        <tt>null</tt>).
+	 *        whether this event represents the start of reception (if <code>true</code>), the end of
+	 *        reception (if <code>false</code>) or the reception of a tone with a given direction (if
+	 *        <code>null</code>).
 	 */
 	public DTMFReceivedEvent(Object source, DTMFTone value, long duration, Boolean start)
 	{
@@ -118,10 +118,10 @@ public class DTMFReceivedEvent extends EventObject
 	}
 
 	/**
-	 * Returns the value of the <tt>start</tt> attribute of this <tt>DTMFReceivedEvent</tt>, which
-	 * indicates whether this <tt>DTMFReceivedEvent</tt> represents the start of reception of a tone
-	 * (if <tt>true</tt>), the end of reception of a tone (if <tt>false</tt>), or the reception of a
-	 * tone with a given duration (if <tt>null</tt>).
+	 * Returns the value of the <code>start</code> attribute of this <code>DTMFReceivedEvent</code>, which
+	 * indicates whether this <code>DTMFReceivedEvent</code> represents the start of reception of a tone
+	 * (if <code>true</code>), the end of reception of a tone (if <code>false</code>), or the reception of a
+	 * tone with a given duration (if <code>null</code>).
 	 */
 	public Boolean getStart()
 	{

@@ -8,10 +8,10 @@ package net.java.sip.communicator.service.protocol;
 import java.util.*;
 
 /**
- * The <tt>ChatRoomConfigurationFormField</tt> is contained in the
- * <tt>ChatRoomConfigurationForm</tt> and represents a configuration property of a chat room. It's
+ * The <code>ChatRoomConfigurationFormField</code> is contained in the
+ * <code>ChatRoomConfigurationForm</code> and represents a configuration property of a chat room. It's
  * meant to be used by GUI-s to provide access to the user to chat room configuration. <br>
- * The <tt>ChatRoomConfigurationFormField</tt> defines 8 different types of fields:
+ * The <code>ChatRoomConfigurationFormField</code> defines 8 different types of fields:
  * <ul>
  * <li>TYPE_TEXT_FIXED - information text, that could not be changed</li>
  * <li>TYPE_BOOLEAN - boolean values</li>

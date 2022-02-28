@@ -49,7 +49,7 @@ public interface CallHistoryService
     String SEC_ENTITY_ID = "secEntityID";   //secondaryCallParticipantIDs
 
     /**
-     * Returns all the calls made by all the contacts in the supplied <tt>contact</tt> on and after
+     * Returns all the calls made by all the contacts in the supplied <code>contact</code> on and after
      * the given date.
      *
      * @param contact MetaContact which contacts participate in the returned calls
@@ -59,7 +59,7 @@ public interface CallHistoryService
     Collection<CallRecord> findByStartDate(MetaContact contact, Date startDate);
 
     /**
-     * Returns all the calls made by all the contacts in the supplied <tt>contact</tt> before the given date.
+     * Returns all the calls made by all the contacts in the supplied <code>contact</code> before the given date.
      *
      * @param contact MetaContact which contacts participate in the returned calls
      * @param endDate Date the end date of the calls
@@ -68,7 +68,7 @@ public interface CallHistoryService
     Collection<CallRecord> findByEndDate(MetaContact contact, Date endDate);
 
     /**
-     * Returns all the calls made by all the contacts in the supplied <tt>contact</tt> between
+     * Returns all the calls made by all the contacts in the supplied <code>contact</code> between
      * the given dates inclusive of startDate.
      *
      * @param contact MetaContact which contacts participate in the returned calls
@@ -106,7 +106,7 @@ public interface CallHistoryService
     Collection<CallRecord> findByPeriod(Date startDate, Date endDate);
 
     /**
-     * Returns the supplied number of recent calls made by all the contacts in the supplied <tt>contact</tt>.
+     * Returns the supplied number of recent calls made by all the contacts in the supplied <code>contact</code>.
      *
      * @param contact MetaContact which contacts participate in the returned calls
      * @param count calls count
@@ -156,14 +156,14 @@ public interface CallHistoryService
             final String address);
 
     /**
-     * Adding <tt>CallHistoryRecordListener</tt> listener to the list.
+     * Adding <code>CallHistoryRecordListener</code> listener to the list.
      *
      * @param listener CallHistoryRecordListener
      */
     void addCallHistoryRecordListener(CallHistoryPeerRecordListener listener);
 
     /**
-     * Removing <tt>CallHistoryRecordListener</tt> listener
+     * Removing <code>CallHistoryRecordListener</code> listener
      *
      * @param listener CallHistoryRecordListener
      */

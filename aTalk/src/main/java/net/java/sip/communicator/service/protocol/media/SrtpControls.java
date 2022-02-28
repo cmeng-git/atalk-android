@@ -10,7 +10,7 @@ import org.atalk.service.neomedia.SrtpControl;
 import org.atalk.service.neomedia.SrtpControlType;
 
 /**
- * Represents a sorted set of <tt>SrtpControl</tt> implementations.
+ * Represents a sorted set of <code>SrtpControl</code> implementations.
  *
  * @author Lyubomir Marinov
  * @author MilanKral 
@@ -24,13 +24,13 @@ public class SrtpControls
             SrtpControlType.SDES };
 
 	/**
-	 * The <tt>SrtpControl</tt> implementations which are the elements of this sorted set.
+	 * The <code>SrtpControl</code> implementations which are the elements of this sorted set.
 	 */
 	private final SrtpControl[][] elements
             = new SrtpControl[MediaType.values().length][SrtpControlType.values().length];
 
 	/**
-	 * Initializes a new <tt>SrtpControls</tt> instance.
+	 * Initializes a new <code>SrtpControls</code> instance.
 	 */
 	public SrtpControls()
 	{

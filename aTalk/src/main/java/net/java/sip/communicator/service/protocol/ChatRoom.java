@@ -49,16 +49,16 @@ public interface ChatRoom
     String CHATROOM_LAST_STATUS = "lastChatRoomStatus";
 
     /**
-     * Returns the name of this <tt>ChatRoom</tt>.
+     * Returns the name of this <code>ChatRoom</code>.
      *
-     * @return a <tt>String</tt> containing the name of this <tt>ChatRoom</tt>.
+     * @return a <code>String</code> containing the name of this <code>ChatRoom</code>.
      */
     String getName();
 
     /**
-     * Returns the EntityBareJid of this <tt>ChatRoom</tt>.
+     * Returns the EntityBareJid of this <code>ChatRoom</code>.
      *
-     * @return a <tt>EntityBareJid</tt> containing the identifier of this <tt>ChatRoom</tt>.
+     * @return a <code>EntityBareJid</code> containing the identifier of this <code>ChatRoom</code>.
      */
     EntityBareJid getIdentifier();
 
@@ -128,16 +128,16 @@ public interface ChatRoom
     void leave();
 
     /**
-     * Returns the last known room subject/theme or <tt>null</tt> if the user hasn't joined the room
+     * Returns the last known room subject/theme or <code>null</code> if the user hasn't joined the room
      * or the room does not have a subject yet.
      *
      * To be notified every time the room's subject change you should add a
-     * <tt>ChatRoomChangeListener</tt> to this room.
+     * <code>ChatRoomChangeListener</code> to this room.
      * {@link #addPropertyChangeListener(ChatRoomPropertyChangeListener)}
      *
      * To change the room's subject use {@link #setSubject(String)}.
      *
-     * @return the room subject or <tt>null</tt> if the user hasn't joined the room or the room does
+     * @return the room subject or <code>null</code> if the user hasn't joined the room or the room does
      * not have a subject yet.
      */
     String getSubject();
@@ -145,7 +145,7 @@ public interface ChatRoom
     /**
      * Sets the subject of this chat room. If the user does not have the right to change the room
      * subject, or the protocol does not support this, or the operation fails for some other reason,
-     * the method throws an <tt>OperationFailedException</tt> with the corresponding code.
+     * the method throws an <code>OperationFailedException</code> with the corresponding code.
      *
      * @param subject the new subject that we'd like this room to have
      * @throws OperationFailedException if the user doesn't have the right to change this property.
@@ -154,7 +154,7 @@ public interface ChatRoom
             throws OperationFailedException;
 
     /**
-     * Returns the local user's nickname in the context of this chat room or <tt>null</tt> if not
+     * Returns the local user's nickname in the context of this chat room or <code>null</code> if not
      * currently joined.
      *
      * @return the nickname currently being used by the local user in the context of the local chat room.
@@ -163,7 +163,7 @@ public interface ChatRoom
 
     /**
      * Returns the local user's role in the context of this chat room if currently joined.
-     * Else retrieve from the value in DB that was previously saved, or <tt>null</tt> if none
+     * Else retrieve from the value in DB that was previously saved, or <code>null</code> if none
      *
      * @return the role currently being used by the local user in the context of the chat room.
      */
@@ -281,33 +281,33 @@ public interface ChatRoom
             throws SmackException.NotConnectedException, InterruptedException;
 
     /**
-     * Returns a <tt>List</tt> of <tt>ChatRoomMember</tt>s corresponding to all members currently
+     * Returns a <code>List</code> of <code>ChatRoomMember</code>s corresponding to all members currently
      * participating in this room.
      *
-     * @return a <tt>List</tt> of <tt>ChatRoomMember</tt> instances corresponding to all room members.
+     * @return a <code>List</code> of <code>ChatRoomMember</code> instances corresponding to all room members.
      */
     List<ChatRoomMember> getMembers();
 
     /**
      * Returns the number of participants that are currently in this chat room.
      *
-     * @return the number of <tt>Contact</tt>s, currently participating in this room.
+     * @return the number of <code>Contact</code>s, currently participating in this room.
      */
     int getMembersCount();
 
     /**
-     * Registers <tt>listener</tt> so that it would receive events every time a new message is
+     * Registers <code>listener</code> so that it would receive events every time a new message is
      * received on this chat room.
      *
-     * @param listener a <tt>MessageListener</tt> that would be notified every time a new message is received
+     * @param listener a <code>MessageListener</code> that would be notified every time a new message is received
      * on this chat room.
      */
     void addMessageListener(ChatRoomMessageListener listener);
 
     /**
-     * Removes <tt>listener</tt> so that it won't receive any further message events from this room.
+     * Removes <code>listener</code> so that it won't receive any further message events from this room.
      *
-     * @param listener the <tt>MessageListener</tt> to remove from this room
+     * @param listener the <code>MessageListener</code> to remove from this room
      */
     void removeMessageListener(ChatRoomMessageListener listener);
 
@@ -325,15 +325,15 @@ public interface ChatRoom
      *
      * @param content content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
-     * @param subject a <tt>String</tt> subject or <tt>null</tt> for now subject.
+     * @param subject a <code>String</code> subject or <code>null</code> for now subject.
      * @return the newly created message.
      */
     IMessage createMessage(String content, int encType, String subject);
 
     /**
-     * Sends the <tt>message</tt> to this chat room.
+     * Sends the <code>message</code> to this chat room.
      *
-     * @param message the <tt>IMessage</tt> to send.
+     * @param message the <code>IMessage</code> to send.
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     void sendMessage(IMessage message)
@@ -344,7 +344,7 @@ public interface ChatRoom
     /**
      * Returns a reference to the provider that created this room.
      *
-     * @return a reference to the <tt>ProtocolProviderService</tt> instance that created this room.
+     * @return a reference to the <code>ProtocolProviderService</code> instance that created this room.
      */
     ProtocolProviderService getParentProvider();
 
@@ -365,7 +365,7 @@ public interface ChatRoom
      * banned user was present in the room then he/she will be removed from the room and notified
      * that he/she was banned along with the reason (if provided) and the user who initiated the ban.
      *
-     * @param chatRoomMember the <tt>ChatRoomMember</tt> to be banned.
+     * @param chatRoomMember the <code>ChatRoomMember</code> to be banned.
      * @param reason the reason why the user was banned.
      * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
@@ -377,7 +377,7 @@ public interface ChatRoom
     /**
      * Kicks a visitor or participant from the room.
      *
-     * @param chatRoomMember the <tt>ChatRoomMember</tt> to kick from the room
+     * @param chatRoomMember the <code>ChatRoomMember</code> to kick from the room
      * @param reason the reason why the participant is being kicked from the room
      * @throws OperationFailedException if an error occurs while kicking the participant. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "administrator" was
@@ -388,11 +388,11 @@ public interface ChatRoom
             throws OperationFailedException;
 
     /**
-     * Returns the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for
+     * Returns the <code>ChatRoomConfigurationForm</code> containing all configuration properties for
      * this chat room. If the user doesn't have permissions to see and change chat room
-     * configuration an <tt>OperationFailedException</tt> is thrown.
+     * configuration an <code>OperationFailedException</code> is thrown.
      *
-     * @return the <tt>ChatRoomConfigurationForm</tt> containing all configuration properties for
+     * @return the <code>ChatRoomConfigurationForm</code> containing all configuration properties for
      * this chat room
      * @throws OperationFailedException if the user doesn't have permissions to see and change chat room configuration
      */
@@ -517,7 +517,7 @@ public interface ChatRoom
     void revokeVoice(String nickname);
 
     /**
-     * Publishes a <tt>ConferenceDescription</tt> to the chat room.
+     * Publishes a <code>ConferenceDescription</code> to the chat room.
      *
      * @param cd the description to publish
      * @param name the name of the conference
@@ -541,7 +541,7 @@ public interface ChatRoom
 
     /**
      * Adds a listener that will be notified when a member of this chat room has published a
-     * <tt>ConferenceDescription</tt> to the room.
+     * <code>ConferenceDescription</code> to the room.
      *
      * @param listener the listener to add.
      */
@@ -549,23 +549,23 @@ public interface ChatRoom
 
     /**
      * Removes a listener that was being notified when a member of this chat room had published a
-     * <tt>ConferenceDescription</tt> to the room.
+     * <code>ConferenceDescription</code> to the room.
      *
      * @param listener the listener to remove.
      */
     void removeConferencePublishedListener(ChatRoomConferencePublishedListener listener);
 
     /**
-     * Returns cached <tt>ConferenceDescription</tt> instances.
+     * Returns cached <code>ConferenceDescription</code> instances.
      *
-     * @return the cached <tt>ConferenceDescription</tt> instances.
+     * @return the cached <code>ConferenceDescription</code> instances.
      */
     Map<String, ConferenceDescription> getCachedConferenceDescriptions();
 
     /**
-     * Returns the number of cached <tt>ConferenceDescription</tt> instances.
+     * Returns the number of cached <code>ConferenceDescription</code> instances.
      *
-     * @return the number of cached <tt>ConferenceDescription</tt> instances.
+     * @return the number of cached <code>ConferenceDescription</code> instances.
      */
     int getCachedConferenceDescriptionSize();
 
@@ -574,7 +574,7 @@ public interface ChatRoom
      *
      * @param reason the reason for destroying.
      * @param alternateAddress the alternate address
-     * @return <tt>true</tt> if the room is destroyed.
+     * @return <code>true</code> if the room is destroyed.
      */
     boolean destroy(String reason, EntityBareJid alternateAddress)
             throws XMPPException;

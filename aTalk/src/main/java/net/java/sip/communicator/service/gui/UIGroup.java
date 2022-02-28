@@ -13,7 +13,7 @@ import java.awt.Component;
 import java.util.*;
 
 /**
- * The <tt>UIGroup</tt> represents the user interface contact list group.
+ * The <code>UIGroup</code> represents the user interface contact list group.
  *
  * @author Yana Stamcheva
  */
@@ -95,8 +95,8 @@ public abstract class UIGroup
     /**
      * Indicates if the group is collapsed or expanded.
      *
-     * @return <tt>true</tt> to indicate that the group is collapsed,
-     * <tt>false</tt> to indicate that it's expanded
+     * @return <code>true</code> to indicate that the group is collapsed,
+     * <code>false</code> to indicate that it's expanded
      */
     public abstract boolean isGroupCollapsed();
 

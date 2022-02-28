@@ -55,7 +55,7 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
     /**
      * Is the whole contact list for the current provider readonly.
      *
-     * @return <tt>true</tt> if the whole contact list is readonly, otherwise <tt>false</tt>.
+     * @return <code>true</code> if the whole contact list is readonly, otherwise <code>false</code>.
      */
     @Override
     public boolean isReadOnly()
@@ -79,10 +79,10 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
     }
 
     /**
-     * Checks whether the <tt>contact</tt> can be edited, removed, moved. If the parent group is readonly.
+     * Checks whether the <code>contact</code> can be edited, removed, moved. If the parent group is readonly.
      *
      * @param contact the contact to check.
-     * @return <tt>true</tt> if the contact is readonly, otherwise <tt>false</tt>.
+     * @return <code>true</code> if the contact is readonly, otherwise <code>false</code>.
      */
     @Override
     public boolean isReadOnly(Contact contact)
@@ -91,10 +91,10 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
     }
 
     /**
-     * Checks whether the <tt>group</tt> is readonly.
+     * Checks whether the <code>group</code> is readonly.
      *
      * @param group the group to check.
-     * @return <tt>true</tt> if the group is readonly, otherwise <tt>false</tt>.
+     * @return <code>true</code> if the group is readonly, otherwise <code>false</code>.
      */
     @Override
     public boolean isReadOnly(ContactGroup group)

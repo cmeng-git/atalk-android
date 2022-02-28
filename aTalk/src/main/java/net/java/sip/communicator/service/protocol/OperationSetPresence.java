@@ -72,10 +72,10 @@ public interface OperationSetPresence extends OperationSet
      * particular contact.
      *
      * @param contactIdentifier the identifier of the contact whose status we're interested in.
-     * @return PresenceStatus the <tt>PresenceStatus</tt> of the specified <tt>contact</tt>
+     * @return PresenceStatus the <code>PresenceStatus</code> of the specified <code>contact</code>
      * @throws OperationFailedException with code NETWORK_FAILURE if retrieving the status fails
      * due to errors experienced during network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      */
     PresenceStatus queryContactStatus(BareJid contactIdentifier)
@@ -93,7 +93,7 @@ public interface OperationSetPresence extends OperationSet
      * @param contactIdentifier the identifier of the contact whose status updates we are subscribing for.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors
      * experienced during network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      */
     void subscribe(ProtocolProviderService pps, String contactIdentifier)
@@ -105,7 +105,7 @@ public interface OperationSetPresence extends OperationSet
      * @param contact the contact whose status updates we are unsubscribe from.
      * @throws OperationFailedException with code NETWORK_FAILURE if unsubscribe fails
      * due to errors experienced during network communication
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      */
     void unsubscribe(Contact contact)
@@ -116,7 +116,7 @@ public interface OperationSetPresence extends OperationSet
      * it and null otherwise/
      *
      * @param contactID a String identifier of the contact which we're seeking a reference of.
-     * @return a reference to the Contact with the specified <tt>contactID</tt> or null if we don't
+     * @return a reference to the Contact with the specified <code>contactID</code> or null if we don't
      * have a subscription for the that identifier.
      */
     Contact findContactByID(String contactID);
@@ -190,8 +190,8 @@ public interface OperationSetPresence extends OperationSet
     String getCurrentStatusMessage();
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>. The method will not try to establish a network connection and
+     * Creates and returns a unresolved contact from the specified <code>address</code> and
+     * <code>persistentData</code>. The method will not try to establish a network connection and
      * resolve the newly created Contact against the server. The protocol provider may will later
      * try and resolve the contact. When this happens the corresponding event would notify
      * interested subscription listeners.
@@ -199,8 +199,8 @@ public interface OperationSetPresence extends OperationSet
      * @param address an identifier of the contact that we'll be creating.
      * @param persistentData a String returned Contact's getPersistentData() method
      * during a previous run and that has been persistently stored locally.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and
-     * <tt>persistentData</tt>
+     * @return the unresolved <code>Contact</code> created from the specified <code>address</code> and
+     * <code>persistentData</code>
      */
     Contact createUnresolvedContact(String address, String persistentData);
 }

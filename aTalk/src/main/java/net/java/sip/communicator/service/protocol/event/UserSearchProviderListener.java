@@ -22,7 +22,7 @@ package net.java.sip.communicator.service.protocol.event;
 public interface UserSearchProviderListener
 {
 	/**
-	 * Notifies the listener with <tt>UserSearchProviderEvent</tt> event.
+	 * Notifies the listener with <code>UserSearchProviderEvent</code> event.
 	 * 
 	 * @param event
 	 *        the event

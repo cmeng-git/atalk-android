@@ -24,7 +24,7 @@ import timber.log.Timber;
 /**
  * Activator the provisioning system. It will gather provisioning URL depending on the
  * configuration (DHCP, manual, ...), retrieve configuration file and push properties to the
- * <tt>ConfigurationService</tt>.
+ * <code>ConfigurationService</code>.
  */
 public class ProvisioningActivator implements BundleActivator
 {
@@ -138,9 +138,9 @@ public class ProvisioningActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>UIService</tt> obtained from the bundle context.
+     * Returns the <code>UIService</code> obtained from the bundle context.
      *
-     * @return the <tt>UIService</tt> obtained from the bundle context
+     * @return the <code>UIService</code> obtained from the bundle context
      */
     public static UIService getUIService()
     {
@@ -152,9 +152,9 @@ public class ProvisioningActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt> obtained from the bundle context.
+     * Returns the <code>ResourceManagementService</code> obtained from the bundle context.
      *
-     * @return the <tt>ResourceManagementService</tt> obtained from the bundle context
+     * @return the <code>ResourceManagementService</code> obtained from the bundle context
      */
     public static ResourceManagementService getResourceService()
     {
@@ -214,9 +214,9 @@ public class ProvisioningActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to a <tt>ProvisioningService</tt> implementation.
+     * Returns a reference to a <code>ProvisioningService</code> implementation.
      *
-     * @return a currently valid implementation of <tt>ProvisioningService</tt>
+     * @return a currently valid implementation of <code>ProvisioningService</code>
      */
     public static ProvisioningServiceImpl getProvisioningService()
     {

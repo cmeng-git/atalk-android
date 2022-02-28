@@ -32,7 +32,7 @@ public class RemoteControlGrantedEvent extends EventObject
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * Constructs a new <tt>RemoteControlGrantedEvent</tt> object.
+	 * Constructs a new <code>RemoteControlGrantedEvent</code> object.
 	 *
 	 * @param source
 	 *        source object
@@ -43,9 +43,9 @@ public class RemoteControlGrantedEvent extends EventObject
 	}
 
 	/**
-	 * Get the <tt>CallPeer</tt>.
+	 * Get the <code>CallPeer</code>.
 	 *
-	 * @return the <tt>CallPeer</tt>
+	 * @return the <code>CallPeer</code>
 	 */
 	public CallPeer getCallPeer()
 	{

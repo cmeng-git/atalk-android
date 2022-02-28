@@ -31,8 +31,8 @@ public interface CredentialsStorageService
      *
      * @param accountUuid account UUID
      * @param password the password to store
-     * @return <tt>true</tt> if the specified <tt>password</tt> was successfully
-     * stored; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>password</code> was successfully
+     * stored; otherwise, <code>false</code>
      */
     public boolean storePassword(String accountUuid, String password);
 
@@ -40,7 +40,7 @@ public interface CredentialsStorageService
      * Load the password for the account that starts with the given prefix.
      *
      * @param accountUuid account UUID
-     * @return the loaded password for the <tt>accountUuid</tt>
+     * @return the loaded password for the <code>accountUuid</code>
      */
     public String loadPassword(String accountUuid);
 
@@ -48,9 +48,9 @@ public interface CredentialsStorageService
      * Remove the password for the account that starts with the given prefix.
      *
      * @param accountUuid account UUID
-     * @return <tt>true</tt> if the password for the specified
-     * <tt>accountUuid</tt> was successfully removed; otherwise,
-     * <tt>false</tt>
+     * @return <code>true</code> if the password for the specified
+     * <code>accountUuid</code> was successfully removed; otherwise,
+     * <code>false</code>
      */
     public boolean removePassword(String accountUuid);
 
@@ -58,7 +58,7 @@ public interface CredentialsStorageService
      * Checks if master password was set by the user and
      * it is used to encrypt saved account passwords.
      *
-     * @return <tt>true</tt> if used, <tt>false</tt> if not
+     * @return <code>true</code> if used, <code>false</code> if not
      */
     public boolean isUsingMasterPassword();
 
@@ -69,8 +69,8 @@ public interface CredentialsStorageService
      *
      * @param oldPassword the old master password
      * @param newPassword the new master password
-     * @return <tt>true</tt> if master password was changed successfully;
-     * <tt>false</tt>, otherwise
+     * @return <code>true</code> if master password was changed successfully;
+     * <code>false</code>, otherwise
      */
     public boolean changeMasterPassword(String oldPassword, String newPassword);
 
@@ -78,7 +78,7 @@ public interface CredentialsStorageService
      * Verifies the correctness of the master password.
      *
      * @param master the master password to verify
-     * @return <tt>true</tt> if the password is correct; <tt>false</tt>,
+     * @return <code>true</code> if the password is correct; <code>false</code>,
      * otherwise
      */
     public boolean verifyMasterPassword(String master);
@@ -88,7 +88,7 @@ public interface CredentialsStorageService
      * in encrypted form.
      *
      * @param accountUuid account UUID
-     * @return <tt>true</tt> if saved, <tt>false</tt> if not
+     * @return <code>true</code> if saved, <code>false</code> if not
      */
     public boolean isStoredEncrypted(String accountUuid);
 }

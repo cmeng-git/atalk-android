@@ -80,7 +80,7 @@ public enum ConferenceMemberState {
 	private final String stateName;
 
 	/**
-	 * Creates an instance of <tt>ConferenceMemberState</tt> by specifying the name of the state.
+	 * Creates an instance of <code>ConferenceMemberState</code> by specifying the name of the state.
 	 * 
 	 * @param name
 	 *        the name of the state
@@ -91,11 +91,11 @@ public enum ConferenceMemberState {
 	}
 
 	/**
-	 * Returns the name of this <tt>ConferenceMemberState</tt> (e.g. "connected" or "dialing out").
+	 * Returns the name of this <code>ConferenceMemberState</code> (e.g. "connected" or "dialing out").
 	 * The name returned by this method is meant to be used by user interface implementations in
 	 * order to provide more readable state string.
 	 *
-	 * @return the name of this <tt>ConferenceMemberState</tt> (e.g. "connected" or "dialing out")
+	 * @return the name of this <code>ConferenceMemberState</code> (e.g. "connected" or "dialing out")
 	 */
 	@Override
 	public String toString()

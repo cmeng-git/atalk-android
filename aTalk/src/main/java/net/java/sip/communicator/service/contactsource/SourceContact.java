@@ -20,9 +20,9 @@ import net.java.sip.communicator.service.protocol.*;
 import java.util.List;
 
 /**
- * The <tt>SourceContact</tt> is the result contact of a search in the source. It should be
+ * The <code>SourceContact</code> is the result contact of a search in the source. It should be
  * identifier by a display name, an image if available and a telephony string, which would allow
- * to call this contact through the preferred telephony provider defined in the <tt>ContactSourceService</tt>.
+ * to call this contact through the preferred telephony provider defined in the <code>ContactSourceService</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -38,7 +38,7 @@ public interface SourceContact
     String getDisplayName();
 
     /**
-     * The key that can be used to store <tt>SourceContact</tt> ids where need it.
+     * The key that can be used to store <code>SourceContact</code> ids where need it.
      */
     String DATA_ID = SourceContact.class.getName() + ".id";
 
@@ -51,9 +51,9 @@ public interface SourceContact
     String getContactAddress();
 
     /**
-     * Returns the parent <tt>ContactSourceService</tt> from which this contact came from.
+     * Returns the parent <code>ContactSourceService</code> from which this contact came from.
      *
-     * @return the parent <tt>ContactSourceService</tt> from which this contact came from
+     * @return the parent <code>ContactSourceService</code> from which this contact came from
      */
     ContactSourceService getContactSource();
 
@@ -73,28 +73,28 @@ public interface SourceContact
     List<ContactDetail> getContactDetails();
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class.
+     * Returns a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class
+     * @param operationSet the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class
      */
     List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet);
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
-     * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
+     * @param category the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      * @throws OperationNotSupportedException if categories aren't supported for call history records
      */
     List<ContactDetail> getContactDetails(ContactDetail.Category category)
             throws OperationNotSupportedException;
 
     /**
-     * Returns the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class.
+     * Returns the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class, for which we would like to obtain a <tt>ContactDetail</tt>
-     * @return the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class
+     * @param operationSet the <code>OperationSet</code> class, for which we would like to obtain a <code>ContactDetail</code>
+     * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
     ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet);
 
@@ -118,9 +118,9 @@ public interface SourceContact
      * Gets the user data associated with this instance and a specific key.
      *
      * @param key the key of the user data associated with this instance to be retrieved
-     * @return an <tt>Object</tt> which represents the value associated with this instance and
-     * the specified <tt>key</tt>; <tt>null</tt> if no association with the specified
-     * <tt>key</tt> exists in this instance
+     * @return an <code>Object</code> which represents the value associated with this instance and
+     * the specified <code>key</code>; <code>null</code> if no association with the specified
+     * <code>key</code> exists in this instance
      */
     Object getData(Object key);
 
@@ -133,8 +133,8 @@ public interface SourceContact
 
     /**
      * Sets a user-specific association in this instance in the form of a key-value pair. If the
-     * specified <tt>key</tt> is already associated in this instance with a value, the existing
-     * value is overwritten with the specified <tt>value</tt>.
+     * specified <code>key</code> is already associated in this instance with a value, the existing
+     * value is overwritten with the specified <code>value</code>.
      * <p>
      * The user-defined association created by this method and stored in this instance is not
      * serialized by this instance and is thus only meant for runtime use.
@@ -145,7 +145,7 @@ public interface SourceContact
      * </p>
      *
      * @param key the key to associate in this instance with the specified value
-     * @param value the value to be associated in this instance with the specified <tt>key</tt>
+     * @param value the value to be associated in this instance with the specified <code>key</code>
      */
     void setData(Object key, Object value);
 

@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>CallPeerSecurityAuthenticationEvent</tt> is triggered whenever a the security strings are
+ * The <code>CallPeerSecurityAuthenticationEvent</code> is triggered whenever a the security strings are
  * received in a secure call.
  *
  * @author Yana Stamcheva

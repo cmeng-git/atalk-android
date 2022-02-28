@@ -8,9 +8,9 @@ package net.java.sip.communicator.service.protocol;
 import java.io.File;
 
 /**
- * The <tt>OperationSetThumbnailedFileFactory</tt> is meant to be used by bundles interested in
+ * The <code>OperationSetThumbnailedFileFactory</code> is meant to be used by bundles interested in
  * making files with thumbnails. For example the user interface can be interested in sending files
- * with thumbnails through the <tt>OperationSetFileTransfer</tt>.
+ * with thumbnails through the <code>OperationSetFileTransfer</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng

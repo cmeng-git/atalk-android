@@ -14,11 +14,11 @@ import org.atalk.android.aTalkApp;
 import timber.log.Timber;
 
 /**
- * This <tt>BroadcastReceiver</tt> listens for <tt>PendingIntent</tt> coming from popup messages notifications. There
+ * This <code>BroadcastReceiver</code> listens for <code>PendingIntent</code> coming from popup messages notifications. There
  * are two actions handled:<br/>
- * - <tt>POPUP_CLICK_ACTION</tt> fired when notification is clicked<br/>
- * - <tt>POPUP_CLEAR_ACTION</tt> fired when notification is cleared<br/>
- * Those events are passed to <tt>NotificationPopupHandler</tt> to take appropriate decisions.
+ * - <code>POPUP_CLICK_ACTION</code> fired when notification is clicked<br/>
+ * - <code>POPUP_CLEAR_ACTION</code> fired when notification is cleared<br/>
+ * Those events are passed to <code>NotificationPopupHandler</code> to take appropriate decisions.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -26,12 +26,12 @@ import timber.log.Timber;
 public class PopupClickReceiver extends BroadcastReceiver
 {
     /**
-     * Popup clicked action name used for <tt>Intent</tt> handling by this <tt>BroadcastReceiver</tt>.
+     * Popup clicked action name used for <code>Intent</code> handling by this <code>BroadcastReceiver</code>.
      */
     public static final String ACTION_POPUP_CLICK = "org.atalk.ui.popup_click";
 
     /**
-     * Popup cleared action name used for <tt>Intent</tt> handling by this <tt>BroadcastReceiver</tt>
+     * Popup cleared action name used for <code>Intent</code> handling by this <code>BroadcastReceiver</code>
      */
     public static final String ACTION_POPUP_CLEAR = "org.atalk.ui.popup_discard";
 
@@ -49,19 +49,19 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static final String ACTION_CALL_ANSWER = "call_answer";
 
     /**
-     * <tt>Intent</tt> extra key that provides the notification id.
+     * <code>Intent</code> extra key that provides the notification id.
      */
     private static final String EXTRA_NOTIFICATION_ID = "notification_id";
 
     /**
-     * <tt>NotificationPopupHandler</tt> that manages the popups.
+     * <code>NotificationPopupHandler</code> that manages the popups.
      */
     private final NotificationPopupHandler notificationHandler;
 
     /**
-     * Creates new instance of <tt>PopupClickReceiver</tt> bound to given <tt>notifcationHandler</tt>.
+     * Creates new instance of <code>PopupClickReceiver</code> bound to given <code>notifcationHandler</code>.
      *
-     * @param notificationHandler the <tt>NotificationPopupHandler</tt> that manages the popups.
+     * @param notificationHandler the <code>NotificationPopupHandler</code> that manages the popups.
      */
     public PopupClickReceiver(NotificationPopupHandler notificationHandler)
     {
@@ -69,7 +69,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Registers this <tt>BroadcastReceiver</tt>.
+     * Registers this <code>BroadcastReceiver</code>.
      */
     void registerReceiver()
     {
@@ -86,7 +86,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Unregisters this <tt>BroadcastReceiver</tt>.
+     * Unregisters this <code>BroadcastReceiver</code>.
      */
     void unregisterReceiver()
     {
@@ -133,10 +133,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates "on click" <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates "on click" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new "on click" <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new "on click" <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createIntent(int notificationId)
     {
@@ -147,10 +147,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates "on deleted" <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new "on deleted" <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createDeleteIntent(int notificationId)
     {
@@ -161,10 +161,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates "on deleted" <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new "on deleted" <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createReplyIntent(int notificationId)
     {
@@ -175,10 +175,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates "on deleted" <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new "on deleted" <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createMarkAsReadIntent(int notificationId)
     {
@@ -189,10 +189,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates "on deleted" <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates "on deleted" <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new "on deleted" <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new "on deleted" <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createSnoozeIntent(int notificationId)
     {
@@ -203,10 +203,10 @@ public class PopupClickReceiver extends BroadcastReceiver
     }
 
     /**
-     * Creates call dismiss <tt>Intent</tt> for notification popup identified by given <tt>notificationId</tt>.
+     * Creates call dismiss <code>Intent</code> for notification popup identified by given <code>notificationId</code>.
      *
      * @param notificationId the id of popup message notification.
-     * @return new dismiss <tt>Intent</tt> for given <tt>notificationId</tt>.
+     * @return new dismiss <code>Intent</code> for given <code>notificationId</code>.
      */
     public static Intent createCallDismiss(int notificationId)
     {

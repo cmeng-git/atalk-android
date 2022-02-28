@@ -28,11 +28,11 @@ import java.io.IOException;
 public interface NetworkLink
 {
 	/**
-	 * Callback triggered by <tt>SctpSocket</tt> whenever it wants to send some
+	 * Callback triggered by <code>SctpSocket</code> whenever it wants to send some
 	 * network packet.
 	 *
 	 * @param s
-	 * 		source <tt>SctpSocket</tt> instance.
+	 * 		source <code>SctpSocket</code> instance.
 	 * @param packet
 	 * 		network packet buffer.
 	 * @throws java.io.IOException

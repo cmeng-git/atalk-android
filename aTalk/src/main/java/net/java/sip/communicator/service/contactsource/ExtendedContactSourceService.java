@@ -18,17 +18,17 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.regex.*;
 
 /**
- * The <tt>ExtendedContactSourceService</tt> as its name states it, extends the
- * <tt>ContactSourceService</tt> in order to provide the possibility to query
- * a contact source by specifying a given <tt>Pattern</tt>. This interface is
+ * The <code>ExtendedContactSourceService</code> as its name states it, extends the
+ * <code>ContactSourceService</code> in order to provide the possibility to query
+ * a contact source by specifying a given <code>Pattern</code>. This interface is
  * meant to be implemented by contact sources, where it is possible to match
- * source results directly through a given <tt>Pattern</tt>, i.e. by using:<br>
+ * source results directly through a given <code>Pattern</code>, i.e. by using:<br>
  * <code>Matcher matcher = pattern.matcher(myString);
  *       if(matcher.find())
  *          ....
  * </code>
- * The advantages of passing a <tt>Pattern</tt> over a <tt>String</tt> are that
- * a <tt>Pattern</tt> can use a predefined regular expression and
+ * The advantages of passing a <code>Pattern</code> over a <code>String</code> are that
+ * a <code>Pattern</code> can use a predefined regular expression and
  * can define certain properties like Pattern.CASE_INSENSITIVE,
  * Pattern.UNICODE_CASE, etc., which could be important for the search.
  *
@@ -38,7 +38,7 @@ public interface ExtendedContactSourceService
     extends ContactSourceService
 {
     /**
-     * Creates query for the given <tt>searchPattern</tt>.
+     * Creates query for the given <code>searchPattern</code>.
      * @param queryPattern the pattern to search for
      * @return the created query
      */

@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusListen
 import java.io.File;
 
 /**
- * The <tt>FileTransfer</tt> interface is meant to be used by parties interested in the file
+ * The <code>FileTransfer</code> interface is meant to be used by parties interested in the file
  * transfer process. It contains information about the status and the progress of the transfer as
  * well as the bytes that have been transferred.
  *
@@ -66,7 +66,7 @@ public interface FileTransfer
     /**
      * Returns the current status of the transfer. This information could be used from the user
      * interface to show the current status of the transfer. The status is returned as an
-     * <tt>int</tt> and could be equal to one of the static constants declared in this interface
+     * <code>int</code> and could be equal to one of the static constants declared in this interface
      * (i.e. COMPLETED, CANCELED, FAILED, etc.).
      *
      * @return the current status of the transfer
@@ -81,28 +81,28 @@ public interface FileTransfer
     long getTransferredBytes();
 
     /**
-     * Adds the given <tt>FileTransferStatusListener</tt> to listen for status changes on this file transfer.
+     * Adds the given <code>FileTransferStatusListener</code> to listen for status changes on this file transfer.
      *
      * @param listener the listener to add
      */
     void addStatusListener(FileTransferStatusListener listener);
 
     /**
-     * Removes the given <tt>FileTransferStatusListener</tt>.
+     * Removes the given <code>FileTransferStatusListener</code>.
      *
      * @param listener the listener to remove
      */
     void removeStatusListener(FileTransferStatusListener listener);
 
     /**
-     * Adds the given <tt>FileTransferProgressListener</tt> to listen for status changes on this file transfer.
+     * Adds the given <code>FileTransferProgressListener</code> to listen for status changes on this file transfer.
      *
      * @param listener the listener to add
      */
     void addProgressListener(FileTransferProgressListener listener);
 
     /**
-     * Removes the given <tt>FileTransferProgressListener</tt>.
+     * Removes the given <code>FileTransferProgressListener</code>.
      *
      * @param listener the listener to remove
      */

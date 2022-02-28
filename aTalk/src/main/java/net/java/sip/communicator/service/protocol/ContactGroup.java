@@ -8,11 +8,11 @@ package net.java.sip.communicator.service.protocol;
 import java.util.Iterator;
 
 /**
- * A <tt>ContactGroup</tt> is a collection of Contacts/Buddies/Subscriptions, stored by
+ * A <code>ContactGroup</code> is a collection of Contacts/Buddies/Subscriptions, stored by
  * communications service (e.g. AIM/ICQ or Skype) returned by persistent presence operation sets.
- * A group may contain simple members or subgroups. Instances of <tt>ContactGroup</tt> cannot be
+ * A group may contain simple members or subgroups. Instances of <code>ContactGroup</code> cannot be
  * directly modified by users of the protocol provider service. In order to add buddies or subgroups to a
- * <tt>ContactGroup</tt> one needs to do so through the <tt>OperationSetPersistentPresence</tt> interface.
+ * <code>ContactGroup</code> one needs to do so through the <code>OperationSetPersistentPresence</code> interface.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -33,14 +33,14 @@ public interface ContactGroup
      String ROOT_GROUP_NAME = "Contacts";
 
     /**
-     * Returns the sub-groups iterator that this <tt>ContactGroup</tt> contains.
+     * Returns the sub-groups iterator that this <code>ContactGroup</code> contains.
      *
-     * @return a java.util.Iterator over the <tt>ContactGroup</tt> children of this group (i.e. subgroups).
+     * @return a java.util.Iterator over the <code>ContactGroup</code> children of this group (i.e. subgroups).
      */
     Iterator<ContactGroup> subgroups();
 
     /**
-     * Returns the number of subgroups contained by this <tt>ContactGroup</tt>.
+     * Returns the number of subgroups contained by this <code>ContactGroup</code>.
      *
      * @return an int indicating the number of subgroups that this ContactGroup contains.
      */
@@ -49,45 +49,45 @@ public interface ContactGroup
     /**
      * Returns the subgroup with the specified index.
      *
-     * @param index the index of the <tt>ContactGroup</tt> to retrieve.
-     * @return the <tt>ContactGroup</tt> with the specified index.
+     * @param index the index of the <code>ContactGroup</code> to retrieve.
+     * @return the <code>ContactGroup</code> with the specified index.
      */
     ContactGroup getGroup(int index);
 
     /**
      * Returns the subgroup with the specified name.
      *
-     * @param groupName the name of the <tt>ContactGroup</tt> to retrieve.
-     * @return the <tt>ContactGroup</tt> with the specified index.
+     * @param groupName the name of the <code>ContactGroup</code> to retrieve.
+     * @return the <code>ContactGroup</code> with the specified index.
      */
     ContactGroup getGroup(String groupName);
 
     /**
-     * Returns an Iterator over all contacts, member of this <tt>ContactGroup</tt>.
+     * Returns an Iterator over all contacts, member of this <code>ContactGroup</code>.
      *
-     * @return a java.util.Iterator over all contacts inside this <tt>ContactGroup</tt>
+     * @return a java.util.Iterator over all contacts inside this <code>ContactGroup</code>
      */
     Iterator<Contact> contacts();
 
     /**
-     * Returns the number of <tt>Contact</tt> members of this <tt>ContactGroup</tt>
+     * Returns the number of <code>Contact</code> members of this <code>ContactGroup</code>
      *
-     * @return an int indicating the number of <tt>Contact</tt>s, members of this <tt>ContactGroup</tt>.
+     * @return an int indicating the number of <code>Contact</code>s, members of this <code>ContactGroup</code>.
      */
     int countContacts();
 
     /**
-     * Returns the <tt>Contact</tt> with the specified address or identifier.
+     * Returns the <code>Contact</code> with the specified address or identifier.
      *
-     * @param id the address or identifier of the <tt>Contact</tt> we are looking for.
-     * @return the <tt>Contact</tt> with the specified id or address.
+     * @param id the address or identifier of the <code>Contact</code> we are looking for.
+     * @return the <code>Contact</code> with the specified id or address.
      */
     Contact getContact(String id);
 
     /**
      * Determines whether the group may contain subgroups or not.
      *
-     * @return true if the groups may be a parent of other <tt>ContactGroup</tt>s and false otherwise.
+     * @return true if the groups may be a parent of other <code>ContactGroup</code>s and false otherwise.
      */
     boolean canContainSubgroups();
 
@@ -121,7 +121,7 @@ public interface ContactGroup
     boolean isPersistent();
 
     /**
-     * Returns a <tt>String</tt> that uniquely represents the group inside the current protocol. The
+     * Returns a <code>String</code> that uniquely represents the group inside the current protocol. The
      * string MUST be persistent (it must not change across connections or runs of the application).
      * In many cases (Jabber, ICQ) the string may match the name of the group as these protocols
      * only allow a single level of contact groups and there is no danger of having the same name
@@ -151,7 +151,7 @@ public interface ContactGroup
      * required and the contact address is sufficient for restoring the contact group.
      *
      *
-     * @return A <tt>String</tt> that could be used to create a unresolved instance of this contact
+     * @return A <code>String</code> that could be used to create a unresolved instance of this contact
      * group during a next run of the application, before establishing network connectivity
      * or null if no such data is required and a UID would be sufficient.
      */

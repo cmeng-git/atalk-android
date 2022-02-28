@@ -6,16 +6,14 @@
 package org.jivesoftware.smackx.colibri;
 
 import org.apache.commons.lang3.StringUtils;
-
-import net.java.sip.communicator.impl.protocol.jabber.jinglesdp.JingleUtils;
-
 import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle.*;
-import org.jxmpp.jid.Jid;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +29,7 @@ import timber.log.Timber;
  * Add one or multiple requests of the same type by calling
  * {@link #addAllocateChannelsReq(boolean, String, String, boolean, java.util.List)}}
  * or {@link #addExpireChannelsReq(ColibriConferenceIQ)}
- * or {@link #addRtpDescription(RtpDescriptionExtension, String, ColibriConferenceIQ.Channel)}
+ * or {@link #addRtpDescription(RtpDescription, String, ColibriConferenceIQ.Channel)}
  * and {@link #addSourceGroupsInfo(Map, ColibriConferenceIQ)}
  * and {@link #addSourceInfo(Map, ColibriConferenceIQ)}.
  * </li>
@@ -66,8 +64,8 @@ public class ColibriBuilder
      */
     private static void copyTransport(JingleContent content, ColibriConferenceIQ.ChannelCommon channel)
     {
-        IceUdpTransportExtension transport = content.getFirstChildOfType(IceUdpTransportExtension.class);
-        channel.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
+        IceUdpTransport transport = content.getFirstChildElement(IceUdpTransport.class);
+        channel.setTransport(IceUdpTransport.cloneTransportAndCandidates(transport, true));
     }
 
     /**
@@ -79,7 +77,7 @@ public class ColibriBuilder
      */
     private static boolean copyDescription(JingleContent content, ColibriConferenceIQ.Channel channel)
     {
-        RtpDescriptionExtension description = content.getFirstChildOfType(RtpDescriptionExtension.class);
+        RtpDescription description = content.getFirstChildElement(RtpDescription.class);
         if (description != null) {
             return copyDescription(description, channel);
         }
@@ -87,46 +85,47 @@ public class ColibriBuilder
     }
 
     /**
-     * Copies the contents of a {@link RtpDescriptionExtension} to a {@link ColibriConferenceIQ.Channel}.
+     * Copies the contents of a {@link RtpDescription} to a {@link ColibriConferenceIQ.Channel}.
      *
-     * @param description the {@link RtpDescriptionExtension} from which to copy.
+     * @param description the {@link RtpDescription} from which to copy.
      * @param channel the {@link ColibriConferenceIQ.Channel} to which to copy.
      */
-    private static boolean copyDescription(RtpDescriptionExtension description, ColibriConferenceIQ.Channel channel)
+    private static boolean copyDescription(RtpDescription description, ColibriConferenceIQ.Channel channel)
     {
         boolean added = false;
-        for (PayloadTypeExtension payloadType : description.getPayloadTypes()) {
-            channel.addPayloadType(PayloadTypeExtension.clone(payloadType));
+        for (PayloadType payloadType : description.getChildElements(PayloadType.class)) {
+            channel.addPayloadType(PayloadType.clone(payloadType));
             added = true;
         }
-        for (RTPHdrExtExtension rtpHdrExt : description.getExtmapList()) {
-            channel.addRtpHeaderExtension(RTPHdrExtExtension.clone(rtpHdrExt));
+        for (RtpHeader rtpHdrExt : description.getChildElements(RtpHeader.class)) {
+            channel.addRtpHeaderExtension(RtpHeader.clone(rtpHdrExt));
             added = true;
         }
         return added;
     }
 
     /**
-     * Sets the {@link SourceExtension}s of a particular {@link ColibriConferenceIQ.Channel}.
+     * Sets the {@link SdpSource}s of a particular {@link ColibriConferenceIQ.Channel}.
      *
      * @param channel the channel to which to add sources.
      * @param sources the list of sources to add.
      */
-    private static void addSources(ColibriConferenceIQ.Channel channel, List<SourceExtension> sources)
+    private static void addSources(ColibriConferenceIQ.Channel channel, List<SdpSource> sources)
     {
-        for (SourceExtension source : sources) {
-            channel.addSource(source.copy());
+        for (SdpSource source : sources) {
+            channel.addSource(SdpSource.clone(source));
         }
         if ((channel.getSources() == null) || channel.getSources().isEmpty()) {
             // Put an empty source to remove all sources
-            SourceExtension emptySource = new SourceExtension();
-            emptySource.setSSRC(-1L);
-            channel.addSource(emptySource);
+            channel.addSource(SdpSource.builder()
+                    .setSsrc(-1L)
+                    .build()
+            );
         }
     }
 
     /**
-     * Adds a list of {@link SourceGroupExtension}s to a particular {@link ColibriConferenceIQ.Channel}.
+     * Adds a list of {@link SdpSourceGroup}s to a particular {@link ColibriConferenceIQ.Channel}.
      *
      * @param channel the channel to which to add source groups.
      * @param sourceGroups the source groups to add.
@@ -134,17 +133,20 @@ public class ColibriBuilder
      * @return {@code true} iff any source groups we added to the channel.
      */
     private static boolean addSourceGroups(ColibriConferenceIQ.Channel channel,
-            List<SourceGroupExtension> sourceGroups, boolean video)
+            List<SdpSourceGroup> sourceGroups, boolean video)
     {
         boolean hasAnyChanges = false;
         if (sourceGroups.isEmpty() && video) {
             hasAnyChanges = true;
 
             // Put an empty source group to turn off simulcast layers
-            channel.addSourceGroup(SourceGroupExtension.createSimulcastGroup());
+            channel.addSourceGroup(SdpSourceGroup.builder()
+                    .setSemantics(SdpSourceGroup.SEMANTICS_SIMULCAST)
+                    .build()
+            );
         }
 
-        for (SourceGroupExtension sourceGroup : sourceGroups) {
+        for (SdpSourceGroup sourceGroup : sourceGroups) {
             hasAnyChanges = true;
             channel.addSourceGroup(sourceGroup);
         }
@@ -174,19 +176,19 @@ public class ColibriBuilder
     private boolean hasAnyChannelsToExpire = false;
 
     /**
-     * Channel 'last-n' option that will be added when channels are created. Set to <tt>null</tt> in order to omit.
+     * Channel 'last-n' option that will be added when channels are created. Set to <code>null</code> in order to omit.
      */
     private Integer channelLastN;
 
     /**
      * Channel 'simulcast-mode' option that will be added when channels are created.
-     * Set to <tt>null</tt> in order to omit.
+     * Set to <code>null</code> in order to omit.
      */
     private SimulcastMode simulcastMode;
 
     /**
      * Specifies the audio packet delay that will be set on all created audio channels.
-     * When set to <tt>null</tt> the builder will clear the attribute which stands for 'undefined'.
+     * When set to <code>null</code> the builder will clear the attribute which stands for 'undefined'.
      **/
     private Integer audioPacketDelay;
 
@@ -228,7 +230,7 @@ public class ColibriBuilder
     /**
      * Adds next channel allocation request to {@link RequestType#ALLOCATE_CHANNELS} query currently being built.
      *
-     * @param useBundle <tt>true</tt> if allocated channels should all use the same bundle.
+     * @param useBundle <code>true</code> if allocated channels should all use the same bundle.
      * @param endpointId name of the endpoint for which Colibri channels will
      * @param peerIsInitiator the value that will be set in 'initiator'
      * attribute ({@link ColibriConferenceIQ.Channel#initiator}).
@@ -247,16 +249,16 @@ public class ColibriBuilder
     /**
      * Adds next channel allocation request to {@link RequestType#ALLOCATE_CHANNELS} query currently being built.
      *
-     * @param useBundle <tt>true</tt> if allocated channels should all use the same bundle.
+     * @param useBundle <code>true</code> if allocated channels should all use the same bundle.
      * @param endpointId name of the endpoint for which Colibri channels will
      * @param statsId the stats ID of the endpoint for which channels are to be allocated.
      * @param peerIsInitiator the value that will be set in 'initiator'
      * attribute ({@link ColibriConferenceIQ.Channel#initiator}).
      * @param contents the list of {@link JingleContent} describing channels media.
      * @param sourceMap a map of content name to the list of
-     * {@link SourceExtension}s which are to be added to the channel allocation request for this content.
+     * {@link SdpSource}s which are to be added to the channel allocation request for this content.
      * @param sourceGroupMap a map of content name to the list of
-     * {@link SourceGroupExtension}s which are to be added to the channel allocation request for this content.
+     * {@link SdpSourceGroup}s which are to be added to the channel allocation request for this content.
      * @param octoRelayIds the optional list of Octo relay IDs to be added to
      * the channel. If this parameter is non-null, the allocated channels will be of type Octo.
      * @return {@code true} if the request yields any changes in Colibri
@@ -264,8 +266,8 @@ public class ColibriBuilder
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
     public boolean addAllocateChannelsReq(boolean useBundle, String endpointId, String statsId, boolean peerIsInitiator,
-            List<JingleContent> contents, Map<String, List<SourceExtension>> sourceMap,
-            Map<String, List<SourceGroupExtension>> sourceGroupMap, List<String> octoRelayIds)
+            List<JingleContent> contents, Map<String, List<SdpSource>> sourceMap,
+            Map<String, List<SdpSourceGroup>> sourceGroupMap, List<String> octoRelayIds)
     {
         ApiLib.requireNonNull(contents, "contents");
         assertRequestType(RequestType.ALLOCATE_CHANNELS);
@@ -342,11 +344,10 @@ public class ColibriBuilder
             ColibriConferenceIQ.ChannelBundle bundle = new ColibriConferenceIQ.ChannelBundle(endpointId);
 
             JingleContent firstContent = contents.get(0);
-            IceUdpTransportExtension transport
-                    = firstContent.getFirstChildOfType(IceUdpTransportExtension.class);
+            IceUdpTransport transport = firstContent.getFirstChildElement(IceUdpTransport.class);
             if (transport != null) {
                 hasAnyChanges = true;
-                bundle.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
+                bundle.setTransport(IceUdpTransport.cloneTransportAndCandidates(transport, true));
             }
             request.addChannelBundle(bundle);
         }
@@ -369,7 +370,7 @@ public class ColibriBuilder
      * channels state on the bridge or {@code false} otherwise. In general when
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addBundleTransportUpdateReq(IceUdpTransportExtension transport, String channelBundleId)
+    public boolean addBundleTransportUpdateReq(IceUdpTransport transport, String channelBundleId)
             throws IllegalArgumentException
     {
         ApiLib.requireNonNull(transport, "transport");
@@ -386,7 +387,7 @@ public class ColibriBuilder
 
         assertRequestType(RequestType.CHANNEL_INFO_UPDATE);
         ColibriConferenceIQ.ChannelBundle channelBundleRequest = new ColibriConferenceIQ.ChannelBundle(channelBundleId);
-        channelBundleRequest.setTransport(IceUdpTransportExtension.cloneTransportAndCandidates(transport, true));
+        channelBundleRequest.setTransport(IceUdpTransport.cloneTransportAndCandidates(transport, true));
         request.addChannelBundle(channelBundleRequest);
 
         // Note that we don't actually check whether the addition of the bundle
@@ -402,9 +403,9 @@ public class ColibriBuilder
      *
      * @param channelInfo the {@link ColibriConferenceIQ} instance that contains
      * info about the channels to be expired.
-     * @return <tt>true</tt> if the request yields any changes in Colibri
-     * channels state on the bridge or <tt>false</tt> otherwise.
-     * In general when <tt>false</tt> is returned for all combined requests it makes no sense to send it.
+     * @return <code>true</code> if the request yields any changes in Colibri
+     * channels state on the bridge or <code>false</code> otherwise.
+     * In general when <code>false</code> is returned for all combined requests it makes no sense to send it.
      */
     public boolean addExpireChannelsReq(ColibriConferenceIQ channelInfo)
     {
@@ -507,19 +508,19 @@ public class ColibriBuilder
     }
 
     /**
-     * Adds an {@link RtpDescriptionExtension} to a specific channel in
+     * Adds an {@link RtpDescription} to a specific channel in
      * the request which is currently being built. The channel in the request
      * is identified by the content name and the ID of {@code channel}.
      *
-     * @param description the {@link RtpDescriptionExtension} to add.
+     * @param description the {@link RtpDescription} to add.
      * @param contentName the name of the content to which the channel belongs.
      * @param channel the the channel used to match the channel in the request
-     * to which an {@link RtpDescriptionExtension} will be added.
+     * to which an {@link RtpDescription} will be added.
      * @return {@code true} if the request yields any changes in Colibri
      * channels state on the bridge or {@code false} otherwise. In general when
      * {@code false} is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addRtpDescription(RtpDescriptionExtension description, String contentName,
+    public boolean addRtpDescription(RtpDescription description, String contentName,
             ColibriConferenceIQ.Channel channel)
     {
         ApiLib.requireNonNull(description, "description");
@@ -546,14 +547,14 @@ public class ColibriBuilder
      * Adds next source information update request to
      * {@link RequestType#CHANNEL_INFO_UPDATE} query currently being built.
      *
-     * @param sourceMap the map of content name to the list of <tt>SourceExtensionElement</tt>.
+     * @param sourceMap the map of content name to the list of <code>SdpSourceGroup</code>.
      * @param localChannelsInfo {@link ColibriConferenceIQ} holding info about
      * Colibri channels to be updated.
-     * @return <tt>true</tt> if the request yields any changes in Colibri
-     * channels state on the bridge or <tt>false</tt> otherwise. In general when
-     * <tt>false</tt> is returned for all combined requests it makes no sense to send it.
+     * @return <code>true</code> if the request yields any changes in Colibri
+     * channels state on the bridge or <code>false</code> otherwise. In general when
+     * <code>false</code> is returned for all combined requests it makes no sense to send it.
      */
-    public boolean addSourceInfo(Map<String, List<SourceExtension>> sourceMap, ColibriConferenceIQ localChannelsInfo)
+    public boolean addSourceInfo(Map<String, List<SdpSource>> sourceMap, ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(sourceMap, "sourceMap");
         ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
@@ -587,11 +588,11 @@ public class ColibriBuilder
     /**
      * Sets the Octo relays for specific channels in the request currently being built.
      *
-     * @param octoRelays the map of content name to the list of <tt>SourceExtensionElement</tt>.
+     * @param octoRelays the map of content name to the list of <code>SdpSourceGroup</code>.
      * @param localChannelsInfo {@link ColibriConferenceIQ} holding info about Colibri channels to be updated.
-     * @return <tt>true</tt> if the request yields any changes in Colibri
-     * channels state on the bridge or <tt>false</tt> otherwise. In general when
-     * <tt>false</tt> is returned for all combined requests it makes no sense to send it.
+     * @return <code>true</code> if the request yields any changes in Colibri
+     * channels state on the bridge or <code>false</code> otherwise. In general when
+     * <code>false</code> is returned for all combined requests it makes no sense to send it.
      */
     public boolean addOctoRelays(List<String> octoRelays, ColibriConferenceIQ localChannelsInfo)
     {
@@ -627,13 +628,13 @@ public class ColibriBuilder
      * Adds next SSRC group information update request to
      * {@link RequestType#CHANNEL_INFO_UPDATE} query currently being built.
      *
-     * @param sourceGroupMap the map of content name to the list of <tt>SourceGroupExtensionElement</tt>.
+     * @param sourceGroupMap the map of content name to the list of <code>SdpSourceGroup</code>.
      * @param localChannelsInfo {@link ColibriConferenceIQ} holding info about Colibri channels to be updated.
-     * @return <tt>true</tt> if the request yields any changes in Colibri channels state on the
-     * bridge or <tt>false</tt> otherwise. In general when <tt>false</tt> is returned for all
+     * @return <code>true</code> if the request yields any changes in Colibri channels state on the
+     * bridge or <code>false</code> otherwise. In general when <code>false</code> is returned for all
      * combined requests it makes no sense to send it.
      */
-    public boolean addSourceGroupsInfo(Map<String, List<SourceGroupExtension>> sourceGroupMap,
+    public boolean addSourceGroupsInfo(Map<String, List<SdpSourceGroup>> sourceGroupMap,
             ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(sourceGroupMap, "sourceGroupMap");
@@ -674,11 +675,11 @@ public class ColibriBuilder
      *
      * @param transportMap the map of content name to transport extensions. Maps transport to media types.
      * @param localChannelsInfo {@link ColibriConferenceIQ} holding info about Colibri channels to be updated.
-     * @return <tt>true</tt> if the request yields any changes in Colibri channels state on the
-     * bridge or <tt>false</tt> otherwise. In general when <tt>false</tt> is returned for all
+     * @return <code>true</code> if the request yields any changes in Colibri channels state on the
+     * bridge or <code>false</code> otherwise. In general when <code>false</code> is returned for all
      * combined requests it makes no sense to send it.
      */
-    public boolean addTransportUpdateReq(Map<String, IceUdpTransportExtension> transportMap,
+    public boolean addTransportUpdateReq(Map<String, IceUdpTransport> transportMap,
             ColibriConferenceIQ localChannelsInfo)
     {
         ApiLib.requireNonNull(transportMap, "transportMap");
@@ -692,13 +693,13 @@ public class ColibriBuilder
         boolean hasAnyChanges = false;
         assertRequestType(RequestType.CHANNEL_INFO_UPDATE);
 
-        for (Map.Entry<String, IceUdpTransportExtension> e : transportMap.entrySet()) {
+        for (Map.Entry<String, IceUdpTransport> e : transportMap.entrySet()) {
             String contentName = e.getKey();
             ColibriConferenceIQ.ChannelCommon channel = getChannelCommon(localChannelsInfo, contentName);
 
             if (channel != null) {
-                IceUdpTransportExtension transport
-                        = IceUdpTransportExtension.cloneTransportAndCandidates(e.getValue(), true);
+                IceUdpTransport transport
+                        = IceUdpTransport.cloneTransportAndCandidates(e.getValue(), true);
 
                 ColibriConferenceIQ.ChannelCommon requestChannel = channel instanceof ColibriConferenceIQ.Channel
                         ? new ColibriConferenceIQ.Channel() : new ColibriConferenceIQ.SctpConnection();
@@ -719,8 +720,8 @@ public class ColibriBuilder
      *
      * @param mediaDirectionMap the map of content name to media direction. Maps media direction to media types.
      * @param localChannelsInfo {@link ColibriConferenceIQ} holding info about Colibri channels to be updated.
-     * @return <tt>true</tt> if the request yields any changes in Colibri channels state on the
-     * bridge or <tt>false</tt> otherwise. In general when <tt>false</tt> is returned for all
+     * @return <code>true</code> if the request yields any changes in Colibri channels state on the
+     * bridge or <code>false</code> otherwise. In general when <code>false</code> is returned for all
      * combined requests it makes no sense to send it.
      * @deprecated Please refactor accordingly if/when this API starts to be used.
      */
@@ -800,9 +801,9 @@ public class ColibriBuilder
      * requests into current query.
      *
      * @param videobridge the JID of videobridge to which this query is directed.
-     * @return constructed query directed to given <tt>videobridge</tt>. If request type of current
+     * @return constructed query directed to given <code>videobridge</code>. If request type of current
      * query is {@link RequestType#EXPIRE_CHANNELS} and there are no channels to be expired
-     * then <tt>null</tt> is returned which signals that there's nothing to be done.
+     * then <code>null</code> is returned which signals that there's nothing to be done.
      */
     public ColibriConferenceIQ getRequest(Jid videobridge)
     {
@@ -843,7 +844,7 @@ public class ColibriBuilder
     }
 
     /**
-     * Returns <tt>true</tt> if {@link RequestType#EXPIRE_CHANNELS} request is being constructed
+     * Returns <code>true</code> if {@link RequestType#EXPIRE_CHANNELS} request is being constructed
      * and there are valid channels to be expired.
      */
     public boolean hasAnyChannelsToExpire()
@@ -853,9 +854,9 @@ public class ColibriBuilder
 
     /**
      * Channel 'last-n' option that will be added when channels are created. Set to
-     * <tt>null</tt> in order to omit. Value is reset after {@link #reset} is called.
+     * <code>null</code> in order to omit. Value is reset after {@link #reset} is called.
      *
-     * @return an integer value or <tt>null</tt> if option is unspecified.
+     * @return an integer value or <code>null</code> if option is unspecified.
      */
     public Integer getChannelLastN()
     {
@@ -865,7 +866,7 @@ public class ColibriBuilder
     /**
      * Sets channel 'last-n' option that will be added to the request when channels are created.
      *
-     * @param channelLastN an integer value to specify 'last-n' option or <tt>null</tt> in order to omit in requests.
+     * @param channelLastN an integer value to specify 'last-n' option or <code>null</code> in order to omit in requests.
      */
     public void setChannelLastN(Integer channelLastN)
     {
@@ -873,8 +874,8 @@ public class ColibriBuilder
     }
 
     /**
-     * Returns an <tt>Integer</tt> which stands for the audio packet delay that will be set on all created audio
-     * channels or <tt>null</tt> if the builder should leave not include the XML attribute at all.
+     * Returns an <code>Integer</code> which stands for the audio packet delay that will be set on all created audio
+     * channels or <code>null</code> if the builder should leave not include the XML attribute at all.
      */
     public Integer getAudioPacketDelay()
     {
@@ -884,9 +885,9 @@ public class ColibriBuilder
     /**
      * Configures audio channels packet delay.
      *
-     * @param audioPacketDelay an <tt>Integer</tt> value which stands for
+     * @param audioPacketDelay an <code>Integer</code> value which stands for
      * the audio packet delay that will be set on all created audio channels or
-     * <tt>null</tt> if the builder should not set that channel property to any value.
+     * <code>null</code> if the builder should not set that channel property to any value.
      */
     public void setAudioPacketDelay(Integer audioPacketDelay)
     {
@@ -896,8 +897,8 @@ public class ColibriBuilder
     /**
      * Sets channel 'simulcast-mode' option that will be added to the request when channels are created.
      *
-     * @param simulcastMode a <tt>SimulcastMode</tt> value to specify
-     * 'simulcast-mode' option or <tt>null</tt> in order to omit in requests.
+     * @param simulcastMode a <code>SimulcastMode</code> value to specify
+     * 'simulcast-mode' option or <code>null</code> in order to omit in requests.
      */
     public void setSimulcastMode(SimulcastMode simulcastMode)
     {
@@ -957,7 +958,7 @@ public class ColibriBuilder
     /**
      * Configures RTP-level relay (RFC 3550, section 2.3).
      *
-     * @param rtpLevelRelayType an <tt>RTPLevelRelayType</tt> value which
+     * @param rtpLevelRelayType an <code>RTPLevelRelayType</code> value which
      * stands for the rtp level relay type that will be set on all created audio channels.
      */
     public void setRTPLevelRelayType(RTPLevelRelayType rtpLevelRelayType)
@@ -968,7 +969,7 @@ public class ColibriBuilder
     /**
      * Configures RTP-level relay (RFC 3550, section 2.3).
      *
-     * @param rtpLevelRelayType a <tt>String</tt> value which
+     * @param rtpLevelRelayType a <code>String</code> value which
      * stands for the rtp level relay type that will be set on all created audio channels.
      */
     public void setRTPLevelRelayType(String rtpLevelRelayType)

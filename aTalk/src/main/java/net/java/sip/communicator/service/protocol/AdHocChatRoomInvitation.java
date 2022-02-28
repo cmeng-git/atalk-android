@@ -16,17 +16,17 @@ import org.jxmpp.jid.EntityFullJid;
 public interface AdHocChatRoomInvitation
 {
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt>, which is the target of this invitation. The ad-hoc chat
+	 * Returns the <code>AdHocChatRoom</code>, which is the target of this invitation. The ad-hoc chat
 	 * room returned by this method will be the room to which the user is invited to join to.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt>, which is the target of this invitation
+	 * @return the <code>AdHocChatRoom</code>, which is the target of this invitation
 	 */
 	public AdHocChatRoom getTargetAdHocChatRoom();
 
 	/**
-	 * Returns the <tt>Contact</tt> that sent this invitation.
+	 * Returns the <code>Contact</code> that sent this invitation.
 	 *
-	 * @return the <tt>Contact</tt> that sent this invitation.
+	 * @return the <code>Contact</code> that sent this invitation.
 	 */
 	public EntityFullJid getInviter();
 

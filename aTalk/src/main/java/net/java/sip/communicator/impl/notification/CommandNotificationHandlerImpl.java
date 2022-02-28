@@ -15,7 +15,7 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
- * An implementation of the <tt>CommandNotificationHandler</tt> interface.
+ * An implementation of the <code>CommandNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -31,7 +31,7 @@ public class CommandNotificationHandlerImpl implements CommandNotificationHandle
     }
 
     /**
-     * Executes the command, given by the <tt>descriptor</tt> of a specific <tt>CommandNotificationAction</tt>.
+     * Executes the command, given by the <code>descriptor</code> of a specific <code>CommandNotificationAction</code>.
      *
      * @param action the action to act upon.
      * @param cmdargs command-line arguments.

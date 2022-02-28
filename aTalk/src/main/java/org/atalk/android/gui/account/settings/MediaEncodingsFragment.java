@@ -63,7 +63,7 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
     /**
      * Sets enabled status for this fragment.
      *
-     * @param isEnabled <tt>true</tt> to enable the fragment.
+     * @param isEnabled <code>true</code> to enable the fragment.
      */
     public void setEnabled(boolean isEnabled)
     {
@@ -72,9 +72,9 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
     }
 
     /**
-     * Returns <tt>true</tt> if this fragment is holding any uncommitted changes
+     * Returns <code>true</code> if this fragment is holding any uncommitted changes
      *
-     * @return <tt>true</tt> if this fragment is holding any uncommitted changes
+     * @return <code>true</code> if this fragment is holding any uncommitted changes
      */
     public boolean hasChanges()
     {
@@ -133,7 +133,7 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
      * Function used to calculate priority based on item index
      *
      * @param idx the index of encoding on the list
-     * @return encoding priority value for given <tt>idx</tt>
+     * @return encoding priority value for given <code>idx</code>
      */
     static public int calcPriority(List<?> encodings, int idx)
     {
@@ -152,11 +152,11 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
     }
 
     /**
-     * Creates new <tt>EncodingsFragment</tt> for given list of encodings and priorities.
+     * Creates new <code>EncodingsFragment</code> for given list of encodings and priorities.
      *
      * @param encodings list of encodings as strings.
      * @param priorities list of encodings priorities.
-     * @return parametrized instance of <tt>EncodingsFragment</tt>.
+     * @return parametrized instance of <code>EncodingsFragment</code>.
      */
     static public MediaEncodingsFragment newInstance(List<String> encodings, List<Integer> priorities)
     {

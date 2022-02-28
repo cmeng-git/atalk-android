@@ -52,13 +52,13 @@ public class CallManager
     public static final String CALL_IDENTIFIER = "CallIdentifier";
 
     /**
-     * A table mapping protocol <tt>Call</tt> objects to the GUI dialogs that are currently used to display them.
+     * A table mapping protocol <code>Call</code> objects to the GUI dialogs that are currently used to display them.
      * The string ID is an instance of the time when the call is first activated
      */
     private static final Map<String, Call> activeCalls = new HashMap<>();
 
     /**
-     * A map of active outgoing calls per <tt>UIContactImpl</tt>.
+     * A map of active outgoing calls per <code>UIContactImpl</code>.
      */
     private static Map<Call, UIContactImpl> uiContactCalls;
 
@@ -150,8 +150,8 @@ public class CallManager
     }
 
     /**
-     * Answers a specific <tt>Call</tt> with or without video and, optionally, does that in a
-     * telephony conference with an existing <tt>Call</tt>.
+     * Answers a specific <code>Call</code> with or without video and, optionally, does that in a
+     * telephony conference with an existing <code>Call</code>.
      *
      * @param call the call to answer
      * @param existingCall current call in progress
@@ -178,7 +178,7 @@ public class CallManager
     }
 
     /**
-     * Merges specific existing <tt>Call</tt>s into a specific telephony conference.
+     * Merges specific existing <code>Call</code>s into a specific telephony conference.
      *
      * @param conference the conference
      * @param calls list of calls
@@ -199,9 +199,9 @@ public class CallManager
     }
 
     /**
-     * Hang ups the given <tt>callPeer</tt>.
+     * Hang ups the given <code>callPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> to hang up
+     * @param peer the <code>CallPeer</code> to hang up
      */
     public static void hangupCallPeer(CallPeer peer)
     {
@@ -209,9 +209,9 @@ public class CallManager
     }
 
     /**
-     * Asynchronously hangs up the <tt>Call</tt>s participating in a specific <tt>CallConference</tt>.
+     * Asynchronously hangs up the <code>Call</code>s participating in a specific <code>CallConference</code>.
      *
-     * @param conference the <tt>CallConference</tt> whose participating <tt>Call</tt>s are to be hanged up
+     * @param conference the <code>CallConference</code> whose participating <code>Call</code>s are to be hanged up
      */
     public static void hangupCalls(CallConference conference)
     {
@@ -245,10 +245,10 @@ public class CallManager
     }
 
     /**
-     * Enables/disables local video for a specific <tt>Call</tt>.
+     * Enables/disables local video for a specific <code>Call</code>.
      *
-     * @param call the <tt>Call</tt> to enable/disable to local video for
-     * @param enable <tt>true</tt> to enable the local video; otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> to enable/disable to local video for
+     * @param enable <code>true</code> to enable the local video; otherwise, <code>false</code>
      */
     public static void enableLocalVideo(Call call, boolean enable)
     {
@@ -256,11 +256,11 @@ public class CallManager
     }
 
     /**
-     * Indicates if the desktop sharing is currently enabled for the given <tt>call</tt>.
+     * Indicates if the desktop sharing is currently enabled for the given <code>call</code>.
      *
-     * @param call the <tt>Call</tt>, for which we would to check if the desktop sharing is currently enabled
-     * @return <tt>true</tt> if the desktop sharing is currently enabled for the given
-     * <tt>call</tt>, <tt>false</tt> otherwise
+     * @param call the <code>Call</code>, for which we would to check if the desktop sharing is currently enabled
+     * @return <code>true</code> if the desktop sharing is currently enabled for the given
+     * <code>call</code>, <code>false</code> otherwise
      */
     public static boolean isLocalVideoEnabled(Call call)
     {
@@ -361,7 +361,7 @@ public class CallManager
     }
 
     /**
-     * Invites the given list of <tt>callees</tt> to the given conference <tt>call</tt>.
+     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
      *
      * @param callees the list of contacts to invite
      * @param call the protocol provider to which this call belongs
@@ -374,7 +374,7 @@ public class CallManager
     }
 
     /**
-     * Invites the given list of <tt>callees</tt> to the given conference <tt>call</tt>.
+     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
      *
      * @param callees the list of contacts to invite
      * @param call existing call
@@ -385,10 +385,10 @@ public class CallManager
     }
 
     /**
-     * Invites specific <tt>callees</tt> to a specific telephony conference.
+     * Invites specific <code>callees</code> to a specific telephony conference.
      *
      * @param callees the list of contacts to invite
-     * @param conference the telephony conference to invite the specified <tt>callees</tt> into
+     * @param conference the telephony conference to invite the specified <code>callees</code> into
      */
     public static void inviteToConferenceCall(Map<ProtocolProviderService, List<String>> callees,
             CallConference conference)
@@ -410,10 +410,10 @@ public class CallManager
     }
 
     /**
-     * Asynchronously creates a new conference <tt>Call</tt> with a specific list of
+     * Asynchronously creates a new conference <code>Call</code> with a specific list of
      * participants/callees.
      *
-     * @param callees the list of participants/callees to invite to a newly-created conference <tt>Call</tt>
+     * @param callees the list of participants/callees to invite to a newly-created conference <code>Call</code>
      */
     public static void createConferenceCall(Map<ProtocolProviderService, List<String>> callees)
     {
@@ -421,12 +421,12 @@ public class CallManager
     }
 
     /**
-     * Asynchronously creates a new video bridge conference <tt>Call</tt> with a specific list of
+     * Asynchronously creates a new video bridge conference <code>Call</code> with a specific list of
      * participants/callees.
      *
-     * @param callProvider the <tt>ProtocolProviderService</tt> to use for creating the call
+     * @param callProvider the <code>ProtocolProviderService</code> to use for creating the call
      * @param callees the list of participants/callees to invite to the newly-created video bridge
-     * conference <tt>Call</tt>
+     * conference <code>Call</code>
      */
     public static void createJitsiVideobridgeConfCall(ProtocolProviderService callProvider, String[] callees)
     {
@@ -434,7 +434,7 @@ public class CallManager
     }
 
     /**
-     * Invites the given list of <tt>callees</tt> to the given conference <tt>call</tt>.
+     * Invites the given list of <code>callees</code> to the given conference <code>call</code>.
      *
      * @param callees the list of contacts to invite
      * @param call the protocol provider to which this call belongs
@@ -445,7 +445,7 @@ public class CallManager
     }
 
     /**
-     * Puts on or off hold the given <tt>callPeer</tt>.
+     * Puts on or off hold the given <code>callPeer</code>.
      *
      * @param callPeer the peer to put on/off hold
      * @param isOnHold indicates the action (on hold or off hold)
@@ -456,7 +456,7 @@ public class CallManager
     }
 
     /**
-     * Puts on or off hold the given <tt>call</tt>. (cmeng-android)
+     * Puts on or off hold the given <code>call</code>. (cmeng-android)
      *
      * @param call the peer to put on/off hold
      * @param isOnHold indicates the action (on hold or off hold)
@@ -470,10 +470,10 @@ public class CallManager
     }
 
     /**
-     * Transfers the given <tt>peer</tt> to the given <tt>target</tt>.
+     * Transfers the given <code>peer</code> to the given <code>target</code>.
      *
-     * @param peer the <tt>CallPeer</tt> to transfer
-     * @param target the <tt>CallPeer</tt> target to transfer to
+     * @param peer the <code>CallPeer</code> to transfer
+     * @param target the <code>CallPeer</code> target to transfer to
      */
     public static void transferCall(CallPeer peer, CallPeer target)
     {
@@ -490,9 +490,9 @@ public class CallManager
     }
 
     /**
-     * Transfers the given <tt>peer</tt> to the given <tt>target</tt>.
+     * Transfers the given <code>peer</code> to the given <code>target</code>.
      *
-     * @param peer the <tt>CallPeer</tt> to transfer
+     * @param peer the <code>CallPeer</code> to transfer
      * @param target the target of the transfer
      */
     public static void transferCall(CallPeer peer, String target)
@@ -569,7 +569,7 @@ public class CallManager
     }
 
     /**
-     * Returns the image corresponding to the given <tt>peer</tt>.
+     * Returns the image corresponding to the given <code>peer</code>.
      *
      * @param peer the call peer, for which we're returning an image
      * @return the peer image
@@ -589,7 +589,7 @@ public class CallManager
      * Indicates if we have video streams to show in this interface.
      *
      * @param call the call to check for video streaming
-     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise, <tt>false</tt>
+     * @return <code>true</code> if we have video streams to show in this interface; otherwise, <code>false</code>
      */
     public static boolean isVideoStreaming(Call call)
     {
@@ -600,7 +600,7 @@ public class CallManager
      * Indicates if we have video streams to show in this interface.
      *
      * @param conference the conference we check for video streaming
-     * @return <tt>true</tt> if we have video streams to show in this interface; otherwise, <tt>false</tt>
+     * @return <code>true</code> if we have video streams to show in this interface; otherwise, <code>false</code>
      */
     public static boolean isVideoStreaming(CallConference conference)
     {
@@ -629,7 +629,7 @@ public class CallManager
      * Indicates if the given call is currently muted.
      *
      * @param call the call to check
-     * @return <tt>true</tt> if the given call is currently muted, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the given call is currently muted, <code>false</code> - otherwise
      */
     public static boolean isMute(Call call)
     {
@@ -645,7 +645,7 @@ public class CallManager
      * Mutes/unmutes the given call.
      *
      * @param call the call to mute/unmute
-     * @param isMute <tt>true</tt> to mute the call, <tt>false</tt> to unmute it
+     * @param isMute <code>true</code> to mute the call, <code>false</code> to unmute it
      */
     public static void setMute(Call call, boolean isMute)
     {
@@ -680,8 +680,8 @@ public class CallManager
     /**
      * Checks if the call has been put on hold by local user.
      *
-     * @param call the <tt>Call</tt> that will be checked.
-     * @return <tt>true</tt> if given <tt>Call</tt> is locally on hold.
+     * @param call the <code>Call</code> that will be checked.
+     * @return <code>true</code> if given <code>Call</code> is locally on hold.
      */
     public static boolean isLocallyOnHold(Call call)
     {
@@ -700,7 +700,7 @@ public class CallManager
     /**
      * Returns of supported/enabled list of audio formats for a provider.
      *
-     * @param device the <tt>MediaDevice</tt>, which audio formats we're looking for
+     * @param device the <code>MediaDevice</code>, which audio formats we're looking for
      * @param protocolProvider the provider to check.
      * @return list of supported/enabled audio formats or empty list otherwise.
      */
@@ -736,8 +736,8 @@ public class CallManager
     }
 
     /**
-     * Creates a new (audio-only or video) <tt>Call</tt> to a contact specified as a
-     * <tt>Contact</tt> instance or a <tt>String</tt> contact address/identifier.
+     * Creates a new (audio-only or video) <code>Call</code> to a contact specified as a
+     * <code>Contact</code> instance or a <code>String</code> contact address/identifier.
      */
     private static class CreateCallThread extends Thread
     {
@@ -752,7 +752,7 @@ public class CallManager
         private final ContactResource contactResource;
 
         /**
-         * The <tt>UIContactImpl</tt> we're calling.
+         * The <code>UIContactImpl</code> we're calling.
          */
         private final UIContactImpl uiContact;
 
@@ -773,7 +773,7 @@ public class CallManager
 
         /**
          * The indicator which determines whether this instance is to create a new video (as
-         * opposed to audio-only) <tt>Call</tt>.
+         * opposed to audio-only) <code>Call</code>.
          */
         private final boolean video;
 
@@ -783,11 +783,11 @@ public class CallManager
         private final ChatRoom chatRoom;
 
         /**
-         * Creates an instance of <tt>CreateCallThread</tt>.
+         * Creates an instance of <code>CreateCallThread</code>.
          *
          * @param protocolProvider the protocol provider through which the call is going.
          * @param contact the contact to call
-         * @param contactResource the specific <tt>ContactResource</tt> we're calling
+         * @param contactResource the specific <code>ContactResource</code> we're calling
          * @param video indicates if this is a video call
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, Contact contact,
@@ -797,7 +797,7 @@ public class CallManager
         }
 
         /**
-         * Creates an instance of <tt>CreateCallThread</tt>.
+         * Creates an instance of <code>CreateCallThread</code>.
          *
          * @param protocolProvider the protocol provider through which the call is going.
          * @param contact the contact to call
@@ -809,11 +809,11 @@ public class CallManager
         }
 
         /**
-         * Initializes a new <tt>CreateCallThread</tt> instance which is to create a new
-         * <tt>Call</tt> to a conference specified via a <tt>ConferenceDescription</tt>.
+         * Initializes a new <code>CreateCallThread</code> instance which is to create a new
+         * <code>Call</code> to a conference specified via a <code>ConferenceDescription</code>.
          *
-         * @param protocolProvider the <tt>ProtocolProviderService</tt> which is to perform the establishment of the
-         * new <tt>Call</tt>.
+         * @param protocolProvider the <code>ProtocolProviderService</code> which is to perform the establishment of the
+         * new <code>Call</code>.
          * @param conferenceDescription the description of the conference to call.
          * @param chatRoom the chat room associated with the call.
          */
@@ -825,9 +825,9 @@ public class CallManager
         }
 
         /**
-         * Initializes a new <tt>CreateCallThread</tt> instance which is to create a new
-         * <tt>Call</tt> to a contact specified either as a <tt>Contact</tt> instance or as a
-         * <tt>String</tt> contact address/identifier.
+         * Initializes a new <code>CreateCallThread</code> instance which is to create a new
+         * <code>Call</code> to a contact specified either as a <code>Contact</code> instance or as a
+         * <code>String</code> contact address/identifier.
          *
          * The constructor is private because it relies on its arguments being validated prior to its invocation.
          *
@@ -838,7 +838,7 @@ public class CallManager
          * @param stringContact the string callee to call
          * @param conferenceDescription the description of a conference to call
          * @param chatRoom the chat room associated with the call.
-         * @param video <tt>true</tt> if this instance is to create a new video (as opposed to audio-only) <tt>Call</tt>
+         * @param video <code>true</code> if this instance is to create a new video (as opposed to audio-only) <code>Call</code>
          */
         public CreateCallThread(ProtocolProviderService protocolProvider, Contact contact,
                 ContactResource contactResource, UIContactImpl uiContact, String stringContact,
@@ -918,11 +918,11 @@ public class CallManager
     }
 
     /**
-     * Creates a video call through the given <tt>protocolProvider</tt>.
+     * Creates a video call through the given <code>protocolProvider</code>.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> through which to make the call
-     * @param contact the <tt>Contact</tt> to call
-     * @param uiContact the <tt>UIContactImpl</tt> we're calling
+     * @param protocolProvider the <code>ProtocolProviderService</code> through which to make the call
+     * @param contact the <code>Contact</code> to call
+     * @param uiContact the <code>UIContactImpl</code> we're calling
      * @param stringContact the contact string to call
      * @throws OperationFailedException thrown if the call operation fails
      * @throws ParseException thrown if the contact string is malformatted
@@ -948,13 +948,13 @@ public class CallManager
     }
 
     /**
-     * Creates a call through the given <tt>protocolProvider</tt>.
+     * Creates a call through the given <code>protocolProvider</code>.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> through which to make the call
-     * @param contact the <tt>Contact</tt> to call
+     * @param protocolProvider the <code>ProtocolProviderService</code> through which to make the call
+     * @param contact the <code>Contact</code> to call
      * @param stringContact the contact string to call
-     * @param contactResource the specific <tt>ContactResource</tt> to call
-     * @param uiContact the <tt>UIContactImpl</tt> we're calling
+     * @param contactResource the specific <code>ContactResource</code> to call
+     * @param uiContact the <code>UIContactImpl</code> we're calling
      * @throws OperationFailedException thrown if the call operation fails
      * @throws ParseException thrown if the contact string is malformatted
      */
@@ -986,9 +986,9 @@ public class CallManager
     }
 
     /**
-     * Creates a call through the given <tt>protocolProvider</tt>.
+     * Creates a call through the given <code>protocolProvider</code>.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> through which to make the call
+     * @param protocolProvider the <code>ProtocolProviderService</code> through which to make the call
      * @param conferenceDescription the description of the conference to call
      * @param chatRoom the chat room associated with the call.
      */
@@ -1003,10 +1003,10 @@ public class CallManager
     }
 
     /**
-     * Returns the <tt>MetaContact</tt>, to which the given <tt>Call</tt> was initially created.
+     * Returns the <code>MetaContact</code>, to which the given <code>Call</code> was initially created.
      *
-     * @param call the <tt>Call</tt>, which corresponding <tt>MetaContact</tt> we're looking for
-     * @return the <tt>UIContactImpl</tt>, to which the given <tt>Call</tt> was initially created
+     * @param call the <code>Call</code>, which corresponding <code>MetaContact</code> we're looking for
+     * @return the <code>UIContactImpl</code>, to which the given <code>Call</code> was initially created
      */
     public static UIContactImpl getCallUIContact(Call call)
     {
@@ -1016,10 +1016,10 @@ public class CallManager
     }
 
     /**
-     * Adds a call for a <tt>metaContact</tt>.
+     * Adds a call for a <code>metaContact</code>.
      *
-     * @param uiContact the <tt>UIContact</tt> corresponding to the call
-     * @param call the <tt>Call</tt> corresponding to the <tt>MetaContact</tt>
+     * @param uiContact the <code>UIContact</code> corresponding to the call
+     * @param call the <code>Call</code> corresponding to the <code>MetaContact</code>
      */
     private static void addUIContactCall(UIContactImpl uiContact, Call call)
     {
@@ -1050,7 +1050,7 @@ public class CallManager
         private final MediaDevice mediaDevice;
 
         /**
-         * The <tt>UIContactImpl</tt> we're calling.
+         * The <code>UIContactImpl</code> we're calling.
          */
         private final UIContactImpl uiContact;
 
@@ -1064,7 +1064,7 @@ public class CallManager
          *
          * @param protocolProvider protocol provider through which we share our desktop
          * @param contact the contact to share the desktop with
-         * @param uiContact the <tt>UIContact</tt>, which initiated the desktop sharing session
+         * @param uiContact the <code>UIContact</code>, which initiated the desktop sharing session
          * @param mediaDevice the media device corresponding to the screen we would like to share
          */
         public CreateDesktopSharingThread(ProtocolProviderService protocolProvider, String contact,
@@ -1118,18 +1118,18 @@ public class CallManager
     }
 
     /**
-     * Answers to all <tt>CallPeer</tt>s associated with a specific <tt>Call</tt> and, optionally,
-     * does that in a telephony conference with an existing <tt>Call</tt>.
+     * Answers to all <code>CallPeer</code>s associated with a specific <code>Call</code> and, optionally,
+     * does that in a telephony conference with an existing <code>Call</code>.
      */
     private static class AnswerCallThread extends Thread
     {
         /**
-         * The <tt>Call</tt> which is to be answered.
+         * The <code>Call</code> which is to be answered.
          */
         private final Call call;
 
         /**
-         * The existing <tt>Call</tt>, if any, which represents a telephony conference in which
+         * The existing <code>Call</code>, if any, which represents a telephony conference in which
          * {@link #call} is to be answered.
          */
         private final Call existingCall;
@@ -1182,50 +1182,50 @@ public class CallManager
     }
 
     /**
-     * Invites a list of callees to a conference <tt>Call</tt>. If the specified <tt>Call</tt> is
-     * <tt>null</tt>, creates a brand new telephony conference.
+     * Invites a list of callees to a conference <code>Call</code>. If the specified <code>Call</code> is
+     * <code>null</code>, creates a brand new telephony conference.
      */
     private static class InviteToConferenceCallThread extends Thread
     {
         /**
          * The addresses of the callees to be invited into the telephony conference to be
          * organized by this instance. For further details, refer to the documentation on the
-         * <tt>callees</tt> parameter of the respective <tt>InviteToConferenceCallThread</tt>
+         * <code>callees</code> parameter of the respective <code>InviteToConferenceCallThread</code>
          * constructor.
          */
         private final Map<ProtocolProviderService, List<String>> callees;
 
         /**
-         * The <tt>Call</tt>, if any, into the telephony conference of which {@link #callees} are
-         * to be invited. If non-<tt>null</tt>, its <tt>CallConference</tt> state will be shared
-         * with all <tt>Call</tt>s established by this instance for the purposes of having the
-         * <tt>callees</tt> into the same telephony conference.
+         * The <code>Call</code>, if any, into the telephony conference of which {@link #callees} are
+         * to be invited. If non-<code>null</code>, its <code>CallConference</code> state will be shared
+         * with all <code>Call</code>s established by this instance for the purposes of having the
+         * <code>callees</code> into the same telephony conference.
          */
         private final Call call;
 
         /**
-         * Initializes a new <tt>InviteToConferenceCallThread</tt> instance which is to invite a
-         * list of callees to a conference <tt>Call</tt>. If the specified <tt>call</tt> is
-         * <tt>null</tt>, creates a brand new telephony conference.
+         * Initializes a new <code>InviteToConferenceCallThread</code> instance which is to invite a
+         * list of callees to a conference <code>Call</code>. If the specified <code>call</code> is
+         * <code>null</code>, creates a brand new telephony conference.
          *
          * @param callees the addresses of the callees to be invited into a telephony conference. The
-         * addresses are provided in multiple <tt>List&lt;String&gt;</tt>s. Each such list
-         * of addresses is mapped by the <tt>ProtocolProviderService</tt> through which they
+         * addresses are provided in multiple <code>List&lt;String&gt;</code>s. Each such list
+         * of addresses is mapped by the <code>ProtocolProviderService</code> through which they
          * are to be invited into the telephony conference. If there are multiple
-         * <tt>ProtocolProviderService</tt>s in the specified <tt>Map</tt>, the resulting
+         * <code>ProtocolProviderService</code>s in the specified <code>Map</code>, the resulting
          * telephony conference is known by the name &quot;cross-protocol&quot;. It is also
-         * allowed to have a list of addresses mapped to <tt>null</tt> which means that the
+         * allowed to have a list of addresses mapped to <code>null</code> which means that the
          * new instance will automatically choose
-         * a <tt>ProtocolProviderService</tt> to invite the respective callees into the
+         * a <code>ProtocolProviderService</code> to invite the respective callees into the
          * telephony conference.
-         * @param call the <tt>Call</tt> to invite the specified <tt>callees</tt> into. If <tt>null</tt>,
+         * @param call the <code>Call</code> to invite the specified <code>callees</code> into. If <code>null</code>,
          * this instance will create a brand new telephony conference. Technically, a
-         * <tt>Call</tt> instance is protocol/account-specific and it is possible to have
+         * <code>Call</code> instance is protocol/account-specific and it is possible to have
          * cross-protocol/account telephony conferences. That's why the specified
-         * <tt>callees</tt> are invited into one and the same <tt>CallConference</tt>:
-         * the one in which the specified <tt>call</tt> is participating or a new one if
-         * <tt>call</tt> is <tt>null</tt>. Of course, an attempt is made to have all callees
-         * from one and the same protocol/account into one <tt>Call</tt> instance.
+         * <code>callees</code> are invited into one and the same <code>CallConference</code>:
+         * the one in which the specified <code>call</code> is participating or a new one if
+         * <code>call</code> is <code>null</code>. Of course, an attempt is made to have all callees
+         * from one and the same protocol/account into one <code>Call</code> instance.
          */
         public InviteToConferenceCallThread(Map<ProtocolProviderService, List<String>> callees, Call call)
         {
@@ -1324,8 +1324,8 @@ public class CallManager
     }
 
     /**
-     * Invites a list of callees to a specific conference <tt>Call</tt>. If the specified
-     * <tt>Call</tt> is <tt>null</tt>, creates a brand new telephony conference.
+     * Invites a list of callees to a specific conference <code>Call</code>. If the specified
+     * <code>Call</code> is <code>null</code>, creates a brand new telephony conference.
      */
     private static class InviteToConferenceBridgeThread extends Thread
     {
@@ -1370,9 +1370,9 @@ public class CallManager
     }
 
     /**
-     * Hangs up a specific <tt>Call</tt> (i.e. all <tt>CallPeer</tt>s associated with a
-     * <tt>Call</tt>), <tt>CallConference</tt> (i.e. all <tt>Call</tt>s participating in a
-     * <tt>CallConference</tt>), or <tt>CallPeer</tt>.
+     * Hangs up a specific <code>Call</code> (i.e. all <code>CallPeer</code>s associated with a
+     * <code>Call</code>), <code>CallConference</code> (i.e. all <code>Call</code>s participating in a
+     * <code>CallConference</code>), or <code>CallPeer</code>.
      */
     private static class HangupCallThread extends Thread
     {
@@ -1381,10 +1381,10 @@ public class CallManager
         private final CallPeer peer;
 
         /**
-         * Initializes a new <tt>HangupCallThread</tt> instance which is to hang up a specific
-         * <tt>Call</tt> i.e. all <tt>CallPeer</tt>s associated with the <tt>Call</tt>.
+         * Initializes a new <code>HangupCallThread</code> instance which is to hang up a specific
+         * <code>Call</code> i.e. all <code>CallPeer</code>s associated with the <code>Call</code>.
          *
-         * @param call the <tt>Call</tt> whose associated <tt>CallPeer</tt>s are to be hanged up
+         * @param call the <code>Call</code> whose associated <code>CallPeer</code>s are to be hanged up
          */
         public HangupCallThread(Call call)
         {
@@ -1393,11 +1393,11 @@ public class CallManager
         }
 
         /**
-         * Initializes a new <tt>HangupCallThread</tt> instance which is to hang up a specific
-         * <tt>CallConference</tt> i.e. all <tt>Call</tt>s participating in the
-         * <tt>CallConference</tt>.
+         * Initializes a new <code>HangupCallThread</code> instance which is to hang up a specific
+         * <code>CallConference</code> i.e. all <code>Call</code>s participating in the
+         * <code>CallConference</code>.
          *
-         * @param conference the <tt>CallConference</tt> whose participating <tt>Call</tt>s re to be hanged up
+         * @param conference the <code>CallConference</code> whose participating <code>Call</code>s re to be hanged up
          */
         public HangupCallThread(CallConference conference)
         {
@@ -1405,10 +1405,10 @@ public class CallManager
         }
 
         /**
-         * Initializes a new <tt>HangupCallThread</tt> instance which is to hang up a specific
-         * <tt>CallPeer</tt>.
+         * Initializes a new <code>HangupCallThread</code> instance which is to hang up a specific
+         * <code>CallPeer</code>.
          *
-         * @param peer the <tt>CallPeer</tt> to hang up
+         * @param peer the <code>CallPeer</code> to hang up
          */
         public HangupCallThread(CallPeer peer)
         {
@@ -1416,12 +1416,12 @@ public class CallManager
         }
 
         /**
-         * Initializes a new <tt>HangupCallThread</tt> instance which is to hang up a specific
-         * <tt>Call</tt>, <tt>CallConference</tt>, or <tt>CallPeer</tt>.
+         * Initializes a new <code>HangupCallThread</code> instance which is to hang up a specific
+         * <code>Call</code>, <code>CallConference</code>, or <code>CallPeer</code>.
          *
-         * @param call the <tt>Call</tt> whose associated <tt>CallPeer</tt>s are to be hanged up
-         * @param conference the <tt>CallConference</tt> whose participating <tt>Call</tt>s re to be hanged up
-         * @param peer the <tt>CallPeer</tt> to hang up
+         * @param call the <code>Call</code> whose associated <code>CallPeer</code>s are to be hanged up
+         * @param conference the <code>CallConference</code> whose participating <code>Call</code>s re to be hanged up
+         * @param peer the <code>CallPeer</code> to hang up
          */
         private HangupCallThread(Call call, CallConference conference, CallPeer peer)
         {
@@ -1504,7 +1504,7 @@ public class CallManager
     }
 
     /**
-     * Puts on hold the given <tt>CallPeer</tt>.
+     * Puts on hold the given <code>CallPeer</code>.
      */
     private static class PutOnHoldCallPeerThread extends Thread
     {
@@ -1534,7 +1534,7 @@ public class CallManager
     }
 
     /**
-     * Merges specific existing <tt>Call</tt>s into a specific telephony conference.
+     * Merges specific existing <code>Call</code>s into a specific telephony conference.
      */
     private static class MergeExistingCalls extends Thread
     {
@@ -1549,11 +1549,11 @@ public class CallManager
         private final Collection<Call> calls;
 
         /**
-         * Initializes a new <tt>MergeExistingCalls</tt> instance which is to merge specific
-         * existing <tt>Call</tt>s into a specific telephony conference.
+         * Initializes a new <code>MergeExistingCalls</code> instance which is to merge specific
+         * existing <code>Call</code>s into a specific telephony conference.
          *
-         * @param conference the telephony conference in which the specified <tt>Call</tt>s are to be merged
-         * @param calls the <tt>Call</tt>s to be merged into the specified telephony conference
+         * @param conference the telephony conference in which the specified <code>Call</code>s are to be merged
+         * @param calls the <code>Call</code>s to be merged into the specified telephony conference
          */
         public MergeExistingCalls(CallConference conference, Collection<Call> calls)
         {
@@ -1562,10 +1562,10 @@ public class CallManager
         }
 
         /**
-         * Puts off hold the <tt>CallPeer</tt>s of a specific <tt>Call</tt> which are locally on
+         * Puts off hold the <code>CallPeer</code>s of a specific <code>Call</code> which are locally on
          * hold.
          *
-         * @param call the <tt>Call</tt> which is to have its <tt>CallPeer</tt>s put off hold
+         * @param call the <code>Call</code> which is to have its <code>CallPeer</code>s put off hold
          */
         private void putOffHold(Call call)
         {
@@ -1617,7 +1617,7 @@ public class CallManager
     }
 
     /**
-     * Normalizes the phone numbers (if any) in a list of <tt>String</tt> contact addresses or
+     * Normalizes the phone numbers (if any) in a list of <code>String</code> contact addresses or
      * phone numbers.
      *
      * @param callees the list of contact addresses or phone numbers to be normalized

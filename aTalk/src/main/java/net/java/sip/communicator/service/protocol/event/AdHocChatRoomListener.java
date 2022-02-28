@@ -22,18 +22,18 @@ package net.java.sip.communicator.service.protocol.event;
 public interface AdHocChatRoomListener
 {
 	/**
-	 * Called when we receive an <tt>AdHocChatRoomCreatedEvent</tt>.
+	 * Called when we receive an <code>AdHocChatRoomCreatedEvent</code>.
 	 *
 	 * @param evt
-	 *        the <tt>AdHocChatRoomCreatedEvent</tt>
+	 *        the <code>AdHocChatRoomCreatedEvent</code>
 	 */
 	public void adHocChatRoomCreated(AdHocChatRoomCreatedEvent evt);
 
 	/**
-	 * Called when we receive an <tt>AdHocChatRoomDestroyedEvent</tt>.
+	 * Called when we receive an <code>AdHocChatRoomDestroyedEvent</code>.
 	 *
 	 * @param evt
-	 *        the <tt>AdHocChatRoomDestroyedEvent</tt>
+	 *        the <code>AdHocChatRoomDestroyedEvent</code>
 	 */
 	public void adHocChatRoomDestroyed(AdHocChatRoomDestroyedEvent evt);
 }

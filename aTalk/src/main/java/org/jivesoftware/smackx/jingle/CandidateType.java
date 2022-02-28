@@ -6,7 +6,9 @@
 package org.jivesoftware.smackx.jingle;
 
 /**
- * An enumeration containing allowed types for {@link CandidateExtension}s.
+ * An enumeration containing allowed types for {@link IceUdpTransportCandidate}.
+ * XEP-0176: Jingle ICE-UDP Transport Method 1.1.1 (2021-03-04)
+ * @see <a href="https://xmpp.org/extensions/xep-0176.html#protocol-syntax">XEP-0176 § 5.3 Syntax</a>
  *
  * @author Emil Ivov
  */
@@ -52,4 +54,18 @@ public enum CandidateType {
 	 * Old name for Host Candidate used by Google Talk.
 	 */
 	local;
+
+	CandidateType()
+	{
+	}
+
+	public static CandidateType fromString(String name)
+	{
+		for (CandidateType t : CandidateType.values()) {
+			if (t.toString().equals(name)) {
+				return t;
+			}
+		}
+		throw new IllegalArgumentException("Illegal type: " + name);
+	}
 }

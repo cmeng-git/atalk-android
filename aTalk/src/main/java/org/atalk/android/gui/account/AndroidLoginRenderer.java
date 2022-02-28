@@ -33,7 +33,7 @@ import org.atalk.service.osgi.OSGiService;
 import java.beans.PropertyChangeEvent;
 
 /**
- * The <tt>AndroidLoginRenderer</tt> is the Android renderer for login events.
+ * The <code>AndroidLoginRenderer</code> is the Android renderer for login events.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -42,7 +42,7 @@ import java.beans.PropertyChangeEvent;
 public class AndroidLoginRenderer implements LoginRenderer
 {
     /**
-     * The <tt>CallListener</tt>.
+     * The <code>CallListener</code>.
      */
     private final CallListener androidCallListener;
 
@@ -92,7 +92,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     private Drawable localStatusDrawable;
 
     /**
-     * Creates an instance of <tt>AndroidLoginRenderer</tt> by specifying the current <tt>Context</tt>.
+     * Creates an instance of <code>AndroidLoginRenderer</code> by specifying the current <code>Context</code>.
      *
      * @param defaultSecurityAuthority the security authority that will be used by this login renderer
      */
@@ -163,7 +163,7 @@ public class AndroidLoginRenderer implements LoginRenderer
     /**
      * Indicates that the given protocol provider has been connected at the given time.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt> corresponding to the connected account
+     * @param protocolProvider the <code>ProtocolProviderService</code> corresponding to the connected account
      * @param date the date/time at which the account has connected
      */
     public void protocolProviderConnected(ProtocolProviderService protocolProvider, long date)
@@ -185,8 +185,8 @@ public class AndroidLoginRenderer implements LoginRenderer
     /**
      * Indicates that a protocol provider connection has failed.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>, which connection failed
-     * @param loginManagerCallback the <tt>LoginManager</tt> implementation, which is managing the process
+     * @param protocolProvider the <code>ProtocolProviderService</code>, which connection failed
+     * @param loginManagerCallback the <code>LoginManager</code> implementation, which is managing the process
      */
     public void protocolProviderConnectionFailed(final ProtocolProviderService protocolProvider,
             final LoginManager loginManagerCallback)
@@ -211,11 +211,11 @@ public class AndroidLoginRenderer implements LoginRenderer
     }
 
     /**
-     * Returns the <tt>SecurityAuthority</tt> implementation related to this login renderer.
+     * Returns the <code>SecurityAuthority</code> implementation related to this login renderer.
      *
-     * @param protocolProvider the specific <tt>ProtocolProviderService</tt>, for which we're obtaining a security
+     * @param protocolProvider the specific <code>ProtocolProviderService</code>, for which we're obtaining a security
      * authority
-     * @return the <tt>SecurityAuthority</tt> implementation related to this login renderer
+     * @return the <code>SecurityAuthority</code> implementation related to this login renderer
      */
     public SecurityAuthority getSecurityAuthorityImpl(ProtocolProviderService protocolProvider)
     {
@@ -306,10 +306,10 @@ public class AndroidLoginRenderer implements LoginRenderer
     }
 
     /**
-     * Indicates if the given <tt>protocolProvider</tt> related user interface is already rendered.
+     * Indicates if the given <code>protocolProvider</code> related user interface is already rendered.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>, which related user interface we're looking for
-     * @return <tt>true</tt> if the given <tt>protocolProvider</tt> related user interface is
+     * @param protocolProvider the <code>ProtocolProviderService</code>, which related user interface we're looking for
+     * @return <code>true</code> if the given <code>protocolProvider</code> related user interface is
      * already rendered
      */
     public boolean containsProtocolProviderUI(ProtocolProviderService protocolProvider)

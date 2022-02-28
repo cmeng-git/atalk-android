@@ -25,7 +25,7 @@ public interface ChatRoomInvitationRejectionListener
     /**
      * Called when an invitee rejects an invitation previously sent by us.
      *
-     * @param evt the instance of the <tt>ChatRoomInvitationRejectedEvent</tt> containing the rejected
+     * @param evt the instance of the <code>ChatRoomInvitationRejectedEvent</code> containing the rejected
      * chat room invitation as well as the source provider where this happened.
      */
     void invitationRejected(ChatRoomInvitationRejectedEvent evt);

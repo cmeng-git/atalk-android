@@ -36,7 +36,7 @@ public interface CallListener extends EventListener
      * call peer but we've decided to keep it for listeners that are only interested in call
      * duration and don't want to follow other call details.
      *
-     * @param event the <tt>CallEvent</tt> containing the source call.
+     * @param event the <code>CallEvent</code> containing the source call.
      */
     void callEnded(CallEvent event);
 }

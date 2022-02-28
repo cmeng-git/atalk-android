@@ -29,7 +29,7 @@ import java.io.File;
 import timber.log.Timber;
 
 /**
- * The Jabber protocol HttpFileDownloadJabberImpl extension of the <tt>AbstractFileTransfer</tt>.
+ * The Jabber protocol HttpFileDownloadJabberImpl extension of the <code>AbstractFileTransfer</code>.
  *
  * @author Eng Chong Meng
  */
@@ -49,7 +49,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer
     protected int mEncryption;
 
     /**
-     * Creates an <tt>IncomingFileTransferJabberImpl</tt>.
+     * Creates an <code>IncomingFileTransferJabberImpl</code>.
      *
      * @param sender the sender of the file
      * @param id the message Uuid uniquely identify  record in DB

@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * An implementation of the <tt>CommandNotificationHandler</tt> interface.
+ * An implementation of the <code>CommandNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  */
@@ -15,7 +15,7 @@ public class CommandNotificationAction extends NotificationAction
 	private String commandDescriptor;
 
 	/**
-	 * Creates an instance of <tt>CommandNotification</tt> by specifying the <tt>commandDescriptor</tt>, which will
+	 * Creates an instance of <code>CommandNotification</code> by specifying the <code>commandDescriptor</code>, which will
 	 * point us to the command to execute.
 	 *
 	 * @param commandDescriptor

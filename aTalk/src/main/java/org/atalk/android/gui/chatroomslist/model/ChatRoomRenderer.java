@@ -27,7 +27,7 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Class used to obtain UI specific data for <tt>ChatRoom</tt> instances.
+ * Class used to obtain UI specific data for <code>ChatRoom</code> instances.
  *
  * @author Eng Chong MEng
  */
@@ -97,10 +97,10 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     }
 
     /**
-     * Returns the display details for the underlying <tt>ChatRoomWrapper</tt>.
+     * Returns the display details for the underlying <code>ChatRoomWrapper</code>.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt>, which details we're looking for
-     * @return the display details for the underlying <tt>ChatRoomWrapper</tt>
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code>, which details we're looking for
+     * @return the display details for the underlying <code>ChatRoomWrapper</code>
      */
     private static String getDisplayDetail(Object chatRoomWrapper)
     {

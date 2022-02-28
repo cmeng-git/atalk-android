@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.notification.event.NotificationEventTyp
 import java.util.EventListener;
 
 /**
- * The <tt>NotificationChangeListener</tt> is notified any time an action type or an event type is added,
+ * The <code>NotificationChangeListener</code> is notified any time an action type or an event type is added,
  * removed or changed.
  *
  * @author Emil Ivov
@@ -23,14 +23,14 @@ public interface NotificationChangeListener extends EventListener
     /**
      * This method gets called when a new notification action has been defined for a particular event type.
      *
-     * @param event the <tt>NotificationActionTypeEvent</tt>, which is dispatched when a new action has been added.
+     * @param event the <code>NotificationActionTypeEvent</code>, which is dispatched when a new action has been added.
      */
     void actionAdded(NotificationActionTypeEvent event);
 
     /**
      * This method gets called when a notification action for a particular event type has been removed.
      *
-     * @param event the <tt>NotificationActionTypeEvent</tt>, which is dispatched when an action has been removed.
+     * @param event the <code>NotificationActionTypeEvent</code>, which is dispatched when an action has been removed.
      */
     void actionRemoved(NotificationActionTypeEvent event);
 
@@ -38,21 +38,21 @@ public interface NotificationChangeListener extends EventListener
      * This method gets called when a notification action for a particular event type has been changed
      * (for example the corresponding descriptor has changed).
      *
-     * @param event the <tt>NotificationActionTypeEvent</tt>, which is dispatched when an action has been changed.
+     * @param event the <code>NotificationActionTypeEvent</code>, which is dispatched when an action has been changed.
      */
     void actionChanged(NotificationActionTypeEvent event);
 
     /**
      * This method gets called when a new event type has been added.
      *
-     * @param event the <tt>NotificationEventTypeEvent</tt>, which is dispatched when a new event type has been added
+     * @param event the <code>NotificationEventTypeEvent</code>, which is dispatched when a new event type has been added
      */
     void eventTypeAdded(NotificationEventTypeEvent event);
 
     /**
      * This method gets called when an event type has been removed.
      *
-     * @param event the <tt>NotificationEventTypeEvent</tt>, which is dispatched when an event type has been removed.
+     * @param event the <code>NotificationEventTypeEvent</code>, which is dispatched when an event type has been removed.
      */
     void eventTypeRemoved(NotificationEventTypeEvent event);
 }

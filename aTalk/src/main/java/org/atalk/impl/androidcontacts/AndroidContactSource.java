@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class AndroidContactSource implements ExtendedContactSourceService, PrefixedContactSourceService
 {
     /**
-     * Queries this search source for the given <tt>searchPattern</tt>.
+     * Queries this search source for the given <code>searchPattern</code>.
      *
      * @param queryPattern the pattern to search for
      * @return the created query
@@ -33,7 +33,7 @@ public class AndroidContactSource implements ExtendedContactSourceService, Prefi
     }
 
     /**
-     * Queries this search source for the given <tt>query</tt>.
+     * Queries this search source for the given <code>query</code>.
      *
      * @param query the string to search for
      * @return the created query
@@ -45,7 +45,7 @@ public class AndroidContactSource implements ExtendedContactSourceService, Prefi
     }
 
     /**
-     * Queries this search source for the given <tt>query</tt>.
+     * Queries this search source for the given <code>query</code>.
      *
      * @param query the string to search for
      * @param contactCount the maximum count of result contacts

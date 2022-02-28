@@ -51,7 +51,7 @@ import javax.crypto.CipherOutputStream;
 import timber.log.Timber;
 
 /**
- * The <tt>ReceiveFileConversationComponent</tt> is the component shown in the conversation area
+ * The <code>ReceiveFileConversationComponent</code> is the component shown in the conversation area
  * of the chat window to display a incoming file transfer.
  *
  * @author Eng Chong Meng
@@ -83,10 +83,10 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     }
 
     /**
-     * Creates a <tt>FileHttpDownloadConversation</tt>.
+     * Creates a <code>FileHttpDownloadConversation</code>.
      *
      * @param cPanel the chat panel
-     * @param sender the message <tt>sender</tt>
+     * @param sender the message <code>sender</code>
      * @param date the date
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
@@ -408,7 +408,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     }
 
     /**
-     * Queries the <tt>DownloadManager</tt> for the status of download job identified by given <tt>id</tt>.
+     * Queries the <code>DownloadManager</code> for the status of download job identified by given <code>id</code>.
      *
      * @param id download identifier which status will be returned.
      * @return download status of the job identified by given id. If given job is not found

@@ -19,8 +19,8 @@ import java.awt.Component;
 import java.util.*;
 
 /**
- * Represents a mechanism to easily add to a specific <tt>Object</tt> by means
- * of composition support for firing <tt>VideoEvent</tt>s to <tt>VideoListener</tt>s.
+ * Represents a mechanism to easily add to a specific <code>Object</code> by means
+ * of composition support for firing <code>VideoEvent</code>s to <code>VideoListener</code>s.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -30,41 +30,41 @@ public class VideoNotifierSupport
     private static final long THREAD_TIMEOUT = 5000;
 
     /**
-     * The list of <tt>VideoEvent</tt>s which are to be delivered to the
+     * The list of <code>VideoEvent</code>s which are to be delivered to the
      * {@link #listeners} registered with this instance when
-     * {@link #synchronous} is equal to <tt>false</tt>.
+     * {@link #synchronous} is equal to <code>false</code>.
      */
     private final List<VideoEvent> events;
 
     /**
-     * The list of <tt>VideoListener</tt>s interested in changes in the
-     * availability of visual <tt>Component</tt>s depicting video.
+     * The list of <code>VideoListener</code>s interested in changes in the
+     * availability of visual <code>Component</code>s depicting video.
      */
     private final List<VideoListener> listeners = new ArrayList<>();
 
     /**
-     * The <tt>Object</tt> which is to be reported as the source of the <tt>VideoEvent</tt>s fired by this instance.
+     * The <code>Object</code> which is to be reported as the source of the <code>VideoEvent</code>s fired by this instance.
      */
     private final Object source;
 
     /**
      * The indicator which determines whether this instance delivers the
-     * <tt>VideoEvent</tt>s to the {@link #listeners} synchronously.
+     * <code>VideoEvent</code>s to the {@link #listeners} synchronously.
      */
     private final boolean synchronous;
 
     /**
-     * The <tt>Thread</tt> in which {@link #events} are delivered to the
-     * {@link #listeners} when {@link #synchronous} is equal to <tt>false</tt>.
+     * The <code>Thread</code> in which {@link #events} are delivered to the
+     * {@link #listeners} when {@link #synchronous} is equal to <code>false</code>.
      */
     private Thread thread;
 
     /**
-     * Initializes a new <tt>VideoNotifierSupport</tt> instance which is to facilitate the management of
-     * <tt>VideoListener</tt>s and firing <tt>VideoEvent</tt>s to them for a specific <tt>Object</tt>.
+     * Initializes a new <code>VideoNotifierSupport</code> instance which is to facilitate the management of
+     * <code>VideoListener</code>s and firing <code>VideoEvent</code>s to them for a specific <code>Object</code>.
      *
-     * @param source the <tt>Object</tt> which is to be reported as the source
-     * of the <tt>VideoEvent</tt>s fired by the new instance
+     * @param source the <code>Object</code> which is to be reported as the source
+     * of the <code>VideoEvent</code>s fired by the new instance
      */
     public VideoNotifierSupport(Object source)
     {
@@ -72,13 +72,13 @@ public class VideoNotifierSupport
     }
 
     /**
-     * Initializes a new <tt>VideoNotifierSupport</tt> instance which is to facilitate the management of
-     * <tt>VideoListener</tt>s and firing <tt>VideoEvent</tt>s to them for a specific <tt>Object</tt>.
+     * Initializes a new <code>VideoNotifierSupport</code> instance which is to facilitate the management of
+     * <code>VideoListener</code>s and firing <code>VideoEvent</code>s to them for a specific <code>Object</code>.
      *
-     * @param source the <tt>Object</tt> which is to be reported as the source
-     * of the <tt>VideoEvent</tt>s fired by the new instance
-     * @param synchronous <tt>true</tt> if the new instance is to deliver the
-     * <tt>VideoEvent</tt>s synchronously; otherwise, <tt>false</tt>
+     * @param source the <code>Object</code> which is to be reported as the source
+     * of the <code>VideoEvent</code>s fired by the new instance
+     * @param synchronous <code>true</code> if the new instance is to deliver the
+     * <code>VideoEvent</code>s synchronously; otherwise, <code>false</code>
      */
     public VideoNotifierSupport(Object source, boolean synchronous)
     {
@@ -89,14 +89,14 @@ public class VideoNotifierSupport
     }
 
     /**
-     * Adds a specific <tt>VideoListener</tt> to this <tt>VideoNotifierSupport</tt> in order to receive
-     * notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Adds a specific <code>VideoListener</code> to this <code>VideoNotifierSupport</code> in order to receive
+     * notifications when visual/video <code>Component</code>s are being added and removed.
      *
      * Adding a listener which has already been added does nothing i.e. it is not added more than once
-     * and thus does not receive one and the same <tt>VideoEvent</tt> multiple times.
+     * and thus does not receive one and the same <code>VideoEvent</code> multiple times.
      *
-     * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s
-     * are being added or removed in this <tt>VideoNotifierSupport</tt>
+     * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s
+     * are being added or removed in this <code>VideoNotifierSupport</code>
      */
     public void addVideoListener(VideoListener listener)
     {
@@ -132,19 +132,19 @@ public class VideoNotifierSupport
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this <tt>VideoMediaStream</tt> about a specific
-     * type of change in the availability of a specific visual <tt>Component</tt> depicting video.
+     * Notifies the <code>VideoListener</code>s registered with this <code>VideoMediaStream</code> about a specific
+     * type of change in the availability of a specific visual <code>Component</code> depicting video.
      *
-     * @param type the type of change as defined by <tt>VideoEvent</tt> in the
-     * availability of the specified visual <tt>Component</tt> depicting video
-     * @param visualComponent the visual <tt>Component</tt> depicting video which has been added or removed
+     * @param type the type of change as defined by <code>VideoEvent</code> in the
+     * availability of the specified visual <code>Component</code> depicting video
+     * @param visualComponent the visual <code>Component</code> depicting video which has been added or removed
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally captured);
      * {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a remote peer is streaming it)
-     * @param wait <tt>true</tt> if the call is to wait till the specified
-     * <tt>VideoEvent</tt> has been delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
-     * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it describes
+     * @param wait <code>true</code> if the call is to wait till the specified
+     * <code>VideoEvent</code> has been delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
+     * @return <code>true</code> if this event and, more specifically, the visual <code>Component</code> it describes
      * have been consumed and should be considered owned, referenced (which is important because
-     * <tt>Component</tt>s belong to a single <tt>Container</tt> at a time); otherwise, <tt>false</tt>
+     * <code>Component</code>s belong to a single <code>Container</code> at a time); otherwise, <code>false</code>
      */
     public boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
@@ -155,11 +155,11 @@ public class VideoNotifierSupport
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this instance about a specific <tt>VideoEvent</tt>.
+     * Notifies the <code>VideoListener</code>s registered with this instance about a specific <code>VideoEvent</code>.
      *
-     * @param event the <tt>VideoEvent</tt> to be fired to the <tt>VideoListener</tt>s registered with this instance
-     * @param wait <tt>true</tt> if the call is to wait till the specified
-     * <tt>VideoEvent</tt> has been delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
+     * @param event the <code>VideoEvent</code> to be fired to the <code>VideoListener</code>s registered with this instance
+     * @param wait <code>true</code> if the call is to wait till the specified
+     * <code>VideoEvent</code> has been delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
      */
     public void fireVideoEvent(VideoEvent event, boolean wait)
     {
@@ -194,11 +194,11 @@ public class VideoNotifierSupport
     }
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this <tt>VideoNotifierSupport</tt> to stop
-     * receiving notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Removes a specific <code>VideoListener</code> from this <code>VideoNotifierSupport</code> to stop
+     * receiving notifications when visual/video <code>Component</code>s are being added and removed.
      *
-     * @param listener the <tt>VideoListener</tt> to be removed that no longer be notified when
-     * visual/video <tt>Component</tt>s are being added or removed
+     * @param listener the <code>VideoListener</code> to be removed that no longer be notified when
+     * visual/video <code>Component</code>s are being added or removed
      */
     public void removeVideoListener(VideoListener listener)
     {

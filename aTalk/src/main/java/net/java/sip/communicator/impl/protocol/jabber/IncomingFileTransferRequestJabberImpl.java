@@ -54,8 +54,8 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private byte[] thumbnail;
 
     /**
-     * Creates an <tt>IncomingFileTransferRequestJabberImpl</tt> based on the given
-     * <tt>fileTransferRequest</tt>, coming from the Jabber protocol.
+     * Creates an <code>IncomingFileTransferRequestJabberImpl</code> based on the given
+     * <code>fileTransferRequest</code>, coming from the Jabber protocol.
      *
      * @param pps the protocol provider
      * @param fileTransferOpSet file transfer operation set
@@ -94,9 +94,9 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     }
 
     /**
-     * Returns the <tt>Contact</tt> making this request.
+     * Returns the <code>Contact</code> making this request.
      *
-     * @return the <tt>Contact</tt> making this request
+     * @return the <code>Contact</code> making this request
      */
     @Override
     public Contact getSender()

@@ -91,9 +91,9 @@ public class CertificateVerificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -104,9 +104,9 @@ public class CertificateVerificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
@@ -117,9 +117,9 @@ public class CertificateVerificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>CredentialsStorageService</tt>, through which we will access all passwords.
+     * Returns the <code>CredentialsStorageService</code>, through which we will access all passwords.
      *
-     * @return the <tt>CredentialsStorageService</tt>, through which we will access all passwords.
+     * @return the <code>CredentialsStorageService</code>, through which we will access all passwords.
      */
     public static CredentialsStorageService getCredService()
     {
@@ -130,9 +130,9 @@ public class CertificateVerificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>VerifyCertificateDialogService</tt>, through which we will use to create dialogs.
+     * Returns the <code>VerifyCertificateDialogService</code>, through which we will use to create dialogs.
      *
-     * @return the <tt>VerifyCertificateDialogService</tt>, through which we will use to create dialogs.
+     * @return the <code>VerifyCertificateDialogService</code>, through which we will use to create dialogs.
      */
     public static VerifyCertificateDialogService getCertificateDialogService()
     {

@@ -34,9 +34,9 @@ public class DataObject
      * Gets the user data associated with this instance and a specific key.
      *
      * @param key the key of the user data associated with this instance to be retrieved
-     * @return an <tt>Object</tt> which represents the value associated with
-     * this instance and the specified <tt>key</tt>; <tt>null</tt> if no
-     * association with the specified <tt>key</tt> exists in this instance
+     * @return an <code>Object</code> which represents the value associated with
+     * this instance and the specified <code>key</code>; <code>null</code> if no
+     * association with the specified <code>key</code> exists in this instance
      */
     public Object getData(Object key)
     {
@@ -52,7 +52,7 @@ public class DataObject
      *
      * @param key the key to retrieve the index in <code>#data</code> of
      * @return the index in <code>#data</code> of the specified <code>key</code>
-     * if it is contained; <tt>-1</tt> if <code>key</code> is not
+     * if it is contained; <code>-1</code> if <code>key</code> is not
      * contained in <code>#data</code>
      */
     private int dataIndexOf(Object key)
@@ -67,8 +67,8 @@ public class DataObject
     /**
      * Sets a
      * user-specific association in this instance in the form of a key-value
-     * pair. If the specified <tt>key</tt> is already associated in this
-     * instance with a value, the existing value is overwritten with the specified <tt>value</tt>.
+     * pair. If the specified <code>key</code> is already associated in this
+     * instance with a value, the existing value is overwritten with the specified <code>value</code>.
      * <p>
      * The user-defined association created by this method and stored in this
      * instance is not serialized by this instance and is thus only meant for runtime use.
@@ -79,7 +79,7 @@ public class DataObject
      * </p>
      *
      * @param key the key to associate in this instance with the specified value
-     * @param value the value to be associated in this instance with the specified <tt>key</tt>
+     * @param value the value to be associated in this instance with the specified <code>key</code>
      */
     public void setData(Object key, Object value)
     {

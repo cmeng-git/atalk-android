@@ -21,7 +21,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>OperationSetTelephonyConferencing</tt> in order to
+ * Represents a default implementation of <code>OperationSetTelephonyConferencing</code> in order to
  * make it easier for implementers to provide complete solutions while focusing on
  * implementation-specific details.
  *
@@ -44,42 +44,42 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
         PropertyChangeListener, CallListener, CallChangeListener
 {
     /**
-     * The name of the conference-info XML element <tt>display-text</tt>.
+     * The name of the conference-info XML element <code>display-text</code>.
      */
     protected static final String ELEMENT_DISPLAY_TEXT = "display-text";
 
     /**
-     * The name of the conference-info XML element <tt>endpoint</tt>.
+     * The name of the conference-info XML element <code>endpoint</code>.
      */
     protected static final String ELEMENT_ENDPOINT = "endpoint";
 
     /**
-     * The name of the conference-info XML element <tt>media</tt>.
+     * The name of the conference-info XML element <code>media</code>.
      */
     protected static final String ELEMENT_MEDIA = "media";
 
     /**
-     * The name of the conference-info XML element <tt>src-id</tt>.
+     * The name of the conference-info XML element <code>src-id</code>.
      */
     protected static final String ELEMENT_SRC_ID = "src-id";
 
     /**
-     * The name of the conference-info XML element <tt>status</tt>.
+     * The name of the conference-info XML element <code>status</code>.
      */
     protected static final String ELEMENT_STATUS = "status";
 
     /**
-     * The name of the conference-info XML element <tt>type</tt>.
+     * The name of the conference-info XML element <code>type</code>.
      */
     protected static final String ELEMENT_TYPE = "type";
 
     /**
-     * The name of the conference-info XML element <tt>user</tt>.
+     * The name of the conference-info XML element <code>user</code>.
      */
     protected static final String ELEMENT_USER = "user";
 
     /**
-     * The name of the conference-info XML element <tt>users</tt>.
+     * The name of the conference-info XML element <code>users</code>.
      */
     protected static final String ELEMENT_USERS = "users";
 
@@ -90,23 +90,23 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     private static final String PARTIAL_NOTIFICATIONS_PROP_NAME = "RFC4575_PARTIAL_NOTIFICATIONS_ENABLED";
 
     /**
-     * The <tt>OperationSetBasicTelephony</tt> implementation which this instance uses to carry out
-     * tasks such as establishing <tt>Call</tt>s.
+     * The <code>OperationSetBasicTelephony</code> implementation which this instance uses to carry out
+     * tasks such as establishing <code>Call</code>s.
      */
     private OperationSetBasicTelephonyT basicTelephony;
 
     /**
-     * The <tt>CallPeerListener</tt> which listens to modifications in the properties/state of
-     * <tt>CallPeer</tt> so that NOTIFY requests can be sent from a conference focus to its
-     * conference members to update them with the latest information about the <tt>CallPeer</tt>.
+     * The <code>CallPeerListener</code> which listens to modifications in the properties/state of
+     * <code>CallPeer</code> so that NOTIFY requests can be sent from a conference focus to its
+     * conference members to update them with the latest information about the <code>CallPeer</code>.
      */
     private final CallPeerListener callPeerListener = new CallPeerAdapter()
     {
         /**
-         * Indicates that a change has occurred in the status of the source <tt>CallPeer</tt>.
+         * Indicates that a change has occurred in the status of the source <code>CallPeer</code>.
          *
          * @param evt
-         *        the <tt>CallPeerChangeEvent</tt> instance containing the source event as well as
+         *        the <code>CallPeerChangeEvent</code> instance containing the source event as well as
          *        its previous and its new status
          */
         @Override
@@ -130,17 +130,17 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     };
 
     /**
-     * The <tt>ProtocolProviderService</tt> implementation which created this instance and for which
+     * The <code>ProtocolProviderService</code> implementation which created this instance and for which
      * telephony conferencing services are being provided by this instance.
      */
     protected final ProtocolProviderServiceT parentProvider;
 
     /**
-     * Initializes a new <tt>AbstractOperationSetTelephonyConferencing</tt> instance which is to
-     * provide telephony conferencing services for the specified <tt>ProtocolProviderService</tt>
+     * Initializes a new <code>AbstractOperationSetTelephonyConferencing</code> instance which is to
+     * provide telephony conferencing services for the specified <code>ProtocolProviderService</code>
      * implementation.
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> implementation which has requested the creation
+     * @param parentProvider the <code>ProtocolProviderService</code> implementation which has requested the creation
      * of the new instance and for which the new instance is to provide telephony
      * conferencing services
      */
@@ -151,12 +151,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>OperationSetTelephonyConferencing</tt> that its <tt>basicTelephony</tt>
-     * property has changed its value from a specific <tt>oldValue</tt> to a specific
-     * <tt>newValue</tt>
+     * Notifies this <code>OperationSetTelephonyConferencing</code> that its <code>basicTelephony</code>
+     * property has changed its value from a specific <code>oldValue</code> to a specific
+     * <code>newValue</code>
      *
-     * @param oldValue the old value of the <tt>basicTelephony</tt> property
-     * @param newValue the new value of the <tt>basicTelephony</tt> property
+     * @param oldValue the old value of the <code>basicTelephony</code> property
+     * @param newValue the new value of the <code>basicTelephony</code> property
      */
     protected void basicTelephonyChanged(OperationSetBasicTelephonyT oldValue,
             OperationSetBasicTelephonyT newValue)
@@ -168,9 +168,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallListener</tt> that a specific <tt>Call</tt> has been established.
+     * Notifies this <code>CallListener</code> that a specific <code>Call</code> has been established.
      *
-     * @param event a <tt>CallEvent</tt> which specified the newly-established <tt>Call</tt>
+     * @param event a <code>CallEvent</code> which specified the newly-established <code>Call</code>
      */
     protected void callBegun(CallEvent event)
     {
@@ -191,9 +191,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallListener</tt> that a specific <tt>Call</tt> has ended.
+     * Notifies this <code>CallListener</code> that a specific <code>Call</code> has ended.
      *
-     * @param event a <tt>CallEvent</tt> which specified the <tt>Call</tt> which has just ended
+     * @param event a <code>CallEvent</code> which specified the <code>Call</code> which has just ended
      */
     public void callEnded(CallEvent event)
     {
@@ -214,11 +214,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallChangeListener</tt> that a specific <tt>CallPeer</tt> has been added to
-     * a specific <tt>Call</tt>.
+     * Notifies this <code>CallChangeListener</code> that a specific <code>CallPeer</code> has been added to
+     * a specific <code>Call</code>.
      *
-     * @param event a <tt>CallPeerEvent</tt> which specifies the <tt>CallPeer</tt> which has been added to
-     * a <tt>Call</tt>
+     * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been added to
+     * a <code>Call</code>
      */
     public void callPeerAdded(CallPeerEvent event)
     {
@@ -231,11 +231,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallChangeListener</tt> that a specific <tt>CallPeer</tt> has been remove
-     * from a specific <tt>Call</tt>.
+     * Notifies this <code>CallChangeListener</code> that a specific <code>CallPeer</code> has been remove
+     * from a specific <code>Call</code>.
      *
-     * @param event a <tt>CallPeerEvent</tt> which specifies the <tt>CallPeer</tt> which has been removed
-     * from a <tt>Call</tt>
+     * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been removed
+     * from a <code>Call</code>
      */
     public void callPeerRemoved(CallPeerEvent event)
     {
@@ -248,11 +248,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallChangeListener</tt> that the <tt>CallPeer</tt> list of a specific
-     * <tt>Call</tt> has been modified by adding or removing a specific <tt>CallPeer</tt>.
+     * Notifies this <code>CallChangeListener</code> that the <code>CallPeer</code> list of a specific
+     * <code>Call</code> has been modified by adding or removing a specific <code>CallPeer</code>.
      *
-     * @param event a <tt>CallPeerEvent</tt> which specifies the <tt>CallPeer</tt> which has been added to
-     * or removed from a <tt>Call</tt>
+     * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been added to
+     * or removed from a <code>Call</code>
      */
     private void callPeersChanged(CallPeerEvent event)
     {
@@ -260,10 +260,10 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallChangeListener</tt> that a specific <tt>Call</tt> has changed its
+     * Notifies this <code>CallChangeListener</code> that a specific <code>Call</code> has changed its
      * state. Does nothing.
      *
-     * @param event a <tt>CallChangeEvent</tt> which specifies the <tt>Call</tt> which has changed its
+     * @param event a <code>CallChangeEvent</code> which specifies the <code>Call</code> which has changed its
      * state, the very state which has been changed and the values of the state before and
      * after the change
      */
@@ -289,13 +289,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Creates a conference <tt>Call</tt> with the specified callees as <tt>CallPeers</tt>.
+     * Creates a conference <code>Call</code> with the specified callees as <code>CallPeers</code>.
      *
      * @param callees the list of addresses that we should call
-     * @param conference the <tt>CallConference</tt> which represents the state of the telephony conference
+     * @param conference the <code>CallConference</code> which represents the state of the telephony conference
      * into which the specified callees are to be invited
-     * @return the newly-created conference call containing all <tt>CallPeer</tt>s
-     * @throws OperationFailedException if establishing the conference <tt>Call</tt> fails
+     * @return the newly-created conference call containing all <code>CallPeer</code>s
+     * @throws OperationFailedException if establishing the conference <code>Call</code> fails
      */
     public Call createConfCall(String[] callees, CallConference conference)
             throws OperationFailedException, XmppStringprepException
@@ -319,36 +319,36 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Creates a new outgoing <tt>Call</tt> into which conference callees are to be invited by this
-     * <tt>OperationSetTelephonyConferencing</tt>.
+     * Creates a new outgoing <code>Call</code> into which conference callees are to be invited by this
+     * <code>OperationSetTelephonyConferencing</code>.
      *
-     * @return a new outgoing <tt>Call</tt> into which conference callees are to be invited by this
-     * <tt>OperationSetTelephonyConferencing</tt>
+     * @return a new outgoing <code>Call</code> into which conference callees are to be invited by this
+     * <code>OperationSetTelephonyConferencing</code>
      * @throws OperationFailedException if anything goes wrong
      */
     protected abstract MediaAwareCallT createOutgoingCall()
             throws OperationFailedException;
 
     /**
-     * Invites a callee with a specific address to join a specific <tt>Call</tt> for the purposes of
+     * Invites a callee with a specific address to join a specific <code>Call</code> for the purposes of
      * telephony conferencing.
      *
-     * @param calleeAddress the address of the callee to be invited to the specified existing <tt>Call</tt>
-     * @param call the existing <tt>Call</tt> to invite the callee with the specified address to
-     * @return a new <tt>CallPeer</tt> instance which describes the signaling and the media
-     * streaming of the newly-invited callee within the specified <tt>Call</tt>
-     * @throws OperationFailedException if inviting the specified callee to the specified <tt>Call</tt> fails
+     * @param calleeAddress the address of the callee to be invited to the specified existing <code>Call</code>
+     * @param call the existing <code>Call</code> to invite the callee with the specified address to
+     * @return a new <code>CallPeer</code> instance which describes the signaling and the media
+     * streaming of the newly-invited callee within the specified <code>Call</code>
+     * @throws OperationFailedException if inviting the specified callee to the specified <code>Call</code> fails
      */
     protected abstract CallPeer doInviteCalleeToCall(CalleeAddressT calleeAddress,
             MediaAwareCallT call)
             throws OperationFailedException;
 
     /**
-     * Gets the <tt>OperationSetBasicTelephony</tt> implementation which this instance uses to carry
-     * out tasks such as establishing <tt>Call</tt>s.
+     * Gets the <code>OperationSetBasicTelephony</code> implementation which this instance uses to carry
+     * out tasks such as establishing <code>Call</code>s.
      *
-     * @return the <tt>OperationSetBasicTelephony</tt> implementation which this instance uses to
-     * carry out tasks such as establishing <tt>Call</tt>s
+     * @return the <code>OperationSetBasicTelephony</code> implementation which this instance uses to
+     * carry out tasks such as establishing <code>Call</code>s
      */
     public OperationSetBasicTelephonyT getBasicTelephony()
     {
@@ -395,13 +395,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Reads the text content of the <tt>status</tt> XML element of a specific <tt>endpoint</tt> XML
+     * Reads the text content of the <code>status</code> XML element of a specific <code>endpoint</code> XML
      * element.
      *
-     * @param endpoint an XML <tt>Node</tt> which represents the <tt>endpoint</tt> XML element from which to
-     * get the text content of its <tt>status</tt> XML element
-     * @return the text content of the <tt>status</tt> XML element of the specified
-     * <tt>endpoint</tt> XML element if any; otherwise, <tt>null</tt>
+     * @param endpoint an XML <code>Node</code> which represents the <code>endpoint</code> XML element from which to
+     * get the text content of its <code>status</code> XML element
+     * @return the text content of the <code>status</code> XML element of the specified
+     * <code>endpoint</code> XML element if any; otherwise, <code>null</code>
      */
     private String getEndpointStatus(Node endpoint)
     {
@@ -419,14 +419,14 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
 
     /**
      * Gets the remote SSRC to be reported in the conference-info XML for a specific
-     * <tt>CallPeer</tt>'s media of a specific <tt>MediaType</tt>.
+     * <code>CallPeer</code>'s media of a specific <code>MediaType</code>.
      *
-     * @param callPeer the <tt>CallPeer</tt> whose remote SSRC for the media of the specified
-     * <tt>mediaType</tt> is to be returned
-     * @param mediaType the <tt>MediaType</tt> of the specified <tt>callPeer</tt>'s media whose remote SSRC is
+     * @param callPeer the <code>CallPeer</code> whose remote SSRC for the media of the specified
+     * <code>mediaType</code> is to be returned
+     * @param mediaType the <code>MediaType</code> of the specified <code>callPeer</code>'s media whose remote SSRC is
      * to be returned
      * @return the remote SSRC to be reported in the conference-info XML for the specified
-     * <tt>callPeer</tt>'s media of the specified <tt>mediaType</tt>
+     * <code>callPeer</code>'s media of the specified <code>mediaType</code>
      */
     protected long getRemoteSourceID(MediaAwareCallPeer<?, ?, ?> callPeer, MediaType mediaType)
     {
@@ -456,9 +456,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>CallListener</tt> that a specific incoming <tt>Call</tt> has been received.
+     * Notifies this <code>CallListener</code> that a specific incoming <code>Call</code> has been received.
      *
-     * @param event a <tt>CallEvent</tt> which specifies the newly-received incoming <tt>Call</tt>
+     * @param event a <code>CallEvent</code> which specifies the newly-received incoming <code>Call</code>
      */
     public void incomingCallReceived(CallEvent event)
     {
@@ -488,11 +488,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies all <tt>CallPeer</tt>s associated with the telephony conference in which a specific
-     * <tt>Call</tt> is participating about changes in the telephony conference-related information.
+     * Notifies all <code>CallPeer</code>s associated with the telephony conference in which a specific
+     * <code>Call</code> is participating about changes in the telephony conference-related information.
      *
-     * @param call the <tt>Call</tt> which specifies the telephony conference the associated
-     * <tt>CallPeer</tt>s of which are to be notified about changes in the telephony
+     * @param call the <code>Call</code> which specifies the telephony conference the associated
+     * <code>CallPeer</code>s of which are to be notified about changes in the telephony
      * conference-related information
      */
     @SuppressWarnings("rawtypes")
@@ -520,20 +520,20 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies all <tt>CallPeer</tt>s associated with a specific <tt>Call</tt> about changes in the
+     * Notifies all <code>CallPeer</code>s associated with a specific <code>Call</code> about changes in the
      * telephony conference-related information. In contrast, {@link #notifyAll()} notifies all
-     * <tt>CallPeer</tt>s associated with the telephony conference in which a specific <tt>Call</tt>
+     * <code>CallPeer</code>s associated with the telephony conference in which a specific <code>Call</code>
      * is participating.
      *
-     * @param call the <tt>Call</tt> whose <tt>CallPeer</tt>s are to be notified about changes in the
+     * @param call the <code>Call</code> whose <code>CallPeer</code>s are to be notified about changes in the
      * telephony conference-related information
      */
     protected abstract void notifyCallPeers(Call call);
 
     /**
-     * Notifies this <tt>CallListener</tt> that a specific outgoing <tt>Call</tt> has been created.
+     * Notifies this <code>CallListener</code> that a specific outgoing <code>Call</code> has been created.
      *
-     * @param event a <tt>CallEvent</tt> which specifies the newly-created outgoing <tt>Call</tt>
+     * @param event a <code>CallEvent</code> which specifies the newly-created outgoing <code>Call</code>
      */
     public void outgoingCallCreated(CallEvent event)
     {
@@ -541,25 +541,25 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Parses a <tt>String</tt> value which represents a callee address specified by the user into
+     * Parses a <code>String</code> value which represents a callee address specified by the user into
      * an object which is to actually represent the callee during the invitation to a conference
-     * <tt>Call</tt>.
+     * <code>Call</code>.
      *
-     * @param calleeAddressString a <tt>String</tt> value which represents a callee address to be parsed into an object
+     * @param calleeAddressString a <code>String</code> value which represents a callee address to be parsed into an object
      * which is to actually represent the callee during the invitation to a conference
-     * <tt>Call</tt>
-     * @return an object which is to actually represent the specified <tt>calleeAddressString</tt>
-     * during the invitation to a conference <tt>Call</tt>
-     * @throws OperationFailedException if parsing the specified <tt>calleeAddressString</tt> fails
+     * <code>Call</code>
+     * @return an object which is to actually represent the specified <code>calleeAddressString</code>
+     * during the invitation to a conference <code>Call</code>
+     * @throws OperationFailedException if parsing the specified <code>calleeAddressString</code> fails
      */
     protected abstract CalleeAddressT parseAddressString(String calleeAddressString)
             throws OperationFailedException, XmppStringprepException;
 
     /**
-     * Notifies this <tt>PropertyChangeListener</tt> that the value of a specific property of the
+     * Notifies this <code>PropertyChangeListener</code> that the value of a specific property of the
      * notifier it is registered with has changed.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which describes the source of the event, the name of
+     * @param ev a <code>PropertyChangeEvent</code> which describes the source of the event, the name of
      * the property which has changed its value and the old and new values of the property
      * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
      */
@@ -582,12 +582,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Notifies this <tt>RegistrationStateChangeListener</tt> that the
-     * <tt>ProtocolProviderService</tt> has registered with change to the registration state.
+     * Notifies this <code>RegistrationStateChangeListener</code> that the
+     * <code>ProtocolProviderService</code> has registered with change to the registration state.
      *
-     * @param event a <tt>RegistrationStateChangeEvent</tt> which specifies the old and the new value of
-     * the registration state of the <tt>ProtocolProviderService</tt> this
-     * <tt>RegistrationStateChangeListener</tt> listens to
+     * @param event a <code>RegistrationStateChangeEvent</code> which specifies the old and the new value of
+     * the registration state of the <code>ProtocolProviderService</code> this
+     * <code>RegistrationStateChangeListener</code> listens to
      */
     public void registrationStateChanged(RegistrationStateChangeEvent event)
     {
@@ -616,14 +616,14 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Updates the conference-related properties of a specific <tt>CallPeer</tt> such as
-     * <tt>conferenceFocus</tt> and <tt>conferenceMembers</tt> with the information described in
-     * <tt>confInfo</tt>. <tt>confInfo</tt> must be a document with "full" state.
+     * Updates the conference-related properties of a specific <code>CallPeer</code> such as
+     * <code>conferenceFocus</code> and <code>conferenceMembers</code> with the information described in
+     * <code>confInfo</code>. <code>confInfo</code> must be a document with "full" state.
      *
-     * @param callPeer the <tt>CallPeer</tt> which is a conference focus and has sent the specified
+     * @param callPeer the <code>CallPeer</code> which is a conference focus and has sent the specified
      * conference-info XML document
      * @param confInfo the conference-info XML document to use to update the conference-related information
-     * of the local peer represented by the associated <tt>Call</tt>. It must have a "full"
+     * of the local peer represented by the associated <code>Call</code>. It must have a "full"
      * state.
      */
     private int setConferenceInfoDocument(MediaAwareCallPeerT callPeer,
@@ -730,19 +730,19 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Updates the conference-related properties of a specific <tt>CallPeer</tt> such as
-     * <tt>conferenceFocus</tt> and <tt>conferenceMembers</tt> with information received from it as
+     * Updates the conference-related properties of a specific <code>CallPeer</code> such as
+     * <code>conferenceFocus</code> and <code>conferenceMembers</code> with information received from it as
      * a conference focus in the form of a conference-info XML document.
      *
-     * @param callPeer the <tt>CallPeer</tt> which is a conference focus and has sent the specified
+     * @param callPeer the <code>CallPeer</code> which is a conference focus and has sent the specified
      * conference-info XML document
-     * @param conferenceInfoXML the conference-info XML document sent by <tt>callPeer</tt> in order to update the
+     * @param conferenceInfoXML the conference-info XML document sent by <code>callPeer</code> in order to update the
      * conference-related information of the local peer represented by the associated
-     * <tt>Call</tt>
-     * @return the value of the <tt>version</tt> attribute of the <tt>conference-info</tt> XML
-     * element of the specified <tt>conferenceInfoXML</tt> if it was successfully parsed and
-     * represented in the specified <tt>callPeer</tt>
-     * @throws XMLException If <tt>conferenceInfoXML</tt> couldn't be parsed as a <tt>ConferenceInfoDocument</tt>
+     * <code>Call</code>
+     * @return the value of the <code>version</code> attribute of the <code>conference-info</code> XML
+     * element of the specified <code>conferenceInfoXML</code> if it was successfully parsed and
+     * represented in the specified <code>callPeer</code>
+     * @throws XMLException If <code>conferenceInfoXML</code> couldn't be parsed as a <code>ConferenceInfoDocument</code>
      */
     protected int setConferenceInfoXML(MediaAwareCallPeerT callPeer, String conferenceInfoXML)
             throws XMLException
@@ -804,12 +804,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Removes the parameters (specified after a semicolon) from a specific address <tt>String</tt>
+     * Removes the parameters (specified after a semicolon) from a specific address <code>String</code>
      * if any are present in it.
      *
-     * @param address the <tt>String</tt> value representing an address from which any parameters are to be
+     * @param address the <code>String</code> value representing an address from which any parameters are to be
      * removed
-     * @return a <tt>String</tt> representing the specified <tt>address</tt> without any parameters
+     * @return a <code>String</code> representing the specified <code>address</code> without any parameters
      */
     public static String stripParametersFromAddress(String address)
     {
@@ -823,12 +823,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Creates a <tt>ConferenceInfoDocument</tt> which describes the current state of the conference
-     * in which <tt>callPeer</tt> participates. The created document contains a "full" description
+     * Creates a <code>ConferenceInfoDocument</code> which describes the current state of the conference
+     * in which <code>callPeer</code> participates. The created document contains a "full" description
      * (as opposed to a partial description, see RFC4575).
      *
-     * @return a <tt>ConferenceInfoDocument</tt> which describes the current state of the conference
-     * in which this <tt>CallPeer</tt> participates.
+     * @return a <code>ConferenceInfoDocument</code> which describes the current state of the conference
+     * in which this <code>CallPeer</code> participates.
      */
     protected ConferenceInfoDocument getCurrentConferenceInfo(MediaAwareCallPeer<?, ?, ?> callPeer)
     {
@@ -863,12 +863,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Adds a <tt>user</tt> element to <tt>confInfo</tt> which describes <tt>callPeer</tt>, or the
-     * local peer if <tt>remote</tt> is <tt>false</tt>.
+     * Adds a <code>user</code> element to <code>confInfo</code> which describes <code>callPeer</code>, or the
+     * local peer if <code>remote</code> is <code>false</code>.
      *
-     * @param confInfo the <tt>ConferenceInformationDocument</tt> to which to add a <tt>user</tt> element
-     * @param callPeer the <tt>CallPeer</tt> which should be described
-     * @param remote <tt>true</tt> to describe <tt>callPeer</tt>, or <tt>false</tt> to describe the local
+     * @param confInfo the <code>ConferenceInformationDocument</code> to which to add a <code>user</code> element
+     * @param callPeer the <code>CallPeer</code> which should be described
+     * @param remote <code>true</code> to describe <code>callPeer</code>, or <code>false</code> to describe the local
      * peer.
      */
     private void addPeerToConferenceInfo(ConferenceInfoDocument confInfo,
@@ -943,13 +943,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Returns a string to be used for the <tt>entity</tt> attribute of the <tt>user</tt> element
-     * for the local peer, in a Conference Information document to be sent to <tt>callPeer</tt>
+     * Returns a string to be used for the <code>entity</code> attribute of the <code>user</code> element
+     * for the local peer, in a Conference Information document to be sent to <code>callPeer</code>
      *
-     * @param callPeer The <tt>CallPeer</tt> for which we are creating a Conference Information document.
-     * @return a string to be used for the <tt>entity</tt> attribute of the <tt>user</tt> element
+     * @param callPeer The <code>CallPeer</code> for which we are creating a Conference Information document.
+     * @return a string to be used for the <code>entity</code> attribute of the <code>user</code> element
      * for the local peer, in a Conference Information document to be sent to
-     * <tt>callPeer</tt>
+     * <code>callPeer</code>
      */
     protected abstract String getLocalEntity(CallPeer callPeer);
 
@@ -963,12 +963,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     protected abstract String getLocalDisplayName();
 
     /**
-     * Gets the <tt>EndpointStatusType</tt> to use when describing <tt>callPeer</tt> in a Conference
+     * Gets the <code>EndpointStatusType</code> to use when describing <code>callPeer</code> in a Conference
      * Information document.
      *
-     * @param callPeer the <tt>CallPeer</tt> which is to get its state described in a <tt>status</tt> XML
-     * element of an <tt>endpoint</tt> XML element
-     * @return the <tt>EndpointStatusType</tt> to use when describing <tt>callPeer</tt> in a
+     * @param callPeer the <code>CallPeer</code> which is to get its state described in a <code>status</code> XML
+     * element of an <code>endpoint</code> XML element
+     * @return the <code>EndpointStatusType</code> to use when describing <code>callPeer</code> in a
      * Conference Information document.
      */
     private ConferenceInfoDocument.EndpointStatusType getEndpointStatus(CallPeer callPeer)
@@ -1010,11 +1010,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * @param from A document with state <tt>full</tt> from which to generate a "diff".
-     * @param to A document with state <tt>full</tt> to which to generate a "diff"
-     * @return a <tt>ConferenceInfoDocument</tt>, such that when it is applied to <tt>from</tt>
-     * using the procedure defined in section 4.6 of RFC4575, the result is <tt>to</tt>. May
-     * return <tt>null</tt> if <tt>from</tt> and <tt>to</tt> are not found to be different
+     * @param from A document with state <code>full</code> from which to generate a "diff".
+     * @param to A document with state <code>full</code> to which to generate a "diff"
+     * @return a <code>ConferenceInfoDocument</code>, such that when it is applied to <code>from</code>
+     * using the procedure defined in section 4.6 of RFC4575, the result is <code>to</code>. May
+     * return <code>null</code> if <code>from</code> and <code>to</code> are not found to be different
      * (that is, in case no document needs to be sent)
      */
     protected ConferenceInfoDocument getConferenceInfoDiff(ConferenceInfoDocument from,
@@ -1099,18 +1099,18 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Updates the conference-related properties of a specific <tt>CallPeer</tt> such as
-     * <tt>conferenceFocus</tt> and <tt>conferenceMembers</tt> with information received from it as
+     * Updates the conference-related properties of a specific <code>CallPeer</code> such as
+     * <code>conferenceFocus</code> and <code>conferenceMembers</code> with information received from it as
      * a conference focus in the form of a partial conference-info XML document.
      *
-     * @param callPeer the <tt>CallPeer</tt> which is a conference focus and has sent the specified partial
+     * @param callPeer the <code>CallPeer</code> which is a conference focus and has sent the specified partial
      * conference-info XML document
-     * @param diff the partial conference-info XML document sent by <tt>callPeer</tt> in order to update
+     * @param diff the partial conference-info XML document sent by <code>callPeer</code> in order to update
      * the conference-related information of the local peer represented by the associated
-     * <tt>Call</tt>
-     * @return the value of the <tt>version</tt> attribute of the <tt>conference-info</tt> XML
-     * element of the specified <tt>conferenceInfoXML</tt> if it was successfully parsed and
-     * represented in the specified <tt>callPeer</tt>
+     * <code>Call</code>
+     * @return the value of the <code>version</code> attribute of the <code>conference-info</code> XML
+     * element of the specified <code>conferenceInfoXML</code> if it was successfully parsed and
+     * represented in the specified <code>callPeer</code>
      */
     private int updateConferenceInfoDocument(MediaAwareCallPeerT callPeer,
             ConferenceInfoDocument diff)
@@ -1196,9 +1196,9 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * @param a A document with state <tt>full</tt> which to compare to <tt>b</tt>
-     * @param b A document with state <tt>full</tt> which to compare to <tt>a</tt>
-     * @return <tt>false</tt> if the two documents are found to be different, <tt>true</tt>
+     * @param a A document with state <code>full</code> which to compare to <code>b</code>
+     * @param b A document with state <code>full</code> which to compare to <code>a</code>
+     * @return <code>false</code> if the two documents are found to be different, <code>true</code>
      * otherwise (that is, it can return true for non-identical documents).
      */
     private boolean conferenceInfoDocumentsMatch(ConferenceInfoDocument a, ConferenceInfoDocument b)
@@ -1223,13 +1223,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Checks whether two <tt>ConferenceInfoDocument.User</tt> instances match according to the
-     * needs of our implementation. Can return <tt>true</tt> for users which are not identical.
+     * Checks whether two <code>ConferenceInfoDocument.User</code> instances match according to the
+     * needs of our implementation. Can return <code>true</code> for users which are not identical.
      *
-     * @param a A <tt>ConferenceInfoDocument.User</tt> to compare
-     * @param b A <tt>ConferenceInfoDocument.User</tt> to compare
-     * @return <tt>false</tt> if <tt>a</tt> and <tt>b</tt> are found to be different in a way that
-     * is significant for our needs, <tt>true</tt> otherwise.
+     * @param a A <code>ConferenceInfoDocument.User</code> to compare
+     * @param b A <code>ConferenceInfoDocument.User</code> to compare
+     * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
+     * is significant for our needs, <code>true</code> otherwise.
      */
     private boolean usersMatch(ConferenceInfoDocument.User a, ConferenceInfoDocument.User b)
     {
@@ -1253,13 +1253,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Checks whether two <tt>ConferenceInfoDocument.Endpoint</tt> instances match according to the
-     * needs of our implementation. Can return <tt>true</tt> for endpoints which are not identical.
+     * Checks whether two <code>ConferenceInfoDocument.Endpoint</code> instances match according to the
+     * needs of our implementation. Can return <code>true</code> for endpoints which are not identical.
      *
-     * @param a A <tt>ConferenceInfoDocument.Endpoint</tt> to compare
-     * @param b A <tt>ConferenceInfoDocument.Endpoint</tt> to compare
-     * @return <tt>false</tt> if <tt>a</tt> and <tt>b</tt> are found to be different in a way that
-     * is significant for our needs, <tt>true</tt> otherwise.
+     * @param a A <code>ConferenceInfoDocument.Endpoint</code> to compare
+     * @param b A <code>ConferenceInfoDocument.Endpoint</code> to compare
+     * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
+     * is significant for our needs, <code>true</code> otherwise.
      */
     private boolean endpointsMatch(ConferenceInfoDocument.Endpoint a,
             ConferenceInfoDocument.Endpoint b)
@@ -1283,13 +1283,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * Checks whether two <tt>ConferenceInfoDocument.Media</tt> instances match according to the
-     * needs of our implementation. Can return <tt>true</tt> for endpoints which are not identical.
+     * Checks whether two <code>ConferenceInfoDocument.Media</code> instances match according to the
+     * needs of our implementation. Can return <code>true</code> for endpoints which are not identical.
      *
-     * @param a A <tt>ConferenceInfoDocument.Media</tt> to compare
-     * @param b A <tt>ConferenceInfoDocument.Media</tt> to compare
-     * @return <tt>false</tt> if <tt>a</tt> and <tt>b</tt> are found to be different in a way that
-     * is significant for our needs, <tt>true</tt> otherwise.
+     * @param a A <code>ConferenceInfoDocument.Media</code> to compare
+     * @param b A <code>ConferenceInfoDocument.Media</code> to compare
+     * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
+     * is significant for our needs, <code>true</code> otherwise.
      */
     private boolean mediasMatch(ConferenceInfoDocument.Media a, ConferenceInfoDocument.Media b)
     {
@@ -1309,10 +1309,10 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     }
 
     /**
-     * @param a A <tt>String</tt> to compare to <tt>b</tt>
-     * @param b A <tt>String</tt> to compare to <tt>a</tt>
-     * @return <tt>true</tt> if and only if <tt>a</tt> and <tt>b</tt> are both <tt>null</tt>, or
-     * they are equal as <tt>String</tt>s
+     * @param a A <code>String</code> to compare to <code>b</code>
+     * @param b A <code>String</code> to compare to <code>a</code>
+     * @return <code>true</code> if and only if <code>a</code> and <code>b</code> are both <code>null</code>, or
+     * they are equal as <code>String</code>s
      */
     private boolean stringsMatch(String a, String b)
     {
@@ -1327,7 +1327,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * Checks whether sending of RFC4575 partial notifications is enabled in the configuration. If
      * disabled, RFC4575 documents will always be sent with state 'full'.
      *
-     * @return <tt>true</tt> if sending of RFC4575 partial notifications is enabled in the
+     * @return <code>true</code> if sending of RFC4575 partial notifications is enabled in the
      * configuration.
      */
     private boolean isPartialNotificationEnabled()
@@ -1340,7 +1340,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     /**
      * {@inheritDoc}
      *
-     * Unimplemented by default, returns <tt>null</tt>.
+     * Unimplemented by default, returns <code>null</code>.
      */
     @Override
     public ConferenceDescription setupConference(ChatRoom chatRoom)

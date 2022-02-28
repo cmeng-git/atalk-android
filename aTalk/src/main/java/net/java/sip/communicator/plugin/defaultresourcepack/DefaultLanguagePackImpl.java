@@ -65,9 +65,9 @@ public class DefaultLanguagePackImpl implements LanguagePack
     }
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for this resource pack.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for this resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for this resource pack.
+     * @return a <code>Map</code>, containing all [key, value] pairs for this resource pack.
      */
     public Map<String, String> getResources()
     {
@@ -75,10 +75,10 @@ public class DefaultLanguagePackImpl implements LanguagePack
     }
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for the given locale.
+     * Returns a <code>Map</code>, containing all [key, value] pairs for the given locale.
      *
-     * @param locale The <tt>Locale</tt> we're looking for.
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for the given locale.
+     * @param locale The <code>Locale</code> we're looking for.
+     * @return a <code>Map</code>, containing all [key, value] pairs for the given locale.
      */
     public Map<String, String> getResources(Locale locale)
     {
@@ -156,12 +156,12 @@ public class DefaultLanguagePackImpl implements LanguagePack
     }
 
     /**
-     * Fills the given resource map with all (key,value) pairs obtained from the given <tt>ResourceBundle</tt>.
+     * Fills the given resource map with all (key,value) pairs obtained from the given <code>ResourceBundle</code>.
      * This method will look in the properties files for references to other properties files and will include
      * in the final map data from all referenced files.
      *
-     * @param resourceBundle The initial <tt>ResourceBundle</tt>, corresponding to the "main" properties file.
-     * @param resources A <tt>Map</tt> that would store the data.
+     * @param resourceBundle The initial <code>ResourceBundle</code>, corresponding to the "main" properties file.
+     * @param resources A <code>Map</code> that would store the data.
      */
     private void initResources(ResourceBundle resourceBundle, Map<String, String> resources)
     {

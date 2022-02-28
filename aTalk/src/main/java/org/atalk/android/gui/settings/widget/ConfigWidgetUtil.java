@@ -31,7 +31,7 @@ import org.atalk.service.configuration.ConfigurationService;
 class ConfigWidgetUtil implements OnBindEditTextListener
 {
     /**
-     * The parent <tt>Preference</tt> handled by this instance.
+     * The parent <code>Preference</code> handled by this instance.
      */
     private final Preference parent;
 
@@ -48,9 +48,9 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     private int mInputType = EditorInfo.TYPE_NULL;
 
     /**
-     * Creates new instance of <tt>ConfigWidgetUtil</tt> for given <tt>parent</tt> <tt>Preference</tt>.
+     * Creates new instance of <code>ConfigWidgetUtil</code> for given <code>parent</code> <code>Preference</code>.
      *
-     * @param parent the <tt>Preference</tt> that will be handled by this instance.
+     * @param parent the <code>Preference</code> that will be handled by this instance.
      */
     ConfigWidgetUtil(Preference parent)
     {
@@ -58,9 +58,9 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     /**
-     * Creates new instance of <tt>ConfigWidgetUtil</tt> for given <tt>parent</tt> <tt>Preference</tt>.
+     * Creates new instance of <code>ConfigWidgetUtil</code> for given <code>parent</code> <code>Preference</code>.
      *
-     * @param parent the <tt>Preference</tt> that will be handled by this instance.
+     * @param parent the <code>Preference</code> that will be handled by this instance.
      * @param mapSummary indicates whether value should be displayed as a summary
      */
     ConfigWidgetUtil(Preference parent, boolean mapSummary)
@@ -70,7 +70,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     /**
-     * PArses the attributes. Should be called by parent <tt>Preference</tt>.
+     * PArses the attributes. Should be called by parent <code>Preference</code>.
      *
      * @param context the Android context
      * @param attrs the attribute set
@@ -83,7 +83,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     /**
-     * Updates the summary if necessary. Should be called by parent <tt>Preference</tt> on value initialization.
+     * Updates the summary if necessary. Should be called by parent <code>Preference</code> on value initialization.
      *
      * @param value the current value
      */
@@ -108,7 +108,7 @@ class ConfigWidgetUtil implements OnBindEditTextListener
     }
 
     /**
-     * Persists new value through the <tt>getConfigurationService</tt>.
+     * Persists new value through the <code>getConfigurationService</code>.
      *
      * @param value the new value to persist.
      */

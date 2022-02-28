@@ -41,7 +41,7 @@ import org.osgi.framework.BundleContext;
 public class LauncherDebugActivity extends OSGiActivity
 {
     /**
-     * Argument that holds an <tt>Intent</tt> that will be started once OSGi startup is finished.
+     * Argument that holds an <code>Intent</code> that will be started once OSGi startup is finished.
      */
     public static final String ARG_RESTORE_INTENT = "ARG_RESTORE_INTENT";
 

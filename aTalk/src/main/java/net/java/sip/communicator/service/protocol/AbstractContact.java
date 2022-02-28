@@ -19,7 +19,7 @@ import java.util.*;
 public abstract class AbstractContact implements Contact
 {
     /**
-     * The list of <tt>ContactResourceListener</tt>-s registered in this contact.
+     * The list of <code>ContactResourceListener</code>-s registered in this contact.
      */
     final private Collection<ContactResourceListener> resourceListeners = new ArrayList<>();
 
@@ -75,7 +75,7 @@ public abstract class AbstractContact implements Contact
      * <p>
      * This default implementation indicates no support for contact resources.
      *
-     * @return <tt>true</tt> if this contact supports resources, <tt>false</tt> otherwise
+     * @return <code>true</code> if this contact supports resources, <code>false</code> otherwise
      */
     public boolean supportResources()
     {
@@ -95,9 +95,9 @@ public abstract class AbstractContact implements Contact
     }
 
     /**
-     * Adds the given <tt>ContactResourceListener</tt> to listen for events related to contact resources changes.
+     * Adds the given <code>ContactResourceListener</code> to listen for events related to contact resources changes.
      *
-     * @param l the <tt>ContactResourceListener</tt> to add
+     * @param l the <code>ContactResourceListener</code> to add
      */
     public void addResourceListener(ContactResourceListener l)
     {
@@ -107,9 +107,9 @@ public abstract class AbstractContact implements Contact
     }
 
     /**
-     * Removes the given <tt>ContactResourceListener</tt> listening for events related to contact resources changes.
+     * Removes the given <code>ContactResourceListener</code> listening for events related to contact resources changes.
      *
-     * @param l the <tt>ContactResourceListener</tt> to remove
+     * @param l the <code>ContactResourceListener</code> to remove
      */
     public void removeResourceListener(ContactResourceListener l)
     {
@@ -119,9 +119,9 @@ public abstract class AbstractContact implements Contact
     }
 
     /**
-     * Notifies all registered <tt>ContactResourceListener</tt>s that an event has occurred.
+     * Notifies all registered <code>ContactResourceListener</code>s that an event has occurred.
      *
-     * @param event the <tt>ContactResourceEvent</tt> to fire notification for
+     * @param event the <code>ContactResourceEvent</code> to fire notification for
      */
     protected void fireContactResourceEvent(ContactResourceEvent event)
     {
@@ -142,7 +142,7 @@ public abstract class AbstractContact implements Contact
     }
 
     /**
-     * Returns the same as <tt>getAddress</tt> function.
+     * Returns the same as <code>getAddress</code> function.
      *
      * @return the address of the contact.
      */

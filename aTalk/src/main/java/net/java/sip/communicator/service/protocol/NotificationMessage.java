@@ -40,7 +40,7 @@ public class NotificationMessage
 	private final Object source;
 
 	/**
-	 * Creates an instance of <tt>NotificationMessage</tt> by specifying the name of the contact
+	 * Creates an instance of <code>NotificationMessage</code> by specifying the name of the contact
 	 * from which the message is, the message group, any additional details and the message actual
 	 * text.
 	 *

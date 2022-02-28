@@ -144,8 +144,8 @@ public class RegistrationStateChangeEvent extends PropertyChangeEvent
     private boolean userRequest = false;
 
     /**
-     * Creates an event instance indicating a change of the provider state from <tt>oldValue</tt> to
-     * <tt>newValue</tt>.
+     * Creates an event instance indicating a change of the provider state from <code>oldValue</code> to
+     * <code>newValue</code>.
      *
      * @param source the provider that generated the event
      * @param oldValue the status the source provider was in before entering the new state.
@@ -199,7 +199,7 @@ public class RegistrationStateChangeEvent extends PropertyChangeEvent
      * Returns a string representation of this event.
      *
      * @return a String containing the name of the event as well as the names of the old and new
-     * <tt>RegistrationState</tt>s
+     * <code>RegistrationState</code>s
      */
     @Override
     public String toString()
@@ -251,7 +251,7 @@ public class RegistrationStateChangeEvent extends PropertyChangeEvent
     /**
      * Changes the event to indicate that it is created from use request.
      *
-     * @param userRequest <tt>true</tt> if from user request
+     * @param userRequest <code>true</code> if from user request
      */
     public void setUserRequest(boolean userRequest)
     {

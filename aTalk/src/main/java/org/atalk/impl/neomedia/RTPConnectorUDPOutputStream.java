@@ -23,9 +23,9 @@ public class RTPConnectorUDPOutputStream extends RTPConnectorOutputStream
     private final DatagramSocket socket;
 
     /**
-     * Initializes a new <tt>RTPConnectorUDPOutputStream</tt>.
+     * Initializes a new <code>RTPConnectorUDPOutputStream</code>.
      *
-     * @param socket a <tt>DatagramSocket</tt>
+     * @param socket a <code>DatagramSocket</code>
      */
     public RTPConnectorUDPOutputStream(DatagramSocket socket)
     {
@@ -33,13 +33,13 @@ public class RTPConnectorUDPOutputStream extends RTPConnectorOutputStream
     }
 
     /**
-     * Sends a specific <tt>RawPacket</tt> through this <tt>OutputDataStream</tt> to a specific <tt>InetSocketAddress</tt>.
+     * Sends a specific <code>RawPacket</code> through this <code>OutputDataStream</code> to a specific <code>InetSocketAddress</code>.
      *
-     * @param packet the <tt>RawPacket</tt> to send through this <tt>OutputDataStream</tt> to the specified <tt>target</tt>
-     * @param target the <tt>InetSocketAddress</tt> to which the specified <tt>packet</tt> is to be sent
-     * through this <tt>OutputDataStream</tt>
-     * @throws IOException if anything goes wrong while sending the specified <tt>packet</tt> through this
-     * <tt>OutputDataStream</tt> to the specified <tt>target</tt>
+     * @param packet the <code>RawPacket</code> to send through this <code>OutputDataStream</code> to the specified <code>target</code>
+     * @param target the <code>InetSocketAddress</code> to which the specified <code>packet</code> is to be sent
+     * through this <code>OutputDataStream</code>
+     * @throws IOException if anything goes wrong while sending the specified <code>packet</code> through this
+     * <code>OutputDataStream</code> to the specified <code>target</code>
      */
     @Override
     protected void sendToTarget(RawPacket packet, InetSocketAddress target)
@@ -50,9 +50,9 @@ public class RTPConnectorUDPOutputStream extends RTPConnectorOutputStream
     }
 
     /**
-     * Returns whether or not this <tt>RTPConnectorOutputStream</tt> has a valid socket.
+     * Returns whether or not this <code>RTPConnectorOutputStream</code> has a valid socket.
      *
-     * @returns true if this <tt>RTPConnectorOutputStream</tt> has a valid socket, false otherwise
+     * @returns true if this <code>RTPConnectorOutputStream</code> has a valid socket, false otherwise
      */
     @Override
     protected boolean isSocketValid()

@@ -44,7 +44,7 @@ public interface ConfigurationService
 
     /**
      * The name of the boolean system property which indicates whether the configuration file is
-     * to be considered read-only. The default value is <tt>false</tt> which means that the
+     * to be considered read-only. The default value is <code>false</code> which means that the
      * configuration file is considered writable.
      */
     String PNAME_CONFIGURATION_FILE_IS_READ_ONLY = "net.java.sip.communicator.CONFIGURATION_FILE_IS_READ_ONLY";
@@ -126,17 +126,17 @@ public interface ConfigurationService
     int removeProperty(String propertyName);
 
     /**
-     * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing all property names.
+     * Returns a <code>java.util.List</code> of <code>String</code>s containing all property names.
      *
-     * @return a <tt>java.util.List</tt>containing all property names
+     * @return a <code>java.util.List</code>containing all property names
      */
     List<String> getAllPropertyNames(String name);
 
     /**
-     * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing the all property names
-     * that have the specified prefix. Depending on the value of the <tt>exactPrefixMatch</tt>
+     * Returns a <code>java.util.List</code> of <code>String</code>s containing the all property names
+     * that have the specified prefix. Depending on the value of the <code>exactPrefixMatch</code>
      * parameter the method will (when false) or will not (when exactPrefixMatch is true) include
-     * property names that have prefixes longer than the specified <tt>prefix</tt> param.
+     * property names that have prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
      *
@@ -155,14 +155,14 @@ public interface ConfigurationService
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have a prefix that
-     * is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * is an exact match of the the <code>prefix</code> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
-     * @return a <tt>java.util.List</tt>containing all property name String-s matching the specified conditions.
+     * @return a <code>java.util.List</code>containing all property name String-s matching the specified conditions.
      */
     List<String> getPropertyNamesByPrefix(String prefix, boolean exactPrefixMatch);
 
     /**
-     * Returns a <tt>List</tt> of <tt>String</tt>s containing the property names that have the
+     * Returns a <code>List</code> of <code>String</code>s containing the property names that have the
      * specified suffix. A suffix is considered to be everything after the last dot in the property name.
      *
      * For example, imagine a configuration service instance containing two properties only:
@@ -172,14 +172,14 @@ public interface ConfigurationService
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * </code>
      *
-     * A call to this method with <tt>suffix</tt> equal to "PROP1" will return both properties,
-     * whereas the call with <tt>suffix</tt> equal to "communicator.PROP1" or "PROP2" will return
-     * an empty <tt>List</tt>. Thus, if the <tt>suffix</tt> argument contains a dot, nothing will be found.
+     * A call to this method with <code>suffix</code> equal to "PROP1" will return both properties,
+     * whereas the call with <code>suffix</code> equal to "communicator.PROP1" or "PROP2" will return
+     * an empty <code>List</code>. Thus, if the <code>suffix</code> argument contains a dot, nothing will be found.
      *
      *
      * @param suffix the suffix for the property names to be returned
-     * @return a <tt>List</tt> of <tt>String</tt>s containing the property names which contain the
-     * specified <tt>suffix</tt>
+     * @return a <code>List</code> of <code>String</code>s containing the property names which contain the
+     * specified <code>suffix</code>
      */
     List<String> getPropertyNamesBySuffix(String suffix);
 
@@ -190,7 +190,7 @@ public interface ConfigurationService
      *
      * @param propertyName the name of the property that is being queried.
      * @return the result of calling the property's toString method and null in case there was no
-     * value mapped against the specified <tt>propertyName</tt>, or the returned string had zero
+     * value mapped against the specified <code>propertyName</code>, or the returned string had zero
      * length or contained whitespaces only.
      */
     String getString(String propertyName);
@@ -204,7 +204,7 @@ public interface ConfigurationService
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
      * in this <code>ConfigurationService</code>
      * @return the result of calling the property's toString method and <code>defaultValue</code>
-     * in case there was no value mapped against the specified <tt>propertyName</tt>, or the
+     * in case there was no value mapped against the specified <code>propertyName</code>, or the
      * returned string had zero length or contained whitespaces only.
      */
     String getString(String propertyName, String defaultValue);
@@ -227,53 +227,53 @@ public interface ConfigurationService
 
     /**
      * Gets the value of a specific property as a signed decimal integer. If the specified
-     * property name is associated with a value in this <tt>ConfigurationService</tt>, the string
+     * property name is associated with a value in this <code>ConfigurationService</code>, the string
      * representation of the value is parsed into a signed decimal integer according to the rules
      * of {@link Integer#parseInt(String)}. If parsing the value as a signed decimal integer
      * fails or there is no value associated with the specified property name,
-     * <tt>defaultValue</tt> is returned.
+     * <code>defaultValue</code> is returned.
      *
      * @param propertyName the name of the property to get the value of as a signed decimal integer
      * @param defaultValue the value to be returned if parsing the value of the specified property name as a
      * signed decimal integer fails or there is no value associated with the specified
-     * property name in this <tt>ConfigurationService</tt>
+     * property name in this <code>ConfigurationService</code>
      * @return the value of the property with the specified name in this
-     * <tt>ConfigurationService</tt> as a signed decimal integer; <tt>defaultValue</tt> if
+     * <code>ConfigurationService</code> as a signed decimal integer; <code>defaultValue</code> if
      * parsing the value of the specified property name fails or no value is associated in this
-     * <tt>ConfigurationService</tt> with the specified property name
+     * <code>ConfigurationService</code> with the specified property name
      */
     int getInt(String propertyName, int defaultValue);
 
     /**
      * Gets the value of a specific property as a double. If the specified property name is
-     * associated with a value in this <tt>ConfigurationService</tt>, the string representation
+     * associated with a value in this <code>ConfigurationService</code>, the string representation
      * of the value is parsed into a double according to the rules of
      * {@link Double#parseDouble(String)}. If there is no value, or parsing of the value fails,
-     * <tt>defaultValue</tt> is returned.
+     * <code>defaultValue</code> is returned.
      *
      * @param propertyName the name of the property.
      * @param defaultValue the default value to be returned.
      * @return the value of the property with the specified name in this
-     * <tt>ConfigurationService</tt> as a double, or <tt>defaultValue</tt>.
+     * <code>ConfigurationService</code> as a double, or <code>defaultValue</code>.
      */
     double getDouble(String propertyName, double defaultValue);
 
     /**
      * Gets the value of a specific property as a signed decimal long integer. If the specified
-     * property name is associated with a value in this <tt>ConfigurationService</tt>, the string
+     * property name is associated with a value in this <code>ConfigurationService</code>, the string
      * representation of the value is parsed into a signed decimal long integer according to the
      * rules of {@link Long#parseLong(String)}. If parsing the value as a signed decimal long
      * integer fails or there is no value associated with the specified property name,
-     * <tt>defaultValue</tt> is returned.
+     * <code>defaultValue</code> is returned.
      *
      * @param propertyName the name of the property to get the value of as a signed decimal long integer
      * @param defaultValue the value to be returned if parsing the value of the specified property name as a
      * signed decimal long integer fails or there is no value associated with the specified
-     * property name in this <tt>ConfigurationService</tt>
+     * property name in this <code>ConfigurationService</code>
      * @return the value of the property with the specified name in this
-     * <tt>ConfigurationService</tt> as a signed
-     * decimal long integer; <tt>defaultValue</tt> if parsing the value of the specified property
-     * name fails or no value is associated in this <tt>ConfigurationService</tt> with the specified property name
+     * <code>ConfigurationService</code> as a signed
+     * decimal long integer; <code>defaultValue</code> if parsing the value of the specified property
+     * name fails or no value is associated in this <code>ConfigurationService</code> with the specified property name
      */
     long getLong(String propertyName, long defaultValue);
 

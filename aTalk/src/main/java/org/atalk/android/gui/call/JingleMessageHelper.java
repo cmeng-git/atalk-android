@@ -39,12 +39,12 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageListener;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
-import org.jivesoftware.smackx.jingle.RtpDescriptionExtension;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import java.util.*;
@@ -122,17 +122,15 @@ public final class JingleMessageHelper implements JingleMessageListener
         mConnections.put(id, connection);
         mJingleCalls.put(id, callee);
         isVideoCall = videoCall;
-
         JingleMessage msgPropose = new JingleMessage(JingleMessage.ACTION_PROPOSE, id);
 
-        RtpDescriptionExtension rtpDescriptionExtension = new RtpDescriptionExtension();
-        rtpDescriptionExtension.setMedia("audio");
-        msgPropose.addDescriptionExtension(rtpDescriptionExtension);
-
+        RtpDescription.Builder rtpBuilder = RtpDescription.builder();
+        rtpBuilder.setMedia("audio");
+        msgPropose.addDescriptionExtension(rtpBuilder.build());
         if (videoCall) {
-            rtpDescriptionExtension = new RtpDescriptionExtension();
-            rtpDescriptionExtension.setMedia("video");
-            msgPropose.addDescriptionExtension(rtpDescriptionExtension);
+            rtpBuilder = RtpDescription.builder();
+            rtpBuilder.setMedia("video");
+            msgPropose.addDescriptionExtension(rtpBuilder.build());
         }
 
         MessageBuilder msgBuilder = StanzaBuilder.buildMessage(msgId)

@@ -19,7 +19,7 @@ public interface ScreenDevice
 	 *
 	 * @param p
 	 * 		point coordinate
-	 * @return <tt>true</tt> if <tt>point</tt> belongs to this screen; <tt>false</tt>, otherwise
+	 * @return <code>true</code> if <code>point</code> belongs to this screen; <code>false</code>, otherwise
 	 */
 	public boolean containsPoint(Point p);
 

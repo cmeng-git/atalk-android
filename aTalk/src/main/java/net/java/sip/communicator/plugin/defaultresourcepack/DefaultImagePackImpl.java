@@ -32,10 +32,10 @@ public class DefaultImagePackImpl
         = "resources.images.images";
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for this
+     * Returns a <code>Map</code>, containing all [key, value] pairs for this
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for this
+     * @return a <code>Map</code>, containing all [key, value] pairs for this
      * resource pack.
      */
     public Map<String, String> getResources()
@@ -74,13 +74,13 @@ public class DefaultImagePackImpl
 
     /**
      * Fills the given resource map with all (key,value) pairs obtained from the
-     * given <tt>ResourceBundle</tt>. This method will look in the properties
+     * given <code>ResourceBundle</code>. This method will look in the properties
      * files for references to other properties files and will include in the
      * final map data from all referenced files.
      *
-     * @param resourceBundle The initial <tt>ResourceBundle</tt>, corresponding
+     * @param resourceBundle The initial <code>ResourceBundle</code>, corresponding
      * to the "main" properties file.
-     * @param resources A <tt>Map</tt> that would store the data.
+     * @param resources A <code>Map</code> that would store the data.
      */
     private void initResources( ResourceBundle resourceBundle,
                                 Map<String, String> resources)

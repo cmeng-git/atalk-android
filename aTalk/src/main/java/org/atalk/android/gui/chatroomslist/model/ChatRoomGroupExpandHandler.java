@@ -45,7 +45,7 @@ public class ChatRoomGroupExpandHandler implements ExpandableListView.OnGroupExp
 	private final ExpandableListView chatRoomListView;
 
 	/**
-	 * Creates new instance of <tt>MetaGroupExpandHandler</tt>.
+	 * Creates new instance of <code>MetaGroupExpandHandler</code>.
 	 *
 	 * @param chatRoomList
 	 *        contact list data model.

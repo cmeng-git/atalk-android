@@ -66,14 +66,14 @@ public class InetCidr implements Serializable, Comparable<InetCidr> {
     }
 
     /**
-     * Constructs a <tt>InetCidr</tt> provided an ip address and an ip mask.
+     * Constructs a <code>InetCidr</code> provided an ip address and an ip mask.
      * 
      * <p>If the mask is not valid, an exception is raised.
      * 
      * @param addr the ip address (IPv4)
      * @param netMask the ip mask
-     * @throws IllegalArgumentException if <tt>addr</tt> or <tt>netMask</tt> is <tt>null</tt>.
-     * @throws IllegalArgumentException if the <tt>netMask</tt> is not a valid one.
+     * @throws IllegalArgumentException if <code>addr</code> or <code>netMask</code> is <code>null</code>.
+     * @throws IllegalArgumentException if the <code>netMask</code> is not a valid one.
      */
     public InetCidr(InetAddress addr, InetAddress netMask) {
     	if ((addr == null) || (netMask == null)) {
@@ -117,18 +117,18 @@ public class InetCidr implements Serializable, Comparable<InetCidr> {
     }
     
     /**
-     * Returns a <tt>long</tt> representation of Cidr.
+     * Returns a <code>long</code> representation of Cidr.
      * 
      * <P>The high 32 bits contain the mask, the low 32 bits the network address.
      * 
-     * @return the <tt>long</tt> representation of the Cidr
+     * @return the <code>long</code> representation of the Cidr
      */
     public final long toLong() {
     	return (addr & 0xFFFFFFFFL) + ( ((long)mask) << 32);
     }
     
     /**
-     * Creates a new <tt>InetCidr</tt> from its <tt>long</tt> representation.
+     * Creates a new <code>InetCidr</code> from its <code>long</code> representation.
      * @param l the Cidr in its "long" format
      * @return the object
      * @throws IllegalArgumentException
@@ -218,8 +218,8 @@ public class InetCidr implements Serializable, Comparable<InetCidr> {
 	/**
      * Checks whether a list of InetCidr is strictly sorted (no 2 equal objects).
      * 
-     * @param list list of potentially sorted <tt>InetCidr</tt>
-     * @return true if <tt>list</tt> is sorted or <tt>null</tt>
+     * @param list list of potentially sorted <code>InetCidr</code>
+     * @return true if <code>list</code> is sorted or <code>null</code>
      * @throws NullPointerException if one or more elements of the list are null
      */
     public static boolean isSorted(List<InetCidr> list) {
@@ -247,7 +247,7 @@ public class InetCidr implements Serializable, Comparable<InetCidr> {
      * Checks whether the list does not contain any overlapping cidr(s).
      * 
      * <p>Pre-requisite: list must be already sorted.
-     * @param list sorted list of <tt>InetCidr</tt>
+     * @param list sorted list of <code>InetCidr</code>
      * @throws NullPointerException if a list element is null
      * @throws IllegalStateException if overlapping cidr are detected
      */

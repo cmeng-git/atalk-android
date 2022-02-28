@@ -15,7 +15,7 @@ package org.atalk.service.neomedia.codec;
 public class Constants
 {
     /**
-     * The <tt>/rtp</tt> constant. Introduced in order to achieve consistency in the casing of the <tt>String</tt>.
+     * The <code>/rtp</code> constant. Introduced in order to achieve consistency in the casing of the <code>String</code>.
      */
     public static final String _RTP = "/rtp";
 

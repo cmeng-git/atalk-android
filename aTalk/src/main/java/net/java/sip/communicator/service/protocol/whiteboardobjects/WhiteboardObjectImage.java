@@ -84,7 +84,7 @@ public interface WhiteboardObjectImage extends WhiteboardObject
 
 	/**
 	 * Returns a binary array containing the image that should be displayed as the background of
-	 * this <tt>WhiteboardObject</tt>.
+	 * this <code>WhiteboardObject</code>.
 	 *
 	 * @return a binary array containing the image that should be displayed as the object
 	 *         background.

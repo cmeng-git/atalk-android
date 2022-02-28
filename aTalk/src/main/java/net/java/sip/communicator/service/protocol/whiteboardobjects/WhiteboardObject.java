@@ -17,7 +17,7 @@ package net.java.sip.communicator.service.protocol.whiteboardobjects;
  * Used to access the content of instant whiteboard objects that are sent or received via the
  * WhiteboardOperationSet.
  * <p>
- * WhiteboardObject are created through the <tt>WhiteboardSession</tt> session.
+ * WhiteboardObject are created through the <code>WhiteboardSession</code> session.
  * <p>
  *
  * All WhiteboardObjects have whiteboard object id.

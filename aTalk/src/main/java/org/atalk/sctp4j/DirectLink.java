@@ -20,7 +20,7 @@ import java.io.IOException;
 import timber.log.Timber;
 
 /**
- * A direct connection that passes packets between two <tt>SctpSocket</tt> instances.
+ * A direct connection that passes packets between two <code>SctpSocket</code> instances.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

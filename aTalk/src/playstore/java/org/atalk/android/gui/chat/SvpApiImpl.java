@@ -18,7 +18,7 @@ import org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivit
 import java.util.*;
 
 /**
- * The <tt>SvpApiImpl</tt> working in conjunction with ChatFragment to provide SVP i.e.
+ * The <code>SvpApiImpl</code> working in conjunction with ChatFragment to provide SVP i.e.
  * Split Street View Panorama And Map support.
  *
  * @author Eng Chong Meng

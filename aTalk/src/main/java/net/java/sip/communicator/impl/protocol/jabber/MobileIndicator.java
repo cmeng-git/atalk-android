@@ -249,11 +249,11 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     }
 
     /**
-     * Checks whether <tt>value</tt> starts one of the <tt>checkStrs</> Strings.
+     * Checks whether <code>value</code> starts one of the <code>checkStrs</> Strings.
      *
      * @param value the value to check
      * @param checkStrs an array of strings we are searching for.
-     * @return <tt>true</tt> if <tt>value</tt> starts one of the Strings.
+     * @return <code>true</code> if <code>value</code> starts one of the Strings.
      */
     private static boolean startsWithStrings(String value, String[] checkStrs)
     {
@@ -265,11 +265,11 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     }
 
     /**
-     * Checks whether <tt>value</tt> contains one of the <tt>checkStrs</> Strings.
+     * Checks whether <code>value</code> contains one of the <code>checkStrs</> Strings.
      *
      * @param value the value to check
      * @param checkStrs an array of strings we are searching for.
-     * @return <tt>true</tt> if <tt>value</tt> contains one of the Strings.
+     * @return <code>true</code> if <code>value</code> contains one of the Strings.
      */
     private static boolean containsStrings(String value, String[] checkStrs)
     {

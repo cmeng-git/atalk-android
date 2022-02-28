@@ -8,10 +8,10 @@ package org.atalk.service.neomedia;
 import java.net.*;
 
 /**
- * The <tt>StreamConnector</tt> interface represents a pair of datagram sockets that a media stream
+ * The <code>StreamConnector</code> interface represents a pair of datagram sockets that a media stream
  * could use for RTP and RTCP traffic.
  * <p>
- * The reason why this media service makes sockets visible through this <tt>StreamConnector</tt> is
+ * The reason why this media service makes sockets visible through this <code>StreamConnector</code> is
  * so that they could be shared among media and other libraries that may need to use them like an
  * ICE implementation for example.
  *
@@ -20,7 +20,7 @@ import java.net.*;
 public interface StreamConnector
 {
 	/**
-	 * Enumerates the protocols supported by <tt>StreamConnector</tt>.
+	 * Enumerates the protocols supported by <code>StreamConnector</code>.
 	 */
 	public enum Protocol {
 		/**
@@ -35,48 +35,48 @@ public interface StreamConnector
 	}
 
 	/**
-	 * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
+	 * Returns a reference to the <code>DatagramSocket</code> that a stream should use for data (e.g.
 	 * RTP) traffic.
 	 *
-	 * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
-	 *         RTP) traffic or <tt>null</tt> if this <tt>StreamConnector</tt> does not handle UDP
+	 * @return a reference to the <code>DatagramSocket</code> that a stream should use for data (e.g.
+	 *         RTP) traffic or <code>null</code> if this <code>StreamConnector</code> does not handle UDP
 	 *         sockets.
 	 */
 	public DatagramSocket getDataSocket();
 
 	/**
-	 * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
+	 * Returns a reference to the <code>DatagramSocket</code> that a stream should use for control data
 	 * (e.g. RTCP).
 	 *
-	 * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
-	 *         (e.g. RTCP) or <tt>null</tt> if this <tt>StreamConnector</tt> does not handle UDP
+	 * @return a reference to the <code>DatagramSocket</code> that a stream should use for control data
+	 *         (e.g. RTCP) or <code>null</code> if this <code>StreamConnector</code> does not handle UDP
 	 *         sockets.
 	 */
 	public DatagramSocket getControlSocket();
 
 	/**
-	 * Returns a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
+	 * Returns a reference to the <code>Socket</code> that a stream should use for data (e.g. RTP)
 	 * traffic.
 	 *
-	 * @return a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
-	 *         traffic or <tt>null</tt> if this <tt>StreamConnector</tt> does not handle TCP
+	 * @return a reference to the <code>Socket</code> that a stream should use for data (e.g. RTP)
+	 *         traffic or <code>null</code> if this <code>StreamConnector</code> does not handle TCP
 	 *         sockets.
 	 */
 	public Socket getDataTCPSocket();
 
 	/**
-	 * Returns a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
+	 * Returns a reference to the <code>Socket</code> that a stream should use for control data (e.g.
 	 * RTCP).
 	 *
-	 * @return a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
-	 *         RTCP) or <tt>null</tt> if this <tt>StreamConnector</tt> does not handle TCP sockets.
+	 * @return a reference to the <code>Socket</code> that a stream should use for control data (e.g.
+	 *         RTCP) or <code>null</code> if this <code>StreamConnector</code> does not handle TCP sockets.
 	 */
 	public Socket getControlTCPSocket();
 
 	/**
-	 * Returns the protocol of this <tt>StreamConnector</tt>.
+	 * Returns the protocol of this <code>StreamConnector</code>.
 	 *
-	 * @return the protocol of this <tt>StreamConnector</tt>
+	 * @return the protocol of this <code>StreamConnector</code>
 	 */
 	public Protocol getProtocol();
 
@@ -87,23 +87,23 @@ public interface StreamConnector
 	public void close();
 
 	/**
-	 * Notifies this instance that utilization of its <tt>DatagramSocket</tt>s for data and/or
+	 * Notifies this instance that utilization of its <code>DatagramSocket</code>s for data and/or
 	 * control traffic has started.
 	 */
 	public void started();
 
 	/**
-	 * Notifies this instance that utilization of its <tt>DatagramSocket</tt>s for data and/or
+	 * Notifies this instance that utilization of its <code>DatagramSocket</code>s for data and/or
 	 * control traffic has temporarily stopped. This instance should be prepared to be started at a
 	 * later time again though.
 	 */
 	public void stopped();
 
 	/**
-	 * Returns <tt>true</tt> if this <tt>StreamConnector</tt> uses rtcp-mux, that is, if its data
+	 * Returns <code>true</code> if this <code>StreamConnector</code> uses rtcp-mux, that is, if its data
 	 * and control sockets share the same local address and port.
 	 * 
-	 * @return <tt>true</tt> if this <tt>StreamConnector</tt> uses rtcp-mux, that is, if its data
+	 * @return <code>true</code> if this <code>StreamConnector</code> uses rtcp-mux, that is, if its data
 	 *         and control sockets share the same local address and port.
 	 */
 	public boolean isRtcpmux();

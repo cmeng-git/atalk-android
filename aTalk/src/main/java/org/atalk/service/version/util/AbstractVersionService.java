@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Base implementation of <tt>VersionService</tt> that uses major, minor and nightly build id
+ * Base implementation of <code>VersionService</code> that uses major, minor and nightly build id
  * fields for versioning purposes.
  *
  * @author Emil Ivov
@@ -27,10 +27,10 @@ public abstract class AbstractVersionService implements VersionService
             = Pattern.compile("(\\d+)\\.(\\d+)\\.([\\d.]+)");
 
     /**
-     * Returns a Version instance corresponding to the <tt>version</tt> string.
+     * Returns a Version instance corresponding to the <code>version</code> string.
      *
-     * @param version a version String that we have obtained by calling a <tt>Version.toString()</tt> method.
-     * @return the <tt>Version</tt> object corresponding to the <tt>version</tt> string. Or null
+     * @param version a version String that we have obtained by calling a <code>Version.toString()</code> method.
+     * @return the <code>Version</code> object corresponding to the <code>version</code> string. Or null
      * if we cannot parse the string.
      */
     public Version parseVersionString(String version)
@@ -47,12 +47,12 @@ public abstract class AbstractVersionService implements VersionService
     }
 
     /**
-     * Creates new <tt>Version</tt> instance specific to current implementation.
+     * Creates new <code>Version</code> instance specific to current implementation.
      *
      * @param majorVersion major version number.
      * @param minorVersion minor version number.
      * @param nightlyBuildId nightly build id string.
-     * @return new <tt>Version</tt> instance specific to current implementation for given major,
+     * @return new <code>Version</code> instance specific to current implementation for given major,
      * minor and nightly build id parameters.
      */
     protected abstract Version createVersionImpl(int majorVersion, int minorVersion, String nightlyBuildId);

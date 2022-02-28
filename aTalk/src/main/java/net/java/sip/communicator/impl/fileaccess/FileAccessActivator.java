@@ -31,7 +31,7 @@ public class FileAccessActivator implements BundleActivator
     /**
      * Initialize and start file service
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if initializing and starting file service fails
      */
     public void start(BundleContext bundleContext)
@@ -46,7 +46,7 @@ public class FileAccessActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)

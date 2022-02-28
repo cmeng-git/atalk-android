@@ -32,7 +32,7 @@ import java.util.*;
  * - {@link #EXTRA_KEY_ENC_REG} with {@link EncodingsRegistrationUtil} instance which  encoding properties<br/>
  * <br/>
  * After activity finishes it's job it return in {@link Intent} the
- * {@link EncodingsRegistrationUtil} under its key and additional <tt>boolean</tt> flag
+ * {@link EncodingsRegistrationUtil} under its key and additional <code>boolean</code> flag
  * indicating whether any changes has been made under key: {@link #EXTRA_KEY_HAS_CHANGES}.
  *
  * @author Pawel Domas
@@ -122,7 +122,7 @@ public class MediaEncodingActivity extends OSGiActivity
     /**
      * Loads properties passed by intent's extras and initializes the activity.
      *
-     * @param savedInstanceState bundle that contains the state or <tt>null</tt> if the <tt>Activity</tt> was just
+     * @param savedInstanceState bundle that contains the state or <code>null</code> if the <code>Activity</code> was just
      * created.
      */
     private void loadEncodings(Bundle savedInstanceState)
@@ -209,10 +209,10 @@ public class MediaEncodingActivity extends OSGiActivity
     }
 
     /**
-     * Creates string representation for given set of <tt>MediaFormat</tt>s.
+     * Creates string representation for given set of <code>MediaFormat</code>s.
      *
-     * @param encodings the iterator with <tt>MediaFormat</tt> to be converted into strings.
-     * @return string representation of given <tt>MediaFormat</tt>s.
+     * @param encodings the iterator with <code>MediaFormat</code> to be converted into strings.
+     * @return string representation of given <code>MediaFormat</code>s.
      */
     public static List<String> getEncodingsStr(Iterator<MediaFormat> encodings)
     {
@@ -224,11 +224,11 @@ public class MediaEncodingActivity extends OSGiActivity
     }
 
     /**
-     * Select <tt>MediaFormat</tt> by string representation created using {@link #getEncodingStr(MediaFormat)}.
+     * Select <code>MediaFormat</code> by string representation created using {@link #getEncodingStr(MediaFormat)}.
      *
-     * @param encodings set of <tt>MediaFormat</tt>s from which the one will be selected.
-     * @param str string representation of <tt>MediaFormat</tt>.
-     * @return selected <tt>MediaFormat</tt> from the given set by matching string representation.
+     * @param encodings set of <code>MediaFormat</code>s from which the one will be selected.
+     * @param str string representation of <code>MediaFormat</code>.
+     * @return selected <code>MediaFormat</code> from the given set by matching string representation.
      */
     public static MediaFormat getEncodingFromStr(Iterator<MediaFormat> encodings, String str)
     {
@@ -288,7 +288,7 @@ public class MediaEncodingActivity extends OSGiActivity
     }
 
     /**
-     * Catches the back key and returns edited state in <tt>Intent</tt> extra. <br/>
+     * Catches the back key and returns edited state in <code>Intent</code> extra. <br/>
      * {@inheritDoc}
      */
     @Override
@@ -313,8 +313,8 @@ public class MediaEncodingActivity extends OSGiActivity
     }
 
     /**
-     * Commits priorities edited by the <tt>EncodingsFragment</tt> into given
-     * <tt>EncodingConfiguration</tt>.
+     * Commits priorities edited by the <code>EncodingsFragment</code> into given
+     * <code>EncodingConfiguration</code>.
      *
      * @param encodingConf configuration that will store encodings priorities.
      * @param mediaType audio or video media type that was edited.

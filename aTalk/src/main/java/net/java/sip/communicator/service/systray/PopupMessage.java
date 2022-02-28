@@ -9,10 +9,10 @@ package net.java.sip.communicator.service.systray;
 import javax.swing.JComponent;
 
 /**
- * The <tt>PopupMessage</tt> class encloses informations to show in a popup.
+ * The <code>PopupMessage</code> class encloses informations to show in a popup.
  * While a message title and a message body are mandatory informations,
  * a popup message could provides more stuffs like a component or an image which
- * may be used by a <tt>PopupMessageHandler</tt> capable to handle it.
+ * may be used by a <code>PopupMessageHandler</code> capable to handle it.
  *
  * @author Symphorien Wanko
  */
@@ -41,7 +41,7 @@ public class PopupMessage
     private byte[] imageIcon;
 
     /**
-     * A ready to show <tt>JComponet</tt> for this <tt>PopupMessage</tt>.
+     * A ready to show <code>JComponet</code> for this <code>PopupMessage</code>.
      */
     private JComponent component;
 
@@ -51,7 +51,7 @@ public class PopupMessage
     private int messageType;
 
     /**
-     * Additional info to be used by the <tt>PopupMessageHandler</tt>.
+     * Additional info to be used by the <code>PopupMessageHandler</code>.
      */
     private Object tag;
 
@@ -66,7 +66,7 @@ public class PopupMessage
     private String group;
 
     /**
-     * Creates a <tt>PopupMessage</tt> with the given title and message inside.
+     * Creates a <code>PopupMessage</code> with the given title and message inside.
      *
      * @param title title of the message
      * @param message message to show in the systray
@@ -83,7 +83,7 @@ public class PopupMessage
      *
      * @param title the title, which will be shown
      * @param message the content of the message to display
-     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <tt>SystrayService</tt>
+     * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <code>SystrayService</code>
      */
     public PopupMessage(String title, String message, int messageType)
     {
@@ -92,7 +92,7 @@ public class PopupMessage
     }
 
     /**
-     * Creates a new <tt>PopupMessage</tt> with the given title, message and
+     * Creates a new <code>PopupMessage</code> with the given title, message and
      * icon.
      *
      * @param title the title of the message
@@ -106,11 +106,11 @@ public class PopupMessage
     }
 
     /**
-     * Creates a new <tt>PopupMessage</tt> with the given
-     * <tt>JComponent</tt> as its content. This constructor also takes a title
+     * Creates a new <code>PopupMessage</code> with the given
+     * <code>JComponent</code> as its content. This constructor also takes a title
      * and a message as replacements in cases the component is not usable.
      *
-     * @param component the component to put in the <tt>PopupMessage</tt>
+     * @param component the component to put in the <code>PopupMessage</code>
      * @param title of the message
      * @param message message to use in place of the component
      */
@@ -121,13 +121,13 @@ public class PopupMessage
     }
 
     /**
-     * Creates a new <tt>PopupMessage</tt> with the given
-     * <tt>JComponent</tt> as its content. This constructor also takes a title
+     * Creates a new <code>PopupMessage</code> with the given
+     * <code>JComponent</code> as its content. This constructor also takes a title
      * and a message as replacements in cases the component is not usable.
      *
      * @param title of the message
      * @param message the message to show in this popup
-     * @param tag additional info to be used by the <tt>PopupMessageHandler</tt>
+     * @param tag additional info to be used by the <code>PopupMessageHandler</code>
      */
     public PopupMessage(String title, String message, Object tag)
     {
@@ -136,14 +136,14 @@ public class PopupMessage
     }
 
     /**
-     * Creates a new <tt>PopupMessage</tt> with the given
-     * <tt>JComponent</tt> as its content. This constructor also takes a title
+     * Creates a new <code>PopupMessage</code> with the given
+     * <code>JComponent</code> as its content. This constructor also takes a title
      * and a message as replacements in cases the component is not usable.
      *
      * @param title the title of the message
      * @param message the message to show in this popup
      * @param imageIcon the image icon to show in this popup message
-     * @param tag additional info to be used by the <tt>PopupMessageHandler</tt>
+     * @param tag additional info to be used by the <code>PopupMessageHandler</code>
      */
     public PopupMessage(String title, String message, byte[] imageIcon, Object tag)
     {
@@ -272,9 +272,9 @@ public class PopupMessage
     }
 
     /**
-     * Returns the object used to tag this <tt>PopupMessage</tt>.
+     * Returns the object used to tag this <code>PopupMessage</code>.
      *
-     * @return the object used to tag this <tt>PopupMessage</tt>
+     * @return the object used to tag this <code>PopupMessage</code>
      */
     public Object getTag()
     {

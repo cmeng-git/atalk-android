@@ -9,7 +9,7 @@ package net.java.sip.communicator.service.systray.event;
 import java.util.*;
 
 /**
- * The <tt>SystrayPopupMessageEvent</tt>s are posted when user clicks on the
+ * The <code>SystrayPopupMessageEvent</code>s are posted when user clicks on the
  * system tray popup message.
  *
  * @author Yana Stamcheva
@@ -21,11 +21,11 @@ public class SystrayPopupMessageEvent extends EventObject
      */
     private static final long serialVersionUID = 0L;
 
-    /** an object to distinguish this <tt>SystrayPopupMessageEvent</tt> */
+    /** an object to distinguish this <code>SystrayPopupMessageEvent</code> */
     private Object tag;
 
     /**
-     * Constructs a new <tt>SystrayPopupMessageEvent</tt> object.
+     * Constructs a new <code>SystrayPopupMessageEvent</code> object.
      *
      * @param source object on which the Event initially occurred
      */
@@ -35,7 +35,7 @@ public class SystrayPopupMessageEvent extends EventObject
     }
 
     /**
-     * Creates a new <tt>SystrayPopupMessageEvent</tt> with the source of the
+     * Creates a new <code>SystrayPopupMessageEvent</code> with the source of the
      * event and additional info provided by the popup handler.
      * @param source the source of the event
      * @param tag additional info for listeners

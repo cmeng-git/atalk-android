@@ -64,7 +64,7 @@ public class OperationSetPersistentPresenceJabberImpl
     private PresenceStatus currentStatus;
 
     /**
-     * <tt>true</tt> update both account and contacts status. set to <tt>false</tt> when the
+     * <code>true</code> update both account and contacts status. set to <code>false</code> when the
      * session is resumed to leave contacts' status untouched.
      */
     private boolean updateAllStatus = true;
@@ -202,7 +202,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * the contact list or until the application is terminated.
      *
      * @param id the address of the contact to create.
-     * @return the newly created volatile <tt>ContactImpl</tt>
+     * @return the newly created volatile <code>ContactImpl</code>
      */
     public synchronized ContactJabberImpl createVolatileContact(Jid id)
     {
@@ -217,7 +217,7 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param id the address of the contact to create.
      * @param displayName the display name of the contact.
-     * @return the newly created volatile <tt>ContactImpl</tt>
+     * @return the newly created volatile <code>ContactImpl</code>
      */
     public synchronized ContactJabberImpl createVolatileContact(Jid id, String displayName)
     {
@@ -232,7 +232,7 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param id the address of the contact to create.
      * @param isPrivateMessagingContact indicates whether the contact should be private messaging contact or not.
-     * @return the newly created volatile <tt>ContactImpl</tt>
+     * @return the newly created volatile <code>ContactImpl</code>
      */
     public synchronized ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact)
     {
@@ -248,7 +248,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param id the address of the contact to create.
      * @param isPrivateMessagingContact indicates whether the contact should be private messaging contact or not.
      * @param displayName the display name of the contact.
-     * @return the newly created volatile <tt>ContactImpl</tt>
+     * @return the newly created volatile <code>ContactImpl</code>
      */
     public synchronized ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact,
             String displayName)
@@ -273,13 +273,13 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact from the specified <code>address</code> and <code>persistentData</code>.
      *
      * @param address an identifier of the contact that we'll be creating.
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
      * @param parentGroup the group where the unresolved contact is supposed to belong to.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and <tt>persistentData</tt>
+     * @return the unresolved <code>Contact</code> created from the specified <code>address</code> and <code>persistentData</code>
      */
     public Contact createUnresolvedContact(String address, String persistentData, ContactGroup parentGroup)
     {
@@ -295,12 +295,12 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact from the specified <tt>address</tt> and <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact from the specified <code>address</code> and <code>persistentData</code>.
      *
      * @param address an identifier of the contact that we'll be creating.
      * @param persistentData a String returned Contact's getPersistentData() method during a previous run and that
      * has been persistently stored locally.
-     * @return the unresolved <tt>Contact</tt> created from the specified <tt>address</tt> and <tt>persistentData</tt>
+     * @return the unresolved <code>Contact</code> created from the specified <code>address</code> and <code>persistentData</code>
      */
     public Contact createUnresolvedContact(String address, String persistentData)
     {
@@ -308,7 +308,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Creates and returns a unresolved contact group from the specified <tt>address</tt> and <tt>persistentData</tt>.
+     * Creates and returns a unresolved contact group from the specified <code>address</code> and <code>persistentData</code>.
      *
      * @param groupUID an identifier, returned by ContactGroup's getGroupUID, that the protocol provider may
      * use in order to create the group.
@@ -316,7 +316,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * that has been persistently stored locally.
      * @param parentGroup the group under which the new group is to be created or null if this is group directly
      * underneath the root.
-     * @return the unresolved <tt>ContactGroup</tt> created from the specified <tt>uid</tt> and <tt>persistentData</tt>
+     * @return the unresolved <code>ContactGroup</code> created from the specified <code>uid</code> and <code>persistentData</code>
      */
     public ContactGroup createUnresolvedContactGroup(String groupUID, String persistentData, ContactGroup parentGroup)
     {
@@ -328,7 +328,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * it and null otherwise
      *
      * @param contactID a String identifier of the contact which we're seeking a reference of.
-     * @return a reference to the Contact with the specified <tt>contactID</tt> or null if we don't
+     * @return a reference to the Contact with the specified <code>contactID</code> or null if we don't
      * have a subscription for the that identifier.
      */
     public Contact findContactByID(String contactID)
@@ -454,7 +454,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * Checks if the contact address is associated with private messaging contact or not.
      *
      * @param contactJid the address of the contact.
-     * @return <tt>true</tt> the contact address is associated with private messaging contact and <tt>false</tt> if not.
+     * @return <code>true</code> the contact address is associated with private messaging contact and <code>false</code> if not.
      */
     public boolean isPrivateMessagingContact(Jid contactJid)
     {
@@ -462,10 +462,10 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Removes the specified contact from its current parent and places it under <tt>newParent</tt>.
+     * Removes the specified contact from its current parent and places it under <code>newParent</code>.
      *
-     * @param contactToMove the <tt>Contact</tt> to move
-     * @param newParent the <tt>ContactGroup</tt> where <tt>Contact</tt> would be placed.
+     * @param contactToMove the <code>Contact</code> to move
+     * @param newParent the <code>ContactGroup</code> where <code>Contact</code> would be placed.
      */
     public void moveContactToGroup(Contact contactToMove, ContactGroup newParent)
             throws OperationFailedException
@@ -551,11 +551,11 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Gets the <tt>PresenceStatus</tt> of a contact with a specific <tt>String</tt> identifier.
+     * Gets the <code>PresenceStatus</code> of a contact with a specific <code>String</code> identifier.
      *
      * @param contactJid the jid of the contact whose status we're interested in.
-     * @return the <tt>PresenceStatus</tt> of the contact with the specified <tt>contactIdentifier</tt>
-     * @throws IllegalArgumentException if the specified <tt>contactIdentifier</tt> does not identify a contact
+     * @return the <code>PresenceStatus</code> of the contact with the specified <code>contactIdentifier</code>
+     * @throws IllegalArgumentException if the specified <code>contactIdentifier</code> does not identify a contact
      * known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service
      */
@@ -638,7 +638,7 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param parent the parent group of the server stored contact list where the contact should be added.
      * @param contactIdentifier the contact whose status updates we are subscribing for.
-     * @throws IllegalArgumentException if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the
+     * @throws IllegalArgumentException if <code>contact</code> or <code>parent</code> are not a contact known to the
      * underlying protocol provider.
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced
@@ -659,7 +659,7 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @param contactIdentifier the identifier of the contact whose status updates we are subscribing for.
      * @param pps the owner of the contact to be added to RootGroup.
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      * @throws OperationFailedException with code NETWORK_FAILURE if subscribing fails due to errors experienced
      * during network communication
@@ -675,7 +675,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * Removes a subscription for the presence status of the specified contact.
      *
      * @param contact the contact whose status updates we are unsubscribing from.
-     * @throws IllegalArgumentException if <tt>contact</tt> is not a contact known to the underlying protocol provider
+     * @throws IllegalArgumentException if <code>contact</code> is not a contact known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service.
      * @throws OperationFailedException with code NETWORK_FAILURE if unSubscribing fails due to errors experienced
      * during network communication
@@ -816,11 +816,11 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Sets the display name for <tt>contact</tt> to be <tt>newName</tt>.
+     * Sets the display name for <code>contact</code> to be <code>newName</code>.
      *
-     * @param contact the <tt>Contact</tt> that we are renaming
-     * @param newName a <tt>String</tt> containing the new display name for <tt>metaContact</tt>.
-     * @throws IllegalArgumentException if <tt>contact</tt> is not an instance that belongs to the underlying implementation.
+     * @param contact the <code>Contact</code> that we are renaming
+     * @param newName a <code>String</code> containing the new display name for <code>metaContact</code>.
+     * @throws IllegalArgumentException if <code>contact</code> is not an instance that belongs to the underlying implementation.
      */
     @Override
     public void setDisplayName(Contact contact, String newName)
@@ -1767,7 +1767,7 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Adds the priority mapping for the <tt>statusName</tt>. Make sure we replace ' ' with '_' and
+     * Adds the priority mapping for the <code>statusName</code>. Make sure we replace ' ' with '_' and
      * use upper case as this will be and the property names used in account properties that can
      * override this values.
      *
@@ -1780,12 +1780,12 @@ public class OperationSetPersistentPresenceJabberImpl
     }
 
     /**
-     * Returns the priority which will be used for <tt>statusName</tt>. Make sure we replace ' '
+     * Returns the priority which will be used for <code>statusName</code>. Make sure we replace ' '
      * with '_' and use upper case as this will be and the property names used in account
      * properties that can override this values.
      *
      * @param statusName the status name
-     * @return the priority which will be used for <tt>statusName</tt>.
+     * @return the priority which will be used for <code>statusName</code>.
      */
     private int getPriorityForPresenceStatus(String statusName)
     {

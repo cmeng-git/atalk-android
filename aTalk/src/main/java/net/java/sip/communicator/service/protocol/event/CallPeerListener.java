@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventListener;
 
 /**
- * Receives events notifying of changes that have occurred within a <tt>CallPeer</tt>. Such changes
+ * Receives events notifying of changes that have occurred within a <code>CallPeer</code>. Such changes
  * may pertain to current call peer state, their display name, address, image and (possibly in the
  * future) others.
  *
@@ -21,7 +21,7 @@ public interface CallPeerListener extends EventListener
     /**
      * Indicates that a change has occurred in the status of the source CallPeer.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new status.
      */
     void peerStateChanged(CallPeerChangeEvent evt);
@@ -29,7 +29,7 @@ public interface CallPeerListener extends EventListener
     /**
      * Indicates that a change has occurred in the display name of the source CallPeer.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new display names.
      */
     void peerDisplayNameChanged(CallPeerChangeEvent evt);
@@ -37,7 +37,7 @@ public interface CallPeerListener extends EventListener
     /**
      * Indicates that a change has occurred in the address of the source CallPeer.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new address.
      */
     void peerAddressChanged(CallPeerChangeEvent evt);
@@ -46,7 +46,7 @@ public interface CallPeerListener extends EventListener
      * Indicates that a change has occurred in the transport address that we use to communicate with
      * the peer.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new transport address.
      */
     void peerTransportAddressChanged(CallPeerChangeEvent evt);
@@ -54,7 +54,7 @@ public interface CallPeerListener extends EventListener
     /**
      * Indicates that a change has occurred in the image of the source CallPeer.
      *
-     * @param evt The <tt>CallPeerChangeEvent</tt> instance containing the source event as well as its
+     * @param evt The <code>CallPeerChangeEvent</code> instance containing the source event as well as its
      * previous and its new image.
      */
     void peerImageChanged(CallPeerChangeEvent evt);

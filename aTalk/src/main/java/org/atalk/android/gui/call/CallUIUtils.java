@@ -80,10 +80,10 @@ public class CallUIUtils
     }
 
     /**
-     * Finds first <tt>Contact</tt> for given <tt>Call</tt>.
+     * Finds first <code>Contact</code> for given <code>Call</code>.
      *
-     * @param call the call to check for <tt>Contact</tt>.
-     * @return first <tt>Contact</tt> for given <tt>Call</tt>.
+     * @param call the call to check for <code>Contact</code>.
+     * @return first <code>Contact</code> for given <code>Call</code>.
      */
     public static Contact getCallee(Call call)
     {

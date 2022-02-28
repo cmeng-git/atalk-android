@@ -90,10 +90,10 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
 
     /**
      * Creates an instance of this uri handler, so that it would start handling URIs by passing
-     * them to the providers registered by <tt>protoFactory</tt> .
+     * them to the providers registered by <code>protoFactory</code> .
      *
      * @param protoFactory the provider that created us.
-     * @throws NullPointerException if <tt>protoFactory</tt> is <tt>null</tt>.
+     * @throws NullPointerException if <code>protoFactory</code> is <code>null</code>.
      */
     public UriHandlerJabberImpl(ProtocolProviderFactory protoFactory)
             throws NullPointerException
@@ -331,7 +331,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
      * uri handling service and thus only handle URIs while the factory is available as an OSGi
      * service. We remove ourselves when our factory unregisters its service reference.
      *
-     * @param event the OSGi <tt>ServiceEvent</tt>
+     * @param event the OSGi <code>ServiceEvent</code>
      */
     public void serviceChanged(ServiceEvent event)
     {
@@ -358,7 +358,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
     }
 
     /**
-     * Uses the <tt>UIService</tt> to show an error <tt>message</tt> and log and <tt>exception</tt>.
+     * Uses the <code>UIService</code> to show an error <code>message</code> and log and <code>exception</code>.
      *
      * @param message the message that we'd like to show to the user.
      * @param exc the exception that we'd like to log
@@ -381,7 +381,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
      *
      * @param uri the uri that we'd like to handle with the provider that we are about to select.
      * @return the provider that we should handle URIs through.
-     * @throws OperationFailedException with code <tt>OPERATION_CANCELED</tt> if the users.
+     * @throws OperationFailedException with code <code>OPERATION_CANCELED</code> if the users.
      */
     public ProtocolProviderService selectHandlingProvider(String uri)
             throws OperationFailedException
@@ -435,7 +435,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         }
 
         /**
-         * Returns a human readable <tt>String</tt> representing the provider encapsulated by this
+         * Returns a human readable <code>String</code> representing the provider encapsulated by this
          * class.
          *
          * @return a human readable string representing the provider.

@@ -9,8 +9,8 @@ package net.java.sip.communicator.service.gui.event;
 import java.util.*;
 
 /**
- * The <tt>ContainerEvent</tt> indicates that a change in a <tt>container</tt>
- * such a <tt>Component</tt> added or removed.
+ * The <code>ContainerEvent</code> indicates that a change in a <code>container</code>
+ * such a <code>Component</code> added or removed.
  */
 public class ContainerEvent extends EventObject
 {

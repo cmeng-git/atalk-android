@@ -14,7 +14,7 @@ pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "L
 package net.java.sip.communicator.service.protocol;
 
 /**
- * Represents an <tt>OperationSet</tt> giving access to desktop sharing server-side specific
+ * Represents an <code>OperationSet</code> giving access to desktop sharing server-side specific
  * functionalities.
  *
  * @author Sebastien Vincent
@@ -43,7 +43,7 @@ public interface OperationSetDesktopSharingServer extends OperationSetDesktopStr
 	 * Process keyboard notification received from remote peer.
 	 *
 	 * @param event
-	 *        <tt>KeyEvent</tt> that will be regenerated on local computer
+	 *        <code>KeyEvent</code> that will be regenerated on local computer
 	 */
 	// public void processKeyboardEvent(KeyEvent event);
 
@@ -51,7 +51,7 @@ public interface OperationSetDesktopSharingServer extends OperationSetDesktopStr
 	 * Process mouse notification received from remote peer.
 	 *
 	 * @param event
-	 *        <tt>MouseEvent</tt> that will be regenerated on local computer
+	 *        <code>MouseEvent</code> that will be regenerated on local computer
 	 */
 	// public void processMouseEvent(MouseEvent event);
 

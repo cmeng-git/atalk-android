@@ -20,7 +20,7 @@ import timber.log.Timber;
 public class ProcessorUtility implements ControllerListener
 {
     /**
-     * The <tt>Object</tt> used for syncing when waiting for a processor to enter a specific state.
+     * The <code>Object</code> used for syncing when waiting for a processor to enter a specific state.
      */
     private final Object stateLock = new Object();
 
@@ -38,16 +38,16 @@ public class ProcessorUtility implements ControllerListener
     private static final int WAIT_TIMEOUT = 10;
 
     /**
-     * Initializes a new <tt>ProcessorUtility</tt> instance.
+     * Initializes a new <code>ProcessorUtility</code> instance.
      */
     public ProcessorUtility()
     {
     }
 
     /**
-     * Gets the <tt>Object</tt> to use for syncing when waiting for a processor to enter a specific state.
+     * Gets the <code>Object</code> to use for syncing when waiting for a processor to enter a specific state.
      *
-     * @return the <tt>Object</tt> to use for syncing when waiting for a processor to enter a
+     * @return the <code>Object</code> to use for syncing when waiting for a processor to enter a
      * specific state
      */
     private Object getStateLock()
@@ -58,7 +58,7 @@ public class ProcessorUtility implements ControllerListener
     /**
      * Specifies whether the wait operation has failed or completed with success.
      *
-     * @param failed <tt>true</tt> if waiting has failed; <tt>false</tt>, otherwise
+     * @param failed <code>true</code> if waiting has failed; <code>false</code>, otherwise
      */
     private void setFailed(boolean failed)
     {
@@ -90,12 +90,12 @@ public class ProcessorUtility implements ControllerListener
     }
 
     /**
-     * Waits until <tt>processor</tt> enters state and returns a boolean indicating success or
+     * Waits until <code>processor</code> enters state and returns a boolean indicating success or
      * failure of the operation.
      *
      * @param processor Processor
      * @param state one of the Processor.XXXed state vars
-     * @return <tt>true</tt> if the state has been reached; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the state has been reached; <code>false</code>, otherwise
      */
     public synchronized boolean waitForState(Processor processor, int state)
     {

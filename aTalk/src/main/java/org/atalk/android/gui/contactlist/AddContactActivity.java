@@ -103,7 +103,7 @@ public class AddContactActivity extends OSGiActivity
     /**
      * Method fired when "add" button is clicked.
      *
-     * @param v add button's <tt>View</tt>
+     * @param v add button's <code>View</code>
      */
     public void onAddClicked(View v)
     {
@@ -149,7 +149,7 @@ public class AddContactActivity extends OSGiActivity
      * Adds a rename listener.
      *
      * @param protocolProvider the protocol provider to which the contact was added
-     * @param metaContact the <tt>MetaContact</tt> if the new contact was added to an existing meta contact
+     * @param metaContact the <code>MetaContact</code> if the new contact was added to an existing meta contact
      * @param contactAddress the address of the newly added contact
      * @param displayName the new display name
      */
@@ -180,7 +180,7 @@ public class AddContactActivity extends OSGiActivity
     /**
      * Renames the given meta contact.
      *
-     * @param metaContact the <tt>MetaContact</tt> to rename
+     * @param metaContact the <code>MetaContact</code> to rename
      * @param displayName the new display name
      */
     private void renameContact(final MetaContact metaContact, final String displayName)

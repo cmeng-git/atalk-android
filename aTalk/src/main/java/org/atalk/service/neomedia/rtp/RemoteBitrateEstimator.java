@@ -32,24 +32,24 @@ public interface RemoteBitrateEstimator extends CallStatsObserver
 
 	/**
 	 * Returns the estimated payload bitrate in bits per second if a valid estimate exists;
-	 * otherwise, <tt>-1</tt>.
+	 * otherwise, <code>-1</code>.
 	 *
 	 * @return the estimated payload bitrate in bits per seconds if a valid estimate exists;
-	 *         otherwise, <tt>-1</tt>
+	 *         otherwise, <code>-1</code>
 	 */
 	long getLatestEstimate();
 
     /**
      * Returns the estimated payload bitrate in bits per second if a valid
-     * estimate exists; otherwise, <tt>-1</tt>.
+     * estimate exists; otherwise, <code>-1</code>.
      *
      * @return the estimated payload bitrate in bits per seconds if a valid
-     * estimate exists; otherwise, <tt>-1</tt>
+     * estimate exists; otherwise, <code>-1</code>
      */
     Collection<Long> getSsrcs();
 
     /**
-     * Removes all data for <tt>ssrc</tt>.
+     * Removes all data for <code>ssrc</code>.
      *
      * @param ssrc
      */

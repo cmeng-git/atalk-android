@@ -23,7 +23,7 @@ package net.java.sip.communicator.service.callhistory.event;
 public interface CallHistoryPeerRecordListener
 {
     /**
-     * This method is called when <tt>CallHistoryPeerRecordEvent</tt> occurred.
+     * This method is called when <code>CallHistoryPeerRecordEvent</code> occurred.
      *
      * @param event the event
      */

@@ -25,10 +25,10 @@ public interface MasterPasswordInputService
     /**
      * Shows an input dialog to the user to obtain the master password.
      *
-     * @param prevSuccess <tt>true</tt> if any previous call returned a correct
+     * @param prevSuccess <code>true</code> if any previous call returned a correct
      * master password and there is no need to show an extra "verification
      * failed" message
-     * @return the master password obtained from the user or <tt>null</tt> if
+     * @return the master password obtained from the user or <code>null</code> if
      * none was provided
      */
     public String showInputDialog(boolean prevSuccess);

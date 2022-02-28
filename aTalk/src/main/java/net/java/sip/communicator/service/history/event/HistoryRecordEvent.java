@@ -11,8 +11,8 @@ import net.java.sip.communicator.service.history.*;
 import net.java.sip.communicator.service.history.records.*;
 
 /**
- * The <tt>HistoryRecordEvent</tt> indicates that a <tt>HistoryRecord</tt>s has been received as a result of a
- * <tt>HistoryQuery</tt>.
+ * The <code>HistoryRecordEvent</code> indicates that a <code>HistoryRecord</code>s has been received as a result of a
+ * <code>HistoryQuery</code>.
  *
  * @author Yana Stamcheva
  */
@@ -24,17 +24,17 @@ public class HistoryRecordEvent extends EventObject
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The <tt>HistoryRecord</tt> this event is about.
+	 * The <code>HistoryRecord</code> this event is about.
 	 */
 	private final HistoryRecord historyRecord;
 
 	/**
-	 * Creates a <tt>HistoryRecordEvent</tt> by specifying the initial query and the record this event is about.
+	 * Creates a <code>HistoryRecordEvent</code> by specifying the initial query and the record this event is about.
 	 * 
 	 * @param query
 	 *        the source that triggered this event
 	 * @param historyRecord
-	 *        the <tt>HistoryRecord</tt> this event is about
+	 *        the <code>HistoryRecord</code> this event is about
 	 */
 	public HistoryRecordEvent(HistoryQuery query, HistoryRecord historyRecord) {
 		super(query);
@@ -43,9 +43,9 @@ public class HistoryRecordEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>HistoryQuery</tt> that triggered this event.
+	 * Returns the <code>HistoryQuery</code> that triggered this event.
 	 * 
-	 * @return the <tt>HistoryQuery</tt> that triggered this event
+	 * @return the <code>HistoryQuery</code> that triggered this event
 	 */
 	public HistoryQuery getQuerySource()
 	{
@@ -53,9 +53,9 @@ public class HistoryRecordEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>HistoryRecord</tt>s this event is about.
+	 * Returns the <code>HistoryRecord</code>s this event is about.
 	 * 
-	 * @return the <tt>HistoryRecord</tt>s this event is about
+	 * @return the <code>HistoryRecord</code>s this event is about
 	 */
 	public HistoryRecord getHistoryRecord()
 	{

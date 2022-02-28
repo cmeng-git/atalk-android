@@ -55,14 +55,14 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     private static final long DECISION_INTERVAL = 300;
 
     /**
-     * The interval of time in milliseconds of idle execution of <tt>DecisionMaker</tt> after which
+     * The interval of time in milliseconds of idle execution of <code>DecisionMaker</code> after which
      * the latter should cease to exist. The interval does not have to be very long because the
-     * background threads running the <tt>DecisionMaker</tt>s are pooled anyway.
+     * background threads running the <code>DecisionMaker</code>s are pooled anyway.
      */
     private static final long DECISION_MAKER_IDLE_TIMEOUT = 15 * 1000;
 
     /**
-     * The name of the <tt>DominantSpeakerIdentification</tt> property <tt>dominantSpeaker</tt>
+     * The name of the <code>DominantSpeakerIdentification</code> property <code>dominantSpeaker</code>
      * which specifies the dominant speaker identified by synchronization source identifier (SSRC).
      */
     public static final String DOMINANT_SPEAKER_PROPERTY_NAME
@@ -70,11 +70,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * The interval of time without a call to {@link Speaker#levelChanged(int)} after which
-     * <tt>DominantSpeakerIdentification</tt> assumes that there will be no report of a
-     * <tt>Speaker</tt>'s level within a certain time-frame. The default value of <tt>40</tt> is
+     * <code>DominantSpeakerIdentification</code> assumes that there will be no report of a
+     * <code>Speaker</code>'s level within a certain time-frame. The default value of <code>40</code> is
      * chosen in order to allow non-aggressive fading of the last received or measured level and to
-     * be greater than the most common RTP packet durations in milliseconds i.e. <tt>20</tt> and
-     * <tt>30</tt>.
+     * be greater than the most common RTP packet durations in milliseconds i.e. <code>20</code> and
+     * <code>30</code>.
      */
     private static final long LEVEL_IDLE_TIMEOUT = 40;
 
@@ -91,25 +91,25 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     private static final int LONG_THRESHOLD = 4;
 
     /**
-     * The maximum value of audio level supported by <tt>DominantSpeakerIdentification</tt>.
+     * The maximum value of audio level supported by <code>DominantSpeakerIdentification</code>.
      */
     private static final int MAX_LEVEL = 127;
 
     /**
-     * The minimum value of audio level supported by <tt>DominantSpeakerIdentification</tt>.
+     * The minimum value of audio level supported by <code>DominantSpeakerIdentification</code>.
      */
     private static final int MIN_LEVEL = 0;
 
     /**
-     * The number of (audio) levels received or measured for a <tt>Speaker</tt> to be monitored in
-     * order to determine that the minimum level for the <tt>Speaker</tt> has increased.
+     * The number of (audio) levels received or measured for a <code>Speaker</code> to be monitored in
+     * order to determine that the minimum level for the <code>Speaker</code> has increased.
      */
     private static final int MIN_LEVEL_WINDOW_LENGTH = 15 /* seconds */ * 1000 /* milliseconds */
             / 20 /* milliseconds per level */;
 
     /**
      * The minimum value of speech activity score supported by
-     * <tt>DominantSpeakerIdentification</tt>. The value must be positive because (1) we are going
+     * <code>DominantSpeakerIdentification</code>. The value must be positive because (1) we are going
      * to use it as the argument of a logarithmic function and the latter is undefined for negative
      * arguments and (2) we will be dividing by the speech activity score.
      */
@@ -123,7 +123,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * The (total) number of sub-bands in the frequency range evaluated for immediate speech
-     * activity. The implementation of the class <tt>DominantSpeakerIdentification</tt> does not
+     * activity. The implementation of the class <code>DominantSpeakerIdentification</code> does not
      * really operate on the representation of the signal in the frequency domain, it works with
      * audio levels derived from RFC 6465 &quot;A Real-time Transport Protocol (RTP) Header
      * Extension for Mixer-to-Client Audio Level Indication&quot;.
@@ -132,7 +132,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * The length/size of a sub-band in the frequency range evaluated for immediate speech activity.
-     * In the context of the implementation of the class <tt>DominantSpeakerIdentification</tt>, it
+     * In the context of the implementation of the class <code>DominantSpeakerIdentification</code>, it
      * specifies the length/size of a sub-unit of the audio level range defined by RFC 6465.
      */
     private static final int N1_SUBUNIT_LENGTH = (MAX_LEVEL - MIN_LEVEL + N1 - 1) / N1;
@@ -149,25 +149,25 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * The interval of time without a call to {@link Speaker#levelChanged(int)} after which
-     * <tt>DominantSpeakerIdentification</tt> assumes that a non-dominant <tt>Speaker</tt> is to be
+     * <code>DominantSpeakerIdentification</code> assumes that a non-dominant <code>Speaker</code> is to be
      * automatically removed from {@link #speakers}.
      */
     private static final long SPEAKER_IDLE_TIMEOUT = 60 * 60 * 1000;
 
     /**
-     * The pool of <tt>Thread</tt>s which run <tt>DominantSpeakerIdentification</tt>s.
+     * The pool of <code>Thread</code>s which run <code>DominantSpeakerIdentification</code>s.
      */
     private static final ExecutorService threadPool
             = ExecutorUtils.newCachedThreadPool(true, "DominantSpeakerIdentification");
 
     /**
-     * Computes the binomial coefficient indexed by <tt>n</tt> and <tt>r</tt> i.e. the number of
-     * ways of picking <tt>r</tt> unordered outcomes from <tt>n</tt> possibilities.
+     * Computes the binomial coefficient indexed by <code>n</code> and <code>r</code> i.e. the number of
+     * ways of picking <code>r</code> unordered outcomes from <code>n</code> possibilities.
      *
      * @param n the number of possibilities to pick from
-     * @param r the number unordered outcomes to pick from <tt>n</tt>
-     * @return the binomial coefficient indexed by <tt>n</tt> and <tt>r</tt> i.e. the number of
-     * ways of picking <tt>r</tt> unordered outcomes from <tt>n</tt> possibilities
+     * @param r the number unordered outcomes to pick from <code>n</code>
+     * @return the binomial coefficient indexed by <code>n</code> and <code>r</code> i.e. the number of
+     * ways of picking <code>r</code> unordered outcomes from <code>n</code> possibilities
      */
     private static long binomialCoefficient(int n, int r)
     {
@@ -227,7 +227,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     private Long dominantSSRC;
 
     /**
-     * The last/latest time at which this <tt>DominantSpeakerIdentification</tt> made a (global)
+     * The last/latest time at which this <code>DominantSpeakerIdentification</code> made a (global)
      * decision about speaker switches. The (global) decision about switcher switches should be
      * made every {@link #DECISION_INTERVAL} milliseconds.
      */
@@ -235,51 +235,51 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * The time in milliseconds of the most recent (audio) level report or measurement (regardless
-     * of the <tt>Speaker</tt>).
+     * of the <code>Speaker</code>).
      */
     private long lastLevelChangedTime;
 
     /**
-     * The last/latest time at which this <tt>DominantSpeakerIdentification</tt> notified the
-     * <tt>Speaker</tt>s who have not received or measured audio levels for a certain time (i.e.
+     * The last/latest time at which this <code>DominantSpeakerIdentification</code> notified the
+     * <code>Speaker</code>s who have not received or measured audio levels for a certain time (i.e.
      * {@link #LEVEL_IDLE_TIMEOUT}) that they will very likely not have a level within a certain
      * time-frame of the algorithm.
      */
     private long lastLevelIdleTime;
 
     /**
-     * The <tt>PropertyChangeNotifier</tt> which facilitates the implementations of adding and
-     * removing <tt>PropertyChangeListener</tt>s to and from this instance and firing
-     * <tt>PropertyChangeEvent</tt>s to the added <tt>PropertyChangeListener</tt>s.
+     * The <code>PropertyChangeNotifier</code> which facilitates the implementations of adding and
+     * removing <code>PropertyChangeListener</code>s to and from this instance and firing
+     * <code>PropertyChangeEvent</code>s to the added <code>PropertyChangeListener</code>s.
      */
     private final PropertyChangeNotifier propertyChangeNotifier = new PropertyChangeNotifier();
 
     /**
      * The relative speech activities for the immediate, medium and long time-intervals,
-     * respectively, which were last calculated for a <tt>Speaker</tt>. Simply reduces the
+     * respectively, which were last calculated for a <code>Speaker</code>. Simply reduces the
      * number of allocations and the penalizing effects of the garbage collector.
      */
     private final double[] relativeSpeechActivities = new double[3];
 
     /**
-     * The <tt>Speaker</tt>s in the multipoint conference associated with this
-     * <tt>ActiveSpeakerDetector</tt>.
+     * The <code>Speaker</code>s in the multipoint conference associated with this
+     * <code>ActiveSpeakerDetector</code>.
      */
     private final Map<Long, Speaker> speakers = new HashMap<>();
 
     /**
-     * Initializes a new <tt>DominantSpeakerIdentification</tT> instance.
+     * Initializes a new <code>DominantSpeakerIdentification</tT> instance.
      */
     public DominantSpeakerIdentification()
     {
     }
 
     /**
-     * Adds a <tt>PropertyChangeListener</tt> to the list of listeners interested in and notified
-     * about changes in the values of the properties of this <tt>DominantSpeakerIdentification</tt>.
+     * Adds a <code>PropertyChangeListener</code> to the list of listeners interested in and notified
+     * about changes in the values of the properties of this <code>DominantSpeakerIdentification</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to be notified about changes in the values of the
-     * properties of this <tt>DominantSpeakerIdentification</tt>
+     * @param listener a <code>PropertyChangeListener</code> to be notified about changes in the values of the
+     * properties of this <code>DominantSpeakerIdentification</code>
      */
     public void addPropertyChangeListener(PropertyChangeListener listener)
     {
@@ -287,13 +287,13 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Notifies this <tt>DominantSpeakerIdentification</tt> instance that a specific
-     * <tt>DecisionMaker</tt> has permanently stopped executing (in its background/daemon
-     * <tt>Thread</tt>). If the specified <tt>decisionMaker</tt> is the one utilized by this
-     * <tt>DominantSpeakerIdentification</tt> instance, the latter will update its state to reflect
+     * Notifies this <code>DominantSpeakerIdentification</code> instance that a specific
+     * <code>DecisionMaker</code> has permanently stopped executing (in its background/daemon
+     * <code>Thread</code>). If the specified <code>decisionMaker</code> is the one utilized by this
+     * <code>DominantSpeakerIdentification</code> instance, the latter will update its state to reflect
      * that the former has exited.
      *
-     * @param decisionMaker the <tt>DecisionMaker</tt> which has exited
+     * @param decisionMaker the <code>DecisionMaker</code> which has exited
      */
     synchronized void decisionMakerExited(DecisionMaker decisionMaker)
     {
@@ -306,7 +306,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
      *
      * By the way, the method name reflects the fact that the method handles an HTTP GET request.
      *
-     * @return a <tt>JSONObject</tt> which represents this instance of the purposes of the REST API of Videobridge
+     * @return a <code>JSONObject</code> which represents this instance of the purposes of the REST API of Videobridge
      */
     public JSONObject doGetJSON()
     {
@@ -348,11 +348,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
-     * with this <tt>DominantSpeakerIdentification</tt> in order to notify about a change in the
+     * Fires a new <code>PropertyChangeEvent</code> to the <code>PropertyChangeListener</code>s registered
+     * with this <code>DominantSpeakerIdentification</code> in order to notify about a change in the
      * value of a specific property which had its old value modified to a specific new value.
      *
-     * @param property the name of the property of this <tt>DominantSpeakerIdentification</tt> which had its
+     * @param property the name of the property of this <code>DominantSpeakerIdentification</code> which had its
      * value changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
@@ -369,11 +369,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
-     * with this <tt>DominantSpeakerIdentification</tt> in order to notify about a change in the
+     * Fires a new <code>PropertyChangeEvent</code> to the <code>PropertyChangeListener</code>s registered
+     * with this <code>DominantSpeakerIdentification</code> in order to notify about a change in the
      * value of a specific property which had its old value modified to a specific new value.
      *
-     * @param property the name of the property of this <tt>DominantSpeakerIdentification</tt> which had its
+     * @param property the name of the property of this <code>DominantSpeakerIdentification</code> which had its
      * value changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
@@ -396,12 +396,12 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Gets the <tt>Speaker</tt> in this multipoint conference identified by a specific SSRC. If no
-     * such <tt>Speaker</tt> exists, a new <tt>Speaker</tt> is initialized with the specified
-     * <tt>ssrc</tt>, added to this multipoint conference and returned.
+     * Gets the <code>Speaker</code> in this multipoint conference identified by a specific SSRC. If no
+     * such <code>Speaker</code> exists, a new <code>Speaker</code> is initialized with the specified
+     * <code>ssrc</code>, added to this multipoint conference and returned.
      *
-     * @param ssrc the SSRC identifying the <tt>Speaker</tt> to return
-     * @return the <tt>Speaker</tt> in this multipoint conference identified by the specified <tt>ssrc</tt>
+     * @param ssrc the SSRC identifying the <code>Speaker</code> to return
+     * @return the <code>Speaker</code> in this multipoint conference identified by the specified <code>ssrc</code>
      */
     private synchronized Speaker getOrCreateSpeaker(long ssrc)
     {
@@ -545,8 +545,8 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     /**
      * Starts a background thread which is to repeatedly make the (global) decision about speaker
      * switches if such a background thread has not been started yet and if the current state of
-     * this <tt>DominantSpeakerIdentification</tt> justifies the start of such a background thread
-     * (e.g. there is at least one <tt>Speaker</tt> in this multipoint conference).
+     * this <code>DominantSpeakerIdentification</code> justifies the start of such a background thread
+     * (e.g. there is at least one <code>Speaker</code> in this multipoint conference).
      */
     private synchronized void maybeStartDecisionMaker()
     {
@@ -566,12 +566,12 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Removes a <tt>PropertyChangeListener</tt> from the list of listeners interested in and
+     * Removes a <code>PropertyChangeListener</code> from the list of listeners interested in and
      * notified about changes in the values of the properties of this
-     * <tt>DominantSpeakerIdentification</tt>.
+     * <code>DominantSpeakerIdentification</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to no longer be notified about changes in the values
-     * of the properties of this <tt>DominantSpeakerIdentification</tt>
+     * @param listener a <code>PropertyChangeListener</code> to no longer be notified about changes in the values
+     * of the properties of this <code>DominantSpeakerIdentification</code>
      */
     public void removePropertyChangeListener(PropertyChangeListener listener)
     {
@@ -579,11 +579,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Runs in the background/daemon <tt>Thread</tt> of {@link #decisionMaker} and makes the
+     * Runs in the background/daemon <code>Thread</code> of {@link #decisionMaker} and makes the
      * decision whether there has been a speaker switch event.
      *
-     * @return a negative integer if the <tt>DecisionMaker</tt> is to exit or a non-negative
-     * integer to specify the time in milliseconds until the next execution of the <tt>DecisionMaker</tt>
+     * @return a negative integer if the <code>DecisionMaker</code> is to exit or a non-negative
+     * integer to specify the time in milliseconds until the next execution of the <code>DecisionMaker</code>
      */
     private long runInDecisionMaker()
     {
@@ -621,12 +621,12 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Runs in the background/daemon <tt>Thread</tt> of a specific <tt>DecisionMaker</tt> and makes
+     * Runs in the background/daemon <code>Thread</code> of a specific <code>DecisionMaker</code> and makes
      * the decision whether there has been a speaker switch event.
      *
-     * @param decisionMaker the <tt>DecisionMaker</tt> invoking the method
-     * @return a negative integer if the <tt>decisionMaker</tt> is to exit or a non-negative
-     * integer to specify the time in milliseconds until the next execution of the <tt>decisionMaker</tt>
+     * @param decisionMaker the <code>DecisionMaker</code> invoking the method
+     * @return a negative integer if the <code>decisionMaker</code> is to exit or a non-negative
+     * integer to specify the time in milliseconds until the next execution of the <code>decisionMaker</code>
      */
     long runInDecisionMaker(DecisionMaker decisionMaker)
     {
@@ -649,11 +649,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Notifies the <tt>Speaker</tt>s in this multipoint conference who have not received or
+     * Notifies the <code>Speaker</code>s in this multipoint conference who have not received or
      * measured audio levels for a certain time (i.e. {@link #LEVEL_IDLE_TIMEOUT}) that they will
      * very likely not have a level within a certain time-frame of the
-     * <tt>DominantSpeakerIdentification</tt> algorithm. Additionally, removes the non-dominant
-     * <tt>Speaker</tt>s who have not received or measured audio levels for far too long (i.e.
+     * <code>DominantSpeakerIdentification</code> algorithm. Additionally, removes the non-dominant
+     * <code>Speaker</code>s who have not received or measured audio levels for far too long (i.e.
      * {@link #SPEAKER_IDLE_TIMEOUT}).
      *
      * @param now the time at which the timing out is being detected
@@ -679,28 +679,28 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
     /**
      * Represents the background thread which repeatedly makes the (global) decision about speaker
-     * switches. Weakly references an associated <tt>DominantSpeakerIdentification</tt> instance in
+     * switches. Weakly references an associated <code>DominantSpeakerIdentification</code> instance in
      * order to eventually detect that the multipoint conference has actually expired and that the
-     * background <tt>Thread</tt> should perish.
+     * background <code>Thread</code> should perish.
      *
      * @author Lyubomir Marinov
      */
     private static class DecisionMaker implements Runnable
     {
         /**
-         * The <tt>DominantSpeakerIdentification</tt> instance which is repeatedly run into this
+         * The <code>DominantSpeakerIdentification</code> instance which is repeatedly run into this
          * background thread in order to make the (global) decision about speaker switches. It is a
-         * <tt>WeakReference</tt> in order to eventually detect that the multipoint conference has
-         * actually expired and that this background <tt>Thread</tt> should perish.
+         * <code>WeakReference</code> in order to eventually detect that the multipoint conference has
+         * actually expired and that this background <code>Thread</code> should perish.
          */
         private final WeakReference<DominantSpeakerIdentification> algorithm;
 
         /**
-         * Initializes a new <tt>DecisionMaker</tt> instance which is to repeatedly run a specific
-         * <tt>DominantSpeakerIdentification</tt> into a background thread in order to make the
+         * Initializes a new <code>DecisionMaker</code> instance which is to repeatedly run a specific
+         * <code>DominantSpeakerIdentification</code> into a background thread in order to make the
          * (global) decision about speaker switches.
          *
-         * @param algorithm the <tt>DominantSpeakerIdentification</tt> to be repeatedly run by the new
+         * @param algorithm the <code>DominantSpeakerIdentification</code> to be repeatedly run by the new
          * instance in order to make the (global) decision about speaker switches
          */
         public DecisionMaker(DominantSpeakerIdentification algorithm)
@@ -756,9 +756,9 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
     }
 
     /**
-     * Facilitates this <tt>DominantSpeakerIdentification</tt> in the implementations of adding and
-     * removing <tt>PropertyChangeListener</tt> s and firing <tt>PropertyChangeEvent</tt>s to the
-     * added <tt>PropertyChangeListener</tt>s.
+     * Facilitates this <code>DominantSpeakerIdentification</code> in the implementations of adding and
+     * removing <code>PropertyChangeListener</code> s and firing <code>PropertyChangeEvent</code>s to the
+     * added <code>PropertyChangeListener</code>s.
      *
      * @author Lyubomir Marinov
      */
@@ -778,7 +778,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         /**
          * {@inheritDoc}
          *
-         * Always returns this <tt>DominantSpeakerIdentification</tt>.
+         * Always returns this <code>DominantSpeakerIdentification</code>.
          */
         @Override
         protected Object getPropertyChangeSource(String property, Object oldValue, Object newValue)
@@ -797,68 +797,68 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         private final byte[] immediates = new byte[LONG_COUNT * N3 * N2];
 
         /**
-         * The speech activity score of this <tt>Speaker</tt> for the immediate time-interval.
+         * The speech activity score of this <code>Speaker</code> for the immediate time-interval.
          */
         private double immediateSpeechActivityScore = MIN_SPEECH_ACTIVITY_SCORE;
 
         /**
          * The time in milliseconds of the most recent invocation of {@link #levelChanged(int)}
          * i.e. the last time at which an actual (audio) level was reported or measured for this
-         * <tt>Speaker</tt>. If no level is reported or measured for this <tt>Speaker</tt> long
+         * <code>Speaker</code>. If no level is reported or measured for this <code>Speaker</code> long
          * enough i.e. {@link #LEVEL_IDLE_TIMEOUT}, the associated
-         * <tt>DominantSpeakerIdentification</tt> will presume that this <tt>Speaker</tt> was muted
+         * <code>DominantSpeakerIdentification</code> will presume that this <code>Speaker</code> was muted
          * for the duration of a certain frame.
          */
         private long lastLevelChangedTime = System.currentTimeMillis();
 
         /**
-         * The (history of) audio levels received or measured for this <tt>Speaker</tt>.
+         * The (history of) audio levels received or measured for this <code>Speaker</code>.
          */
         private final byte[] levels;
 
         private final byte[] longs = new byte[LONG_COUNT];
 
         /**
-         * The speech activity score of this <tt>Speaker</tt> for the long time-interval.
+         * The speech activity score of this <code>Speaker</code> for the long time-interval.
          */
         private double longSpeechActivityScore = MIN_SPEECH_ACTIVITY_SCORE;
 
         private final byte[] mediums = new byte[LONG_COUNT * N3];
 
         /**
-         * The speech activity score of this <tt>Speaker</tt> for the medium time-interval.
+         * The speech activity score of this <code>Speaker</code> for the medium time-interval.
          */
         private double mediumSpeechActivityScore = MIN_SPEECH_ACTIVITY_SCORE;
 
         /**
-         * The minimum (audio) level received or measured for this <tt>Speaker</tt>. Since
-         * <tt>MIN_LEVEL</tt> is specified for samples generated by a muted audio source, a value
-         * equal to <tt>MIN_LEVEL</tt> indicates that the minimum level for this <tt>Speaker</tt>
+         * The minimum (audio) level received or measured for this <code>Speaker</code>. Since
+         * <code>MIN_LEVEL</code> is specified for samples generated by a muted audio source, a value
+         * equal to <code>MIN_LEVEL</code> indicates that the minimum level for this <code>Speaker</code>
          * has not been determined yet.
          */
         private byte minLevel = MIN_LEVEL;
 
         /**
          * The (current) estimate of the minimum (audio) level received or measured for this
-         * <tt>Speaker</tt>. Used to increase the value of {@link #minLevel}
+         * <code>Speaker</code>. Used to increase the value of {@link #minLevel}
          */
         private byte nextMinLevel = MIN_LEVEL;
 
         /**
-         * The number of subsequent (audio) levels received or measured for this <tt>Speaker</tt>
+         * The number of subsequent (audio) levels received or measured for this <code>Speaker</code>
          * which have been monitored thus far in order to estimate an up-to-date minimum (audio)
-         * level received or measured for this <tt>Speaker</tt>.
+         * level received or measured for this <code>Speaker</code>.
          */
         private int nextMinLevelWindowLength;
 
         /**
-         * The synchronization source identifier/SSRC of this <tt>Speaker</tt> which is unique
+         * The synchronization source identifier/SSRC of this <code>Speaker</code> which is unique
          * within a multipoint conference.
          */
         public final long ssrc;
 
         /**
-         * Initializes a new <tt>Speaker</tt> instance identified by a specific synchronization
+         * Initializes a new <code>Speaker</code> instance identified by a specific synchronization
          * source identifier/SSRC.
          *
          * @param ssrc the synchronization source identifier/SSRC of the new instance
@@ -908,7 +908,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Computes/evaluates the speech activity score of this <tt>Speaker</tt> for the immediate time-interval.
+         * Computes/evaluates the speech activity score of this <code>Speaker</code> for the immediate time-interval.
          */
         private void evaluateImmediateSpeechActivityScore()
         {
@@ -917,7 +917,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Computes/evaluates the speech activity score of this <tt>Speaker</tt> for the long time-interval.
+         * Computes/evaluates the speech activity score of this <code>Speaker</code> for the long time-interval.
          */
         private void evaluateLongSpeechActivityScore()
         {
@@ -925,7 +925,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Computes/evaluates the speech activity score of this <tt>Speaker</tt> for the medium time-interval.
+         * Computes/evaluates the speech activity score of this <code>Speaker</code> for the medium time-interval.
          */
         private void evaluateMediumSpeechActivityScore()
         {
@@ -933,7 +933,7 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Evaluates the speech activity scores of this <tt>Speaker</tt> for the immediate, medium,
+         * Evaluates the speech activity scores of this <code>Speaker</code> for the immediate, medium,
          * and long time-intervals. Invoked when it is time to decide whether there has been a
          * speaker switch event.
          */
@@ -951,10 +951,10 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
 
         /**
          * Gets the time in milliseconds at which an actual (audio) level was reported or measured
-         * for this <tt>Speaker</tt> last.
+         * for this <code>Speaker</code> last.
          *
          * @return the time in milliseconds at which an actual (audio) level was reported or
-         * measured for this <tt>Speaker</tt> last
+         * measured for this <code>Speaker</code> last
          */
         public synchronized long getLastLevelChangedTime()
         {
@@ -962,10 +962,10 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Gets the (history of) audio levels received or measured for this <tt>Speaker</tt>.
+         * Gets the (history of) audio levels received or measured for this <code>Speaker</code>.
          *
-         * @return a <tt>byte</tt> array which represents the (history of) audio levels received or
-         * measured for this <tt>Speaker</tt>
+         * @return a <code>byte</code> array which represents the (history of) audio levels received or
+         * measured for this <code>Speaker</code>
          */
         byte[] getLevels()
         {
@@ -983,12 +983,12 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Gets the speech activity score of this <tt>Speaker</tt> for a specific time-interval.
+         * Gets the speech activity score of this <code>Speaker</code> for a specific time-interval.
          *
-         * @param interval <tt>0</tt> for the immediate time-interval, <tt>1</tt> for the medium
-         * time-interval, or <tt>2</tt> for the long time-interval
-         * @return the speech activity score of this <tt>Speaker</tt> for the time-interval
-         * specified by <tt>index</tt>
+         * @param interval <code>0</code> for the immediate time-interval, <code>1</code> for the medium
+         * time-interval, or <code>2</code> for the long time-interval
+         * @return the speech activity score of this <code>Speaker</code> for the time-interval
+         * specified by <code>index</code>
          */
         double getSpeechActivityScore(int interval)
         {
@@ -1005,9 +1005,9 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Notifies this <tt>Speaker</tt> that a new audio level has been received or measured.
+         * Notifies this <code>Speaker</code> that a new audio level has been received or measured.
          *
-         * @param level the audio level which has been received or measured for this <tt>Speaker</tt>
+         * @param level the audio level which has been received or measured for this <code>Speaker</code>
          */
         @SuppressWarnings("unused")
         public void levelChanged(int level)
@@ -1016,11 +1016,11 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Notifies this <tt>Speaker</tt> that a new audio level has been received or measured at a specific time.
+         * Notifies this <code>Speaker</code> that a new audio level has been received or measured at a specific time.
          *
-         * @param level the audio level which has been received or measured for this <tt>Speaker</tt>
-         * @param time the (local <tt>System</tt>) time in milliseconds at which the specified
-         * <tt>level</tt> has been received or measured
+         * @param level the audio level which has been received or measured for this <code>Speaker</code>
+         * @param time the (local <code>System</code>) time in milliseconds at which the specified
+         * <code>level</code> has been received or measured
          */
         public synchronized void levelChanged(int level, long time)
         {
@@ -1048,9 +1048,9 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Notifies this <tt>Speaker</tt> that no new audio level has been received or measured for
-         * a certain time which very likely means that this <tt>Speaker</tt> will not have a level
-         * within a certain time-frame of a <tt>DominantSpeakerIdentification</tt> algorithm.
+         * Notifies this <code>Speaker</code> that no new audio level has been received or measured for
+         * a certain time which very likely means that this <code>Speaker</code> will not have a level
+         * within a certain time-frame of a <code>DominantSpeakerIdentification</code> algorithm.
          */
         public synchronized void levelTimedOut()
         {
@@ -1058,10 +1058,10 @@ public class DominantSpeakerIdentification extends AbstractActiveSpeakerDetector
         }
 
         /**
-         * Updates the minimum (audio) level received or measured for this <tt>Speaker</tt> in
+         * Updates the minimum (audio) level received or measured for this <code>Speaker</code> in
          * light of the receipt of a specific level.
          *
-         * @param level the audio level received or measured for this <tt>Speaker</tt>
+         * @param level the audio level received or measured for this <code>Speaker</code>
          */
         private void updateMinLevel(byte level)
         {

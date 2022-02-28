@@ -9,8 +9,8 @@ import net.java.sip.communicator.service.protocol.ContactGroup;
 
 /**
  * The Jabber implementation of the service.protocol.ContactGroup interface. There are two types of
- * groups possible here. <tt>RootContactGroupJabberImpl</tt> which is the root node of the
- * ContactList itself and <tt>ContactGroupJabberImpl</tt> which represents standard groups. The
+ * groups possible here. <code>RootContactGroupJabberImpl</code> which is the root node of the
+ * ContactList itself and <code>ContactGroupJabberImpl</code> which represents standard groups. The
  * reason for having those 2 is that generally, Jabber groups may not contain subgroups. A contact
  * list on the other hand may not directly contain buddies.
  *

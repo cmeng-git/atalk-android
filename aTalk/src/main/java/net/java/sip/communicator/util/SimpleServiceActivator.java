@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 /**
  * Base class for activators which only register new service in bundle context.
- * Service registration activity is logged on <tt>Debug</tt> level.
+ * Service registration activity is logged on <code>Debug</code> level.
  *
  * @param <T> service implementation template type (for convenient instance access)
  *
@@ -38,7 +38,7 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
     protected T serviceImpl;
 
     /**
-     * Creates new instance of <tt>SimpleServiceActivator</tt>
+     * Creates new instance of <code>SimpleServiceActivator</code>
      *
      * @param serviceClass class of service that will be registered on bundle startup
      * @param serviceName service name that wil be used in log messages
@@ -52,7 +52,7 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
     /**
      * Initialize and start the service.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if initializing and starting this service fails
      */
     public void start(BundleContext bundleContext)
@@ -66,7 +66,7 @@ public abstract class SimpleServiceActivator<T> implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws @Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)

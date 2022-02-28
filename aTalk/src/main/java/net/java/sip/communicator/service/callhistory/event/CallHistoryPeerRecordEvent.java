@@ -45,7 +45,7 @@ public class CallHistoryPeerRecordEvent extends EventObject
     private static ProtocolProviderService provider;
 
     /**
-     * Constructs new <tt>CallHistoryPeerRecordEvent</tt> event.
+     * Constructs new <code>CallHistoryPeerRecordEvent</code> event.
      *
      * @param peerAddress the address of the peer associated with the event.
      * @param startDate the date when the peer has been added.

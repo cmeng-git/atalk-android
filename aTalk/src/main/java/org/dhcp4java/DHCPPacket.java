@@ -72,74 +72,74 @@ import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
  *     System.out.println(dhcp.toString());
  * }
  * </pre>
- * In this second way, beware that a <tt>BadPacketExpcetion</tt> is thrown
+ * In this second way, beware that a <code>BadPacketExpcetion</code> is thrown
  * if the datagram contains invalid DHCP data.
  *
  *
  * <p><b>Getters and Setters</b>: methods are provided with high-level data structures
  * wherever it is possible (String, InetAddress...). However there are also low-overhead
- * version (suffix <tt>Raw</tt>) dealing directly with <tt>byte[]</tt> for maximum performance.
+ * version (suffix <code>Raw</code>) dealing directly with <code>byte[]</code> for maximum performance.
  * They are useful in servers for copying parameters in a servers from a request to a response without
  * any type conversion. All parameters are copies, you may modify them as you like without
- * any side-effect on the <tt>DHCPPacket</tt> object.
+ * any side-effect on the <code>DHCPPacket</code> object.
  *
  * <h4>DHCP datagram format description:</h4>
  * <blockquote><table cellspacing=2>
  * <tr><th>Field</th><th>Octets</th><th>Description</th></tr>
- * <tr><td valign=top><tt>op</tt></td><td valign=top>1</td>
+ * <tr><td valign=top><code>op</code></td><td valign=top>1</td>
  * <td>Message op code / message type.<br>
  * use constants
- * <tt>BOOTREQUEST</tt>,
- * <tt>BOOTREPLY</tt></td></tr>
- * <tr><td valign=top><tt>htype</tt></td>
+ * <code>BOOTREQUEST</code>,
+ * <code>BOOTREPLY</code></td></tr>
+ * <tr><td valign=top><code>htype</code></td>
  * <td valign=top>1</td><td>Hardware address type, see ARP section in
  * "Assigned Numbers" RFC<br>
  * use constants
- * <tt>HTYPE_ETHER</tt>,
- * <tt>HTYPE_IEEE802</tt>,
- * <tt>HTYPE_FDDI</tt></td></tr>
- * <tr><td valign=top><tt>hlen</tt></td><td>1</td><td>Hardware address length
+ * <code>HTYPE_ETHER</code>,
+ * <code>HTYPE_IEEE802</code>,
+ * <code>HTYPE_FDDI</code></td></tr>
+ * <tr><td valign=top><code>hlen</code></td><td>1</td><td>Hardware address length
  * (e.g.  '6' for ethernet).</td></tr>
- * <tr><td valign=top><tt>hops</tt></td><td valign=top>1</td><td>Client sets to zero, optionally used
+ * <tr><td valign=top><code>hops</code></td><td valign=top>1</td><td>Client sets to zero, optionally used
  * by relay agents when booting via a relay agent.</td></tr>
- * <tr><td valign=top><tt>xid</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>xid</code></td><td valign=top>4</td>
  * <td>Transaction ID, a random number chosen by the
  * client, used by the client and server to associate
  * messages and responses between a client and a
  * server.</td></tr>
- * <tr><td valign=top><tt>secs</tt></td><td valign=top>2</td>
+ * <tr><td valign=top><code>secs</code></td><td valign=top>2</td>
  * <td>Filled in by client, seconds elapsed since client
  * began address acquisition or renewal process.</td></tr>
- * <tr><td valign=top><tt>flags</tt></td><td valign=top>2</td>
+ * <tr><td valign=top><code>flags</code></td><td valign=top>2</td>
  * <td>Flags (see below).</td></tr>
- * <tr><td valign=top><tt>ciaddr</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>ciaddr</code></td><td valign=top>4</td>
  * <td>Client IP address; only filled in if client is in
  * BOUND, RENEW or REBINDING state and can respond
  * to ARP requests.</td></tr>
- * <tr><td valign=top><tt>yiaddr</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>yiaddr</code></td><td valign=top>4</td>
  * <td>'your' (client) IP address.</td></tr>
- * <tr><td valign=top><tt>siaddr</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>siaddr</code></td><td valign=top>4</td>
  * <td>IP address of next server to use in bootstrap;
  * returned in DHCPOFFER, DHCPACK by server.</td></tr>
- * <tr><td valign=top><tt>giaddr</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>giaddr</code></td><td valign=top>4</td>
  * <td>Relay agent IP address, used in booting via a
  * relay agent.</td></tr>
- * <tr><td valign=top><tt>chaddr</tt></td><td valign=top>16</td>
+ * <tr><td valign=top><code>chaddr</code></td><td valign=top>16</td>
  * <td>Client hardware address.</td></tr>
- * <tr><td valign=top><tt>sname</tt></td><td valign=top>64</td>
+ * <tr><td valign=top><code>sname</code></td><td valign=top>64</td>
  * <td>Optional server host name, null terminated string.</td></tr>
- * <tr><td valign=top><tt>file</tt></td><td valign=top>128</td>
+ * <tr><td valign=top><code>file</code></td><td valign=top>128</td>
  * <td>Boot file name, null terminated string; "generic"
  * name or null in DHCPDISCOVER, fully qualified
  * directory-path name in DHCPOFFER.</td></tr>
- * <tr><td valign=top><tt>isDhcp</tt></td><td valign=top>4</td>
+ * <tr><td valign=top><code>isDhcp</code></td><td valign=top>4</td>
  * <td>Controls whether the packet is BOOTP or DHCP.
  * DHCP contains the "magic cookie" of 4 bytes.
  * 0x63 0x82 0x53 0x63.</td></tr>
- * <tr><td valign=top><tt>DHO_*code*</tt></td><td valign=top>*</td>
+ * <tr><td valign=top><code>DHO_*code*</code></td><td valign=top>*</td>
  * <td>Optional parameters field.  See the options
  * documents for a list of defined options. See below.</td></tr>
- * <tr><td valign=top><tt>padding</tt></td><td valign=top>*</td>
+ * <tr><td valign=top><code>padding</code></td><td valign=top>*</td>
  * <td>Optional padding at the end of the packet.</td></tr>
  * </table></blockquote>
  *
@@ -233,8 +233,8 @@ import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
  * DHO_SUBNET_SELECTION(118)
  * </pre>
  *
- * <p>These options can be set and get through basic low-level <tt>getOptionRaw</tt> and
- * <tt>setOptionRaw</tt> passing <tt>byte[]</tt> structures. Using these functions, data formats
+ * <p>These options can be set and get through basic low-level <code>getOptionRaw</code> and
+ * <code>setOptionRaw</code> passing <code>byte[]</code> structures. Using these functions, data formats
  * are under your responsibility. Arrays are always passed by copies (clones) so you can modify
  * them freely without side-effects. These functions allow maximum performance, especially
  * when copying options from a request datagram to a response datagram.
@@ -273,15 +273,15 @@ import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
  *
  *
  * <p><b>Note</b>: this class is not synchronized for maximum performance.
- * However, it is unlikely that the same <tt>DHCPPacket</tt> is used in two different
+ * However, it is unlikely that the same <code>DHCPPacket</code> is used in two different
  * threads in real life DHPC servers or clients. Multi-threading acces
  * to an instance of this class is at your own risk.
  *
  * <p><b>Limitations</b>: this class doesn't support spanned options or options longer than 256 bytes.
- * It does not support options stored in <tt>sname</tt> or <tt>file</tt> fields.
+ * It does not support options stored in <code>sname</code> or <code>file</code> fields.
  *
  * <p>This API is originally a port from my PERL
- * <tt><a href="http://search.cpan.org/~shadinger/">Net::DHCP</a></tt> api.
+ * <code><a href="http://search.cpan.org/~shadinger/">Net::DHCP</a></code> api.
  *
  * <p><b>Future extensions</b>: IPv6 support, extended data structure TODO...
  */
@@ -315,7 +315,7 @@ public class DHCPPacket implements Cloneable, Serializable
 
     // DHCP options
     // Invariant 1: K is identical to V.getCode()
-    // Invariant 2: V.value is never <tt>null</tt>
+    // Invariant 2: V.value is never <code>null</code>
     // Invariant 3; K is not 0 (PAD) and not -1 (END)
     private Map<Byte, DHCPOption> options;
     private boolean isDhcp;    // well-formed DHCP Packet ?
@@ -332,9 +332,9 @@ public class DHCPPacket implements Cloneable, Serializable
 
 
     /**
-     * Constructor for the <tt>DHCPPacket</tt> class.
+     * Constructor for the <code>DHCPPacket</code> class.
      *
-     * <p>This creates an empty <tt>DHCPPacket</tt> datagram.
+     * <p>This creates an empty <code>DHCPPacket</code> datagram.
      * All data is default values and the packet is still lacking key data
      * to be sent on the wire.
      */
@@ -357,13 +357,13 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Factory for creating <tt>DHCPPacket</tt> objects by parsing a
-     * <tt>DatagramPacket</tt> object.
+     * Factory for creating <code>DHCPPacket</code> objects by parsing a
+     * <code>DatagramPacket</code> object.
      *
      * @param datagram the UDP datagram received to be parsed
-     * @return the newly create <tt>DHCPPacket</tt> instance
+     * @return the newly create <code>DHCPPacket</code> instance
      * @throws DHCPBadPacketException the datagram is malformed and cannot be parsed properly.
-     * @throws IllegalArgumentException datagram is <tt>null</tt>
+     * @throws IllegalArgumentException datagram is <code>null</code>
      * @throws IOException
      */
     public static DHCPPacket getPacket(DatagramPacket datagram)
@@ -381,8 +381,8 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Factory for creating <tt>DHCPPacket</tt> objects by parsing a
-     * <tt>byte[]</tt> e.g. from a datagram.
+     * Factory for creating <code>DHCPPacket</code> objects by parsing a
+     * <code>byte[]</code> e.g. from a datagram.
      *
      * <p>This method allows you to specify non-strict mode which is much more
      * tolerant for packet options. By default, any problem seen during DHCP option
@@ -392,7 +392,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * @param offset the offset for the buffer.
      * @param length the number of bytes to read.
      * @param strict do we parse in strict mode?
-     * @return the newly create <tt>DHCPPacket</tt> instance
+     * @return the newly create <code>DHCPPacket</code> instance
      * @throws DHCPBadPacketException the datagram is malformed.
      */
     public static DHCPPacket getPacket(byte[] buf, int offset, int length, boolean strict)
@@ -405,11 +405,11 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Returns a copy of this <tt>DHCPPacket</tt>.
+     * Returns a copy of this <code>DHCPPacket</code>.
      *
-     * <p>The <tt>truncated</tt> flag is reset.
+     * <p>The <code>truncated</code> flag is reset.
      *
-     * @return a copy of the <tt>DHCPPacket</tt> instance.
+     * @return a copy of the <code>DHCPPacket</code> instance.
      */
     @Override
     public DHCPPacket clone()
@@ -439,9 +439,9 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Returns true if 2 instances of <tt>DHCPPacket</tt> represent the same DHCP packet.
+     * Returns true if 2 instances of <code>DHCPPacket</code> represent the same DHCP packet.
      *
-     * <p>This is a field by field comparison, except <tt>truncated</tt> which is ignored.
+     * <p>This is a field by field comparison, except <code>truncated</code> which is ignored.
      */
     @Override
     public boolean equals(Object o)
@@ -561,11 +561,11 @@ public class DHCPPacket implements Cloneable, Serializable
      * @param buffer byte array to convert to a DHCPMessage object
      * @param offset starting offset for the buffer
      * @param length length of the buffer
-     * @param address0 the address from which the packet was sent, or <tt>null</tt>
+     * @param address0 the address from which the packet was sent, or <code>null</code>
      * @param port0 the port from which the packet was sent
      * @param strict do we read in strict mode?
      * @return a DHCPMessage object with information from byte array.
-     * @throws IllegalArgumentException if buffer is <tt>null</tt>...
+     * @throws IllegalArgumentException if buffer is <code>null</code>...
      * @throws IndexOutOfBoundsException offset..offset+length is out of buffer bounds
      * @throws DHCPBadPacketException datagram is malformed
      */
@@ -912,7 +912,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Returns the chaddr field (Client hardware address - typically MAC address).
      *
-     * <p>Returns the byte[16] raw buffer. Only the first <tt>hlen</tt> bytes are valid.
+     * <p>Returns the byte[16] raw buffer. Only the first <code>hlen</code> bytes are valid.
      *
      * @return the chaddr field.
      */
@@ -925,7 +925,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * Appends the chaddr field (Client hardware address - typically MAC address) as
      * a hex string to this string buffer.
      *
-     * <p>Only first <tt>hlen</tt> bytes are appended, as uppercase hex string.
+     * <p>Only first <code>hlen</code> bytes are appended, as uppercase hex string.
      *
      * @param buffer this string buffer
      * @return the string buffer.
@@ -937,9 +937,9 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Return the hardware address (@MAC) as an <tt>HardwareAddress</tt> object.
+     * Return the hardware address (@MAC) as an <code>HardwareAddress</code> object.
      *
-     * @return the <tt>HardwareAddress</tt> object
+     * @return the <code>HardwareAddress</code> object
      */
     public HardwareAddress getHardwareAddress()
     {
@@ -956,7 +956,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * Returns the chaddr field (Client hardware address - typically MAC address) as
      * a hex string.
      *
-     * <p>Only first <tt>hlen</tt> bytes are printed, as uppercase hex string.
+     * <p>Only first <code>hlen</code> bytes are printed, as uppercase hex string.
      *
      * @return the chaddr field as hex string.
      */
@@ -969,7 +969,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * Sets the chaddr field (Client hardware address - typically MAC address).
      *
      * <p>The buffer length should be between 0 and 16, otherwise an
-     * <tt>IllegalArgumentException</tt> is thrown.
+     * <code>IllegalArgumentException</code> is thrown.
      *
      * <p>If chaddr is null, the field is filled with zeros.
      *
@@ -1004,7 +1004,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Returns the ciaddr field (Client IP Address).
      *
-     * @return the ciaddr field converted to <tt>InetAddress</tt> object.
+     * @return the ciaddr field converted to <code>InetAddress</code> object.
      */
     public InetAddress getCiaddr()
     {
@@ -1031,8 +1031,8 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the ciaddr field (Client IP Address).
      *
-     * <p>Ths <tt>ciaddr</tt> field must be of <tt>Inet4Address</tt> class or
-     * an <tt>IllegalArgumentException</tt> is thrown.
+     * <p>Ths <code>ciaddr</code> field must be of <code>Inet4Address</code> class or
+     * an <code>IllegalArgumentException</code> is thrown.
      *
      * @param ciaddr The ciaddr to set.
      */
@@ -1059,11 +1059,11 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the ciaddr field (Client IP Address).
      *
-     * <p><tt>ciaddr</tt> must be a 4 bytes array, or an <tt>IllegalArgumentException</tt>
+     * <p><code>ciaddr</code> must be a 4 bytes array, or an <code>IllegalArgumentException</code>
      * is thrown.
      *
      * <p>This is the low-level maximum performance setter for this field.
-     * The array is internally copied so any further modification to <tt>ciaddr</tt>
+     * The array is internally copied so any further modification to <code>ciaddr</code>
      * parameter has no side effect.
      *
      * @param ciaddr The ciaddr to set.
@@ -1104,10 +1104,10 @@ public class DHCPPacket implements Cloneable, Serializable
      * Sets the file field (Boot File Name) as String.
      *
      * <p>The string is first converted to a byte[] array using transparent
-     * encoding. If the resulting buffer size is > 128, an <tt>IllegalArgumentException</tt>
+     * encoding. If the resulting buffer size is > 128, an <code>IllegalArgumentException</code>
      * is thrown.
      *
-     * <p>If <tt>file</tt> parameter is null, the buffer is filled with zeros.
+     * <p>If <code>file</code> parameter is null, the buffer is filled with zeros.
      *
      * @param file The file field to set.
      * @throws IllegalArgumentException string too long
@@ -1120,10 +1120,10 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the file field (Boot File Name) as String.
      *
-     * <p>If the buffer size is > 128, an <tt>IllegalArgumentException</tt>
+     * <p>If the buffer size is > 128, an <code>IllegalArgumentException</code>
      * is thrown.
      *
-     * <p>If <tt>file</tt> parameter is null, the buffer is filled with zeros.
+     * <p>If <code>file</code> parameter is null, the buffer is filled with zeros.
      *
      * <p>This is the low-level maximum performance setter for this field.
      *
@@ -1167,7 +1167,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Returns the giaddr field (Relay agent IP address).
      *
-     * @return the giaddr field converted to <tt>InetAddress</tt> object.
+     * @return the giaddr field converted to <code>InetAddress</code> object.
      */
     public InetAddress getGiaddr()
     {
@@ -1194,8 +1194,8 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the giaddr field (Relay agent IP address).
      *
-     * <p>Ths <tt>giaddr</tt> field must be of <tt>Inet4Address</tt> class or
-     * an <tt>IllegalArgumentException</tt> is thrown.
+     * <p>Ths <code>giaddr</code> field must be of <code>Inet4Address</code> class or
+     * an <code>IllegalArgumentException</code> is thrown.
      *
      * @param giaddr The giaddr to set.
      */
@@ -1222,11 +1222,11 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the giaddr field (Relay agent IP address).
      *
-     * <p><tt>giaddr</tt> must be a 4 bytes array, or an <tt>IllegalArgumentException</tt>
+     * <p><code>giaddr</code> must be a 4 bytes array, or an <code>IllegalArgumentException</code>
      * is thrown.
      *
      * <p>This is the low-level maximum performance setter for this field.
-     * The array is internally copied so any further modification to <tt>ciaddr</tt>
+     * The array is internally copied so any further modification to <code>ciaddr</code>
      * parameter has no side effect.
      *
      * @param giaddr The giaddr to set.
@@ -1295,7 +1295,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * HTYPE_FDDI (8)
      * </pre>
      *
-     * <p>Typical value is <tt>HTYPE_ETHER</tt>.
+     * <p>Typical value is <code>HTYPE_ETHER</code>.
      *
      * @return the htype field.
      */
@@ -1314,7 +1314,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * HTYPE_FDDI (8)
      * </pre>
      *
-     * <p>Typical value is <tt>HTYPE_ETHER</tt>.
+     * <p>Typical value is <code>HTYPE_ETHER</code>.
      *
      * @param htype The htype to set.
      */
@@ -1329,7 +1329,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * <p>It indicates the presence of the DHCP Magic Cookie at the end
      * of the BOOTP portion.
      *
-     * <p>Default is <tt>true</tt> for a brand-new object.
+     * <p>Default is <code>true</code> for a brand-new object.
      *
      * @return Returns the isDhcp.
      */
@@ -1341,14 +1341,14 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the isDhcp flag.
      *
-     * <p>Indicates whether to generate a DHCP or a BOOTP packet. If <tt>true</tt>
+     * <p>Indicates whether to generate a DHCP or a BOOTP packet. If <code>true</code>
      * the DHCP Magic Cookie is added after the BOOTP portion and before the
      * DHCP Options.
      *
-     * <p>If <tt>isDhcp</tt> if false, all DHCP options are ignored when calling
-     * <tt>serialize()</tt>.
+     * <p>If <code>isDhcp</code> if false, all DHCP options are ignored when calling
+     * <code>serialize()</code>.
      *
-     * <p>Default value is <tt>true</tt>.
+     * <p>Default value is <code>true</code>.
      *
      * @param isDhcp The isDhcp to set.
      */
@@ -1382,7 +1382,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * BOOTREPLY (2)
      * </pre>
      *
-     * <p>Default value is <tt>BOOTREPLY</tt>, suitable for server replies.
+     * <p>Default value is <code>BOOTREPLY</code>, suitable for server replies.
      *
      * @param op The op to set.
      */
@@ -1410,10 +1410,10 @@ public class DHCPPacket implements Cloneable, Serializable
      * <p>This byte array follows the DHCP Options.
      * Normally, its content is irrelevant.
      *
-     * <p>If <tt>paddig</tt> is null, it is set to an empty buffer.
+     * <p>If <code>paddig</code> is null, it is set to an empty buffer.
      *
      * <p>Padding is automatically added at the end of the datagram when calling
-     * <tt>serialize()</tt> to match DHCP minimal packet size.
+     * <code>serialize()</code> to match DHCP minimal packet size.
      *
      * @param padding The padding to set.
      */
@@ -1423,9 +1423,9 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Sets the padding buffer with <tt>length</tt> zero bytes.
+     * Sets the padding buffer with <code>length</code> zero bytes.
      *
-     * <p>This is a short cut for <tt>setPadding(new byte[length])</tt>.
+     * <p>This is a short cut for <code>setPadding(new byte[length])</code>.
      *
      * @param length size of the padding buffer
      */
@@ -1463,7 +1463,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Returns the siaddr field (IP address of next server).
      *
-     * @return the siaddr field converted to <tt>InetAddress</tt> object.
+     * @return the siaddr field converted to <code>InetAddress</code> object.
      */
     public InetAddress getSiaddr()
     {
@@ -1490,8 +1490,8 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the siaddr field (IP address of next server).
      *
-     * <p>Ths <tt>siaddr</tt> field must be of <tt>Inet4Address</tt> class or
-     * an <tt>IllegalArgumentException</tt> is thrown.
+     * <p>Ths <code>siaddr</code> field must be of <code>Inet4Address</code> class or
+     * an <code>IllegalArgumentException</code> is thrown.
      *
      * @param siaddr The siaddr to set.
      */
@@ -1518,11 +1518,11 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the siaddr field (IP address of next server).
      *
-     * <p><tt>siaddr</tt> must be a 4 bytes array, or an <tt>IllegalArgumentException</tt>
+     * <p><code>siaddr</code> must be a 4 bytes array, or an <code>IllegalArgumentException</code>
      * is thrown.
      *
      * <p>This is the low-level maximum performance setter for this field.
-     * The array is internally copied so any further modification to <tt>ciaddr</tt>
+     * The array is internally copied so any further modification to <code>ciaddr</code>
      * parameter has no side effect.
      *
      * @param siaddr The siaddr to set.
@@ -1563,10 +1563,10 @@ public class DHCPPacket implements Cloneable, Serializable
      * Sets the sname field (Optional server host name) as String.
      *
      * <p>The string is first converted to a byte[] array using transparent
-     * encoding. If the resulting buffer size is > 64, an <tt>IllegalArgumentException</tt>
+     * encoding. If the resulting buffer size is > 64, an <code>IllegalArgumentException</code>
      * is thrown.
      *
-     * <p>If <tt>sname</tt> parameter is null, the buffer is filled with zeros.
+     * <p>If <code>sname</code> parameter is null, the buffer is filled with zeros.
      *
      * @param sname The sname field to set.
      * @throws IllegalArgumentException string too long
@@ -1579,10 +1579,10 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the sname field (Optional server host name) as String.
      *
-     * <p>If the buffer size is > 64, an <tt>IllegalArgumentException</tt>
+     * <p>If the buffer size is > 64, an <code>IllegalArgumentException</code>
      * is thrown.
      *
-     * <p>If <tt>sname</tt> parameter is null, the buffer is filled with zeros.
+     * <p>If <code>sname</code> parameter is null, the buffer is filled with zeros.
      *
      * <p>This is the low-level maximum performance setter for this field.
      *
@@ -1629,7 +1629,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Returns the yiaddr field ('your' IP address).
      *
-     * @return the yiaddr field converted to <tt>InetAddress</tt> object.
+     * @return the yiaddr field converted to <code>InetAddress</code> object.
      */
     public InetAddress getYiaddr()
     {
@@ -1656,8 +1656,8 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the yiaddr field ('your' IP address).
      *
-     * <p>Ths <tt>yiaddr</tt> field must be of <tt>Inet4Address</tt> class or
-     * an <tt>IllegalArgumentException</tt> is thrown.
+     * <p>Ths <code>yiaddr</code> field must be of <code>Inet4Address</code> class or
+     * an <code>IllegalArgumentException</code> is thrown.
      *
      * @param yiaddr The yiaddr to set.
      */
@@ -1684,11 +1684,11 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the yiaddr field ('your' IP address).
      *
-     * <p><tt>yiaddr</tt> must be a 4 bytes array, or an <tt>IllegalArgumentException</tt>
+     * <p><code>yiaddr</code> must be a 4 bytes array, or an <code>IllegalArgumentException</code>
      * is thrown.
      *
      * <p>This is the low-level maximum performance setter for this field.
-     * The array is internally copied so any further modification to <tt>ciaddr</tt>
+     * The array is internally copied so any further modification to <code>ciaddr</code>
      * parameter has no side effect.
      *
      * @param yiaddr The yiaddr to set.
@@ -1704,9 +1704,9 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Return the DHCP Option Type.
      *
-     * <p>This is a short-cut for <tt>getOptionAsByte(DHO_DHCP_MESSAGE_TYPE)</tt>.
+     * <p>This is a short-cut for <code>getOptionAsByte(DHO_DHCP_MESSAGE_TYPE)</code>.
      *
-     * @return option type, of <tt>null</tt> if not present.
+     * @return option type, of <code>null</code> if not present.
      */
     public Byte getDHCPMessageType()
     {
@@ -1716,7 +1716,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the DHCP Option Type.
      *
-     * <p>This is a short-cur for <tt>setOptionAsByte(DHO_DHCP_MESSAGE_TYPE, optionType);</tt>.
+     * <p>This is a short-cur for <code>setOptionAsByte(DHO_DHCP_MESSAGE_TYPE, optionType);</code>.
      *
      * @param optionType
      */
@@ -1730,7 +1730,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * with a 0xFF option. This parameter is set only when parsing packets in
      * non-strict mode (which is not the default behaviour).
      *
-     * <p>This field is read-only and can be <tt>true</tt> only with objects created
+     * <p>This field is read-only and can be <code>true</code> only with objects created
      * by parsing a Datagram - getPacket() methods.
      *
      * <p>This field is cleared if the object is cloned.
@@ -1746,7 +1746,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * Wrapper function for getValueAsNum() in DHCPOption. Returns a numerical option: int, short or byte.
      *
      * @param code DHCP option code
-     * @return Integer object or <tt>null</tt>
+     * @return Integer object or <code>null</code>
      */
     public Integer getOptionAsNum(byte code)
     {
@@ -1777,7 +1777,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value, <tt>null</tt> if option is not present.
+     * @return the option value, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1800,7 +1800,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value, <tt>null</tt> if option is not present.
+     * @return the option value, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1826,7 +1826,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value, <tt>null</tt> if option is not present.
+     * @return the option value, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1852,7 +1852,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value, <tt>null</tt> if option is not present.
+     * @return the option value, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1886,7 +1886,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value, <tt>null</tt> if option is not present.
+     * @return the option value, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      */
     public String getOptionAsString(byte code)
@@ -1906,7 +1906,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value array, <tt>null</tt> if option is not present.
+     * @return the option value array, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1952,7 +1952,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * </pre>
      *
      * @param code the option code.
-     * @return the option value array, <tt>null</tt> if option is not present.
+     * @return the option value array, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      * @throws DHCPBadPacketException the option value in packet is of wrong size.
      */
@@ -1974,7 +1974,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * <p>Note: this mehtod is similar to getOptionRaw, only with option type checking.
      *
      * @param code the option code.
-     * @return the option value array, <tt>null</tt> if option is not present.
+     * @return the option value array, <code>null</code> if option is not present.
      * @throws IllegalArgumentException the option code is not in the list above.
      */
     public byte[] getOptionAsBytes(byte code)
@@ -1987,7 +1987,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as Byte format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value
@@ -2001,7 +2001,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as Short format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value
@@ -2015,7 +2015,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as Integer format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value
@@ -2029,7 +2029,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as InetAddress format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value
@@ -2043,7 +2043,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as InetAddress format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code in String format.
      * @param val the value
@@ -2059,7 +2059,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as InetAddress array format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value array
@@ -2073,7 +2073,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets a DHCP Option as String format.
      *
-     * <p>See <tt>DHCPOption</tt> for allowed option codes.
+     * <p>See <code>DHCPOption</code> for allowed option codes.
      *
      * @param code the option code.
      * @param val the value
@@ -2091,7 +2091,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * No byte[] copy is completed to increase performance.
      *
      * @param code option code
-     * @return Returns the option as raw <tt>byte[]</tt>, or <tt>null</tt> if
+     * @return Returns the option as raw <code>byte[]</code>, or <code>null</code> if
      * the option is not present.
      */
     public byte[] getOptionRaw(byte code)
@@ -2107,7 +2107,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * This method is used by every option getter in this object.
      *
      * @param code option code
-     * @return Returns the option as <tt>DHCPOption</tt>, or <tt>null</tt> if
+     * @return Returns the option as <code>DHCPOption</code>, or <code>null</code> if
      * the option is not present.
      */
     public DHCPOption getOption(byte code)
@@ -2138,7 +2138,7 @@ public class DHCPPacket implements Cloneable, Serializable
      *
      * <p>The Collection is read-only.
      *
-     * @return collection of <tt>DHCPOption</tt>.
+     * @return collection of <code>DHCPOption</code>.
      */
     public Collection<DHCPOption> getOptionsCollection()
     {
@@ -2158,13 +2158,13 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the option specified for the option.
      *
-     * <p>If <tt>buf</tt> is <tt>null</tt>, the option is cleared.
+     * <p>If <code>buf</code> is <code>null</code>, the option is cleared.
      *
      * <p>Options are sorted in creation order. Previous values are replaced.
      *
      * <p>This is the low-level maximum performance setter for options.
      *
-     * @param code opt    option code, use <tt>DHO_*</tt> for predefined values.
+     * @param code opt    option code, use <code>DHO_*</code> for predefined values.
      * @param buf raw buffer value (cloned). If null, the option is removed.
      */
     public void setOptionRaw(byte code, byte[] buf)
@@ -2180,7 +2180,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the option specified for the option.
      *
-     * <p>If <tt>buf</tt> is <tt>null</tt>, the option is cleared.
+     * <p>If <code>buf</code> is <code>null</code>, the option is cleared.
      *
      * <p>Options are sorted in creation order. Previous values are replaced, but their
      * previous position is retained.
@@ -2188,7 +2188,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * <p>This is the low-level maximum performance setter for options.
      * This method is called by all setter methods in this class.
      *
-     * @param opt option code, use <tt>DHO_*</tt> for predefined values.
+     * @param opt option code, use <code>DHO_*</code> for predefined values.
      */
     public void setOption(DHCPOption opt)
     {
@@ -2253,7 +2253,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * or from which the datagram was received.
      *
      * @return the IP address of the machine to which this datagram is being sent
-     * or from which the datagram was received. <tt>null</tt> if no address.
+     * or from which the datagram was received. <code>null</code> if no address.
      */
     public InetAddress getAddress()
     {
@@ -2263,8 +2263,8 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Sets the IP address of the machine to which this datagram is being sent.
      *
-     * @param address the <tt>InetAddress</tt>.
-     * @throws IllegalArgumentException address is not of <tt>Inet4Address</tt> class.
+     * @param address the <code>InetAddress</code>.
+     * @throws IllegalArgumentException address is not of <code>Inet4Address</code> class.
      */
     public void setAddress(InetAddress address)
     {
@@ -2314,7 +2314,7 @@ public class DHCPPacket implements Cloneable, Serializable
     /**
      * Syntactic sugar for setAddress/setPort.
      *
-     * @param addrPort address and port, if <tt>null</t> address is set to null and port to 0
+     * @param addrPort address and port, if <code>null</t> address is set to null and port to 0
      */
     public void setAddrPort(InetSocketAddress addrPort)
     {
@@ -2393,7 +2393,7 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Converts a byte[] to a sequence of hex chars (uppercase), limited to <tt>len</tt> bytes
+     * Converts a byte[] to a sequence of hex chars (uppercase), limited to <code>len</code> bytes
      * and appends them to a string buffer
      */
     static void appendHex(StringBuilder sbuf, final byte[] buf, int src, int len)
@@ -2429,7 +2429,7 @@ public class DHCPPacket implements Cloneable, Serializable
      * Convert bytes to hex string.
      *
      * @param buf
-     * @return hex string (lowercase) or "" if buf is <tt>null</tt>
+     * @return hex string (lowercase) or "" if buf is <code>null</code>
      */
     static String bytes2Hex(byte[] buf)
     {
@@ -2514,7 +2514,7 @@ public class DHCPPacket implements Cloneable, Serializable
     }
 
     /**
-     * Faster version than <tt>InetAddress.getHostAddress()</tt>.
+     * Faster version than <code>InetAddress.getHostAddress()</code>.
      *
      * @return String representation of address.
      */

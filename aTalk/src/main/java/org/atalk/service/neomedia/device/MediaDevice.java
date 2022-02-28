@@ -15,7 +15,7 @@ import org.atalk.util.MediaType;
 import java.util.List;
 
 /**
- * The <tt>MediaDevice</tt> class represents capture and playback devices that can be used to grab
+ * The <code>MediaDevice</code> class represents capture and playback devices that can be used to grab
  * or render media. Sound cards, USB phones and webcams are examples of such media devices.
  *
  * @author Emil Ivov
@@ -24,64 +24,64 @@ import java.util.List;
 public interface MediaDevice
 {
     /**
-     * Returns the <tt>MediaDirection</tt> supported by this device.
+     * Returns the <code>MediaDirection</code> supported by this device.
      *
-     * @return <tt>MediaDirection.SENDONLY</tt> if this is a read-only device,
-     * <tt>MediaDirection.RECVONLY</tt> if this is a write-only device and
-     * <tt>MediaDirection.SENDRECV</tt> if this <tt>MediaDevice</tt> can both capture and render media.
+     * @return <code>MediaDirection.SENDONLY</code> if this is a read-only device,
+     * <code>MediaDirection.RECVONLY</code> if this is a write-only device and
+     * <code>MediaDirection.SENDRECV</code> if this <code>MediaDevice</code> can both capture and render media.
      */
     MediaDirection getDirection();
 
     /**
-     * Returns the <tt>MediaFormat</tt> that this device is currently set to use when capturing data.
+     * Returns the <code>MediaFormat</code> that this device is currently set to use when capturing data.
      *
-     * @return the <tt>MediaFormat</tt> that this device is currently set to provide media in.
+     * @return the <code>MediaFormat</code> that this device is currently set to provide media in.
      */
     MediaFormat getFormat();
 
     /**
-     * Returns the <tt>MediaType</tt> that this device supports.
+     * Returns the <code>MediaType</code> that this device supports.
      *
-     * @return <tt>MediaType.AUDIO</tt> if this is an audio device or <tt>MediaType.VIDEO</tt> in
+     * @return <code>MediaType.AUDIO</code> if this is an audio device or <code>MediaType.VIDEO</code> in
      * case of a video device.
      */
     MediaType getMediaType();
 
     /**
-     * Returns the <tt>List</tt> of <tt>RTPExtension</tt>s that this device know how to handle.
+     * Returns the <code>List</code> of <code>RTPExtension</code>s that this device know how to handle.
      *
-     * @return the <tt>List</tt> of <tt>RTPExtension</tt>s that this device know how to handle or
-     * <tt>null</tt> if the device does not support any RTP extensions.
+     * @return the <code>List</code> of <code>RTPExtension</code>s that this device know how to handle or
+     * <code>null</code> if the device does not support any RTP extensions.
      */
     List<RTPExtension> getSupportedExtensions();
 
     /**
-     * Returns a list of <tt>MediaFormat</tt> instances representing the media formats supported by
-     * this <tt>MediaDevice</tt>.
+     * Returns a list of <code>MediaFormat</code> instances representing the media formats supported by
+     * this <code>MediaDevice</code>.
      *
-     * @return the list of <tt>MediaFormat</tt>s supported by this device.
+     * @return the list of <code>MediaFormat</code>s supported by this device.
      */
     List<MediaFormat> getSupportedFormats();
 
     /**
-     * Returns a list of <tt>MediaFormat</tt> instances representing the media formats supported by
-     * this <tt>MediaDevice</tt>.
+     * Returns a list of <code>MediaFormat</code> instances representing the media formats supported by
+     * this <code>MediaDevice</code>.
      *
      * @param localPreset the preset used to set the send format parameters, used for video and settings.
      * @param remotePreset the preset used to set the receive format parameters, used for video and settings.
-     * @return the list of <tt>MediaFormat</tt>s supported by this device.
+     * @return the list of <code>MediaFormat</code>s supported by this device.
      */
     List<MediaFormat> getSupportedFormats(QualityPreset localPreset, QualityPreset remotePreset);
 
     /**
-     * Returns a list of <tt>MediaFormat</tt> instances representing the media formats supported by
-     * this <tt>MediaDevice</tt> and enabled in <tt>encodingConfiguration</tt>.
+     * Returns a list of <code>MediaFormat</code> instances representing the media formats supported by
+     * this <code>MediaDevice</code> and enabled in <code>encodingConfiguration</code>.
      *
      * @param localPreset the preset used to set the send format parameters, used for video and settings.
      * @param remotePreset the preset used to set the receive format parameters, used for video and settings.
-     * @param encodingConfiguration the <tt>EncodingConfiguration<tt> instance
+     * @param encodingConfiguration the <code>EncodingConfiguration<code> instance
      * to use.
-     * @return the list of <tt>MediaFormat</tt>s supported by this device.
+     * @return the list of <code>MediaFormat</code>s supported by this device.
      */
     List<MediaFormat> getSupportedFormats(QualityPreset localPreset,
             QualityPreset remotePreset, EncodingConfiguration encodingConfiguration);

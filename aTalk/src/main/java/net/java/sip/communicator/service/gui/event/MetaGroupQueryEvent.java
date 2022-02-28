@@ -11,24 +11,24 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import java.util.EventObject;
 
 /**
- * The <tt>MetaGroupQueryEvent</tt> is triggered each time a
- * <tt>MetaContactGroup</tt> is received as a result of a <tt>MetaContactQuery</tt>.
+ * The <code>MetaGroupQueryEvent</code> is triggered each time a
+ * <code>MetaContactGroup</code> is received as a result of a <code>MetaContactQuery</code>.
  *
  * @author Yana Stamcheva
  */
 public class MetaGroupQueryEvent extends EventObject
 {
     /**
-     * The <tt>MetaContactGroup</tt> this event is about.
+     * The <code>MetaContactGroup</code> this event is about.
      */
     private final MetaContactGroup metaGroup;
 
     /**
-     * Creates an instance of <tt>MetaGroupQueryEvent</tt> by specifying the
-     * <tt>source</tt> query this event comes from and the <tt>metaGroup</tt> this event is about.
+     * Creates an instance of <code>MetaGroupQueryEvent</code> by specifying the
+     * <code>source</code> query this event comes from and the <code>metaGroup</code> this event is about.
      *
-     * @param source the <tt>MetaContactQuery</tt> that triggered this event
-     * @param metaGroup the <tt>MetaContactGroup</tt> this event is about
+     * @param source the <code>MetaContactQuery</code> that triggered this event
+     * @param metaGroup the <code>MetaContactGroup</code> this event is about
      */
     public MetaGroupQueryEvent(MetaContactQuery source, MetaContactGroup metaGroup)
     {
@@ -37,9 +37,9 @@ public class MetaGroupQueryEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>MetaContactQuery</tt> that triggered this event.
+     * Returns the <code>MetaContactQuery</code> that triggered this event.
      *
-     * @return the <tt>MetaContactQuery</tt> that triggered this event
+     * @return the <code>MetaContactQuery</code> that triggered this event
      */
     public MetaContactQuery getQuerySource()
     {
@@ -47,9 +47,9 @@ public class MetaGroupQueryEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>MetaContactGroup</tt> this event is about.
+     * Returns the <code>MetaContactGroup</code> this event is about.
      *
-     * @return the <tt>MetaContactGroup</tt> this event is about
+     * @return the <code>MetaContactGroup</code> this event is about
      */
     public MetaContactGroup getMetaGroup()
     {

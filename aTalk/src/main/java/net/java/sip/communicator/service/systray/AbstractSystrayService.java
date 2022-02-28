@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 /**
  * Base implementation of {@link SystrayService}. Manages
- * <tt>PopupMessageHandler</tt>s and <tt>SystrayPopupMessageListener</tt>s.
+ * <code>PopupMessageHandler</code>s and <code>SystrayPopupMessageListener</code>s.
  *
  * @author Nicolas Chamouard
  * @author Yana Stamcheva
@@ -40,7 +40,7 @@ public abstract class AbstractSystrayService implements SystrayService
     private PopupMessageHandler activePopupHandler;
 
     /**
-     * A set of usable <tt>PopupMessageHandler</tt>
+     * A set of usable <code>PopupMessageHandler</code>
      */
     private final Hashtable<String, PopupMessageHandler> popupHandlerSet = new Hashtable<>();
 
@@ -51,7 +51,7 @@ public abstract class AbstractSystrayService implements SystrayService
     private List<SystrayPopupMessageListener> earlyAddedListeners = null;
 
     /**
-     * Creates new instance of <tt>AbstractSystrayService</tt>.
+     * Creates new instance of <code>AbstractSystrayService</code>.
      *
      * @param bundleContext OSGI bundle context that will be used by this
      * instance
@@ -62,9 +62,9 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Registers given <tt>PopupMessageHandler</tt>.
+     * Registers given <code>PopupMessageHandler</code>.
      *
-     * @param handler the <tt>PopupMessageHandler</tt> to be registered.
+     * @param handler the <code>PopupMessageHandler</code> to be registered.
      */
     protected void addPopupHandler(PopupMessageHandler handler)
     {
@@ -72,9 +72,9 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Removes given <tt>PopupMessageHandler</tt>.
+     * Removes given <code>PopupMessageHandler</code>.
      *
-     * @param handler the <tt>PopupMessageHandler</tt> to be removed.
+     * @param handler the <code>PopupMessageHandler</code> to be removed.
      */
     protected void removePopupHandler(PopupMessageHandler handler)
     {
@@ -82,10 +82,10 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Checks if given <tt>handlerClass</tt> is registered as a handler.
+     * Checks if given <code>handlerClass</code> is registered as a handler.
      *
      * @param handlerClass the class name to be checked.
-     * @return <tt>true</tt> if given <tt>handlerClass</tt> is already registered as a handler.
+     * @return <code>true</code> if given <code>handlerClass</code> is already registered as a handler.
      */
     protected boolean containsHandler(String handlerClass)
     {
@@ -93,9 +93,9 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Returns active <tt>PopupMessageHandler</tt>.
+     * Returns active <code>PopupMessageHandler</code>.
      *
-     * @return active <tt>PopupMessageHandler</tt>.
+     * @return active <code>PopupMessageHandler</code>.
      */
     protected PopupMessageHandler getActivePopupHandler()
     {
@@ -103,7 +103,7 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Implements <tt>SystraService#showPopupMessage()</tt>
+     * Implements <code>SystraService#showPopupMessage()</code>
      *
      * @param popupMessage the message we will show
      */
@@ -116,8 +116,8 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Implements the <tt>SystrayService.addPopupMessageListener</tt> method.
-     * If <tt>activePopupHandler</tt> is still not available record the listener so we can add him later.
+     * Implements the <code>SystrayService.addPopupMessageListener</code> method.
+     * If <code>activePopupHandler</code> is still not available record the listener so we can add him later.
      *
      * @param listener the listener to add
      */
@@ -134,7 +134,7 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Implements the <tt>SystrayService.removePopupMessageListener</tt> method.
+     * Implements the <code>SystrayService.removePopupMessageListener</code> method.
      *
      * @param listener the listener to remove
      */
@@ -203,7 +203,7 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Initializes popup handler by searching registered services for class <tt>PopupMessageHandler</tt>.
+     * Initializes popup handler by searching registered services for class <code>PopupMessageHandler</code>.
      */
     protected void initHandlers()
     {
@@ -242,12 +242,12 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * An implementation of <tt>ServiceListener</tt> we will use
+     * An implementation of <code>ServiceListener</code> we will use
      */
     private class ServiceListenerImpl implements ServiceListener
     {
         /**
-         * implements <tt>ServiceListener.serviceChanged</tt>
+         * implements <code>ServiceListener.serviceChanged</code>
          *
          * @param serviceEvent
          */

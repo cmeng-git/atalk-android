@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The <tt>PresenceFilter</tt> is used to filter offline contacts from the contact list.
+ * The <code>PresenceFilter</code> is used to filter offline contacts from the contact list.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -48,7 +48,7 @@ public class PresenceFilter implements ContactListFilter
     private static final int INITIAL_CONTACT_COUNT = 30;
 
     /**
-     * Creates an instance of <tt>PresenceFilter</tt>.
+     * Creates an instance of <code>PresenceFilter</code>.
      */
     public PresenceFilter()
     {
@@ -56,7 +56,7 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Applies this filter. This filter is applied over the <tt>MetaContactListService</tt>.
+     * Applies this filter. This filter is applied over the <code>MetaContactListService</code>.
      *
      * @param filterQuery the query which keeps track of the filtering results
      */
@@ -105,10 +105,10 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Indicates if the given <tt>uiContact</tt> is matching this filter.
+     * Indicates if the given <code>uiContact</code> is matching this filter.
      *
-     * @param uiContact the <tt>UIContact</tt> to check
-     * @return <tt>true</tt> if the given <tt>uiContact</tt> is matching this filter, otherwise returns <tt>false</tt>
+     * @param uiContact the <code>UIContact</code> to check
+     * @return <code>true</code> if the given <code>uiContact</code> is matching this filter, otherwise returns <code>false</code>
      */
     public boolean isMatching(UIContact uiContact)
     {
@@ -123,10 +123,10 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Indicates if the given <tt>uiGroup</tt> is matching this filter.
+     * Indicates if the given <code>uiGroup</code> is matching this filter.
      *
-     * @param uiGroup the <tt>UIGroup</tt> to check
-     * @return <tt>true</tt> if the given <tt>uiGroup</tt> is matching this filter, otherwise returns <tt>false</tt>
+     * @param uiGroup the <code>UIGroup</code> to check
+     * @return <code>true</code> if the given <code>uiGroup</code> is matching this filter, otherwise returns <code>false</code>
      */
     public boolean isMatching(UIGroup uiGroup)
     {
@@ -150,9 +150,9 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if offline contacts are shown, otherwise returns <tt>false</tt>.
+     * Returns <code>true</code> if offline contacts are shown, otherwise returns <code>false</code>.
      *
-     * @return <tt>true</tt> if offline contacts are shown, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if offline contacts are shown, otherwise returns <code>false</code>
      */
     public boolean isShowOffline()
     {
@@ -160,11 +160,11 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if offline contacts are shown or if the given <tt>MetaContact</tt> is online,
+     * Returns <code>true</code> if offline contacts are shown or if the given <code>MetaContact</code> is online,
      * otherwise returns false.
      *
-     * @param metaContact the <tt>MetaContact</tt> to check
-     * @return <tt>true</tt> if the given <tt>MetaContact</tt> is matching this filter
+     * @param metaContact the <code>MetaContact</code> to check
+     * @return <code>true</code> if the given <code>MetaContact</code> is matching this filter
      */
     public boolean isMatching(MetaContact metaContact)
     {
@@ -172,11 +172,11 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if offline contacts are shown or if the given <tt>MetaContact</tt> is online,
+     * Returns <code>true</code> if offline contacts are shown or if the given <code>MetaContact</code> is online,
      * otherwise returns false.
      *
-     * @param contact the <tt>MetaContact</tt> to check
-     * @return <tt>true</tt> if the given <tt>MetaContact</tt> is matching this filter
+     * @param contact the <code>MetaContact</code> to check
+     * @return <code>true</code> if the given <code>MetaContact</code> is matching this filter
      */
     public boolean isMatching(SourceContact contact)
     {
@@ -187,11 +187,11 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if offline contacts are shown or if the given <tt>MetaContactGroup</tt>
+     * Returns <code>true</code> if offline contacts are shown or if the given <code>MetaContactGroup</code>
      * contains online contacts.
      *
-     * @param metaGroup the <tt>MetaContactGroup</tt> to check
-     * @return <tt>true</tt> if the given <tt>MetaContactGroup</tt> is matching this filter
+     * @param metaGroup the <code>MetaContactGroup</code> to check
+     * @return <code>true</code> if the given <code>MetaContactGroup</code> is matching this filter
      */
     public boolean isMatching(MetaContactGroup metaGroup)
     {
@@ -200,10 +200,10 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Returns <tt>true</tt> if the given meta contact is online, <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the given meta contact is online, <code>false</code> otherwise.
      *
      * @param contact the meta contact
-     * @return <tt>true</tt> if the given meta contact is online, <tt>false</tt> otherwise
+     * @return <code>true</code> if the given meta contact is online, <code>false</code> otherwise
      */
     private boolean isContactOnline(MetaContact contact)
     {
@@ -217,11 +217,11 @@ public class PresenceFilter implements ContactListFilter
     }
 
     /**
-     * Adds all contacts contained in the given <tt>MetaContactGroup</tt> matching the current filter
+     * Adds all contacts contained in the given <code>MetaContactGroup</code> matching the current filter
      * and not contained in the contact list.
      *
-     * @param metaGroup the <tt>MetaContactGroup</tt>, which matching contacts to add
-     * @param query the <tt>MetaContactQuery</tt> that notifies interested listeners of the results of this matching
+     * @param metaGroup the <code>MetaContactGroup</code>, which matching contacts to add
+     * @param query the <code>MetaContactQuery</code> that notifies interested listeners of the results of this matching
      * @param resultCount the initial result count we would insert directly to the contact list without firing events
      */
     private void addMatching(MetaContactGroup metaGroup, MetaContactQuery query, int resultCount)

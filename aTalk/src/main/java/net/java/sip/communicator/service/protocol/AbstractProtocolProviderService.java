@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import timber.log.Timber;
 
 /**
- * Implements standard functionality of <tt>ProtocolProviderService</tt> in order to make it easier
+ * Implements standard functionality of <code>ProtocolProviderService</code> in order to make it easier
  * for implementers to provide complete solutions while focusing on protocol-specific details.
  *
  * @author Lyubomir Marinov
@@ -26,7 +26,7 @@ import timber.log.Timber;
 public abstract class AbstractProtocolProviderService implements ProtocolProviderService
 {
     /**
-     * A list of all listeners registered for <tt>RegistrationStateChangeEvent</tt>s.
+     * A list of all listeners registered for <code>RegistrationStateChangeEvent</code>s.
      */
     private final List<RegistrationStateChangeListener> registrationListeners = new ArrayList<>();
 
@@ -64,15 +64,15 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     }
 
     /**
-     * Adds a specific <tt>OperationSet</tt> implementation to the set of supported
-     * <tt>OperationSet</tt>s of this instance. Serves as a type-safe wrapper around
-     * {@link #supportedOperationSets} which works with class names instead of <tt>Class</tt> and
+     * Adds a specific <code>OperationSet</code> implementation to the set of supported
+     * <code>OperationSet</code>s of this instance. Serves as a type-safe wrapper around
+     * {@link #supportedOperationSets} which works with class names instead of <code>Class</code> and
      * also shortens the code which performs such additions.
      *
-     * @param <T> the exact type of the <tt>OperationSet</tt> implementation to be added
-     * @param opsetClass the <tt>Class</tt> of <tt>OperationSet</tt> under the name of which the specified
+     * @param <T> the exact type of the <code>OperationSet</code> implementation to be added
+     * @param opsetClass the <code>Class</code> of <code>OperationSet</code> under the name of which the specified
      * implementation is to be added
-     * @param opset the <tt>OperationSet</tt> implementation to be added
+     * @param opset the <code>OperationSet</code> implementation to be added
      */
     protected <T extends OperationSet> void addSupportedOperationSet(Class<T> opsetClass, T opset)
     {
@@ -80,11 +80,11 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     }
 
     /**
-     * Removes an <tt>OperationSet</tt> implementation from the set of supported
-     * <tt>OperationSet</tt>s for this instance.
+     * Removes an <code>OperationSet</code> implementation from the set of supported
+     * <code>OperationSet</code>s for this instance.
      *
-     * @param <T> the exact type of the <tt>OperationSet</tt> implementation to be added
-     * @param opsetClass the <tt>Class</tt> of <tt>OperationSet</tt> under the name of which the specified
+     * @param <T> the exact type of the <code>OperationSet</code> implementation to be added
+     * @param opsetClass the <code>Class</code> of <code>OperationSet</code> under the name of which the specified
      * implementation is to be added
      */
     protected <T extends OperationSet> void removeSupportedOperationSet(Class<T> opsetClass)
@@ -93,8 +93,8 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     }
 
     /**
-     * Removes all <tt>OperationSet</tt> implementation from the set of supported
-     * <tt>OperationSet</tt>s for this instance.
+     * Removes all <code>OperationSet</code> implementation from the set of supported
+     * <code>OperationSet</code>s for this instance.
      */
     protected void clearSupportedOperationSet()
     {
@@ -170,10 +170,10 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * Returns the operation set corresponding to the specified class or null if this operation set
      * is not supported by the provider implementation.
      *
-     * @param <T> the exact type of the <tt>OperationSet</tt> that we're looking for
-     * @param opsetClass the <tt>Class</tt> of the operation set that we're looking for.
-     * @return returns an <tt>OperationSet</tt> of the specified <tt>Class</tt> if the underlying
-     * implementation supports it; <tt>null</tt>, otherwise.
+     * @param <T> the exact type of the <code>OperationSet</code> that we're looking for
+     * @param opsetClass the <code>Class</code> of the operation set that we're looking for.
+     * @return returns an <code>OperationSet</code> of the specified <code>Class</code> if the underlying
+     * implementation supports it; <code>null</code>, otherwise.
      */
     @SuppressWarnings("unchecked")
     public <T extends OperationSet> T getOperationSet(Class<T> opsetClass)
@@ -228,7 +228,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * OperationSet-s though not encouraged, may also be defined by service implementors.
      *
      * @return a {@link Collection} containing instances of all supported operation set classes
-     * (e.g. <tt>OperationSetPresence.class</tt>.
+     * (e.g. <code>OperationSetPresence.class</code>.
      */
     @SuppressWarnings("unchecked")
     public Collection<Class<? extends OperationSet>> getSupportedOperationSetClasses()
@@ -248,7 +248,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     /**
      * Indicates whether or not the previous XMPP session's stream was resumed.
      *
-     * @return <tt>true</tt> if the previous XMPP session's stream was resumed and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the previous XMPP session's stream was resumed and <code>false</code> otherwise.
      */
     public boolean isResumed()
     {
@@ -258,7 +258,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     /**
      * Indicates whether or not this provider is registered
      *
-     * @return <tt>true</tt> if the provider is currently registered and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the provider is currently registered and <code>false</code> otherwise.
      */
     public boolean isRegistered()
     {
@@ -268,8 +268,8 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
     /**
      * Indicates whether or not this provider must registered when placing outgoing calls.
      *
-     * @return <tt>true</tt> if the provider must be registered when placing a call and
-     * <tt>false</tt> otherwise.
+     * @return <code>true</code> if the provider must be registered when placing a call and
+     * <code>false</code> otherwise.
      */
     public boolean isRegistrationRequiredForCalling()
     {
@@ -280,7 +280,7 @@ public abstract class AbstractProtocolProviderService implements ProtocolProvide
      * Removes the specified registration state change listener so that it does not receive any
      * further notifications upon changes of the RegistrationState of this provider.
      *
-     * @param listener the listener to register for <tt>RegistrationStateChangeEvent</tt>s.
+     * @param listener the listener to register for <code>RegistrationStateChangeEvent</code>s.
      */
     public void removeRegistrationStateChangeListener(RegistrationStateChangeListener listener)
     {

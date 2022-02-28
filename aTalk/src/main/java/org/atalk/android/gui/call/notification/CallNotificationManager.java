@@ -62,7 +62,7 @@ public class CallNotificationManager
     /**
      * Returns call control notifications manager.
      *
-     * @return the <tt>CallNotificationManager</tt>.
+     * @return the <code>CallNotificationManager</code>.
      */
     public static CallNotificationManager get()
     {
@@ -134,11 +134,11 @@ public class CallNotificationManager
     }
 
     /**
-     * Binds pending intents to all control <tt>Views</tt>.
+     * Binds pending intents to all control <code>Views</code>.
      *
      * @param ctx Android context.
-     * @param contentView notification root <tt>View</tt>.
-     * @param callID the call ID that will be used in the <tt>Intents</tt>
+     * @param contentView notification root <code>View</code>.
+     * @param callID the call ID that will be used in the <code>Intents</code>
      */
     private void setIntents(Context ctx, RemoteViews contentView, String callID)
     {
@@ -179,7 +179,7 @@ public class CallNotificationManager
     }
 
     /**
-     * Stops the notification running for the call identified by given <tt>callId</tt>.
+     * Stops the notification running for the call identified by given <code>callId</code>.
      *
      * @param callId the ID of the call managed by {@link CallManager}.
      */
@@ -195,10 +195,10 @@ public class CallNotificationManager
     }
 
     /**
-     * Checks if there is notification running for a call with given <tt>callID</tt>.
+     * Checks if there is notification running for a call with given <code>callID</code>.
      *
      * @param callID the ID of a call managed by {@link CallManager}.
-     * @return <tt>true</tt> if there is notification running for a call identified by <tt>callID</tt>.
+     * @return <code>true</code> if there is notification running for a call identified by <code>callID</code>.
      */
     public synchronized boolean isNotificationRunning(String callID)
     {

@@ -20,21 +20,21 @@ import org.atalk.android.aTalkApp;
 public class VibrateHandlerImpl implements VibrateNotificationHandler
 {
 	/**
-	 * The <tt>Vibrator</tt> if present on this device.
+	 * The <code>Vibrator</code> if present on this device.
 	 */
 	private final Vibrator vibratorService;
 
 	/**
-	 * Creates new instance of <tt>VibrateHandlerImpl</tt>.
+	 * Creates new instance of <code>VibrateHandlerImpl</code>.
 	 */
 	public VibrateHandlerImpl() {
 		this.vibratorService = (Vibrator) aTalkApp.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	/**
-	 * Returns <tt>true</tt> if the <tt>Vibrator</tt> service is present on this device.
+	 * Returns <code>true</code> if the <code>Vibrator</code> service is present on this device.
 	 *
-	 * @return <tt>true</tt> if the <tt>Vibrator</tt> service is present on this device.
+	 * @return <code>true</code> if the <code>Vibrator</code> service is present on this device.
 	 */
 	private boolean hasVibrator()
 	{

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Extends the <tt>MediaStream</tt> interface and adds methods specific to video streaming.
+ * Extends the <code>MediaStream</code> interface and adds methods specific to video streaming.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
@@ -28,47 +28,47 @@ public interface VideoMediaStream extends MediaStream
     String REQUEST_RETRANSMISSIONS_PNAME = VideoMediaStream.class.getName() + ".REQUEST_RETRANSMISSIONS";
 
     /**
-     * Adds a specific <tt>VideoListener</tt> to this <tt>VideoMediaStream</tt> in order to receive
-     * notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Adds a specific <code>VideoListener</code> to this <code>VideoMediaStream</code> in order to receive
+     * notifications when visual/video <code>Component</code>s are being added and removed.
      * <p>
      * Adding a listener which has already been added does nothing i.e. it is not added more than
-     * once and thus does not receive one and the same <tt>VideoEvent</tt> multiple times
+     * once and thus does not receive one and the same <code>VideoEvent</code> multiple times
      * </p>
      *
-     * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s are
-     * being added or removed in this <tt>VideoMediaStream</tt>
+     * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s are
+     * being added or removed in this <code>VideoMediaStream</code>
      */
     public void addVideoListener(VideoListener listener);
 
     /**
-     * Gets the <tt>KeyFrameControl</tt> of this <tt>VideoMediaStream</tt>.
+     * Gets the <code>KeyFrameControl</code> of this <code>VideoMediaStream</code>.
      *
-     * @return the <tt>KeyFrameControl</tt> of this <tt>VideoMediaStream</tt>
+     * @return the <code>KeyFrameControl</code> of this <code>VideoMediaStream</code>
      */
     public KeyFrameControl getKeyFrameControl();
 
     /**
-     * Gets the visual <tt>Component</tt>, if any, depicting the video streamed from the local peer
+     * Gets the visual <code>Component</code>, if any, depicting the video streamed from the local peer
      * to the remote peer.
      *
-     * @return the visual <tt>Component</tt> depicting the local video if local video is actually
-     * being streamed from the local peer to the remote peer; otherwise, <tt>null</tt>
+     * @return the visual <code>Component</code> depicting the local video if local video is actually
+     * being streamed from the local peer to the remote peer; otherwise, <code>null</code>
      */
     public Component getLocalVisualComponent();
 
     /**
-     * Gets the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>.
+     * Gets the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
-     * @return the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>
+     * @return the <code>QualityControl</code> of this <code>VideoMediaStream</code>
      */
     public QualityControl getQualityControl();
 
     /**
-     * Gets the visual <tt>Component</tt> where video from the remote peer is being rendered or
-     * <tt>null</tt> if no video is currently being rendered.
+     * Gets the visual <code>Component</code> where video from the remote peer is being rendered or
+     * <code>null</code> if no video is currently being rendered.
      *
-     * @return the visual <tt>Component</tt> where video from the remote peer is being rendered or
-     * <tt>null</tt> if no video is currently being rendered
+     * @return the visual <code>Component</code> where video from the remote peer is being rendered or
+     * <code>null</code> if no video is currently being rendered
      * @deprecated Since multiple videos may be received from the remote peer and rendered, it is
      * not clear which one of them is to be singled out as the return value. Thus
      * {@link #getVisualComponent(long)} and {@link #getVisualComponents()} are to be used instead.
@@ -77,23 +77,23 @@ public interface VideoMediaStream extends MediaStream
     public Component getVisualComponent();
 
     /**
-     * Gets the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> with a specific SSRC.
+     * Gets the visual <code>Component</code> rendering the <code>ReceiveStream</code> with a specific SSRC.
      *
-     * @param ssrc the SSRC of the <tt>ReceiveStream</tt> to get the associated rendering visual <tt>Component</tt> of
-     * @return the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> with the specified
-     * <tt>ssrc</tt> if any; otherwise, <tt>null</tt>
+     * @param ssrc the SSRC of the <code>ReceiveStream</code> to get the associated rendering visual <code>Component</code> of
+     * @return the visual <code>Component</code> rendering the <code>ReceiveStream</code> with the specified
+     * <code>ssrc</code> if any; otherwise, <code>null</code>
      */
     public Component getVisualComponent(long ssrc);
 
     /**
-     * Gets a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered.
+     * Gets a list of the visual <code>Component</code>s where video from the remote peer is being rendered.
      *
-     * @return a list of the visual <tt>Component</tt>s where video from the remote peer is being rendered
+     * @return a list of the visual <code>Component</code>s where video from the remote peer is being rendered
      */
     public List<Component> getVisualComponents();
 
     /**
-     * Move origin of a partial desktop streaming <tt>MediaDevice</tt>.
+     * Move origin of a partial desktop streaming <code>MediaDevice</code>.
      *
      * @param x new x coordinate origin
      * @param y new y coordinate origin
@@ -101,16 +101,16 @@ public interface VideoMediaStream extends MediaStream
     public void movePartialDesktopStreaming(int x, int y);
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this <tt>VideoMediaStream</tt> in order to have to
-	 * no longer receive notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Removes a specific <code>VideoListener</code> from this <code>VideoMediaStream</code> in order to have to
+	 * no longer receive notifications when visual/video <code>Component</code>s are being added and removed.
      *
-     * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
-     * <tt>Component</tt>s are being added or removed in this <tt>VideoMediaStream</tt>
+     * @param listener the <code>VideoListener</code> to no longer be notified when visual/video
+     * <code>Component</code>s are being added or removed in this <code>VideoMediaStream</code>
      */
     public void removeVideoListener(VideoListener listener);
 
     /**
-     * Updates the <tt>QualityControl</tt> of this <tt>VideoMediaStream</tt>.
+     * Updates the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
      * @param advancedParams parameters of advanced attributes that may affect quality control
      */

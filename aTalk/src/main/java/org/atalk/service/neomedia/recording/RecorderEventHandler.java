@@ -6,7 +6,7 @@
 package org.atalk.service.neomedia.recording;
 
 /**
- * An interface that allows handling of <tt>RecorderEvent</tt> instances, such as writing them to
+ * An interface that allows handling of <code>RecorderEvent</code> instances, such as writing them to
  * disk in some format.
  *
  * @author Boris Grozev
@@ -14,7 +14,7 @@ package org.atalk.service.neomedia.recording;
 public interface RecorderEventHandler
 {
 	/**
-	 * Handle a specific <tt>RecorderEvent</tt>
+	 * Handle a specific <code>RecorderEvent</code>
 	 * 
 	 * @param ev
 	 *        the event to handle.
@@ -23,7 +23,7 @@ public interface RecorderEventHandler
 	public boolean handleEvent(RecorderEvent ev);
 
 	/**
-	 * Closes the <tt>RecorderEventHandler</tt>.
+	 * Closes the <code>RecorderEventHandler</code>.
 	 */
 	public void close();
 }

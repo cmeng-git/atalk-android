@@ -68,9 +68,9 @@ public class ChatRoomBookmarkDialog extends OSGiDialogFragment
     private EditText mPasswordField;
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>.
+     * Constructs the <code>ChatInviteDialog</code>.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> whom attributes are to be modified.
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> whom attributes are to be modified.
      * @param callback to be call on dialog closed.
      */
     public static ChatRoomBookmarkDialog getInstance(ChatRoomWrapper chatRoomWrapper, OnFinishedCallback callback)

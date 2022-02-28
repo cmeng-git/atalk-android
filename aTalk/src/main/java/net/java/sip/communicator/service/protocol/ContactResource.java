@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * The <tt>ContactResource</tt> class represents a resource, from which a <tt>Contact</tt> is connected.
+ * The <code>ContactResource</code> class represents a resource, from which a <code>Contact</code> is connected.
  *
  * @author Yana Stamcheva
  */
@@ -46,17 +46,17 @@ public class ContactResource
     protected boolean mobile = false;
 
     /**
-     * Creates an empty instance of <tt>ContactResource</tt> representing the base resource.
+     * Creates an empty instance of <code>ContactResource</code> representing the base resource.
      */
     public ContactResource()
     {
     }
 
     /**
-     * Creates a <tt>ContactResource</tt> by specifying the <tt>resourceName</tt>, the
-     * <tt>presenceStatus</tt> and the <tt>priority</tt>.
+     * Creates a <code>ContactResource</code> by specifying the <code>resourceName</code>, the
+     * <code>presenceStatus</code> and the <code>priority</code>.
      *
-     * @param contact the parent <tt>Contact</tt> this resource is about
+     * @param contact the parent <code>Contact</code> this resource is about
      * @param resourceName the name of this resource
      * @param presenceStatus the presence status of this resource
      * @param priority the priority of this resource
@@ -72,9 +72,9 @@ public class ContactResource
     }
 
     /**
-     * Returns the <tt>Contact</tt>, this resources belongs to.
+     * Returns the <code>Contact</code>, this resources belongs to.
      *
-     * @return the <tt>Contact</tt>, this resources belongs to
+     * @return the <code>Contact</code>, this resources belongs to
      */
     public Contact getContact()
     {

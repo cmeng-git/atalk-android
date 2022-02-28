@@ -25,17 +25,17 @@ import java.io.File;
 public class ConfigUtils
 {
     /**
-     * Gets an absolute path in the form of <tt>File</tt> from an absolute or
-     * relative <tt>path</tt> specified in the form of a <tt>String</tt>. If
-     * <tt>path</tt> is relative, it is resolved against
-     * <tt>ConfigurationService.PNAME_SC_HOME_DIR_LOCATION</tt> and
-     * <tt>ConfigurationService.PNAME_SC_HOME_DIR_NAME</tt>, <tt>user.home</tt>,
+     * Gets an absolute path in the form of <code>File</code> from an absolute or
+     * relative <code>path</code> specified in the form of a <code>String</code>. If
+     * <code>path</code> is relative, it is resolved against
+     * <code>ConfigurationService.PNAME_SC_HOME_DIR_LOCATION</code> and
+     * <code>ConfigurationService.PNAME_SC_HOME_DIR_NAME</code>, <code>user.home</code>,
      * or the current working directory.
      *
-     * @param path the absolute or relative path in the form of <tt>String</tt>
-     * for/from which an absolute path in the form of <tt>File</tt> is to be returned
-     * @param cfg the <tt>ConfigurationService</tt> to be employed by the method (invocation) if necessary
-     * @return an absolute path in the form of <tt>File</tt> for/from the specified <tt>path</tt>
+     * @param path the absolute or relative path in the form of <code>String</code>
+     * for/from which an absolute path in the form of <code>File</code> is to be returned
+     * @param cfg the <code>ConfigurationService</code> to be employed by the method (invocation) if necessary
+     * @return an absolute path in the form of <code>File</code> for/from the specified <code>path</code>
      */
     public static File getAbsoluteFile(String path, ConfigurationService cfg)
     {

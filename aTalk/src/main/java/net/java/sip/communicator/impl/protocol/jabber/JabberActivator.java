@@ -70,32 +70,32 @@ public class JabberActivator implements BundleActivator
     private static ProtocolProviderFactoryJabberImpl jabberProviderFactory = null;
 
     /**
-     * The <tt>UriHandler</tt> implementation that we use to handle "xmpp:" URIs
+     * The <code>UriHandler</code> implementation that we use to handle "xmpp:" URIs
      */
     private UriHandlerJabberImpl uriHandlerImpl = null;
 
     /**
-     * A reference to the currently valid <tt>UIService</tt>.
+     * A reference to the currently valid <code>UIService</code>.
      */
     private static UIService uiService = null;
 
     /**
-     * A reference to the currently valid <tt>ResoucreManagementService</tt> instance.
+     * A reference to the currently valid <code>ResoucreManagementService</code> instance.
      */
     private static ResourceManagementService resourcesService = null;
 
     /**
-     * A reference to the currently valid <tt>HIDService</tt> instance.
+     * A reference to the currently valid <code>HIDService</code> instance.
      */
     private static HIDService hidService = null;
 
     /**
-     * A reference to the currently valid <tt>GoogleContactsService</tt> instance.
+     * A reference to the currently valid <code>GoogleContactsService</code> instance.
      */
     private static GoogleContactsService googleService = null;
 
     /**
-     * A reference to the currently valid <tt>VersionService</tt> instance.
+     * A reference to the currently valid <code>VersionService</code> instance.
      */
     private static VersionService versionService = null;
 
@@ -165,7 +165,7 @@ public class JabberActivator implements BundleActivator
     /**
      * Returns a reference to the protocol provider factory that we have registered.
      *
-     * @return a reference to the <tt>ProtocolProviderFactoryJabberImpl</tt> instance that we have
+     * @return a reference to the <code>ProtocolProviderFactoryJabberImpl</code> instance that we have
      * registered from this package.
      */
     public static ProtocolProviderFactoryJabberImpl getProtocolProviderFactory()
@@ -216,10 +216,10 @@ public class JabberActivator implements BundleActivator
 
     /**
      * Returns a reference to the ResourceManagementService implementation currently registered in
-     * the bundle context or <tt>null</tt> if no such implementation was found.
+     * the bundle context or <code>null</code> if no such implementation was found.
      *
      * @return a reference to the ResourceManagementService implementation currently registered in
-     * the bundle context or <tt>null</tt> if no such implementation was found.
+     * the bundle context or <code>null</code> if no such implementation was found.
      */
     public static ResourceManagementService getResources()
     {
@@ -276,10 +276,10 @@ public class JabberActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to <tt>HIDService</tt> implementation currently registered in the bundle
+     * Returns a reference to <code>HIDService</code> implementation currently registered in the bundle
      * context or null if no such implementation was found
      *
-     * @return a currently valid implementation of the <tt>HIDService</tt>
+     * @return a currently valid implementation of the <code>HIDService</code>
      */
     public static HIDService getHIDService()
     {
@@ -337,9 +337,9 @@ public class JabberActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context.
+     * Returns the <code>GlobalDisplayDetailsService</code> obtained from the bundle context.
      *
-     * @return the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context
+     * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
     public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
     {

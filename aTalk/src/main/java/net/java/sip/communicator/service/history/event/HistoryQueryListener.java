@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.history.event;
 
 /**
- * The <tt>HistoryQueryListener</tt> listens for changes in the result of a given <tt>HistoryQuery</tt>. When a query to
+ * The <code>HistoryQueryListener</code> listens for changes in the result of a given <code>HistoryQuery</code>. When a query to
  * the history is started, this listener would be notified every time new results are available for this query.
  *
  * @author Yana Stamcheva
@@ -14,10 +14,10 @@ package net.java.sip.communicator.service.history.event;
 public interface HistoryQueryListener
 {
 	/**
-	 * Indicates that new <tt>HistoryRecord</tt> has been received as a result of the query.
+	 * Indicates that new <code>HistoryRecord</code> has been received as a result of the query.
 	 * 
 	 * @param event
-	 *        the <tt>HistoryRecordEvent</tt> containing information about the query results.
+	 *        the <code>HistoryRecordEvent</code> containing information about the query results.
 	 */
 	public void historyRecordReceived(HistoryRecordEvent event);
 
@@ -25,7 +25,7 @@ public interface HistoryQueryListener
 	 * Indicates that the status of the history has changed.
 	 * 
 	 * @param event
-	 *        the <tt>HistoryQueryStatusEvent</tt> containing information about the status change
+	 *        the <code>HistoryQueryStatusEvent</code> containing information about the status change
 	 */
 	public void queryStatusChanged(HistoryQueryStatusEvent event);
 }

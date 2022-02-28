@@ -53,7 +53,7 @@ public interface OperationSetContactTypeInfo extends OperationSet
 	 *         with code NETWORK_FAILURE if subscribing fails due to errors experienced during
 	 *         network communication
 	 * @throws IllegalArgumentException
-	 *         if <tt>contact</tt> is not a contact known to the underlying protocol provider
+	 *         if <code>contact</code> is not a contact known to the underlying protocol provider
 	 * @throws IllegalStateException
 	 *         if the underlying protocol provider is not registered/signed on a public service.
 	 */
@@ -80,7 +80,7 @@ public interface OperationSetContactTypeInfo extends OperationSet
 	 *         with code NETWORK_FAILURE if subscribing fails due to errors experienced during
 	 *         network communication
 	 * @throws IllegalArgumentException
-	 *         if <tt>contact</tt> or <tt>parent</tt> are not a contact known to the underlying
+	 *         if <code>contact</code> or <code>parent</code> are not a contact known to the underlying
 	 *         protocol provider.
 	 * @throws IllegalStateException
 	 *         if the underlying protocol provider is not registered/signed on a public service.

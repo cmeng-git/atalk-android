@@ -59,10 +59,10 @@ public interface ByteArrayBuffer
 
     /**
      * Perform checks on the byte buffer represented by this instance and
-     * return <tt>true</tt> if it is found to be invalid.
+     * return <code>true</code> if it is found to be invalid.
      *
-     * @return <tt>true</tt> if the byte buffer represented by this
-     * instance is found to be invalid, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the byte buffer represented by this
+     * instance is found to be invalid, <code>false</code> otherwise.
      */
     boolean isInvalid();
 

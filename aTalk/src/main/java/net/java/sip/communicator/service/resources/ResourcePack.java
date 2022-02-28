@@ -18,7 +18,7 @@ package net.java.sip.communicator.service.resources;
 import java.util.*;
 
 /**
- * The <tt>ResourcePack</tt> service.
+ * The <code>ResourcePack</code> service.
  *
  * @author Damian Minkov
  */
@@ -27,10 +27,10 @@ public interface ResourcePack
     public String RESOURCE_NAME = "ResourceName";
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for this
+     * Returns a <code>Map</code>, containing all [key, value] pairs for this
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for this
+     * @return a <code>Map</code>, containing all [key, value] pairs for this
      * resource pack.
      */
     public Map<String, String> getResources();

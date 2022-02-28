@@ -24,7 +24,7 @@ import timber.log.Timber;
 public class ContactListUtils
 {
     /**
-     * Adds a new contact in separate <tt>Thread</tt>.
+     * Adds a new contact in separate <code>Thread</code>.
      *
      * @param protocolProvider parent protocol provider.
      * @param group contact group to which new contact will be added.

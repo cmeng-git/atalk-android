@@ -14,11 +14,11 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>OperationSetChatStateNotifications</tt> in order to make
+ * Represents a default implementation of <code>OperationSetChatStateNotifications</code> in order to make
  * it easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
- * @param <T> the type of the <tt>ProtocolProviderService</tt> implementation providing the
- * <tt>AbstractOperationSetChatStateNotifications</tt> implementation
+ * @param <T> the type of the <code>ProtocolProviderService</code> implementation providing the
+ * <code>AbstractOperationSetChatStateNotifications</code> implementation
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
@@ -32,15 +32,15 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     protected final T parentProvider;
 
     /**
-     * The list of currently registered <tt>ChatStateNotificationsListener</tt>s.
+     * The list of currently registered <code>ChatStateNotificationsListener</code>s.
      */
     private final List<ChatStateNotificationsListener> chatStateNotificationsListeners = new ArrayList<>();
 
     /**
-     * Initializes a new <tt>AbstractOperationSetChatStateNotifications</tt> instance created by a
-     * specific <tt>ProtocolProviderService</tt> instance.
+     * Initializes a new <code>AbstractOperationSetChatStateNotifications</code> instance created by a
+     * specific <code>ProtocolProviderService</code> instance.
      *
-     * @param parentProvider the <tt>ProtocolProviderService</tt> which creates the new instance
+     * @param parentProvider the <code>ProtocolProviderService</code> which creates the new instance
      */
     protected AbstractOperationSetChatStateNotifications(T parentProvider)
     {
@@ -48,9 +48,9 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     }
 
     /**
-     * Adds <tt>listener</tt> to the list of listeners registered for receiving <tt>ChatStateNotificationEvent</tt>s.
+     * Adds <code>listener</code> to the list of listeners registered for receiving <code>ChatStateNotificationEvent</code>s.
      *
-     * @param listener the <tt>TypingNotificationsListener</tt> listener that we'd like to add
+     * @param listener the <code>TypingNotificationsListener</code> listener that we'd like to add
      * @see OperationSetChatStateNotifications#addChatStateNotificationsListener(ChatStateNotificationsListener)
      */
     public void addChatStateNotificationsListener(ChatStateNotificationsListener listener)
@@ -76,7 +76,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     }
 
     /**
-     * Delivers a <tt>ChatStateNotificationEvent</tt> to all registered listeners.
+     * Delivers a <code>ChatStateNotificationEvent</code> to all registered listeners.
      *
      * @param sourceContact the contact who has sent the notification
      * @param chatState the chat state from event delivery
@@ -94,7 +94,7 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     }
 
     /**
-     * Delivers a <tt>ChatStateNotificationEvent</tt> to all registered listeners for delivery failed event.
+     * Delivers a <code>ChatStateNotificationEvent</code> to all registered listeners for delivery failed event.
      *
      * @param sourceContact the contact who has sent the notification
      * @param evtCode the code of the event to deliver
@@ -114,10 +114,10 @@ public abstract class AbstractOperationSetChatStateNotifications<T extends Proto
     }
 
     /**
-     * Removes <tt>listener</tt> from the list of listeners registered for receiving
-     * <tt>ChatStateNotificationEvent</tt>s.
+     * Removes <code>listener</code> from the list of listeners registered for receiving
+     * <code>ChatStateNotificationEvent</code>s.
      *
-     * @param listener the <tt>TypingNotificationsListener</tt> listener that we'd like to remove
+     * @param listener the <code>TypingNotificationsListener</code> listener that we'd like to remove
      * @see OperationSetChatStateNotifications#removeChatStateNotificationsListener(ChatStateNotificationsListener)
      */
     public void removeChatStateNotificationsListener(ChatStateNotificationsListener listener)

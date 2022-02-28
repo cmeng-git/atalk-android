@@ -42,8 +42,8 @@ public class QualityPreset implements Comparable<QualityPreset>
 	private final Dimension resolution;
 
 	/**
-	 * Initializes a new quality preset with a specific <tt>resolution</tt> and a specific
-	 * <tt>frameRate</tt>.
+	 * Initializes a new quality preset with a specific <code>resolution</code> and a specific
+	 * <code>frameRate</code>.
 	 *
 	 * @param resolution
 	 *        the resolution
@@ -57,8 +57,8 @@ public class QualityPreset implements Comparable<QualityPreset>
 	}
 
 	/**
-	 * Initializes a new quality preset with a specific <tt>resolution</tt> and an unspecified
-	 * <tt>frameRate</tt>.
+	 * Initializes a new quality preset with a specific <code>resolution</code> and an unspecified
+	 * <code>frameRate</code>.
 	 *
 	 * @param resolution
 	 *        the resolution

@@ -7,7 +7,7 @@
 package net.java.sip.communicator.service.contactsource;
 
 /**
- * The <tt>ContactSourceService</tt> interface is meant to be implemented by modules supporting
+ * The <code>ContactSourceService</code> interface is meant to be implemented by modules supporting
  * large lists of contacts and wanting to enable searching from other modules.
  *
  * @author Yana Stamcheva
@@ -50,20 +50,20 @@ public interface ContactSourceService
     String getDisplayName();
 
     /**
-     * Creates and returns new <tt>ContactQuery</tt> instance.
+     * Creates and returns new <code>ContactQuery</code> instance.
      * 
      * @param queryString the string to search for
      * 
-     * @return new <tt>ContactQuery</tt> instance.
+     * @return new <code>ContactQuery</code> instance.
      */
     ContactQuery createContactQuery(String queryString);
     
     /**
-     * Creates and returns new <tt>ContactQuery</tt> instance.
+     * Creates and returns new <code>ContactQuery</code> instance.
      * 
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
-     * @return new <tt>ContactQuery</tt> instance.
+     * @return new <code>ContactQuery</code> instance.
      */
     ContactQuery createContactQuery(String queryString, int contactCount);
 

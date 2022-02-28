@@ -6,18 +6,18 @@
 package org.atalk.service.neomedia.device;
 
 /**
- * Represents a special-purpose <tt>MediaDevice</tt> which is effectively built on top of and
- * forwarding to another <tt>MediaDevice</tt>.
+ * Represents a special-purpose <code>MediaDevice</code> which is effectively built on top of and
+ * forwarding to another <code>MediaDevice</code>.
  *
  * @author Lyubomir Marinov
  */
 public interface MediaDeviceWrapper extends MediaDevice
 {
 	/**
-	 * Gets the actual <tt>MediaDevice</tt> which this <tt>MediaDevice</tt> is effectively built on
+	 * Gets the actual <code>MediaDevice</code> which this <code>MediaDevice</code> is effectively built on
 	 * top of and forwarding to.
 	 *
-	 * @return the actual <tt>MediaDevice</tt> which this <tt>MediaDevice</tt> is effectively built
+	 * @return the actual <code>MediaDevice</code> which this <code>MediaDevice</code> is effectively built
 	 *         on top of and forwarding to
 	 */
 	public MediaDevice getWrappedDevice();

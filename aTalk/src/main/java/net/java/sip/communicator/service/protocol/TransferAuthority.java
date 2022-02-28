@@ -13,26 +13,26 @@ package net.java.sip.communicator.service.protocol;
 public interface TransferAuthority
 {
 	/**
-	 * Checks with user for unknown transfer. Returns <tt>true</tt> if user accepts and we must
-	 * process the transfer, <tt>false</tt> otherwise.
+	 * Checks with user for unknown transfer. Returns <code>true</code> if user accepts and we must
+	 * process the transfer, <code>false</code> otherwise.
 	 *
 	 * @param fromContact
 	 *        the contact initiating the transfer.
 	 * @param transferTo
 	 *        the address we will be transferred to.
-	 * @return <tt>true</tt> if transfer is allowed to process, <tt>false</tt> otherwise.
+	 * @return <code>true</code> if transfer is allowed to process, <code>false</code> otherwise.
 	 */
 	public boolean processTransfer(Contact fromContact, String transferTo);
 
 	/**
-	 * Checks with user for unknown transfer. Returns <tt>true</tt> if user accepts and we must
-	 * process the transfer, <tt>false</tt> otherwise.
+	 * Checks with user for unknown transfer. Returns <code>true</code> if user accepts and we must
+	 * process the transfer, <code>false</code> otherwise.
 	 *
 	 * @param fromAddress
 	 *        the address initiating the transfer.
 	 * @param transferTo
 	 *        the address we will be transferred to.
-	 * @return <tt>true</tt> if transfer is allowed to process, <tt>false</tt> otherwise.
+	 * @return <code>true</code> if transfer is allowed to process, <code>false</code> otherwise.
 	 */
 	public boolean processTransfer(String fromAddress, String transferTo);
 }

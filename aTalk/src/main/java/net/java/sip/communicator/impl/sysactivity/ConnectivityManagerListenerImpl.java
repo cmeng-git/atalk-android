@@ -37,7 +37,7 @@ public class ConnectivityManagerListenerImpl extends BroadcastReceiver
     private boolean connected = false;
 
     /**
-     * Gets the instance of <tt>ConnectivityManagerListenerImpl</tt>.
+     * Gets the instance of <code>ConnectivityManagerListenerImpl</code>.
      *
      * @return the ConnectivityManagerListenerImpl.
      */

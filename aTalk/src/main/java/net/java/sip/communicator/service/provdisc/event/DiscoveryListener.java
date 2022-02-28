@@ -19,7 +19,7 @@ import java.util.EventListener;
 
 /**
  * Listener that will be notified when a provisioning URL is retrieved by the
- * <tt>ProvisioningDiscoveryService</tt>.
+ * <code>ProvisioningDiscoveryService</code>.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng

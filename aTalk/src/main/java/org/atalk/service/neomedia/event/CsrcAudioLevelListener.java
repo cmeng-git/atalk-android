@@ -6,7 +6,7 @@
 package org.atalk.service.neomedia.event;
 
 /**
- * The <tt>CsrcAudioLevelListener</tt> delivers audio level events reported by the remote party in
+ * The <code>CsrcAudioLevelListener</code> delivers audio level events reported by the remote party in
  * cases where it (the remote party) is acting as a mixer, mixing flows from numerous contributors.
  * It is up to upper layers such as SIP to define means of determining the exact members that the
  * CSRC IDs and hence audio levels participants belong to.
@@ -20,7 +20,7 @@ public interface CsrcAudioLevelListener
 	 * participants (Contributing SouRCes) that are taking part in a conference call.
 	 *
 	 * @param audioLevels
-	 *        a <tt>long</tt> array in which the elements at the even indices specify the CSRC IDs
+	 *        a <code>long</code> array in which the elements at the even indices specify the CSRC IDs
 	 *        and the elements at the odd indices specify the respective audio levels
 	 */
 	public void audioLevelsReceived(long[] audioLevels);

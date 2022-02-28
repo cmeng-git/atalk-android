@@ -22,7 +22,7 @@ import org.atalk.android.R;
 public class ScrollingTable extends LinearLayout
 {
     /**
-     * Create a new instance of <tt>ScrollingTable</tt>
+     * Create a new instance of <code>ScrollingTable</code>
      *
      * @param context the context
      */
@@ -32,7 +32,7 @@ public class ScrollingTable extends LinearLayout
     }
 
     /**
-     * Creates a new instance of <tt>ScrollingTable</tt>.
+     * Creates a new instance of <code>ScrollingTable</code>.
      *
      * @param context the context
      * @param attrs the attribute set
@@ -98,7 +98,7 @@ public class ScrollingTable extends LinearLayout
     }
 
     /**
-     * Adjust given table columns width to sizes given in <tt>widths</tt> array.
+     * Adjust given table columns width to sizes given in <code>widths</code> array.
      *
      * @param table the table layout which columns will be adjusted
      * @param widths array of columns widths to set

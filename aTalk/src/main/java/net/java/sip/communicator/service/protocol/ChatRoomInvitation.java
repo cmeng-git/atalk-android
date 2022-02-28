@@ -18,10 +18,10 @@ import org.jxmpp.jid.*;
 public interface ChatRoomInvitation
 {
 	/**
-	 * Returns the <tt>ChatRoom</tt>, which is the target of this invitation. The chat room returned
+	 * Returns the <code>ChatRoom</code>, which is the target of this invitation. The chat room returned
 	 * by this method will be the room to which the user is invited to join to.
 	 *
-	 * @return the <tt>ChatRoom</tt>, which is the target of this invitation
+	 * @return the <code>ChatRoom</code>, which is the target of this invitation
 	 */
 	ChatRoom getTargetChatRoom();
 
@@ -33,9 +33,9 @@ public interface ChatRoomInvitation
 	byte[] getChatRoomPassword();
 
 	/**
-	 * Returns the <tt>ChatRoomMember</tt> that sent this invitation.
+	 * Returns the <code>ChatRoomMember</code> that sent this invitation.
 	 *
-	 * @return the <tt>ChatRoomMember</tt> that sent this invitation.
+	 * @return the <code>ChatRoomMember</code> that sent this invitation.
 	 */
 	EntityJid getInviter();
 

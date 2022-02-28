@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import net.java.sip.communicator.service.contactsource.SourceContact;
 
 /**
- * Class used to obtain UI specific data for <tt>SourceContact</tt> instances.
+ * Class used to obtain UI specific data for <code>SourceContact</code> instances.
  *
  * @author Pawel Domas
  */

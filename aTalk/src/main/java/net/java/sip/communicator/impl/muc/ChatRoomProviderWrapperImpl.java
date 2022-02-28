@@ -50,7 +50,7 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
     private Object[] data;
 
     /**
-     * Creates an instance of <tt>ChatRoomProviderWrapper</tt> by specifying the protocol
+     * Creates an instance of <code>ChatRoomProviderWrapper</code> by specifying the protocol
      * provider, corresponding to the multi user chat account.
      *
      * @param protocolProvider protocol provider, corresponding to the multi user chat account.
@@ -279,7 +279,7 @@ public class ChatRoomProviderWrapperImpl implements ChatRoomProviderWrapper
      *
      * @param key the key to retrieve the index in {@code #data} of
      * @return the index in {@code #data} of the specified {@code key} if it is contained;
-     * <tt>-1</tt> if {@code key} is not contained in {@code #data}
+     * <code>-1</code> if {@code key} is not contained in {@code #data}
      */
     private int dataIndexOf(Object key)
     {

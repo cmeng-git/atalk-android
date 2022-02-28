@@ -44,7 +44,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>MUCServiceImpl</tt> class implements the service for the chat rooms.
+ * The <code>MUCServiceImpl</code> class implements the service for the chat rooms.
  *
  * @author Hristo Terezov
  * @author Eng Chong Meng
@@ -79,7 +79,7 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Adds a change listener to the <tt>ChatRoomList</tt>.
+     * Adds a change listener to the <code>ChatRoomList</code>.
      *
      * @param l the listener.
      */
@@ -89,7 +89,7 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Removes a change listener to the <tt>ChatRoomList</tt>.
+     * Removes a change listener to the <code>ChatRoomList</code>.
      *
      * @param l the listener.
      */
@@ -99,7 +99,7 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Fires a <tt>ChatRoomListChangedEvent</tt> event.
+     * Fires a <code>ChatRoomListChangedEvent</code> event.
      *
      * @param chatRoomWrapper the chat room.
      * @param eventID the id of the event.
@@ -231,7 +231,7 @@ public class MUCServiceImpl extends MUCService
                 = chatRoomProvider.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
         ChatRoom chatRoom = null;
         try {
-            /* Find chatRoom for <tt>roomName</tt>. If the room doesn't exists in the cache then creates it. */
+            /* Find chatRoom for <code>roomName</code>. If the room doesn't exists in the cache then creates it. */
             chatRoom = groupChatOpSet.findRoom(chatRoomName);
         } catch (Exception e) {
             Timber.log(TimberLog.FINER, e, "Exception occurred while searching for room:%s", chatRoomName);
@@ -264,7 +264,7 @@ public class MUCServiceImpl extends MUCService
      * @param reason the reason for room creation
      * @param persistent is the room persistent
      * @param isPrivate whether the room will be private or public.
-     * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
+     * @return the <code>ChatRoomWrapper</code> corresponding to the created room
      */
     public ChatRoomWrapper createChatRoom(ChatRoomWrapper chatRoomWrapper,
             String reason, boolean join, boolean persistent, boolean isPrivate)
@@ -286,7 +286,7 @@ public class MUCServiceImpl extends MUCService
      * @param persistent whether the newly created room will be persistent.
      * @param isPrivate whether the room will be private or public.
      * @param onServerRoom whether the room is already in the server room list.
-     * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room or <tt>null</tt> if
+     * @return the <code>ChatRoomWrapper</code> corresponding to the created room or <code>null</code> if
      * the protocol fails to create the chat room.
      */
     public ChatRoomWrapper createChatRoom(String roomName, ProtocolProviderService protocolProvider,
@@ -342,7 +342,7 @@ public class MUCServiceImpl extends MUCService
      * @param contacts the contacts invited when creating the chat room.
      * @param reason the reason for room creation
      * @param persistent is the room persistent
-     * @return the <tt>ChatRoomWrapper</tt> corresponding to the created room
+     * @return the <code>ChatRoomWrapper</code> corresponding to the created room
      */
     public ChatRoomWrapper createPrivateChatRoom(ProtocolProviderService protocolProvider,
             Collection<String> contacts, String reason, boolean persistent)
@@ -351,10 +351,10 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns existing chat rooms for the given <tt>chatRoomProvider</tt>.
+     * Returns existing chat rooms for the given <code>chatRoomProvider</code>.
      *
-     * @param chatRoomProvider the <tt>ChatRoomProviderWrapper</tt>, which chat rooms we're looking for
-     * @return existing chat rooms for the given <tt>chatRoomProvider</tt>
+     * @param chatRoomProvider the <code>ChatRoomProviderWrapper</code>, which chat rooms we're looking for
+     * @return existing chat rooms for the given <code>chatRoomProvider</code>
      */
     public List<String> getExistingChatRooms(ChatRoomProviderWrapper chatRoomProvider)
     {
@@ -382,10 +382,10 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns existing chatRooms in store for the given <tt>ProtocolProviderService</tt>.
+     * Returns existing chatRooms in store for the given <code>ProtocolProviderService</code>.
      *
-     * @param pps the <tt>ProtocolProviderService</tt>, whom chatRooms we're looking for
-     * @return existing chatRooms in store for the given <tt>ProtocolProviderService</tt>
+     * @param pps the <code>ProtocolProviderService</code>, whom chatRooms we're looking for
+     * @return existing chatRooms in store for the given <code>ProtocolProviderService</code>
      */
     public List<String> getExistingChatRooms(ProtocolProviderService pps)
     {
@@ -409,7 +409,7 @@ public class MUCServiceImpl extends MUCService
      * Leaves the given chat room.
      *
      * @param chatRoomWrapper the chat room to leave.
-     * @return <tt>ChatRoomWrapper</tt> instance associated with the chat room.
+     * @return <code>ChatRoomWrapper</code> instance associated with the chat room.
      */
     public ChatRoomWrapper leaveChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
@@ -546,7 +546,7 @@ public class MUCServiceImpl extends MUCService
         /**
          * Starts the chat activity for the given metaContact.
          *
-         * @param descriptor <tt>MetaContact</tt> for which chat activity will be started.
+         * @param descriptor <code>MetaContact</code> for which chat activity will be started.
          */
         private void startChatActivity(Object descriptor)
         {
@@ -634,10 +634,10 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Finds the <tt>ChatRoomWrapper</tt> instance associated with the source contact.
+     * Finds the <code>ChatRoomWrapper</code> instance associated with the source contact.
      *
      * @param contact the source contact.
-     * @return the <tt>ChatRoomWrapper</tt> instance.
+     * @return the <code>ChatRoomWrapper</code> instance.
      */
     public ChatRoomWrapper findChatRoomWrapperFromSourceContact(SourceContact contact)
     {
@@ -650,11 +650,11 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Finds the <tt>ChatRoomWrapper</tt> instance associated with the chat room.
+     * Finds the <code>ChatRoomWrapper</code> instance associated with the chat room.
      *
      * @param chatRoomID the id of the chat room.
      * @param pps the provider of the chat room.
-     * @return the <tt>ChatRoomWrapper</tt> instance.
+     * @return the <code>ChatRoomWrapper</code> instance.
      */
     public ChatRoomWrapper findChatRoomWrapperFromChatRoomID(String chatRoomID, ProtocolProviderService pps)
     {
@@ -665,7 +665,7 @@ public class MUCServiceImpl extends MUCService
      * Searches for chat room wrapper in chat room list by chat room.
      *
      * @param chatRoom the chat room.
-     * @param create if <tt>true</tt> and the chat room wrapper is not found new chatRoomWrapper is created.
+     * @param create if <code>true</code> and the chat room wrapper is not found new chatRoomWrapper is created.
      * @return found chat room wrapper or the created chat room wrapper.
      */
     @Override
@@ -713,9 +713,9 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Removes the given <tt>ChatRoom</tt> from the list of all chat rooms.
+     * Removes the given <code>ChatRoom</code> from the list of all chat rooms.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to remove
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to remove
      */
     public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
     {
@@ -723,9 +723,9 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Destroys the given <tt>ChatRoom</tt> from the list of all chat rooms.
+     * Destroys the given <code>ChatRoom</code> from the list of all chat rooms.
      *
-     * @param chatRoomWrapper the <tt>ChatRoomWrapper</tt> to be destroyed.
+     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to be destroyed.
      * @param reason the reason for destroying.
      * @param alternateAddress the alternative entityBareJid of the chatRoom to join.
      */
@@ -788,11 +788,11 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns the <tt>ChatRoomProviderWrapper</tt> that correspond to the given
-     * <tt>ProtocolProviderService</tt>. If the list doesn't contain a corresponding wrapper - returns null.
+     * Returns the <code>ChatRoomProviderWrapper</code> that correspond to the given
+     * <code>ProtocolProviderService</code>. If the list doesn't contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
-     * @return the <tt>ChatRoomProvider</tt> object corresponding to the given <tt>ProtocolProviderService</tt>
+     * @return the <code>ChatRoomProvider</code> object corresponding to the given <code>ProtocolProviderService</code>
      */
     public ChatRoomProviderWrapper findServerWrapperFromProvider(ProtocolProviderService protocolProvider)
     {
@@ -800,11 +800,11 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns the <tt>ChatRoomWrapper</tt> that correspond to the given <tt>ChatRoom</tt>. If the
+     * Returns the <code>ChatRoomWrapper</code> that correspond to the given <code>ChatRoom</code>. If the
      * list of chat rooms doesn't contain a corresponding wrapper - returns null.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> that we're looking for
-     * @return the <tt>ChatRoomWrapper</tt> object corresponding to the given <tt>ChatRoom</tt>
+     * @param chatRoom the <code>ChatRoom</code> that we're looking for
+     * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
     public ChatRoomWrapper findChatRoomWrapperFromChatRoom(ChatRoom chatRoom)
     {
@@ -847,9 +847,9 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns instance of the <tt>ServerChatRoomContactSourceService</tt> contact source.
+     * Returns instance of the <code>ServerChatRoomContactSourceService</code> contact source.
      *
-     * @return instance of the <tt>ServerChatRoomContactSourceService</tt> contact source.
+     * @return instance of the <code>ServerChatRoomContactSourceService</code> contact source.
      */
     public ContactSourceService getServerChatRoomsContactSourceForProvider(ChatRoomProviderWrapper pps)
     {
@@ -857,10 +857,10 @@ public class MUCServiceImpl extends MUCService
     }
 
     /**
-     * Returns <tt>true</tt> if the contact is <tt>ChatRoomSourceContact</tt>
+     * Returns <code>true</code> if the contact is <code>ChatRoomSourceContact</code>
      *
      * @param contact the contact
-     * @return <tt>true</tt> if the contact is <tt>ChatRoomSourceContact</tt>
+     * @return <code>true</code> if the contact is <code>ChatRoomSourceContact</code>
      */
     public boolean isMUCSourceContact(SourceContact contact)
     {

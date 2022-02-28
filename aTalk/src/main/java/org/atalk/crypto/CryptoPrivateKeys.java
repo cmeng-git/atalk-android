@@ -188,7 +188,7 @@ public class CryptoPrivateKeys extends OSGiActivity
      * Displays alert asking user if he wants to regenerate or generate new privateKey.
      *
      * @param bareJid the account bareJid
-     * @param isKeyExist <tt>true</tt>if key exist
+     * @param isKeyExist <code>true</code>if key exist
      */
     private void showGenerateKeyAlert(final String bareJid, boolean isKeyExist)
     {
@@ -238,9 +238,9 @@ public class CryptoPrivateKeys extends OSGiActivity
         private final List<String> deviceFP;
 
         /**
-         * Creates new instance of <tt>FingerprintListAdapter</tt>.
+         * Creates new instance of <code>FingerprintListAdapter</code>.
          *
-         * @param fingerprintList list of <tt>device</tt> for which OMEMO/OTR fingerprints will be displayed.
+         * @param fingerprintList list of <code>device</code> for which OMEMO/OTR fingerprints will be displayed.
          */
         PrivateKeyListAdapter(Map<String, String> fingerprintList)
         {

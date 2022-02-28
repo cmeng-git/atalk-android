@@ -37,7 +37,7 @@ public class WhiteboardPoint implements Cloneable
 	private double y;
 
 	/**
-	 * Constructs and initializes a point with the same location as the specified <tt>Point</tt>
+	 * Constructs and initializes a point with the same location as the specified <code>Point</code>
 	 * object.
 	 * 
 	 * @param p
@@ -49,7 +49,7 @@ public class WhiteboardPoint implements Cloneable
 	}
 
 	/**
-	 * Constructs and initializes a point at the specified <tt>(x,y)</tt> location in the coordinate
+	 * Constructs and initializes a point at the specified <code>(x,y)</code> location in the coordinate
 	 * space.
 	 *
 	 * @param x
@@ -65,9 +65,9 @@ public class WhiteboardPoint implements Cloneable
 	}
 
 	/**
-	 * Returns the X coordinate of this <tt>WhiteboardPoint</tt>.
+	 * Returns the X coordinate of this <code>WhiteboardPoint</code>.
 	 *
-	 * @return the x coordinate of this <tt>WhiteboardPoint</tt>.
+	 * @return the x coordinate of this <code>WhiteboardPoint</code>.
 	 */
 	public double getX()
 	{
@@ -75,9 +75,9 @@ public class WhiteboardPoint implements Cloneable
 	}
 
 	/**
-	 * Returns the Y coordinate of this <tt>WhiteboardPoint</tt>.
+	 * Returns the Y coordinate of this <code>WhiteboardPoint</code>.
 	 *
-	 * @return the y coordinate of this <tt>WhiteboardPoint</tt>.
+	 * @return the y coordinate of this <code>WhiteboardPoint</code>.
 	 */
 	public double getY()
 	{
@@ -107,15 +107,15 @@ public class WhiteboardPoint implements Cloneable
 	}
 
 	/**
-	 * Determines whether or not two points are equal. Two instances of <tt>WhiteboardPoint</tt> are
-	 * equal if the values of their <tt>x</tt> and <tt>y</tt> member fields, representing their
+	 * Determines whether or not two points are equal. Two instances of <code>WhiteboardPoint</code> are
+	 * equal if the values of their <code>x</code> and <code>y</code> member fields, representing their
 	 * position in the coordinate space, are the same.
 	 *
 	 * @param obj
-	 *        an object to be compared with this <tt>WhiteboardPoint</tt>
+	 *        an object to be compared with this <code>WhiteboardPoint</code>
 	 *
-	 * @return <tt>true</tt> if the object to be compared is an instance of <tt>WhiteboardPoint</tt>
-	 *         and has the same values; <tt>false</tt> otherwise.
+	 * @return <code>true</code> if the object to be compared is an instance of <code>WhiteboardPoint</code>
+	 *         and has the same values; <code>false</code> otherwise.
 	 */
 	@Override
 	public boolean equals(Object obj)
@@ -150,9 +150,9 @@ public class WhiteboardPoint implements Cloneable
 	}
 
 	/**
-	 * Creates and returns a copy of this <tt>WhiteboardPoint</tt>.
+	 * Creates and returns a copy of this <code>WhiteboardPoint</code>.
 	 *
-	 * @return a clone of this <tt>WhiteboardPoint</tt> instance.
+	 * @return a clone of this <code>WhiteboardPoint</code> instance.
 	 */
 	@Override
 	protected Object clone()

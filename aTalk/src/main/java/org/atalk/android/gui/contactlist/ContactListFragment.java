@@ -88,7 +88,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     protected ExpandableListView contactListView;
 
     /**
-     * Stores last clicked <tt>MetaContact</tt>; take care activity destroyed by OS.
+     * Stores last clicked <code>MetaContact</code>; take care activity destroyed by OS.
      */
     protected static MetaContact mClickedContact;
 
@@ -110,7 +110,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     private Context mContext = null;
 
     /**
-     * Creates new instance of <tt>ContactListFragment</tt>.
+     * Creates new instance of <code>ContactListFragment</code>.
      */
     public ContactListFragment()
     {
@@ -490,7 +490,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Method fired when given chat is being closed.
      *
-     * @param closedChat closed <tt>ChatPanel</tt>.
+     * @param closedChat closed <code>ChatPanel</code>.
      */
     public void onCloseChat(ChatPanel closedChat)
     {
@@ -545,7 +545,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Starts the {@link AccountInfoPresenceActivity} for clicked {@link Account}
      *
-     * @param metaContact the <tt>Contact</tt> for which info to be opened.
+     * @param metaContact the <code>Contact</code> for which info to be opened.
      */
     private void startContactInfoActivity(MetaContact metaContact)
     {
@@ -565,13 +565,13 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     }
 
     /**
-     * Expands/collapses the group given by <tt>groupPosition</tt>.
+     * Expands/collapses the group given by <code>groupPosition</code>.
      *
      * @param parent the parent expandable list view
      * @param v the view
      * @param groupPosition the position of the group
      * @param id the identifier
-     * @return <tt>true</tt> if the group click action has been performed
+     * @return <code>true</code> if the group click action has been performed
      */
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
     {
@@ -610,7 +610,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Starts the chat activity for the given metaContact.
      *
-     * @param descriptor <tt>MetaContact</tt> for which chat activity will be started.
+     * @param descriptor <code>MetaContact</code> for which chat activity will be started.
      */
     private void startChatActivity(Object descriptor)
     {
@@ -634,7 +634,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     }
 
     /**
-     * Filters contact list for given <tt>query</tt>.
+     * Filters contact list for given <code>query</code>.
      *
      * @param query the query string that will be used for filtering contacts.
      */
@@ -671,7 +671,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     }
 
     /**
-     * Class used to implement <tt>SearchView</tt> listeners for compatibility purposes.
+     * Class used to implement <code>SearchView</code> listeners for compatibility purposes.
      */
     class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener
     {

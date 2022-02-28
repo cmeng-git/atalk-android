@@ -25,23 +25,23 @@ public interface OperationSetInstantMessageTransform extends OperationSet
 	 * Adds a transformation layer to this protocol provider using a default priority value.
 	 *
 	 * @param transformLayer
-	 *        the <tt>TransformLayer</tt> that we'd like to add to our protocol provider.
+	 *        the <code>TransformLayer</code> that we'd like to add to our protocol provider.
 	 */
 	public void addTransformLayer(TransformLayer transformLayer);
 
 	/**
-	 * Adds <tt>transformLayer</tt> to the layers currently used for message transformation in this
-	 * provider and assigns the specified <tt>priority</tt> to it.
+	 * Adds <code>transformLayer</code> to the layers currently used for message transformation in this
+	 * provider and assigns the specified <code>priority</code> to it.
 	 *
 	 * @param priority
-	 *        the priority/order index that we'd like to insert <tt>transportLayer</tt> at.
+	 *        the priority/order index that we'd like to insert <code>transportLayer</code> at.
 	 * @param transformLayer
 	 *        the layer we are registering
 	 */
 	public void addTransformLayer(int priority, TransformLayer transformLayer);
 
 	/**
-	 * Removes <tt>transformLayer</tt> from the list of currently registered transform layers so
+	 * Removes <code>transformLayer</code> from the list of currently registered transform layers so
 	 * that it won't be notified for further message events.
 	 *
 	 * @param transformLayer
@@ -50,14 +50,14 @@ public interface OperationSetInstantMessageTransform extends OperationSet
 	public void removeTransformLayer(TransformLayer transformLayer);
 
 	/**
-	 * Determines whether <tt>layer</tt> is currently registered with this provider.
+	 * Determines whether <code>layer</code> is currently registered with this provider.
 	 *
 	 * @param layer
 	 *        the layer for which we'd like to know whether it is currently registered with this
 	 *        provider.
 	 *
-	 * @return <tt>true</tt> if <tt>layer</tt> is currently registered with this provider and
-	 *         <tt>false</tt> otherwise.
+	 * @return <code>true</code> if <code>layer</code> is currently registered with this provider and
+	 *         <code>false</code> otherwise.
 	 */
 	public boolean containsLayer(TransformLayer layer);
 }

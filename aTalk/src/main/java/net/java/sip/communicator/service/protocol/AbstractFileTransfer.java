@@ -12,10 +12,10 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * An abstract implementation of the <tt>FileTransfer</tt> interface providing implementation of
+ * An abstract implementation of the <code>FileTransfer</code> interface providing implementation of
  * status and progress events related methods and leaving all protocol specific methods abstract. A
- * protocol specific implementation could extend this class and implement only <tt>cancel()</tt> and
- * <tt>getTransferredBytes()</tt>.
+ * protocol specific implementation could extend this class and implement only <code>cancel()</code> and
+ * <code>getTransferredBytes()</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -55,7 +55,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     abstract public long getTransferredBytes();
 
     /**
-     * Adds the given <tt>FileTransferProgressListener</tt> to listen for status changes on this file transfer.
+     * Adds the given <code>FileTransferProgressListener</code> to listen for status changes on this file transfer.
      *
      * @param listener the listener to add
      */
@@ -69,7 +69,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Adds the given <tt>FileTransferStatusListener</tt> to listen for status changes on this file transfer.
+     * Adds the given <code>FileTransferStatusListener</code> to listen for status changes on this file transfer.
      *
      * @param listener the listener to add
      */
@@ -83,7 +83,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Removes the given <tt>FileTransferProgressListener</tt>.
+     * Removes the given <code>FileTransferProgressListener</code>.
      *
      * @param listener the listener to remove
      */
@@ -95,7 +95,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Removes the given <tt>FileTransferStatusListener</tt>.
+     * Removes the given <code>FileTransferStatusListener</code>.
      *
      * @param listener the listener to remove
      */
@@ -121,7 +121,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occured.
+     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> occured.
      *
      * @param newStatus the new status
      */
@@ -131,7 +131,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferStatusChangeEvent</tt> occurred.
+     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> occurred.
      *
      * @param newStatus the new status
      * @param reason the reason of the status change
@@ -158,7 +158,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <tt>FileTransferProgressEvent</tt> occurred.
+     * Notifies all status listeners that a new <code>FileTransferProgressEvent</code> occurred.
      *
      * @param timestamp the date on which the event occurred
      * @param progress the bytes representing the progress of the transfer

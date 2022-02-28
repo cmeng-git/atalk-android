@@ -22,7 +22,7 @@ import org.jxmpp.jid.BareJid;
 import java.util.*;
 
 /**
- * The <tt>GlobalDisplayNameImpl</tt> offers generic access to a global display name for the local user.
+ * The <code>GlobalDisplayNameImpl</code> offers generic access to a global display name for the local user.
  * <p>
  *
  * @author Yana Stamcheva
@@ -73,7 +73,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     private String globalDisplayName;
 
     /**
-     * Creates an instance of <tt>GlobalDisplayDetailsImpl</tt>.
+     * Creates an instance of <code>GlobalDisplayDetailsImpl</code>.
      */
     public GlobalDisplayDetailsImpl()
     {
@@ -137,10 +137,10 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     }
 
     /**
-     * Adds the given <tt>GlobalDisplayDetailsListener</tt> to listen for change events concerning
+     * Adds the given <code>GlobalDisplayDetailsListener</code> to listen for change events concerning
      * the global display details.
      *
-     * @param l the <tt>GlobalDisplayDetailsListener</tt> to add
+     * @param l the <code>GlobalDisplayDetailsListener</code> to add
      */
     public void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l)
     {
@@ -151,10 +151,10 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     }
 
     /**
-     * Removes the given <tt>GlobalDisplayDetailsListener</tt> listening for change events
+     * Removes the given <code>GlobalDisplayDetailsListener</code> listening for change events
      * concerning the global display details.
      *
-     * @param l the <tt>GlobalDisplayDetailsListener</tt> to remove
+     * @param l the <code>GlobalDisplayDetailsListener</code> to remove
      */
     public void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l)
     {
@@ -166,7 +166,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     /**
      * Updates account information when a protocol provider is registered.
      *
-     * @param evt the <tt>RegistrationStateChangeEvent</tt> that notified us of the change
+     * @param evt the <code>RegistrationStateChangeEvent</code> that notified us of the change
      */
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
     {
@@ -241,7 +241,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      * Registers a ServerStoredDetailsChangeListener with the operation sets of the providers, if
      * a provider change its name we use it in the UI.
      *
-     * @param evt the <tt>ServerStoredDetailsChangeEvent</tt> the event for name change.
+     * @param evt the <code>ServerStoredDetailsChangeEvent</code> the event for name change.
      */
     public void serverStoredDetailsChanged(ServerStoredDetailsChangeEvent evt)
     {

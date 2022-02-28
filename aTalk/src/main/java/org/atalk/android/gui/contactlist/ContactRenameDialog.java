@@ -110,10 +110,10 @@ public class ContactRenameDialog extends OSGiDialogFragment
     }
 
     /**
-     * Creates new instance of <tt>MoveToGroupDialog</tt>.
+     * Creates new instance of <code>MoveToGroupDialog</code>.
      *
      * @param metaContact the contact that will be moved.
-     * @return parametrized instance of <tt>MoveToGroupDialog</tt>.
+     * @return parametrized instance of <code>MoveToGroupDialog</code>.
      */
     public static ContactRenameDialog getInstance(MetaContact metaContact)
     {

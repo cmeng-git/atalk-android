@@ -33,7 +33,7 @@ public class PasswordUtil
      * where each argument is separated by space and value is
      * assigned by '=' sign. For example "arg=value -arg2=value4 --arg3=val45".
      * @param passwordArg the name of password argument to be shadowed.
-     * @return <tt>cmdLine</tt> string with password argument values shadowed by
+     * @return <code>cmdLine</code> string with password argument values shadowed by
      * 'X'
      */
     public static String replacePassword(String cmdLine, String passwordArg)
@@ -57,11 +57,11 @@ public class PasswordUtil
     }
 
     /**
-     * Does {@link #replacePassword(String, String)} for every argument given in <tt>passwordArgs</tt> array.
+     * Does {@link #replacePassword(String, String)} for every argument given in <code>passwordArgs</code> array.
      *
      * @param string command line argument string, e.g. "arg=3 pass=secret"
      * @param passwordArgs the array which contains the names of password argument to be shadowed.
-     * @return <tt>cmdLine</tt> string with password arguments values shadowed by 'X'
+     * @return <code>cmdLine</code> string with password arguments values shadowed by 'X'
      */
     public static String replacePasswords(String string, String[] passwordArgs)
     {

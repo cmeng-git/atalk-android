@@ -17,26 +17,26 @@ import org.osgi.framework.BundleContext;
 import timber.log.Timber;
 
 /**
- * Represents the entry point of the <tt>libjitsi</tt> library.
+ * Represents the entry point of the <code>libjitsi</code> library.
  * <p>
  * The {@link #start()} method is to be called to initialize/start the use of
  * the library. Respectively, the {@link #stop()} method is to be called to
  * uninitialize/stop the use of the library (i.e. to release the resources
- * acquired by the library during its execution). The <tt>getXXXService()</tt>
- * methods may be called only after the <tt>start()</tt> method returns
- * successfully and before the <tt>stop()</tt> method is called.
+ * acquired by the library during its execution). The <code>getXXXService()</code>
+ * methods may be called only after the <code>start()</code> method returns
+ * successfully and before the <code>stop()</code> method is called.
  * </p>
  * <p>
- * The <tt>libjitsi</tt> library may be utilized both with and without OSGi. If
- * the library detects during the execution of the <tt>start()</tt> method that
- * (a) the <tt>LibJitsi</tt> class has been loaded as part of an OSGi
- * <tt>Bundle</tt> and (b) successfully retrieves the associated
- * <tt>BundleContext</tt>, it will look for the references to the
+ * The <code>libjitsi</code> library may be utilized both with and without OSGi. If
+ * the library detects during the execution of the <code>start()</code> method that
+ * (a) the <code>LibJitsi</code> class has been loaded as part of an OSGi
+ * <code>Bundle</code> and (b) successfully retrieves the associated
+ * <code>BundleContext</code>, it will look for the references to the
  * implementations of the supported service classes in the retrieved
- * <tt>BundleContext</tt>. Otherwise, the library will stand alone without
+ * <code>BundleContext</code>. Otherwise, the library will stand alone without
  * relying on OSGi functionality. In the case of successful detection of OSGi,
  * the library will not register the supported service class instances in the
- * retrieved <tt>BundleContext</tt>.
+ * retrieved <code>BundleContext</code>.
  * </p>
  *
  * @author Lyubomir Marinov
@@ -45,18 +45,18 @@ import timber.log.Timber;
 public abstract class LibJitsi
 {
     /**
-     * The <tt>LibJitsi</tt> instance which is provides the implementation of the <tt>getXXXService</tt> methods.
+     * The <code>LibJitsi</code> instance which is provides the implementation of the <code>getXXXService</code> methods.
      */
     private static LibJitsi impl;
 
     /**
-     * Gets the <tt>AudioNotifierService</tt> instance. If no existing
-     * <tt>AudioNotifierService</tt> instance is known to the library, tries to
+     * Gets the <code>AudioNotifierService</code> instance. If no existing
+     * <code>AudioNotifierService</code> instance is known to the library, tries to
      * initialize a new one. (Such a try to initialize a new instance is
      * performed just once while the library is initialized.)
      *
-     * @return the <tt>AudioNotifierService</tt> instance known to the library
-     * or <tt>null</tt> if no <tt>AudioNotifierService</tt> instance is known to the library
+     * @return the <code>AudioNotifierService</code> instance known to the library
+     * or <code>null</code> if no <code>AudioNotifierService</code> instance is known to the library
      */
     public static AudioNotifierService getAudioNotifierService()
     {
@@ -64,13 +64,13 @@ public abstract class LibJitsi
     }
 
     /**
-     * Gets the <tt>ConfigurationService</tt> instance. If no existing
-     * <tt>ConfigurationService</tt> instance is known to the library, tries to
+     * Gets the <code>ConfigurationService</code> instance. If no existing
+     * <code>ConfigurationService</code> instance is known to the library, tries to
      * initialize a new one. (Such a try to initialize a new instance is
      * performed just once while the library is initialized.)
      *
-     * @return the <tt>ConfigurationService</tt> instance known to the library
-     * or <tt>null</tt> if no <tt>ConfigurationService</tt> instance is known to the library
+     * @return the <code>ConfigurationService</code> instance known to the library
+     * or <code>null</code> if no <code>ConfigurationService</code> instance is known to the library
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -78,13 +78,13 @@ public abstract class LibJitsi
     }
 
     /**
-     * Gets the <tt>FileAccessService</tt> instance. If no existing
-     * <tt>FileAccessService</tt> instance is known to the library, tries to
+     * Gets the <code>FileAccessService</code> instance. If no existing
+     * <code>FileAccessService</code> instance is known to the library, tries to
      * initialize a new one. (Such a try to initialize a new instance is
      * performed just once while the library is initialized.)
      *
-     * @return the <tt>FileAccessService</tt> instance known to the library or
-     * <tt>null</tt> if no <tt>FileAccessService</tt> instance is known to the library
+     * @return the <code>FileAccessService</code> instance known to the library or
+     * <code>null</code> if no <code>FileAccessService</code> instance is known to the library
      */
     public static FileAccessService getFileAccessService()
     {
@@ -92,13 +92,13 @@ public abstract class LibJitsi
     }
 
     /**
-     * Gets the <tt>MediaService</tt> instance. If no existing
-     * <tt>MediaService</tt> instance is known to the library, tries to
+     * Gets the <code>MediaService</code> instance. If no existing
+     * <code>MediaService</code> instance is known to the library, tries to
      * initialize a new one. (Such a try to initialize a new instance is
      * performed just once while the library is initialized.)
      *
-     * @return the <tt>MediaService</tt> instance known to the library or
-     * <tt>null</tt> if no <tt>MediaService</tt> instance is known to the library
+     * @return the <code>MediaService</code> instance known to the library or
+     * <code>null</code> if no <code>MediaService</code> instance is known to the library
      */
     public static MediaService getMediaService()
     {
@@ -106,13 +106,13 @@ public abstract class LibJitsi
     }
 
     /**
-     * Gets the <tt>ResourceManagementService</tt> instance. If no existing
-     * <tt>ResourceManagementService</tt> instance is known to the library,
+     * Gets the <code>ResourceManagementService</code> instance. If no existing
+     * <code>ResourceManagementService</code> instance is known to the library,
      * tries to initialize a new one. (Such a try to initialize a new instance
      * is performed just once while the library is initialized.)
      *
-     * @return the <tt>ResourceManagementService</tt> instance known to the
-     * library or <tt>null</tt> if no <tt>ResourceManagementService</tt>
+     * @return the <code>ResourceManagementService</code> instance known to the
+     * library or <code>null</code> if no <code>ResourceManagementService</code>
      * instance is known to the library.
      */
     public static ResourceManagementService getResourceManagementService()
@@ -137,7 +137,7 @@ public abstract class LibJitsi
     }
 
     /**
-     * Starts/initializes the use of the <tt>libjitsi</tt> library.
+     * Starts/initializes the use of the <code>libjitsi</code> library.
      */
     public static void start()
     {
@@ -145,7 +145,7 @@ public abstract class LibJitsi
     }
 
     /**
-     * Starts/initializes the use of the <tt>libjitsi</tt> library.
+     * Starts/initializes the use of the <code>libjitsi</code> library.
      *
      * @param context an OSGi {@link BundleContext}.
      */
@@ -173,7 +173,7 @@ public abstract class LibJitsi
     }
 
     /**
-     * Stops/uninitializes the use of the <tt>libjitsi</tt> library.
+     * Stops/uninitializes the use of the <code>libjitsi</code> library.
      */
     public static void stop()
     {
@@ -181,18 +181,18 @@ public abstract class LibJitsi
     }
 
     /**
-     * Initializes a new <tt>LibJitsi</tt> instance.
+     * Initializes a new <code>LibJitsi</code> instance.
      */
     protected LibJitsi()
     {
     }
 
     /**
-     * Gets a service of a specific type associated with this implementation of the <tt>libjitsi</tt> library.
+     * Gets a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
      *
      * @param serviceClass the type of the service to be retrieved
      * @return a service of the specified type if there is such an association
-     * known to this implementation of the <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
+     * known to this implementation of the <code>libjitsi</code> library; otherwise, <code>null</code>
      */
     protected abstract <T> T getService(Class<T> serviceClass);
 }

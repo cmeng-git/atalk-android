@@ -63,10 +63,10 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
 
     /**
      * Convenience method for running code on UI thread looper(instead of getActivity().runOnUIThread()). It is never
-     * guaranteed that <tt>getActivity()</tt> will return not <tt>null</tt> value, hence it must be checked in the
-     * <tt>action</tt>.
+     * guaranteed that <code>getActivity()</code> will return not <code>null</code> value, hence it must be checked in the
+     * <code>action</code>.
      *
-     * @param action <tt>Runnable</tt> action to execute on UI thread.
+     * @param action <code>Runnable</code> action to execute on UI thread.
      */
     public void runOnUiThread(Runnable action)
     {

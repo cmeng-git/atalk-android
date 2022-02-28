@@ -3,7 +3,7 @@ package org.atalk.android.gui.dialogs;
 import org.atalk.android.R;
 
 /**
- * The <tt>AttachOptionItem</tt> gives list items for optional attachments.
+ * The <code>AttachOptionItem</code> gives list items for optional attachments.
  *
  * @author Eng Chong Meng
  */

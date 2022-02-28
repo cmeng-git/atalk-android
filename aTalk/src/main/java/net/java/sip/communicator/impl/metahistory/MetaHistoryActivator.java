@@ -22,7 +22,7 @@ import timber.log.Timber;
 public class MetaHistoryActivator implements BundleActivator
 {
     /**
-     * The <tt>MetaHistoryService</tt> reference.
+     * The <code>MetaHistoryService</code> reference.
      */
     private MetaHistoryServiceImpl metaHistoryService = null;
 
@@ -46,7 +46,7 @@ public class MetaHistoryActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)

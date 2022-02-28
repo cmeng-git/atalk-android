@@ -11,7 +11,7 @@ import java.util.*;
 import net.java.sip.communicator.service.gui.*;
 
 /**
- * The <tt>ContactListEvent</tt> is triggered when a contact or a group is
+ * The <code>ContactListEvent</code> is triggered when a contact or a group is
  * clicked in the contact list.
  * @author Yana Stamcheva
  */
@@ -76,8 +76,8 @@ public class ContactListEvent
     }
 
     /**
-     * Returns the <tt>UIContactDescriptor</tt> for which this event occured.
-     * @return the </tt>UIContactDescriptor</tt> for which this event occured
+     * Returns the <code>UIContactDescriptor</code> for which this event occured.
+     * @return the </code>UIContactDescriptor</code> for which this event occured
      */
     public UIContact getSourceContact()
     {
@@ -88,8 +88,8 @@ public class ContactListEvent
     }
 
     /**
-     * Returns the <tt>UIGroupDescriptor</tt> for which this event occured.
-     * @return the <tt>UIGroupDescriptor</tt> for which this event occured
+     * Returns the <code>UIGroupDescriptor</code> for which this event occured.
+     * @return the <code>UIGroupDescriptor</code> for which this event occured
      */
     public UIGroup getSourceGroup()
     {

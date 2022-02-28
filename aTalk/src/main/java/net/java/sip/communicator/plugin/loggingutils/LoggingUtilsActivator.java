@@ -66,7 +66,7 @@ public class LoggingUtilsActivator implements BundleActivator
     private ServiceRegistration<?> logUploadServReg = null;
 
     /**
-     * <tt>LogUploadService</tt> impl instance for android.
+     * <code>LogUploadService</code> impl instance for android.
      */
     private LogUploadServiceImpl logUploadImpl;
 
@@ -104,9 +104,9 @@ public class LoggingUtilsActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt> obtained from the bundle context.
+     * Returns the <code>ResourceManagementService</code> obtained from the bundle context.
      *
-     * @return the <tt>ResourceManagementService</tt> obtained from the bundle context
+     * @return the <code>ResourceManagementService</code> obtained from the bundle context
      */
     public static ResourceManagementService getResourceService()
     {
@@ -140,9 +140,9 @@ public class LoggingUtilsActivator implements BundleActivator
      *
      * @return a currently valid implementation of the FileAccessService .
      *
-     * Returns the <tt>FileAccessService</tt> obtained from the bundle context.
+     * Returns the <code>FileAccessService</code> obtained from the bundle context.
      *
-     * @return the <tt>FileAccessService</tt> obtained from the bundle context
+     * @return the <code>FileAccessService</code> obtained from the bundle context
      */
     public static FileAccessService getFileAccessService()
     {
@@ -153,9 +153,9 @@ public class LoggingUtilsActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>NotificationService</tt> obtained from the bundle context.
+     * Returns the <code>NotificationService</code> obtained from the bundle context.
      *
-     * @return the <tt>NotificationService</tt> obtained from the bundle context
+     * @return the <code>NotificationService</code> obtained from the bundle context
      */
     public static NotificationService getNotificationService()
     {

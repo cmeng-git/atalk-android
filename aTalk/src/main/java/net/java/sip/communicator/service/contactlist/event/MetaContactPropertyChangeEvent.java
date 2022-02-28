@@ -84,8 +84,8 @@ public abstract class MetaContactPropertyChangeEvent extends PropertyChangeEvent
     /**
      * Creates an instance of this event.
      *
-     * @param source the <tt>MetaContact</tt> that this event is about.
-     * @param eventName one of the META_CONTACT_XXXED <tt>String</tt> strings indicating the exact typ of
+     * @param source the <code>MetaContact</code> that this event is about.
+     * @param eventName one of the META_CONTACT_XXXED <code>String</code> strings indicating the exact typ of
      * this event.
      * @param oldValue the value of the changed property before the change had occurred.
      * @param newValue the value of the changed property after the change has occurred.
@@ -96,9 +96,9 @@ public abstract class MetaContactPropertyChangeEvent extends PropertyChangeEvent
     }
 
     /**
-     * Returns a reference to the <tt>MetaContact</tt> that this event is about
+     * Returns a reference to the <code>MetaContact</code> that this event is about
      *
-     * @return the <tt>MetaContact</tt> that this event is about.
+     * @return the <code>MetaContact</code> that this event is about.
      */
     public MetaContact getSourceMetaContact()
     {

@@ -15,7 +15,7 @@ import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 /**
- * <tt>Activity</tt> implements aTalk global settings.
+ * <code>Activity</code> implements aTalk global settings.
  *
  * @author Eng Chong Meng
  */

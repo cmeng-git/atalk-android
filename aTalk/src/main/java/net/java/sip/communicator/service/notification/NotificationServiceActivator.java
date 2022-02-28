@@ -11,7 +11,7 @@ import org.osgi.framework.*;
 import timber.log.Timber;
 
 /**
- * The <tt>NotificationActivator</tt> is the activator of the notification bundle.
+ * The <code>NotificationActivator</code> is the activator of the notification bundle.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -39,9 +39,9 @@ public class NotificationServiceActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> obtained from the bundle context.
+     * Returns the <code>ConfigurationService</code> obtained from the bundle context.
      *
-     * @return the <tt>ConfigurationService</tt> obtained from the bundle context
+     * @return the <code>ConfigurationService</code> obtained from the bundle context
      */
     public static ConfigurationService getConfigurationService()
     {

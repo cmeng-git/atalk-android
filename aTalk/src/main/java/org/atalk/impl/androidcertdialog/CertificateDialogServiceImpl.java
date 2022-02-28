@@ -17,7 +17,7 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
- * Android implementation of <tt>VerifyCertificateDialogService</tt>.
+ * Android implementation of <code>VerifyCertificateDialogService</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -25,8 +25,8 @@ import timber.log.Timber;
 class CertificateDialogServiceImpl implements VerifyCertificateDialogService
 {
     /**
-     * Maps request ids to <tt>VerifyCertDialog</tt> so that they can be retrieved by Android
-     * <tt>Activity</tt> or <tt>Fragments</tt>.
+     * Maps request ids to <code>VerifyCertDialog</code> so that they can be retrieved by Android
+     * <code>Activity</code> or <code>Fragments</code>.
      */
     private Map<Long, VerifyCertDialog> requestMap = new HashMap<>();
 
@@ -50,10 +50,10 @@ class CertificateDialogServiceImpl implements VerifyCertificateDialogService
     }
 
     /**
-     * Retrieves the dialog for given <tt>requestId</tt>.
+     * Retrieves the dialog for given <code>requestId</code>.
      *
      * @param requestId dialog's request identifier assigned during dialog creation.
-     * @return the dialog for given <tt>requestId</tt>.
+     * @return the dialog for given <code>requestId</code>.
      */
     public VerifyCertDialog retrieveDialog(Long requestId)
     {

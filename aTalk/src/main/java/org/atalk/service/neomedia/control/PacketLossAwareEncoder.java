@@ -15,7 +15,7 @@ import javax.media.*;
 public interface PacketLossAwareEncoder extends Control
 {
 	/**
-	 * Tells the encoder to expect <tt>percentage</tt> percent packet loss.
+	 * Tells the encoder to expect <code>percentage</code> percent packet loss.
 	 *
 	 * @return the percentage of expected packet loss
 	 */

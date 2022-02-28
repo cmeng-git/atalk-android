@@ -17,14 +17,14 @@ import java.text.ParseException;
 import java.util.List;
 
 /**
- * Represents a default implementation of <tt>OperationSetVideoTelephony</tt> in order to make it
+ * Represents a default implementation of <code>OperationSetVideoTelephony</code> in order to make it
  * easier for implementers to provide complete solutions while focusing on implementation-specific details.
  *
  * @param <T> the implementation specific telephony operation set class like for example
- * <tt>OperationSetBasicTelephonySipImpl</tt>.
- * @param <U> the implementation specific provider class like for example <tt>ProtocolProviderServiceSipImpl</tt>.
- * @param <V> the <tt>MediaAwareCall</tt> implementation like <tt>CallSipImpl</tt> or <tt>CallJabberImpl</tt>.
- * @param <W> the <tt>MediaAwarePeerCall</tt> implementation like <tt>CallPeerSipImpl</tt> or <tt>CallPeerJabberImpl</tt>.
+ * <code>OperationSetBasicTelephonySipImpl</code>.
+ * @param <U> the implementation specific provider class like for example <code>ProtocolProviderServiceSipImpl</code>.
+ * @param <V> the <code>MediaAwareCall</code> implementation like <code>CallSipImpl</code> or <code>CallJabberImpl</code>.
+ * @param <W> the <code>MediaAwarePeerCall</code> implementation like <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>.
  *
  * @author Emil Ivov
  * @author Sebastien Vincent
@@ -35,7 +35,7 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
         implements OperationSetVideoTelephony
 {
     /**
-     * The SIP <tt>ProtocolProviderService</tt> implementation which created this instance and for
+     * The SIP <code>ProtocolProviderService</code> implementation which created this instance and for
      * which telephony conferencing services are being provided by this instance.
      */
     protected final U parentProvider;
@@ -46,10 +46,10 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     protected final T basicTelephony;
 
     /**
-     * Initializes a new <tt>AbstractOperationSetVideoTelephony</tt> instance which builds upon the
-     * telephony-related functionality of a specific <tt>OperationSetBasicTelephony</tt> implementation.
+     * Initializes a new <code>AbstractOperationSetVideoTelephony</code> instance which builds upon the
+     * telephony-related functionality of a specific <code>OperationSetBasicTelephony</code> implementation.
      *
-     * @param basicTelephony the <tt>OperationSetBasicTelephony</tt> the new extension should build upon
+     * @param basicTelephony the <code>OperationSetBasicTelephony</code> the new extension should build upon
      */
     public AbstractOperationSetVideoTelephony(T basicTelephony)
     {
@@ -58,14 +58,14 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Delegates to the <tt>CallPeerMediaHandler</tt> of the specified <tt>CallPeer</tt> because the
-     * video is provided by it. Because other <tt>OperationSetVideoTelephony</tt> implementations
-     * may not provide their video through the <tt>CallPeerMediaHandler</tt>, this implementation
-     * promotes itself as the provider of the video by replacing the <tt>CallPeerMediaHandler</tt>
-     * in the <tt>VideoEvents</tt> it fires.
+     * Delegates to the <code>CallPeerMediaHandler</code> of the specified <code>CallPeer</code> because the
+     * video is provided by it. Because other <code>OperationSetVideoTelephony</code> implementations
+     * may not provide their video through the <code>CallPeerMediaHandler</code>, this implementation
+     * promotes itself as the provider of the video by replacing the <code>CallPeerMediaHandler</code>
+     * in the <code>VideoEvents</code> it fires.
      *
-     * @param peer the <tt>CallPeer</tt> that we will be registering <tt>listener</tt> with.
-     * @param listener the <tt>VideoListener</tt> that we'd like to register.
+     * @param peer the <code>CallPeer</code> that we will be registering <code>listener</code> with.
+     * @param listener the <code>VideoListener</code> that we'd like to register.
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -80,8 +80,8 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     /**
      * Implements {@link OperationSetVideoTelephony#getLocalVisualComponent(CallPeer)}.
      *
-     * @param peer the <tt>CallPeer</tt> that we are sending our local video to.
-     * @return the <tt>Component</tt> containing the local video.
+     * @param peer the <code>CallPeer</code> that we are sending our local video to.
+     * @return the <code>Component</code> containing the local video.
      * @throws OperationFailedException if we fail extracting the local video.
      */
     @SuppressWarnings("unchecked")
@@ -93,11 +93,11 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Gets the visual/video <tt>Component</tt> available in this telephony for a specific <tt>CallPeer</tt>.
+     * Gets the visual/video <code>Component</code> available in this telephony for a specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose video is to be retrieved
-     * @return the visual/video <tt>Component</tt> available in this telephony for the specified
-     * <tt>peer</tt> if any; otherwise, <tt>null</tt>
+     * @param peer the <code>CallPeer</code> whose video is to be retrieved
+     * @return the visual/video <code>Component</code> available in this telephony for the specified
+     * <code>peer</code> if any; otherwise, <code>null</code>
      */
     @Deprecated
     public Component getVisualComponent(CallPeer peer)
@@ -107,10 +107,10 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Gets the visual/video <tt>Component</tt>s available in this telephony for a specific <tt>CallPeer</tt>.
+     * Gets the visual/video <code>Component</code>s available in this telephony for a specific <code>CallPeer</code>.
      *
-     * @param peer the <tt>CallPeer</tt> whose videos are to be retrieved
-     * @return the visual/video <tt>Component</tt>s available in this telephony for the specified <tt>peer</tt>
+     * @param peer the <code>CallPeer</code> whose videos are to be retrieved
+     * @return the visual/video <code>Component</code>s available in this telephony for the specified <code>peer</code>
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -120,12 +120,12 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Returns the <tt>ConferenceMember</tt> corresponding to the given <tt>visualComponent</tt>.
+     * Returns the <code>ConferenceMember</code> corresponding to the given <code>visualComponent</code>.
      *
-     * @param peer the parent <tt>CallPeer</tt>
-     * @param visualComponent the visual <tt>Component</tt>, which corresponding <tt>ConferenceMember</tt> we're
+     * @param peer the parent <code>CallPeer</code>
+     * @param visualComponent the visual <code>Component</code>, which corresponding <code>ConferenceMember</code> we're
      * looking for
-     * @return the <tt>ConferenceMember</tt> corresponding to the given <tt>visualComponent</tt>.
+     * @return the <code>ConferenceMember</code> corresponding to the given <code>visualComponent</code>.
      */
     public ConferenceMember getConferenceMember(CallPeer peer, Component visualComponent)
     {
@@ -145,11 +145,11 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Delegates to the <tt>CallPeerMediaHandler</tt> of the specified <tt>CallPeer</tt> because the
+     * Delegates to the <code>CallPeerMediaHandler</code> of the specified <code>CallPeer</code> because the
      * video is provided by it.
      *
-     * @param peer the <tt>CallPeer</tt> that we'd like to unregister our <tt>VideoListener</tt> from.
-     * @param listener the <tt>VideoListener</tt> that we'd like to unregister.
+     * @param peer the <code>CallPeer</code> that we'd like to unregister our <code>VideoListener</code> from.
+     * @param listener the <code>VideoListener</code> that we'd like to unregister.
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -165,7 +165,7 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
      * re-invites all CallPeers to re-negotiate the modified media setup.
      *
      * @param call the call where we'd like to allow sending local video.
-     * @param allowed <tt>true</tt> if local video transmission is allowed and <tt>false</tt> otherwise.
+     * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      * @throws OperationFailedException if video initialization fails.
      */
     public void setLocalVideoAllowed(Call call, boolean allowed)
@@ -178,14 +178,14 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Determines whether the streaming of local video in a specific <tt>Call</tt> is currently
+     * Determines whether the streaming of local video in a specific <code>Call</code> is currently
      * allowed. The setting does not reflect the availability of actual video capture devices, it
      * just expresses the desire of the user to have the local video streamed in the case the system
      * is actually able to do so.
      *
-     * @param call the <tt>Call</tt> whose video transmission properties we are interested in.
-     * @return <tt>true</tt> if the streaming of local video for the specified <tt>Call</tt> is allowed;
-     * otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> whose video transmission properties we are interested in.
+     * @return <code>true</code> if the streaming of local video for the specified <code>Call</code> is allowed;
+     * otherwise, <code>false</code>
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -195,12 +195,12 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Determines whether a specific <tt>Call</tt> is currently streaming the local video (to a
+     * Determines whether a specific <code>Call</code> is currently streaming the local video (to a
      * remote destination).
      *
-     * @param call the <tt>Call</tt> whose video transmission we are interested in.
-     * @return <tt>true</tt> if the specified <tt>Call</tt> is currently streaming the local video
-     * (to a remote destination); otherwise, <tt>false</tt>
+     * @param call the <code>Call</code> whose video transmission we are interested in.
+     * @return <code>true</code> if the specified <code>Call</code> is currently streaming the local video
+     * (to a remote destination); otherwise, <code>false</code>
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -210,13 +210,13 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners which get notified
+     * Adds a specific <code>PropertyChangeListener</code> to the list of listeners which get notified
      * when the properties (e.g. {@link #LOCAL_VIDEO_STREAMING}) associated with a specific
-     * <tt>Call</tt> change their values.
+     * <code>Call</code> change their values.
      *
-     * @param call the <tt>Call</tt> to start listening to the changes of the property values of
-     * @param listener the <tt>PropertyChangeListener</tt> to be notified when the properties associated with
-     * the specified <tt>Call</tt> change their values
+     * @param call the <code>Call</code> to start listening to the changes of the property values of
+     * @param listener the <code>PropertyChangeListener</code> to be notified when the properties associated with
+     * the specified <code>Call</code> change their values
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -226,13 +226,13 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Removes a specific <tt>PropertyChangeListener</tt> from the list of listeners which get
+     * Removes a specific <code>PropertyChangeListener</code> from the list of listeners which get
      * notified when the properties (e.g. {@link #LOCAL_VIDEO_STREAMING}) associated with a specific
-     * <tt>Call</tt> change their values.
+     * <code>Call</code> change their values.
      *
-     * @param call the <tt>Call</tt> to stop listening to the changes of the property values of
-     * @param listener the <tt>PropertyChangeListener</tt> to no longer be notified when the properties
-     * associated with the specified <tt>Call</tt> change their values
+     * @param call the <code>Call</code> to stop listening to the changes of the property values of
+     * @param listener the <code>PropertyChangeListener</code> to no longer be notified when the properties
+     * associated with the specified <code>Call</code> change their values
      */
     @SuppressWarnings("unchecked")
     // work with MediaAware* in media package
@@ -242,9 +242,9 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
     }
 
     /**
-     * Get the <tt>MediaUseCase</tt> of a video telephony operation set.
+     * Get the <code>MediaUseCase</code> of a video telephony operation set.
      *
-     * @return <tt>MediaUseCase.CALL</tt>
+     * @return <code>MediaUseCase.CALL</code>
      */
     public MediaUseCase getMediaUseCase()
     {
@@ -273,7 +273,7 @@ public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetB
      * change events will be delivered through that call peer. The Call that this peer is a member of
      * could be retrieved from the CallParticipatn instance with the use of the corresponding method.
      * @throws OperationFailedException with the corresponding code if we fail to create the video call.
-     * @throws java.text.ParseException if <tt>callee</tt> is not a valid sip address string.
+     * @throws java.text.ParseException if <code>callee</code> is not a valid sip address string.
      */
     public Call createVideoCall(String uri, QualityPreset qualityPreferences)
             throws OperationFailedException, ParseException

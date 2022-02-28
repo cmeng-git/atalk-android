@@ -121,9 +121,9 @@ public class ShareActivity extends OSGiActivity
     }
 
     /**
-     * Called when new <tt>Intent</tt> is received(this <tt>Activity</tt> is launched in <tt>singleTask</tt> mode.
+     * Called when new <code>Intent</code> is received(this <code>Activity</code> is launched in <code>singleTask</code> mode.
      *
-     * @param intent new <tt>Intent</tt> data.
+     * @param intent new <code>Intent</code> data.
      */
     @Override
     protected void onNewIntent(Intent intent)
@@ -133,9 +133,9 @@ public class ShareActivity extends OSGiActivity
     }
 
     /**
-     * Decides what should be displayed based on supplied <tt>Intent</tt> and instance state.
+     * Decides what should be displayed based on supplied <code>Intent</code> and instance state.
      *
-     * @param intent <tt>Activity</tt> <tt>Intent</tt>.
+     * @param intent <code>Activity</code> <code>Intent</code>.
      */
     private void handleIntent(Intent intent)
     {

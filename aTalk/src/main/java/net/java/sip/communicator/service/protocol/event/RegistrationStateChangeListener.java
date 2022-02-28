@@ -17,7 +17,7 @@ import java.util.EventListener;
 
 /**
  * An event listener that should be implemented by parties interested in changes that occur in the
- * registration state of a <tt>ProtocolProviderService</tt>.
+ * registration state of a <code>ProtocolProviderService</code>.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -25,10 +25,10 @@ import java.util.EventListener;
 public interface RegistrationStateChangeListener extends EventListener
 {
     /**
-     * The method is called by a <tt>ProtocolProviderService</tt> implementation whenever a change
+     * The method is called by a <code>ProtocolProviderService</code> implementation whenever a change
      * in its registration state has occurred.
      *
-     * @param evt a <tt>RegistrationStateChangeEvent</tt> which describes the registration state change.
+     * @param evt a <code>RegistrationStateChangeEvent</code> which describes the registration state change.
      */
     void registrationStateChanged(RegistrationStateChangeEvent evt);
 }

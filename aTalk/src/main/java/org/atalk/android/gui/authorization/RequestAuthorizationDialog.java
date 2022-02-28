@@ -75,7 +75,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
     /**
      * Method fired when the request button is clicked.
      *
-     * @param v the button's <tt>View</tt>
+     * @param v the button's <code>View</code>
      */
     public void onRequestClicked(View v)
     {
@@ -88,7 +88,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
     /**
      * Method fired when the cancel button is clicked.
      *
-     * @param v the button's <tt>View</tt>
+     * @param v the button's <code>View</code>
      */
     public void onCancelClicked(View v)
     {
@@ -108,11 +108,11 @@ public class RequestAuthorizationDialog extends OSGiActivity
     }
 
     /**
-     * Creates the <tt>Intent</tt> to start <tt>RequestAuthorizationDialog</tt> parametrized with
-     * given <tt>requestId</tt>.
+     * Creates the <code>Intent</code> to start <code>RequestAuthorizationDialog</code> parametrized with
+     * given <code>requestId</code>.
      *
      * @param requestId the id of authentication request.
-     * @return <tt>Intent</tt> that start <tt>RequestAuthorizationDialog</tt> parametrized with given request id.
+     * @return <code>Intent</code> that start <code>RequestAuthorizationDialog</code> parametrized with given request id.
      */
     public static Intent getRequestAuthDialogIntent(long requestId)
     {

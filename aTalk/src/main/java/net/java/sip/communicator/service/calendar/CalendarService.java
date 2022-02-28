@@ -75,11 +75,11 @@ public interface CalendarService
 		}
 
 		/**
-		 * Finds <tt>BusyStatusEnum</tt> instance by given value of the status.
+		 * Finds <code>BusyStatusEnum</code> instance by given value of the status.
 		 * 
 		 * @param value
 		 *        the value of the status we are searching for.
-		 * @return the status or <tt>FREE</tt> if no status is found.
+		 * @return the status or <code>FREE</code> if no status is found.
 		 */
 		public static BusyStatusEnum getFromLong(Long value)
 		{
@@ -139,7 +139,7 @@ public interface CalendarService
 	 * 
 	 * @param presenceStatuses
 	 *        the remembered presence statuses
-	 * @return <tt>true</tt> if the status is changed.
+	 * @return <code>true</code> if the status is changed.
 	 */
 	public boolean onThePhoneStatusChanged(Map<ProtocolProviderService, PresenceStatus> presenceStatuses);
 

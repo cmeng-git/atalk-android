@@ -42,7 +42,7 @@ public class DOMElementWriter
 	 *
 	 * @param name
 	 * 		the XML (element) name to be decoded
-	 * @return a <tt>String</tt> which represents <tt>name</tt> decoded
+	 * @return a <code>String</code> which represents <code>name</code> decoded
 	 * according to https://www.w3.org/TR/xml/#NT-Name
 	 */
 	public static String decodeName(String name)
@@ -99,12 +99,12 @@ public class DOMElementWriter
 	}
 
 	/**
-	 * Encodes a specific <tt>String</tt> so that it is a valid XML (element)
+	 * Encodes a specific <code>String</code> so that it is a valid XML (element)
 	 * name according to https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param value
-	 * 		the <tt>String</tt> to be encoded so that it is a valid XML name
-	 * @return a <tt>String</tt> which represents <tt>value</tt> encoded so that
+	 * 		the <code>String</code> to be encoded so that it is a valid XML name
+	 * @return a <code>String</code> which represents <code>value</code> encoded so that
 	 * it is a valid XML (element) name
 	 */
 	public static String encodeName(String value)
@@ -144,8 +144,8 @@ public class DOMElementWriter
 	 *
 	 * @param c
 	 * 		the character to be checked whether it represents a hex digit
-	 * @return <tt>true</tt> if the specified character represents a hex digit;
-	 * otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the specified character represents a hex digit;
+	 * otherwise, <code>false</code>
 	 */
 	private static boolean isHexDigit(char c)
 	{
@@ -155,14 +155,14 @@ public class DOMElementWriter
 	}
 
 	/**
-	 * Determines whether a specific characters is a <tt>NameChar</tt> as
+	 * Determines whether a specific characters is a <code>NameChar</code> as
 	 * defined by https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param c
 	 * 		the character which is to be determines whether it is a
-	 * 		<tt>NameChar</tt>
-	 * @return <tt>true</tt> if the specified character is a <tt>NameChar</tt>;
-	 * otherwise, <tt>false</tt>
+	 * 		<code>NameChar</code>
+	 * @return <code>true</code> if the specified character is a <code>NameChar</code>;
+	 * otherwise, <code>false</code>
 	 */
 	private static boolean isNameChar(char c)
 	{
@@ -187,14 +187,14 @@ public class DOMElementWriter
 	}
 
 	/**
-	 * Determines whether a specific characters is a <tt>NameStartChar</tt> as
+	 * Determines whether a specific characters is a <code>NameStartChar</code> as
 	 * defined by https://www.w3.org/TR/xml/#NT-Name.
 	 *
 	 * @param c
 	 * 		the character to be determined whether it is a
-	 * 		<tt>NameStartChar</tt>
-	 * @return <tt>true</tt> if the specified character is a
-	 * <tt>NameStartChar</tt>; otherwise, <tt>false</tt>
+	 * 		<code>NameStartChar</code>
+	 * @return <code>true</code> if the specified character is a
+	 * <code>NameStartChar</code>; otherwise, <code>false</code>
 	 */
 	private static boolean isNameStartChar(char c)
 	{
@@ -441,9 +441,9 @@ public class DOMElementWriter
 	/**
 	 * Drop characters that are illegal in XML documents.
 	 * <p>
-	 * <p>Also ensure that we are not including an <tt>]]&gt;</tt>
+	 * <p>Also ensure that we are not including an <code>]]&gt;</code>
 	 * marker by replacing that sequence with
-	 * <tt>&amp;#x5d;&amp;#x5d;&amp;gt;</tt>.</p>
+	 * <code>&amp;#x5d;&amp;#x5d;&amp;gt;</code>.</p>
 	 * <p>
 	 * <p>See XML 1.0 2.2 <a
 	 * href="https://www.w3.org/TR/1998/REC-xml-19980210#charsets">https://www.w3.org/TR/1998/REC-xml-19980210#charsets</a> and
@@ -481,8 +481,8 @@ public class DOMElementWriter
 	 *
 	 * @param ent
 	 * 		the string whose nature we need to determine.
-	 * @return <tt>true</tt> if <tt>ent</tt> is an entity reference and
-	 * <tt>false</tt> otherwise.
+	 * @return <code>true</code> if <code>ent</code> is an entity reference and
+	 * <code>false</code> otherwise.
 	 */
 	public boolean isReference(String ent)
 	{

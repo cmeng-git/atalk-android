@@ -15,20 +15,20 @@ import java.net.*;
 public interface OperationSetWebContactInfo extends OperationSet
 {
 	/**
-	 * Returns the URL of a page containing information on <tt>contact</tt>
+	 * Returns the URL of a page containing information on <code>contact</code>
 	 * 
 	 * @param contact
-	 *        the <tt>Contact</tt> that we'd like to get information about.
+	 *        the <code>Contact</code> that we'd like to get information about.
 	 * @return the URL of a page containing information on the specified contact.
 	 */
 	public URL getWebContactInfo(Contact contact);
 
 	/**
 	 * Returns the URL of a page containing information on the contact with the specified
-	 * <tt>contactAddress</tt>.
+	 * <code>contactAddress</code>.
 	 * 
 	 * @param contactAddress
-	 *        the <tt>contactAddress</tt> that we'd like to get information about.
+	 *        the <code>contactAddress</code> that we'd like to get information about.
 	 * @return the URL of a page containing information on the specified contact.
 	 */
 	public URL getWebContactInfo(String contactAddress);

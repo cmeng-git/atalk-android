@@ -32,13 +32,13 @@ public class MetaContactMovedEvent extends MetaContactPropertyChangeEvent
     private static final long serialVersionUID = 0L;
 
     /**
-     * Create as an instance of this <tt>MetaContactMovedEvent</tt> using the specified arguments.
+     * Create as an instance of this <code>MetaContactMovedEvent</code> using the specified arguments.
      *
-     * @param sourceContact a reference to the <tt>MetaContact</tt> that this
+     * @param sourceContact a reference to the <code>MetaContact</code> that this
      * event is about.
-     * @param oldParent a reference to the <tt>MetaContactGroup</tt> that contained <tt>sourceContact</tt>
+     * @param oldParent a reference to the <code>MetaContactGroup</code> that contained <code>sourceContact</code>
      * before it was moved.
-     * @param newParent a reference to the <tt>MetaContactGroup</tt> that contains <tt>sourceContact</tt>
+     * @param newParent a reference to the <code>MetaContactGroup</code> that contains <code>sourceContact</code>
      * after it was moved.
      */
     public MetaContactMovedEvent(MetaContact sourceContact, MetaContactGroup oldParent, MetaContactGroup newParent)
@@ -49,7 +49,7 @@ public class MetaContactMovedEvent extends MetaContactPropertyChangeEvent
     /**
      * Returns the old parent of this meta contact.
      *
-     * @return a reference to the <tt>MetaContactGroup</tt> that contained the source meta
+     * @return a reference to the <code>MetaContactGroup</code> that contained the source meta
      * contact before it was moved.
      */
     public MetaContactGroup getOldParent()
@@ -60,7 +60,7 @@ public class MetaContactMovedEvent extends MetaContactPropertyChangeEvent
     /**
      * Returns the new parent of this meta contact.
      *
-     * @return a reference to the <tt>MetaContactGroup</tt> that contains the source meta contact
+     * @return a reference to the <code>MetaContactGroup</code> that contains the source meta contact
      * after it was moved.
      */
     public MetaContactGroup getNewParent()

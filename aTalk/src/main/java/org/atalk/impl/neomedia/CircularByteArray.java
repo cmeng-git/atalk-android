@@ -6,14 +6,14 @@
 package org.atalk.impl.neomedia;
 
 /**
- * Implements a circular <tt>byte</tt> array.
+ * Implements a circular <code>byte</code> array.
  *
  * @author Lyubomir Marinov
  */
 public class CircularByteArray
 {
 	/**
-	 * The elements of this <tt>CircularByteArray</tt>.
+	 * The elements of this <code>CircularByteArray</code>.
 	 */
 	private final byte[] elements;
 
@@ -23,7 +23,7 @@ public class CircularByteArray
 	private int tail;
 
 	/**
-	 * Initializes a new <tt>CircularBufferArray</tt> instance with a specific length.
+	 * Initializes a new <code>CircularBufferArray</code> instance with a specific length.
 	 *
 	 * @param length
 	 *        the length i.e. the number of elements of the new instance
@@ -35,10 +35,10 @@ public class CircularByteArray
 	}
 
 	/**
-	 * Adds a specific element at the end of this <tt>CircularByteArray</tt>.
+	 * Adds a specific element at the end of this <code>CircularByteArray</code>.
 	 *
 	 * @param element
-	 *        the element to add at the end of this <tt>CircularByteArray</tt>
+	 *        the element to add at the end of this <code>CircularByteArray</code>
 	 */
 	public synchronized void push(byte element)
 	{
@@ -52,10 +52,10 @@ public class CircularByteArray
 	}
 
 	/**
-	 * Copies the elements of this <tt>CircularByteArray</tt> into a new <tt>byte</tt> array.
+	 * Copies the elements of this <code>CircularByteArray</code> into a new <code>byte</code> array.
 	 *
-	 * @return a new <tt>byte</tt> array which contains the same elements and in the same order as
-	 *         this <tt>CircularByteArray</tt>
+	 * @return a new <code>byte</code> array which contains the same elements and in the same order as
+	 *         this <code>CircularByteArray</code>
 	 */
 	public synchronized byte[] toArray()
 	{

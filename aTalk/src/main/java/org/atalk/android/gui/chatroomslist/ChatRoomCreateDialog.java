@@ -84,9 +84,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     private Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>.
+     * Constructs the <code>ChatInviteDialog</code>.
      *
-     * @param mContext the <tt>ChatPanel</tt> corresponding to the <tt>ChatRoom</tt>, where the contact is invited.
+     * @param mContext the <code>ChatPanel</code> corresponding to the <code>ChatRoom</code>, where the contact is invited.
      */
     public ChatRoomCreateDialog(Context mContext)
     {
@@ -294,9 +294,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     /**
-     * Sets the (chat room) subject to be displayed in this <tt>ChatRoomSubjectPanel</tt>.
+     * Sets the (chat room) subject to be displayed in this <code>ChatRoomSubjectPanel</code>.
      *
-     * @param subject the (chat room) subject to be displayed in this <tt>ChatRoomSubjectPanel</tt>
+     * @param subject the (chat room) subject to be displayed in this <code>ChatRoomSubjectPanel</code>
      */
     public void setSubject(String subject)
     {

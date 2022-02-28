@@ -34,11 +34,11 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	private final HistoryQuery historyQuery;
 
 	/**
-	 * Creates an instance of <tt>CallHistoryQueryImpl</tt> by specifying the underlying
-	 * <tt>HistoryQuery</tt>.
+	 * Creates an instance of <code>CallHistoryQueryImpl</code> by specifying the underlying
+	 * <code>HistoryQuery</code>.
 	 *
 	 * @param query
-	 * 		the underlying <tt>HistoryQuery</tt> this query is based on
+	 * 		the underlying <code>HistoryQuery</code> this query is based on
 	 */
 	public CallHistoryQueryImpl(HistoryQuery query)
 	{
@@ -80,7 +80,7 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	 * determine how and when to fill this list of results.
 	 * <p>
 	 * This method could be used in order to obtain first fast initial results and then obtain
-	 * the additional results through the <tt>CallHistoryQueryListener</tt>, which should improve
+	 * the additional results through the <code>CallHistoryQueryListener</code>, which should improve
 	 * user experience when waiting for results.
 	 *
 	 * @return a collection of the initial results for this query
@@ -91,11 +91,11 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	}
 
 	/**
-	 * Adds the given <tt>CallHistoryQueryListener</tt> to the list of listeners interested in
+	 * Adds the given <code>CallHistoryQueryListener</code> to the list of listeners interested in
 	 * query result changes.
 	 *
 	 * @param l
-	 * 		the <tt>CallHistoryQueryListener</tt> to add
+	 * 		the <code>CallHistoryQueryListener</code> to add
 	 */
 	public void addQueryListener(CallHistoryQueryListener l)
 	{
@@ -105,11 +105,11 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	}
 
 	/**
-	 * Removes the given <tt>CallHistoryQueryListener</tt> from the list of listeners interested
+	 * Removes the given <code>CallHistoryQueryListener</code> from the list of listeners interested
 	 * in query result changes.
 	 *
 	 * @param l
-	 * 		the <tt>CallHistoryQueryListener</tt> to remove
+	 * 		the <code>CallHistoryQueryListener</code> to remove
 	 */
 	public void removeQueryListener(CallHistoryQueryListener l)
 	{
@@ -119,10 +119,10 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	}
 
 	/**
-	 * Notifies all registered <tt>HistoryQueryListener</tt>s that a new record has been received.
+	 * Notifies all registered <code>HistoryQueryListener</code>s that a new record has been received.
 	 *
 	 * @param record
-	 * 		the <tt>HistoryRecord</tt>
+	 * 		the <code>HistoryRecord</code>
 	 */
 	private void fireQueryEvent(CallRecord record)
 	{
@@ -134,7 +134,7 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	}
 
 	/**
-	 * Notifies all registered <tt>HistoryQueryListener</tt>s that a new status has been received.
+	 * Notifies all registered <code>HistoryQueryListener</code>s that a new status has been received.
 	 *
 	 * @param newStatus
 	 * 		the new status
@@ -159,11 +159,11 @@ public class CallHistoryQueryImpl implements CallHistoryQuery
 	}
 
 	/**
-	 * Adds the given <tt>CallRecord</tt> to the result list of this query and notifies all
+	 * Adds the given <code>CallRecord</code> to the result list of this query and notifies all
 	 * interested listeners that a new record is received.
 	 *
 	 * @param callRecord
-	 * 		the <tt>CallRecord</tt> to add
+	 * 		the <code>CallRecord</code> to add
 	 */
 	public void addHistoryRecord(CallRecord callRecord)
 	{

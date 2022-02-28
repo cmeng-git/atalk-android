@@ -76,9 +76,9 @@ public class ChatInviteDialog extends Dialog
     private Button mInviteButton;
 
     /**
-     * Constructs the <tt>ChatInviteDialog</tt>.
+     * Constructs the <code>ChatInviteDialog</code>.
      *
-     * @param mChatPanel the <tt>ChatPanel</tt> corresponding to the <tt>ChatRoom</tt>, where the contact is invited.
+     * @param mChatPanel the <code>ChatPanel</code> corresponding to the <code>ChatRoom</code>, where the contact is invited.
      */
     public ChatInviteDialog(Context mContext, ChatPanel mChatPanel)
     {
@@ -208,7 +208,7 @@ public class ChatInviteDialog extends Dialog
     }
 
     /**
-     * Expands/collapses the group given by <tt>groupPosition</tt>.
+     * Expands/collapses the group given by <code>groupPosition</code>.
      *
      * Group collapse will clear all highlight of selected contacts; On expansion
      * allow time for view to expand before proceed to refresh the selected contacts' highlight
@@ -217,7 +217,7 @@ public class ChatInviteDialog extends Dialog
      * @param v the view
      * @param groupPosition the position of the group
      * @param id the identifier
-     * @return <tt>true</tt> if the group click action has been performed
+     * @return <code>true</code> if the group click action has been performed
      */
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
@@ -234,7 +234,7 @@ public class ChatInviteDialog extends Dialog
     }
 
 //    /**
-//     * The <tt>ChatInviteContactListFilter</tt> is <tt>InviteContactListFilter</tt> which doesn't list
+//     * The <code>ChatInviteContactListFilter</code> is <code>InviteContactListFilter</code> which doesn't list
 //     * contact that don't have persistence addresses (for example private messaging contacts are not listed).
 //     */
 //    private class ChatInviteContactListFilter // extends InviteContactListFilter
@@ -245,7 +245,7 @@ public class ChatInviteDialog extends Dialog
 //        private OperationSetMultiUserChat opSetMUC;
 //
 //        /**
-//         * Creates an instance of <tt>InviteContactListFilter</tt>.
+//         * Creates an instance of <code>InviteContactListFilter</code>.
 //         *
 //         * @param sourceContactList the contact list to filter
 //         */

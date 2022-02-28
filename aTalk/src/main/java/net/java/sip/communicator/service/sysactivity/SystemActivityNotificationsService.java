@@ -44,7 +44,7 @@ public interface SystemActivityNotificationsService
 
     /**
      * Registers a listener that would be notified for idle of the system
-     * for <tt>idleTime</tt>.
+     * for <code>idleTime</code>.
      *
      * @param idleTime the time in milliseconds after which we will consider
      * system to be idle. This doesn't count when system seems idle as

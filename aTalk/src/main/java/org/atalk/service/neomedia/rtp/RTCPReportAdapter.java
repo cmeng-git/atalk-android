@@ -8,7 +8,7 @@ package org.atalk.service.neomedia.rtp;
 import net.sf.fmj.media.rtp.*;
 
 /**
- * A default implementation of <tt>RTCPReportListener</tt> to facilitate implementers.
+ * A default implementation of <code>RTCPReportListener</code> to facilitate implementers.
  *
  * @author Lyubomir Marinov
  */

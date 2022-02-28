@@ -30,8 +30,8 @@ public class ProviderStatusChangeEvent extends PropertyChangeEvent
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * Creates an event instance indicating a change of the property specified by <tt>eventType</tt>
-	 * from <tt>oldValue</tt> to <tt>newValue</tt>.
+	 * Creates an event instance indicating a change of the property specified by <code>eventType</code>
+	 * from <code>oldValue</code> to <code>newValue</code>.
 	 * 
 	 * @param source
 	 *        the provider that generated the event

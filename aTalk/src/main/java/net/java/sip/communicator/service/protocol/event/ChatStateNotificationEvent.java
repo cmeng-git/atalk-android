@@ -23,10 +23,10 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 import java.util.EventObject;
 
 /**
- * <tt>ChatStateNotificationEvent</tt>s are delivered upon reception of a corresponding message
- * from a remote contact. <tt>ChatStateNotificationEvent</tt>s contain a state id, identifying
+ * <code>ChatStateNotificationEvent</code>s are delivered upon reception of a corresponding message
+ * from a remote contact. <code>ChatStateNotificationEvent</code>s contain a state id, identifying
  * the exact chat state event that has occurred (a user has started or stopped composing), the
- * source <tt>Contact</tt> that generated the event and others.
+ * source <code>Contact</code> that generated the event and others.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -46,7 +46,7 @@ public class ChatStateNotificationEvent extends EventObject
      * Creates a ChatStateNotificationEvent with the specified parameters.
      *
      * @param chatDescriptor the Chat Descriptor that has sent the notification.
-     * @param state the <tt>Contact</tt>'s current chat state
+     * @param state the <code>Contact</code>'s current chat state
      * @param msg the message received
      */
     public ChatStateNotificationEvent(Object chatDescriptor, ChatState state, Message msg)
@@ -57,9 +57,9 @@ public class ChatStateNotificationEvent extends EventObject
     }
 
     /**
-     * Returns the chat state that this <tt>ChatStateNotificationEvent</tt> is carrying.
+     * Returns the chat state that this <code>ChatStateNotificationEvent</code> is carrying.
      *
-     * @return one of the <tt>ChatState</tt>s indicating the chat state that this notification is about.
+     * @return one of the <code>ChatState</code>s indicating the chat state that this notification is about.
      */
     public ChatState getChatState()
     {
@@ -67,9 +67,9 @@ public class ChatStateNotificationEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that has sent this event.
+     * Returns a reference to the <code>Contact</code> that has sent this event.
      *
-     * @return a reference to the <tt>Contact</tt> whose chat state we're being notified about.
+     * @return a reference to the <code>Contact</code> whose chat state we're being notified about.
      */
     public Object getChatDescriptor()
     {

@@ -6,18 +6,18 @@
 package org.atalk.service.neomedia.event;
 
 /**
- * Represents a listener of <tt>RTCPFeedbackMessageListener</tt> instances.
+ * Represents a listener of <code>RTCPFeedbackMessageListener</code> instances.
  *
  * @author Hristo Terezov
  */
 public interface RTCPFeedbackMessageCreateListener
 {
 	/**
-	 * Notifies this <tt>RTCPFeedbackCreateListener</tt> that a <tt>RTCPFeedbackMessageListener</tt>
+	 * Notifies this <code>RTCPFeedbackCreateListener</code> that a <code>RTCPFeedbackMessageListener</code>
 	 * is created.
 	 *
 	 * @param rtcpFeedbackMessageListener
-	 *        the created <tt>RTCPFeedbackMessageListener</tt> instance
+	 *        the created <code>RTCPFeedbackMessageListener</code> instance
 	 */
 	public void onRTCPFeedbackMessageCreate(RTCPFeedbackMessageListener rtcpFeedbackMessageListener);
 }

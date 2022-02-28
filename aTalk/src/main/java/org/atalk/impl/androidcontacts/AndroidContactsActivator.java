@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.util.SimpleServiceActivator;
 
 /**
- * Activator of <tt>AndroidContactSource</tt> service.
+ * Activator of <code>AndroidContactSource</code> service.
  *
  * @author Pawel Domas
  */

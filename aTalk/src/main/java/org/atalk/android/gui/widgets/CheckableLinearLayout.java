@@ -11,8 +11,8 @@ import android.view.View;
 import android.widget.*;
 
 /*
- * This class implements <tt>Checkable</tt> interface in order to provide custom <tt>ListView</tt> row layouts that can
- * be checked. The layout retrieves first child <tt>CheckedTextView</tt> and serves as a proxy between the ListView.
+ * This class implements <code>Checkable</code> interface in order to provide custom <code>ListView</code> row layouts that can
+ * be checked. The layout retrieves first child <code>CheckedTextView</code> and serves as a proxy between the ListView.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -21,12 +21,12 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable
 {
 
     /**
-     * Instance of <tt>CheckedTextView</tt> to which this layout delegates <tt>Checkable</tt> interface calls.
+     * Instance of <code>CheckedTextView</code> to which this layout delegates <code>Checkable</code> interface calls.
      */
     private CheckedTextView checkbox;
 
     /**
-     * Creates new instance of <tt>CheckableRelativeLayout</tt>.
+     * Creates new instance of <code>CheckableRelativeLayout</code>.
      *
      * @param context the context
      * @param attrs attributes set
@@ -37,7 +37,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable
     }
 
     /**
-     * Overrides in order to retrieve <tt>CheckedTextView</tt>.
+     * Overrides in order to retrieve <code>CheckedTextView</code>.
      */
     @Override
     protected void onFinishInflate()

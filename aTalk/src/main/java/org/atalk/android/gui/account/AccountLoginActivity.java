@@ -23,7 +23,7 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
- * The <tt>AccountLoginActivity</tt> is the activity responsible for creating or
+ * The <code>AccountLoginActivity</code> is the activity responsible for creating or
  * registration a new account on the server.
  *
  * @author Yana Stamcheva
@@ -66,13 +66,13 @@ public class AccountLoginActivity extends ExitMenuActivity
     }
 
     /**
-     * Create an new account database with the given <tt>userName</tt>, <tt>password</tt>
-     * and <tt>protocolName</tt>.
+     * Create an new account database with the given <code>userName</code>, <code>password</code>
+     * and <code>protocolName</code>.
      *
      * @param userName the username of the account
      * @param password the password of the account
      * @param protocolName the name of the protocol
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the newly signed in account
+     * @return the <code>ProtocolProviderService</code> corresponding to the newly signed in account
      */
     private ProtocolProviderService createAccount(String userName, String password,
             String protocolName, Map<String, String> accountProperties)

@@ -32,17 +32,17 @@ public class VolumeChangeEvent extends EventObject
 	private final boolean mute;
 
 	/**
-	 * Initializes a new <tt>VolumeChangeEvent</tt> which is to notify about a specific volume level
+	 * Initializes a new <code>VolumeChangeEvent</code> which is to notify about a specific volume level
 	 * and its mute state.
 	 *
 	 * @param source
-	 *        the <tt>VolumeControl</tt> which is the source of the change
+	 *        the <code>VolumeControl</code> which is the source of the change
 	 * @param level
 	 *        the volume level
 	 * @param mute
-	 *        <tt>true</tt> if the volume is muted; otherwise, <tt>false</tt>
+	 *        <code>true</code> if the volume is muted; otherwise, <code>false</code>
 	 * @throws IllegalArgumentException
-	 *         if source is <tt>null</tt>
+	 *         if source is <code>null</code>
 	 */
 	public VolumeChangeEvent(VolumeControl source, float level, boolean mute)
 	{
@@ -53,11 +53,11 @@ public class VolumeChangeEvent extends EventObject
 	}
 
 	/**
-	 * Gets the <tt>VolumeControl</tt> which is the source of the change notified about by this
-	 * <tt>VolumeChangeEvent</tt>.
+	 * Gets the <code>VolumeControl</code> which is the source of the change notified about by this
+	 * <code>VolumeChangeEvent</code>.
 	 *
-	 * @return the <tt>VolumeControl</tt> which is the source of the change notified about by this
-	 *         <tt>VolumeChangeEvent</tt>
+	 * @return the <code>VolumeControl</code> which is the source of the change notified about by this
+	 *         <code>VolumeChangeEvent</code>
 	 */
 	public VolumeControl getSourceVolumeControl()
 	{
@@ -65,9 +65,9 @@ public class VolumeChangeEvent extends EventObject
 	}
 
 	/**
-	 * Gets the volume level notified about by this <tt>VolumeChangeEvent</tt>.
+	 * Gets the volume level notified about by this <code>VolumeChangeEvent</code>.
 	 *
-	 * @return the volume level notified about by this <tt>VolumeChangeEvent</tt>
+	 * @return the volume level notified about by this <code>VolumeChangeEvent</code>
 	 */
 	public float getLevel()
 	{
@@ -77,7 +77,7 @@ public class VolumeChangeEvent extends EventObject
 	/**
 	 * Gets the indicator which determines whether the volume is muted.
 	 *
-	 * @return <tt>true</tt> if the volume is muted; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the volume is muted; otherwise, <code>false</code>
 	 */
 	public boolean getMute()
 	{

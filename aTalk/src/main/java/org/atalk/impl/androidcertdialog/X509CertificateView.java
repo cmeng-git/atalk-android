@@ -60,7 +60,7 @@ public class X509CertificateView extends Dialog
      * Constructs a X509 certificate form from certificate[] chain
      * Default to assume only one certificate in the certificate chain.
      *
-     * @param certificates <tt>X509Certificate</tt> object
+     * @param certificates <code>X509Certificate</code> object
      */
     public X509CertificateView(Context context, Certificate[] certificates)
     {

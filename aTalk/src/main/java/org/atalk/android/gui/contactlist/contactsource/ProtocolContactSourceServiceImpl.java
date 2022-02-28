@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * The <tt>ProtocolContactSourceServiceImpl</tt>
+ * The <code>ProtocolContactSourceServiceImpl</code>
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -45,20 +45,20 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
     private final Class<? extends OperationSet> opSetClass;
 
     /**
-     * The <tt>MetaContactListService</tt>, providing the meta contact list.
+     * The <code>MetaContactListService</code>, providing the meta contact list.
      */
     MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
 
     /**
-     * The <tt>List</tt> of <tt>ProtocolContactQuery</tt> instances which have been started and haven't stopped yet.
+     * The <code>List</code> of <code>ProtocolContactQuery</code> instances which have been started and haven't stopped yet.
      */
     private final List<ProtocolCQuery> queries = new LinkedList<>();
 
     /**
-     * Creates an instance of <tt>ProtocolContactSourceServiceImpl</tt>.
+     * Creates an instance of <code>ProtocolContactSourceServiceImpl</code>.
      *
      * @param protocolProvider the protocol provider which is the contact source
-     * @param opSetClass the <tt>OperationSet</tt> class that is supported by source contacts
+     * @param opSetClass the <code>OperationSet</code> class that is supported by source contacts
      */
     public ProtocolContactSourceServiceImpl(ProtocolProviderService protocolProvider,
             Class<? extends OperationSet> opSetClass)
@@ -88,7 +88,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>searchPattern</tt>.
+     * Creates query for the given <code>searchPattern</code>.
      *
      * @param queryString the string to search for
      * @return the created query
@@ -99,7 +99,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>searchPattern</tt>.
+     * Creates query for the given <code>searchPattern</code>.
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts
@@ -130,7 +130,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
     }
 
     /**
-     * The <tt>ProtocolCQuery</tt> performing the query for this contact source.
+     * The <code>ProtocolCQuery</code> performing the query for this contact source.
      */
     private class ProtocolCQuery extends AsyncContactQuery<ProtocolContactSourceServiceImpl>
     {
@@ -145,7 +145,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
         private final String queryString;
 
         /**
-         * Creates an instance of <tt>ProtocolCQuery</tt>.
+         * Creates an instance of <code>ProtocolCQuery</code>.
          *
          * @param queryString the query string
          * @param contactCount the maximum number of contacts to return as result
@@ -162,7 +162,7 @@ public class ProtocolContactSourceServiceImpl implements ContactSourceService
         /**
          * {@inheritDoc}
          * <p>
-         * Always returns <tt>false</tt>.
+         * Always returns <code>false</code>.
          */
         @Override
         protected boolean phoneNumberMatches(String phoneNumber)

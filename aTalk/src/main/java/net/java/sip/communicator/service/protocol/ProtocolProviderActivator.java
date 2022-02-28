@@ -121,10 +121,10 @@ public class ProtocolProviderActivator implements BundleActivator
     }
 
     /**
-     * Returns a <tt>ProtocolProviderFactory</tt> for a given protocol provider.
+     * Returns a <code>ProtocolProviderFactory</code> for a given protocol provider.
      *
      * @param protocolName the name of the protocol, which factory we're looking for
-     * @return a <tt>ProtocolProviderFactory</tt> for a given protocol provider
+     * @return a <code>ProtocolProviderFactory</code> for a given protocol provider
      */
     public static ProtocolProviderFactory getProtocolProviderFactory(String protocolName)
     {
@@ -217,9 +217,9 @@ public class ProtocolProviderActivator implements BundleActivator
     }
 
     /**
-     * Get the <tt>AccountManager</tt> of the protocol.
+     * Get the <code>AccountManager</code> of the protocol.
      *
-     * @return <tt>AccountManager</tt> of the protocol
+     * @return <code>AccountManager</code> of the protocol
      */
     public static AccountManager getAccountManager()
     {

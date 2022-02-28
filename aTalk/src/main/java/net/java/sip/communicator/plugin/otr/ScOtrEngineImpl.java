@@ -213,10 +213,10 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     }
 
     /**
-     * Returns the <tt>ScSessionID</tt> for given <tt>UUID</tt>.
+     * Returns the <code>ScSessionID</code> for given <code>UUID</code>.
      *
-     * @param guid the <tt>UUID</tt> identifying <tt>ScSessionID</tt>.
-     * @return the <tt>ScSessionID</tt> for given <tt>UUID</tt> or <tt>null</tt> if no matching session found.
+     * @param guid the <code>UUID</code> identifying <code>ScSessionID</code>.
+     * @return the <code>ScSessionID</code> for given <code>UUID</code> or <code>null</code> if no matching session found.
      */
     public static ScSessionID getScSessionForGuid(UUID guid)
     {
@@ -247,10 +247,10 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     }
 
     /**
-     * Checks whether history is enabled for the metaContact containing the <tt>contact</tt>.
+     * Checks whether history is enabled for the metaContact containing the <code>contact</code>.
      *
      * @param contact the contact to check.
-     * @return whether chat logging is enabled while chatting with <tt>contact</tt>.
+     * @return whether chat logging is enabled while chatting with <code>contact</code>.
      */
     private boolean isHistoryLoggingEnabled(Contact contact)
     {
@@ -340,11 +340,11 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     }
 
     /**
-     * Gets a copy of the list of <tt>ScOtrEngineListener</tt>s registered with this instance
-     * which may safely be iterated without the risk of a <tt>ConcurrentModificationException</tt>.
+     * Gets a copy of the list of <code>ScOtrEngineListener</code>s registered with this instance
+     * which may safely be iterated without the risk of a <code>ConcurrentModificationException</code>.
      *
-     * @return a copy of the list of <tt>ScOtrEngineListener<tt>s registered with this instance
-     * which may safely be iterated without the risk of a <tt>ConcurrentModificationException</tt>
+     * @return a copy of the list of <code>ScOtrEngineListener<code>s registered with this instance
+     * which may safely be iterated without the risk of a <code>ConcurrentModificationException</code>
      */
     private ScOtrEngineListener[] getListeners()
     {
@@ -422,7 +422,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     }
 
     /**
-     * Cleans the contactsMap when <tt>ProtocolProviderService</tt> gets unregistered.
+     * Cleans the contactsMap when <code>ProtocolProviderService</code> gets unregistered.
      */
     @Override
     public void serviceChanged(ServiceEvent ev)

@@ -37,7 +37,7 @@ public interface ProvisioningDiscoveryService
      * Launch a discovery for a provisioning URL.
      *
      * This method is asynchronous, the response will be notified to any
-     * <tt>ProvisioningListener</tt> registered.
+     * <code>ProvisioningListener</code> registered.
      */
     public void startDiscovery();
 
@@ -51,17 +51,17 @@ public interface ProvisioningDiscoveryService
 
     /**
      * Add a listener that will be notified when the
-     * <tt>startDiscovery</tt> has finished.
+     * <code>startDiscovery</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void addDiscoveryListener(DiscoveryListener listener);
 
     /**
      * Add a listener that will be notified when the
-     * <tt>discoverProvisioningURL</tt> has finished.
+     * <code>discoverProvisioningURL</code> has finished.
      *
-     * @param listener <tt>ProvisioningListener</tt> to add
+     * @param listener <code>ProvisioningListener</code> to add
      */
     public void removeDiscoveryListener(DiscoveryListener listener);
 }

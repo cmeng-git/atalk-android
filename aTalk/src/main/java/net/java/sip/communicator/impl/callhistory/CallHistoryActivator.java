@@ -28,7 +28,7 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
- * Activates the <tt>CallHistoryService</tt>.
+ * Activates the <code>CallHistoryService</code>.
  *
  * @author Damian Minkov
  * @author Yana Stamcheva
@@ -42,7 +42,7 @@ public class CallHistoryActivator implements BundleActivator
     public static BundleContext bundleContext;
 
     /**
-     * The <tt>CallHistoryServiceImpl</tt> instantiated in the start method of this bundle.
+     * The <code>CallHistoryServiceImpl</code> instantiated in the start method of this bundle.
      */
     private static CallHistoryServiceImpl callHistoryService = null;
 
@@ -59,7 +59,7 @@ public class CallHistoryActivator implements BundleActivator
     /**
      * Initialize and start call history
      *
-     * @param bc the <tt>BundleContext</tt>
+     * @param bc the <code>BundleContext</code>
      * @throws Exception if initializing and starting call history fails
      */
     public void start(BundleContext bc)
@@ -83,7 +83,7 @@ public class CallHistoryActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)
@@ -94,9 +94,9 @@ public class CallHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns the instance of <tt>CallHistoryService</tt> created in this activator.
+     * Returns the instance of <code>CallHistoryService</code> created in this activator.
      *
-     * @return the instance of <tt>CallHistoryService</tt> created in this activator
+     * @return the instance of <code>CallHistoryService</code> created in this activator
      */
     public static CallHistoryService getCallHistoryService()
     {
@@ -104,9 +104,9 @@ public class CallHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * Returns the <code>ResourceManagementService</code>, through which we will access all resources.
      *
-     * @return the <tt>ResourceManagementService</tt>, through which we will access all resources.
+     * @return the <code>ResourceManagementService</code>, through which we will access all resources.
      */
     public static ResourceManagementService getResources()
     {
@@ -117,9 +117,9 @@ public class CallHistoryActivator implements BundleActivator
     }
 
     /**
-     * Returns all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context.
+     * Returns all <code>ProtocolProviderFactory</code>s obtained from the bundle context.
      *
-     * @return all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context
+     * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
     public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
     {

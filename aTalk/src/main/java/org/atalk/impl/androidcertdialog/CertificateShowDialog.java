@@ -33,7 +33,7 @@ import java.security.cert.Certificate;
 /**
  * The dialog that displays certificate details. It allows user to mark the certificate as "always trusted".
  * The dialog details are created dynamically in html format. That's because it's certificate implementation
- * dependent. Parent <tt>Activity</tt> must implement <tt>CertInfoDialogListener</tt>.
+ * dependent. Parent <code>Activity</code> must implement <code>CertInfoDialogListener</code>.
  *
  * @author Eng Chong Meng
  */
@@ -44,7 +44,7 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     private static final String ARG_REQ_ID = "request_id";
 
     /**
-     * Parent <tt>Activity</tt> listening for this dialog results.
+     * Parent <code>Activity</code> listening for this dialog results.
      */
     private CertInfoDialogListener listener;
 
@@ -101,7 +101,7 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     /**
      * Method fired when continue button is clicked.
      *
-     * @param v button's <tt>View</tt>.
+     * @param v button's <code>View</code>.
      */
     public void onContinueClicked(View v) {
         listener.onDialogResult(true);
@@ -111,7 +111,7 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     /**
      * Method fired when cancel button is clicked.
      *
-     * @param v button's <tt>View</tt>.
+     * @param v button's <code>View</code>.
      */
     public void onCancelClicked(View v) {
         listener.onDialogResult(false);
@@ -119,10 +119,10 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     }
 
     /**
-     * Creates new instance of <tt>CertificateInfoDialog</tt> parametrized with given <tt>requestId</tt>.
+     * Creates new instance of <code>CertificateInfoDialog</code> parametrized with given <code>requestId</code>.
      *
-     * @param requestId identifier of dialog model managed by <tt>CertificateDialogServiceImpl</tt>
-     * @return new instance of <tt>CertificateInfoDialog</tt> parametrized with given <tt>requestId</tt>.
+     * @param requestId identifier of dialog model managed by <code>CertificateDialogServiceImpl</code>
+     * @return new instance of <code>CertificateInfoDialog</code> parametrized with given <code>requestId</code>.
      */
     static public CertificateShowDialog createFragment(long requestId) {
         CertificateShowDialog dialog = new CertificateShowDialog();
@@ -133,13 +133,13 @@ public class CertificateShowDialog extends OSGiDialogFragment {
     }
 
     /**
-     * Interface used to pass dialog result to parent <tt>Activity</tt>.
+     * Interface used to pass dialog result to parent <code>Activity</code>.
      */
     public interface CertInfoDialogListener {
         /**
          * Fired when dialog is dismissed. Passes the result as an argument.
          *
-         * @param continueAnyway <tt>true</tt> if continue anyway button was pressed, <tt>false</tt>
+         * @param continueAnyway <code>true</code> if continue anyway button was pressed, <code>false</code>
          * means that the dialog was discarded or cancel button was pressed.
          */
         void onDialogResult(boolean continueAnyway);

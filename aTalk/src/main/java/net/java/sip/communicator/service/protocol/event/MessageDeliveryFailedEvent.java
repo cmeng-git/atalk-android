@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.protocol.IMessage;
 import java.util.EventObject;
 
 /**
- * <tt>MessageDeliveryFailedEvent</tt>s inform of failed delivery of an instant message.
+ * <code>MessageDeliveryFailedEvent</code>s inform of failed delivery of an instant message.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -130,11 +130,11 @@ public class MessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Creates a <tt>MessageDeliveryFailedEvent</tt> indicating failure of delivery of the
-     * <tt>source</tt> message to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveryFailedEvent</code> indicating failure of delivery of the
+     * <code>source</code> message to the specified <code>to</code> contact.
      *
-     * @param source the <tt>IMessage</tt> whose delivery this event represents.
-     * @param to the <tt>Contact</tt> that this message was sent to.
+     * @param source the <code>IMessage</code> whose delivery this event represents.
+     * @param to the <code>Contact</code> that this message was sent to.
      * @param errorCode an errorCode indicating the reason of the failure.
      * @param timestamp the exact timestamp when it was determined that delivery had failed.
      * @param reason a human readable message indicating the reason for the failure or null if the reason is unknown.
@@ -149,9 +149,9 @@ public class MessageDeliveryFailedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>Contact</tt> that the source (failed) <tt>IMessage</tt> was sent to.
+     * Returns a reference to the <code>Contact</code> that the source (failed) <code>IMessage</code> was sent to.
      *
-     * @return a reference to the <tt>Contact</tt> that the source failed <tt>IMessage</tt> was sent to.
+     * @return a reference to the <code>Contact</code> that the source failed <code>IMessage</code> was sent to.
      */
     public Contact getDestinationContact()
     {
@@ -161,7 +161,7 @@ public class MessageDeliveryFailedEvent extends EventObject
     /**
      * Returns the message that triggered this event
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getSourceMessage()
     {

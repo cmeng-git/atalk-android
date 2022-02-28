@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListen
 import java.util.*;
 
 /**
- * Abstract base implementation of <tt>PopupMessageHandler</tt> which
+ * Abstract base implementation of <code>PopupMessageHandler</code> which
  * facilitates the full implementation of the interface.
  *
  * @author Lubomir Marinov
@@ -21,16 +21,16 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
 {
 
     /**
-     * The list of <tt>SystrayPopupMessageListener</tt>s registered with this
+     * The list of <code>SystrayPopupMessageListener</code>s registered with this
      * instance.
      */
     private final List<SystrayPopupMessageListener> popupMessageListeners = new Vector<>();
 
     /**
-     * Adds a <tt>SystrayPopupMessageListener</tt> to this instance so that it
-     * receives <tt>SystrayPopupMessageEvent</tt>s.
+     * Adds a <code>SystrayPopupMessageListener</code> to this instance so that it
+     * receives <code>SystrayPopupMessageEvent</code>s.
      *
-     * @param listener the <tt>SystrayPopupMessageListener</tt> to be added to this instance
+     * @param listener the <code>SystrayPopupMessageListener</code> to be added to this instance
      * @see PopupMessageHandler#addPopupMessageListener(SystrayPopupMessageListener)
      */
     public void addPopupMessageListener(SystrayPopupMessageListener listener)
@@ -42,11 +42,11 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
     }
 
     /**
-     * Notifies the <tt>SystrayPopupMessageListener</tt>s registered with this
-     * instance that a <tt>SystrayPopupMessageEvent</tt> has occurred.
+     * Notifies the <code>SystrayPopupMessageListener</code>s registered with this
+     * instance that a <code>SystrayPopupMessageEvent</code> has occurred.
      *
-     * @param evt the <tt>SystrayPopupMessageEvent</tt> to be fired to the
-     * <tt>SystrayPopupMessageListener</tt>s registered with this instance
+     * @param evt the <code>SystrayPopupMessageEvent</code> to be fired to the
+     * <code>SystrayPopupMessageListener</code>s registered with this instance
      */
     protected void firePopupMessageClicked(SystrayPopupMessageEvent evt)
     {
@@ -59,10 +59,10 @@ public abstract class AbstractPopupMessageHandler implements PopupMessageHandler
     }
 
     /**
-     * Removes a <tt>SystrayPopupMessageListener</tt> from this instance so that
-     * it no longer receives <tt>SystrayPopupMessageEvent</tt>s.
+     * Removes a <code>SystrayPopupMessageListener</code> from this instance so that
+     * it no longer receives <code>SystrayPopupMessageEvent</code>s.
      *
-     * @param listener the <tt>SystrayPopupMessageListener</tt> to be removed from this instance
+     * @param listener the <code>SystrayPopupMessageListener</code> to be removed from this instance
      * @see PopupMessageHandler#removePopupMessageListener(SystrayPopupMessageListener)
      */
     public void removePopupMessageListener(SystrayPopupMessageListener listener)

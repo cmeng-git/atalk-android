@@ -36,12 +36,12 @@ import androidx.fragment.app.Fragment;
  * server overridden option and the server ip:port. Use the arguments to fill the fragment with default values.
  * Supported arguments are:
  * - {@link #ARG_LOGIN} login default text value; editable only if new user creation
- * - {@link #ARG_LOGIN_EDITABLE} <tt>boolean</tt> flag indicating if the login field is editable
+ * - {@link #ARG_LOGIN_EDITABLE} <code>boolean</code> flag indicating if the login field is editable
  * - {@link #ARG_PASSWORD} password default text value
- * - {@link #ARG_IB_REGISTRATION} "store password" default <tt>boolean</tt> value
- * - {@link #ARG_IB_REGISTRATION} "ibr_registration" default <tt>boolean</tt> value
- * - {@link #ARG_STORE_PASSWORD} "store password" default <tt>boolean</tt> value
- * - {@link #ARG_IS_SERVER_OVERRIDDEN} "Server Overridden" default <tt>boolean</tt> value
+ * - {@link #ARG_IB_REGISTRATION} "store password" default <code>boolean</code> value
+ * - {@link #ARG_IB_REGISTRATION} "ibr_registration" default <code>boolean</code> value
+ * - {@link #ARG_STORE_PASSWORD} "store password" default <code>boolean</code> value
+ * - {@link #ARG_IS_SERVER_OVERRIDDEN} "Server Overridden" default <code>boolean</code> value
  * - {@link #ARG_SERVER_ADDRESS} Server address default text value
  * - {@link #ARG_SERVER_PORT} Server port default text value
  * - {@link #ARG_LOGIN_REASON} login in reason, present last server return exception if any
@@ -71,22 +71,22 @@ public class CredentialsFragment extends Fragment
     public static final String ARG_LOGIN_EDITABLE = "login_editable";
 
     /**
-     * Pre-entered "store password" <tt>boolean</tt> value.
+     * Pre-entered "store password" <code>boolean</code> value.
      */
     public static final String ARG_STORE_PASSWORD = "store_pass";
 
     /**
-     * Pre-entered "store password" <tt>boolean</tt> value.
+     * Pre-entered "store password" <code>boolean</code> value.
      */
     public static final String ARG_IB_REGISTRATION = "ib_registration";
 
     /**
-     * Show server option for user entry if true " <tt>boolean</tt> value.
+     * Show server option for user entry if true " <code>boolean</code> value.
      */
     public static final String ARG_IS_SHOWN_SERVER_OPTION = "is_shown_server_option";
 
     /**
-     * Pre-entered "is server overridden" <tt>boolean</tt> value.
+     * Pre-entered "is server overridden" <code>boolean</code> value.
      */
     public static final String ARG_IS_SERVER_OVERRIDDEN = "is_server_overridden";
 

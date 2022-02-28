@@ -21,11 +21,11 @@ package net.java.sip.communicator.service.protocol.event;
 public interface WhiteboardInvitationListener
 {
 	/**
-	 * Called when we receive an invitation to join an existing <tt>WhiteboardSession</tt>.
+	 * Called when we receive an invitation to join an existing <code>WhiteboardSession</code>.
 	 * <p>
 	 * 
 	 * @param evt
-	 *        the <tt>WhiteboardInvitationReceivedEvent</tt> that contains the newly received
+	 *        the <code>WhiteboardInvitationReceivedEvent</code> that contains the newly received
 	 *        invitation and its source provider.
 	 */
 	public abstract void invitationReceived(WhiteboardInvitationReceivedEvent evt);

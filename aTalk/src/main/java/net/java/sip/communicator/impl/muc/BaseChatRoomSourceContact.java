@@ -84,10 +84,10 @@ public class BaseChatRoomSourceContact extends SortedGenericSourceContact
     }
 
     /**
-     * Generates the default contact details for <tt>BaseChatRoomSourceContact</tt> instances.
+     * Generates the default contact details for <code>BaseChatRoomSourceContact</code> instances.
      *
      * @param chatRoomName the name of the chat room associated with the contact
-     * @return list of default <tt>ContactDetail</tt>s for the contact.
+     * @return list of default <code>ContactDetail</code>s for the contact.
      */
     private static List<ContactDetail> generateDefaultContactDetails(String chatRoomName)
     {

@@ -65,7 +65,7 @@ public class MetaContactGroupEvent extends EventObject
      * Indicates that the MetaContactGroupEvent instance was triggered by the renaming of a
      * protocol specific ContactGroup in the source MetaContactGroup. Note that this does not in
      * any way mean that the name of the MetaContactGroup itself has changed.
-     * <tt>MetaContactGroup</tt>s contain multiple protocol groups and their name cannot change
+     * <code>MetaContactGroup</code>s contain multiple protocol groups and their name cannot change
      * each time one of them is renamed.
      */
     public static final int CONTACT_GROUP_RENAMED_IN_META_GROUP = 5;

@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Implements <tt>OperationSetIncomingDTMF</tt> for the jabber protocol.
+ * Implements <code>OperationSetIncomingDTMF</code> for the jabber protocol.
  *
  * @author Boris Grozev
  */

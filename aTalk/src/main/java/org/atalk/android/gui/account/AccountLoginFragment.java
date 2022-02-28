@@ -28,8 +28,8 @@ import org.atalk.service.osgi.OSGiFragment;
 import java.util.*;
 
 /**
- * The <tt>AccountLoginFragment</tt> is used for creating new account, but can be also used to obtain
- * user credentials. In order to do that parent <tt>Activity</tt> must implement {@link AccountLoginListener}.
+ * The <code>AccountLoginFragment</code> is used for creating new account, but can be also used to obtain
+ * user credentials. In order to do that parent <code>Activity</code> must implement {@link AccountLoginListener}.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -87,11 +87,11 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     private Context mContext;
 
     /**
-     * Creates new <tt>AccountLoginFragment</tt> with optionally filled login and password fields.
+     * Creates new <code>AccountLoginFragment</code> with optionally filled login and password fields.
      *
      * @param login optional login text that will be filled on the form.
      * @param password optional password text that will be filled on the form.
-     * @return new instance of parametrized <tt>AccountLoginFragment</tt>.
+     * @return new instance of parametrized <code>AccountLoginFragment</code>.
      */
     public static AccountLoginFragment createInstance(String login, String password)
     {
@@ -296,9 +296,9 @@ public class AccountLoginFragment extends OSGiFragment implements AdapterView.On
     }
 
     /**
-     * Stores the given <tt>protocolProvider</tt> data in the android system accounts.
+     * Stores the given <code>protocolProvider</code> data in the android system accounts.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>, corresponding to the account to store
+     * @param protocolProvider the <code>ProtocolProviderService</code>, corresponding to the account to store
      */
     private void storeAndroidAccount(ProtocolProviderService protocolProvider)
     {

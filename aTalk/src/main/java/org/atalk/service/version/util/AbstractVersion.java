@@ -8,7 +8,7 @@ package org.atalk.service.version.util;
 import org.atalk.service.version.Version;
 
 /**
- * Base class for <tt>Version</tt> implementation that uses major, minor and nightly build id for
+ * Base class for <code>Version</code> implementation that uses major, minor and nightly build id for
  * versioning purposes.
  *
  * @author Emil Ivov
@@ -88,14 +88,14 @@ public abstract class AbstractVersion implements Version
 	}
 
 	/**
-	 * Compares another <tt>Version</tt> object to this one and returns a negative, zero or a
+	 * Compares another <code>Version</code> object to this one and returns a negative, zero or a
 	 * positive integer if this version instance represents respectively an earlier, same, or
-	 * later version as the one indicated by the <tt>version</tt> parameter.
+	 * later version as the one indicated by the <code>version</code> parameter.
 	 *
 	 * @param version
-	 * 		the <tt>Version</tt> instance that we'd like to compare to this one.
+	 * 		the <code>Version</code> instance that we'd like to compare to this one.
 	 * @return a negative integer, zero, or a positive integer as this object represents a version
-	 * that is earlier, same, or more recent than the one referenced by the <tt>version</tt>
+	 * that is earlier, same, or more recent than the one referenced by the <code>version</code>
 	 * parameter.
 	 */
 	public int compareTo(Version version)
@@ -129,9 +129,9 @@ public abstract class AbstractVersion implements Version
 	 * 		the first version to compare
 	 * @param v2
 	 * 		the second version to compare
-	 * @return a negative integer, zero, or a positive integer as the first parameter <tt>v1</tt>
+	 * @return a negative integer, zero, or a positive integer as the first parameter <code>v1</code>
 	 * represents a version that is earlier, same, or more recent than the one referenced by the
-	 * <tt>v2</tt> parameter.
+	 * <code>v2</code> parameter.
 	 */
 	private static int compareNightlyBuildIDByComponents(String v1, String v2)
 	{
@@ -158,7 +158,7 @@ public abstract class AbstractVersion implements Version
 	}
 
 	/**
-	 * Compares the <tt>version</tt> parameter to this version and returns true if and only if
+	 * Compares the <code>version</code> parameter to this version and returns true if and only if
 	 * both reference the same Jitsi version and false otherwise.
 	 *
 	 * @param version

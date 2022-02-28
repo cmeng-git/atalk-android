@@ -28,14 +28,14 @@ import java.util.Locale;
 public final class ResourceManagementServiceUtils
 {
     /**
-     * Constructs a new <tt>Locale</tt> instance from a specific locale
+     * Constructs a new <code>Locale</code> instance from a specific locale
      * identifier which can either be a two-letter language code or contain a
      * two-letter language code and a two-letter country code in the form
-     * <tt>&lt;language&gt;_&lt;country&gt;</tt>.
+     * <code>&lt;language&gt;_&lt;country&gt;</code>.
      *
-     * @param localeId the locale identifier describing the new <tt>Locale</tt>
+     * @param localeId the locale identifier describing the new <code>Locale</code>
      * instance to be created
-     * @return a new <tt>Locale</tt> instance with language and country (if
+     * @return a new <code>Locale</code> instance with language and country (if
      * specified) matching the given locale identifier
      */
     public static Locale getLocale(String localeId)
@@ -56,13 +56,13 @@ public final class ResourceManagementServiceUtils
     }
 
     /**
-     * Gets the <tt>ResourceManagementService</tt> instance registered in a
-     * specific <tt>BundleContext</tt> (if any).
+     * Gets the <code>ResourceManagementService</code> instance registered in a
+     * specific <code>BundleContext</code> (if any).
      *
-     * @param bundleContext the <tt>BundleContext</tt> to be checked for a
-     * registered <tt>ResourceManagementService</tt>
-     * @return a <tt>ResourceManagementService</tt> instance registered in
-     * the specified <tt>BundleContext</tt> if any; otherwise, <tt>null</tt>
+     * @param bundleContext the <code>BundleContext</code> to be checked for a
+     * registered <code>ResourceManagementService</code>
+     * @return a <code>ResourceManagementService</code> instance registered in
+     * the specified <code>BundleContext</code> if any; otherwise, <code>null</code>
      */
     public static ResourceManagementService getService(BundleContext bundleContext)
     {
@@ -70,7 +70,7 @@ public final class ResourceManagementServiceUtils
     }
 
     /**
-     * Prevents the creation of <tt>ResourceManagementServiceUtils</tt> instances.
+     * Prevents the creation of <code>ResourceManagementServiceUtils</code> instances.
      */
     private ResourceManagementServiceUtils()
     {

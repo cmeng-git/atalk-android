@@ -169,7 +169,7 @@ public class NotificationsTableSettings extends OSGiActivity implements Notifica
     /**
      * Fired when enable event toggle button is clicked
      *
-     * @param v toggle button <tt>View</tt>
+     * @param v toggle button <code>View</code>
      */
     public void onEnableItemClicked(View v)
     {

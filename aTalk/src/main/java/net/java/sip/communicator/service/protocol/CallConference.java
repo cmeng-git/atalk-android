@@ -12,12 +12,12 @@ import org.atalk.util.event.PropertyChangeNotifier;
 import java.util.*;
 
 /**
- * Represents the telephony conference-related state of a <tt>Call</tt>. Multiple <tt>Call</tt>
- * instances share a single <tt>CallConference</tt> instance when the former are into a telephony
- * conference i.e. the local peer/user is the conference focus. <tt>CallConference</tt> is
+ * Represents the telephony conference-related state of a <code>Call</code>. Multiple <code>Call</code>
+ * instances share a single <code>CallConference</code> instance when the former are into a telephony
+ * conference i.e. the local peer/user is the conference focus. <code>CallConference</code> is
  * protocol-agnostic and thus enables cross-protocol conferences. Since a non-conference
- * <tt>Call</tt> may be converted into a conference <tt>Call</tt> at any time, every <tt>Call</tt>
- * instance maintains a <tt>CallConference</tt> instance regardless of whether the <tt>Call</tt> in
+ * <code>Call</code> may be converted into a conference <code>Call</code> at any time, every <code>Call</code>
+ * instance maintains a <code>CallConference</code> instance regardless of whether the <code>Call</code> in
  * question is participating in a telephony conference.
  *
  * @author Lyubomir Marinov
@@ -26,22 +26,22 @@ import java.util.*;
 public class CallConference extends PropertyChangeNotifier
 {
     /**
-     * The name of the <tt>CallConference</tt> property which specifies the list of <tt>Call</tt>s
+     * The name of the <code>CallConference</code> property which specifies the list of <code>Call</code>s
      * participating in a telephony conference. A change in the value of the property is delivered
-     * in the form of a <tt>PropertyChangeEvent</tt> which has its <tt>oldValue</tt> or
-     * <tt>newValue</tt> set to the <tt>Call</tt> which has been removed or added to the list of
-     * <tt>Call</tt>s participating in the telephony conference.
+     * in the form of a <code>PropertyChangeEvent</code> which has its <code>oldValue</code> or
+     * <code>newValue</code> set to the <code>Call</code> which has been removed or added to the list of
+     * <code>Call</code>s participating in the telephony conference.
      */
     public static final String CALLS = "calls";
 
     /**
-     * Gets the number of <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in the
-     * telephony conference-related state of a specific <tt>Call</tt>.
+     * Gets the number of <code>CallPeer</code>s associated with the <code>Call</code>s participating in the
+     * telephony conference-related state of a specific <code>Call</code>.
      *
-     * @param call the <tt>Call</tt> for which the number of <tt>CallPeer</tt>s associated with the
-     * <tt>Call</tt>s participating in its associated telephony conference-related state
-     * @return the number of <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
-     * the telephony conference-related state of the specified <tt>Call</tt>
+     * @param call the <code>Call</code> for which the number of <code>CallPeer</code>s associated with the
+     * <code>Call</code>s participating in its associated telephony conference-related state
+     * @return the number of <code>CallPeer</code>s associated with the <code>Call</code>s participating in
+     * the telephony conference-related state of the specified <code>Call</code>
      */
     public static int getCallPeerCount(Call call)
     {
@@ -56,13 +56,13 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets a list of the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in the
-     * telephony conference in which a specific <tt>Call</tt> is participating.
+     * Gets a list of the <code>CallPeer</code>s associated with the <code>Call</code>s participating in the
+     * telephony conference in which a specific <code>Call</code> is participating.
      *
-     * @param call the <tt>Call</tt> which specifies the telephony conference the <tt>CallPeer</tt>s of
+     * @param call the <code>Call</code> which specifies the telephony conference the <code>CallPeer</code>s of
      * which are to be retrieved
-     * @return a list of the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
-     * the telephony conference in which the specified <tt>call</tt> is participating
+     * @return a list of the <code>CallPeer</code>s associated with the <code>Call</code>s participating in
+     * the telephony conference in which the specified <code>call</code> is participating
      */
     public static List<CallPeer> getCallPeers(Call call)
     {
@@ -81,13 +81,13 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the list of <tt>Call</tt>s participating in the telephony conference in which a specific
-     * <tt>Call</tt> is participating.
+     * Gets the list of <code>Call</code>s participating in the telephony conference in which a specific
+     * <code>Call</code> is participating.
      *
-     * @param call the <tt>Call</tt> which participates in the telephony conference the list of
-     * participating <tt>Call</tt>s of which is to be returned
-     * @return the list of <tt>Call</tt>s participating in the telephony conference in which the
-     * specified <tt>call</tt> is participating
+     * @param call the <code>Call</code> which participates in the telephony conference the list of
+     * participating <code>Call</code>s of which is to be returned
+     * @return the list of <code>Call</code>s participating in the telephony conference in which the
+     * specified <code>call</code> is participating
      */
     public static List<Call> getCalls(Call call)
     {
@@ -102,13 +102,13 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Determines whether a <tt>CallConference</tt> is to report the local peer/user as a conference
-     * focus judging by a specific list of <tt>Call</tt>s.
+     * Determines whether a <code>CallConference</code> is to report the local peer/user as a conference
+     * focus judging by a specific list of <code>Call</code>s.
      *
-     * @param calls the list of <tt>Call</tt> which are to be judged whether the local peer/user that they
+     * @param calls the list of <code>Call</code> which are to be judged whether the local peer/user that they
      * represent is to be considered as a conference focus
-     * @return <tt>true</tt> if the local peer/user represented by the specified <tt>calls</tt> is
-     * judged to be a conference focus; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the local peer/user represented by the specified <code>calls</code> is
+     * judged to be a conference focus; otherwise, <code>false</code>
      */
     private static boolean isConferenceFocus(List<Call> calls)
     {
@@ -125,7 +125,7 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * The <tt>CallChangeListener</tt> which listens to changes in the <tt>Call</tt>s participating
+     * The <code>CallChangeListener</code> which listens to changes in the <code>Call</code>s participating
      * in this telephony conference.
      */
     private final CallChangeListener callChangeListener = new CallChangeListener()
@@ -150,14 +150,14 @@ public class CallConference extends PropertyChangeNotifier
     };
 
     /**
-     * The list of <tt>CallChangeListener</tt>s added to the <tt>Call</tt>s participating in this
+     * The list of <code>CallChangeListener</code>s added to the <code>Call</code>s participating in this
      * telephony conference via {@link #addCallChangeListener(CallChangeListener)}.
      */
     private final List<CallChangeListener> callChangeListeners = new LinkedList<>();
 
     /**
-     * The <tt>CallPeerConferenceListener</tt> which listens to the <tt>CallPeer</tt>s associated
-     * with the <tt>Call</tt> s participating in this telephony conference.
+     * The <code>CallPeerConferenceListener</code> which listens to the <code>CallPeer</code>s associated
+     * with the <code>Call</code> s participating in this telephony conference.
      */
     private final CallPeerConferenceListener callPeerConferenceListener = new CallPeerConferenceAdapter()
     {
@@ -185,29 +185,29 @@ public class CallConference extends PropertyChangeNotifier
     };
 
     /**
-     * The list of <tt>CallPeerConferenceListener</tt>s added to the <tt>CallPeer</tt>s associated
-     * with the <tt>CallPeer</tt>s participating in this telephony conference via
+     * The list of <code>CallPeerConferenceListener</code>s added to the <code>CallPeer</code>s associated
+     * with the <code>CallPeer</code>s participating in this telephony conference via
      * {@link #addCallPeerConferenceListener}.
      */
     private final List<CallPeerConferenceListener> callPeerConferenceListeners = new LinkedList<>();
 
     /**
-     * The synchronization root/<tt>Object</tt> which protects the access to {@link #immutableCalls}
+     * The synchronization root/<code>Object</code> which protects the access to {@link #immutableCalls}
      * and {@link #mutableCalls}.
      */
     private final Object callsSyncRoot = new Object();
 
     /**
      * The indicator which determines whether the local peer represented by this instance and the
-     * <tt>Call</tt>s participating in it is acting as a conference focus. The SIP protocol, for
+     * <code>Call</code>s participating in it is acting as a conference focus. The SIP protocol, for
      * example, will add the &quot;isfocus&quot; parameter to the Contact headers of its outgoing
-     * signaling if <tt>true</tt>.
+     * signaling if <code>true</code>.
      */
     private boolean conferenceFocus = false;
 
     /**
-     * The list of <tt>Call</tt>s participating in this telephony conference as an immutable
-     * <tt>List</tt> which can be exposed out of this instance without the need to make a copy. In
+     * The list of <code>Call</code>s participating in this telephony conference as an immutable
+     * <code>List</code> which can be exposed out of this instance without the need to make a copy. In
      * other words, it is an unmodifiable view of {@link #mutableCalls}.
      */
     private List<Call> immutableCalls;
@@ -219,13 +219,13 @@ public class CallConference extends PropertyChangeNotifier
     private final boolean jitsiVideobridge;
 
     /**
-     * The list of <tt>Call</tt>s participating in this telephony conference as a mutable
-     * <tt>List</tt> which should not be exposed out of this instance.
+     * The list of <code>Call</code>s participating in this telephony conference as a mutable
+     * <code>List</code> which should not be exposed out of this instance.
      */
     private List<Call> mutableCalls;
 
     /**
-     * Initializes a new <tt>CallConference</tt> instance.
+     * Initializes a new <code>CallConference</code> instance.
      */
     public CallConference()
     {
@@ -233,12 +233,12 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes a new <tt>CallConference</tt> instance which is to optionally utilize the Jitsi
+     * Initializes a new <code>CallConference</code> instance which is to optionally utilize the Jitsi
      * Videobridge server-side telephony conferencing technology.
      *
-     * @param jitsiVideobridge <tt>true</tt> if the telephony conference represented by the new instance is to
+     * @param jitsiVideobridge <code>true</code> if the telephony conference represented by the new instance is to
      * utilize the Jitsi Videobridge server-side telephony conferencing technology;
-     * otherwise, <tt>false</tt>
+     * otherwise, <code>false</code>
      */
     public CallConference(boolean jitsiVideobridge)
     {
@@ -249,14 +249,14 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>Call</tt> to the list of <tt>Call</tt>s participating in this telephony
+     * Adds a specific <code>Call</code> to the list of <code>Call</code>s participating in this telephony
      * conference.
      *
-     * @param call the <tt>Call</tt> to add to the list of <tt>Call</tt>s participating in this telephony
+     * @param call the <code>Call</code> to add to the list of <code>Call</code>s participating in this telephony
      * conference
-     * @return <tt>true</tt> if the list of <tt>Call</tt>s participating in this telephony
-     * conference changed as a result of the method call; otherwise, <tt>false</tt>
-     * @throws NullPointerException if <tt>call</tt> is <tt>null</tt>
+     * @return <code>true</code> if the list of <code>Call</code>s participating in this telephony
+     * conference changed as a result of the method call; otherwise, <code>false</code>
+     * @throws NullPointerException if <code>call</code> is <code>null</code>
      */
     boolean addCall(Call call)
     {
@@ -287,13 +287,13 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a <tt>CallChangeListener</tt> to the <tt>Call</tt>s participating in this telephony
+     * Adds a <code>CallChangeListener</code> to the <code>Call</code>s participating in this telephony
      * conference. The method is a convenience that takes on the responsibility of tracking the
-     * <tt>Call</tt>s that get added/removed to/from this telephony conference.
+     * <code>Call</code>s that get added/removed to/from this telephony conference.
      *
-     * @param listener the <tt>CallChangeListner</tt> to be added to the <tt>Call</tt>s participating in this
+     * @param listener the <code>CallChangeListner</code> to be added to the <code>Call</code>s participating in this
      * telephony conference
-     * @throws NullPointerException if <tt>listener</tt> is <tt>null</tt>
+     * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     public void addCallChangeListener(CallChangeListener listener)
     {
@@ -308,11 +308,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Adds {@link #callPeerConferenceListener} to the <tt>CallPeer</tt>s associated with a specific
-     * <tt>Call</tt>.
+     * Adds {@link #callPeerConferenceListener} to the <code>CallPeer</code>s associated with a specific
+     * <code>Call</code>.
      *
-     * @param call the <tt>Call</tt> to whose associated <tt>CallPeer</tt>s
-     * <tt>callPeerConferenceListener</tt> is to be added
+     * @param call the <code>Call</code> to whose associated <code>CallPeer</code>s
+     * <code>callPeerConferenceListener</code> is to be added
      */
     private void addCallPeerConferenceListener(Call call)
     {
@@ -324,15 +324,15 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a <tt>CallPeerConferenceListener</tt> to the <tt>CallPeer</tt>s associated with the
-     * <tt>Call</tt>s participating in this telephony conference. The method is a convenience that
-     * takes on the responsibility of tracking the <tt>Call</tt>s that get added/removed to/from
-     * this telephony conference and the <tt>CallPeer</tt> that get added/removed to/from these
-     * <tt>Call</tt>s.
+     * Adds a <code>CallPeerConferenceListener</code> to the <code>CallPeer</code>s associated with the
+     * <code>Call</code>s participating in this telephony conference. The method is a convenience that
+     * takes on the responsibility of tracking the <code>Call</code>s that get added/removed to/from
+     * this telephony conference and the <code>CallPeer</code> that get added/removed to/from these
+     * <code>Call</code>s.
      *
-     * @param listener the <tt>CallPeerConferenceListener</tt> to be added to the <tt>CallPeer</tt>s
-     * associated with the <tt>Call</tt>s participating in this telephony conference
-     * @throws NullPointerException if <tt>listener</tt> is <tt>null</tt>
+     * @param listener the <code>CallPeerConferenceListener</code> to be added to the <code>CallPeer</code>s
+     * associated with the <code>Call</code>s participating in this telephony conference
+     * @throws NullPointerException if <code>listener</code> is <code>null</code>
      */
     public void addCallPeerConferenceListener(CallPeerConferenceListener listener)
     {
@@ -347,10 +347,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this <tt>CallConference</tt> that a specific <tt>Call</tt> has been added to the
-     * list of <tt>Call</tt>s participating in this telephony conference.
+     * Notifies this <code>CallConference</code> that a specific <code>Call</code> has been added to the
+     * list of <code>Call</code>s participating in this telephony conference.
      *
-     * @param call the <tt>Call</tt> which has been added to the list of <tt>Call</tt>s participating in
+     * @param call the <code>Call</code> which has been added to the list of <code>Call</code>s participating in
      * this telephony conference
      */
     protected void callAdded(Call call)
@@ -373,10 +373,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this <tt>CallConference</tt> that a specific <tt>Call</tt> has been removed from the
-     * list of <tt>Call</tt>s participating in this telephony conference.
+     * Notifies this <code>CallConference</code> that a specific <code>Call</code> has been removed from the
+     * list of <code>Call</code>s participating in this telephony conference.
      *
-     * @param call the <tt>Call</tt> which has been removed from the list of <tt>Call</tt>s participating
+     * @param call the <code>Call</code> which has been removed from the list of <code>Call</code>s participating
      * in this telephony conference
      */
     protected void callRemoved(Call call)
@@ -397,12 +397,12 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this telephony conference that the <tt>CallState</tt> of a <tt>Call</tt> has
+     * Notifies this telephony conference that the <code>CallState</code> of a <code>Call</code> has
      * changed.
      *
-     * @param ev a <tt>CallChangeEvent</tt> which specifies the <tt>Call</tt> which had its
-     * <tt>CallState</tt> changed and the old and new <tt>CallState</tt>s of that
-     * <tt>Call</tt>
+     * @param ev a <code>CallChangeEvent</code> which specifies the <code>Call</code> which had its
+     * <code>CallState</code> changed and the old and new <code>CallState</code>s of that
+     * <code>Call</code>
      */
     private void callStateChanged(CallChangeEvent ev)
     {
@@ -427,11 +427,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this <tt>CallConference</tt> that the value of its <tt>conferenceFocus</tt> property
+     * Notifies this <code>CallConference</code> that the value of its <code>conferenceFocus</code> property
      * has changed from a specific old value to a specific new value.
      *
-     * @param oldValue the value of the <tt>conferenceFocus</tt> property of this instance before the change
-     * @param newValue the value of the <tt>conferenceFocus</tt> property of this instance after the change
+     * @param oldValue the value of the <code>conferenceFocus</code> property of this instance before the change
+     * @param newValue the value of the <code>conferenceFocus</code> property of this instance after the change
      */
     protected void conferenceFocusChanged(boolean oldValue, boolean newValue)
     {
@@ -439,11 +439,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Determines whether a specific <tt>Call</tt> is participating in this telephony conference.
+     * Determines whether a specific <code>Call</code> is participating in this telephony conference.
      *
-     * @param call the <tt>Call</tt> which is to be checked whether it is participating in this telephony
+     * @param call the <code>Call</code> which is to be checked whether it is participating in this telephony
      * conference
-     * @return <tt>true</tt> if the specified <tt>call</tt> is participating in this telephony
+     * @return <code>true</code> if the specified <code>call</code> is participating in this telephony
      * conference
      */
     public boolean containsCall(Call call)
@@ -454,10 +454,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the list of <tt>CallChangeListener</tt>s added to the <tt>Call</tt>s participating in
+     * Gets the list of <code>CallChangeListener</code>s added to the <code>Call</code>s participating in
      * this telephony conference via {@link #addCallChangeListener(CallChangeListener)}.
      *
-     * @return the list of <tt>CallChangeListener</tt>s added to the <tt>Call</tt>s participating in
+     * @return the list of <code>CallChangeListener</code>s added to the <code>Call</code>s participating in
      * this telephony conference via {@link #addCallChangeListener(CallChangeListener)}
      */
     private CallChangeListener[] getCallChangeListeners()
@@ -468,9 +468,9 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the number of <tt>Call</tt>s that are participating in this telephony conference.
+     * Gets the number of <code>Call</code>s that are participating in this telephony conference.
      *
-     * @return the number of <tt>Call</tt>s that are participating in this telephony conference
+     * @return the number of <code>Call</code>s that are participating in this telephony conference
      */
     public int getCallCount()
     {
@@ -480,12 +480,12 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the list of <tt>CallPeerConferenceListener</tt>s added to the <tt>CallPeer</tt>s
-     * associated with the <tt>Call</tt>s participating in this telephony conference via
+     * Gets the list of <code>CallPeerConferenceListener</code>s added to the <code>CallPeer</code>s
+     * associated with the <code>Call</code>s participating in this telephony conference via
      * {@link #addCallPeerConferenceListener(CallPeerConferenceListener)}.
      *
-     * @return the list of <tt>CallPeerConferenceListener</tt>s added to the <tt>CallPeer</tt>s
-     * associated with the <tt>Call</tt>s participating in this telephony conference via
+     * @return the list of <code>CallPeerConferenceListener</code>s added to the <code>CallPeer</code>s
+     * associated with the <code>Call</code>s participating in this telephony conference via
      * {@link #addCallPeerConferenceListener(CallPeerConferenceListener)}
      */
     private CallPeerConferenceListener[] getCallPeerConferenceListeners()
@@ -496,10 +496,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the number of <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
+     * Gets the number of <code>CallPeer</code>s associated with the <code>Call</code>s participating in
      * this telephony conference.
      *
-     * @return the number of <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
+     * @return the number of <code>CallPeer</code>s associated with the <code>Call</code>s participating in
      * this telephony conference
      */
     public int getCallPeerCount()
@@ -512,10 +512,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets a list of the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
+     * Gets a list of the <code>CallPeer</code>s associated with the <code>Call</code>s participating in
      * this telephony conference.
      *
-     * @return a list of the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in
+     * @return a list of the <code>CallPeer</code>s associated with the <code>Call</code>s participating in
      * this telephony conference
      */
     public List<CallPeer> getCallPeers()
@@ -527,10 +527,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Adds the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s participating in this
-     * telephony conference into a specific <tt>List</tt>.
+     * Adds the <code>CallPeer</code>s associated with the <code>Call</code>s participating in this
+     * telephony conference into a specific <code>List</code>.
      *
-     * @param callPeers a <tt>List</tt> into which the <tt>CallPeer</tt>s associated with the <tt>Call</tt>s
+     * @param callPeers a <code>List</code> into which the <code>CallPeer</code>s associated with the <code>Call</code>s
      * participating in this telephony conference are to be added
      */
     protected void getCallPeers(List<CallPeer> callPeers)
@@ -544,10 +544,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the list of <tt>Call</tt> participating in this telephony conference.
+     * Gets the list of <code>Call</code> participating in this telephony conference.
      *
-     * @return the list of <tt>Call</tt>s participating in this telephony conference. An empty array
-     * of <tt>Call</tt> element type is returned if there are no <tt>Call</tt>s in this
+     * @return the list of <code>Call</code>s participating in this telephony conference. An empty array
+     * of <code>Call</code> element type is returned if there are no <code>Call</code>s in this
      * telephony conference-related state.
      */
     public List<Call> getCalls()
@@ -559,10 +559,10 @@ public class CallConference extends PropertyChangeNotifier
 
     /**
      * Determines whether the local peer/user associated with this instance and represented by the
-     * <tt>Call</tt>s participating into it is acting as a conference focus.
+     * <code>Call</code>s participating into it is acting as a conference focus.
      *
-     * @return <tt>true</tt> if the local peer/user associated by this instance is acting as a
-     * conference focus; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the local peer/user associated by this instance is acting as a
+     * conference focus; otherwise, <code>false</code>
      */
     public boolean isConferenceFocus()
     {
@@ -571,12 +571,12 @@ public class CallConference extends PropertyChangeNotifier
 
     /**
      * Determines whether the current state of this instance suggests that the telephony conference
-     * it represents has ended. Iterates over the <tt>Call</tt>s participating in this telephony
-     * conference and looks for a <tt>Call</tt> which is not in the {@link CallState#CALL_ENDED}
+     * it represents has ended. Iterates over the <code>Call</code>s participating in this telephony
+     * conference and looks for a <code>Call</code> which is not in the {@link CallState#CALL_ENDED}
      * state.
      *
-     * @return <tt>true</tt> if the current state of this instance suggests that the telephony
-     * conference it represents has ended; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the current state of this instance suggests that the telephony
+     * conference it represents has ended; otherwise, <code>false</code>
      */
     public boolean isEnded()
     {
@@ -591,7 +591,7 @@ public class CallConference extends PropertyChangeNotifier
      * Determines whether the telephony conference represented by this instance is utilizing the
      * Jitsi Videobridge server-side telephony conferencing technology.
      *
-     * @return <tt>true</tt> if the telephony conference represented by this instance is utilizing
+     * @return <code>true</code> if the telephony conference represented by this instance is utilizing
      * the Jitsi Videobridge server-side telephony conferencing technology
      */
     public boolean isJitsiVideobridge()
@@ -600,12 +600,12 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this telephony conference that a <tt>CallPeerConferenceEvent</tt> was fired by a
-     * <tt>CallPeer</tt> associated with a <tt>Call</tt> participating in this telephony conference.
-     * Forwards the specified <tt>CallPeerConferenceEvent</tt> to
+     * Notifies this telephony conference that a <code>CallPeerConferenceEvent</code> was fired by a
+     * <code>CallPeer</code> associated with a <code>Call</code> participating in this telephony conference.
+     * Forwards the specified <code>CallPeerConferenceEvent</code> to
      * {@link #callPeerConferenceListeners}.
      *
-     * @param ev the <tt>CallPeerConferenceEvent</tt> which was fired
+     * @param ev the <code>CallPeerConferenceEvent</code> which was fired
      */
     private void onCallPeerConferenceEvent(CallPeerConferenceEvent ev)
     {
@@ -633,11 +633,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this telephony conference about a specific <tt>CallPeerEvent</tt> i.e. that a
-     * <tt>CallPeer</tt> was either added to or removed from a <tt>Call</tt>.
+     * Notifies this telephony conference about a specific <code>CallPeerEvent</code> i.e. that a
+     * <code>CallPeer</code> was either added to or removed from a <code>Call</code>.
      *
-     * @param ev a <tt>CallPeerEvent</tt> which specifies the <tt>CallPeer</tt> which was added or
-     * removed and the <tt>Call</tt> to which it was added or from which is was removed
+     * @param ev a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which was added or
+     * removed and the <code>Call</code> to which it was added or from which is was removed
      */
     private void onCallPeerEvent(CallPeerEvent ev)
     {
@@ -704,13 +704,13 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>Call</tt> from the list of <tt>Call</tt>s participating in this
+     * Removes a specific <code>Call</code> from the list of <code>Call</code>s participating in this
      * telephony conference.
      *
-     * @param call the <tt>Call</tt> to remove from the list of <tt>Call</tt>s participating in this
+     * @param call the <code>Call</code> to remove from the list of <code>Call</code>s participating in this
      * telephony conference
-     * @return <tt>true</tt> if the list of <tt>Call</tt>s participating in this telephony
-     * conference changed as a result of the method call; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the list of <code>Call</code>s participating in this telephony
+     * conference changed as a result of the method call; otherwise, <code>false</code>
      */
     boolean removeCall(Call call)
     {
@@ -741,10 +741,10 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a <tt>CallChangeListener</tt> from the <tt>Call</tt>s participating in this telephony
+     * Removes a <code>CallChangeListener</code> from the <code>Call</code>s participating in this telephony
      * conference.
      *
-     * @param listener the <tt>CallChangeListener</tt> to be removed from the <tt>Call</tt>s participating in
+     * @param listener the <code>CallChangeListener</code> to be removed from the <code>Call</code>s participating in
      * this telephony conference
      * @see #addCallChangeListener(CallChangeListener)
      */
@@ -758,11 +758,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Removes {@link #callPeerConferenceListener} from the <tt>CallPeer</tt>s associated with a
-     * specific <tt>Call</tt>.
+     * Removes {@link #callPeerConferenceListener} from the <code>CallPeer</code>s associated with a
+     * specific <code>Call</code>.
      *
-     * @param call the <tt>Call</tt> from whose associated <tt>CallPeer</tt>s
-     * <tt>callPeerConferenceListener</tt> is to be removed
+     * @param call the <code>Call</code> from whose associated <code>CallPeer</code>s
+     * <code>callPeerConferenceListener</code> is to be removed
      */
     private void removeCallPeerConferenceListener(Call call)
     {
@@ -774,11 +774,11 @@ public class CallConference extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a <tt>CallPeerConferenceListener</tt> from the <tt>CallPeer</tt>s associated with the
-     * <tt>Call</tt>s participating in this telephony conference.
+     * Removes a <code>CallPeerConferenceListener</code> from the <code>CallPeer</code>s associated with the
+     * <code>Call</code>s participating in this telephony conference.
      *
-     * @param listener the <tt>CallPeerConferenceListener</tt> to be removed from the <tt>CallPeer</tt>s
-     * associated with the <tt>Call</tt>s participating in this telephony conference
+     * @param listener the <code>CallPeerConferenceListener</code> to be removed from the <code>CallPeer</code>s
+     * associated with the <code>Call</code>s participating in this telephony conference
      * @see #addCallPeerConferenceListener(CallPeerConferenceListener)
      */
     public void removeCallPeerConferenceListener(CallPeerConferenceListener listener)
@@ -792,11 +792,11 @@ public class CallConference extends PropertyChangeNotifier
 
     /**
      * Sets the indicator which determines whether the local peer represented by this instance and
-     * the <tt>Call</tt>s participating in it is acting as a conference focus (and thus may, for
+     * the <code>Call</code>s participating in it is acting as a conference focus (and thus may, for
      * example, need to send the corresponding parameters in its outgoing signaling).
      *
-     * @param conferenceFocus <tt>true</tt> if the local peer represented by this instance and the <tt>Call</tt>s
-     * participating in it is to act as a conference focus; otherwise, <tt>false</tt>
+     * @param conferenceFocus <code>true</code> if the local peer represented by this instance and the <code>Call</code>s
+     * participating in it is to act as a conference focus; otherwise, <code>false</code>
      */
     public void setConferenceFocus(boolean conferenceFocus)
     {

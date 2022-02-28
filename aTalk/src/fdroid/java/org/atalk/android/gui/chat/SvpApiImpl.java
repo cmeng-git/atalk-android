@@ -14,7 +14,7 @@ import org.atalk.android.gui.chat.ChatFragment.ChatListAdapter.MessageDisplay;
 import java.util.List;
 
 /**
- * The <tt>SvpApiImpl</tt> working in conjunction with ChatFragment to provide SVP support.
+ * The <code>SvpApiImpl</code> working in conjunction with ChatFragment to provide SVP support.
  * An implementation API for F-Droid release
  *
  * @author Eng Chong Meng

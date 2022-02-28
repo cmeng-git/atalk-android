@@ -74,7 +74,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
     private ChatStateManager chatStateManager = null;
 
     /**
-     * @param provider a ref to the <tt>ProtocolProviderServiceImpl</tt> that created us and that we'll use
+     * @param provider a ref to the <code>ProtocolProviderServiceImpl</code> that created us and that we'll use
      * for retrieving the underlying aim connection.
      */
     OperationSetChatStateNotificationsJabberImpl(ProtocolProviderServiceJabberImpl provider)
@@ -88,10 +88,10 @@ public class OperationSetChatStateNotificationsJabberImpl extends
      * Sends a chat state notification to the chatDescriptor that chat state we are in
      * XEP-0085 chat state sending
      *
-     * @param chatDescriptor the <tt>chatDescriptor</tt> i.e. Contact or ChatRoom to notify
+     * @param chatDescriptor the <code>chatDescriptor</code> i.e. Contact or ChatRoom to notify
      * @param chatState the chat state that we have entered.
      * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
-     * @throws java.lang.IllegalArgumentException if <tt>notifiedContact</tt> is not
+     * @throws java.lang.IllegalArgumentException if <code>notifiedContact</code> is not
      * an instance belonging to the underlying implementation.
      */
     public void sendChatStateNotification(Object chatDescriptor, ChatState chatState)

@@ -23,8 +23,8 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Represents a source of <tt>PropertyChangeEvent</tt>s which notifies
- * <tt>PropertyChangeListener</tt>s about changes in the values of properties.
+ * Represents a source of <code>PropertyChangeEvent</code>s which notifies
+ * <code>PropertyChangeListener</code>s about changes in the values of properties.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -32,26 +32,26 @@ import timber.log.Timber;
 public class PropertyChangeNotifier
 {
     /**
-     * The list of <tt>PropertyChangeListener</tt>s interested in and notified about changes in
-     * the values of the properties of this <tt>PropertyChangeNotifier</tt>.
+     * The list of <code>PropertyChangeListener</code>s interested in and notified about changes in
+     * the values of the properties of this <code>PropertyChangeNotifier</code>.
      */
     private final List<PropertyChangeListener> listeners = new ArrayList<>();
 
     /**
-     * Initializes a new <tt>PropertyChangeNotifier</tt> instance.
+     * Initializes a new <code>PropertyChangeNotifier</code> instance.
      */
     public PropertyChangeNotifier()
     {
     }
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to the list of listeners
+     * Adds a specific <code>PropertyChangeListener</code> to the list of listeners
      * interested in and notified about changes in the values of the properties
-     * of this <tt>PropertyChangeNotifier</tt>.
+     * of this <code>PropertyChangeNotifier</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to be notified about
+     * @param listener a <code>PropertyChangeListener</code> to be notified about
      * changes in the values of the properties of this
-     * <tt>PropertyChangeNotifier</tt>. If the specified listener is already in the list of
+     * <code>PropertyChangeNotifier</code>. If the specified listener is already in the list of
      * interested listeners (i.e. it has been previously added), it is not added again.
      */
     public void addPropertyChangeListener(PropertyChangeListener listener)
@@ -68,15 +68,15 @@ public class PropertyChangeNotifier
     }
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the
-     * <tt>PropertyChangeListener</tt>s registered with this
-     * <tt>PropertyChangeNotifier</tt> in order to notify about a change in the
+     * Fires a new <code>PropertyChangeEvent</code> to the
+     * <code>PropertyChangeListener</code>s registered with this
+     * <code>PropertyChangeNotifier</code> in order to notify about a change in the
      * value of a specific property which had its old value modified to a
-     * specific new value. <tt>PropertyChangeNotifier</tt> does not check
-     * whether the specified <tt>oldValue</tt> and <tt>newValue</tt> are indeed different.
+     * specific new value. <code>PropertyChangeNotifier</code> does not check
+     * whether the specified <code>oldValue</code> and <code>newValue</code> are indeed different.
      *
      * @param property the name of the property of this
-     * <tt>PropertyChangeNotifier</tt> which had its value changed
+     * <code>PropertyChangeNotifier</code> which had its value changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
      */
@@ -111,19 +111,19 @@ public class PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>Object</tt> to be reported as the source of a new
-     * <tt>PropertyChangeEvent</tt> which is to notify the <tt>PropertyChangeListener</tt>s
-     * registered with this <tt>PropertyChangeNotifier</tt> about the change in the value of a
+     * Gets the <code>Object</code> to be reported as the source of a new
+     * <code>PropertyChangeEvent</code> which is to notify the <code>PropertyChangeListener</code>s
+     * registered with this <code>PropertyChangeNotifier</code> about the change in the value of a
      * property with a  specific name from a specific old value to a specific new value.
      *
      * @param property the name of the property which had its value changed from
      * the specified old value to the specified new value
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
-     * @return the <tt>Object</tt> to be reported as the source of the new
-     * <tt>PropertyChangeEvent</tt> which is to notify the
-     * <tt>PropertyChangeListener</tt>s registered with this
-     * <tt>PropertyChangeNotifier</tt> about the change in the value of the
+     * @return the <code>Object</code> to be reported as the source of the new
+     * <code>PropertyChangeEvent</code> which is to notify the
+     * <code>PropertyChangeListener</code>s registered with this
+     * <code>PropertyChangeNotifier</code> about the change in the value of the
      * property with the specified name from the specified old value to the specified new value
      */
     protected Object getPropertyChangeSource(String property, Object oldValue, Object newValue)
@@ -132,13 +132,13 @@ public class PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>PropertyChangeListener</tt> from the list of
+     * Removes a specific <code>PropertyChangeListener</code> from the list of
      * listeners interested in and notified about changes in the values of the
-     * properties of this <tt>PropertyChangeNotifer</tt>.
+     * properties of this <code>PropertyChangeNotifer</code>.
      *
-     * @param listener a <tt>PropertyChangeListener</tt> to no longer be
+     * @param listener a <code>PropertyChangeListener</code> to no longer be
      * notified about changes in the values of the properties of this
-     * <tt>PropertyChangeNotifier</tt>
+     * <code>PropertyChangeNotifier</code>
      */
     public void removePropertyChangeListener(PropertyChangeListener listener)
     {

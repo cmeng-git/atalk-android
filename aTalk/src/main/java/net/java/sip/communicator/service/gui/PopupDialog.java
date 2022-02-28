@@ -222,9 +222,9 @@ public interface PopupDialog extends ExportedWindow
 
     /**
      * Implements the
-     * <tt>PopupDialog.showInputPopupDialog(Object, String, int, Object[],
-     * Object)</tt> method. Invokes the corresponding
-     * <tt>JOptionPane.showInputDialog</tt> method.
+     * <code>PopupDialog.showInputPopupDialog(Object, String, int, Object[],
+     * Object)</code> method. Invokes the corresponding
+     * <code>JOptionPane.showInputDialog</code> method.
      *
      * @param message the message to display
      * @param messageType the type of message to be displayed: ERROR_MESSAGE,
@@ -238,9 +238,9 @@ public interface PopupDialog extends ExportedWindow
             int messageType, Object[] selectionValues, Object initialSelectionValue, byte[] icon);
 
     /**
-     * Implements the <tt>PopupDialog.showMessagePopupDialog(Object, String,
-     * int)</tt> method. Invokes the corresponding
-     * <tt>JOptionPane.showMessageDialog</tt> method.
+     * Implements the <code>PopupDialog.showMessagePopupDialog(Object, String,
+     * int)</code> method. Invokes the corresponding
+     * <code>JOptionPane.showMessageDialog</code> method.
      *
      * @param message the Object to display
      * @param title the title string for the dialog
@@ -251,9 +251,9 @@ public interface PopupDialog extends ExportedWindow
     void showMessagePopupDialog(Object message, String title, int messageType, byte[] icon);
 
     /**
-     * Implements the <tt>PopupDialog.showConfirmPopupDialog(Object, String,
-     * int, int)</tt> method. Invokes the corresponding
-     * <tt>JOptionPane.showConfirmDialog</tt> method.
+     * Implements the <code>PopupDialog.showConfirmPopupDialog(Object, String,
+     * int, int)</code> method. Invokes the corresponding
+     * <code>JOptionPane.showConfirmDialog</code> method.
      *
      * @param message the Object to display
      * @param title the title string for the dialog

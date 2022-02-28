@@ -28,8 +28,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Utility class that implements <tt>Html.ImageGetter</tt> interface and can be used
- * to display url images in <tt>TextView</tt> through the HTML syntax.
+ * Utility class that implements <code>Html.ImageGetter</code> interface and can be used
+ * to display url images in <code>TextView</code> through the HTML syntax.
  *
  * @author Eng Chong Meng
  */

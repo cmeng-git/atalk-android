@@ -51,7 +51,7 @@ public class LocalUserAdHocChatRoomPresenceChangeEvent extends EventObject
 	public static final String LOCAL_USER_DROPPED = "LocalUserDropped";
 
 	/**
-	 * The <tt>AdHocChatRoom</tt> to which the change is related.
+	 * The <code>AdHocChatRoom</code> to which the change is related.
 	 */
 	private AdHocChatRoom adHocChatRoom = null;
 
@@ -66,13 +66,13 @@ public class LocalUserAdHocChatRoomPresenceChangeEvent extends EventObject
 	private String reason = null;
 
 	/**
-	 * Creates an <tt>AdHocChatRoomLocalUserPresenceChangeEvent</tt> representing that a change in
+	 * Creates an <code>AdHocChatRoomLocalUserPresenceChangeEvent</code> representing that a change in
 	 * local participant presence in the source ad-hoc chat room has occurred.
 	 *
 	 * @param source
-	 *        the <tt>OperationSetAdHocMultiUserChat</tt>, which produced this event
+	 *        the <code>OperationSetAdHocMultiUserChat</code>, which produced this event
 	 * @param adHocChatRoom
-	 *        the <tt>AdHocChatRoom</tt> that this event is about
+	 *        the <code>AdHocChatRoom</code> that this event is about
 	 * @param eventType
 	 *        the type of this event.
 	 * @param reason
@@ -89,9 +89,9 @@ public class LocalUserAdHocChatRoomPresenceChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>OperationSetAdHocMultiUserChat</tt>, where this event has occurred.
+	 * Returns the <code>OperationSetAdHocMultiUserChat</code>, where this event has occurred.
 	 *
-	 * @return the <tt>OperationSetAdHocMultiUserChat</tt>, where this event has occurred
+	 * @return the <code>OperationSetAdHocMultiUserChat</code>, where this event has occurred
 	 */
 	public OperationSetAdHocMultiUserChat getAdHocMultiUserChatOpSet()
 	{
@@ -99,9 +99,9 @@ public class LocalUserAdHocChatRoomPresenceChangeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt>, that this event is about.
+	 * Returns the <code>AdHocChatRoom</code>, that this event is about.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt>, that this event is about
+	 * @return the <code>AdHocChatRoom</code>, that this event is about
 	 */
 	public AdHocChatRoom getAdHocChatRoom()
 	{
@@ -132,7 +132,7 @@ public class LocalUserAdHocChatRoomPresenceChangeEvent extends EventObject
 	/**
 	 * Returns a String representation of this event.
 	 *
-	 * @return a <tt>String</tt> for representing this event.
+	 * @return a <code>String</code> for representing this event.
 	 */
 	@Override
 	public String toString()

@@ -31,37 +31,37 @@ public interface SkinPack
     public static final String RESOURCE_NAME_DEFAULT_VALUE = "SkinPack";
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for image
+     * Returns a <code>Map</code>, containing all [key, value] pairs for image
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for image
+     * @return a <code>Map</code>, containing all [key, value] pairs for image
      * resource pack.
      */
     public Map<String, String> getImageResources();
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for style
+     * Returns a <code>Map</code>, containing all [key, value] pairs for style
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for style
+     * @return a <code>Map</code>, containing all [key, value] pairs for style
      * resource pack.
      */
     public Map<String, String> getStyleResources();
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for color
+     * Returns a <code>Map</code>, containing all [key, value] pairs for color
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for color
+     * @return a <code>Map</code>, containing all [key, value] pairs for color
      * resource pack.
      */
     public Map<String, String> getColorResources();
 
     /**
-     * Returns a <tt>Map</tt>, containing all [key, value] pairs for settings
+     * Returns a <code>Map</code>, containing all [key, value] pairs for settings
      * resource pack.
      *
-     * @return a <tt>Map</tt>, containing all [key, value] pairs for settings
+     * @return a <code>Map</code>, containing all [key, value] pairs for settings
      * resource pack.
      */
     public Map<String, String> getSettingsResources();

@@ -176,7 +176,7 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      * Checks whether a contact is a private messaging contact for chat rooms.
      *
      * @param contact the contact to check.
-     * @return <tt>true</tt> if contact is private messaging contact for chat room.
+     * @return <code>true</code> if contact is private messaging contact for chat room.
      */
     private boolean isPrivateMessagingContact(Contact contact)
     {

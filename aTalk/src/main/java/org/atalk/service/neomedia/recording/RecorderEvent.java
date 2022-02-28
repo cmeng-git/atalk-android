@@ -20,62 +20,62 @@ import androidx.annotation.NonNull;
 public class RecorderEvent
 {
     /**
-     * The type of this <tt>RecorderEvent</tt>.
+     * The type of this <code>RecorderEvent</code>.
      */
     private Type type = Type.OTHER;
 
     /**
-     * A timestamp for this <tt>RecorderEvent</tt>.
+     * A timestamp for this <code>RecorderEvent</code>.
      */
     private long instant = -1;
 
     /**
-     * The SSRC associated with this <tt>RecorderEvent</tt>.
+     * The SSRC associated with this <code>RecorderEvent</code>.
      */
     private long ssrc = -1;
 
     /**
-     * The SSRC of an audio stream associated with this <tt>RecorderEvent</tt>.
+     * The SSRC of an audio stream associated with this <code>RecorderEvent</code>.
      */
     private long audioSsrc = -1;
 
     /**
-     * An RTP timestamp for this <tt>RecorderEvent</tt>.
+     * An RTP timestamp for this <code>RecorderEvent</code>.
      */
     private long rtpTimestamp = -1;
 
     /**
-     * An NTP timestamp (represented as a double in seconds) for this <tt>RecorderEvent</tt>.
+     * An NTP timestamp (represented as a double in seconds) for this <code>RecorderEvent</code>.
      */
     private double ntpTime = -1.0;
 
     /**
-     * Duration associated with this <tt>RecorderEvent</tt>.
+     * Duration associated with this <code>RecorderEvent</code>.
      */
     private long duration = -1;
 
     /**
-     * An aspect ratio associated with this <tt>RecorderEvent</tt>.
+     * An aspect ratio associated with this <code>RecorderEvent</code>.
      */
     private AspectRatio aspectRatio = AspectRatio.ASPECT_RATIO_UNKNOWN;
 
     /**
-     * A file name associated with this <tt>RecorderEvent</tt>.
+     * A file name associated with this <code>RecorderEvent</code>.
      */
     private String filename;
 
     /**
-     * The media type associated with this <tt>RecorderEvent</tt>.
+     * The media type associated with this <code>RecorderEvent</code>.
      */
     private MediaType mediaType = null;
 
     /**
-     * The name of the participant associated with this <tt>RecorderEvent</tt>.
+     * The name of the participant associated with this <code>RecorderEvent</code>.
      */
     private String participantName = null;
 
     /**
-     * A textual description of the participant associated with this <tt>RecorderEvent</tt>. (human readable)
+     * A textual description of the participant associated with this <code>RecorderEvent</code>. (human readable)
      */
     private String participantDescription = null;
 
@@ -84,16 +84,16 @@ public class RecorderEvent
     private boolean disableOtherVideosOnTop = false;
 
     /**
-     * Constructs a <tt>RecorderEvent</tt>.
+     * Constructs a <code>RecorderEvent</code>.
      */
     public RecorderEvent()
     {
     }
 
     /**
-     * Constructs a <tt>RecorderEvent</tt> and tries to parse its fields from <tt>json</tt>.
+     * Constructs a <code>RecorderEvent</code> and tries to parse its fields from <code>json</code>.
      *
-     * @param json a JSON object, containing fields with which to initialize the fields of this <tt>RecorderEvent</tt>.
+     * @param json a JSON object, containing fields with which to initialize the fields of this <code>RecorderEvent</code>.
      */
     public RecorderEvent(JSONObject json)
     {
@@ -262,7 +262,7 @@ public class RecorderEvent
     }
 
     /**
-     * <tt>RecorderEvent</tt> types.
+     * <code>RecorderEvent</code> types.
      */
     public enum Type
     {

@@ -23,13 +23,13 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * <tt>DialogActivity</tt> can be used to display alerts without having parent <tt>Activity</tt>
- * (from services). <br/> Simple alerts can be displayed using static method <tt>showDialog(...)
- * </tt>.<br/> Optionally confirm button's text and the listener can be supplied. It allows to
- * react to users actions. For this purpose use method <tt>showConfirmDialog(...)</tt>.<br/>
+ * <code>DialogActivity</code> can be used to display alerts without having parent <code>Activity</code>
+ * (from services). <br/> Simple alerts can be displayed using static method <code>showDialog(...)
+ * </code>.<br/> Optionally confirm button's text and the listener can be supplied. It allows to
+ * react to users actions. For this purpose use method <code>showConfirmDialog(...)</code>.<br/>
  * For more sophisticated use cases content fragment class with it's arguments can be specified
- * in method <tt>showCustomDialog()</tt>. When they're present the alert message will be replaced
- * by the {@link Fragment}'s <tt>View</tt>.
+ * in method <code>showCustomDialog()</code>. When they're present the alert message will be replaced
+ * by the {@link Fragment}'s <code>View</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -57,7 +57,7 @@ public class DialogActivity extends OSGiActivity
     private static final String EXTRA_DIALOG_ID = "dialog_id";
 
     /**
-     * Optional listener ID extra(can be supplied only using method static <tt>showConfirmDialog</tt>.
+     * Optional listener ID extra(can be supplied only using method static <code>showConfirmDialog</code>.
      */
     public static final String EXTRA_LISTENER_ID = "listener_id";
 
@@ -67,12 +67,12 @@ public class DialogActivity extends OSGiActivity
     public static final String EXTRA_CONTENT_FRAGMENT = "fragment_class";
 
     /**
-     * Optional content fragment's argument <tt>Bundle</tt>.
+     * Optional content fragment's argument <code>Bundle</code>.
      */
     public static final String EXTRA_CONTENT_ARGS = "fragment_args";
 
     /**
-     * Prevents from closing this activity on outside touch events and blocks the back key if set to <tt>true</tt>.
+     * Prevents from closing this activity on outside touch events and blocks the back key if set to <code>true</code>.
      */
     public static final String EXTRA_CANCELABLE = "cancelable";
 
@@ -111,7 +111,7 @@ public class DialogActivity extends OSGiActivity
             = LocalBroadcastManager.getInstance(aTalkApp.getGlobalContext());
 
     /**
-     * <tt>BroadcastReceiver</tt> that listens for close dialog action.
+     * <code>BroadcastReceiver</code> that listens for close dialog action.
      */
     private CommandDialogListener commandIntentListener;
 
@@ -331,7 +331,7 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * Fires {@link #ACTION_CLOSE_DIALOG} broadcast action in order to close the dialog identified
-     * by given <tt>dialogId</tt>.
+     * by given <code>dialogId</code>.
      *
      * @param dialogId dialog identifier returned when the dialog was created.
      */
@@ -344,7 +344,7 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * Fires {@link #ACTION_FOCUS_DIALOG} broadcast action in order to focus the dialog identified
-     * by given <tt>dialogId</tt>.
+     * by given <code>dialogId</code>.
      *
      * @param dialogId dialog identifier returned when the dialog was created.
      */
@@ -356,12 +356,12 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Creates an <tt>Intent</tt> that will display a dialog with given <tt>title</tt> and content <tt>message</tt>.
+     * Creates an <code>Intent</code> that will display a dialog with given <code>title</code> and content <code>message</code>.
      *
      * @param ctx Android context.
      * @param title dialog title that will be used
      * @param message dialog message that wil be used.
-     * @return an <tt>Intent</tt> that will display a dialog.
+     * @return an <code>Intent</code> that will display a dialog.
      */
     public static Intent getDialogIntent(Context ctx, String title, String message)
     {
@@ -386,10 +386,10 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Shows a dialog for the given context and a title given by <tt>titleId</tt> and
-     * message given by <tt>messageId</tt> with its optional arg.
+     * Shows a dialog for the given context and a title given by <code>titleId</code> and
+     * message given by <code>messageId</code> with its optional arg.
      *
-     * @param ctx the android <tt>Context</tt>
+     * @param ctx the android <code>Context</code>
      * @param titleId the title identifier in the resources
      * @param messageId the message identifier in the resources
      * @param arg optional arg for the message expansion.
@@ -401,7 +401,7 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
+     * Shows confirm dialog allowing to handle confirm action using supplied <code>listener</code>.
      *
      * @param context Android context.
      * @param title dialog title that will be used
@@ -429,13 +429,13 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Shows confirm dialog allowing to handle confirm action using supplied <tt>listener</tt>.
+     * Shows confirm dialog allowing to handle confirm action using supplied <code>listener</code>.
      *
      * @param context the android context.
      * @param title dialog title Res that will be used
      * @param message the message identifier in the resources
      * @param confirmTxt confirm button label Res.
-     * @param listener the <tt>DialogInterface.DialogListener</tt> to attach to the confirm button
+     * @param listener the <code>DialogInterface.DialogListener</code> to attach to the confirm button
      * @param arg optional arg for the message resource arg.
      */
     public static void showConfirmDialog(Context context, int title, int message,
@@ -448,13 +448,13 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * Show custom dialog. Alert text will be replaced by the {@link Fragment} created from
-     * <tt>fragmentClass</tt> name. Optional <tt>fragmentArguments</tt> <tt>Bundle</tt> will be
+     * <code>fragmentClass</code> name. Optional <code>fragmentArguments</code> <code>Bundle</code> will be
      * supplied to created instance.
      *
      * @param context Android context.
      * @param title the title that will be used.
-     * @param fragmentClass <tt>Fragment</tt>'s class name that will be used instead of text message.
-     * @param fragmentArguments optional <tt>Fragment</tt> arguments <tt>Bundle</tt>.
+     * @param fragmentClass <code>Fragment</code>'s class name that will be used instead of text message.
+     * @param fragmentArguments optional <code>Fragment</code> arguments <code>Bundle</code>.
      * @param confirmTxt the confirm button's label.
      * @param listener listener that will be notified on user actions.
      * @param extraArguments additional arguments with keys defined in {@link DialogActivity}.
@@ -492,10 +492,10 @@ public class DialogActivity extends OSGiActivity
     }
 
     /**
-     * Waits until the dialog with given <tt>dialogId</tt> is opened.
+     * Waits until the dialog with given <code>dialogId</code> is opened.
      *
      * @param dialogId the id of the dialog we want to wait for.
-     * @return <tt>true</tt> if dialog has been opened or <tt>false</tt> if the dialog had not
+     * @return <code>true</code> if dialog has been opened or <code>false</code> if the dialog had not
      * been opened within 10 seconds after call to this method.
      */
     public static boolean waitForDialogOpened(long dialogId)
@@ -523,14 +523,14 @@ public class DialogActivity extends OSGiActivity
         /**
          * Fired when user clicks the dialog's confirm button.
          *
-         * @param dialog source <tt>DialogActivity</tt>.
+         * @param dialog source <code>DialogActivity</code>.
          */
         boolean onConfirmClicked(DialogActivity dialog);
 
         /**
          * Fired when user dismisses the dialog.
          *
-         * @param dialog source <tt>DialogActivity</tt>
+         * @param dialog source <code>DialogActivity</code>
          */
         void onDialogCancelled(DialogActivity dialog);
     }

@@ -40,7 +40,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import timber.log.Timber;
 
 /**
- * The <tt>ChatPanel</tt>, <tt>ChatActivity</tt>, <tt>ChatController</tt> and <tt>ChatFragment</tt>
+ * The <code>ChatPanel</code>, <code>ChatActivity</code>, <code>ChatController</code> and <code>ChatFragment</code>
  * together formed the frontend interface to the user, where users can write and send messages
  * (ChatController), view received and sent messages (ChatFragment). A ChatPanel is created for a
  * contact or for a group of contacts in case of a chat conference. There is always one default
@@ -60,7 +60,7 @@ public class ChatPanel implements Chat, MessageListener
     private static final int HISTORY_CHUNK_SIZE = 30;
 
     /**
-     * The underlying <tt>MetaContact</tt>, we're chatting with.
+     * The underlying <code>MetaContact</code>, we're chatting with.
      */
     private final MetaContact mMetaContact;
 
@@ -130,12 +130,12 @@ public class ChatPanel implements Chat, MessageListener
     private int ttsDelay = 1200;
 
     /**
-     * Field used by the <tt>ChatController</tt> to keep track of last edited message content.
+     * Field used by the <code>ChatController</code> to keep track of last edited message content.
      */
     private String editedText;
 
     /**
-     * Field used by the <tt>ChatController</tt> (input text) to remember if user was
+     * Field used by the <code>ChatController</code> (input text) to remember if user was
      * making correction to the earlier sent message.
      */
     private String correctionUID;
@@ -204,9 +204,9 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Returns the underlying <tt>MetaContact</tt>, we're chatting with in metaContactChatSession
+     * Returns the underlying <code>MetaContact</code>, we're chatting with in metaContactChatSession
      *
-     * @return the underlying <tt>MetaContact</tt>, we're chatting with
+     * @return the underlying <code>MetaContact</code>, we're chatting with
      */
     public MetaContact getMetaContact()
     {
@@ -231,7 +231,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Check if current chat is set to OMEMO crypto mode
      *
-     * @return return <tt>true</tt> if OMEMO crypto chat is selected.
+     * @return return <code>true</code> if OMEMO crypto chat is selected.
      */
     public boolean isOmemoChat()
     {
@@ -243,7 +243,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * Check if current chat is set to OTR crypto mode
      *
-     * @return return <tt>true</tt> if OMEMO crypto chat is selected
+     * @return return <code>true</code> if OMEMO crypto chat is selected
      */
     public boolean isOTRChat()
     {
@@ -304,9 +304,9 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatSessionListener</tt> to listen for message events in this chat session.
+     * Adds the given <code>ChatSessionListener</code> to listen for message events in this chat session.
      *
-     * @param msgListener the <tt>ChatSessionListener</tt> to add
+     * @param msgListener the <code>ChatSessionListener</code> to add
      */
     public void addMessageListener(ChatSessionListener msgListener)
     {
@@ -315,9 +315,9 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Removes the given <tt>ChatSessionListener</tt> from this chat session.
+     * Removes the given <code>ChatSessionListener</code> from this chat session.
      *
-     * @param msgListener the <tt>ChatSessionListener</tt> to remove
+     * @param msgListener the <code>ChatSessionListener</code> to remove
      */
     public void removeMessageListener(ChatSessionListener msgListener)
     {
@@ -325,10 +325,10 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ChatStateNotificationsListener</tt> to listen for chat state events
+     * Adds the given <code>ChatStateNotificationsListener</code> to listen for chat state events
      * in this chat session (Contact or ChatRoom).
      *
-     * @param l the <tt>ChatStateNotificationsListener</tt> to add
+     * @param l the <code>ChatStateNotificationsListener</code> to add
      */
     public void addChatStateListener(ChatStateNotificationsListener l)
     {
@@ -341,9 +341,9 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Removes the given <tt>ChatStateNotificationsListener</tt> from this chat session (Contact or ChatRoom)..
+     * Removes the given <code>ChatStateNotificationsListener</code> from this chat session (Contact or ChatRoom)..
      *
-     * @param l the <tt>ChatStateNotificationsListener</tt> to remove
+     * @param l the <code>ChatStateNotificationsListener</code> to remove
      */
     public void removeChatStateListener(ChatStateNotificationsListener l)
     {
@@ -356,10 +356,10 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds the given <tt>ContactPresenceStatusListener</tt> to listen for message events
+     * Adds the given <code>ContactPresenceStatusListener</code> to listen for message events
      * in this chat session.
      *
-     * @param l the <tt>ContactPresenceStatusListener</tt> to add
+     * @param l the <code>ContactPresenceStatusListener</code> to add
      */
     public void addContactStatusListener(ContactPresenceStatusListener l)
     {
@@ -379,9 +379,9 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Removes the given <tt>ContactPresenceStatusListener</tt> from this chat session.
+     * Removes the given <code>ContactPresenceStatusListener</code> from this chat session.
      *
-     * @param l the <tt>ContactPresenceStatusListener</tt> to remove
+     * @param l the <code>ContactPresenceStatusListener</code> to remove
      */
     public void removeContactStatusListener(ContactPresenceStatusListener l)
     {
@@ -580,7 +580,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Implements the <tt>Chat.isChatFocused</tt> method. Returns TRUE if this chat is
+     * Implements the <code>Chat.isChatFocused</code> method. Returns TRUE if this chat is
      * the currently selected and if the chat window, where it's contained is active.
      * NPE: mChatSession == null from field
      *
@@ -605,7 +605,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Bring this chat to front if <tt>b</tt> is true, hide it otherwise.
+     * Bring this chat to front if <code>b</code> is true, hide it otherwise.
      *
      * @param isVisible tells if the chat will be made visible or not.
      */
@@ -652,7 +652,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Add a message to this <tt>Chat</tt>. Mainly use for System messages for internal generated messages
+     * Add a message to this <code>Chat</code>. Mainly use for System messages for internal generated messages
      *
      * @param contactName the name of the contact sending the message
      * @param date the time at which the message is sent or received
@@ -667,7 +667,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Add a message to this <tt>Chat</tt>.
+     * Add a message to this <code>Chat</code>.
      *
      * @param contactName the name of the contact sending the message
      * @param displayName the display name of the contact
@@ -682,7 +682,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Adds a chat message to this <tt>Chat</tt> panel.
+     * Adds a chat message to this <code>Chat</code> panel.
      *
      * @param chatMessage the ChatMessage.
      */
@@ -798,7 +798,7 @@ public class ChatPanel implements Chat, MessageListener
     /**
      * ChatMessage for IncomingFileTransferRequest
      *
-     * Adds the given <tt>IncomingFileTransferRequest</tt> to the conversation panel in order to
+     * Adds the given <code>IncomingFileTransferRequest</code> to the conversation panel in order to
      * notify the user of an incoming file transfer request.
      * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      *
@@ -829,10 +829,10 @@ public class ChatPanel implements Chat, MessageListener
 
     /**
      * Adds a new ChatLinkClickedListener. The callback is called for every link whose scheme is
-     * <tt>jitsi</tt>. It is the callback's responsibility to filter the action based on the URI.
+     * <code>jitsi</code>. It is the callback's responsibility to filter the action based on the URI.
      *
      * Example:<br>
-     * <tt>jitsi://classname/action?query</tt><br>
+     * <code>jitsi://classname/action?query</code><br>
      * Use the name of the registering class as the host, the action to execute as the path and
      * any parameters as the query.
      *
@@ -935,7 +935,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Extends <tt>MessageListener</tt> interface in order to provide notifications about injected
+     * Extends <code>MessageListener</code> interface in order to provide notifications about injected
      * messages without the need of event objects.
      *
      * @author Pawel Domas
@@ -950,7 +950,7 @@ public class ChatPanel implements Chat, MessageListener
      * Updates the status of the given chat transport in the send via selector box and notifies
      * the user for the status change.
      *
-     * @param chatTransport the <tt>chatTransport</tt> to update
+     * @param chatTransport the <code>chatTransport</code> to update
      */
     public void updateChatTransportStatus(final ChatTransport chatTransport)
     {
@@ -977,7 +977,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Renames all occurrences of the given <tt>chatContact</tt> in this chat panel.
+     * Renames all occurrences of the given <code>chatContact</code> in this chat panel.
      *
      * @param chatContact the contact to rename
      * @param name the new name
@@ -995,7 +995,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Sets the given <tt>subject</tt> to this chat.
+     * Sets the given <code>subject</code> to this chat.
      *
      * @param subject the subject to set
      */
@@ -1066,7 +1066,7 @@ public class ChatPanel implements Chat, MessageListener
     }
 
     /**
-     * Invites the given <tt>chatContacts</tt> to this chat.
+     * Invites the given <code>chatContacts</code> to this chat.
      *
      * @param inviteChatTransport the chat transport to use to send the invite
      * @param chatContacts the contacts to invite

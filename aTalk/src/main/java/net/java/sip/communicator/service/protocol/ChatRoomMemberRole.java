@@ -81,7 +81,7 @@ public enum ChatRoomMemberRole implements Comparable<ChatRoomMemberRole> {
     }
 
 	/**
-	 * Creates a role with the specified <tt>roleName</tt>. The constructor is protected in case
+	 * Creates a role with the specified <code>roleName</code>. The constructor is protected in case
 	 * protocol implementations need to add extra roles (this should only be done when absolutely
 	 * necessary in order to assert smooth interoperability with the user interface).
 	 *
@@ -132,7 +132,7 @@ public enum ChatRoomMemberRole implements Comparable<ChatRoomMemberRole> {
 	 * UI) that would not necessarily "know" all possible roles. Higher values of the role index
 	 * indicate roles with more permissions and lower values pertain to more restrictive roles.
 	 *
-	 * @return an <tt>int</tt> that when compared to role indexes of other roles can provide an
+	 * @return an <code>int</code> that when compared to role indexes of other roles can provide an
 	 *         ordering for the different role instances.
 	 */
 	public int getRoleIndex()

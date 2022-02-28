@@ -84,7 +84,7 @@ public class MessageSourceContact extends DataObject
     private Date timestamp = null;
 
     /**
-     * Constructs <tt>MessageSourceContact</tt>.
+     * Constructs <code>MessageSourceContact</code>.
      *
      * @param source the source event.
      * @param service the message source service.
@@ -131,10 +131,10 @@ public class MessageSourceContact extends DataObject
     }
 
     /**
-     * Checks whether <tt>timestamp</tt> is today.
+     * Checks whether <code>timestamp</code> is today.
      *
      * @param timestamp the date to check
-     * @return whether <tt>timestamp</tt> is today.
+     * @return whether <code>timestamp</code> is today.
      */
     private boolean isToday(Date timestamp)
     {
@@ -343,11 +343,11 @@ public class MessageSourceContact extends DataObject
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt>
+     * Returns a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code>
      * class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt>
+     * @param operationSet the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code>
      * class
      */
     @Override
@@ -364,10 +364,10 @@ public class MessageSourceContact extends DataObject
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
-     * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
+     * @param category the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      */
     @Override
     public List<ContactDetail> getContactDetails(ContactDetail.Category category)
@@ -380,11 +380,11 @@ public class MessageSourceContact extends DataObject
     }
 
     /**
-     * Returns the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class.
+     * Returns the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class, for which we would like to obtain a
-     * <tt>ContactDetail</tt>
-     * @return the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class
+     * @param operationSet the <code>OperationSet</code> class, for which we would like to obtain a
+     * <code>ContactDetail</code>
+     * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
     @Override
     public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)

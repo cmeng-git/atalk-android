@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 /**
- * An <tt>OperationSet</tt> that allows us to receive DTMF tones through this protocol provider.
+ * An <code>OperationSet</code> that allows us to receive DTMF tones through this protocol provider.
  *
  * @author Damian Minkov
  */

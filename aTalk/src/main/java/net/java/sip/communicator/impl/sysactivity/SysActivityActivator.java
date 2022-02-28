@@ -31,7 +31,7 @@ import timber.log.Timber;
 public class SysActivityActivator implements BundleActivator
 {
     /**
-     * The OSGi <tt>BundleContext</tt>.
+     * The OSGi <code>BundleContext</code>.
      */
     private static BundleContext bundleContext = null;
 

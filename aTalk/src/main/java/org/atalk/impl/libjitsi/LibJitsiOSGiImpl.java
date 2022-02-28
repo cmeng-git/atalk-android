@@ -11,7 +11,7 @@ import org.osgi.framework.ServiceReference;
 import java.util.Objects;
 
 /**
- * Represents an implementation of the <tt>libjitsi</tt> library which utilizes OSGi.
+ * Represents an implementation of the <code>libjitsi</code> library which utilizes OSGi.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -19,15 +19,15 @@ import java.util.Objects;
 public class LibJitsiOSGiImpl extends LibJitsiImpl
 {
     /**
-     * The <tt>BundleContext</tt> discovered by this instance during its initialization and
+     * The <code>BundleContext</code> discovered by this instance during its initialization and
      * used to look for registered services.
      */
     private final BundleContext bundleContext;
 
     /**
-     * Initializes a new <tt>LibJitsiOSGiImpl</tt> instance with a specific <tt>BundleContext</tt>.
+     * Initializes a new <code>LibJitsiOSGiImpl</code> instance with a specific <code>BundleContext</code>.
      *
-     * @param bundleContext the <tt>BundleContext</tt> to be used by the new
+     * @param bundleContext the <code>BundleContext</code> to be used by the new
      * instance to look for registered services
      */
     public LibJitsiOSGiImpl(BundleContext bundleContext)
@@ -36,11 +36,11 @@ public class LibJitsiOSGiImpl extends LibJitsiImpl
     }
 
     /**
-     * Gets a service of a specific type associated with this implementation of the <tt>libjitsi</tt> library.
+     * Gets a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
      *
      * @param serviceClass the type of the service to be retrieved
      * @return a service of the specified type if there is such an association known to this
-     * implementation of the <tt>libjitsi</tt> library; otherwise, <tt>null</tt>
+     * implementation of the <code>libjitsi</code> library; otherwise, <code>null</code>
      */
     @Override
     protected <T> T getService(Class<T> serviceClass)

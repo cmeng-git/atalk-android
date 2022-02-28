@@ -16,8 +16,8 @@
 package net.java.sip.communicator.service.contactsource;
 
 /**
- * The <tt>EditableSourceContact</tt> is an extension to the
- * <tt>SourceContact</tt> interface that allows editing.
+ * The <code>EditableSourceContact</code> is an extension to the
+ * <code>SourceContact</code> interface that allows editing.
  *
  * @see SourceContact
  *
@@ -29,15 +29,15 @@ public interface EditableSourceContact
     /**
      * Adds a contact detail to the list of contact details.
      *
-     * @param detail the <tt>ContactDetail</tt> to add
+     * @param detail the <code>ContactDetail</code> to add
      */
     public void addContactDetail(ContactDetail detail);
 
     /**
-     * Removes the given <tt>ContactDetail</tt> from the list of details for
-     * this <tt>SourceContact</tt>.
+     * Removes the given <code>ContactDetail</code> from the list of details for
+     * this <code>SourceContact</code>.
      *
-     * @param detail the <tt>ContactDetail</tt> to remove
+     * @param detail the <code>ContactDetail</code> to remove
      */
     public void removeContactDetail(ContactDetail detail);
 

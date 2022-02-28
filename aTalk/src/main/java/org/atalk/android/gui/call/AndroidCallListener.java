@@ -32,7 +32,7 @@ import timber.log.Timber;
 
 /**
  * A utility implementation of the {@link CallListener} interface which delivers
- * the <tt>CallEvent</tt>s to the AWT event dispatching thread.
+ * the <code>CallEvent</code>s to the AWT event dispatching thread.
  *
  * @author Yana Stamcheva
  * @author Pawel Domas
@@ -53,7 +53,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * {@inheritDoc}
      *
-     * Delivers the <tt>CallEvent</tt> to the AWT event dispatching thread.
+     * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
     public void incomingCallReceived(CallEvent ev)
     {
@@ -64,7 +64,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * {@inheritDoc}
      *
-     * Delivers the <tt>CallEvent</tt> to the AWT event dispatching thread.
+     * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
     public void outgoingCallCreated(CallEvent ev)
     {
@@ -74,7 +74,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * {@inheritDoc}
      *
-     * Delivers the <tt>CallEvent</tt> to the AWT event dispatching thread.
+     * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
     public void callEnded(CallEvent ev)
     {
@@ -83,10 +83,10 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     /**
-     * Notifies this <tt>CallListener</tt> about a specific <tt>CallEvent</tt>. Executes in whichever
+     * Notifies this <code>CallListener</code> about a specific <code>CallEvent</code>. Executes in whichever
      * thread brought the event to this listener. Delivers the event to the AWT event dispatching thread.
      *
-     * @param evt the <tt>CallEvent</tt> this <tt>CallListener</tt> is being notified about
+     * @param evt the <code>CallEvent</code> this <code>CallListener</code> is being notified about
      */
     protected void onCallEvent(final CallEvent evt)
     {
@@ -198,7 +198,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      * a. an incoming call is accepted via Jingle Message Initiation or
      * b. an outgoing call has been initiated.
      *
-     * @param evt the <tt>CallEvent</tt> that notified us
+     * @param evt the <code>CallEvent</code> that notified us
      */
     private static void startVideoCallActivity(Call call)
     {
@@ -211,7 +211,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * Start the heads-up notifications for incoming (received) call via legacy Jingle.
      *
-     * @param evt the <tt>CallEvent</tt>
+     * @param evt the <code>CallEvent</code>
      */
     private void startReceivedCallActivity(CallEvent evt)
     {
@@ -269,9 +269,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     /**
-     * Fires missed call notification for given <tt>CallChangeEvent</tt>.
+     * Fires missed call notification for given <code>CallChangeEvent</code>.
      *
-     * @param evt the <tt>CallChangeEvent</tt> that describes missed call.
+     * @param evt the <code>CallChangeEvent</code> that describes missed call.
      */
     private void fireMissedCallNotification(CallChangeEvent evt)
     {

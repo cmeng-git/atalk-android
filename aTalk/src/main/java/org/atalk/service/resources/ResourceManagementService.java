@@ -41,34 +41,34 @@ public interface ResourceManagementService
     String getColorString(String key);
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given path.
+     * Returns the <code>InputStream</code> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given path.
+     * @return the <code>InputStream</code> of the image corresponding to the given path.
      */
     InputStream getImageInputStreamForPath(String path);
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given key.
+     * Returns the <code>InputStream</code> of the image corresponding to the given key.
      *
      * @param streamKey The identifier of the image in the resource properties file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given key.
+     * @return the <code>InputStream</code> of the image corresponding to the given key.
      */
     InputStream getImageInputStream(String streamKey);
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given key.
+     * Returns the <code>URL</code> of the image corresponding to the given key.
      *
      * @param urlKey The identifier of the image in the resource properties file.
-     * @return the <tt>URL</tt> of the image corresponding to the given key
+     * @return the <code>URL</code> of the image corresponding to the given key
      */
     URL getImageURL(String urlKey);
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given path.
+     * Returns the <code>URL</code> of the image corresponding to the given path.
      *
      * @param path The path to the given image file.
-     * @return the <tt>URL</tt> of the image corresponding to the given path.
+     * @return the <code>URL</code> of the image corresponding to the given path.
      */
     URL getImageURLForPath(String path);
 
@@ -219,10 +219,10 @@ public interface ResourceManagementService
     String getSoundPath(String soundKey);
 
     /**
-     * Constructs an <tt>ImageIcon</tt> from the specified image ID and returns it.
+     * Constructs an <code>ImageIcon</code> from the specified image ID and returns it.
      *
      * @param imageID The identifier of the image.
-     * @return An <tt>ImageIcon</tt> containing the image with the given identifier.
+     * @return An <code>ImageIcon</code> containing the image with the given identifier.
      */
     ImageIcon getImage(String imageID);
 
@@ -238,7 +238,7 @@ public interface ResourceManagementService
      * Builds a new skin bundle from the zip file content.
      *
      * @param zipFile Zip file with skin information.
-     * @return <tt>File</tt> for the bundle.
+     * @return <code>File</code> for the bundle.
      * @throws Exception When something goes wrong.
      */
     File prepareSkinBundleFromZip(File zipFile)

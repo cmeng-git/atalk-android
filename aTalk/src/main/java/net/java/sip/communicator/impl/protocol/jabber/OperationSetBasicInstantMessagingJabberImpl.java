@@ -144,7 +144,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     /**
      * A reference to the persistent presence operation set that we use to match incoming messages
-     * to <tt>Contact</tt>s and vice versa.
+     * to <code>Contact</code>s and vice versa.
      */
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence = null;
 
@@ -170,7 +170,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * Creates an instance of this operation set.
      *
-     * @param provider a reference to the <tt>ProtocolProviderServiceImpl</tt> that created us and that we'll
+     * @param provider a reference to the <code>ProtocolProviderServiceImpl</code> that created us and that we'll
      * use for retrieving the underlying aim connection.
      */
     OperationSetBasicInstantMessagingJabberImpl(ProtocolProviderServiceJabberImpl provider)
@@ -186,7 +186,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * message to have the same UID as the message before correction.
      *
      * @param messageText the string content of the message.
-     * @param encType the encryption type for the <tt>content</tt>
+     * @param encType the encryption type for the <code>content</code>
      * @param messageUID the unique identifier of this message.
      * @return IMessage the newly created message
      */
@@ -199,7 +199,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType the encryption type for the <tt>content</tt>
+     * @param encType the encryption type for the <code>content</code>
      * @return the newly created message.
      */
     public IMessage createMessage(String content, int encType)
@@ -211,7 +211,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Create a IMessage instance for sending arbitrary MIME-encoding content.
      *
      * @param content content value
-     * @param encType the encryption type for the <tt>content</tt>
+     * @param encType the encryption type for the <code>content</code>
      * @param subject the Subject of the message that we'd like to create.
      * @return the newly created message.
      */
@@ -230,7 +230,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * this method to return true even when offline messaging is not supported, and then have the
      * sendMessage method throw an OperationFailedException with code - OFFLINE_MESSAGES_NOT_SUPPORTED.
      *
-     * @return <tt>true</tt> if the protocol supports offline messages and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the protocol supports offline messages and <code>false</code> otherwise.
      */
     public boolean isOfflineMessagingSupported()
     {
@@ -241,7 +241,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Determines whether the protocol supports the supplied content type
      *
      * @param mimeType the encryption type we want to check
-     * @return <tt>true</tt> if the protocol supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the protocol supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType)
     {
@@ -253,7 +253,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param mimeType the encryption type we want to check
      * @param contact contact which is checked for supported encType
-     * @return <tt>true</tt> if the contact supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
     @Override
     public boolean isContentTypeSupported(int mimeType, Contact contact)
@@ -270,7 +270,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Remove from our <tt>jidThreads</tt> map all entries that have not seen any activity
+     * Remove from our <code>jidThreads</code> map all entries that have not seen any activity
      * (i.e. neither outgoing nor incoming messages) for more than JID_INACTIVITY_TIMEOUT.
      * Note that this method is not synchronous and that it is only meant for use by the
      * {@link #getThreadIDForAddress(BareJid, boolean)} and {@link #putJidForAddress(Jid, String)}
@@ -292,7 +292,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * When chat state enter ChatState.gone, existing thread should not be used again.
      *
-     * @param bareJid the <tt>address</tt> that we'd like to remove a threadID for.
+     * @param bareJid the <code>address</code> that we'd like to remove a threadID for.
      */
     public void purgeGoneJidThreads(BareJid bareJid)
     {
@@ -300,18 +300,18 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Returns the threadID that the party with the specified <tt>address</tt> contacted us from or
-     * <tt>new ThreadID</tt> if <tt>null</tt> and <tt>generateNewIfNoExist</tt> is true; otherwise
-     * <tt>null</tt> if we don't have a jid for the specified <tt>address</tt> yet.
+     * Returns the threadID that the party with the specified <code>address</code> contacted us from or
+     * <code>new ThreadID</code> if <code>null</code> and <code>generateNewIfNoExist</code> is true; otherwise
+     * <code>null</code> if we don't have a jid for the specified <code>address</code> yet.
      *
      * The method would also purge all entries that haven't seen any activity (i.e. no one has
-     * tried to get or remap it) for a delay longer than <tt>JID_INACTIVITY_TIMEOUT</tt>.
+     * tried to get or remap it) for a delay longer than <code>JID_INACTIVITY_TIMEOUT</code>.
      *
-     * @param bareJid the <tt>Jid</tt> that we'd like to obtain a threadID for.
-     * @param generateNewIfNoExist if <tt>true</tt> generates new threadID if null is found.
-     * @return new or last threadID that the party with the specified <tt>address</tt> contacted
-     * us from OR <tt>null</tt> if we don't have a jid for the specified <tt>address</tt> and
-     * <tt>generateNewIfNoExist</tt> is false.
+     * @param bareJid the <code>Jid</code> that we'd like to obtain a threadID for.
+     * @param generateNewIfNoExist if <code>true</code> generates new threadID if null is found.
+     * @return new or last threadID that the party with the specified <code>address</code> contacted
+     * us from OR <code>null</code> if we don't have a jid for the specified <code>address</code> and
+     * <code>generateNewIfNoExist</code> is false.
      */
     public String getThreadIDForAddress(BareJid bareJid, boolean generateNewIfNoExist)
     {
@@ -337,12 +337,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Maps the specified <tt>address</tt> to <tt>jid</tt>. The point of this method is to allow us
-     * to send all messages destined to the contact with the specified <tt>address</tt> to the
-     * <tt>jid</tt> that they last contacted us from.
+     * Maps the specified <code>address</code> to <code>jid</code>. The point of this method is to allow us
+     * to send all messages destined to the contact with the specified <code>address</code> to the
+     * <code>jid</code> that they last contacted us from.
      *
      * @param threadID the threadID of conversation.
-     * @param jid the jid (i.e. address/resource) that the contact with the specified <tt>address</tt>
+     * @param jid the jid (i.e. address/resource) that the contact with the specified <code>address</code>
      * last contacted us from.
      */
     private void putJidForAddress(Jid jid, String threadID)
@@ -460,12 +460,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt> contact.
+     * Sends the <code>message</code> to the destination indicated by the <code>to</code> contact.
      *
-     * @param to the <tt>Contact</tt> to send <tt>message</tt> to
-     * @param message the <tt>IMessage</tt> to send.
+     * @param to the <code>Contact</code> to send <code>message</code> to
+     * @param message the <code>IMessage</code> to send.
      * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
-     * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance of ContactImpl.
+     * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance of ContactImpl.
      */
     public void sendInstantMessage(Contact to, IMessage message)
     {
@@ -473,14 +473,14 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Sends the <tt>message</tt> to the destination indicated by the <tt>to</tt>. Provides a
+     * Sends the <code>message</code> to the destination indicated by the <code>to</code>. Provides a
      * default implementation of this method.
      *
-     * @param to the <tt>Contact</tt> to send <tt>message</tt> to
+     * @param to the <code>Contact</code> to send <code>message</code> to
      * @param resource the resource to which the message should be send
-     * @param message the <tt>IMessage</tt> to send.
+     * @param message the <code>IMessage</code> to send.
      * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
-     * @throws java.lang.IllegalArgumentException if <tt>to</tt> is not an instance belonging to the underlying implementation.
+     * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance belonging to the underlying implementation.
      */
     @Override
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message)
@@ -492,8 +492,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Replaces the message with ID <tt>correctedMessageUID</tt> sent to the contact <tt>to</tt>
-     * with the message <tt>message</tt>
+     * Replaces the message with ID <code>correctedMessageUID</code> sent to the contact <code>to</code>
+     * with the message <code>message</code>
      *
      * @param to The contact to send the message to.
      * @param message The new message.
@@ -906,10 +906,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     private static class GroupMessagePacketFilter implements StanzaFilter
     {
         /**
-         * Returns <tt>true</tt> if <tt>packet</tt> is a <tt>Message</tt> and false otherwise.
+         * Returns <code>true</code> if <code>packet</code> is a <code>Message</code> and false otherwise.
          *
          * @param packet the packet that we need to check.
-         * @return <tt>true</tt> if <tt>packet</tt> is a <tt>Message</tt> and false otherwise.
+         * @return <code>true</code> if <code>packet</code> is a <code>Message</code> and false otherwise.
          */
         @Override
         public boolean accept(Stanza packet)

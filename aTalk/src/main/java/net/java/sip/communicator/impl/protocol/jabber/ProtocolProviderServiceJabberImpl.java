@@ -92,6 +92,8 @@ import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
 import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.RawUdpTransport;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jivesoftware.smackx.jitsimeet.*;
@@ -123,8 +125,8 @@ import org.jivesoftware.smackx.coin.CoinIQ;
 import org.jivesoftware.smackx.coin.CoinIQProvider;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.colibri.ColibriIQProvider;
-import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtension;
-import org.jivesoftware.smackx.condesc.ConferenceDescriptionExtensionProvider;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtensionProvider;
 import org.jivesoftware.smackx.inputevt.InputEvtIQ;
 import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
 import org.jivesoftware.smackx.jibri.JibriIq;
@@ -176,7 +178,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for RTP support.
      */
-    public static final String URN_XMPP_JINGLE_RTP = RtpDescriptionExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP = RtpDescription.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for RTP support with audio.
@@ -191,17 +193,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for ZRTP support with RTP.
      */
-    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHashExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RTP_ZRTP = ZrtpHash.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransportExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_RAW_UDP_0 = RawUdpTransport.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for ICE_UDP transport support.
      */
-    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransportExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_ICE_UDP_1 = IceUdpTransport.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for Jingle Nodes support.
@@ -211,7 +213,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Jingle's Discovery Info URN for "XEP-0251: Jingle Session Transfer" support.
      */
-    public static final String URN_XMPP_JINGLE_TRANSFER_0 = TransferExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_TRANSFER_0 = SdpTransfer.NAMESPACE;
 
     /**
      * Jingle's Discovery Info URN for
@@ -223,7 +225,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Jingle's Discovery Info URN for &quot;XEP-0320: Use of DTLS-SRTP in Jingle Sessions&quot;.
      * "urn:xmpp:jingle:apps:dtls:0"
      */
-    public static final String URN_XMPP_JINGLE_DTLS_SRTP = DtlsFingerprintExtension.NAMESPACE;
+    public static final String URN_XMPP_JINGLE_DTLS_SRTP = SrtpFingerprint.NAMESPACE;
 
     /**
      * Discovery Info URN for classic RFC3264-style Offer/Answer negotiation with no support for
@@ -376,8 +378,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private final List<String> supportedFeatures = new ArrayList<>();
 
     /**
-     * The <tt>ServiceDiscoveryManager</tt> is responsible for advertising
-     * <tt>supportedFeatures</tt> when asked by a remote client. It can also be used to query
+     * The <code>ServiceDiscoveryManager</code> is responsible for advertising
+     * <code>supportedFeatures</code> when asked by a remote client. It can also be used to query
      * remote clients for supported features.
      */
     private ScServiceDiscoveryManager discoveryManager = null;
@@ -389,7 +391,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private HTTPAuthorizationRequestManager httpAuthorizationRequestManager = null;
 
     /**
-     * The <tt>OperationSetContactCapabilities</tt> of this <tt>ProtocolProviderService</tt> which
+     * The <code>OperationSetContactCapabilities</code> of this <code>ProtocolProviderService</code> which
      * is the service-public counterpart of {@link #discoveryManager}.
      */
     private OperationSetContactCapabilitiesJabberImpl opsetContactCapabilities;
@@ -528,7 +530,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * An <tt>OperationSet</tt> that allows access to connection information used by the protocol provider.
+     * An <code>OperationSet</code> that allows access to connection information used by the protocol provider.
      */
     private class OperationSetConnectionInfoJabberImpl implements OperationSetConnectionInfo
     {
@@ -546,7 +548,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Returns the state of the account login state of this protocol provider
      * Note: RegistrationState is not inBand Registration
      *
-     * @return the <tt>RegistrationState</tt> ot the provider is currently in.
+     * @return the <code>RegistrationState</code> ot the provider is currently in.
      */
     public RegistrationState getRegistrationState()
     {
@@ -1903,7 +1905,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         supportedFeatures.add(DataPacketExtension.NAMESPACE);
 
         // XEP-0294: Jingle RTP Header Extensions Negotiation
-        supportedFeatures.add(RTPHdrExtExtension.NAMESPACE);
+        supportedFeatures.add(RtpHeader.NAMESPACE);
 
         // XEP-0308: Last Message Correction
         supportedFeatures.add(MessageCorrectExtension.NAMESPACE);
@@ -2079,7 +2081,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Initialized the service implementation, and puts it in a state where it could inter-operate
      * with other services. It is strongly recommended that properties in this Map be mapped to
-     * property names as specified by <tt>AccountProperties</tt>.
+     * property names as specified by <code>AccountProperties</code>.
      *
      * @param screenName the account id/uin/screenName of the account that we're about to create
      * @param accountID the identifier of the account that this protocol provider represents.
@@ -2450,9 +2452,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Returns the <tt>XMPPConnection</tt>opened by this provider
+     * Returns the <code>XMPPConnection</code>opened by this provider
      *
-     * @return a reference to the <tt>XMPPConnection</tt> last opened by this provider.
+     * @return a reference to the <code>XMPPConnection</code> last opened by this provider.
      */
     public XMPPConnection getConnection()
     {
@@ -2460,17 +2462,17 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Determines whether a specific <tt>XMPPException</tt> signals that attempted login has failed.
+     * Determines whether a specific <code>XMPPException</code> signals that attempted login has failed.
      *
-     * Calling method will trigger a re-login dialog if the return <tt>failureMode</tt> is not
-     * <tt>SecurityAuthority.REASON_UNKNOWN</tt> etc
+     * Calling method will trigger a re-login dialog if the return <code>failureMode</code> is not
+     * <code>SecurityAuthority.REASON_UNKNOWN</code> etc
      *
      * Add additional exMsg message if necessary to achieve this effect.
      *
-     * @param ex the <tt>Exception</tt> which is to be determined whether it signals
+     * @param ex the <code>Exception</code> which is to be determined whether it signals
      * that attempted authentication has failed
-     * @return if the specified <tt>ex</tt> signals that attempted authentication is
-     * known' otherwise <tt>SecurityAuthority.REASON_UNKNOWN</tt> is returned.
+     * @return if the specified <code>ex</code> signals that attempted authentication is
+     * known' otherwise <code>SecurityAuthority.REASON_UNKNOWN</code> is returned.
      * @see SecurityAuthority#REASON_UNKNOWN
      */
     private int checkLoginFailMode(Exception ex)
@@ -2603,9 +2605,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Returns the current instance of <tt>JabberStatusEnum</tt>.
+     * Returns the current instance of <code>JabberStatusEnum</code>.
      *
-     * @return the current instance of <tt>JabberStatusEnum</tt>.
+     * @return the current instance of <code>JabberStatusEnum</code>.
      */
     JabberStatusEnum getJabberStatusEnum()
     {
@@ -2613,12 +2615,12 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Determines if the given list of <tt>features</tt> is supported by the specified jabber id.
+     * Determines if the given list of <code>features</code> is supported by the specified jabber id.
      *
      * @param jid the jabber id for which to check;
      * Jid must be FullJid unless it is for service e.g. proxy.atalk.org, conference.atalk.org
      * @param features the list of features to check for
-     * @return <tt>true</tt> if the list of features is supported; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the list of features is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureListSupported(Jid jid, String... features)
     {
@@ -2644,11 +2646,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Determines if the given list of <tt>features</tt> is supported by the specified jabber id.
+     * Determines if the given list of <code>features</code> is supported by the specified jabber id.
      *
      * @param jid the jabber id that we'd like to get information about
      * @param feature the feature to check for
-     * @return <tt>true</tt> if the list of features is supported, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if the list of features is supported, otherwise returns <code>false</code>
      */
     public boolean isFeatureSupported(Jid jid, String feature)
     {
@@ -2828,14 +2830,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Returns the <tt>InetAddress</tt> that is most likely to be to be used as a next hop when
+     * Returns the <code>InetAddress</code> that is most likely to be to be used as a next hop when
      * contacting our XMPP server. This is an utility method that is used whenever we have to
      * choose one of our local addresses (e.g. when trying to pick a best candidate for raw udp).
      * It is based on the assumption that, in absence of any more specific details, chances are
      * that we will be accessing remote destinations via the same interface that we are using to
      * access our jabber server.
      *
-     * @return the <tt>InetAddress</tt> that is most likely to be to be used as a next hop when contacting our server.
+     * @return the <code>InetAddress</code> that is most likely to be to be used as a next hop when contacting our server.
      * @throws IllegalArgumentException if we don't have a valid server.
      */
     public InetAddress getNextHop()
@@ -2902,14 +2904,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Logs a specific message and associated <tt>Throwable</tt> cause as an error using the
-     * current <tt>Logger</tt> and then throws a new <tt>OperationFailedException</tt> with the
+     * Logs a specific message and associated <code>Throwable</code> cause as an error using the
+     * current <code>Logger</code> and then throws a new <code>OperationFailedException</code> with the
      * message, a specific error code and the cause.
      *
-     * @param message the message to be logged and then wrapped in a new <tt>OperationFailedException</tt>
-     * @param errorCode the error code to be assigned to the new <tt>OperationFailedException</tt>
-     * @param cause the <tt>Throwable</tt> that has caused the necessity to log an error and have a new
-     * <tt>OperationFailedException</tt> thrown
+     * @param message the message to be logged and then wrapped in a new <code>OperationFailedException</code>
+     * @param errorCode the error code to be assigned to the new <code>OperationFailedException</code>
+     * @param cause the <code>Throwable</code> that has caused the necessity to log an error and have a new
+     * <code>OperationFailedException</code> thrown
      * @throws OperationFailedException the exception that we wanted this method to throw.
      */
     public static void throwOperationFailedException(String message, int errorCode, Throwable cause)
@@ -2977,10 +2979,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Gets the entity PRE_KEY_ID of the first Jitsi Videobridge associated with {@link #mConnection} i.e.
-     * provided by the <tt>serviceName</tt> of <tt>mConnection</tt>.
+     * provided by the <code>serviceName</code> of <code>mConnection</code>.
      * Abort checking if last check returned with NoResponseException. Await 45s wait time
      *
-     * @return the entity PRE_KEY_ID of the first Jitsi Videobridge associated with <tt>mConnection</tt>
+     * @return the entity PRE_KEY_ID of the first Jitsi Videobridge associated with <code>mConnection</code>
      */
     public Jid getJitsiVideobridge()
     {

@@ -91,7 +91,7 @@ public class AndroidCallUtil
     }
 
     /**
-     * Creates new call to given <tt>destination</tt> using selected <tt>provider</tt>.
+     * Creates new call to given <code>destination</code> using selected <code>provider</code>.
      *
      * @param context the android context
      * @param metaContact target callee metaContact.
@@ -116,7 +116,7 @@ public class AndroidCallUtil
     }
 
     /**
-     * Creates new call to given <tt>destination</tt> using selected <tt>provider</tt>.
+     * Creates new call to given <code>destination</code> using selected <code>provider</code>.
      *
      * @param context the android context
      * @param provider the provider that will be used to make a call.
@@ -168,7 +168,7 @@ public class AndroidCallUtil
      * Checks if there is a call in progress. If true then shows a warning toast and finishes the activity.
      *
      * @param activity activity doing a check.
-     * @return <tt>true</tt> if there is call in progress and <tt>Activity</tt> was finished.
+     * @return <code>true</code> if there is call in progress and <code>Activity</code> was finished.
      */
     public static boolean checkCallInProgress(Activity activity)
     {

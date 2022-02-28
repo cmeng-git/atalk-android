@@ -31,8 +31,8 @@ import java.util.List;
 public interface CallPeer
 {
     /**
-     * The constant indicating that a <tt>CallPeer</tt> has not yet transitioned into a state
-     * marking the beginning of a participation in a <tt>Call</tt> or that such a transition may
+     * The constant indicating that a <code>CallPeer</code> has not yet transitioned into a state
+     * marking the beginning of a participation in a <code>Call</code> or that such a transition may
      * have happened but the time of its occurrence is unknown.
      */
     public static long CALL_DURATION_START_TIME_UNKNOWN = 0;
@@ -43,11 +43,11 @@ public interface CallPeer
     public static final String MUTE_PROPERTY_NAME = "Mute";
 
     /**
-     * Adds a specific <tt>CallPeerConferenceListener</tt> to the list of listeners interested in
+     * Adds a specific <code>CallPeerConferenceListener</code> to the list of listeners interested in
      * and notified about changes in conference-related information such as this peer acting or not
      * acting as a conference focus and conference membership details.
      *
-     * @param listener a <tt>CallPeerConferenceListener</tt> to be notified about changes in
+     * @param listener a <code>CallPeerConferenceListener</code> to be notified about changes in
      * conference-related information. If the specified listener is already in the list of
      * interested listeners (i.e. it has been previously added), it is not added again.
      */
@@ -68,10 +68,10 @@ public interface CallPeer
     void addCallPeerSecurityListener(CallPeerSecurityListener listener);
 
     /**
-     * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in conference members sound level.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to add
+     * @param listener the <code>SoundLevelListener</code> to add
      */
     void addConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
 
@@ -83,10 +83,10 @@ public interface CallPeer
     void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+     * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
      * notified about changes in stream sound level related information.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to add
+     * @param listener the <code>SoundLevelListener</code> to add
      */
     void addStreamSoundLevelListener(SoundLevelListener listener);
 
@@ -105,11 +105,11 @@ public interface CallPeer
     Call getCall();
 
     /**
-     * Gets the time at which this <tt>CallPeer</tt> transitioned into a state (likely
-     * {@link CallPeerState#CONNECTED}) marking the start of the duration of the participation in a <tt>Call</tt>.
+     * Gets the time at which this <code>CallPeer</code> transitioned into a state (likely
+     * {@link CallPeerState#CONNECTED}) marking the start of the duration of the participation in a <code>Call</code>.
      *
-     * @return the time at which this <tt>CallPeer</tt> transitioned into a state marking the start
-     * of the duration of the participation in a <tt>Call</tt> or
+     * @return the time at which this <code>CallPeer</code> transitioned into a state marking the start
+     * of the duration of the participation in a <code>Call</code> or
      * {@link #CALL_DURATION_START_TIME_UNKNOWN} if such a transition has not been performed
      */
     long getCallDurationStartTime();
@@ -119,15 +119,15 @@ public interface CallPeer
      * not available for the current call peer.
      *
      * @return a URL link to a location with call information or a call control web interface
-     * related to this peer or <tt>null</tt> if no such URL is available.
+     * related to this peer or <code>null</code> if no such URL is available.
      */
     URL getCallInfoURL();
 
     /**
-     * Gets the number of <tt>ConferenceMember</tt>s currently known to this peer if it is acting as
+     * Gets the number of <code>ConferenceMember</code>s currently known to this peer if it is acting as
      * a conference focus.
      *
-     * @return the number of <tt>ConferenceMember</tt>s currently known to this peer if it is acting
+     * @return the number of <code>ConferenceMember</code>s currently known to this peer if it is acting
      * as a conference focus. If this peer is not acting as a conference focus or it does
      * but there are currently no members in the conference it manages, a value of zero is
      * returned.
@@ -135,13 +135,13 @@ public interface CallPeer
     int getConferenceMemberCount();
 
     /**
-     * Gets the <tt>ConferenceMember</tt>s currently known to this peer if it is acting as a
+     * Gets the <code>ConferenceMember</code>s currently known to this peer if it is acting as a
      * conference focus.
      *
-     * @return a <tt>List</tt> of <tt>ConferenceMember</tt>s describing the members of a conference
+     * @return a <code>List</code> of <code>ConferenceMember</code>s describing the members of a conference
      * managed by this peer if it is acting as a conference focus. If this peer is not
      * acting as a conference focus or it does but there are currently no members in the
-     * conference it manages, an empty <tt>List</tt> is returned.
+     * conference it manages, an empty <code>List</code> is returned.
      */
     List<ConferenceMember> getConferenceMembers();
 
@@ -149,15 +149,15 @@ public interface CallPeer
      * Returns the contact corresponding to this peer or null if no particular contact has been  associated.
      * <p>
      *
-     * @return the <tt>Contact</tt> corresponding to this peer or null if no particular contact has
+     * @return the <code>Contact</code> corresponding to this peer or null if no particular contact has
      * been associated.
      */
     Contact getContact();
 
     /**
-     * Returns the currently used security settings of this <tt>CallPeer</tt>.
+     * Returns the currently used security settings of this <code>CallPeer</code>.
      *
-     * @return the <tt>CallPeerSecurityStatusEvent</tt> that contains the current security settings.
+     * @return the <code>CallPeerSecurityStatusEvent</code> that contains the current security settings.
      */
     CallPeerSecurityStatusEvent getCurrentSecuritySettings();
 
@@ -169,9 +169,9 @@ public interface CallPeer
     String getDisplayName();
 
     /**
-     * Returns an alternative IMPP address corresponding to this <tt>CallPeer</tt>.
+     * Returns an alternative IMPP address corresponding to this <code>CallPeer</code>.
      *
-     * @return a string representing an alternative IMPP address corresponding to this <tt>CallPeer</tt>
+     * @return a string representing an alternative IMPP address corresponding to this <code>CallPeer</code>
      */
     String getAlternativeIMPPAddress();
 
@@ -222,25 +222,25 @@ public interface CallPeer
 
     /**
      * Determines whether this peer is acting as a conference focus and thus may provide information
-     * about <tt>ConferenceMember</tt> such as {@link #getConferenceMembers()} and {@link #getConferenceMemberCount()}.
+     * about <code>ConferenceMember</code> such as {@link #getConferenceMembers()} and {@link #getConferenceMemberCount()}.
      *
-     * @return <tt>true</tt> if this peer is acting as a conference focus; <tt>false</tt>, otherwise
+     * @return <code>true</code> if this peer is acting as a conference focus; <code>false</code>, otherwise
      */
     boolean isConferenceFocus();
 
     /**
      * Determines whether the audio stream (if any) being sent to this peer is mute.
      *
-     * @return <tt>true</tt> if an audio stream is being sent to this peer and it is currently mute; <tt>false</tt>, otherwise
+     * @return <code>true</code> if an audio stream is being sent to this peer and it is currently mute; <code>false</code>, otherwise
      */
     boolean isMute();
 
     /**
-     * Removes a specific <tt>CallPeerConferenceListener</tt> from the list of listeners interested
+     * Removes a specific <code>CallPeerConferenceListener</code> from the list of listeners interested
      * in and notified about changes in conference-related information such as this peer acting or
      * not acting as a conference focus and conference membership details.
      *
-     * @param listener a <tt>CallPeerConferenceListener</tt> to no longer be notified about changes in
+     * @param listener a <code>CallPeerConferenceListener</code> to no longer be notified about changes in
      * conference-related information
      */
     void removeCallPeerConferenceListener(CallPeerConferenceListener listener);
@@ -260,10 +260,10 @@ public interface CallPeer
     void removeCallPeerSecurityListener(CallPeerSecurityListener listener);
 
     /**
-     * Removes a specific <tt>SoundLevelListener</tt> of the list of listeners interested in and
+     * Removes a specific <code>SoundLevelListener</code> of the list of listeners interested in and
      * notified about changes in conference members sound level.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to remove
+     * @param listener the <code>SoundLevelListener</code> to remove
      */
     void removeConferenceMembersSoundLevelListener(ConferenceMembersSoundLevelListener listener);
 
@@ -275,10 +275,10 @@ public interface CallPeer
     void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * Removes a specific <tt>SoundLevelListener</tt> of the list of listeners interested in and
+     * Removes a specific <code>SoundLevelListener</code> of the list of listeners interested in and
      * notified about changes in stream sound level related information.
      *
-     * @param listener the <tt>SoundLevelListener</tt> to remove
+     * @param listener the <code>SoundLevelListener</code> to remove
      */
     void removeStreamSoundLevelListener(SoundLevelListener listener);
 

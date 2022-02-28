@@ -12,11 +12,11 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 /**
- * Provides implementations for some of the methods in the <tt>Call</tt> abstract class to facilitate implementations.
+ * Provides implementations for some of the methods in the <code>Call</code> abstract class to facilitate implementations.
  *
- * @param <T> the peer extension class like for example <tt>CallPeerSipImpl</tt> or <tt>CallPeerJabberImpl</tt>
- * @param <U> the provider extension class like for example <tt>ProtocolProviderServiceSipImpl</tt> or
- * <tt>ProtocolProviderServiceJabberImpl</tt>
+ * @param <T> the peer extension class like for example <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>
+ * @param <U> the provider extension class like for example <code>ProtocolProviderServiceSipImpl</code> or
+ * <code>ProtocolProviderServiceJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -24,28 +24,28 @@ import java.util.*;
 public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProviderService> extends Call
 {
     /**
-     * The list of <tt>CallPeer</tt>s of this <tt>Call</tt>. It is implemented as a copy-on-write
+     * The list of <code>CallPeer</code>s of this <code>Call</code>. It is implemented as a copy-on-write
      * storage in order to optimize the implementation of {@link Call#getCallPeers()}. It represents
      * private state which is to not be exposed to outsiders. An unmodifiable view which may safely
-     * be exposed to outsiders without the danger of <tt>ConcurrentModificationException</tt> is
+     * be exposed to outsiders without the danger of <code>ConcurrentModificationException</code> is
      * {@link #unmodifiableCallPeers}.
      */
     private List<T> callPeers;
 
     /**
-     * The <tt>Object</tt> which is used to synchronize the access to {@link #callPeers} and
+     * The <code>Object</code> which is used to synchronize the access to {@link #callPeers} and
      * {@link #unmodifiableCallPeers}.
      */
     private final Object callPeersSyncRoot = new Object();
 
     /**
-     * The <tt>PropertyChangeSupport</tt> which helps this instance with <tt>PropertyChangeListener</tt>s.
+     * The <code>PropertyChangeSupport</code> which helps this instance with <code>PropertyChangeListener</code>s.
      */
     private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     /**
      * An unmodifiable view of {@link #callPeers}. It may safely be exposed to outsiders without the
-     * danger of <tt>ConcurrentModificationException</tt> and thus optimizes the implementation of
+     * danger of <code>ConcurrentModificationException</code> and thus optimizes the implementation of
      * {@link Call#getCallPeers()}.
      */
     private List<T> unmodifiableCallPeers;
@@ -76,19 +76,19 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     }
 
     /**
-     * Adds a specific <tt>CallPeer</tt> to the list of <tt>CallPeer</tt>s of this <tt>Call</tt> if
+     * Adds a specific <code>CallPeer</code> to the list of <code>CallPeer</code>s of this <code>Call</code> if
      * the list does not contain it; otherwise, does nothing. Does not fire
      * {@link CallPeerEvent#CALL_PEER_ADDED}.
      * <p>
-     * The method is named <tt>doAddCallPeer</tt> and not <tt>addCallPeer</tt> because, at the time
-     * of its introduction, multiple extenders have already defined an <tt>addCallPeer</tt> method
+     * The method is named <code>doAddCallPeer</code> and not <code>addCallPeer</code> because, at the time
+     * of its introduction, multiple extenders have already defined an <code>addCallPeer</code> method
      * with the same argument but with no return value.
      * </p>
      *
-     * @param callPeer the <tt>CallPeer</tt> to be added to the list of <tt>CallPeer</tt>s of this <tt>Call</tt>
-     * @return <tt>true</tt> if the list of <tt>CallPeer</tt>s of this <tt>Call</tt> was modified as
-     * a result of the execution of the method; otherwise, <tt>false</tt>
-     * @throws NullPointerException if <tt>callPeer</tt> is <tt>null</tt>
+     * @param callPeer the <code>CallPeer</code> to be added to the list of <code>CallPeer</code>s of this <code>Call</code>
+     * @return <code>true</code> if the list of <code>CallPeer</code>s of this <code>Call</code> was modified as
+     * a result of the execution of the method; otherwise, <code>false</code>
+     * @throws NullPointerException if <code>callPeer</code> is <code>null</code>
      */
     protected boolean doAddCallPeer(T callPeer)
     {
@@ -118,18 +118,18 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     }
 
     /**
-     * Removes a specific <tt>CallPeer</tt> from the list of <tt>CallPeer</tt>s of this
-     * <tt>Call</tt> if the list does contain it; otherwise, does nothing. Does not fire
+     * Removes a specific <code>CallPeer</code> from the list of <code>CallPeer</code>s of this
+     * <code>Call</code> if the list does contain it; otherwise, does nothing. Does not fire
      * {@link CallPeerEvent#CALL_PEER_REMOVED}.
      * <p>
-     * The method is named <tt>doRemoveCallPeer</tt> and not <tt>removeCallPeer</tt> because, at the
-     * time of its introduction, multiple extenders have already defined a <tt>removeCallPeer</tt>
+     * The method is named <code>doRemoveCallPeer</code> and not <code>removeCallPeer</code> because, at the
+     * time of its introduction, multiple extenders have already defined a <code>removeCallPeer</code>
      * method with the same argument but with no return value.
      * </p>
      *
-     * @param callPeer the <tt>CallPeer</tt> to be removed from the list of <tt>CallPeer</tt>s of this <tt>Call</tt>
-     * @return <tt>true</tt> if the list of <tt>CallPeer</tt>s of this <tt>Call</tt> was modified as
-     * a result of the execution of the method; otherwise, <tt>false</tt>
+     * @param callPeer the <code>CallPeer</code> to be removed from the list of <code>CallPeer</code>s of this <code>Call</code>
+     * @return <code>true</code> if the list of <code>CallPeer</code>s of this <code>Call</code> was modified as
+     * a result of the execution of the method; otherwise, <code>false</code>
      */
     protected boolean doRemoveCallPeer(T callPeer)
     {
@@ -165,7 +165,7 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     /**
      * Returns the number of peers currently associated with this call.
      *
-     * @return an <tt>int</tt> indicating the number of peers currently associated with this call.
+     * @return an <code>int</code> indicating the number of peers currently associated with this call.
      */
     @Override
     public int getCallPeerCount()
@@ -174,10 +174,10 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     }
 
     /**
-     * Gets an unmodifiable <tt>List</tt> of the <tt>CallPeer</tt>s of this <tt>Call</tt>. The implementation of
-     * {@link Call#getCallPeers()} returns an <tt>Iterator</tt> over the same <tt>List</tt>.
+     * Gets an unmodifiable <code>List</code> of the <code>CallPeer</code>s of this <code>Call</code>. The implementation of
+     * {@link Call#getCallPeers()} returns an <code>Iterator</code> over the same <code>List</code>.
      *
-     * @return an unmodifiable <tt>List</tt> of the <tt>CallPeer</tt>s of this <tt>Call</tt>
+     * @return an unmodifiable <code>List</code> of the <code>CallPeer</code>s of this <code>Call</code>
      */
     public List<T> getCallPeerList()
     {
@@ -187,10 +187,10 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     }
 
     /**
-     * Returns an <tt>Iterator</tt> over the (list of) <tt>CallPeer</tt>s of this <tt>Call</tt>. The
-     * returned <tt>Iterator</tt> operates over the <tt>List</tt> returned by {@link #getCallPeerList()}.
+     * Returns an <code>Iterator</code> over the (list of) <code>CallPeer</code>s of this <code>Call</code>. The
+     * returned <code>Iterator</code> operates over the <code>List</code> returned by {@link #getCallPeerList()}.
      *
-     * @return an <tt>Iterator</tt> over the (list of) <tt>CallPeer</tt>s of this <tt>Call</tt>
+     * @return an <code>Iterator</code> over the (list of) <code>CallPeer</code>s of this <code>Call</code>
      */
     @Override
     public Iterator<T> getCallPeers()
@@ -199,9 +199,9 @@ public abstract class AbstractCall<T extends CallPeer, U extends ProtocolProvide
     }
 
     /**
-     * Returns a reference to the <tt>ProtocolProviderService</tt> instance that created this call.
+     * Returns a reference to the <code>ProtocolProviderService</code> instance that created this call.
      *
-     * @return the <tt>ProtocolProviderService</tt> that created this call.
+     * @return the <code>ProtocolProviderService</code> that created this call.
      */
     @Override
     @SuppressWarnings("unchecked")

@@ -11,8 +11,8 @@ import net.java.sip.communicator.service.history.records.HistoryRecord;
 import java.util.Collection;
 
 /**
- * The <tt>HistoryQuery</tt> corresponds to a query made through the
- * <tt>InteractiveHistoryReader</tt>. It allows to be canceled, to listen for changes in the
+ * The <code>HistoryQuery</code> corresponds to a query made through the
+ * <code>InteractiveHistoryReader</code>. It allows to be canceled, to listen for changes in the
  * results and to obtain initial results if available.
  *
  * @author Yana Stamcheva
@@ -36,7 +36,7 @@ public interface HistoryQuery
 	 * determine how and when to fill this list of results.
 	 * <p>
 	 * This method could be used in order to obtain first fast initial results and then obtain the
-	 * additional results through the <tt>HistoryQueryListener</tt>, which should improve user
+	 * additional results through the <code>HistoryQueryListener</code>, which should improve user
 	 * experience when waiting for results.
 	 *
 	 * @return a collection of the initial results for this query
@@ -44,20 +44,20 @@ public interface HistoryQuery
 	Collection<HistoryRecord> getHistoryRecords();
 
 	/**
-	 * Adds the given <tt>HistoryQueryListener</tt> to the list of listeners interested in query
+	 * Adds the given <code>HistoryQueryListener</code> to the list of listeners interested in query
 	 * result changes.
 	 *
 	 * @param l
-	 * 		the <tt>HistoryQueryListener</tt> to add
+	 * 		the <code>HistoryQueryListener</code> to add
 	 */
 	void addHistoryRecordsListener(HistoryQueryListener l);
 
 	/**
-	 * Removes the given <tt>HistoryQueryListener</tt> from the list of listeners interested in
+	 * Removes the given <code>HistoryQueryListener</code> from the list of listeners interested in
 	 * query result changes.
 	 *
 	 * @param l
-	 * 		the <tt>HistoryQueryListener</tt> to remove
+	 * 		the <code>HistoryQueryListener</code> to remove
 	 */
 	void removeHistoryRecordsListener(HistoryQueryListener l);
 }

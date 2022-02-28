@@ -18,8 +18,8 @@ package org.atalk.util.event;
 import java.awt.Component;
 
 /**
- * Represents a <tt>VideoEvent</tt> which notifies about an update to the size
- * of a specific visual <tt>Component</tt> depicting video.
+ * Represents a <code>VideoEvent</code> which notifies about an update to the size
+ * of a specific visual <code>Component</code> depicting video.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -32,24 +32,24 @@ public class SizeChangeVideoEvent extends VideoEvent
     private static final long serialVersionUID = 0L;
 
     /**
-     * The new height of the associated visual <tt>Component</tt>.
+     * The new height of the associated visual <code>Component</code>.
      */
     private final int height;
 
     /**
-     * The new width of the associated visual <tt>Component</tt>.
+     * The new width of the associated visual <code>Component</code>.
      */
     private final int width;
 
     /**
-     * Initializes a new <tt>SizeChangeVideoEvent</tt> which is to notify about
-     * an update to the size of a specific visual <tt>Component</tt> depicting video.
+     * Initializes a new <code>SizeChangeVideoEvent</code> which is to notify about
+     * an update to the size of a specific visual <code>Component</code> depicting video.
      *
-     * @param source the source of the new <tt>SizeChangeVideoEvent</tt>
-     * @param visualComponent the visual <tt>Component</tt> depicting video with the updated size
-     * @param origin the origin of the video the new <tt>SizeChangeVideoEvent</tt> is to notify about
-     * @param width the new width of <tt>visualComponent</tt>
-     * @param height the new height of <tt>visualComponent</tt>
+     * @param source the source of the new <code>SizeChangeVideoEvent</code>
+     * @param visualComponent the visual <code>Component</code> depicting video with the updated size
+     * @param origin the origin of the video the new <code>SizeChangeVideoEvent</code> is to notify about
+     * @param width the new width of <code>visualComponent</code>
+     * @param height the new height of <code>visualComponent</code>
      */
     public SizeChangeVideoEvent(Object source, Component visualComponent, int origin, int width, int height)
     {
@@ -62,7 +62,7 @@ public class SizeChangeVideoEvent extends VideoEvent
      * {@inheritDoc}
      * <p>
      * Makes sure that the cloning of this instance initializes a new
-     * <tt>SizeChangeVideoEvent</tt> instance.
+     * <code>SizeChangeVideoEvent</code> instance.
      */
     @Override
     public VideoEvent clone(Object source)
@@ -71,9 +71,9 @@ public class SizeChangeVideoEvent extends VideoEvent
     }
 
     /**
-     * Gets the new height of the associated visual <tt>Component</tt>.
+     * Gets the new height of the associated visual <code>Component</code>.
      *
-     * @return the new height of the associated visual <tt>Component</tt>
+     * @return the new height of the associated visual <code>Component</code>
      */
     public int getHeight()
     {
@@ -81,9 +81,9 @@ public class SizeChangeVideoEvent extends VideoEvent
     }
 
     /**
-     * Gets the new width of the associated visual <tt>Component</tt>.
+     * Gets the new width of the associated visual <code>Component</code>.
      *
-     * @return the new width of the associated visual <tt>Component</tt>
+     * @return the new width of the associated visual <code>Component</code>
      */
     public int getWidth()
     {

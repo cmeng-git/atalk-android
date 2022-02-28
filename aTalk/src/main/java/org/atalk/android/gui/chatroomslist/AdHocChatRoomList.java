@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * The <tt>AdHocChatRoomsList</tt> is the list containing all ad-hoc chat rooms.
+ * The <code>AdHocChatRoomsList</code> is the list containing all ad-hoc chat rooms.
  *
  * @author Valentin Martinet
  * @author Eng Chong Meng
@@ -67,7 +67,7 @@ public class AdHocChatRoomList
     /**
      * Adds a chat server and all its existing ad-hoc chat rooms.
      *
-     * @param pps the <tt>ProtocolProviderService</tt> corresponding to the chat server
+     * @param pps the <code>ProtocolProviderService</code> corresponding to the chat server
      */
     public void addChatProvider(ProtocolProviderService pps)
     {
@@ -93,7 +93,7 @@ public class AdHocChatRoomList
     /**
      * Removes the corresponding server and all related ad-hoc chat rooms from this list.
      *
-     * @param pps the <tt>ProtocolProviderService</tt> corresponding to the server to remove
+     * @param pps the <code>ProtocolProviderService</code> corresponding to the server to remove
      */
     public void removeChatProvider(ProtocolProviderService pps)
     {
@@ -105,7 +105,7 @@ public class AdHocChatRoomList
     /**
      * Removes the corresponding server and all related ad-hoc chat rooms from this list.
      *
-     * @param adHocChatRoomProvider the <tt>AdHocChatRoomProviderWrapper</tt> corresponding to the server to remove
+     * @param adHocChatRoomProvider the <code>AdHocChatRoomProviderWrapper</code> corresponding to the server to remove
      */
     private void removeChatProvider(AdHocChatRoomProviderWrapper adHocChatRoomProvider)
     {
@@ -122,7 +122,7 @@ public class AdHocChatRoomList
     /**
      * Adds a chat room to this list.
      *
-     * @param adHocChatRoomWrapper the <tt>AdHocChatRoom</tt> to add
+     * @param adHocChatRoomWrapper the <code>AdHocChatRoom</code> to add
      */
     public void addAdHocChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper)
     {
@@ -134,9 +134,9 @@ public class AdHocChatRoomList
     }
 
     /**
-     * Removes the given <tt>AdHocChatRoom</tt> from the list of all ad-hoc chat rooms.
+     * Removes the given <code>AdHocChatRoom</code> from the list of all ad-hoc chat rooms.
      *
-     * @param adHocChatRoomWrapper the <tt>AdHocChatRoomWrapper</tt> to remove
+     * @param adHocChatRoomWrapper the <code>AdHocChatRoomWrapper</code> to remove
      */
     public void removeChatRoom(AdHocChatRoomWrapper adHocChatRoomWrapper)
     {
@@ -149,12 +149,12 @@ public class AdHocChatRoomList
     }
 
     /**
-     * Returns the <tt>AdHocChatRoomWrapper</tt> that correspond to the given <tt>AdHocChatRoom
-     * </tt>. If the list of ad-hoc chat rooms
+     * Returns the <code>AdHocChatRoomWrapper</code> that correspond to the given <code>AdHocChatRoom
+     * </code>. If the list of ad-hoc chat rooms
      * doesn't contain a corresponding wrapper - returns null.
      *
-     * @param adHocChatRoom the <tt>ChatRoom</tt> that we're looking for
-     * @return the <tt>ChatRoomWrapper</tt> object corresponding to the given <tt>ChatRoom</tt>
+     * @param adHocChatRoom the <code>ChatRoom</code> that we're looking for
+     * @return the <code>ChatRoomWrapper</code> object corresponding to the given <code>ChatRoom</code>
      */
     public AdHocChatRoomWrapper findChatRoomWrapperFromAdHocChatRoom(AdHocChatRoom adHocChatRoom)
     {
@@ -175,13 +175,13 @@ public class AdHocChatRoomList
     }
 
     /**
-     * Returns the <tt>AdHocChatRoomProviderWrapper</tt> that correspond to the given
-     * <tt>ProtocolProviderService</tt>. If the list doesn't
+     * Returns the <code>AdHocChatRoomProviderWrapper</code> that correspond to the given
+     * <code>ProtocolProviderService</code>. If the list doesn't
      * contain a corresponding wrapper - returns null.
      *
      * @param protocolProvider the protocol provider that we're looking for
-     * @return the <tt>AdHocChatRoomProvider</tt> object corresponding to the given
-     * <tt>ProtocolProviderService</tt>
+     * @return the <code>AdHocChatRoomProvider</code> object corresponding to the given
+     * <code>ProtocolProviderService</code>
      */
     public AdHocChatRoomProviderWrapper findServerWrapperFromProvider(
             ProtocolProviderService protocolProvider)

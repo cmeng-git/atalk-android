@@ -29,8 +29,8 @@ import org.atalk.android.aTalkApp;
 import java.util.*;
 
 /**
- * The <tt>CallHistorySourceContact</tt> is an implementation of the
- * <tt>SourceContact</tt> interface based on a <tt>CallRecord</tt>.
+ * The <code>CallHistorySourceContact</code> is an implementation of the
+ * <code>SourceContact</code> interface based on a <code>CallRecord</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -44,7 +44,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     private static final String STRIP_ADDRESSES_TO_NUMBERS = "callhistory.STRIP_ADDRESSES_TO_NUMBERS";
 
     /**
-     * The parent <tt>CallHistoryContactSource</tt>, where this contact is contained.
+     * The parent <code>CallHistoryContactSource</code>, where this contact is contained.
      */
     private final CallHistoryContactSource contactSource;
 
@@ -87,7 +87,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     private final String displayDetails;
 
     /**
-     * Creates an instance of <tt>CallHistorySourceContact</tt>
+     * Creates an instance of <code>CallHistorySourceContact</code>
      *
      * @param contactSource the contact source
      * @param callRecord the call record
@@ -219,9 +219,9 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns the parent <tt>ContactSourceService</tt> from which this contact came from.
+     * Returns the parent <code>ContactSourceService</code> from which this contact came from.
      *
-     * @return the parent <tt>ContactSourceService</tt> from which this contact came from
+     * @return the parent <code>ContactSourceService</code> from which this contact came from
      */
     public ContactSourceService getContactSource()
     {
@@ -274,10 +274,10 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class.
+     * Returns a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s supporting the given <tt>OperationSet</tt> class.
+     * @param operationSet the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      */
     public List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet)
     {
@@ -290,10 +290,10 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns a list of all <tt>ContactDetail</tt>s corresponding to the given category.
+     * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
-     * @param category the <tt>OperationSet</tt> class we're looking for
-     * @return a list of all <tt>ContactDetail</tt>s corresponding to the given category
+     * @param category the <code>OperationSet</code> class we're looking for
+     * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      */
     public List<ContactDetail> getContactDetails(ContactDetail.Category category)
             throws OperationNotSupportedException
@@ -303,11 +303,11 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
     }
 
     /**
-     * Returns the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class.
+     * Returns the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class.
      *
-     * @param operationSet the <tt>OperationSet</tt> class, for which we would
-     * like to obtain a <tt>ContactDetail</tt>
-     * @return the preferred <tt>ContactDetail</tt> for a given <tt>OperationSet</tt> class
+     * @param operationSet the <code>OperationSet</code> class, for which we would
+     * like to obtain a <code>ContactDetail</code>
+     * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
     public ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet)
     {

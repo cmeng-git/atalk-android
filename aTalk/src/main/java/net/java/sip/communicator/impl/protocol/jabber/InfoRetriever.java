@@ -370,7 +370,7 @@ public class InfoRetriever
     }
 
     /**
-     * Checks for full name tag in the <tt>card</tt>.
+     * Checks for full name tag in the <code>card</code>.
      *
      * @param card the card to check.
      * @return the Full name if existing, null otherwise.

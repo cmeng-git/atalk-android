@@ -54,7 +54,7 @@ import timber.log.Timber;
 import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
- * The <tt>FileTransferConversationComponent</tt> is the parent of all file conversation
+ * The <code>FileTransferConversationComponent</code> is the parent of all file conversation
  * components - for incoming, outgoing and history file transfers.
  *
  * @author Eng Chong Meng
@@ -433,7 +433,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Updates progress bar progress line every time a progress event has been received file transport
      * Note: total size of event.getProgress() is always lag behind event.getFileTransfer().getTransferredBytes();
      *
-     * @param event the <tt>FileTransferProgressEvent</tt> that notifies us
+     * @param event the <code>FileTransferProgressEvent</code> that notifies us
      */
     public void progressChanged(final FileTransferProgressEvent event)
     {
@@ -967,10 +967,10 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Adds the given <tt>ScFileTransferListener</tt> that would listen for file transfer requests
+     * Adds the given <code>ScFileTransferListener</code> that would listen for file transfer requests
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to add
+     * @param listener the <code>ScFileTransferListener</code> to add
      */
     public void addUploadListener(UploadProgressListener listener)
     {
@@ -982,10 +982,10 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Removes the given <tt>ScFileTransferListener</tt> that listens for file transfer requests and
+     * Removes the given <code>ScFileTransferListener</code> that listens for file transfer requests and
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to remove
+     * @param listener the <code>ScFileTransferListener</code> to remove
      */
     public void removeUploadListener(UploadProgressListener listener)
     {

@@ -57,13 +57,13 @@ public class NotificationActionTypeEvent extends EventObject
 	 * Creates an instance of this event according to the specified type.
 	 *
 	 * @param source
-	 *        the <tt>NotificationService</tt> that dispatched this event
+	 *        the <code>NotificationService</code> that dispatched this event
 	 * @param eventType
 	 *        the type of this event. One of the static fields declared in this class
 	 * @param sourceEventType
 	 *        the event type for which this event occured
 	 * @param actionHandler
-	 *        the <tt>NotificationActionHandler</tt> that handles the given action
+	 *        the <code>NotificationActionHandler</code> that handles the given action
 	 */
 	public NotificationActionTypeEvent(NotificationService source, String eventType,
             String sourceEventType, NotificationAction actionHandler) {
@@ -85,9 +85,9 @@ public class NotificationActionTypeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>NotificationActionHandler</tt> that handles the action, for which this event is about.
+	 * Returns the <code>NotificationActionHandler</code> that handles the action, for which this event is about.
 	 *
-	 * @return the <tt>NotificationActionHandler</tt> that handles the action, for which this event is about.
+	 * @return the <code>NotificationActionHandler</code> that handles the action, for which this event is about.
 	 */
 	public NotificationAction getActionHandler()
 	{

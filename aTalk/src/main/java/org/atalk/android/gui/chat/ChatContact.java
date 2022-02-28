@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import org.atalk.android.gui.util.AndroidImageUtil;
 
 /**
- * The <tt>ChatContact</tt> is a wrapping class for the <tt>Contact</tt> and <tt>ChatRoomMember</tt> interface.
+ * The <code>ChatContact</code> is a wrapping class for the <code>Contact</code> and <code>ChatRoomMember</code> interface.
  *
  * @param <T> the type of the descriptor
  * @author Yana Stamcheva
@@ -49,7 +49,7 @@ public abstract class ChatContact<T>
     private boolean selected;
 
     /**
-     * Initializes a new <tt>ChatContact</tt> instance with a specific descriptor.
+     * Initializes a new <code>ChatContact</code> instance with a specific descriptor.
      *
      * @param descriptor the descriptor to be adapted by the new instance
      */
@@ -59,12 +59,12 @@ public abstract class ChatContact<T>
     }
 
     /**
-     * Determines whether a specific <tt>Object</tt> represents the same value as this
-     * <tt>ChatContact</tt>.
+     * Determines whether a specific <code>Object</code> represents the same value as this
+     * <code>ChatContact</code>.
      *
-     * @param obj the <tt>Object</tt> to be checked for value equality with this <tt>ChatContact</tt>
-     * @return <tt>true</tt> if <tt>obj</tt> represents the same value as this
-     * <tt>ChatContact</tt>; otherwise, <tt>false</tt>.
+     * @param obj the <code>Object</code> to be checked for value equality with this <code>ChatContact</code>
+     * @return <code>true</code> if <code>obj</code> represents the same value as this
+     * <code>ChatContact</code>; otherwise, <code>false</code>.
      */
     @Override
     public boolean equals(Object obj)
@@ -114,7 +114,7 @@ public abstract class ChatContact<T>
 
     /**
      * Returns the descriptor object corresponding to this chat contact. In the case of single chat this could
-     * be the <tt>MetaContact</tt> and in the case of conference chat this could be the <tt>ChatRoomMember</tt>.
+     * be the <code>MetaContact</code> and in the case of conference chat this could be the <code>ChatRoomMember</code>.
      *
      * @return the descriptor object corresponding to this chat contact.
      */

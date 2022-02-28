@@ -46,13 +46,13 @@ public class ChatRoomPropertyChangeFailedEvent extends PropertyChangeEvent
 	private final int reasonCode;
 
 	/**
-	 * Creates a <tt>ChatRoomPropertyChangeEvent</tt> indicating that a change has occurred for
-	 * property <tt>propertyName</tt> in the <tt>source</tt> chat room and that its value has
-	 * changed from <tt>oldValue</tt> to <tt>newValue</tt>.
+	 * Creates a <code>ChatRoomPropertyChangeEvent</code> indicating that a change has occurred for
+	 * property <code>propertyName</code> in the <code>source</code> chat room and that its value has
+	 * changed from <code>oldValue</code> to <code>newValue</code>.
 	 * <p>
 	 * 
 	 * @param source
-	 *        the <tt>ChatRoom</tt>, to which the property belongs
+	 *        the <code>ChatRoom</code>, to which the property belongs
 	 * @param propertyName
 	 *        the name of the property
 	 * @param propertyValue
@@ -76,7 +76,7 @@ public class ChatRoomPropertyChangeFailedEvent extends PropertyChangeEvent
 	/**
 	 * Returns the source chat room for this event.
 	 *
-	 * @return the <tt>ChatRoom</tt> associated with this event.
+	 * @return the <code>ChatRoom</code> associated with this event.
 	 */
 	public ChatRoom getSourceChatRoom()
 	{

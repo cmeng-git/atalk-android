@@ -14,7 +14,7 @@ package org.atalk.android.gui.util.event;
 public interface EventListener<T>
 {
     /**
-     * Method fired when change occurs on the <tt>eventObject</tt>
+     * Method fired when change occurs on the <code>eventObject</code>
      *
      * @param eventObject the instance that has been changed
      */

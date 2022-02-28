@@ -19,7 +19,7 @@ import java.util.List;
 public abstract class AbstractActiveSpeakerDetector implements ActiveSpeakerDetector
 {
     /**
-     * An empty array with element type <tt>ActiveSpeakerChangedListener</tt>. Explicitly defined
+     * An empty array with element type <code>ActiveSpeakerChangedListener</code>. Explicitly defined
      * for the purposes of reducing the total number of unnecessary allocations and the undesired
      * effects of the garbage collector.
      */
@@ -33,7 +33,7 @@ public abstract class AbstractActiveSpeakerDetector implements ActiveSpeakerDete
     /**
      * {@inheritDoc}
      *
-     * @throws NullPointerException if the specified <tt>listener</tt> is <tt>null</tt>
+     * @throws NullPointerException if the specified <code>listener</code> is <code>null</code>
      */
     @Override
     public void addActiveSpeakerChangedListener(ActiveSpeakerChangedListener listener)
@@ -48,7 +48,7 @@ public abstract class AbstractActiveSpeakerDetector implements ActiveSpeakerDete
     }
 
     /**
-     * Notifies the <tt>ActiveSpeakerChangedListener</tt>s registered with this instance that the
+     * Notifies the <code>ActiveSpeakerChangedListener</code>s registered with this instance that the
      * active speaker in multipoint conference associated with this instance has changed and is
      * identified by a specific synchronization source identifier/SSRC.
      *

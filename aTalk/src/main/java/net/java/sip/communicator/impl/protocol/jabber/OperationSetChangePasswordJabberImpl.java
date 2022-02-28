@@ -26,7 +26,7 @@ import timber.log.Timber;
 public class OperationSetChangePasswordJabberImpl implements OperationSetChangePassword
 {
     /**
-     * The <tt>ProtocolProviderService</tt> whose password we'll change.
+     * The <code>ProtocolProviderService</code> whose password we'll change.
      */
     private ProtocolProviderServiceJabberImpl protocolProvider;
 

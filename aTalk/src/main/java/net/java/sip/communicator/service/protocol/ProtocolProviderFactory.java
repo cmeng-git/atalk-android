@@ -598,7 +598,7 @@ public abstract class ProtocolProviderFactory
     public static final String ZID_SALT = "ZID_SALT";
 
     /**
-     * Creates a new <tt>ProtocolProviderFactory</tt>.
+     * Creates a new <code>ProtocolProviderFactory</code>.
      *
      * @param bundleContext the bundle context reference of the service
      * @param protocolName the name of the protocol
@@ -622,7 +622,7 @@ public abstract class ProtocolProviderFactory
 
     /**
      * Initializes and creates an account corresponding to the specified accountProperties and
-     * registers the resulting ProtocolProvider in the <tt>context</tt> BundleContext parameter.
+     * registers the resulting ProtocolProvider in the <code>context</code> BundleContext parameter.
      * Note that account registration is persistent and accounts that are registered during a
      * particular sip-communicator session would be automatically reloaded during all following
      * sessions until they are removed through the removeAccount method.
@@ -653,10 +653,10 @@ public abstract class ProtocolProviderFactory
             throws IllegalArgumentException, NullPointerException;
 
     /**
-     * Returns a copy of the list containing the <tt>AccountID</tt>s of all accounts currently
+     * Returns a copy of the list containing the <code>AccountID</code>s of all accounts currently
      * registered in this protocol provider.
      *
-     * @return a copy of the list containing the <tt>AccountID</tt>s of all accounts currently
+     * @return a copy of the list containing the <code>AccountID</code>s of all accounts currently
      * registered in this protocol provider.
      */
     public ArrayList<AccountID> getRegisteredAccounts()
@@ -739,7 +739,7 @@ public abstract class ProtocolProviderFactory
      * access to and control the stored accounts.
      *
      * In order to store all account properties, the method would create an entry in the
-     * configuration service corresponding (beginning with) the <tt>sourceFactory</tt>'s package
+     * configuration service corresponding (beginning with) the <code>sourceFactory</code>'s package
      * name and add to it a unique identifier (e.g. the current milliseconds.)
      *
      * @param accountID the AccountID corresponding to the account that we would like to store.
@@ -755,13 +755,13 @@ public abstract class ProtocolProviderFactory
      * access to and control the stored accounts.
      *
      * In order to store all account properties, the method would create an entry in the
-     * configuration service corresponding (beginning with) the <tt>sourceFactory</tt>'s package
+     * configuration service corresponding (beginning with) the <code>sourceFactory</code>'s package
      * name and add to it a unique identifier (e.g. the current milliseconds.)
      *
      * @param accountID the AccountID corresponding to the account that we would like to store.
-     * @param isModification if <tt>false</tt> there must be no such already loaded account, it <tt>true</tt> ist
-     * modification of an existing account. Usually we use this method with <tt>false</tt> in
-     * method installAccount and with <tt>true</tt> or the overridden method in method
+     * @param isModification if <code>false</code> there must be no such already loaded account, it <code>true</code> ist
+     * modification of an existing account. Usually we use this method with <code>false</code> in
+     * method installAccount and with <code>true</code> or the overridden method in method
      * modifyAccount.
      */
     protected void storeAccount(AccountID accountID, boolean isModification)
@@ -802,10 +802,10 @@ public abstract class ProtocolProviderFactory
      * which the password (among the other account properties) is to be saved.
      *
      * @param bundleContext a currently valid bundle context.
-     * @param accountID the <tt>AccountID</tt> of the account whose password is to be stored
+     * @param accountID the <code>AccountID</code> of the account whose password is to be stored
      * @param password the password to be stored
-     * @throws IllegalArgumentException if no account corresponding to <tt>accountID</tt> has been previously stored.
-     * @throws OperationFailedException if anything goes wrong while storing the specified <tt>password</tt>
+     * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored.
+     * @throws OperationFailedException if anything goes wrong while storing the specified <code>password</code>
      */
     protected void storePassword(BundleContext bundleContext, AccountID accountID, String password)
             throws IllegalArgumentException, OperationFailedException
@@ -852,10 +852,10 @@ public abstract class ProtocolProviderFactory
      * which the password (among the other account properties) is to be saved.
      *
      * @param bundleContext a currently valid bundle context.
-     * @param accountID the <tt>AccountID</tt> of the account whose password is to be stored
+     * @param accountID the <code>AccountID</code> of the account whose password is to be stored
      * @param dnssecMode the dnssecMode to be stored
-     * @throws IllegalArgumentException if no account corresponding to <tt>accountID</tt> has been previously stored.
-     * @throws OperationFailedException if anything goes wrong while storing the specified <tt>password</tt>
+     * @throws IllegalArgumentException if no account corresponding to <code>accountID</code> has been previously stored.
+     * @throws OperationFailedException if anything goes wrong while storing the specified <code>password</code>
      */
     protected void storeDnssecMode(BundleContext bundleContext, AccountID accountID, String dnssecMode)
             throws IllegalArgumentException, OperationFailedException
@@ -903,7 +903,7 @@ public abstract class ProtocolProviderFactory
 
     /**
      * Initializes and creates an account corresponding to the specified accountProperties and
-     * registers the resulting ProtocolProvider in the <tt>context</tt> BundleContext parameter.
+     * registers the resulting ProtocolProvider in the <code>context</code> BundleContext parameter.
      * This method has a persistent effect. Once created the resulting account will remain
      * installed until removed through the uninstallAccount method.
      *
@@ -918,13 +918,13 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Creates a protocol provider for the given <tt>accountID</tt> and registers it in the bundle
+     * Creates a protocol provider for the given <code>accountID</code> and registers it in the bundle
      * context. This method has a persistent effect. Once created the resulting account will remain
      * installed until removed through the uninstallAccount method.
      *
      * @param accountID the account identifier
-     * @return <tt>true</tt> if the account with the given <tt>accountID</tt> is successfully
-     * loaded, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if the account with the given <code>accountID</code> is successfully
+     * loaded, otherwise returns <code>false</code>
      */
     public boolean loadAccount(AccountID accountID)
     {
@@ -954,7 +954,7 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Unloads the account corresponding to the given <tt>accountID</tt>. Unregisters the corresponding
+     * Unloads the account corresponding to the given <code>accountID</code>. Unregisters the corresponding
      * protocol provider, but keeps the account in contrast to the uninstallAccount method.
      *
      * @param accountID the account identifier
@@ -1065,7 +1065,7 @@ public abstract class ProtocolProviderFactory
     protected abstract ProtocolProviderService createService(String userID, AccountID accountID);
 
     /**
-     * Removes the account with <tt>accountID</tt> from the set of accounts that are persistently
+     * Removes the account with <code>accountID</code> from the set of accounts that are persistently
      * stored inside the configuration service.
      *
      * @param accountID the AccountID of the account to remove.
@@ -1150,9 +1150,9 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Get the <tt>AccountManager</tt> of the protocol.
+     * Get the <code>AccountManager</code> of the protocol.
      *
-     * @return <tt>AccountManager</tt> of the protocol
+     * @return <code>AccountManager</code> of the protocol
      */
     public AccountManager getAccountManager()
     {
@@ -1163,11 +1163,11 @@ public abstract class ProtocolProviderFactory
     }
 
     /**
-     * Finds registered <tt>ProtocolProviderFactory</tt> for given <tt>protocolName</tt>.
+     * Finds registered <code>ProtocolProviderFactory</code> for given <code>protocolName</code>.
      *
      * @param bundleContext the OSGI bundle context that will be used.
      * @param protocolName the protocol name.
-     * @return Registered <tt>ProtocolProviderFactory</tt> for given protocol name or <tt>null</tt>
+     * @return Registered <code>ProtocolProviderFactory</code> for given protocol name or <code>null</code>
      * if no provider was found.
      */
     public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String

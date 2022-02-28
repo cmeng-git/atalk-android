@@ -25,7 +25,7 @@ import org.atalk.android.gui.chat.*;
 import java.util.*;
 
 /**
- * An implementation of <tt>ChatSession</tt> for conference chatting.
+ * An implementation of <code>ChatSession</code> for conference chatting.
  *
  * @author Yana Stamcheva
  * @author Lubomir Marinov
@@ -52,7 +52,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     private final ChatPanel sessionRenderer;
 
     /**
-     * Creates an instance of <tt>ConferenceChatSession</tt>, by specifying the sessionRenderer to
+     * Creates an instance of <code>ConferenceChatSession</code>, by specifying the sessionRenderer to
      * be used for communication with the UI and the chatRoom corresponding to this
      * conference session.
      *
@@ -322,10 +322,10 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Returns the <tt>ChatSessionRenderer</tt> that provides the connection between this chat
+     * Returns the <code>ChatSessionRenderer</code> that provides the connection between this chat
      * session and its UI.
      *
-     * @return The <tt>ChatSessionRenderer</tt>.
+     * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
     public ChatPanel getChatSessionRenderer()
@@ -334,12 +334,12 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Invoked when <tt>ChatRoomMemberPresenceChangeEvent</tt> is received. When a new
-     * <tt>ChatRoomMember</tt> has joined the chat, adds it to the list of chat participants.
-     * When a <tt>ChatRoomMember</tt> has left or quit, or has being kicked it's removed from the
+     * Invoked when <code>ChatRoomMemberPresenceChangeEvent</code> is received. When a new
+     * <code>ChatRoomMember</code> has joined the chat, adds it to the list of chat participants.
+     * When a <code>ChatRoomMember</code> has left or quit, or has being kicked it's removed from the
      * chat window.
      *
-     * @param evt the <tt>ChatRoomMemberPresenceChangeEvent</tt> that notified us
+     * @param evt the <code>ChatRoomMemberPresenceChangeEvent</code> that notified us
      */
     public void memberPresenceChanged(final ChatRoomMemberPresenceChangeEvent evt)
     {
@@ -450,7 +450,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * Loads the given chat room in the this chat conference panel. Loads all members and adds all
      * corresponding listeners.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> to load
+     * @param chatRoom the <code>ChatRoom</code> to load
      */
     public void loadChatRoom(ChatRoom chatRoom)
     {
@@ -477,7 +477,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Implements the <tt>ChatPanel.getChatStatusIcon</tt> method.
+     * Implements the <code>ChatPanel.getChatStatusIcon</code> method.
      *
      * @return the status icon corresponding to this chat room
      */
@@ -503,7 +503,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Initializes the list of participants.(It is assumed that <tt>chatParticipants</tt> is
+     * Initializes the list of participants.(It is assumed that <code>chatParticipants</code> is
      * locked.)
      */
     private void initChatParticipants()
@@ -520,7 +520,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      * supported for all non system and non private
      * sessions.
      *
-     * @return <tt>true</tt> to indicate that the contact list is supported, <tt>false</tt>
+     * @return <code>true</code> to indicate that the contact list is supported, <code>false</code>
      * otherwise.
      */
     @Override
@@ -531,7 +531,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Adds the given <tt>ChatRoomMemberRoleListener</tt> to the contained chat room role
+     * Adds the given <code>ChatRoomMemberRoleListener</code> to the contained chat room role
      * listeners.
      *
      * @param l the listener to add
@@ -542,7 +542,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Adds the given <tt>ChatRoomLocalUserRoleListener</tt> to the contained chat room role
+     * Adds the given <code>ChatRoomLocalUserRoleListener</code> to the contained chat room role
      * listeners.
      *
      * @param l the listener to add
@@ -553,7 +553,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Removes the given <tt>ChatRoomMemberRoleListener</tt> from the contained chat room role
+     * Removes the given <code>ChatRoomMemberRoleListener</code> from the contained chat room role
      * listeners.
      *
      * @param l the listener to remove
@@ -564,7 +564,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Removes the given <tt>ChatRoomLocalUserRoleListener</tt> from the contained chat room role
+     * Removes the given <code>ChatRoomLocalUserRoleListener</code> from the contained chat room role
      * listeners.
      *
      * @param l the listener to remove
@@ -575,11 +575,11 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Acts upon a <tt>ChatRoomConferencePublishedEvent</tt>, dispatched when a member of a chat
-     * room publishes a <tt>ConferenceDescription</tt>.
+     * Acts upon a <code>ChatRoomConferencePublishedEvent</code>, dispatched when a member of a chat
+     * room publishes a <code>ConferenceDescription</code>.
      *
-     * @param evt the event received, which contains the <tt>ChatRoom</tt>, <tt>ChatRoomMember</tt> and
-     * <tt>ConferenceDescription</tt> involved.
+     * @param evt the event received, which contains the <code>ChatRoom</code>, <code>ChatRoomMember</code> and
+     * <code>ConferenceDescription</code> involved.
      */
     public void conferencePublished(final ChatRoomConferencePublishedEvent evt)
     {
@@ -603,7 +603,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
      *
      * @param chatRoom the chat room where the conference is announced.
      * @param chatRoomMember the chat room member who announced the conference.
-     * @param cd the <tt>ConferenceDescription</tt> instance which represents the conference.
+     * @param cd the <code>ConferenceDescription</code> instance which represents the conference.
      */
     private void updateChatConferences(ChatRoom chatRoom, ChatRoomMember chatRoomMember,
             ConferenceDescription cd, int activeConferencesCount)

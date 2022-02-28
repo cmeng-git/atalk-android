@@ -74,7 +74,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     private String userNameLastEdited;
 
     /**
-     * Creates new instance of <tt>JabberPreferenceFragment</tt>
+     * Creates new instance of <code>JabberPreferenceFragment</code>
      */
     public JabberPreferenceFragment()
     {

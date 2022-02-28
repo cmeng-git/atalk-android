@@ -27,7 +27,7 @@ import timber.log.Timber;
 /**
  * The only reason d'etre for this Activator is so that it would set a global exception handler.
  * It doesn't export any services and neither it runs any initialization - all it does is call
- * <tt>Thread.setUncaughtExceptionHandler()</tt>
+ * <code>Thread.setUncaughtExceptionHandler()</code>
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -44,7 +44,7 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     private static AlertUIService alertUIService;
 
     /**
-     * Calls <tt>Thread.setUncaughtExceptionHandler()</tt>
+     * Calls <code>Thread.setUncaughtExceptionHandler()</code>
      *
      * @param context The execution context of the bundle being started (unused).
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the Framework
@@ -104,9 +104,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt> currently registered.
+     * Returns the <code>ConfigurationService</code> currently registered.
      *
-     * @return the <tt>ConfigurationService</tt>
+     * @return the <code>ConfigurationService</code>
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -130,11 +130,11 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Gets the <tt>UIService</tt> instance registered in the <tt>BundleContext</tt> of the
-     * <tt>UtilActivator</tt>.
+     * Gets the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
+     * <code>UtilActivator</code>.
      *
-     * @return the <tt>UIService</tt> instance registered in the <tt>BundleContext</tt> of the
-     * <tt>UtilActivator</tt>
+     * @return the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
+     * <code>UtilActivator</code>
      */
     public static UIService getUIService()
     {
@@ -144,9 +144,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the <tt>FileAccessService</tt> obtained from the bundle context.
+     * Returns the <code>FileAccessService</code> obtained from the bundle context.
      *
-     * @return the <tt>FileAccessService</tt> obtained from the bundle context
+     * @return the <code>FileAccessService</code> obtained from the bundle context
      */
     public static FileAccessService getFileAccessService()
     {
@@ -157,9 +157,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns an instance of the <tt>MediaService</tt> obtained from the bundle context.
+     * Returns an instance of the <code>MediaService</code> obtained from the bundle context.
      *
-     * @return an instance of the <tt>MediaService</tt> obtained from the bundle context
+     * @return an instance of the <code>MediaService</code> obtained from the bundle context
      */
     public static MediaService getMediaService()
     {
@@ -170,11 +170,11 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the {@link MediaConfigurationService} instance registered in the <tt>BundleContext</tt> of the
-     * <tt>UtilActivator</tt>.
+     * Returns the {@link MediaConfigurationService} instance registered in the <code>BundleContext</code> of the
+     * <code>UtilActivator</code>.
      *
-     * @return the <tt>UIService</tt> instance registered in the <tt>BundleContext</tt> of the
-     * <tt>UtilActivator</tt>
+     * @return the <code>UIService</code> instance registered in the <code>BundleContext</code> of the
+     * <code>UtilActivator</code>
      */
     public static MediaConfigurationService getMediaConfiguration()
     {
@@ -182,9 +182,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context.
+     * Returns all <code>ProtocolProviderFactory</code>s obtained from the bundle context.
      *
-     * @return all <tt>ProtocolProviderFactory</tt>s obtained from the bundle context
+     * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
     public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
     {
@@ -210,9 +210,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the <tt>AccountManager</tt> obtained from the bundle context.
+     * Returns the <code>AccountManager</code> obtained from the bundle context.
      *
-     * @return the <tt>AccountManager</tt> obtained from the bundle context
+     * @return the <code>AccountManager</code> obtained from the bundle context
      */
     public static AccountManager getAccountManager()
     {
@@ -223,9 +223,9 @@ public class UtilActivator implements BundleActivator, Thread.UncaughtExceptionH
     }
 
     /**
-     * Returns the <tt>AlertUIService</tt> obtained from the bundle context.
+     * Returns the <code>AlertUIService</code> obtained from the bundle context.
      *
-     * @return the <tt>AlertUIService</tt> obtained from the bundle context
+     * @return the <code>AlertUIService</code> obtained from the bundle context
      */
     public static AlertUIService getAlertUIService()
     {

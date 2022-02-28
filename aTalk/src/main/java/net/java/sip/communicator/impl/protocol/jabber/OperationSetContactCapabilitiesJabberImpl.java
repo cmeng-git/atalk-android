@@ -21,10 +21,10 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Represents an <tt>OperationSet</tt> to query the <tt>OperationSet</tt>s supported for a specific
- * Jabber <tt>Contact</tt>. The <tt>OperationSet</tt>s reported as supported for a specific Jabber
- * <tt>Contact</tt> are considered by the associated protocol provider to be capabilities possessed
- * by the Jabber <tt>Contact</tt> in question.
+ * Represents an <code>OperationSet</code> to query the <code>OperationSet</code>s supported for a specific
+ * Jabber <code>Contact</code>. The <code>OperationSet</code>s reported as supported for a specific Jabber
+ * <code>Contact</code> are considered by the associated protocol provider to be capabilities possessed
+ * by the Jabber <code>Contact</code> in question.
  *
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
@@ -35,15 +35,15 @@ public class OperationSetContactCapabilitiesJabberImpl
         implements UserCapsNodeListener, ContactPresenceStatusListener
 {
     /**
-     * The list of <tt>OperationSet</tt> capabilities presumed to be supported by a
-     * <tt>Contact</tt> when it is offline.
+     * The list of <code>OperationSet</code> capabilities presumed to be supported by a
+     * <code>Contact</code> when it is offline.
      */
     private static final Set<Class<? extends OperationSet>> OFFLINE_OPERATION_SETS = new HashSet<>();
 
     /**
-     * The <tt>Map</tt> which associates specific <tt>OperationSet</tt> classes with the
-     * features to be supported by a <tt>Contact</tt> in order to consider the <tt>Contact</tt>
-     * to possess the respective <tt>OperationSet</tt> capability.
+     * The <code>Map</code> which associates specific <code>OperationSet</code> classes with the
+     * features to be supported by a <code>Contact</code> in order to consider the <code>Contact</code>
+     * to possess the respective <code>OperationSet</code> capability.
      */
     private static final Map<Class<? extends OperationSet>, String[]> OPERATION_SETS_TO_FEATURES = new HashMap<>();
 
@@ -72,15 +72,15 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * The <tt>discoveryManager</tt> of {@link #parentProvider}.
+     * The <code>discoveryManager</code> of {@link #parentProvider}.
      */
     private ScServiceDiscoveryManager discoveryManager;
 
     /**
-     * Initializes a new <tt>OperationSetContactCapabilitiesJabberImpl</tt> instance which is to be
-     * provided by a specific <tt>ProtocolProviderServiceJabberImpl</tt>.
+     * Initializes a new <code>OperationSetContactCapabilitiesJabberImpl</code> instance which is to be
+     * provided by a specific <code>ProtocolProviderServiceJabberImpl</code>.
      *
-     * @param parentProvider the <tt>ProtocolProviderServiceJabberImpl</tt> which will provide the new instance
+     * @param parentProvider the <code>ProtocolProviderServiceJabberImpl</code> which will provide the new instance
      */
     public OperationSetContactCapabilitiesJabberImpl(ProtocolProviderServiceJabberImpl parentProvider)
     {
@@ -105,21 +105,21 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Gets the <tt>OperationSet</tt> corresponding to the specified <tt>Class</tt> and supported
-     * by the specified <tt>Contact</tt>. If the returned value is non-<tt>null</tt>, it indicates
-     * that the <tt>Contact</tt> is considered by the associated protocol provider to possess the
-     * <tt>opsetClass</tt> capability. Otherwise, the associated protocol provider considers
-     * <tt>contact</tt> to not have the <tt>opsetClass</tt> capability.
+     * Gets the <code>OperationSet</code> corresponding to the specified <code>Class</code> and supported
+     * by the specified <code>Contact</code>. If the returned value is non-<code>null</code>, it indicates
+     * that the <code>Contact</code> is considered by the associated protocol provider to possess the
+     * <code>opsetClass</code> capability. Otherwise, the associated protocol provider considers
+     * <code>contact</code> to not have the <code>opsetClass</code> capability.
      *
-     * @param <U> the type extending <tt>OperationSet</tt> for which the specified <tt>contact</tt> is
+     * @param <U> the type extending <code>OperationSet</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param contact the <tt>Contact</tt> for which the <tt>opsetClass</tt> capability is to be queried
-     * @param opsetClass the <tt>OperationSet</tt> <tt>Class</tt> for which the specified <tt>contact</tt> is
+     * @param contact the <code>Contact</code> for which the <code>opsetClass</code> capability is to be queried
+     * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return the <tt>OperationSet</tt> corresponding to the specified <tt>opsetClass</tt>
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
-     * the specified <tt>contact</tt>; otherwise, <tt>null</tt>
+     * the specified <code>contact</code>; otherwise, <code>null</code>
      * @see AbstractOperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
     @Override
@@ -130,18 +130,18 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Gets the <tt>OperationSet</tt>s supported by a specific <tt>Contact</tt>. The returned
-     * <tt>OperationSet</tt>s are considered by the associated protocol provider to capabilities
-     * possessed by the specified <tt>contact</tt>.
+     * Gets the <code>OperationSet</code>s supported by a specific <code>Contact</code>. The returned
+     * <code>OperationSet</code>s are considered by the associated protocol provider to capabilities
+     * possessed by the specified <code>contact</code>.
      *
-     * @param contact the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to
+     * @param contact the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to
      * be retrieved
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return a <tt>Map</tt> listing the <tt>OperationSet</tt>s considered by the associated
-     * protocol provider to be supported by the specified <tt>contact</tt> (i.e. to be
-     * possessed as capabilities). Each supported <tt>OperationSet</tt> capability is
-     * represented by a <tt>Map.Entry</tt> with key equal to the <tt>OperationSet</tt> class
-     * name and value equal to the respective <tt>OperationSet</tt> instance
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
+     * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
+     * possessed as capabilities). Each supported <code>OperationSet</code> capability is
+     * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
+     * name and value equal to the respective <code>OperationSet</code> instance
      * @see AbstractOperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
     @Override
@@ -152,17 +152,17 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Gets the <tt>OperationSet</tt>s supported by a specific <tt>Contact</tt>. The returned
-     * <tt>OperationSet</tt>s are considered by the associated protocol provider to capabilities
-     * possessed by the specified <tt>contact</tt>.
+     * Gets the <code>OperationSet</code>s supported by a specific <code>Contact</code>. The returned
+     * <code>OperationSet</code>s are considered by the associated protocol provider to capabilities
+     * possessed by the specified <code>contact</code>.
      *
-     * @param jid the <tt>Contact</tt> for which the supported <tt>OperationSet</tt> capabilities are to be retrieved
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return a <tt>Map</tt> listing the <tt>OperationSet</tt>s considered by the associated
-     * protocol provider to be supported by the specified <tt>contact</tt> (i.e. to be
-     * possessed as capabilities). Each supported <tt>OperationSet</tt> capability is
-     * represented by a <tt>Map.Entry</tt> with key equal to the <tt>OperationSet</tt> class
-     * name and value equal to the respective <tt>OperationSet</tt> instance
+     * @param jid the <code>Contact</code> for which the supported <code>OperationSet</code> capabilities are to be retrieved
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return a <code>Map</code> listing the <code>OperationSet</code>s considered by the associated
+     * protocol provider to be supported by the specified <code>contact</code> (i.e. to be
+     * possessed as capabilities). Each supported <code>OperationSet</code> capability is
+     * represented by a <code>Map.Entry</code> with key equal to the <code>OperationSet</code> class
+     * name and value equal to the respective <code>OperationSet</code> instance
      * @see AbstractOperationSetContactCapabilities#getSupportedOperationSets(Contact)
      */
     @SuppressWarnings("unchecked")
@@ -196,21 +196,21 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Gets the <tt>OperationSet</tt> corresponding to the specified <tt>Class</tt> and
-     * supported by the specified <tt>Contact</tt>. If the returned value is non-<tt>null</tt>,
-     * it indicates that the <tt>Contact</tt> is considered by the associated protocol provider
-     * to possess the <tt>opsetClass</tt> capability. Otherwise, the associated protocol provider
-     * considers <tt>contact</tt> to not have the <tt>opsetClass</tt> capability.
+     * Gets the <code>OperationSet</code> corresponding to the specified <code>Class</code> and
+     * supported by the specified <code>Contact</code>. If the returned value is non-<code>null</code>,
+     * it indicates that the <code>Contact</code> is considered by the associated protocol provider
+     * to possess the <code>opsetClass</code> capability. Otherwise, the associated protocol provider
+     * considers <code>contact</code> to not have the <code>opsetClass</code> capability.
      *
-     * @param <U> the type extending <tt>OperationSet</tt> for which the specified <tt>contact</tt> is
+     * @param <U> the type extending <code>OperationSet</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
      * @param jid the Jabber id for which we're checking supported operation sets
-     * @param opsetClass the <tt>OperationSet</tt> <tt>Class</tt> for which the specified <tt>contact</tt> is
+     * @param opsetClass the <code>OperationSet</code> <code>Class</code> for which the specified <code>contact</code> is
      * to be checked whether it possesses it as a capability
-     * @param online <tt>true</tt> if <tt>contact</tt> is online; otherwise, <tt>false</tt>
-     * @return the <tt>OperationSet</tt> corresponding to the specified <tt>opsetClass</tt>
+     * @param online <code>true</code> if <code>contact</code> is online; otherwise, <code>false</code>
+     * @return the <code>OperationSet</code> corresponding to the specified <code>opsetClass</code>
      * which is considered by the associated protocol provider to be possessed as a capability by
-     * the specified <tt>contact</tt>; otherwise, <tt>null</tt>
+     * the specified <code>contact</code>; otherwise, <code>null</code>
      * @see AbstractOperationSetContactCapabilities#getOperationSet(Contact, Class)
      */
     private <U extends OperationSet> U getOperationSet(Jid jid, Class<U> opsetClass, boolean online)
@@ -245,10 +245,10 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Sets the <tt>ScServiceDiscoveryManager</tt> which is the <tt>discoveryManager</tt> of {@link #parentProvider}.
+     * Sets the <code>ScServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of {@link #parentProvider}.
      * Remove the existing one before replaced with the new request
      *
-     * @param discManager the <tt>ScServiceDiscoveryManager</tt> which is the <tt>discoveryManager</tt> of
+     * @param discManager the <code>ScServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of
      * {@link #parentProvider}
      */
     void setDiscoveryManager(ScServiceDiscoveryManager discManager)
@@ -263,7 +263,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Notifies this listener that an <tt>EntityCapsManager</tt> has added a record for a specific
+     * Notifies this listener that an <code>EntityCapsManager</code> has added a record for a specific
      * user about the caps node the user has.
      *
      * @param user the user (contact full Jid)
@@ -306,7 +306,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     /**
      * Update self when user goes offline.
      *
-     * @param evt the <tt>ContactPresenceStatusChangeEvent</tt> that notified us
+     * @param evt the <code>ContactPresenceStatusChangeEvent</code> that notified us
      */
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
     {

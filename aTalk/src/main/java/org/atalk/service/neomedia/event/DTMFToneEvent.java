@@ -11,7 +11,7 @@ import org.atalk.service.neomedia.AudioMediaStream;
 import org.atalk.service.neomedia.DTMFRtpTone;
 
 /**
- * This event represents starting or ending reception of a specific <tt>DTMFRtpTone</tt>.
+ * This event represents starting or ending reception of a specific <code>DTMFRtpTone</code>.
  *
  * @author Emil Ivov
  */
@@ -28,11 +28,11 @@ public class DTMFToneEvent extends EventObject
 	private final DTMFRtpTone dtmfTone;
 
 	/**
-	 * Creates an instance of this <tt>DTMFToneEvent</tt> with the specified source stream and DTMF
+	 * Creates an instance of this <code>DTMFToneEvent</code> with the specified source stream and DTMF
 	 * tone.
 	 *
 	 * @param source
-	 *        the <tt>AudioMediaSteam</tt> instance that received the tone.
+	 *        the <code>AudioMediaSteam</code> instance that received the tone.
 	 * @param dtmfTone
 	 *        the tone that we (started/stopped) receiving.
 	 */
@@ -44,9 +44,9 @@ public class DTMFToneEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>DTMFTone</tt> instance that this event pertains to.
+	 * Returns the <code>DTMFTone</code> instance that this event pertains to.
 	 *
-	 * @return the <tt>DTMFTone</tt> instance that this event pertains to.
+	 * @return the <code>DTMFTone</code> instance that this event pertains to.
 	 */
 	public DTMFRtpTone getDtmfTone()
 	{

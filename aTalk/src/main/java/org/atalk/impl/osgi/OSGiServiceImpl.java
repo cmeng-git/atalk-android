@@ -43,13 +43,13 @@ public class OSGiServiceImpl
     private final AsyncExecutor<Runnable> executor = new AsyncExecutor<>(5, TimeUnit.MINUTES);
 
     /**
-     * The <tt>org.osgi.framework.launch.Framework</tt> instance which represents the OSGi
-     * instance launched by this <tt>OSGiServiceImpl</tt>.
+     * The <code>org.osgi.framework.launch.Framework</code> instance which represents the OSGi
+     * instance launched by this <code>OSGiServiceImpl</code>.
      */
     private Framework framework;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #framework}.
+     * The <code>Object</code> which synchronizes the access to {@link #framework}.
      */
     private final Object frameworkSyncRoot = new Object();
 
@@ -59,10 +59,10 @@ public class OSGiServiceImpl
     private final OSGiService service;
 
     /**
-     * Initializes a new <tt>OSGiServiceImpl</tt> instance which is to be used by a specific
-     * Android <tt>OSGiService</tt> as its very implementation.
+     * Initializes a new <code>OSGiServiceImpl</code> instance which is to be used by a specific
+     * Android <code>OSGiService</code> as its very implementation.
      *
-     * @param service the Android <tt>OSGiService</tt> which is to use the new instance as its very implementation
+     * @param service the Android <code>OSGiService</code> which is to use the new instance as its very implementation
      */
     public OSGiServiceImpl(OSGiService service)
     {
@@ -71,11 +71,11 @@ public class OSGiServiceImpl
 
     /**
      * Invoked by the Android system to initialize a communication channel to {@link #service}.
-     * Returns an implementation of the public API of the <tt>OSGiService</tt> i.e.
+     * Returns an implementation of the public API of the <code>OSGiService</code> i.e.
      * {@link BundleContextHolder} in the form of an {@link IBinder}.
      *
-     * @param intent the <tt>Intent</tt> which was used to bind to <tt>service</tt>
-     * @return an <tt>IBinder</tt> through which clients may call on to the public API of <tt>OSGiService</tt>
+     * @param intent the <code>Intent</code> which was used to bind to <code>service</code>
+     * @return an <code>IBinder</code> through which clients may call on to the public API of <code>OSGiService</code>
      * @see Service#onBind(Intent)
      */
     public IBinder onBind(Intent intent)
@@ -125,11 +125,11 @@ public class OSGiServiceImpl
      * Invoked by the Android system every time a client explicitly starts {@link #service} by
      * calling {@link Context#startService(Intent)}. Always returns {@link Service#START_STICKY}.
      *
-     * @param intent the <tt>Intent</tt> supplied to <tt>Context.startService(Intent}</tt>
+     * @param intent the <code>Intent</code> supplied to <code>Context.startService(Intent}</code>
      * @param flags additional data about the start request
      * @param startId a unique integer which represents this specific request to start
      * @return a value which indicates what semantics the Android system should use for
-     * <tt>service</tt>'s current started state
+     * <code>service</code>'s current started state
      * @see Service#onStartCommand(Intent, int, int)
      */
     public int onStartCommand(Intent intent, int flags, int startId)
@@ -138,7 +138,7 @@ public class OSGiServiceImpl
     }
 
     /**
-     * Sets up <tt>java.util.logging.LogManager</tt> by assigning values to the system properties
+     * Sets up <code>java.util.logging.LogManager</code> by assigning values to the system properties
      * which allow more control over reading the initial configuration.
      */
     private void setJavaUtilLoggingConfigFile()
@@ -242,7 +242,7 @@ public class OSGiServiceImpl
          *
          * @param context the context to use
          * @return the locations of the OSGi bundles (or rather of the class files of their
-         * <tt>BundleActivator</tt> implementations) comprising the Jitsi core/library and the
+         * <code>BundleActivator</code> implementations) comprising the Jitsi core/library and the
          * application which is currently using it. And the corresponding start levels.
          */
         private TreeMap<Integer, List<String>> getBundlesConfig(Context context)

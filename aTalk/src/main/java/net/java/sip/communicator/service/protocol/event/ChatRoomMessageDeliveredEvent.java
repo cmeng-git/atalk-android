@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>MessageDeliveredEvent</tt>s confirm successful delivery of an instant message.
+ * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
@@ -38,7 +38,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * The received <tt>IMessage</tt>.
+     * The received <code>IMessage</code>.
      */
     private IMessage message = null;
 
@@ -53,10 +53,10 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     private boolean historyMessage = false;
 
     /**
-     * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-     * to the specified <tt>to</tt> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+     * to the specified <code>to</code> contact.
      *
-     * @param source the <tt>ChatRoom</tt> which triggered this event.
+     * @param source the <code>ChatRoom</code> which triggered this event.
      * @param timestamp a date indicating the exact moment when the event occurred
      * @param message the message that triggered this event.
      * @param eventType indicating the type of the delivered event. It's either an ACTION_MESSAGE_DELIVERED or
@@ -73,7 +73,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getMessage()
     {
@@ -91,9 +91,9 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ChatRoom</tt> that triggered this event.
+     * Returns the <code>ChatRoom</code> that triggered this event.
      *
-     * @return the <tt>ChatRoom</tt> that triggered this event.
+     * @return the <code>ChatRoom</code> that triggered this event.
      */
     public ChatRoom getSourceChatRoom()
     {

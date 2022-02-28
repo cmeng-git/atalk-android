@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>ChatRoomInvitationReceivedEvent</tt>s indicate reception of an invitation to join a chat room.
+ * <code>ChatRoomInvitationReceivedEvent</code>s indicate reception of an invitation to join a chat room.
  *
  * @author Emil Ivov
  * @author Stephane Remy
@@ -44,11 +44,11 @@ public class ChatRoomInvitationReceivedEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * Creates an <tt>InvitationReceivedEvent</tt> representing reception of the <tt>source</tt>
-     * invitation received from the specified <tt>from</tt> chat room member.
+     * Creates an <code>InvitationReceivedEvent</code> representing reception of the <code>source</code>
+     * invitation received from the specified <code>from</code> chat room member.
      *
-     * @param multiUserChatOpSet the <tt>OperationSetMultiUserChat</tt>, which dispatches this event
-     * @param invitation the <tt>ChatRoomInvitation</tt> that this event is for
+     * @param multiUserChatOpSet the <code>OperationSetMultiUserChat</code>, which dispatches this event
+     * @param invitation the <code>ChatRoomInvitation</code> that this event is for
      * @param timestamp the exact date when the event occurred.
      */
     public ChatRoomInvitationReceivedEvent(OperationSetMultiUserChat multiUserChatOpSet,
@@ -71,9 +71,9 @@ public class ChatRoomInvitationReceivedEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ChatRoomInvitation</tt> that this event is for.
+     * Returns the <code>ChatRoomInvitation</code> that this event is for.
      *
-     * @return the <tt>ChatRoomInvitation</tt> that this event is for.
+     * @return the <code>ChatRoomInvitation</code> that this event is for.
      */
     public ChatRoomInvitation getInvitation()
     {

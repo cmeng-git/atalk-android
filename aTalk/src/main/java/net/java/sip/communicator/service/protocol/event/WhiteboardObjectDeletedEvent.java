@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>WhiteboardObjectDeletedEvent</tt> indicates reception of a new <tt>WhiteboardObject</tt> in
+ * <code>WhiteboardObjectDeletedEvent</code> indicates reception of a new <code>WhiteboardObject</code> in
  * the corresponding whiteboard session.
  *
  * @author Julien Waechter
@@ -47,18 +47,18 @@ public class WhiteboardObjectDeletedEvent extends EventObject
 	private String id;
 
 	/**
-	 * Creates a <tt>WhiteboardObjectReceivedEvent</tt> representing reception of the
-	 * <tt>source</tt> WhiteboardObject received from the specified <tt>from</tt> contact.
+	 * Creates a <code>WhiteboardObjectReceivedEvent</code> representing reception of the
+	 * <code>source</code> WhiteboardObject received from the specified <code>from</code> contact.
 	 *
 	 *
 	 *
 	 * @param source
-	 *        the <tt>WhiteboardSession</tt>
+	 *        the <code>WhiteboardSession</code>
 	 * @param id
-	 *        the identification of the <tt>WhiteboardObject</tt> whose reception this event
+	 *        the identification of the <code>WhiteboardObject</code> whose reception this event
 	 *        represents.
 	 * @param from
-	 *        the <tt>Contact</tt> that has sent this WhiteboardObject.
+	 *        the <code>Contact</code> that has sent this WhiteboardObject.
 	 * @param timestamp
 	 *        the exact date when the event ocurred.
 	 */
@@ -82,10 +82,10 @@ public class WhiteboardObjectDeletedEvent extends EventObject
 	}
 
 	/**
-	 * Returns a reference to the <tt>Contact</tt> that has send the <tt>WhiteboardObject</tt> whose
+	 * Returns a reference to the <code>Contact</code> that has send the <code>WhiteboardObject</code> whose
 	 * reception this event represents.
 	 *
-	 * @return a reference to the <tt>Contact</tt> that has send the <tt>WhiteboardObject</tt> whose
+	 * @return a reference to the <code>Contact</code> that has send the <code>WhiteboardObject</code> whose
 	 *         reception this event represents.
 	 */
 	public Contact getSourceContact()
@@ -96,7 +96,7 @@ public class WhiteboardObjectDeletedEvent extends EventObject
 	/**
 	 * Returns the identification of the deleted WhiteboardObject that triggered this event
 	 *
-	 * @return the <tt>WhiteboardObject</tt> that triggered this event.
+	 * @return the <code>WhiteboardObject</code> that triggered this event.
 	 */
 	public String getId()
 	{

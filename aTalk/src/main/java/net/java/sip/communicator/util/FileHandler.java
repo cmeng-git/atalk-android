@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 /**
- * Simple file logging <tt>Handler</tt>.
+ * Simple file logging <code>Handler</code>.
  * Extends java.util.logging.FileHandler and adds the special component to
  * the file pattern - %s which is replaced at runtime with sip-communicator's
  * home directory. If the pattern option is missing creates log
@@ -42,16 +42,16 @@ public class FileHandler extends java.util.logging.FileHandler
      * ${net.java.sip.communicator.SC_LOG_DIR_LOCATION}/
      * ${net.java.sip.communicator.SC_HOME_DIR_NAME}.
      * <p>
-     * The field is public so that our <tt>Logger</tt> could reset it if necessary.
+     * The field is public so that our <code>Logger</code> could reset it if necessary.
      */
     public static String pattern = null;
 
     /**
-     * Initialize a <tt>FileHandler</tt> to write to a set of files.  When
+     * Initialize a <code>FileHandler</code> to write to a set of files.  When
      * (approximately) the given limit has been written to one file,
      * another file will be opened.  The output will cycle through a set of count files.
      * <p>
-     * The <tt>FileHandler</tt> is configured based on <tt>LogManager</tt>
+     * The <code>FileHandler</code> is configured based on <code>LogManager</code>
      * properties (or their default values) except that the given pattern
      * argument is used as the filename pattern, the file limit is
      * set to the limit argument, and the file count is set to the given count argument.
@@ -63,7 +63,7 @@ public class FileHandler extends java.util.logging.FileHandler
      * @param count the number of files to use
      * @throws IOException if there are IO problems opening the files.
      * @throws SecurityException if a security manager exists and if
-     * the caller does not have <tt>LoggingPermission("control")</tt>.
+     * the caller does not have <code>LoggingPermission("control")</code>.
      * @throws IllegalArgumentException if limit < 0, or count < 1.
      * @throws IllegalArgumentException if pattern is an empty string
      */
@@ -74,13 +74,13 @@ public class FileHandler extends java.util.logging.FileHandler
     }
 
     /**
-     * Construct a default <tt>FileHandler</tt>.  This will be configured
-     * entirely from <tt>LogManager</tt> properties (or their default values). Will change
+     * Construct a default <code>FileHandler</code>.  This will be configured
+     * entirely from <code>LogManager</code> properties (or their default values). Will change
      * <p>
      *
      * @throws IOException if there are IO problems opening the files.
      * @throws SecurityException if a security manager exists and if
-     * the caller does not have <tt>LoggingPermission("control"))</tt>.
+     * the caller does not have <code>LoggingPermission("control"))</code>.
      * @throws NullPointerException if pattern property is an empty String.
      */
     public FileHandler()

@@ -136,9 +136,9 @@ public class CallPeerChangeEvent extends java.beans.PropertyChangeEvent
     }
 
     /**
-     * Returns the <tt>CallPeer</tt> that this event is about.
+     * Returns the <code>CallPeer</code> that this event is about.
      *
-     * @return a reference to the <tt>CallPeer</tt> that is the source of this event.
+     * @return a reference to the <code>CallPeer</code> that is the source of this event.
      */
     public CallPeer getSourceCallPeer()
     {

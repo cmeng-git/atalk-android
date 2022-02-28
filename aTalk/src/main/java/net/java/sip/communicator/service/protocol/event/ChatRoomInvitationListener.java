@@ -22,10 +22,10 @@ package net.java.sip.communicator.service.protocol.event;
 public interface ChatRoomInvitationListener
 {
     /**
-     * Called when we receive an invitation to join an existing <tt>ChatRoom</tt>.
+     * Called when we receive an invitation to join an existing <code>ChatRoom</code>.
      * <p>
      *
-     * @param evt the <tt>ChatRoomInvitationReceivedEvent</tt> that contains the newly received
+     * @param evt the <code>ChatRoomInvitationReceivedEvent</code> that contains the newly received
      * invitation and its source provider.
      */
     void invitationReceived(ChatRoomInvitationReceivedEvent evt);

@@ -34,7 +34,7 @@ public class AccountAuthenticatorService extends Service
 	private static AccountAuthenticatorImpl sAccountAuthenticator = null;
 
 	/**
-	 * Creates an instance of <tt>AccountAuthenticatorService</tt>.
+	 * Creates an instance of <code>AccountAuthenticatorService</code>.
 	 */
 	public AccountAuthenticatorService()
 	{
@@ -73,7 +73,7 @@ public class AccountAuthenticatorService extends Service
 	}
 
 	/**
-	 * An implementation of the <tt>AbstractAccountAuthenticator</tt>.
+	 * An implementation of the <code>AbstractAccountAuthenticator</code>.
 	 */
 	private static class AccountAuthenticatorImpl extends AbstractAccountAuthenticator
 	{
@@ -83,7 +83,7 @@ public class AccountAuthenticatorService extends Service
 		private Context mContext;
 
 		/**
-		 * Creates an instance of <tt>AccountAuthenticatorImpl</tt> by specifying the android
+		 * Creates an instance of <code>AccountAuthenticatorImpl</code> by specifying the android
 		 * context.
 		 *
 		 * @param context

@@ -17,7 +17,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The <tt>AccountUtils</tt> provides utility methods helping us to easily obtain an account or
+ * The <code>AccountUtils</code> provides utility methods helping us to easily obtain an account or
  * a groups of accounts or protocol providers by some specific criteria.
  *
  * @author Yana Stamcheva
@@ -26,9 +26,9 @@ import timber.log.Timber;
 public class AccountUtils
 {
     /**
-     * Returns an iterator over a list of all stored <tt>AccountID</tt>-s.
+     * Returns an iterator over a list of all stored <code>AccountID</code>-s.
      *
-     * @return an iterator over a list of all stored <tt>AccountID</tt>-s
+     * @return an iterator over a list of all stored <code>AccountID</code>-s
      */
     public static Collection<AccountID> getStoredAccounts()
     {
@@ -40,10 +40,10 @@ public class AccountUtils
     }
 
     /**
-     * Return the <tt>AccountID</tt> corresponding to the given string account unique identifier.
+     * Return the <code>AccountID</code> corresponding to the given string account unique identifier.
      *
      * @param accountUID the account unique identifier string
-     * @return the <tt>AccountID</tt> corresponding to the given string account unique identifier
+     * @return the <code>AccountID</code> corresponding to the given string account unique identifier
      */
     public static AccountID getAccountIDForUID(String accountUID)
     {
@@ -56,11 +56,11 @@ public class AccountUtils
     }
 
     /**
-     * Return the <tt>AccountID</tt> corresponding to the given string account userID; assuming
+     * Return the <code>AccountID</code> corresponding to the given string account userID; assuming
      * that userID is unique across all protocolServiceProviders
      *
      * @param userID the account unique identifier string
-     * @return the <tt>AccountID</tt> corresponding to the given string account userID
+     * @return the <code>AccountID</code> corresponding to the given string account userID
      */
     public static AccountID getAccountIDForUserID(String userID)
     {
@@ -73,10 +73,10 @@ public class AccountUtils
     }
 
     /**
-     * Returns a list of all currently registered providers, which support the given <tt>operationSetClass</tt>.
+     * Returns a list of all currently registered providers, which support the given <code>operationSetClass</code>.
      *
      * @param opSetClass the operation set class for which we're looking for providers
-     * @return a list of all currently registered providers, which support the given <tt>operationSetClass</tt>
+     * @return a list of all currently registered providers, which support the given <code>operationSetClass</code>
      */
     public static List<ProtocolProviderService> getRegisteredProviders(
             Class<? extends OperationSet> opSetClass)
@@ -103,8 +103,8 @@ public class AccountUtils
      *
      * @param protocolName the protocol name
      * @param opSetClass the operation set class for which we're looking for providers
-     * @return a list of all currently registered providers for the given <tt>protocolName</tt>
-     * and supporting the given <tt>operationSetClass</tt>
+     * @return a list of all currently registered providers for the given <code>protocolName</code>
+     * and supporting the given <code>operationSetClass</code>
      */
     public static List<ProtocolProviderService> getRegisteredProviders(String protocolName,
             Class<? extends OperationSet> opSetClass)
@@ -169,11 +169,11 @@ public class AccountUtils
     }
 
     /**
-     * Returns the <tt>ProtocolProviderService</tt> corresponding to the given account identifier
+     * Returns the <code>ProtocolProviderService</code> corresponding to the given account identifier
      * that is registered in the given factory
      *
      * @param accountID the identifier of the account
-     * @return the <tt>ProtocolProviderService</tt> corresponding to the given account identifier
+     * @return the <code>ProtocolProviderService</code> corresponding to the given account identifier
      * that is registered in the given factory
      */
     public static ProtocolProviderService getRegisteredProviderForAccount(AccountID accountID)
@@ -191,10 +191,10 @@ public class AccountUtils
     }
 
     /**
-     * Returns a <tt>ProtocolProviderFactory</tt> for a given protocol provider.
+     * Returns a <code>ProtocolProviderFactory</code> for a given protocol provider.
      *
-     * @param protocolProvider the <tt>ProtocolProviderService</tt>, which factory we're looking for
-     * @return a <tt>ProtocolProviderFactory</tt> for a given protocol provider
+     * @param protocolProvider the <code>ProtocolProviderService</code>, which factory we're looking for
+     * @return a <code>ProtocolProviderFactory</code> for a given protocol provider
      */
     public static ProtocolProviderFactory getProtocolProviderFactory(ProtocolProviderService protocolProvider)
     {
@@ -202,10 +202,10 @@ public class AccountUtils
     }
 
     /**
-     * Returns a <tt>ProtocolProviderFactory</tt> for a given protocol provider.
+     * Returns a <code>ProtocolProviderFactory</code> for a given protocol provider.
      *
      * @param protocolName the name of the protocol
-     * @return a <tt>ProtocolProviderFactory</tt> for a given protocol provider
+     * @return a <code>ProtocolProviderFactory</code> for a given protocol provider
      */
     public static ProtocolProviderFactory getProtocolProviderFactory(String protocolName)
     {

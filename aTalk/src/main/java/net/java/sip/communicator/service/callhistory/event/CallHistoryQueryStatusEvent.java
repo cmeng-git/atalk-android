@@ -20,8 +20,8 @@ import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
 import java.util.EventObject;
 
 /**
- * The <tt>CallHistoryQueryStatusEvent</tt> is triggered each time a
- * <tt>CallHistoryQuery</tt> changes its status. Possible statuses are:
+ * The <code>CallHistoryQueryStatusEvent</code> is triggered each time a
+ * <code>CallHistoryQuery</code> changes its status. Possible statuses are:
  * QUERY_COMPLETED, QUERY_CANCELED and QUERY_ERROR.
  *
  * @author Yana Stamcheva
@@ -39,11 +39,11 @@ public class CallHistoryQueryStatusEvent extends EventObject
     private final int eventType;
 
     /**
-     * Creates a <tt>CallHistoryQueryStatusEvent</tt> by specifying the source
-     * <tt>CallHistoryQuery</tt> and the <tt>eventType</tt> indicating why initially this event occurred.
+     * Creates a <code>CallHistoryQueryStatusEvent</code> by specifying the source
+     * <code>CallHistoryQuery</code> and the <code>eventType</code> indicating why initially this event occurred.
      *
-     * @param source the <tt>CallHistoryQuery</tt> this event is about
-     * @param eventType the type of the event. One of the QUERY_XXX constants defined in the <tt>CallHistoryQuery</tt>
+     * @param source the <code>CallHistoryQuery</code> this event is about
+     * @param eventType the type of the event. One of the QUERY_XXX constants defined in the <code>CallHistoryQuery</code>
      */
     public CallHistoryQueryStatusEvent(CallHistoryQuery source, int eventType)
     {
@@ -52,9 +52,9 @@ public class CallHistoryQueryStatusEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>CallHistoryQuery</tt> that triggered this event.
+     * Returns the <code>CallHistoryQuery</code> that triggered this event.
      *
-     * @return the <tt>CallHistoryQuery</tt> that triggered this event
+     * @return the <code>CallHistoryQuery</code> that triggered this event
      */
     public CallHistoryQuery getQuerySource()
     {

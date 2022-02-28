@@ -43,8 +43,8 @@ public class SingleCallInProgressPolicy
 
     /**
      * The name of the configuration property which specifies whether
-     * <tt>OnThePhoneStatusPolicy</tt> is enabled i.e. whether it should set the presence statuses
-     * of online accounts to &quot;On the phone&quot; when at least one <tt>Call</tt> is in progress.
+     * <code>OnThePhoneStatusPolicy</code> is enabled i.e. whether it should set the presence statuses
+     * of online accounts to &quot;On the phone&quot; when at least one <code>Call</code> is in progress.
      */
     private static final String PNAME_ON_THE_PHONE_STATUS_ENABLED = "protocol.OnThePhoneStatusPolicy.enabled";
 
@@ -56,38 +56,38 @@ public class SingleCallInProgressPolicy
 
     /**
      * The name of the configuration property which specifies whether
-     * <tt>SingleCallInProgressPolicy</tt> is enabled i.e. whether it should put existing calls on
+     * <code>SingleCallInProgressPolicy</code> is enabled i.e. whether it should put existing calls on
      * hold when a new call enters in progress.
      */
     private static final String PNAME_SINGLE_CALL_IN_PROGRESS_POLICY_ENABLED
             = "protocol.SingleCallInProgressPolicy.enabled";
 
     /**
-     * The <tt>BundleContext</tt> to the Calls of which this policy applies.
+     * The <code>BundleContext</code> to the Calls of which this policy applies.
      */
     private final BundleContext bundleContext;
 
     /**
-     * The <tt>Call</tt>s this policy manages i.e. put on hold when one of them enters in progress.
+     * The <code>Call</code>s this policy manages i.e. put on hold when one of them enters in progress.
      */
     private final List<Call> calls = new ArrayList<>();
 
     /**
-     * The listener utilized by this policy to discover new <tt>Call</tt> and track their in-progress state.
+     * The listener utilized by this policy to discover new <code>Call</code> and track their in-progress state.
      */
     private final SingleCallInProgressPolicyListener listener = new SingleCallInProgressPolicyListener();
 
     /**
      * The implementation of the policy to have the presence statuses of online accounts (i.e. registered
-     * <tt>ProtocolProviderService</tt>s) set to &quot;On the phone&quot; when at least one <tt>Call</tt> is in progress.
+     * <code>ProtocolProviderService</code>s) set to &quot;On the phone&quot; when at least one <code>Call</code> is in progress.
      */
     private final OnThePhoneStatusPolicy onThePhoneStatusPolicy = new OnThePhoneStatusPolicy();
 
     /**
-     * Initializes a new <tt>SingleCallInProgressPolicy</tt> instance which will apply to the
-     * <tt>Call</tt>s of a specific <tt>BundleContext</tt>.
+     * Initializes a new <code>SingleCallInProgressPolicy</code> instance which will apply to the
+     * <code>Call</code>s of a specific <code>BundleContext</code>.
      *
-     * @param bundleContext the <tt>BundleContext</tt> to the <tt>Call<tt>s of which the new policy should apply
+     * @param bundleContext the <code>BundleContext</code> to the <code>Call<code>s of which the new policy should apply
      */
     public SingleCallInProgressPolicy(BundleContext bundleContext)
     {
@@ -100,9 +100,9 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Registers a specific <tt>Call</tt> with this policy in order to have the rules of the latter apply to the former.
+     * Registers a specific <code>Call</code> with this policy in order to have the rules of the latter apply to the former.
      *
-     * @param call the <tt>Call</tt> to register with this policy in order to have the rules of the
+     * @param call the <code>Call</code> to register with this policy in order to have the rules of the
      * latter apply to the former
      */
     private void addCallListener(Call call)
@@ -121,11 +121,11 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Registers a specific <tt>OperationSetBasicTelephony</tt> with this policy in order to have
-     * the rules of the latter apply to the <tt>Call</tt>s created by the former.
+     * Registers a specific <code>OperationSetBasicTelephony</code> with this policy in order to have
+     * the rules of the latter apply to the <code>Call</code>s created by the former.
      *
-     * @param telephony the <tt>OperationSetBasicTelephony</tt> to register with this policy in order to have
-     * the rules of the latter apply to the <tt>Call</tt>s created by the former
+     * @param telephony the <code>OperationSetBasicTelephony</code> to register with this policy in order to have
+     * the rules of the latter apply to the <code>Call</code>s created by the former
      */
     private void addOperationSetBasicTelephonyListener(
             OperationSetBasicTelephony<? extends ProtocolProviderService> telephony)
@@ -135,10 +135,10 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Handles changes in the state of a <tt>Call</tt> this policy applies to in order to detect
+     * Handles changes in the state of a <code>Call</code> this policy applies to in order to detect
      * when new calls become in-progress and when the other calls should be put on hold.
      *
-     * @param ev a <tt>CallChangeEvent</tt> value which describes the <tt>Call</tt> and the change in its state
+     * @param ev a <code>CallChangeEvent</code> value which describes the <code>Call</code> and the change in its state
      */
     private void callStateChanged(CallChangeEvent ev)
     {
@@ -192,16 +192,16 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Handles the start and end of the <tt>Call</tt>s this policy applies to in order to have them
+     * Handles the start and end of the <code>Call</code>s this policy applies to in order to have them
      * or stop having them put the other existing calls on hold when the former change their states
-     * to <tt>CallState.CALL_IN_PROGRESS</tt>.
+     * to <code>CallState.CALL_IN_PROGRESS</code>.
      * <p>
      * Also handles call rejection via "busy here" according to the call policy.
      * </p>
      *
      * @param type one of {@link CallEvent#CALL_ENDED}, {@link CallEvent#CALL_INITIATED} and
      * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
-     * @param ev a <tt>CallEvent</tt> value which describes the change and the <tt>Call</tt> associated with it
+     * @param ev a <code>CallEvent</code> value which describes the change and the <code>Call</code> associated with it
      */
     private void handleCallEvent(int type, Call call)
     {
@@ -224,9 +224,9 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Notifies this instance that an incoming <tt>Call</tt> has been received.
+     * Notifies this instance that an incoming <code>Call</code> has been received.
      *
-     * @param ev a <tt>CallEvent</tt> which describes the received incoming <tt>Call</tt>
+     * @param ev a <code>CallEvent</code> which describes the received incoming <code>Call</code>
      */
     private void incomingCallReceived(CallEvent ev)
     {
@@ -292,9 +292,9 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Puts the <tt>CallPeer</tt>s of a specific <tt>Call</tt> on hold.
+     * Puts the <code>CallPeer</code>s of a specific <code>Call</code> on hold.
      *
-     * @param call the <tt>Call</tt> the <tt>CallPeer</tt>s of which are to be put on hold
+     * @param call the <code>Call</code> the <code>CallPeer</code>s of which are to be put on hold
      */
     private void putOnHold(Call call)
     {
@@ -320,7 +320,7 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Rejects a <tt>call</tt> with busy here code.
+     * Rejects a <code>call</code> with busy here code.
      *
      * @param call the call to reject.
      */
@@ -344,10 +344,10 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Unregisters a specific <tt>Call</tt> from this policy in order to have the rules of the
+     * Unregisters a specific <code>Call</code> from this policy in order to have the rules of the
      * latter no longer applied to the former.
      *
-     * @param call the <tt>Call</tt> to unregister from this policy in order to have the rules of the
+     * @param call the <code>Call</code> to unregister from this policy in order to have the rules of the
      * latter no longer apply to the former
      */
     private void removeCallListener(Call call)
@@ -361,11 +361,11 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Unregisters a specific <tt>OperationSetBasicTelephony</tt> from this policy in order to have
-     * the rules of the latter no longer apply to the <tt>Call</tt>s created by the former.
+     * Unregisters a specific <code>OperationSetBasicTelephony</code> from this policy in order to have
+     * the rules of the latter no longer apply to the <code>Call</code>s created by the former.
      *
-     * @param telephony the <tt>OperationSetBasicTelephony</tt> to unregister from this policy in order to
-     * have the rules of the latter apply to the <tt>Call</tt>s created by the former
+     * @param telephony the <code>OperationSetBasicTelephony</code> to unregister from this policy in order to
+     * have the rules of the latter apply to the <code>Call</code>s created by the former
      */
     private void removeOperationSetBasicTelephonyListener(
             OperationSetBasicTelephony<? extends ProtocolProviderService> telephony)
@@ -374,12 +374,12 @@ public class SingleCallInProgressPolicy
     }
 
     /**
-     * Handles the registering and unregistering of <tt>OperationSetBasicTelephony</tt> instances in
-     * order to apply or unapply the rules of this policy to the <tt>Call</tt>s originating from them.
+     * Handles the registering and unregistering of <code>OperationSetBasicTelephony</code> instances in
+     * order to apply or unapply the rules of this policy to the <code>Call</code>s originating from them.
      *
-     * @param ev a <tt>ServiceEvent</tt> value which described a change in an OSGi service and which is
+     * @param ev a <code>ServiceEvent</code> value which described a change in an OSGi service and which is
      * to be examined for the registering or unregistering of a
-     * <tt>ProtocolProviderService</tt> and thus a <tt>OperationSetBasicTelephony</tt>
+     * <code>ProtocolProviderService</code> and thus a <code>OperationSetBasicTelephony</code>
      */
     private void serviceChanged(ServiceEvent ev)
     {
@@ -408,32 +408,32 @@ public class SingleCallInProgressPolicy
 
     /**
      * Implements the policy to have the presence statuses of online accounts (i.e. registered
-     * <tt>ProtocolProviderService</tt>s) set to &quot;On the phone&quot; when at least one <tt>Call</tt> is in progress.
+     * <code>ProtocolProviderService</code>s) set to &quot;On the phone&quot; when at least one <code>Call</code> is in progress.
      *
      * @author Lyubomir Marinov
      */
     private class OnThePhoneStatusPolicy
     {
         /**
-         * The regular expression which removes whitespace from the <tt>statusName</tt> property
-         * value of <tt>PresenceStatus</tt> instances in order to recognize the
-         * <tt>PresenceStatus</tt> which represents &quot;On the phone&quot;.
+         * The regular expression which removes whitespace from the <code>statusName</code> property
+         * value of <code>PresenceStatus</code> instances in order to recognize the
+         * <code>PresenceStatus</code> which represents &quot;On the phone&quot;.
          */
         private final Pattern presenceStatusNameWhitespace = Pattern.compile("\\p{Space}");
 
         /**
-         * The <tt>PresenceStatus</tt>es of <tt>ProtocolProviderService</tt>s before they were
+         * The <code>PresenceStatus</code>es of <code>ProtocolProviderService</code>s before they were
          * changed to &quot;On the phone&quot; remembered so that they can be restored after the
-         * last <tt>Call</tt> in progress ends.
+         * last <code>Call</code> in progress ends.
          */
         private final Map<ProtocolProviderService, PresenceStatus> presenceStatuses
                 = Collections.synchronizedMap(new WeakHashMap<>());
 
         /**
-         * Notifies this instance that the <tt>callState</tt> of a specific <tt>Call</tt> has changed.
+         * Notifies this instance that the <code>callState</code> of a specific <code>Call</code> has changed.
          *
-         * @param ev a <tt>CallChangeEvent</tt> which represents the details of the notification such
-         * as the affected <tt>Call</tt> and its old and new <tt>CallState</tt>s
+         * @param ev a <code>CallChangeEvent</code> which represents the details of the notification such
+         * as the affected <code>Call</code> and its old and new <code>CallState</code>s
          */
         public void callStateChanged(CallChangeEvent ev)
         {
@@ -455,14 +455,14 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Finds the first <tt>PresenceStatus</tt> among the set of <tt>PresenceStatus</tt>es
-         * supported by a specific <tt>OperationSetPresence</tt> which represents &quot; On the phone&quot;.
+         * Finds the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
+         * supported by a specific <code>OperationSetPresence</code> which represents &quot; On the phone&quot;.
          *
-         * @param presence the <tt>OperationSetPresence</tt> which represents the set of supported
-         * <tt>PresenceStatus</tt>es
-         * @return the first <tt>PresenceStatus</tt> among the set of <tt>PresenceStatus</tt>es
-         * supported by <tt>presence</tt> which represents &quot;On the phone&quot; if such
-         * a <tt>PresenceStatus</tt> was found; otherwise, <tt>null</tt>
+         * @param presence the <code>OperationSetPresence</code> which represents the set of supported
+         * <code>PresenceStatus</code>es
+         * @return the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
+         * supported by <code>presence</code> which represents &quot;On the phone&quot; if such
+         * a <code>PresenceStatus</code> was found; otherwise, <code>null</code>
          */
         private PresenceStatus findOnThePhonePresenceStatus(OperationSetPresence presence)
         {
@@ -486,12 +486,12 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Notifies this instance that a new outgoing <tt>Call</tt> was initiated, an incoming
-         * <tt>Call</tt> was received or an existing <tt>Call</tt> ended.
+         * Notifies this instance that a new outgoing <code>Call</code> was initiated, an incoming
+         * <code>Call</code> was received or an existing <code>Call</code> ended.
          *
          * @param type one of {@link CallEvent#CALL_ENDED}, {@link CallEvent#CALL_INITIATED} and
          * {@link CallEvent#CALL_RECEIVED} which describes the type of the event to be handled
-         * @param call the <tt>Call</tt> instance.
+         * @param call the <code>Call</code> instance.
          */
         public void handleCallEvent(int type, Call call)
         {
@@ -499,11 +499,11 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Determines whether there is at least one existing <tt>Call</tt> which is currently in
+         * Determines whether there is at least one existing <code>Call</code> which is currently in
          * progress i.e. determines whether the local user is currently on the phone.
          *
-         * @return <tt>true</tt> if there is at least one existing <tt>Call</tt> which is currently
-         * in progress i.e. if the local user is currently on the phone; otherwise, <tt>false</tt>
+         * @return <code>true</code> if there is at least one existing <code>Call</code> which is currently
+         * in progress i.e. if the local user is currently on the phone; otherwise, <code>false</code>
          */
         private boolean isOnThePhone()
         {
@@ -518,10 +518,10 @@ public class SingleCallInProgressPolicy
 
         /**
          * Invokes {@link OperationSetPresence#publishPresenceStatus(PresenceStatus, String)} on a
-         * specific <tt>OperationSetPresence</tt> with a specific <tt>PresenceStatus</tt> and catches any exceptions.
+         * specific <code>OperationSetPresence</code> with a specific <code>PresenceStatus</code> and catches any exceptions.
          *
-         * @param presence the <tt>OperationSetPresence</tt> on which the method is to be invoked
-         * @param presenceStatus the <tt>PresenceStatus</tt> to provide as the respective method argument value
+         * @param presence the <code>OperationSetPresence</code> on which the method is to be invoked
+         * @param presenceStatus the <code>PresenceStatus</code> to provide as the respective method argument value
          */
         private void publishPresenceStatus(OperationSetPresence presence, PresenceStatus presenceStatus)
         {
@@ -539,13 +539,13 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Finds the first <tt>PresenceStatus</tt> among the set of <tt>PresenceStatus</tt>es
-         * supported by a specific <tt>OperationSetPresence</tt> which represents &quot; In meeting&quot;.
+         * Finds the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
+         * supported by a specific <code>OperationSetPresence</code> which represents &quot; In meeting&quot;.
          *
-         * @param presence the <tt>OperationSetPresence</tt> which represents the set of supported <tt>PresenceStatus</tt>es
-         * @return the first <tt>PresenceStatus</tt> among the set of <tt>PresenceStatus</tt>es
-         * supported by <tt>presence</tt> which represents &quot;In meeting&quot; if such a
-         * <tt>PresenceStatus</tt> was found; otherwise, <tt>null</tt>
+         * @param presence the <code>OperationSetPresence</code> which represents the set of supported <code>PresenceStatus</code>es
+         * @return the first <code>PresenceStatus</code> among the set of <code>PresenceStatus</code>es
+         * supported by <code>presence</code> which represents &quot;In meeting&quot; if such a
+         * <code>PresenceStatus</code> was found; otherwise, <code>null</code>
          */
         private PresenceStatus findInMeetingPresenceStatus(OperationSetPresence presence)
         {
@@ -687,7 +687,7 @@ public class SingleCallInProgressPolicy
     private class SingleCallInProgressPolicyListener implements CallChangeListener, CallListener, ServiceListener
     {
         /**
-         * Stops tracking the state of a specific <tt>Call</tt> and no longer tries to put it on hold when it ends.
+         * Stops tracking the state of a specific <code>Call</code> and no longer tries to put it on hold when it ends.
          *
          * @see CallListener#callEnded(CallEvent)
          */
@@ -702,9 +702,9 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Does nothing because adding <tt>CallPeer<tt>s to <tt>Call</tt>s isn't related to the
+         * Does nothing because adding <code>CallPeer<code>s to <code>Call</code>s isn't related to the
          * policy to put existing calls on hold when a new call becomes in-progress and just
-         * implements <tt>CallChangeListener</tt>.
+         * implements <code>CallChangeListener</code>.
          *
          * @see CallChangeListener#callPeerAdded(CallPeerEvent)
          */
@@ -717,8 +717,8 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Does nothing because removing <tt>CallPeer<tt>s to <tt>Call</tt>s isn't related to the policy to put
-         * existing calls on hold when a new call becomes in-progress and just implements <tt>CallChangeListener</tt>.
+         * Does nothing because removing <code>CallPeer<code>s to <code>Call</code>s isn't related to the policy to put
+         * existing calls on hold when a new call becomes in-progress and just implements <code>CallChangeListener</code>.
          *
          * @see CallChangeListener#callPeerRemoved(CallPeerEvent)
          */
@@ -731,10 +731,10 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Upon a <tt>Call</tt> changing its state to <tt>CallState.CALL_IN_PROGRESS</tt>, puts the
-         * other existing <tt>Call</tt>s on hold.
+         * Upon a <code>Call</code> changing its state to <code>CallState.CALL_IN_PROGRESS</code>, puts the
+         * other existing <code>Call</code>s on hold.
          *
-         * @param ev the <tt>CallChangeEvent</tt> that we are to deliver.
+         * @param ev the <code>CallChangeEvent</code> that we are to deliver.
          * @see CallChangeListener#callStateChanged(CallChangeEvent)
          */
         public void callStateChanged(CallChangeEvent ev)
@@ -745,8 +745,8 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Remembers an incoming <tt>Call</tt> so that it can put the other existing <tt>Call</tt>s
-         * on hold when it changes its state to <tt>CallState.CALL_IN_PROGRESS</tt>.
+         * Remembers an incoming <code>Call</code> so that it can put the other existing <code>Call</code>s
+         * on hold when it changes its state to <code>CallState.CALL_IN_PROGRESS</code>.
          *
          * @see CallListener#incomingCallReceived(CallEvent)
          */
@@ -756,8 +756,8 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Remembers an outgoing <tt>Call</tt> so that it can put the other existing <tt>Call</tt>s
-         * on hold when it changes its state to <tt>CallState.CALL_IN_PROGRESS</tt>.
+         * Remembers an outgoing <code>Call</code> so that it can put the other existing <code>Call</code>s
+         * on hold when it changes its state to <code>CallState.CALL_IN_PROGRESS</code>.
          *
          * @see CallListener#outgoingCallCreated(CallEvent)
          */
@@ -767,13 +767,13 @@ public class SingleCallInProgressPolicy
         }
 
         /**
-         * Starts/stops tracking the new <tt>Call</tt>s originating from a specific
-         * <tt>ProtocolProviderService</tt> when it registers/unregisters in order to take them into
+         * Starts/stops tracking the new <code>Call</code>s originating from a specific
+         * <code>ProtocolProviderService</code> when it registers/unregisters in order to take them into
          * account when putting existing calls on hold upon a new call entering its in-progress state.
          *
-         * @param ev the <tt>ServiceEvent</tt> event describing a change in the state of a service
-         * registration which may be a <tt>ProtocolProviderService</tt> supporting
-         * <tt>OperationSetBasicTelephony</tt> and thus being able to create new <tt>Call</tt>s
+         * @param ev the <code>ServiceEvent</code> event describing a change in the state of a service
+         * registration which may be a <code>ProtocolProviderService</code> supporting
+         * <code>OperationSetBasicTelephony</code> and thus being able to create new <code>Call</code>s
          */
         public void serviceChanged(ServiceEvent ev)
         {

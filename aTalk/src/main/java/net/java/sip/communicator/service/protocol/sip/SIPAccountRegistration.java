@@ -24,8 +24,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * The <tt>SIPAccountRegistration</tt> is used to store all user input data through the
- * <tt>SIPAccountRegistrationWizard</tt>.
+ * The <code>SIPAccountRegistration</code> is used to store all user input data through the
+ * <code>SIPAccountRegistrationWizard</code>.
  *
  * @author Yana Stamcheva
  * @author Grigorii Balutsel
@@ -140,7 +140,7 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
     /**
      * Returns security registration object holding security configuration.
      *
-     * @return <tt>SecurityAccountRegistration</tt> object holding security configuration.
+     * @return <code>SecurityAccountRegistration</code> object holding security configuration.
      */
     public SecurityAccountRegistration getSecurityRegistration()
     {
@@ -148,7 +148,7 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
     }
 
     /**
-     * Loads configuration properties from given <tt>accountID</tt>.
+     * Loads configuration properties from given <code>accountID</code>.
      *
      * @param accountID the account identifier that will be used.
      * @param bundleContext the OSGI bundle context required for some operations.
@@ -173,7 +173,7 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
     }
 
     /**
-     * Stores configuration properties held by this object into given <tt>accountProperties</tt>
+     * Stores configuration properties held by this object into given <code>accountProperties</code>
      * map.
      *
      * @param userName the user name that will be used.

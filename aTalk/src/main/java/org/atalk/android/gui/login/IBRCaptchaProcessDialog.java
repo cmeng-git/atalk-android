@@ -108,7 +108,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     private String mReasonText;
 
     /**
-     * Constructor for the <tt>Captcha Request Dialog</tt> for passing the dialog parameters
+     * Constructor for the <code>Captcha Request Dialog</code> for passing the dialog parameters
      *
      * @param context the context to which the dialog belongs
      * @param pps the protocol provider service that offers the service
@@ -196,7 +196,7 @@ public class IBRCaptchaProcessDialog extends Dialog
      * - Form With captcha protection with embedded captcha image if available, else the
      * image is retrieved from the given url in the form.
      *
-     * Return <tt>true</tt> if IBRegistration is supported and info is available
+     * Return <code>true</code> if IBRegistration is supported and info is available
      */
     private boolean initIBRRegistration()
     {
@@ -407,7 +407,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     }
 
     /**
-     * Handles the <tt>ActionEvent</tt> triggered when one user clicks on the Submit button.
+     * Handles the <code>ActionEvent</code> triggered when one user clicks on the Submit button.
      */
     private void onSubmitClicked()
     {
@@ -513,7 +513,7 @@ public class IBRCaptchaProcessDialog extends Dialog
     /**
      * Show or hide server address & port
      *
-     * @param IsServerOverridden <tt>true</tt> show server address and port field for user entry
+     * @param IsServerOverridden <code>true</code> show server address and port field for user entry
      */
     private void updateViewVisibility(boolean IsServerOverridden)
     {

@@ -115,27 +115,27 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Method should return <tt>EncodingsRegistrationUtil</tt> if it supported by impl fragment.
-     * Preference categories with keys: <tt>pref_cat_audio_encoding</tt> and/or
-     * <tt>pref_cat_video_encoding</tt> must be included in preferences xml to trigger encodings activities.
+     * Method should return <code>EncodingsRegistrationUtil</code> if it supported by impl fragment.
+     * Preference categories with keys: <code>pref_cat_audio_encoding</code> and/or
+     * <code>pref_cat_video_encoding</code> must be included in preferences xml to trigger encodings activities.
      *
-     * @return impl fragments should return <tt>EncodingsRegistrationUtil</tt> if encodings are supported.
+     * @return impl fragments should return <code>EncodingsRegistrationUtil</code> if encodings are supported.
      */
     protected abstract EncodingsRegistrationUtil getEncodingsRegistration();
 
     /**
-     * Method should return <tt>SecurityAccountRegistration</tt> if security details are supported
-     * by impl fragment. Preference category with key <tt>pref_key_enable_encryption</tt> must be
+     * Method should return <code>SecurityAccountRegistration</code> if security details are supported
+     * by impl fragment. Preference category with key <code>pref_key_enable_encryption</code> must be
      * present to trigger security edit activity.
      *
-     * @return <tt>SecurityAccountRegistration</tt> if security details are supported by impl fragment.
+     * @return <code>SecurityAccountRegistration</code> if security details are supported by impl fragment.
      */
     protected abstract SecurityAccountRegistration getSecurityRegistration();
 
     /**
-     * Returns currently used <tt>AccountRegistrationWizard</tt>.
+     * Returns currently used <code>AccountRegistrationWizard</code>.
      *
-     * @return currently used <tt>AccountRegistrationWizard</tt>.
+     * @return currently used <code>AccountRegistrationWizard</code>.
      */
     protected AccountRegistrationWizard getWizard()
     {
@@ -153,9 +153,9 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Returns <tt>true</tt> if preference views have been initialized with values from the registration object.
+     * Returns <code>true</code> if preference views have been initialized with values from the registration object.
      *
-     * @return <tt>true</tt> if preference views have been initialized with values from the registration object.
+     * @return <code>true</code> if preference views have been initialized with values from the registration object.
      */
     protected boolean isInitialized()
     {
@@ -221,7 +221,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Method fired when OSGI context is attached, but after the <tt>View</tt> is created.
+     * Method fired when OSGI context is attached, but after the <code>View</code> is created.
      */
     @Override
     protected void onOSGiConnected()
@@ -230,7 +230,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Fired when OSGI is started and the <tt>bundleContext</tt> is available.
+     * Fired when OSGI is started and the <code>bundleContext</code> is available.
      *
      * @param bundleContext the OSGI bundle context.
      */
@@ -242,7 +242,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     }
 
     /**
-     * Load the <tt>account</tt> and its encoding and security properties if exist as reference for update
+     * Load the <code>account</code> and its encoding and security properties if exist as reference for update
      * before merging with the original mAccountProperties in #doCommitChanges() in the sub-class
      *
      * @param account the {@link AccountID} that will be edited
@@ -277,7 +277,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     protected abstract void onPreferencesCreated();
 
     /**
-     * Stores <tt>initialized</tt> flag.
+     * Stores <code>initialized</code> flag.
      */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState)
@@ -290,7 +290,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Finds the wizard for given protocol name
      *
      * @param protocolName the name of the protocol
-     * @return {@link AccountRegistrationWizard} for given <tt>protocolName</tt>
+     * @return {@link AccountRegistrationWizard} for given <code>protocolName</code>
      */
     AccountRegistrationWizard findRegistrationService(String protocolName)
     {
@@ -313,7 +313,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
 
     /**
      * Method called after all preference Views are created and initialized. Subclasses can use
-     * given <tt>summaryMapper</tt> to include it's preferences in summary mapping
+     * given <code>summaryMapper</code> to include it's preferences in summary mapping
      *
      * @param summaryMapper the {@link SummaryMapper} managed by this {@link AccountPreferenceFragment} that can
      * be used by subclasses to map preference's values into their summaries

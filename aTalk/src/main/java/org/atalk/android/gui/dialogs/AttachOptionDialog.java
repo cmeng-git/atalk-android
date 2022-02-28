@@ -12,7 +12,7 @@ import org.atalk.android.gui.chat.ChatActivity;
 import java.util.*;
 
 /**
- * The <tt>AttachOptionDialog</tt> provides user with optional attachments.
+ * The <code>AttachOptionDialog</code> provides user with optional attachments.
  *
  * @author Eng Chong Meng
  */

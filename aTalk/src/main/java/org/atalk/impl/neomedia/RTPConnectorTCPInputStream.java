@@ -21,7 +21,7 @@ import timber.log.Timber;
 public class RTPConnectorTCPInputStream extends TransformInputStream<Socket>
 {
     /**
-     * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a
+     * Initializes a new <code>RTPConnectorInputStream</code> which is to receive packet data from a
      * specific TCP socket.
      *
      * @param socket the TCP socket the new instance is to receive data from

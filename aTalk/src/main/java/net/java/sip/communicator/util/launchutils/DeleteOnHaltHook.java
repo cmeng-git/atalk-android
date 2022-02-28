@@ -10,25 +10,25 @@ import java.io.*;
 import java.util.*;
 
 /**
- * In the fashion of <tt>java.io.DeleteOnExitHook</tt>, provides a way to delete
- * files when <tt>Runtime.halt(int)</tt> is to be invoked.
+ * In the fashion of <code>java.io.DeleteOnExitHook</code>, provides a way to delete
+ * files when <code>Runtime.halt(int)</code> is to be invoked.
  *
  * @author Lyubomir Marinov
  */
 public class DeleteOnHaltHook
 {
     /**
-     * The set of files to be deleted when <tt>Runtime.halt(int)</tt> is to be
+     * The set of files to be deleted when <code>Runtime.halt(int)</code> is to be
      * invoked.
      */
     private static Set<String> files = new LinkedHashSet<String>();
 
     /**
      * Adds a file to the set of files to be deleted when
-     * <tt>Runtime.halt(int)</tt> is to be invoked.
+     * <code>Runtime.halt(int)</code> is to be invoked.
      *
      * @param file the name of the file to be deleted when
-     * <tt>Runtime.halt(int)</tt> is to be invoked
+     * <code>Runtime.halt(int)</code> is to be invoked
      */
     public static synchronized void add(String file)
     {
@@ -40,7 +40,7 @@ public class DeleteOnHaltHook
 
     /**
      * Deletes the files which have been registered for deletion when
-     * <tt>Runtime.halt(int)</tt> is to be invoked.
+     * <code>Runtime.halt(int)</code> is to be invoked.
      */
     public static void runHooks()
     {
@@ -62,6 +62,6 @@ public class DeleteOnHaltHook
         }
     }
 
-    /** Prevents the initialization of <tt>DeleteOnHaltHook</tt> instances. */
+    /** Prevents the initialization of <code>DeleteOnHaltHook</code> instances. */
     private DeleteOnHaltHook() {}
 }

@@ -17,6 +17,8 @@
  */
 package org.ice4j.ice.harvest;
 
+import androidx.annotation.NonNull;
+
 import org.bitlet.weupnp.*;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
@@ -28,20 +30,18 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * Implements a <tt>CandidateHarvester</tt> which gathers <tt>Candidate</tt>s
+ * Implements a <code>CandidateHarvester</code> which gathers <code>Candidate</code>s
  * for a specified {@link Component} using UPnP.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class UPNPHarvester
-        extends AbstractCandidateHarvester
+public class UPNPHarvester extends AbstractCandidateHarvester
 {
     /**
      * The logger.
      */
-    private static final Logger logger =
-            Logger.getLogger(UPNPHarvester.class.getName());
+    private static final Logger logger = Logger.getLogger(UPNPHarvester.class.getName());
 
     /**
      * Maximum port to try to allocate.
@@ -73,22 +73,19 @@ public class UPNPHarvester
     private boolean threadStarted = false;
 
     /**
-     * Gathers UPnP candidates for all host <tt>Candidate</tt>s that are
-     * already present in the specified <tt>component</tt>. This method relies
-     * on the specified <tt>component</tt> to already contain all its host
-     * candidates so that it would resolve them.
+     * Gathers UPnP candidates for all host <code>Candidate</code>s that are already present in the specified
+     * <code>component</code>. This method relies on the specified <code>component</code> to already contain
+     * all its host candidates so that it would resolve them.
      *
-     * @param component the {@link Component} that we'd like to gather candidate
-     * UPnP <tt>Candidate</tt>s for
-     * @return the <tt>LocalCandidate</tt>s gathered by this
-     * <tt>CandidateHarvester</tt>
+     * @param component the {@link Component} that we'd like to gather candidate UPnP <code>Candidate</code>s for
+     * @return the <code>LocalCandidate</code>s gathered by this <code>CandidateHarvester</code>
      */
     public synchronized Collection<LocalCandidate> harvest(Component component)
     {
         Collection<LocalCandidate> candidates = new HashSet<>();
         int retries = 0;
 
-        logger.info("Begin UPnP harvesting " + threadStarted + ": " + device);
+        logger.info("Begin UPnP harvesting! started: " + threadStarted + "; device: " + device);
         try {
             if (device == null) {
                 // do it only once
@@ -111,7 +108,7 @@ public class UPNPHarvester
                 }
 
                 if (device == null) {
-                    logger.fine("UPnP harvesting found zero device");
+                    logger.warning("UPnP harvesting found zero device");
                     return candidates;
                 }
             }
@@ -164,7 +161,7 @@ public class UPNPHarvester
         } catch (Throwable e) {
             logger.info("Exception while gathering UPnP candidates: " + e);
         }
-
+        // logger.info("Harvested UPnP candidates: " + candidates);
         return candidates;
     }
 
@@ -176,8 +173,7 @@ public class UPNPHarvester
      * @param port local port
      * @param component parent component
      * @param device the UPnP gateway device
-     * @return a new <tt>UPNPCandidate</tt> instance which
-     * represents the specified <tt>TransportAddress</tt>
+     * @return a new <code>UPNPCandidate</code> instance which represents the specified <code>TransportAddress</code>
      */
     private List<LocalCandidate> createUPNPCandidate(IceSocketWrapper socket,
             String externalIP, int port, Component component, GatewayDevice device)
@@ -266,10 +262,11 @@ public class UPNPHarvester
     }
 
     /**
-     * Returns a <tt>String</tt> representation of this harvester containing its name.
+     * Returns a <code>String</code> representation of this harvester containing its name.
      *
-     * @return a <tt>String</tt> representation of this harvester containing its name.
+     * @return a <code>String</code> representation of this harvester containing its name.
      */
+    @NonNull
     @Override
     public String toString()
     {

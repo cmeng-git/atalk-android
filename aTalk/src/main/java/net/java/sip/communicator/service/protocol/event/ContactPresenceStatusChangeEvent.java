@@ -38,7 +38,7 @@ public class ContactPresenceStatusChangeEvent extends PropertyChangeEvent
     private Jid contactJid = null;
 
     /**
-     * The contact's <tt>ProtocolProviderService</tt>.
+     * The contact's <code>ProtocolProviderService</code>.
      */
     private ProtocolProviderService sourceProvider = null;
 
@@ -55,7 +55,7 @@ public class ContactPresenceStatusChangeEvent extends PropertyChangeEvent
 
     /**
      * Creates an event instance indicating that the specified source contact has changed status
-     * from <tt>oldValue</tt> to <tt>newValue</tt>.
+     * from <code>oldValue</code> to <code>newValue</code>.
      *
      * @param source the provider that generated the event
      * @param jid the contact FullJid that generated the event
@@ -73,7 +73,7 @@ public class ContactPresenceStatusChangeEvent extends PropertyChangeEvent
 
     /**
      * Creates an event instance indicating that the specified source contact has changed status
-     * from <tt>oldValue</tt> to <tt>newValue</tt>.
+     * from <code>oldValue</code> to <code>newValue</code>.
      *
      * @param source the provider that generated the event
      * @param jid the contact FullJid that generated the event
@@ -177,7 +177,7 @@ public class ContactPresenceStatusChangeEvent extends PropertyChangeEvent
     }
 
     /**
-     * When the event fired is change in the resource of the contact will return <tt>true</tt>.
+     * When the event fired is change in the resource of the contact will return <code>true</code>.
      *
      * @return the event fired is only for change in the resource of the contact.
      */

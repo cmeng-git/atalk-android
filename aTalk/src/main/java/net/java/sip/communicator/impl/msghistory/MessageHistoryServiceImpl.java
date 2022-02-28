@@ -653,12 +653,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     // ============== End ChatSessionFragment utilities ======================
 
     /**
-     * Return the messages for the recently contacted <tt>count</tt> contacts.
+     * Return the messages for the recently contacted <code>count</code> contacts.
      *
      * @param count contacts count
      * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org,
-     * or <tt>null</tt> to search for all providers
-     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <tt>null</tt>
+     * or <code>null</code> to search for all providers
+     * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <code>null</code>
      * to search for all contacts
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
@@ -1610,7 +1610,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Called to notify interested parties that a change in our presence in a chat room has
      * occurred. Changes may include us being kicked, join, left.
      *
-     * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> instance containing the chat
+     * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> instance containing the chat
      * room and the type, and reason of the change
      */
     public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
@@ -2133,7 +2133,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Called to notify interested parties that a change in our presence in an ad-hoc chat room
      * has occurred. Changes may include us being join, left.
      *
-     * @param evt the <tt>LocalUserAdHocChatRoomPresenceChangeEvent</tt> instance containing the ad-hoc
+     * @param evt the <code>LocalUserAdHocChatRoomPresenceChangeEvent</code> instance containing the ad-hoc
      * chat room and the type, and reason of the change
      */
     public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
@@ -2321,7 +2321,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isHistoryLoggingEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isEnabled indicates if the history logging is enabled.
      */
@@ -2334,12 +2334,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
     /**
      * Returns {@code true} if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
-     * <tt>nick</tt>, otherwise - returns {@code false}. Indicates to the user
+     * <code>nick</code>, otherwise - returns {@code false}. Indicates to the user
      * interface whether the history logging is enabled for the supplied nick (nick for
      * metaContact or for chatRoom).
      *
      * @return {@code true} if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
-     * <tt>nick</tt>, otherwise - returns {@code false}.
+     * <code>nick</code>, otherwise - returns {@code false}.
      */
     public boolean isHistoryLoggingEnabled(String entityJid)
     {
@@ -2349,7 +2349,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt>
+     * Updates the "isHistoryLoggingEnabled" property through the <code>ConfigurationService</code>
      * for the contact.
      *
      * @param isEnabled indicates if the history logging is enabled for the contact.
@@ -2541,7 +2541,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Handles <tt>PropertyChangeEvent</tt> triggered from the modification of the isMessageHistoryEnabled property.
+     * Handles <code>PropertyChangeEvent</code> triggered from the modification of the isMessageHistoryEnabled property.
      */
     private class MessageHistoryPropertyChangeListener implements PropertyChangeListener
     {

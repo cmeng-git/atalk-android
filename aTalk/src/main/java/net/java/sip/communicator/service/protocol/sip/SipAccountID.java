@@ -165,7 +165,7 @@ public class SipAccountID extends AccountID
 	/**
 	 * Is proxy auto configured.
 	 * 
-	 * @return <tt>true</tt> if proxy is auto configured.
+	 * @return <code>true</code> if proxy is auto configured.
 	 */
 	public boolean isProxyAutoConfigure()
 	{
@@ -176,7 +176,7 @@ public class SipAccountID extends AccountID
 	 * Sets auto configuration of proxy enabled or disabled.
 	 * 
 	 * @param proxyAutoConfigure
-	 *        <tt>true</tt> if the proxy will be auto configured.
+	 *        <code>true</code> if the proxy will be auto configured.
 	 */
 	public void setProxyAutoConfigure(boolean proxyAutoConfigure)
 	{
@@ -383,8 +383,8 @@ public class SipAccountID extends AccountID
 	/**
 	 * Checks if contact list has to use SIP account credentials.
 	 *
-	 * @return <tt>true</tt> if contact list has to use SIP account credentials otherwise
-	 *         <tt>false</tt>.
+	 * @return <code>true</code> if contact list has to use SIP account credentials otherwise
+	 *         <code>false</code>.
 	 */
 	public boolean isClistOptionUseSipCredentials()
 	{
@@ -527,7 +527,7 @@ public class SipAccountID extends AccountID
 	 * Sets message waiting indications.
 	 *
 	 * @param messageWaitingIndications
-	 *        <tt>true</tt> to enable message waiting indications.
+	 *        <code>true</code> to enable message waiting indications.
 	 */
 	public void setMessageWaitingIndications(boolean messageWaitingIndications)
 	{

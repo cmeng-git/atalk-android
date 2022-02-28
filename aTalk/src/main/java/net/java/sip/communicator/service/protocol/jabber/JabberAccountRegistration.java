@@ -19,8 +19,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * The <tt>JabberAccountRegistration</tt> is used to store all user input data through the
- * <tt>JabberAccountRegistrationWizard</tt>.
+ * The <code>JabberAccountRegistration</code> is used to store all user input data through the
+ * <code>JabberAccountRegistrationWizard</code>.
  *
  * @author Yana Stamcheva
  * @author Boris Grozev
@@ -77,7 +77,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         /**
          * RTP/SAVP is disabled for Jabber protocol.
          *
-         * @return Always <tt>ProtocolProviderFactory.SAVP_OFF</tt>.
+         * @return Always <code>ProtocolProviderFactory.SAVP_OFF</code>.
          */
         @Override
         public int getSavpOption()
@@ -143,9 +143,9 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Adds the given <tt>stunServer</tt> to the list of additional stun servers.
+     * Adds the given <code>stunServer</code> to the list of additional stun servers.
      *
-     * @param stunServer the <tt>StunServer</tt> to add
+     * @param stunServer the <code>StunServer</code> to add
      */
     public void addStunServer(StunServerDescriptor stunServer)
     {
@@ -153,10 +153,10 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Returns the <tt>List</tt> of all additional stun servers entered by the user. The list is
-     * guaranteed not to be <tt>null</tt>.
+     * Returns the <code>List</code> of all additional stun servers entered by the user. The list is
+     * guaranteed not to be <code>null</code>.
      *
-     * @return the <tt>List</tt> of all additional stun servers entered by the user.
+     * @return the <code>List</code> of all additional stun servers entered by the user.
      */
     public List<StunServerDescriptor> getAdditionalStunServers()
     {
@@ -164,9 +164,9 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Adds the given <tt>node</tt> to the list of additional JingleNodes.
+     * Adds the given <code>node</code> to the list of additional JingleNodes.
      *
-     * @param node the <tt>node</tt> to add
+     * @param node the <code>node</code> to add
      */
     public void addJingleNodes(JingleNodeDescriptor node)
     {
@@ -174,10 +174,10 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Returns the <tt>List</tt> of all additional stun servers entered by the user. The list is
-     * guaranteed not to be <tt>null</tt>.
+     * Returns the <code>List</code> of all additional stun servers entered by the user. The list is
+     * guaranteed not to be <code>null</code>.
      *
-     * @return the <tt>List</tt> of all additional stun servers entered by the user.
+     * @return the <code>List</code> of all additional stun servers entered by the user.
      */
     public List<JingleNodeDescriptor> getAdditionalJingleNodes()
     {
@@ -185,9 +185,9 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Returns <tt>EncodingsRegistrationUtil</tt> object which stores encodings configuration.
+     * Returns <code>EncodingsRegistrationUtil</code> object which stores encodings configuration.
      *
-     * @return <tt>EncodingsRegistrationUtil</tt> object which stores encodings configuration.
+     * @return <code>EncodingsRegistrationUtil</code> object which stores encodings configuration.
      */
     public EncodingsRegistrationUtil getEncodingsRegistration()
     {
@@ -195,9 +195,9 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Returns <tt>SecurityAccountRegistration</tt> object which stores security settings.
+     * Returns <code>SecurityAccountRegistration</code> object which stores security settings.
      *
-     * @return <tt>SecurityAccountRegistration</tt> object which stores security settings.
+     * @return <code>SecurityAccountRegistration</code> object which stores security settings.
      */
     public SecurityAccountRegistration getSecurityRegistration()
     {
@@ -206,11 +206,11 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
 
     /**
      * Merge Jabber account configuration held by this registration account (after cleanup and updated with
-     * new STUN/JN, Security and Encoding settings into the given <tt>accountProperties</tt> map.
+     * new STUN/JN, Security and Encoding settings into the given <code>accountProperties</code> map.
      *
      * @param passWord the password for this account.
-     * @param protocolIconPath the path to protocol icon if used, or <tt>null</tt> otherwise.
-     * @param accountIconPath the path to account icon if used, or <tt>null</tt> otherwise.
+     * @param protocolIconPath the path to protocol icon if used, or <code>null</code> otherwise.
+     * @param accountIconPath the path to account icon if used, or <code>null</code> otherwise.
      * @param accountProperties the map used for storing account properties.
      * @throws OperationFailedException if properties are invalid.
      */
@@ -280,7 +280,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     }
 
     /**
-     * Fills this registration object with configuration properties from given <tt>account</tt>.
+     * Fills this registration object with configuration properties from given <code>account</code>.
      *
      * @param account the account object that will be used.
      * @param bundleContext the OSGi bundle context required for some operations.

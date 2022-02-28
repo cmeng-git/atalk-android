@@ -19,8 +19,8 @@ public class ContactResourceJabberImpl extends ContactResource
     private final FullJid fullJid;
 
     /**
-     * Creates a <tt>ContactResource</tt> by specifying the <tt>resourceName</tt>, the
-     * <tt>presenceStatus</tt> and the <tt>priority</tt>.
+     * Creates a <code>ContactResource</code> by specifying the <code>resourceName</code>, the
+     * <code>presenceStatus</code> and the <code>priority</code>.
      *
      * @param fullJid the full jid corresponding to this contact resource
      * @param contact
@@ -45,9 +45,9 @@ public class ContactResourceJabberImpl extends ContactResource
     }
 
     /**
-     * Sets the new <tt>PresenceStatus</tt> of this resource.
+     * Sets the new <code>PresenceStatus</code> of this resource.
      *
-     * @param newStatus the new <tt>PresenceStatus</tt> to set
+     * @param newStatus the new <code>PresenceStatus</code> to set
      */
     protected void setPresenceStatus(PresenceStatus newStatus)
     {

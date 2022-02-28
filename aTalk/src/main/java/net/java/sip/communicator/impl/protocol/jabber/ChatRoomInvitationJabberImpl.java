@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
 import org.jxmpp.jid.EntityJid;
 
 /**
- * The Jabber implementation of the <tt>ChatRoomInvitation</tt> interface.
+ * The Jabber implementation of the <code>ChatRoomInvitation</code> interface.
  *
  * @author Yana Stamcheva
  */
@@ -26,10 +26,10 @@ public class ChatRoomInvitationJabberImpl implements ChatRoomInvitation
     private byte[] password;
 
     /**
-     * Creates an invitation for the given <tt>targetChatRoom</tt>, from the given <tt>inviter</tt>.
+     * Creates an invitation for the given <code>targetChatRoom</code>, from the given <code>inviter</code>.
      *
-     * @param targetChatRoom the <tt>ChatRoom</tt> for which the invitation is
-     * @param inviter the <tt>ChatRoomMember</tt>, which sent the invitation
+     * @param targetChatRoom the <code>ChatRoom</code> for which the invitation is
+     * @param inviter the <code>ChatRoomMember</code>, which sent the invitation
      * @param reason the reason of the invitation
      * @param password the password
      */

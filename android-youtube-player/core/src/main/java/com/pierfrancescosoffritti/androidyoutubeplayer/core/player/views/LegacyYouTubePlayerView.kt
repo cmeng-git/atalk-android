@@ -1,46 +1,51 @@
 package com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views
 
 import android.content.Context
-import android.content.IntentFilter
+import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
+import android.net.ConnectivityManager.NetworkCallback
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.pierfrancescosoffritti.androidyoutubeplayer.R
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerCallback
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.FullScreenHelper
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.PlaybackResumer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.PlayerUiController
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.NetworkListener
 
-internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0):
-        SixteenByNineFrameLayout(context, attrs, defStyleAttr), LifecycleObserver {
+internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        SixteenByNineFrameLayout(context, attrs, defStyleAttr), LifecycleEventObserver {
 
-    constructor(context: Context): this(context, null, 0)
-    constructor(context: Context, attrs: AttributeSet? = null): this(context, attrs, 0)
+    constructor(context: Context) : this(context, null, 0)
+    constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs, 0)
 
     internal val youTubePlayer: WebViewYouTubePlayer = WebViewYouTubePlayer(context)
     private val defaultPlayerUiController: DefaultPlayerUiController
 
-    private val networkListener = NetworkListener()
     private val playbackResumer = PlaybackResumer()
     private val fullScreenHelper = FullScreenHelper(this)
 
+    private var networkCallback = NetworkCallback();
     internal var isYouTubePlayerReady = false
     private var initialize = { }
     private val youTubePlayerCallbacks = HashSet<YouTubePlayerCallback>()
+    private val mainThreadHandler: Handler = Handler(Looper.getMainLooper())
 
     internal var canPlay = true
         private set
@@ -49,7 +54,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
         private set
 
     init {
-        addView(youTubePlayer, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        addView(youTubePlayer, LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         defaultPlayerUiController = DefaultPlayerUiController(this, youTubePlayer)
 
         fullScreenHelper.addFullScreenListener(defaultPlayerUiController)
@@ -60,7 +65,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
         // stop playing if the user loads a video but then leaves the app before the video starts playing.
         youTubePlayer.addListener(object : AbstractYouTubePlayerListener() {
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
-                if(state == PlayerConstants.PlayerState.PLAYING && !isEligibleForPlayback())
+                if (state == PlayerConstants.PlayerState.PLAYING && !isEligibleForPlayback())
                     youTubePlayer.pause()
             }
         })
@@ -75,13 +80,6 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
                 youTubePlayer.removeListener(this)
             }
         })
-
-        networkListener.onNetworkAvailable = {
-            if (!isYouTubePlayerReady)
-                initialize()
-            else
-                playbackResumer.resume(youTubePlayer)
-        }
     }
 
     /**
@@ -92,18 +90,45 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * @param playerOptions customizable options for the embedded video player, can be null.
      */
     fun initialize(youTubePlayerListener: YouTubePlayerListener, handleNetworkEvents: Boolean, playerOptions: IFramePlayerOptions?) {
-        if(isYouTubePlayerReady)
+        if (isYouTubePlayerReady)
             throw IllegalStateException("This YouTubePlayerView has already been initialized.")
 
-        if (handleNetworkEvents)
-            context.registerReceiver(networkListener, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        if (handleNetworkEvents) {
+            // context.registerReceiver(networkCallback, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            registerNetworkCallback()
 
-        initialize = {
-            youTubePlayer.initialize({it.addListener(youTubePlayerListener)}, playerOptions)
         }
 
-        if(!handleNetworkEvents)
+        initialize = {
+            youTubePlayer.initialize({ it.addListener(youTubePlayerListener) }, playerOptions)
+        }
+
+        if (!handleNetworkEvents)
             initialize()
+    }
+
+    private fun registerNetworkCallback() {
+        val manager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val request = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_ETHERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build()
+
+        networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                mainThreadHandler.post {
+                    if (!isYouTubePlayerReady)
+                        initialize()
+                    else
+                        playbackResumer.resume(youTubePlayer)
+                }
+            }
+
+            override fun onUnavailable() {}
+        }
+        manager.registerNetworkCallback(request, networkCallback)
     }
 
     /**
@@ -122,7 +147,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      *
      * @see LegacyYouTubePlayerView.initialize
      */
-    fun initialize(youTubePlayerListener: YouTubePlayerListener) =
+    private fun initialize(youTubePlayerListener: YouTubePlayerListener) =
             initialize(youTubePlayerListener, true)
 
     /**
@@ -143,7 +168,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
      * This function is called only once.
      */
     fun getYouTubePlayerWhenReady(youTubePlayerCallback: YouTubePlayerCallback) {
-        if(isYouTubePlayerReady)
+        if (isYouTubePlayerReady)
             youTubePlayerCallback.onYouTubePlayer(youTubePlayer)
         else
             youTubePlayerCallbacks.add(youTubePlayerCallback)
@@ -170,28 +195,41 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
         return View.inflate(context, layoutId, this)
     }
 
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when {
+            Lifecycle.Event.ON_DESTROY == event -> {
+                release()
+            }
+            Lifecycle.Event.ON_RESUME == event -> {
+                onResume()
+            }
+            Lifecycle.Event.ON_STOP == event -> {
+                onStop()
+            }
+        }
+    }
+
     /**
      * Call this method before destroying the host Fragment/Activity, or register this View as an observer of its host lifecycle
      */
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun release() {
         removeView(youTubePlayer)
         youTubePlayer.removeAllViews()
         youTubePlayer.destroy()
         try {
-            context.unregisterReceiver(networkListener)
+            val manager = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            manager.unregisterNetworkCallback(networkCallback)
         } catch (ignore: Exception) {
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun onResume() {
+    fun onResume() {
         playbackResumer.onLifecycleResume()
         canPlay = true
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStop() {
+    // W/cr_AwContents: Application attempted to call on a destroyed WebView
+    fun onStop() {
         // W/cr_AwContents: Application attempted to call on a destroyed WebView
         if (youTubePlayer.isShown)
             youTubePlayer.pause()

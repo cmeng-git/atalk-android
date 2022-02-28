@@ -19,7 +19,7 @@ import timber.log.Timber;
 public class FileHistoryActivator implements BundleActivator
 {
     /**
-     * A <tt>FileHistoryService</tt> service reference.
+     * A <code>FileHistoryService</code> service reference.
      */
     private FileHistoryServiceImpl fileHistoryService = null;
 
@@ -48,7 +48,7 @@ public class FileHistoryActivator implements BundleActivator
     /**
      * Stops this bundle.
      *
-     * @param bundleContext the <tt>BundleContext</tt>
+     * @param bundleContext the <code>BundleContext</code>
      * @throws Exception if the stop operation goes wrong
      */
     public void stop(BundleContext bundleContext)

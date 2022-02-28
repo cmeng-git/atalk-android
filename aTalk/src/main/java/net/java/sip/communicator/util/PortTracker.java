@@ -9,7 +9,7 @@ package net.java.sip.communicator.util;
 import timber.log.Timber;
 
 /**
- * The <tt>PortTracker</tt> class allows for a controlled selection of bind
+ * The <code>PortTracker</code> class allows for a controlled selection of bind
  * ports. This is typically useful in cases where we would like to set bounds
  * for the ports that we are going to use for a particular socket. For example,
  * at the time of writing of this class, this policy allows Jitsi to bind RTP
@@ -62,7 +62,7 @@ public class PortTracker
      * also update the value of the next port to allocate in case it is
      * currently outside the specified range. The method also allows configuring
      * this allocator in a way that it would always return the same port. This
-     * would happen when <tt>newMinPort</tt> is equal to <tt>newMaxPort</tt>
+     * would happen when <code>newMinPort</code> is equal to <code>newMaxPort</code>
      * which would make both equal to the only possible value.
      *
      * @param newMinPort the minimum port that we would like to bind on
@@ -155,14 +155,14 @@ public class PortTracker
 
     /**
      * Attempts to create a port tracker that uses the min and max values
-     * indicated by the <tt>newMinPortString</tt> and <tt>newMinPortString</tt>
-     * strings and returns it if successful. The method fails silently (returning <tt>null</tt>) otherwise.
+     * indicated by the <code>newMinPortString</code> and <code>newMinPortString</code>
+     * strings and returns it if successful. The method fails silently (returning <code>null</code>) otherwise.
      *
      * @param newMinPortString the {@link String} containing the minimum port
      * number that this tracker should allow.
      * @param newMaxPortString the {@link String} containing the minimum port
      * number that this tracker should allow.
-     * @return the newly created port tracker or <tt>null</tt> if the string
+     * @return the newly created port tracker or <code>null</code> if the string
      * params do not contain valid port numbers.
      */
     public static PortTracker createTracker(String newMinPortString,

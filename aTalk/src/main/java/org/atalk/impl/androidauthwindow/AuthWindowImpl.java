@@ -16,8 +16,8 @@ import org.atalk.android.aTalkApp;
 import timber.log.Timber;
 
 /**
- * Android <tt>AuthenticationWindow</tt> impl. Serves as a static data model for <tt>AuthWindowActivity</tt>. Is
- * identified by the request id passed as an intent extra. All requests are mapped in <tt>AuthWindowServiceImpl</tt>.
+ * Android <code>AuthenticationWindow</code> impl. Serves as a static data model for <code>AuthWindowActivity</code>. Is
+ * identified by the request id passed as an intent extra. All requests are mapped in <code>AuthWindowServiceImpl</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -54,9 +54,9 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     private boolean isCanceled;
 
     /**
-     * Creates new instance of <tt>AuthWindowImpl</tt>
+     * Creates new instance of <code>AuthWindowImpl</code>
      *
-     * @param requestId request identifier managed by <tt>AuthWindowServiceImpl</tt>
+     * @param requestId request identifier managed by <code>AuthWindowServiceImpl</code>
      * @param userName pre entered username
      * @param password pre entered password
      * @param server name of the server that requested authentication
@@ -129,7 +129,7 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     /**
      * Indicates if this window has been canceled.
      *
-     * @return <tt>true</tt> if this window has been canceled, <tt>false</tt> - otherwise.
+     * @return <code>true</code> if this window has been canceled, <code>false</code> - otherwise.
      */
     public boolean isCanceled()
     {
@@ -169,7 +169,7 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     /**
      * Indicates if the password should be remembered.
      *
-     * @return <tt>true</tt> if the password should be remembered, <tt>false</tt> - otherwise.
+     * @return <code>true</code> if the password should be remembered, <code>false</code> - otherwise.
      */
     public boolean isRememberPassword()
     {
@@ -179,7 +179,7 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     /**
      * Sets the store password flag.
      *
-     * @param storePassword <tt>true</tt> if the password should be stored.
+     * @param storePassword <code>true</code> if the password should be stored.
      */
     void setRememberPassword(boolean storePassword)
     {
@@ -187,9 +187,9 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     }
 
     /**
-     * Returns <tt>true</tt> if username filed is editable.
+     * Returns <code>true</code> if username filed is editable.
      *
-     * @return <tt>true</tt> if username filed is editable.
+     * @return <code>true</code> if username filed is editable.
      */
     boolean isUserNameEditable()
     {
@@ -199,7 +199,7 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     /**
      * Shows or hides the "save password" checkbox.
      *
-     * @param allow the checkbox is shown when allow is <tt>true</tt>
+     * @param allow the checkbox is shown when allow is <code>true</code>
      */
     public void setAllowSavePassword(boolean allow)
     {
@@ -207,9 +207,9 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
     }
 
     /**
-     * Returns <tt>true</tt> if it's allowed to save the password.
+     * Returns <code>true</code> if it's allowed to save the password.
      *
-     * @return <tt>true</tt> if it's allowed to save the password.
+     * @return <code>true</code> if it's allowed to save the password.
      */
     boolean isAllowSavePassword()
     {

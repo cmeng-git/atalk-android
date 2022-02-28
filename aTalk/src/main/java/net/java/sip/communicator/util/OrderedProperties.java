@@ -84,7 +84,7 @@ public class OrderedProperties extends Properties
     }
 
     /**
-     * Get the elements of the <tt>LinkedHashMap</tt>.
+     * Get the elements of the <code>LinkedHashMap</code>.
      *
      * @return enumeration
      */

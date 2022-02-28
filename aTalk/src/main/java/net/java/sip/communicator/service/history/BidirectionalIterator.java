@@ -18,7 +18,7 @@ public interface BidirectionalIterator<T> extends Iterator<T>
 {
 	/**
 	 * Returns true if the iteration has elements preceeding the current one. (In other words, returns true if
-	 * <tt>prev</tt> would return an element rather than throwing an exception.)
+	 * <code>prev</code> would return an element rather than throwing an exception.)
 	 *
 	 * @return true if the iterator has preceeding elements.
 	 */

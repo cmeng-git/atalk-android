@@ -328,7 +328,7 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
     //==============================================================
 
     /**
-     * Adapter displays fingerprints for given list of <tt>omemoDevices</tt>s and <tt>contacts</tt>.
+     * Adapter displays fingerprints for given list of <code>omemoDevices</code>s and <code>contacts</code>.
      */
     private class FingerprintListAdapter extends BaseAdapter
     {
@@ -339,9 +339,9 @@ public class CryptoDeviceFingerPrints extends OSGiActivity
         private final List<String> deviceFP;
 
         /**
-         * Creates new instance of <tt>FingerprintListAdapter</tt>.
+         * Creates new instance of <code>FingerprintListAdapter</code>.
          *
-         * @param linkedHashMap list of <tt>device</tt> for which OMEMO/OTR fingerprints will be displayed.
+         * @param linkedHashMap list of <code>device</code> for which OMEMO/OTR fingerprints will be displayed.
          */
         FingerprintListAdapter(Map<String, String> linkedHashMap)
         {

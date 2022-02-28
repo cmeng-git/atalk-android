@@ -124,7 +124,7 @@ public final class DTMFRtpTone
 	/**
 	 * Returns the string representation of this DTMF tone.
 	 *
-	 * @return the <tt>String</tt> representation of this DTMF tone.
+	 * @return the <code>String</code> representation of this DTMF tone.
 	 */
 	public String getValue()
 	{
@@ -137,7 +137,7 @@ public final class DTMFRtpTone
 	 * @param target
 	 *        the reference object with which to compare.
 	 *
-	 * @return <tt>true</tt> if target represents the same tone as this object.
+	 * @return <code>true</code> if target represents the same tone as this object.
 	 */
 	@Override
 	public boolean equals(Object target)

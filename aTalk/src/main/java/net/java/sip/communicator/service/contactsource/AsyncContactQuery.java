@@ -19,9 +19,9 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Provides an abstract implementation of a <tt>ContactQuery</tt> which runs in a separate <tt>Thread</tt>.
+ * Provides an abstract implementation of a <code>ContactQuery</code> which runs in a separate <code>Thread</code>.
  *
- * @param <T> the very type of <tt>ContactSourceService</tt> which performs the <tt>ContactQuery</tt>
+ * @param <T> the very type of <code>ContactSourceService</code> which performs the <code>ContactQuery</code>
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
@@ -29,40 +29,40 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
         extends AbstractContactQuery<T>
 {
     /**
-     * The {@link #query} in the form of a <tt>String</tt> telephone number if
-     * such parsing, formatting and validation is possible; otherwise, <tt>null</tt>.
+     * The {@link #query} in the form of a <code>String</code> telephone number if
+     * such parsing, formatting and validation is possible; otherwise, <code>null</code>.
      */
     private String phoneNumberQuery;
 
     /**
-     * The <tt>Pattern</tt> for which the associated <tt>ContactSourceService</tt> is being queried.
+     * The <code>Pattern</code> for which the associated <code>ContactSourceService</code> is being queried.
      */
     protected final Pattern query;
 
     /**
      * The indicator which determines whether there has been an attempt to
      * convert {@link #query} to {@link #phoneNumberQuery}. If the conversion has
-     * been successful, <tt>phoneNumberQuery</tt> will be non-<tt>null</tt>.
+     * been successful, <code>phoneNumberQuery</code> will be non-<code>null</code>.
      */
     private boolean queryIsConvertedToPhoneNumber;
 
     /**
-     * The <tt>SourceContact</tt>s which match {@link #query}.
+     * The <code>SourceContact</code>s which match {@link #query}.
      */
     private Collection<SourceContact> queryResults = new LinkedList<>();
 
     /**
-     * The <tt>Thread</tt> in which this <tt>AsyncContactQuery</tt> is performing {@link #query}.
+     * The <code>Thread</code> in which this <code>AsyncContactQuery</code> is performing {@link #query}.
      */
     private Thread thread;
 
     /**
-     * Initializes a new <tt>AsyncContactQuery</tt> instance which is to perform
-     * a specific <tt>query</tt> on behalf of a specific <tt>contactSource</tt>.
+     * Initializes a new <code>AsyncContactQuery</code> instance which is to perform
+     * a specific <code>query</code> on behalf of a specific <code>contactSource</code>.
      *
-     * @param contactSource the <tt>ContactSourceService</tt> which is to
-     * perform the new <tt>ContactQuery</tt> instance
-     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is being queried
+     * @param contactSource the <code>ContactSourceService</code> which is to
+     * perform the new <code>ContactQuery</code> instance
+     * @param query the <code>Pattern</code> for which <code>contactSource</code> is being queried
      * @param isSorted indicates if the results of this query should be sorted
      */
     protected AsyncContactQuery(T contactSource, Pattern query, boolean isSorted)
@@ -74,12 +74,12 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Initializes a new <tt>AsyncContactQuery</tt> instance which is to perform
-     * a specific <tt>query</tt> on behalf of a specific <tt>contactSource</tt>.
+     * Initializes a new <code>AsyncContactQuery</code> instance which is to perform
+     * a specific <code>query</code> on behalf of a specific <code>contactSource</code>.
      *
-     * @param contactSource the <tt>ContactSourceService</tt> which is to
-     * perform the new <tt>ContactQuery</tt> instance
-     * @param query the <tt>Pattern</tt> for which <tt>contactSource</tt> is being queried
+     * @param contactSource the <code>ContactSourceService</code> which is to
+     * perform the new <code>ContactQuery</code> instance
+     * @param query the <code>Pattern</code> for which <code>contactSource</code> is being queried
      */
     protected AsyncContactQuery(T contactSource, Pattern query)
     {
@@ -88,15 +88,15 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Adds a specific <tt>SourceContact</tt> to the list of
-     * <tt>SourceContact</tt>s to be returned by this <tt>ContactQuery</tt> in
+     * Adds a specific <code>SourceContact</code> to the list of
+     * <code>SourceContact</code>s to be returned by this <code>ContactQuery</code> in
      * response to {@link #getQueryResults()}.
      *
-     * @param sourceContact the <tt>SourceContact</tt> to be added to the
-     * <tt>queryResults</tt> of this <tt>ContactQuery</tt>
+     * @param sourceContact the <code>SourceContact</code> to be added to the
+     * <code>queryResults</code> of this <code>ContactQuery</code>
      * @param showMoreEnabled indicates whether show more label should be shown or not.
-     * @return <tt>true</tt> if the <tt>queryResults</tt> of this
-     * <tt>ContactQuery</tt> has changed in response to the call
+     * @return <code>true</code> if the <code>queryResults</code> of this
+     * <code>ContactQuery</code> has changed in response to the call
      */
     protected boolean addQueryResult(SourceContact sourceContact, boolean showMoreEnabled)
     {
@@ -111,13 +111,13 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Adds a specific <tt>SourceContact</tt> to the list of
-     * <tt>SourceContact</tt>s to be returned by this <tt>ContactQuery</tt> in response to {@link #getQueryResults()}.
+     * Adds a specific <code>SourceContact</code> to the list of
+     * <code>SourceContact</code>s to be returned by this <code>ContactQuery</code> in response to {@link #getQueryResults()}.
      *
-     * @param sourceContact the <tt>SourceContact</tt> to be added to the
-     * <tt>queryResults</tt> of this <tt>ContactQuery</tt>
-     * @return <tt>true</tt> if the <tt>queryResults</tt> of this
-     * <tt>ContactQuery</tt> has changed in response to the call
+     * @param sourceContact the <code>SourceContact</code> to be added to the
+     * <code>queryResults</code> of this <code>ContactQuery</code>
+     * @return <code>true</code> if the <code>queryResults</code> of this
+     * <code>ContactQuery</code> has changed in response to the call
      */
     protected boolean addQueryResult(SourceContact sourceContact)
     {
@@ -131,13 +131,13 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Removes a specific <tt>SourceContact</tt> from the list of
-     * <tt>SourceContact</tt>s.
+     * Removes a specific <code>SourceContact</code> from the list of
+     * <code>SourceContact</code>s.
      *
-     * @param sourceContact the <tt>SourceContact</tt> to be removed from the
-     * <tt>queryResults</tt> of this <tt>ContactQuery</tt>
-     * @return <tt>true</tt> if the <tt>queryResults</tt> of this
-     * <tt>ContactQuery</tt> has changed in response to the call
+     * @param sourceContact the <code>SourceContact</code> to be removed from the
+     * <code>queryResults</code> of this <code>ContactQuery</code>
+     * @return <code>true</code> if the <code>queryResults</code> of this
+     * <code>ContactQuery</code> has changed in response to the call
      */
     protected boolean removeQueryResult(SourceContact sourceContact)
     {
@@ -151,14 +151,14 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Adds a set of <tt>SourceContact</tt> instances to the list of
-     * <tt>SourceContact</tt>s to be returned by this <tt>ContactQuery</tt> in
+     * Adds a set of <code>SourceContact</code> instances to the list of
+     * <code>SourceContact</code>s to be returned by this <code>ContactQuery</code> in
      * response to {@link #getQueryResults()}.
      *
-     * @param sourceContacts the set of <tt>SourceContact</tt> to be added to
-     * the <tt>queryResults</tt> of this <tt>ContactQuery</tt>
-     * @return <tt>true</tt> if the <tt>queryResults</tt> of this
-     * <tt>ContactQuery</tt> has changed in response to the call
+     * @param sourceContacts the set of <code>SourceContact</code> to be added to
+     * the <code>queryResults</code> of this <code>ContactQuery</code>
+     * @return <code>true</code> if the <code>queryResults</code> of this
+     * <code>ContactQuery</code> has changed in response to the call
      */
     protected boolean addQueryResults(final Set<? extends SourceContact> sourceContacts)
     {
@@ -179,12 +179,12 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
 
 
     /**
-     * Gets the {@link #query} of this <tt>AsyncContactQuery</tt> as a
-     * <tt>String</tt> which represents a phone number (if possible).
+     * Gets the {@link #query} of this <code>AsyncContactQuery</code> as a
+     * <code>String</code> which represents a phone number (if possible).
      *
-     * @return a <tt>String</tt> which represents the <tt>query</tt> of this
-     * <tt>AsyncContactQuery</tt> as a phone number if such parsing, formatting
-     * and validation is possible; otherwise, <tt>null</tt>
+     * @return a <code>String</code> which represents the <code>query</code> of this
+     * <code>AsyncContactQuery</code> as a phone number if such parsing, formatting
+     * and validation is possible; otherwise, <code>null</code>
      */
     protected String getPhoneNumberQuery()
     {
@@ -215,9 +215,9 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Gets the number of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>.
+     * Gets the number of <code>SourceContact</code>s which match this <code>ContactQuery</code>.
      *
-     * @return the number of <tt>SourceContact</tt> which match this <tt>ContactQuery</tt>
+     * @return the number of <code>SourceContact</code> which match this <code>ContactQuery</code>
      */
     public int getQueryResultCount()
     {
@@ -227,9 +227,9 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Gets the <tt>List</tt> of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>.
+     * Gets the <code>List</code> of <code>SourceContact</code>s which match this <code>ContactQuery</code>.
      *
-     * @return the <tt>List</tt> of <tt>SourceContact</tt>s which match this <tt>ContactQuery</tt>
+     * @return the <code>List</code> of <code>SourceContact</code>s which match this <code>ContactQuery</code>
      * @see ContactQuery#getQueryResults()
      */
     public List<SourceContact> getQueryResults()
@@ -254,12 +254,12 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Performs this <tt>ContactQuery</tt> in a background <tt>Thread</tt>.
+     * Performs this <code>ContactQuery</code> in a background <code>Thread</code>.
      */
     protected abstract void run();
 
     /**
-     * Starts this <tt>AsyncContactQuery</tt>.
+     * Starts this <code>AsyncContactQuery</code>.
      */
     public synchronized void start()
     {
@@ -290,11 +290,11 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Notifies this <tt>AsyncContactQuery</tt> that it has stopped performing
-     * in the associated background <tt>Thread</tt>.
+     * Notifies this <code>AsyncContactQuery</code> that it has stopped performing
+     * in the associated background <code>Thread</code>.
      *
-     * @param completed <tt>true</tt> if this <tt>ContactQuery</tt> has
-     * successfully completed, <tt>false</tt> if an error has been encountered during its execution
+     * @param completed <code>true</code> if this <code>ContactQuery</code> has
+     * successfully completed, <code>false</code> if an error has been encountered during its execution
      */
     protected void stopped(boolean completed)
     {
@@ -303,13 +303,13 @@ public abstract class AsyncContactQuery<T extends ContactSourceService>
     }
 
     /**
-     * Determines whether a specific <tt>String</tt> phone number matches the
-     * {@link #query} of this <tt>AsyncContactQuery</tt>.
+     * Determines whether a specific <code>String</code> phone number matches the
+     * {@link #query} of this <code>AsyncContactQuery</code>.
      *
-     * @param phoneNumber the <tt>String</tt> which represents the phone number
-     * to match to the <tt>query</tt> of this <tt>AsyncContactQuery</tt>
-     * @return <tt>true</tt> if the specified <tt>phoneNumber</tt> matches the
-     * <tt>query</tt> of this <tt>AsyncContactQuery</tt>; otherwise, <tt>false</tt>
+     * @param phoneNumber the <code>String</code> which represents the phone number
+     * to match to the <code>query</code> of this <code>AsyncContactQuery</code>
+     * @return <code>true</code> if the specified <code>phoneNumber</code> matches the
+     * <code>query</code> of this <code>AsyncContactQuery</code>; otherwise, <code>false</code>
      */
     protected boolean phoneNumberMatches(String phoneNumber)
     {

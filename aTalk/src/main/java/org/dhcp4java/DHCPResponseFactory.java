@@ -59,7 +59,7 @@ public final class DHCPResponseFactory
      * <p>Reponse is populated according to the DHCP request received (must be
      * DHCPDISCOVER), the proposed client address and a set of pre-set options.
      *
-     * <p>Note: <tt>getDefaultSocketAddress</tt> is called internally to populate
+     * <p>Note: <code>getDefaultSocketAddress</code> is called internally to populate
      * address and port number to which response should be sent.
      *
      * @param request
@@ -140,7 +140,7 @@ public final class DHCPResponseFactory
      * <p>Reponse is populated according to the DHCP request received (must be
      * DHCPREQUEST), the proposed client address and a set of pre-set options.
      *
-     * <p>Note: <tt>getDefaultSocketAddress</tt> is called internally to populate
+     * <p>Note: <code>getDefaultSocketAddress</code> is called internally to populate
      * address and port number to which response should be sent.
      *
      * @param request
@@ -227,7 +227,7 @@ public final class DHCPResponseFactory
      * <p>Reponse is populated according to the DHCP request received (must be
      * DHCPREQUEST), the proposed client address and a set of pre-set options.
      *
-     * <p>Note: <tt>getDefaultSocketAddress</tt> is called internally to populate
+     * <p>Note: <code>getDefaultSocketAddress</code> is called internally to populate
      * address and port number to which response should be sent.
      *
      * @param request
@@ -294,7 +294,7 @@ public final class DHCPResponseFactory
      * <p>This is a method ready to use for *standard* behaviour for any RFC
      * compliant DHCP Server.
      *
-     * <p>If <tt>giaddr</tt> is null, it is the client's addres/68, otherwise
+     * <p>If <code>giaddr</code> is null, it is the client's addres/68, otherwise
      * giaddr/67.
      *
      * <p>Standard behaviour is to set the response packet as follows:
@@ -306,7 +306,7 @@ public final class DHCPResponseFactory
      * @param responseType the DHCP Message Type the servers wants to send (DHCPOFFER,
      * DHCPACK, DHCPNAK)
      * @return the ip/port to send back the response
-     * @throws IllegalArgumentException if request is <tt>null</tt>.
+     * @throws IllegalArgumentException if request is <code>null</code>.
      * @throws IllegalArgumentException if responseType is not valid.
      */
     public static InetSocketAddress getDefaultSocketAddress(DHCPPacket request, byte responseType)

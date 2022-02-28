@@ -131,7 +131,7 @@ public interface ChatRoomProviderWrapper
      *
      * @param key the key of the user data associated with this instance to be retrieved
      * @return an <code>Object</code> which represents the value associated with
-     * this instance and the specified <code>key</code>; <tt>null</tt>
+     * this instance and the specified <code>key</code>; <code>null</code>
      * if no association with the specified <code>key</code> exists in this instance
      */
     Object getData(Object key);

@@ -32,7 +32,7 @@ import timber.log.Timber;
 public class DnsUtilActivator implements BundleActivator
 {
     /**
-     * Calls <tt>Thread.setUncaughtExceptionHandler()</tt>
+     * Calls <code>Thread.setUncaughtExceptionHandler()</code>
      *
      * @param context The execution context of the bundle being started (unused).
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the Framework

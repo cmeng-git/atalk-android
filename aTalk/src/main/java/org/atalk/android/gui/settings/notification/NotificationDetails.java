@@ -65,27 +65,27 @@ public class NotificationDetails extends OSGiActivity
     private ResourceManagementService rms;
 
     /**
-     * The description <tt>View</tt>
+     * The description <code>View</code>
      */
     private TextView description;
 
     /**
-     * Popup handler checkbox <tt>View</tt>
+     * Popup handler checkbox <code>View</code>
      */
     private CompoundButton popup;
 
     /**
-     * Sound notification handler checkbox <tt>View</tt>
+     * Sound notification handler checkbox <code>View</code>
      */
     private CompoundButton soundNotification;
 
     /**
-     * Sound playback handler checkbox <tt>View</tt>
+     * Sound playback handler checkbox <code>View</code>
      */
     private CompoundButton soundPlayback;
 
     /**
-     * Vibrate handler checkbox <tt>View</tt>
+     * Vibrate handler checkbox <code>View</code>
      */
     private CompoundButton vibrate;
 
@@ -236,7 +236,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Fired when popup checkbox is clicked.
      *
-     * @param v popup checkbox <tt>View</tt>
+     * @param v popup checkbox <code>View</code>
      */
     public void onPopupClicked(View v)
     {
@@ -251,7 +251,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Fired when sound notification checkbox is clicked.
      *
-     * @param v sound notification checkbox <tt>View</tt>
+     * @param v sound notification checkbox <code>View</code>
      */
     public void onSoundNotificationClicked(View v)
     {
@@ -263,7 +263,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Fired when sound playback checkbox is clicked.
      *
-     * @param v sound playback checkbox <tt>View</tt>
+     * @param v sound playback checkbox <code>View</code>
      */
     public void onSoundPlaybackClicked(View v)
     {
@@ -275,7 +275,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * Fired when vibrate notification checkbox is clicked.
      *
-     * @param v vibrate notification checkbox <tt>View</tt>
+     * @param v vibrate notification checkbox <code>View</code>
      */
     public void onVibrateClicked(View v)
     {
@@ -423,7 +423,7 @@ public class NotificationDetails extends OSGiActivity
     /**
      * {@inheritDoc}
      *
-     * If removed event is the one currently displayed, closes the <tt>Activity</tt>.
+     * If removed event is the one currently displayed, closes the <code>Activity</code>.
      */
     @Override
     public void eventTypeRemoved(NotificationEventTypeEvent event)
@@ -436,11 +436,11 @@ public class NotificationDetails extends OSGiActivity
     }
 
     /**
-     * Gets the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
+     * Gets the <code>Intent</code> for starting <code>NotificationDetails</code> <code>Activity</code>.
      *
      * @param ctx the context
-     * @param eventType name of the event that will be displayed by <tt>NotificationDetails</tt>.
-     * @return the <tt>Intent</tt> for starting <tt>NotificationDetails</tt> <tt>Activity</tt>.
+     * @param eventType name of the event that will be displayed by <code>NotificationDetails</code>.
+     * @return the <code>Intent</code> for starting <code>NotificationDetails</code> <code>Activity</code>.
      */
     public static Intent getIntent(Context ctx, String eventType)
     {

@@ -22,7 +22,7 @@ import org.jivesoftware.smackx.omemo.OmemoService;
 
 /**
  * Helper class that produces "remove account dialog". It asks the user for account removal
- * confirmation and finally removes the account. Interface <tt>OnAccountRemovedListener</tt> is
+ * confirmation and finally removes the account. Interface <code>OnAccountRemovedListener</code> is
  * used to notify about account removal which will not be fired if the user cancels the dialog.
  *
  * @author Pawel Domas
@@ -73,7 +73,7 @@ public class RemoveAccountDialog
     }
 
     /**
-     * Remove all the properties of the given <tt>Account</tt> from the accountProperties database.
+     * Remove all the properties of the given <code>Account</code> from the accountProperties database.
      * Note: accountUuid without any suffix as propertyName will remove all the properties in
      * the accountProperties for the specified accountUuid
      *
@@ -96,10 +96,10 @@ public class RemoveAccountDialog
     interface OnAccountRemovedListener
     {
         /**
-         * Fired after <tt>Account</tt> is removed from the system which happens after user
+         * Fired after <code>Account</code> is removed from the system which happens after user
          * confirms the action. Will not be fired when user dismisses the dialog.
          *
-         * @param account removed <tt>Account</tt>.
+         * @param account removed <code>Account</code>.
          */
         void onAccountRemoved(Account account);
     }

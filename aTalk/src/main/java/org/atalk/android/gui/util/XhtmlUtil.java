@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 import java.util.List;
 
 /**
- * Utility class that implements <tt>XHtml</tt> utility
+ * Utility class that implements <code>XHtml</code> utility
  *
  * @author Eng Chong Meng
  */

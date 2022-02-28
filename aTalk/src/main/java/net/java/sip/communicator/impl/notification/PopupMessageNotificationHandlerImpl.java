@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import timber.log.Timber;
 
 /**
- * An implementation of the <tt>PopupMessageNotificationHandler</tt> interface.
+ * An implementation of the <code>PopupMessageNotificationHandler</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -31,10 +31,10 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
     }
 
     /**
-     * Shows the given <tt>PopupMessage</tt>
+     * Shows the given <code>PopupMessage</code>
      *
      * @param action the action to act upon
-     * @param data <tt>NotificationData</tt> that contains the name/key, icon and extra info for popup message
+     * @param data <code>NotificationData</code> that contains the name/key, icon and extra info for popup message
      */
     public void popupMessage(PopupMessageNotificationAction action, NotificationData data)
     {
@@ -60,7 +60,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
     }
 
     /**
-     * Adds a listener for <tt>SystrayPopupMessageEvent</tt>s posted when user clicks on the system tray popup message.
+     * Adds a listener for <code>SystrayPopupMessageEvent</code>s posted when user clicks on the system tray popup message.
      *
      * @param listener the listener to add
      */
@@ -74,7 +74,7 @@ public class PopupMessageNotificationHandlerImpl implements PopupMessageNotifica
     }
 
     /**
-     * Removes a listener previously added with <tt>addPopupMessageListener</tt>.
+     * Removes a listener previously added with <code>addPopupMessageListener</code>.
      *
      * @param listener the listener to remove
      */

@@ -36,7 +36,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     /**
      * It's where we store all active calls
      *
-     * @param opSet the <tt>OperationSetBasicTelphony</tt> instance which has
+     * @param opSet the <code>OperationSetBasicTelphony</code> instance which has
      * been used to create calls in this repository
      */
     public ActiveCallsRepositoryJabberImpl(OperationSetBasicTelephonyJabberImpl opSet)
@@ -46,11 +46,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
 
     /**
      * Returns the {@link CallJabberImpl} containing a {@link
-     * CallPeerJabberImpl} whose corresponding jingle session has the specified jingle <tt>sid</tt>.
+     * CallPeerJabberImpl} whose corresponding jingle session has the specified jingle <code>sid</code>.
      *
-     * @param sid the jingle <tt>sid</tt> we're looking for.
+     * @param sid the jingle <code>sid</code> we're looking for.
      * @return the {@link CallJabberImpl} containing the peer with the
-     * specified <tt>sid</tt> or <tt>null</tt> if we couldn't find one matching it.
+     * specified <code>sid</code> or <code>null</code> if we couldn't find one matching it.
      */
     public CallJabberImpl findSID(String sid)
     {
@@ -64,10 +64,10 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Returns the <tt>Call</tt> with ID equal to <tt>callid</tt>.
+     * Returns the <code>Call</code> with ID equal to <code>callid</code>.
      *
      * @param callid the ID to search for
-     * @return the <tt>Call</tt> with ID equal to <tt>callid</tt>.
+     * @return the <code>Call</code> with ID equal to <code>callid</code>.
      */
     public CallJabberImpl findCallId(String callid)
     {
@@ -81,11 +81,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Returns the {@link CallPeerJabberImpl} whose jingle session has the specified jingle <tt>sid</tt>.
+     * Returns the {@link CallPeerJabberImpl} whose jingle session has the specified jingle <code>sid</code>.
      *
-     * @param sid the jingle <tt>sid</tt> we're looking for.
-     * @return the {@link CallPeerJabberImpl} with the specified <tt>sid</tt>
-     * or <tt>null</tt> if we couldn't find one matching it.
+     * @param sid the jingle <code>sid</code> we're looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified <code>sid</code>
+     * or <code>null</code> if we couldn't find one matching it.
      */
     public CallPeerJabberImpl findCallPeer(String sid)
     {
@@ -100,11 +100,11 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Returns the {@link CallPeerJabberImpl} whose session-initiate's ID has the specified IQ <tt>id</tt>.
+     * Returns the {@link CallPeerJabberImpl} whose session-initiate's ID has the specified IQ <code>id</code>.
      *
-     * @param id the IQ <tt>id</tt> we're looking for.
-     * @return the {@link CallPeerJabberImpl} with the specified <tt>id</tt>
-     * or <tt>null</tt> if we couldn't find one matching it.
+     * @param id the IQ <code>id</code> we're looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified <code>id</code>
+     * or <code>null</code> if we couldn't find one matching it.
      */
     public CallPeerJabberImpl findCallPeerBySessInitPacketID(String id)
     {
@@ -119,13 +119,13 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Creates and dispatches a <tt>CallEvent</tt> notifying registered
-     * listeners that an event with id <tt>eventID</tt> has occurred on <tt>sourceCall</tt>.
+     * Creates and dispatches a <code>CallEvent</code> notifying registered
+     * listeners that an event with id <code>eventID</code> has occurred on <code>sourceCall</code>.
      *
      * @param eventID the ID of the event to dispatch
      * @param sourceCall the call on which the event has occurred
-     * @param cause the <tt>CallChangeEvent</tt>, if any, which is the cause
-     * that necessitated a new <tt>CallEvent</tt> to be fired
+     * @param cause the <code>CallChangeEvent</code>, if any, which is the cause
+     * that necessitated a new <code>CallEvent</code> to be fired
      * @see ActiveCallsRepository#fireCallEvent(int, Call, CallChangeEvent)
      */
     @Override

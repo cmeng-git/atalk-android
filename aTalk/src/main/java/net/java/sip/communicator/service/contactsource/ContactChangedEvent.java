@@ -18,9 +18,9 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.*;
 
 /**
- * The <tt>ContactChangedEvent</tt> indicates that a
- * <tt>SourceContact</tt> has been updated as a result of a
- * <tt>ContactQuery</tt>.
+ * The <code>ContactChangedEvent</code> indicates that a
+ * <code>SourceContact</code> has been updated as a result of a
+ * <code>ContactQuery</code>.
  * @author Yana Stamcheva
  */
 public class ContactChangedEvent
@@ -37,8 +37,8 @@ public class ContactChangedEvent
     private final SourceContact contact;
 
     /**
-     * Creates a <tt>ContactChangedEvent</tt> by specifying the contact search
-     * source and the updated <tt>searchContact</tt>.
+     * Creates a <code>ContactChangedEvent</code> by specifying the contact search
+     * source and the updated <code>searchContact</code>.
      * @param source the source that triggered this event
      * @param contact the updated contact
      */
@@ -51,8 +51,8 @@ public class ContactChangedEvent
     }
 
     /**
-     * Returns the <tt>ContactQuery</tt> that triggered this event.
-     * @return the <tt>ContactQuery</tt> that triggered this event
+     * Returns the <code>ContactQuery</code> that triggered this event.
+     * @return the <code>ContactQuery</code> that triggered this event
      */
     public ContactQuery getQuerySource()
     {

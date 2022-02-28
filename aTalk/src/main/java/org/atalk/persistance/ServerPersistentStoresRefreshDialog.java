@@ -78,9 +78,9 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
 
     /**
      * Displays create refresh store dialog. If the source wants to be notified about the result
-     * should pass the listener here or <tt>null</tt> otherwise.
+     * should pass the listener here or <code>null</code> otherwise.
      *
-     * @param parent the parent <tt>Activity</tt>
+     * @param parent the parent <code>Activity</code>
      */
     public void show(Activity parent)
     {
@@ -92,7 +92,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     }
 
     /**
-     * Implements <tt>DialogActivity.DialogListener</tt> interface and handles refresh stores process.
+     * Implements <code>DialogActivity.DialogListener</code> interface and handles refresh stores process.
      */
     class DialogListenerImpl implements DialogActivity.DialogListener
     {

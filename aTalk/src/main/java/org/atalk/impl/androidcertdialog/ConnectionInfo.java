@@ -158,7 +158,7 @@ public class ConnectionInfo extends OSGiActivity
      * Displays SSL Certificate information.
      * Invoked when user short clicks a link in the editor pane.
      *
-     * @param position the position of <tt>SSL Certificate</tt> in adapter's list which will be displayed.
+     * @param position the position of <code>SSL Certificate</code> in adapter's list which will be displayed.
      */
     public void showSslCertificate(int position)
     {
@@ -184,7 +184,7 @@ public class ConnectionInfo extends OSGiActivity
      * Displays alert asking user if he wants to delete the selected SSL Certificate. (Long click)
      * Delete both the serviceName certificate and the _xmpp-client.serviceName
      *
-     * @param position the position of <tt>SSL Certificate</tt> in adapter's list which has to be used in the alert.
+     * @param position the position of <code>SSL Certificate</code> in adapter's list which has to be used in the alert.
      */
     private void showSslCertificateDeleteAlert(int position)
     {
@@ -278,19 +278,19 @@ public class ConnectionInfo extends OSGiActivity
     }
 
     /**
-     * Adapter which displays Connection Info for list of <tt>ProtocolProvider</tt>s.
+     * Adapter which displays Connection Info for list of <code>ProtocolProvider</code>s.
      */
     class ConnectionInfoAdapter extends BaseAdapter
     {
         /**
-         * List of <tt>AccountID</tt> for which the connection info and certificates are being displayed.
+         * List of <code>AccountID</code> for which the connection info and certificates are being displayed.
          */
         private List<AccountID> accountIDs;
 
         /**
-         * Creates a new instance of <tt>SslCertificateListAdapter</tt>.
+         * Creates a new instance of <code>SslCertificateListAdapter</code>.
          *
-         * @param accountIDS the list of <tt>AccountId</tt>s for which connection info and
+         * @param accountIDS the list of <code>AccountId</code>s for which connection info and
          * certificates will be displayed by this adapter.
          */
         ConnectionInfoAdapter(List<AccountID> accountIDS)
@@ -301,7 +301,7 @@ public class ConnectionInfo extends OSGiActivity
         /**
          * Call to update the new List item; notify data change after update
          *
-         * @param accountIDS the list of <tt>AccountId</tt>s for which connection info and
+         * @param accountIDS the list of <code>AccountId</code>s for which connection info and
          * certificates will be displayed by this adapter.
          */
         public void setAccountIDs(List<AccountID> accountIDS)

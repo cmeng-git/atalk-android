@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.*;
 
 /**
- * Implements utility functions to facilitate work with <tt>Executor</tt>s and <tt>ExecutorService</tt>.
+ * Implements utility functions to facilitate work with <code>Executor</code>s and <code>ExecutorService</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -21,10 +21,10 @@ public class ExecutorUtils
      * constructed threads when they are available. Optionally, the new threads are created as
      * daemon threads and their names are based on a specific (prefix) string.
      *
-     * @param daemon <tt>true</tt> to create the new threads as daemon threads
-     * or <tt>false</tt> to create the new threads as user threads
+     * @param daemon <code>true</code> to create the new threads as daemon threads
+     * or <code>false</code> to create the new threads as user threads
      * @param baseName the base/prefix to use for the names of the new threads
-     * or <tt>null</tt> to leave them with their default names
+     * or <code>null</code> to leave them with their default names
      * @return the newly created thread pool
      */
     public static ExecutorService newCachedThreadPool(final boolean daemon, final String baseName)
@@ -36,10 +36,10 @@ public class ExecutorUtils
      * A thread factory creating threads, which are created as daemon threads(optionally)
      * and their names are based on a specific (prefix) string.
      *
-     * @param daemon <tt>true</tt> to create the new threads as daemon threads
-     * or <tt>false</tt> to create the new threads as user threads
+     * @param daemon <code>true</code> to create the new threads as daemon threads
+     * or <code>false</code> to create the new threads as user threads
      * @param baseName the base/prefix to use for the names of the new threads
-     * or <tt>null</tt> to leave them with their default names
+     * or <code>null</code> to leave them with their default names
      * @return the newly created thread factory
      */
     private static ThreadFactory newThreadFactory(final boolean daemon, final String baseName)
@@ -47,8 +47,8 @@ public class ExecutorUtils
         return new ThreadFactory()
         {
             /**
-             * The default <tt>ThreadFactory</tt> implementation which is augmented by this
-             * instance to create daemon <tt>Thread</tt>s.
+             * The default <code>ThreadFactory</code> implementation which is augmented by this
+             * instance to create daemon <code>Thread</code>s.
              */
             private final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
 
@@ -78,10 +78,10 @@ public class ExecutorUtils
      *
      * @param corePoolSize the number of threads to keep in the pool,
      * even if they are idle.
-     * @param daemon <tt>true</tt> to create the new threads as daemon threads
-     * or <tt>false</tt> to create the new threads as user threads
+     * @param daemon <code>true</code> to create the new threads as daemon threads
+     * or <code>false</code> to create the new threads as user threads
      * @param baseName the base/prefix to use for the names of the new threads
-     * or <tt>null</tt> to leave them with their default names
+     * or <code>null</code> to leave them with their default names
      * @return the newly created thread pool
      */
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, boolean daemon, String baseName)

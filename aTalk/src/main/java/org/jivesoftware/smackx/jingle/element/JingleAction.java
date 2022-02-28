@@ -1,211 +1,197 @@
-/*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+/**
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Copyright © 2014-2022 Jive Software
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import androidx.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * XEP-0166 Jingle, stipulates that the value of the 'action' attribute MUST be one of the values
- * enumerated here. If an entity receives a value not defined here, it MUST ignore the attribute and
- * MUST return a <bad-request/> error to the sender. There is no default value for the 'action'
- * attribute.
+ * The "action" in the jingle packet, as an enum.
+ * @see <a href="https://xmpp.org/extensions/xep-0166.html#concepts-session">XEP-0166 § 5.1 Overall Session Management</a>
  *
- * @author Emil Ivov
+ * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public enum JingleAction
-{
-    /**
-     * The <tt>content-accept</tt> action is used to accept a <tt>content-add</tt> action received
-     * from another party.
-     */
-    CONTENT_ACCEPT("content-accept"),
+public enum JingleAction {
 
     /**
-     * The <tt>content-add</tt> action is used to add one or more new content definitions to the
+     * The <code>content-accept</code> action is used to accept a <code>content-add</code> action received
+     * from another party.
+     */
+    content_accept,
+
+    /**
+     * The <code>content-add</code> action is used to add one or more new content definitions to the
      * session. The sender MUST specify only the added content definition(s), not the added content
      * definition(s) plus the existing content definition(s). Therefore it is the responsibility of
      * the recipient to maintain a local copy of the current content definition(s). If the recipient
-     * wishes to include the new content definition in the session, it MUST send a
-     * <tt>content-accept</tt> action to the other party; if not, it MUST send a
-     * <tt>content-reject</tt> action to the other party.
+     * wishes to include the new content definition in the session, it MUST send a <code>content-accept</code>
+     * action to the other party; if not, it MUST send a <code>content-reject</code> action to the other party.
      */
-    CONTENT_ADD("content-add"),
+    content_add,
 
     /**
-     * The <tt>content-modify</tt> action is used to change the direction of an existing content
+     * The <code>content-modify</code> action is used to change the direction of an existing content
      * definition through modification of the 'senders' attribute. If the recipient deems the
-     * directionality of a <tt>content-modify</tt> action to be unacceptable, it MAY reply with a
-     * contrary <tt>content-modify</tt> action, terminate the session, or simply refuse to send or
+     * directionality of a <code>content-modify</code> action to be unacceptable, it MAY reply with a
+     * contrary <code>content-modify</code> action, terminate the session, or simply refuse to send or
      * accept application data in the new direction. In any case, the recipient MUST NOT send a
-     * <tt>content-accept</tt> action in response to the <tt>content-modify</tt>.
+     * <code>content-accept</code> action in response to the <code>content-modify</code>.
      */
-    CONTENT_MODIFY("content-modify"),
+    content_modify,
 
     /**
-     * The <tt>content-reject</tt> action is used to reject a <tt>content-add</tt> action received
+     * The <code>content-reject</code> action is used to reject a <code>content-add</code> action received
      * from another party.
      */
-    CONTENT_REJECT("content-reject"),
+    content_reject,
 
     /**
-     * The <tt>content-remove</tt> action is used to remove one or more content definitions from the
+     * The <code>content-remove</code> action is used to remove one or more content definitions from the
      * session. The sender MUST specify only the removed content definition(s), not the removed
      * content definition(s) plus the remaining content definition(s). Therefore it is the
      * responsibility of the recipient to maintain a local copy of the current content
      * definition(s). Upon receiving a content-remove from the other party, the recipient MUST NOT
-     * send a <tt>content-accept</tt> and MUST NOT continue to negotiate the transport method or
+     * send a <code>content-accept</code> and MUST NOT continue to negotiate the transport method or
      * send application data related to that content definition.
      * <p>
-     * If the <tt>content-remove</tt> results in zero content definitions for the session, the
-     * entity that receives the <tt>content-remove</tt> SHOULD send a <tt>session-terminate</tt>
+     * If the <code>content-remove</code> results in zero content definitions for the session, the
+     * entity that receives the <code>content-remove</code> SHOULD send a <code>session-terminate</code>
      * action to the other party (since a session with no content definitions is void).
      */
-    CONTENT_REMOVE("content-remove"),
+    content_remove,
 
     /**
-     * The <tt>description-info</tt> action is used to send informational hints about parameters
+     * The <code>description-info</code> action is used to send informational hints about parameters
      * related to the application type, such as the suggested height and width of a video display
      * area or suggested configuration for an audio stream.
      */
-    DESCRIPTION_INFO("description-info"),
+    description_info,
 
     /**
-     * The <tt>security-info</tt> action is used to send information related to establishment or
+     * The <code>security-info</code> action is used to send information related to establishment or
      * maintenance of security preconditions.
      */
-    SECURITY_INFO("security-info"),
+    security_info,
 
     /**
-     * The <tt>session-accept</tt> action is used to definitively accept a session negotiation
-     * (implicitly this action also serves as a <tt>content-accept</tt>). A <tt>session-accept</tt>
+     * The <code>session-accept</code> action is used to definitively accept a session negotiation
+     * (implicitly this action also serves as a <code>content-accept</code>). A <code>session-accept</code>
      * action indicates a willingness to proceed with the session (which might necessitate further
-     * negotiation before media can be exchanged). The <tt>session-accept</tt> action indicates
+     * negotiation before media can be exchanged). The <code>session-accept</code> action indicates
      * acceptance only of the content definition(s) whose disposition type is "session" (the default
      * value of the <content/> element's 'disposition' attribute), not any content definition(s)
-     * whose disposition type is something other than "session" (e.g., "early-session" for early
-     * media).
+     * whose disposition type is something other than "session" (e.g., "early-session" for early media).
      *
-     * In the <tt>session-accept</tt> stanza, the <jingle/> element MUST contain one or more
-     * <content/> elements, each of which MUST contain one <description/> element and one
-     * <transport/> element.
+     * In the <code>session-accept</code> stanza, the <jingle/> element MUST contain one or more
+     * <content/> elements, each of which MUST contain one <description/> element and one <transport/> element.
      */
-    SESSION_ACCEPT("session-accept"),
+    session_accept,
 
     /**
-     * The <tt>session-info</tt> action is used to send information related to establishment or
+     * The <code>session-info</code> action is used to send information related to establishment or
      * maintenance of security preconditions.
      */
-    SESSION_INFO("session-info"),
+    session_info,
 
     /**
-     * The <tt>session-initiate</tt> action is used to request negotiation of a new Jingle session.
-     * When sending a <tt>session-initiate</tt> with one <content/> element, the value of the
+     * The <code>session-initiate</code> action is used to request negotiation of a new Jingle session.
+     * When sending a <code>session-initiate</code> with one <content/> element, the value of the
      * <content/> element's 'disposition' attribute MUST be "session" (if there are multiple
      * <content/> elements then at least one MUST have a disposition of "session"); if this rule is
      * violated, the responder MUST return a <bad-request/> error to the initiator.
      */
-    SESSION_INITIATE("session-initiate"),
+    session_initiate,
 
     /**
-     * The <tt>session-terminate</tt> action is used to end an existing session.
+     * The <code>session-terminate</code> action is used to end an existing session.
      */
-    SESSION_TERMINATE("session-terminate"),
+    session_terminate,
 
     /**
-     * The <tt>transport-accept</tt> action is used to accept a <tt>transport-replace</tt> action
+     * The <code>transport-accept</code> action is used to accept a <code>transport-replace</code> action
      * received from another party.
      */
-    TRANSPORT_ACCEPT("transport-accept"),
+    transport_accept,
 
     /**
-     * The <tt>transport-info</tt> action is used to exchange transport candidates; it is mainly
+     * The <code>transport-info</code> action is used to exchange transport candidates; it is mainly
      * used in Jingle ICE-UDP but might be used in other transport specifications.
      */
-    TRANSPORT_INFO("transport-info"),
+    transport_info,
 
     /**
-     * The <tt>transport-reject</tt> action is used to reject a <tt>transport-replace</tt> action
+     * The <code>transport-reject</code> action is used to reject a <code>transport-replace</code> action
      * received from another party.
      */
-    TRANSPORT_REJECT("transport-reject"),
+    transport_reject,
 
     /**
-     * The <tt>transport-replace</tt> action is used to redefine a transport method, typically for
-     * fallback to a different method (e.g., changing from ICE-UDP to Raw UDP for a datagram
-     * transport, or changing from SOCKS5 Bytestreams to In-Band Bytestreams [27] for a streaming
-     * transport). If the recipient wishes to use the new transport definition, it MUST send a
-     * transport-accept action to the other party; if not, it MUST send a transport-reject action to
-     * the other party.
+     * The <code>transport-replace</code> action is used to redefine a transport method, typically for
+     * fallback to a different method (e.g. changing from ICE-UDP to Raw UDP for a datagram transport,
+     * or changing from SOCKS5 Bytestreams to In-Band Bytestreams for a streaming transport). If the
+     * recipient wishes to use the new transport definition, it MUST send a transport-accept action to
+     * the other party; if not, it MUST send a transport-reject action to the other party.
      */
-    TRANSPORT_REPLACE("transport-replace"),
-
-    /**
-     * The "addsource" action used in Jitsi-Meet.
-     */
-    ADDSOURCE("addsource"),
-
-    /**
-     * The "removesource" action used in Jitsi-Meet.
-     */
-    REMOVESOURCE("removesource"),
+    transport_replace,
 
     /**
      * The "source-add" action used in Jitsi-Meet.
      */
-    SOURCEADD("source-add"),
+    source_add,
 
     /**
      * The "source-remove" action used in Jitsi-Meet.
      */
-    SOURCEREMOVE("source-remove");
+    source_remove,
+    ;
 
-    /**
-     * The name of this direction.
-     */
-    private final String actionName;
+    private static final Map<String, JingleAction> map = new HashMap<>(JingleAction.values().length);
+    static {
+        for (JingleAction jingleAction : JingleAction.values()) {
+            map.put(jingleAction.toString(), jingleAction);
+        }
+    }
 
-    /**
-     * Creates a <tt>JingleAction</tt> instance with the specified name.
-     *
-     * @param actionName the name of the <tt>JingleAction</tt> we'd like to create.
-     */
-    private JingleAction(String actionName)
-    {
-        this.actionName = actionName;
+    private final String asString;
+
+    JingleAction() {
+        asString = this.name().replace('_', '-');
     }
 
     /**
-     * Returns the name of this <tt>JingleAction</tt> (e.g. "session-initiate" or
-     * "transport-accept"). The name returned by this method is meant for use directly in the XMPP
-     * XML string.
+     * Returns the name of this <code>JingleAction</code> (e.g. "session-initiate" or "transport-accept").
+     * The name returned by this method is meant for use directly in the XMPP XML string.
      *
-     * @return Returns the name of this <tt>JingleAction</tt> (e.g. "session-initiate" or
-     * "transport-accept").
+     * @return Returns the name of this <code>JingleAction</code> (e.g. "session-initiate" or "transport-accept").
      */
+    @NonNull
     @Override
-    public String toString()
-    {
-        return actionName;
+    public String toString() {
+        return asString;
     }
 
-    /**
-     * Returns a <tt>JingleAction</tt> value corresponding to the specified <tt>jingleActionStr</tt>
-     * or in other words {@link #SESSION_INITIATE} for "session-initiate" or
-     * {@link #TRANSPORT_ACCEPT} for "transport-accept").
-     *
-     * @param jingleActionStr the action <tt>String</tt> that we'd like to parse.
-     * @return a <tt>JingleAction</tt> value corresponding to the specified <tt>jingleActionStr</tt>
-     * .
-     * @throws IllegalArgumentException in case <tt>jingleActionStr</tt> is not a valid media direction.
-     */
-    public static JingleAction fromString(String jingleActionStr)
-    {
-        for (JingleAction value : values())
-            if (value.toString().equals(jingleActionStr))
-                return value;
-
-        return null;
+    public static JingleAction fromString(String string) {
+        JingleAction jingleAction = map.get(string);
+        if (jingleAction == null) {
+            throw new IllegalArgumentException("Unknown jingle action: " + string);
+        }
+        return jingleAction;
     }
 }

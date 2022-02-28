@@ -32,7 +32,7 @@ import timber.log.Timber;
  * vCard-temp information for the {@link #mContact}.
  * <p>
  * The main panel that allows users to view their account information. Different instances of
- * this class are created for every registered <tt>ProtocolProviderService</tt>.
+ * this class are created for every registered <code>ProtocolProviderService</code>.
  * Currently, supported account details are first/middle/last names, nickname,
  * street/city/region/country address, postal code, birth date, gender, organization name, job
  * title, about me, home/work email, home/work phone.
@@ -48,8 +48,8 @@ public class ContactInfoActivity extends OSGiActivity
         implements OperationSetServerStoredContactInfo.DetailsResponseListener
 {
     /**
-     * Mapping between all supported by this plugin <tt>ServerStoredDetails</tt> and their
-     * respective <tt>TextView</tt> that are used for modifying the details.
+     * Mapping between all supported by this plugin <code>ServerStoredDetails</code> and their
+     * respective <code>TextView</code> that are used for modifying the details.
      */
     private final Map<Class<? extends GenericDetail>, TextView> detailToTextField = new HashMap<>();
 
@@ -243,8 +243,8 @@ public class ContactInfoActivity extends OSGiActivity
     }
 
     /**
-     * Loads a single <tt>GenericDetail</tt> obtained from the
-     * <tt>OperationSetServerStoredAccountInfo</tt> into this plugin.
+     * Loads a single <code>GenericDetail</code> obtained from the
+     * <code>OperationSetServerStoredAccountInfo</code> into this plugin.
      *
      * @param detail to be loaded.
      */

@@ -20,8 +20,8 @@ import org.atalk.android.gui.chat.ChatMessage;
 import java.util.*;
 
 /**
- * <tt>MessageDeliveredEvent</tt>s confirm successful delivery of an instant message. Here, it's
- * applied to an <tt>AdHocChatRoom</tt>.
+ * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message. Here, it's
+ * applied to an <code>AdHocChatRoom</code>.
  *
  * @author Valentin Martinet
  */
@@ -48,7 +48,7 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	private final Date timestamp;
 
 	/**
-	 * The received <tt>IMessage</tt>.
+	 * The received <code>IMessage</code>.
 	 */
 	private IMessage message = null;
 
@@ -58,11 +58,11 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	private int eventType = -1;
 
 	/**
-	 * Creates a <tt>MessageDeliveredEvent</tt> representing delivery of the <tt>source</tt> message
-	 * to the specified <tt>to</tt> contact.
+	 * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
+	 * to the specified <code>to</code> contact.
 	 *
 	 * @param source
-	 *        the <tt>AdHocChatRoom</tt> which triggered this event.
+	 *        the <code>AdHocChatRoom</code> which triggered this event.
 	 * @param timestamp
 	 *        a date indicating the exact moment when the event occurred
 	 * @param message
@@ -84,7 +84,7 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	/**
 	 * Returns the received message.
 	 *
-	 * @return the <tt>IMessage</tt> that triggered this event.
+	 * @return the <code>IMessage</code> that triggered this event.
 	 */
 	public IMessage getMessage()
 	{
@@ -102,9 +102,9 @@ public class AdHocChatRoomMessageDeliveredEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>AdHocChatRoom</tt> that triggered this event.
+	 * Returns the <code>AdHocChatRoom</code> that triggered this event.
 	 *
-	 * @return the <tt>AdHocChatRoom</tt> that triggered this event.
+	 * @return the <code>AdHocChatRoom</code> that triggered this event.
 	 */
 	public AdHocChatRoom getSourceChatRoom()
 	{

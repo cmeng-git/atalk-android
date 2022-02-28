@@ -18,8 +18,8 @@ package net.java.sip.communicator.service.contactsource;
 import java.util.regex.*;
 
 /**
- * Declares the interface of a <tt>ContactSourceService</tt> which performs
- * <tt>ContactQuery</tt>s in a separate <tt>Thread</tt>.
+ * Declares the interface of a <code>ContactSourceService</code> which performs
+ * <code>ContactQuery</code>s in a separate <code>Thread</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -28,14 +28,14 @@ public abstract class AsyncContactSourceService
     implements ExtendedContactSourceService
 {
     /**
-     * Creates query that searches for <tt>SourceContact</tt>s
-     * which match a specific <tt>query</tt> <tt>String</tt>.
+     * Creates query that searches for <code>SourceContact</code>s
+     * which match a specific <code>query</code> <code>String</code>.
      *
-     * @param query the <tt>String</tt> which this <tt>ContactSourceService</tt>
+     * @param query the <code>String</code> which this <code>ContactSourceService</code>
      * is being queried for
-     * @return a <tt>ContactQuery</tt> which represents the query of this
-     * <tt>ContactSourceService</tt> implementation for the specified
-     * <tt>String</tt> and via which the matching <tt>SourceContact</tt>s (if
+     * @return a <code>ContactQuery</code> which represents the query of this
+     * <code>ContactSourceService</code> implementation for the specified
+     * <code>String</code> and via which the matching <code>SourceContact</code>s (if
      * any) will be returned
      * @see ContactSourceService#createContactQuery(String)
      */
@@ -46,15 +46,15 @@ public abstract class AsyncContactSourceService
     }
 
     /**
-     * Creates query that searches for <tt>SourceContact</tt>s
-     * which match a specific <tt>query</tt> <tt>String</tt>.
+     * Creates query that searches for <code>SourceContact</code>s
+     * which match a specific <code>query</code> <code>String</code>.
      *
-     * @param query the <tt>String</tt> which this <tt>ContactSourceService</tt>
+     * @param query the <code>String</code> which this <code>ContactSourceService</code>
      * is being queried for
      * @param contactCount the maximum count of result contacts
-     * @return a <tt>ContactQuery</tt> which represents the query of this
-     * <tt>ContactSourceService</tt> implementation for the specified
-     * <tt>String</tt> and via which the matching <tt>SourceContact</tt>s (if
+     * @return a <code>ContactQuery</code> which represents the query of this
+     * <code>ContactSourceService</code> implementation for the specified
+     * <code>String</code> and via which the matching <code>SourceContact</code>s (if
      * any) will be returned
      * @see ContactSourceService#createContactQuery(String)
      */
@@ -65,7 +65,7 @@ public abstract class AsyncContactSourceService
     }
 
     /**
-     * Stops this <tt>ContactSourceService</tt>.
+     * Stops this <code>ContactSourceService</code>.
      */
     public abstract void stop();
 

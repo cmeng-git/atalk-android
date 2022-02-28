@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * The <tt>ChatRoomQuery</tt> is a query over the <tt>ChatRoomContactSourceService</tt>.
+ * The <code>ChatRoomQuery</code> is a query over the <code>ChatRoomContactSourceService</code>.
  *
  * @author Hristo Terezov
  * @author Eng Chong Meng
@@ -61,7 +61,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     private ServiceListener protolProviderRegistrationListener = null;
 
     /**
-     * Creates an instance of <tt>ChatRoomQuery</tt> by specifying the parent contact source, the
+     * Creates an instance of <code>ChatRoomQuery</code> by specifying the parent contact source, the
      * query string to match and the maximum result contacts to return.
      *
      * @param queryString the query string to match
@@ -147,7 +147,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     /**
      * Handles chat room presence status updates.
      *
-     * @param evt the <tt>LocalUserChatRoomPresenceChangeEvent</tt> instance containing the chat room
+     * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> instance containing the chat room
      * and the type, and reason of the change
      */
     @Override
@@ -325,7 +325,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param contact the contact
      * @param chatRoom the chat room
-     * @return returns <tt>true</tt> if they are equal, or <tt>false</tt> if they are different
+     * @return returns <code>true</code> if they are equal, or <code>false</code> if they are different
      */
     private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoom chatRoom)
     {
@@ -339,7 +339,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param contact the contact
      * @param chatRoomWrapper the chat room wrapper
-     * @return returns <tt>true</tt> if they are equal, or <tt>false</tt> if they are different.
+     * @return returns <code>true</code> if they are equal, or <code>false</code> if they are different.
      */
     private boolean contactEqualsChatRoom(final ChatRoomSourceContact contact, final ChatRoomWrapper chatRoomWrapper)
     {
@@ -382,7 +382,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     /**
-     * Cancels this <tt>ContactQuery</tt>.
+     * Cancels this <code>ContactQuery</code>.
      *
      * @see ContactQuery#cancel()
      */
@@ -426,7 +426,7 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     /**
-     * Listens for <tt>ProtocolProviderService</tt> registrations.
+     * Listens for <code>ProtocolProviderService</code> registrations.
      */
     private class ProtocolProviderRegListener implements ServiceListener
     {

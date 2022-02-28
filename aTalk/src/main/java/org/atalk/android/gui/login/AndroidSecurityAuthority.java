@@ -24,7 +24,7 @@ import org.atalk.android.gui.util.ViewUtil;
 import timber.log.Timber;
 
 /**
- * Android <tt>SecurityAuthority</tt> implementation.
+ * Android <code>SecurityAuthority</code> implementation.
  *
  * The method checks for valid reason based on given reasonCode. Pending on the given reason, it
  * either launches a user login dialog or displays an error message.

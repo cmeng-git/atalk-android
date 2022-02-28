@@ -46,11 +46,11 @@ public class XMLConfUtils extends XMLUtils
 	 * @param doc
 	 * 		the target document where the specified path should be created
 	 * @param path
-	 * 		an array of <tt>String</tt> elements which represents the path to be created. Each
-	 * 		element of <tt>path</tt> up to and including the index {@code pathLength - 1}
+	 * 		an array of <code>String</code> elements which represents the path to be created. Each
+	 * 		element of <code>path</code> up to and including the index {@code pathLength - 1}
 	 * 		must be valid  XML (element) names
 	 * @param pathLength
-	 * 		the length of the specified <tt>path</tt>
+	 * 		the length of the specified <code>path</code>
 	 * @return the component at the end of the newly created path.
 	 */
 	public static Element createLastPathComponent(Document doc, String[] path, int pathLength)

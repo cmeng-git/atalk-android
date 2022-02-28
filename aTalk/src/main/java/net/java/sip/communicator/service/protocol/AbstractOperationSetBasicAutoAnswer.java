@@ -90,7 +90,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      *
      * @param call The new incoming call to auto-answer if needed.
      * @param isVideoCall Indicates if the remote peer which has created this call wish to have a video call.
-     * @return <tt>true</tt> if we have processed and no further processing is needed, <tt>false</tt> otherwise.
+     * @return <code>true</code> if we have processed and no further processing is needed, <code>false</code> otherwise.
      */
     public boolean autoAnswer(Call call, boolean isVideoCall)
     {
@@ -121,7 +121,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      * Checks if the call satisfy the auto answer conditions.
      *
      * @param call The new incoming call to auto-answer if needed.
-     * @return <tt>true</tt> if the call satisfy the auto answer conditions. <tt>False</tt> otherwise.
+     * @return <code>true</code> if the call satisfy the auto answer conditions. <code>False</code> otherwise.
      */
     protected abstract boolean satisfyAutoAnswerConditions(Call call);
 
@@ -212,7 +212,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
             try {
                 // If user has configured to answer video call with video, then create a video call.
                 // Always answer with video for incoming video call via Jingle Message accept.
-                if (this.isVideoCall && (answerOnJingleMessageAccept || answerWithVideo) && opSetVideoTelephony != null) {
+                if (this.isVideoCall && (answerOnJingleMessageAccept || answerWithVideo) && (opSetVideoTelephony != null)) {
                     opSetVideoTelephony.answerVideoCallPeer(peer);
                 }
                 // Else send only audio to the remote peer (remote peer is still able to send us its video stream).
@@ -227,7 +227,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
         /**
          * If our peer was not in proper state wait for it and then answer.
          *
-         * @param evt the <tt>CallPeerChangeEvent</tt> instance containing the
+         * @param evt the <code>CallPeerChangeEvent</code> instance containing the
          */
         @Override
         public void peerStateChanged(CallPeerChangeEvent evt)

@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 /**
- * <tt>MessageReceivedEvent</tt>s indicate reception of an instant message.
+ * <code>MessageReceivedEvent</code>s indicate reception of an instant message.
  *
  * @author Emil Ivov
  * @author Lubomir Marinov
@@ -49,7 +49,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     private final Date timestamp;
 
     /**
-     * The received <tt>IMessage</tt>.
+     * The received <code>IMessage</code>.
      */
     private final IMessage message;
 
@@ -71,13 +71,13 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     private boolean isImportantMessage = false;
 
     /**
-     * Creates a <tt>MessageReceivedEvent</tt> representing reception of the <tt>source</tt> message
-     * received from the specified <tt>from</tt> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
+     * received from the specified <code>from</code> contact.
      *
-     * @param source the <tt>ChatRoom</tt> for which the message is received.
-     * @param from the <tt>ChatRoomMember</tt> that has sent this message.
+     * @param source the <code>ChatRoom</code> for which the message is received.
+     * @param from the <code>ChatRoomMember</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
-     * @param message the received <tt>IMessage</tt>.
+     * @param message the received <code>IMessage</code>.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
      */
@@ -101,10 +101,10 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <tt>ChatRoomMember</tt> that has send the <tt>IMessage</tt> whose
+     * Returns a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code> whose
      * reception this event represents.
      *
-     * @return a reference to the <tt>ChatRoomMember</tt> that has send the <tt>IMessage</tt> whose
+     * @return a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code> whose
      * reception this event represents.
      */
     public ChatRoomMember getSourceChatRoomMember()
@@ -115,7 +115,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     /**
      * Returns the received message.
      *
-     * @return the <tt>IMessage</tt> that triggered this event.
+     * @return the <code>IMessage</code> that triggered this event.
      */
     public IMessage getMessage()
     {
@@ -133,9 +133,9 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ChatRoom</tt> that triggered this event.
+     * Returns the <code>ChatRoom</code> that triggered this event.
      *
-     * @return the <tt>ChatRoom</tt> that triggered this event.
+     * @return the <code>ChatRoom</code> that triggered this event.
      */
     public ChatRoom getSourceChatRoom()
     {
@@ -194,9 +194,9 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns <tt>true</tt> if message is important and <tt>false</tt> if not.
+     * Returns <code>true</code> if message is important and <code>false</code> if not.
      *
-     * @return <tt>true</tt> if message is important and <tt>false</tt> if not.
+     * @return <code>true</code> if message is important and <code>false</code> if not.
      */
     public boolean isImportantMessage()
     {

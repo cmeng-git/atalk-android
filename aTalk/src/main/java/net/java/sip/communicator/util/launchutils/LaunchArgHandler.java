@@ -19,7 +19,7 @@ import java.util.logging.Handler;
 import timber.log.Timber;
 
 /**
- * The <tt>LauncherArgHandler</tt> class handles invocation arguments that have
+ * The <code>LauncherArgHandler</code> class handles invocation arguments that have
  * been passed to us when running SIP Communicator. The class supports a fixed
  * set of options and also allows for registration of delegates.
  *
@@ -35,7 +35,7 @@ public class LaunchArgHandler
             net.java.sip.communicator.util.Logger.getLogger(LaunchArgHandler.class);
 
     /**
-     * Returned by the <tt>handleArgs</tt> methods when the arguments that have
+     * Returned by the <code>handleArgs</code> methods when the arguments that have
      * been parsed do not require for SIP Communicator to be started and the
      * Launcher is supposed to exit. That could happen when "SIP Communicator"
      * is launched with a --version argument for example or when trying to
@@ -44,22 +44,22 @@ public class LaunchArgHandler
     public static final int ACTION_EXIT = 0;
 
     /**
-     * Returned by the <tt>handleArgs</tt> methods when all arguments have been
+     * Returned by the <code>handleArgs</code> methods when all arguments have been
      * parsed and the SIP Communicator launch can continue.
      */
     public static final int ACTION_CONTINUE = 1;
 
     /**
-     * Returned by the <tt>handleArgs</tt> method when parsing the arguments
+     * Returned by the <code>handleArgs</code> method when parsing the arguments
      * has failed or if no arguments were passed and an instance of SC was
      * already launched. If this is the code returned by handleArgs, then the
-     * <tt>getErrorCode</tt> method would return an error code indicating what
+     * <code>getErrorCode</code> method would return an error code indicating what
      * the error was.
      */
     public static final int ACTION_ERROR = 2;
 
     /**
-     * Returned by the <tt>handleArgs</tt> methods when all arguments have been
+     * Returned by the <code>handleArgs</code> methods when all arguments have been
      * successfully parsed and one of them indicates that the user has requested
      * a multi instance launch.
      */
@@ -107,7 +107,7 @@ public class LaunchArgHandler
 
     /**
      * The errorCode identifying the error that occurred last time
-     * <tt>handleArgs</tt> was called.
+     * <code>handleArgs</code> was called.
      */
     private int errorCode = 0;
 
@@ -283,7 +283,7 @@ public class LaunchArgHandler
     }
 
     /**
-     * Passes <tt>uriArg</tt> to our uri manager for handling.
+     * Passes <code>uriArg</code> to our uri manager for handling.
      *
      * @param uri the uri that we'd like to pass to
      */
@@ -448,10 +448,10 @@ public class LaunchArgHandler
 
     /**
      * Returns an error code that could help identify an error when
-     * <tt>handleArgs</tt> returns ACTION_ERROR or 0 if everything went fine.
+     * <code>handleArgs</code> returns ACTION_ERROR or 0 if everything went fine.
      *
      * @return an error code that could help identify an error when
-     * <tt>handleArgs</tt> returns ACTION_ERROR or 0 if everything went fine.
+     * <code>handleArgs</code> returns ACTION_ERROR or 0 if everything went fine.
      */
     public int getErrorCode()
     {
@@ -459,11 +459,11 @@ public class LaunchArgHandler
     }
 
     /**
-     * Sets the <tt>delegationPeer</tt> that would be handling all URIs passed
+     * Sets the <code>delegationPeer</code> that would be handling all URIs passed
      * as command line arguments to SIP Communicator.
      *
-     * @param delegationPeer the <tt>delegationPeer</tt> that should handle URIs
-     * or <tt>null</tt> if we'd like to unset a previously set peer.
+     * @param delegationPeer the <code>delegationPeer</code> that should handle URIs
+     * or <code>null</code> if we'd like to unset a previously set peer.
      */
     public void setDelegationPeer(ArgDelegationPeer delegationPeer)
     {

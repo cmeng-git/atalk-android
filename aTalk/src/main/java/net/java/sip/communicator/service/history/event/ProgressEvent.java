@@ -44,7 +44,7 @@ public class ProgressEvent extends java.util.EventObject
 	private int progress = 0;
 
 	/**
-	 * Constructs a new <tt>ProgressEvent</tt>.
+	 * Constructs a new <code>ProgressEvent</code>.
 	 *
 	 * @param source
 	 *        Object The source firing this event
@@ -67,7 +67,7 @@ public class ProgressEvent extends java.util.EventObject
 	}
 
 	/**
-	 * Constructs a new <tt>ProgressEvent</tt>.
+	 * Constructs a new <code>ProgressEvent</code>.
 	 *
 	 * @param source
 	 *        Object The source firing this event
@@ -83,7 +83,7 @@ public class ProgressEvent extends java.util.EventObject
 	}
 
 	/**
-	 * Constructs a new <tt>ProgressEvent</tt>.
+	 * Constructs a new <code>ProgressEvent</code>.
 	 *
 	 * @param source
 	 *        Object The source firing this event

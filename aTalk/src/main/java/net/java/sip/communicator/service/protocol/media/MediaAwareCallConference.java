@@ -21,8 +21,8 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
- * Extends <tt>CallConference</tt> to represent the media-specific information associated with the
- * telephony conference-related state of a <tt>MediaAwareCall</tt>.
+ * Extends <code>CallConference</code> to represent the media-specific information associated with the
+ * telephony conference-related state of a <code>MediaAwareCall</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -30,35 +30,35 @@ import java.util.*;
 public class MediaAwareCallConference extends CallConference
 {
     /**
-     * The <tt>PropertyChangeListener</tt> which will listen to the <tt>MediaService</tt> about
-     * <tt>PropertyChangeEvent</tt>s.
+     * The <code>PropertyChangeListener</code> which will listen to the <code>MediaService</code> about
+     * <code>PropertyChangeEvent</code>s.
      */
     private static WeakPropertyChangeListener mediaServicePropertyChangeListener;
 
     /**
-     * The <tt>MediaDevice</tt>s indexed by <tt>MediaType</tt> ordinal which are to be used by this
-     * telephony conference for media capture and/or playback. If the <tt>MediaDevice</tt> for a
-     * specific <tt>MediaType</tt> is <tt>null</tt> ,
+     * The <code>MediaDevice</code>s indexed by <code>MediaType</code> ordinal which are to be used by this
+     * telephony conference for media capture and/or playback. If the <code>MediaDevice</code> for a
+     * specific <code>MediaType</code> is <code>null</code> ,
      * {@link MediaService#getDefaultDevice(MediaType, MediaUseCase)} is called.
      */
     private final MediaDevice[] devices;
 
     /**
-     * The <tt>MediaDevice</tt>s which implement media mixing on the respective
-     * <tt>MediaDevice</tt> in {@link #devices} for the purposes of this telephony conference.
+     * The <code>MediaDevice</code>s which implement media mixing on the respective
+     * <code>MediaDevice</code> in {@link #devices} for the purposes of this telephony conference.
      */
     private final MediaDevice[] mixers;
 
     /**
-     * The <tt>VolumeControl</tt> implementation which is to control the volume (level) of the
+     * The <code>VolumeControl</code> implementation which is to control the volume (level) of the
      * audio played back the telephony conference represented by this instance.
      */
     private final VolumeControl outputVolumeControl
             = new BasicVolumeControl(VolumeControl.PLAYBACK_VOLUME_LEVEL_PROPERTY_NAME);
 
     /**
-     * The <tt>PropertyChangeListener</tt> which listens to sources of
-     * <tt>PropertyChangeEvent</tt>s on behalf of this instance.
+     * The <code>PropertyChangeListener</code> which listens to sources of
+     * <code>PropertyChangeEvent</code>s on behalf of this instance.
      */
     private final PropertyChangeListener propertyChangeListener = new PropertyChangeListener()
     {
@@ -75,15 +75,15 @@ public class MediaAwareCallConference extends CallConference
     private final Object translatorSyncRoot = new Object();
 
     /**
-     * The <tt>RTPTranslator</tt> which forwards video RTP and RTCP traffic between the
-     * <tt>CallPeer</tt>s of the <tt>Call</tt>s participating in this telephony conference when the
+     * The <code>RTPTranslator</code> which forwards video RTP and RTCP traffic between the
+     * <code>CallPeer</code>s of the <code>Call</code>s participating in this telephony conference when the
      * local peer is acting as a conference focus.
      */
     private RTPTranslator videoRTPTranslator;
 
     /**
-     * The <tt>RTPTranslator</tt> which forwards audio RTP and RTCP traffic
-     * between the <tt>CallPeer</tt>s of the <tt>Call</tt>s participating in
+     * The <code>RTPTranslator</code> which forwards audio RTP and RTCP traffic
+     * between the <code>CallPeer</code>s of the <code>Call</code>s participating in
      * this telephony conference when the local peer is acting as a conference focus.
      */
     private RTPTranslator audioRTPTranslator;
@@ -96,7 +96,7 @@ public class MediaAwareCallConference extends CallConference
     private boolean translator = false;
 
     /**
-     * Initializes a new <tt>MediaAwareCallConference</tt> instance.
+     * Initializes a new <code>MediaAwareCallConference</code> instance.
      */
     public MediaAwareCallConference()
     {
@@ -104,11 +104,11 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Initializes a new <tt>MediaAwareCallConference</tt> instance which is to optionally utilize
+     * Initializes a new <code>MediaAwareCallConference</code> instance which is to optionally utilize
      * the Jitsi Videobridge server-side telephony conferencing technology.
      *
-     * @param jitsiVideobridge <tt>true</tt> if the telephony conference represented by the new instance is to
-     * utilize the Jitsi Videobridge server-side telephony conferencing technology; otherwise, <tt>false</tt>
+     * @param jitsiVideobridge <code>true</code> if the telephony conference represented by the new instance is to
+     * utilize the Jitsi Videobridge server-side telephony conferencing technology; otherwise, <code>false</code>
      */
     public MediaAwareCallConference(boolean jitsiVideobridge)
     {
@@ -116,12 +116,12 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Initializes a new <tt>MediaAwareCallConference</tt> instance which is to optionally
+     * Initializes a new <code>MediaAwareCallConference</code> instance which is to optionally
      * utilize the Jitsi Videobridge server-side telephony conferencing technology.
      *
-     * @param jitsiVideobridge <tt>true</tt> if the telephony conference
+     * @param jitsiVideobridge <code>true</code> if the telephony conference
      * represented by the new instance is to utilize the Jitsi Videobridge
-     * server-side telephony conferencing technology; otherwise, <tt>false</tt>
+     * server-side telephony conferencing technology; otherwise, <code>false</code>
      */
     public MediaAwareCallConference(boolean jitsiVideobridge, boolean translator)
     {
@@ -140,13 +140,13 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Adds a specific <tt>PropertyChangeListener</tt> to be notified about
-     * <tt>PropertyChangeEvent</tt>s fired by the current <tt>MediaService</tt> implementation. The
-     * implementation adds a <tt>WeakReference</tt> to the specified <tt>listener</tt> because
-     * <tt>MediaAwareCallConference</tt> is unable to determine when the
-     * <tt>PropertyChangeListener</tt> is to be removed.
+     * Adds a specific <code>PropertyChangeListener</code> to be notified about
+     * <code>PropertyChangeEvent</code>s fired by the current <code>MediaService</code> implementation. The
+     * implementation adds a <code>WeakReference</code> to the specified <code>listener</code> because
+     * <code>MediaAwareCallConference</code> is unable to determine when the
+     * <code>PropertyChangeListener</code> is to be removed.
      *
-     * @param listener the <tt>PropertyChangeListener</tt> to add
+     * @param listener the <code>PropertyChangeListener</code> to add
      */
     private static synchronized void addMediaServicePropertyChangeListener(
             PropertyChangeListener listener)
@@ -206,10 +206,10 @@ public class MediaAwareCallConference extends CallConference
     /**
      * {@inheritDoc}
      * <p>
-     * Disposes of <tt>this.videoRTPTranslator</tt> if the removed <tt>Call</tt> was the last
-     * <tt>Call</tt> in this <tt>CallConference</tt>.
+     * Disposes of <code>this.videoRTPTranslator</code> if the removed <code>Call</code> was the last
+     * <code>Call</code> in this <code>CallConference</code>.
      *
-     * @param call the <tt>Call</tt> which has been removed from the list of <tt>Call</tt>s participating
+     * @param call the <code>Call</code> which has been removed from the list of <code>Call</code>s participating
      * in this telephony conference.
      */
     @Override
@@ -232,17 +232,17 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Gets a <tt>MediaDevice</tt> which is capable of capture and/or playback of media of the
-     * specified <tt>MediaType</tt> and is the default choice of the user with respect to such a
-     * <tt>MediaDevice</tt>.
+     * Gets a <code>MediaDevice</code> which is capable of capture and/or playback of media of the
+     * specified <code>MediaType</code> and is the default choice of the user with respect to such a
+     * <code>MediaDevice</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> in which the retrieved <tt>MediaDevice</tt> is to capture
+     * @param mediaType the <code>MediaType</code> in which the retrieved <code>MediaDevice</code> is to capture
      * and/or play back media
-     * @param useCase the <tt>MediaUseCase</tt> associated with the intended utilization of the
-     * <tt>MediaDevice</tt> to be retrieved
-     * @return a <tt>MediaDevice</tt> which is capable of capture and/or playback of media of the
-     * specified <tt>mediaType</tt> and is the default choice of the user with respect to
-     * such a <tt>MediaDevice</tt>
+     * @param useCase the <code>MediaUseCase</code> associated with the intended utilization of the
+     * <code>MediaDevice</code> to be retrieved
+     * @return a <code>MediaDevice</code> which is capable of capture and/or playback of media of the
+     * specified <code>mediaType</code> and is the default choice of the user with respect to
+     * such a <code>MediaDevice</code>
      */
     public MediaDevice getDefaultDevice(MediaType mediaType, MediaUseCase useCase)
     {
@@ -293,10 +293,10 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Gets the <tt>VolumeControl</tt> which controls the volume (level) of the audio played
+     * Gets the <code>VolumeControl</code> which controls the volume (level) of the audio played
      * back in the telephony conference represented by this instance.
      *
-     * @return the <tt>VolumeControl</tt> which controls the volume (level) of the audio played
+     * @return the <code>VolumeControl</code> which controls the volume (level) of the audio played
      * back in the telephony conference represented by this instance
      */
     public VolumeControl getOutputVolumeControl()
@@ -305,14 +305,14 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Gets the <tt>RTPTranslator</tt> which forwards RTP and RTCP traffic between the
-     * <tt>CallPeer</tt>s of the <tt>Call</tt>s participating in this telephony conference when the
+     * Gets the <code>RTPTranslator</code> which forwards RTP and RTCP traffic between the
+     * <code>CallPeer</code>s of the <code>Call</code>s participating in this telephony conference when the
      * local peer is acting as a conference focus.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>MediaStream</tt> which RTP and RTCP traffic is to be
+     * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which RTP and RTCP traffic is to be
      * forwarded between
-     * @return the <tt>RTPTranslator</tt> which forwards RTP and RTCP traffic between the
-     * <tt>CallPeer</tt>s of the <tt>Call</tt>s participating in this telephony conference
+     * @return the <code>RTPTranslator</code> which forwards RTP and RTCP traffic between the
+     * <code>CallPeer</code>s of the <code>Call</code>s participating in this telephony conference
      * when the local peer is acting as a conference focus
      */
     public RTPTranslator getRTPTranslator(MediaType mediaType)
@@ -350,12 +350,12 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Notifies this <tt>MediaAwareCallConference</tt> about changes in the values of the
-     * properties of sources of <tt>PropertyChangeEvent</tt>s. For example, this instance listens
+     * Notifies this <code>MediaAwareCallConference</code> about changes in the values of the
+     * properties of sources of <code>PropertyChangeEvent</code>s. For example, this instance listens
      * to  changes of the value of {@link MediaService#DEFAULT_DEVICE} which represents the
      * user's choice with respect to the default audio device.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which specifies the name of the property which had its
+     * @param ev a <code>PropertyChangeEvent</code> which specifies the name of the property which had its
      * value changed and the old and new values of that property
      */
     private void propertyChange(PropertyChangeEvent ev)
@@ -396,13 +396,13 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Sets the <tt>MediaDevice</tt> to be used by this telephony conference for capture and/or
-     * playback of media of a specific <tt>MediaType</tt>.
+     * Sets the <code>MediaDevice</code> to be used by this telephony conference for capture and/or
+     * playback of media of a specific <code>MediaType</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> of the media which is to be captured and/or played back by the
-     * specified <tt>device</tt>
-     * @param device the <tt>MediaDevice</tt> to be used by this telephony conference for capture and/or
-     * playback of media of the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the media which is to be captured and/or played back by the
+     * specified <code>device</code>
+     * @param device the <code>MediaDevice</code> to be used by this telephony conference for capture and/or
+     * playback of media of the specified <code>mediaType</code>
      */
     void setDevice(MediaType mediaType, MediaDevice device)
     {
@@ -428,36 +428,36 @@ public class MediaAwareCallConference extends CallConference
     }
 
     /**
-     * Implements a <tt>PropertyChangeListener</tt> which weakly references and delegates to
-     * specific <tt>PropertyChangeListener</tt>s and automatically adds itself to and removes
-     * itself from a specific <tt>PropertyChangeNotifier</tt> depending on whether there are
-     * <tt>PropertyChangeListener</tt>s to delegate to. Thus enables listening to a
-     * <tt>PropertyChangeNotifier</tt> by invoking
+     * Implements a <code>PropertyChangeListener</code> which weakly references and delegates to
+     * specific <code>PropertyChangeListener</code>s and automatically adds itself to and removes
+     * itself from a specific <code>PropertyChangeNotifier</code> depending on whether there are
+     * <code>PropertyChangeListener</code>s to delegate to. Thus enables listening to a
+     * <code>PropertyChangeNotifier</code> by invoking
      * {@link PropertyChangeNotifier#addPropertyChangeListener(PropertyChangeListener)} without
      * {@link PropertyChangeNotifier#removePropertyChangeListener(PropertyChangeListener)}.
      */
     private static class WeakPropertyChangeListener implements PropertyChangeListener
     {
         /**
-         * The indicator which determines whether this <tt>PropertyChangeListener</tt> has been
+         * The indicator which determines whether this <code>PropertyChangeListener</code> has been
          * added to {@link #notifier}.
          */
         private boolean added = false;
 
         /**
-         * The list of <tt>PropertyChangeListener</tt>s which are to be notified about
-         * <tt>PropertyChangeEvent</tt>s fired by {@link #notifier}.
+         * The list of <code>PropertyChangeListener</code>s which are to be notified about
+         * <code>PropertyChangeEvent</code>s fired by {@link #notifier}.
          */
         private final List<WeakReference<PropertyChangeListener>> listeners = new LinkedList<>();
 
         /**
-         * The <tt>PropertyChangeNotifier</tt> this instance is to listen to about
-         * <tt>PropertyChangeEvent</tt>s which are to be forwarded to {@link #listeners}.
+         * The <code>PropertyChangeNotifier</code> this instance is to listen to about
+         * <code>PropertyChangeEvent</code>s which are to be forwarded to {@link #listeners}.
          */
         private final PropertyChangeNotifier notifier;
 
         /**
-         * Initializes a new <tt>WeakPropertyChangeListener</tt> instance.
+         * Initializes a new <code>WeakPropertyChangeListener</code> instance.
          */
         protected WeakPropertyChangeListener()
         {
@@ -465,10 +465,10 @@ public class MediaAwareCallConference extends CallConference
         }
 
         /**
-         * Initializes a new <tt>WeakPropertyChangeListener</tt> instance which is to listen to a
-         * specific <tt>PropertyChangeNotifier</tt>.
+         * Initializes a new <code>WeakPropertyChangeListener</code> instance which is to listen to a
+         * specific <code>PropertyChangeNotifier</code>.
          *
-         * @param notifier the <tt>PropertyChangeNotifier</tt> the new instance is to listen to
+         * @param notifier the <code>PropertyChangeNotifier</code> the new instance is to listen to
          */
         public WeakPropertyChangeListener(PropertyChangeNotifier notifier)
         {
@@ -476,11 +476,11 @@ public class MediaAwareCallConference extends CallConference
         }
 
         /**
-         * Adds a specific <tt>PropertyChangeListener</tt> to the list of
-         * <tt>PropertyChangeListener</tt>s to be notified about <tt>PropertyChangeEvent</tt>s
-         * fired by the <tt>PropertyChangeNotifier</tt> associated with this instance.
+         * Adds a specific <code>PropertyChangeListener</code> to the list of
+         * <code>PropertyChangeListener</code>s to be notified about <code>PropertyChangeEvent</code>s
+         * fired by the <code>PropertyChangeNotifier</code> associated with this instance.
          *
-         * @param listener the <tt>PropertyChangeListener</tt> to add
+         * @param listener the <code>PropertyChangeListener</code> to add
          */
         public synchronized void addPropertyChangeListener(PropertyChangeListener listener)
         {
@@ -503,7 +503,7 @@ public class MediaAwareCallConference extends CallConference
         }
 
         /**
-         * Adds this as a <tt>PropertyChangeListener</tt> to {@link #notifier}.
+         * Adds this as a <code>PropertyChangeListener</code> to {@link #notifier}.
          */
         protected void addThisToNotifier()
         {
@@ -514,7 +514,7 @@ public class MediaAwareCallConference extends CallConference
         /**
          * {@inheritDoc}
          * <p>
-         * Notifies this instance about a <tt>PropertyChangeEvent</tt> fired by {@link #notifier}.
+         * Notifies this instance about a <code>PropertyChangeEvent</code> fired by {@link #notifier}.
          */
         @Override
         public void propertyChange(PropertyChangeEvent ev)
@@ -552,11 +552,11 @@ public class MediaAwareCallConference extends CallConference
         }
 
         /**
-         * Removes a specific <tt>PropertyChangeListener</tt> from the list of
-         * <tt>PropertyChangeListener</tt>s to be notified about <tt>PropertyChangeEvent</tt>s
-         * fired by the <tt>PropertyChangeNotifier</tt> associated with this instance.
+         * Removes a specific <code>PropertyChangeListener</code> from the list of
+         * <code>PropertyChangeListener</code>s to be notified about <code>PropertyChangeEvent</code>s
+         * fired by the <code>PropertyChangeNotifier</code> associated with this instance.
          *
-         * @param listener the <tt>PropertyChangeListener</tt> to remove
+         * @param listener the <code>PropertyChangeListener</code> to remove
          */
         @SuppressWarnings("unused")
         public synchronized void removePropertyChangeListener(PropertyChangeListener listener)
@@ -575,7 +575,7 @@ public class MediaAwareCallConference extends CallConference
         }
 
         /**
-         * Removes this as a <tt>PropertyChangeListener</tt> from {@link #notifier}.
+         * Removes this as a <code>PropertyChangeListener</code> from {@link #notifier}.
          */
         protected void removeThisFromNotifier()
         {

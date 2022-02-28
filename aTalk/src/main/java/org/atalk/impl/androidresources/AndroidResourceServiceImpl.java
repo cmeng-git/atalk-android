@@ -133,10 +133,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Gets the resource ID for given color <tt>strKey</tt>.
+     * Gets the resource ID for given color <code>strKey</code>.
      *
      * @param strKey the color text identifier that has to be resolved
-     * @return the resource ID for given color <tt>strKey</tt>
+     * @return the resource ID for given color <code>strKey</code>
      */
     private int getColorId(String strKey)
     {
@@ -199,10 +199,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given path.
+     * Returns the <code>InputStream</code> of the image corresponding to the given path.
      *
      * @param path The path to the image file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given path.
+     * @return the <code>InputStream</code> of the image corresponding to the given path.
      */
     public InputStream getImageInputStreamForPath(String path)
     {
@@ -220,10 +220,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>InputStream</tt> of the image corresponding to the given key.
+     * Returns the <code>InputStream</code> of the image corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
-     * @return the <tt>InputStream</tt> of the image corresponding to the given key.
+     * @return the <code>InputStream</code> of the image corresponding to the given key.
      */
     public InputStream getImageInputStream(String key)
     {
@@ -241,10 +241,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given key.
+     * Returns the <code>URL</code> of the image corresponding to the given key.
      *
      * @param key The identifier of the image in the resource properties file.
-     * @return the <tt>URL</tt> of the image corresponding to the given key
+     * @return the <code>URL</code> of the image corresponding to the given key
      */
     public URL getImageURL(String key)
     {
@@ -252,10 +252,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the image corresponding to the given path.
+     * Returns the <code>URL</code> of the image corresponding to the given path.
      *
      * @param path The path to the given image file.
-     * @return the <tt>URL</tt> of the image corresponding to the given path.
+     * @return the <code>URL</code> of the image corresponding to the given path.
      */
     public URL getImageURLForPath(String path)
     {
@@ -291,10 +291,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the string resource id for given <tt>key</tt>.
+     * Returns the string resource id for given <code>key</code>.
      *
      * @param key the name of string resource as defined in "strings.xml"
-     * @return the string value for given <tt>key</tt>
+     * @return the string value for given <code>key</code>
      */
     private int getStringId(String key)
     {
@@ -338,7 +338,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
      * The sound resource identifier. Sounds are stored in res/raw folder.
      *
      * @param key the name of sound, for busy.wav it will be just busy
-     * @return the sound resource id for given <tt>key</tt>
+     * @return the sound resource id for given <code>key</code>
      */
     private int getSoundId(String key)
     {
@@ -346,10 +346,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the sound corresponding to the given property key.
+     * Returns the <code>URL</code> of the sound corresponding to the given property key.
      *
      * @param key the key string
-     * @return the <tt>URL</tt> of the sound corresponding to the given property key.
+     * @return the <code>URL</code> of the sound corresponding to the given property key.
      */
     public URL getSoundURL(String key)
     {
@@ -365,10 +365,10 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the <tt>URL</tt> of the sound corresponding to the given path.
+     * Returns the <code>URL</code> of the sound corresponding to the given path.
      *
      * @param path the path, for which we're looking for a sound URL
-     * @return the <tt>URL</tt> of the sound corresponding to the given path.
+     * @return the <code>URL</code> of the sound corresponding to the given path.
      */
     public URL getSoundURLForPath(String path)
     {
@@ -376,7 +376,7 @@ public class AndroidResourceServiceImpl extends AbstractResourcesService
     }
 
     /**
-     * Returns the path for given <tt>soundKey</tt>. It's formatted with protocol name in the URI format.
+     * Returns the path for given <code>soundKey</code>. It's formatted with protocol name in the URI format.
      *
      * @param soundKey the key, for the sound path
      */

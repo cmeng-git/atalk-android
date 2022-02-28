@@ -17,7 +17,7 @@ import org.osgi.framework.*;
 import timber.log.Timber;
 
 /**
- * The <tt>NotificationActivator</tt> is the activator of the notification bundle.
+ * The <code>NotificationActivator</code> is the activator of the notification bundle.
  *
  * @author Yana Stamcheva
  */
@@ -30,7 +30,7 @@ public class NotificationActivator implements BundleActivator
     private static NotificationService notificationService;
 
     /**
-     * A reference to the <tt>UIService</tt> currently in use in Jitsi.
+     * A reference to the <code>UIService</code> currently in use in Jitsi.
      */
     private static UIService uiService = null;
 
@@ -40,8 +40,8 @@ public class NotificationActivator implements BundleActivator
     private SoundNotificationHandler soundHandler;
 
     /**
-     * The <tt>ConfigurationService</tt> registered in {@link #bundleContext} and used by the
-     * <tt>NotificationActivator</tt> instance to read and write configuration properties.
+     * The <code>ConfigurationService</code> registered in {@link #bundleContext} and used by the
+     * <code>NotificationActivator</code> instance to read and write configuration properties.
      */
     private static ConfigurationService configurationService;
 
@@ -78,9 +78,9 @@ public class NotificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>AudioNotifierService</tt> obtained from the bundle context.
+     * Returns the <code>AudioNotifierService</code> obtained from the bundle context.
      *
-     * @return the <tt>AudioNotifierService</tt> obtained from the bundle context
+     * @return the <code>AudioNotifierService</code> obtained from the bundle context
      */
     public static AudioNotifierService getAudioNotifier()
     {
@@ -94,9 +94,9 @@ public class NotificationActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>SystrayService</tt> obtained from the bundle context.
+     * Returns the <code>SystrayService</code> obtained from the bundle context.
      *
-     * @return the <tt>SystrayService</tt> obtained from the bundle context
+     * @return the <code>SystrayService</code> obtained from the bundle context
      */
     public static SystrayService getSystray()
     {

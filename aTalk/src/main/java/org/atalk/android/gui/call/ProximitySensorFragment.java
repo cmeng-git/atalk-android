@@ -19,7 +19,7 @@ import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**
- * This fragment when added to parent <tt>VideoCallActivity</tt> will listen for proximity sensor
+ * This fragment when added to parent <code>VideoCallActivity</code> will listen for proximity sensor
  * updates and turn the screen on and off when NEAR/FAR distance is detected.
  *
  * @author Pawel Domas

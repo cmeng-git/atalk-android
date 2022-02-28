@@ -17,7 +17,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import timber.log.Timber;
 
 /**
- * <tt>BroadcastReceiver</tt> that listens for {@link #CALL_CTRL_ACTION} action and performs
+ * <code>BroadcastReceiver</code> that listens for {@link #CALL_CTRL_ACTION} action and performs
  * few basic operations(mute, hangup...) on the call.<br/>
  * Target call must be specified by ID passed as extra argument under {@link #EXTRA_CALL_ID} key.
  * The IDs are managed by {@link CallManager}.<br/>
@@ -121,10 +121,10 @@ public class CallControl extends BroadcastReceiver
     }
 
     /**
-     * Creates the <tt>Intent</tt> for {@link #ACTION_HANGUP}.
+     * Creates the <code>Intent</code> for {@link #ACTION_HANGUP}.
      *
      * @param callID the ID of target call.
-     * @return the <tt>Intent</tt> for {@link #ACTION_HANGUP}.
+     * @return the <code>Intent</code> for {@link #ACTION_HANGUP}.
      */
     public static Intent getHangupIntent(String callID)
     {
@@ -132,10 +132,10 @@ public class CallControl extends BroadcastReceiver
     }
 
     /**
-     * Creates the <tt>Intent</tt> for {@link #ACTION_TOGGLE_MUTE}.
+     * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      *
      * @param callID the ID of target call.
-     * @return the <tt>Intent</tt> for {@link #ACTION_TOGGLE_MUTE}.
+     * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      */
     public static Intent getToggleMuteIntent(String callID)
     {
@@ -143,10 +143,10 @@ public class CallControl extends BroadcastReceiver
     }
 
     /**
-     * Creates the <tt>Intent</tt> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
      * @param callID the ID of target call.
-     * @return the <tt>Intent</tt> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
     public static Intent getToggleOnHoldIntent(String callID)
     {
@@ -154,10 +154,10 @@ public class CallControl extends BroadcastReceiver
     }
 
     /**
-     * Creates the <tt>Intent</tt> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
      * @param callID the ID of target call.
-     * @return the <tt>Intent</tt> for {@link #ACTION_TOGGLE_ON_HOLD}.
+     * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
     public static Intent getToggleSpeakerIntent(String callID)
     {
@@ -165,13 +165,13 @@ public class CallControl extends BroadcastReceiver
     }
 
     /**
-     * Creates new <tt>Intent</tt> for given call <tt>action</tt> value that will be performed on the
-     * call identified by <tt>callID</tt>.
+     * Creates new <code>Intent</code> for given call <code>action</code> value that will be performed on the
+     * call identified by <code>callID</code>.
      *
      * @param callID target call ID managed by {@link CallManager}.
      * @param action the action value that will be used.
-     * @return new <tt>Intent</tt> for given call <tt>action</tt> value that will be performed on the
-     * call identified by <tt>callID</tt>.
+     * @return new <code>Intent</code> for given call <code>action</code> value that will be performed on the
+     * call identified by <code>callID</code>.
      */
     private static Intent createIntent(String callID, int action)
     {

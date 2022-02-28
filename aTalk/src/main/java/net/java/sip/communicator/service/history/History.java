@@ -21,9 +21,9 @@ public interface History
 	HistoryReader getReader();
 
 	/**
-	 * Returns an object that can be used to read and query this history. The <tt>InteractiveHistoryReader</tt> differs
-	 * from the <tt>HistoryReader</tt> in the way it manages query results. It allows to cancel a search at any time and
-	 * to track history results through a <tt>HistoryQueryListener</tt>.
+	 * Returns an object that can be used to read and query this history. The <code>InteractiveHistoryReader</code> differs
+	 * from the <code>HistoryReader</code> in the way it manages query results. It allows to cancel a search at any time and
+	 * to track history results through a <code>HistoryQueryListener</code>.
 	 * 
 	 * @return an object that can be used to read and query this history
 	 */
@@ -47,10 +47,10 @@ public interface History
 	HistoryRecordStructure getHistoryRecordsStructure();
 
 	/**
-	 * Sets the given <tt>structure</tt> to be the new history records structure used in this history implementation.
+	 * Sets the given <code>structure</code> to be the new history records structure used in this history implementation.
 	 * 
 	 * @param structure
-	 *        the new <tt>HistoryRecordStructure</tt> to use
+	 *        the new <code>HistoryRecordStructure</code> to use
 	 */
 	void setHistoryRecordsStructure(HistoryRecordStructure structure);
 }

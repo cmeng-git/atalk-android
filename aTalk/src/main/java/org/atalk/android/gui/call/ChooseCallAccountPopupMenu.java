@@ -37,7 +37,7 @@ import java.util.*;
 import javax.swing.*;
 
 /**
- * The <tt>ChooseCallAccountDialog</tt> is the dialog shown when calling a
+ * The <code>ChooseCallAccountDialog</code> is the dialog shown when calling a
  * contact in order to let the user choose the account he'd prefer to use in
  * order to call this contact.
  *
@@ -63,7 +63,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     private CallInterfaceListener callInterfaceListener;
 
     /**
-     * The <tt>MetaContact</tt> we're calling.
+     * The <code>MetaContact</code> we're calling.
      */
     private UIContactImpl uiContact;
 
@@ -88,7 +88,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
      * @param invoker the invoker of this pop up menu
      * @param contactToCall the contact to call
      * @param telephonyProviders a list of all possible telephony providers
-     * @param l <tt>CallInterfaceListener</tt> instance
+     * @param l <code>CallInterfaceListener</code> instance
      */
     public ChooseCallAccountPopupMenu(
             JComponent invoker,
@@ -194,7 +194,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * Adds the given <tt>telephonyProvider</tt> to the list of available
+     * Adds the given <code>telephonyProvider</code> to the list of available
      * telephony providers.
      *
      * @param telephonyProvider the provider to add.
@@ -229,7 +229,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * Adds the given <tt>telephonyContact</tt> to the list of available telephony contact.
+     * Adds the given <code>telephonyContact</code> to the list of available telephony contact.
      *
      * @param telephonyContact the telephony contact to add
      * @param opSetClass the operation set class, that indicates the action that
@@ -320,7 +320,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * Adds the given <tt>ChatTransport</tt> to the list of available
+     * Adds the given <code>ChatTransport</code> to the list of available
      * telephony chat transports.
      *
      * @param telTransport the telephony chat transport to add
@@ -381,9 +381,9 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * Sets the <tt>UIContactImpl</tt> we're currently calling.
+     * Sets the <code>UIContactImpl</code> we're currently calling.
      *
-     * @param uiContact the <tt>UIContactImpl</tt> we're currently calling
+     * @param uiContact the <code>UIContactImpl</code> we're currently calling
      */
     public void setUIContact(UIContactImpl uiContact)
     {
@@ -413,7 +413,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
      * @param opSetClass the operation set to use.
      * @param protocolProviderService the protocol provider
      * @param contact the contact address
-     * @param uiContact the <tt>MetaContact</tt> selected
+     * @param uiContact the <code>MetaContact</code> selected
      */
     protected void itemSelected(Class<? extends OperationSet> opSetClass,
             ProtocolProviderService protocolProviderService, String contact, UIContactImpl uiContact)
@@ -460,7 +460,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
 
     /**
      * A custom menu item corresponding to a specific
-     * <tt>ProtocolProviderService</tt>.
+     * <code>ProtocolProviderService</code>.
      */
     private class ProviderMenuItem extends JMenuItem implements Skinnable
     {
@@ -497,7 +497,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * A custom menu item corresponding to a specific protocol <tt>Contact</tt>.
+     * A custom menu item corresponding to a specific protocol <code>Contact</code>.
      */
     private class ContactMenuItem extends JMenuItem implements Skinnable
     {
@@ -565,7 +565,7 @@ public class ChooseCallAccountPopupMenu /* extends SIPCommPopupMenu */ implement
     }
 
     /**
-     * A custom menu item corresponding to a specific <tt>ChatTransport</tt>.
+     * A custom menu item corresponding to a specific <code>ChatTransport</code>.
      */
     private class ChatTransportMenuItem
             extends JMenuItem

@@ -51,7 +51,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     private ProtocolProviderServiceJabberImpl jabberProvider;
 
     /**
-     * List of all supported <tt>ServerStoredDetails</tt> for this implementation.
+     * List of all supported <code>ServerStoredDetails</code> for this implementation.
      */
     public static final List<Class<? extends GenericDetail>> supportedTypes = new ArrayList<>();
 

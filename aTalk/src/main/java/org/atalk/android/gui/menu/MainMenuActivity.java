@@ -59,10 +59,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 
 /**
- * The main options menu. Every <tt>Activity</tt> that desires to have the general options menu
+ * The main options menu. Every <code>Activity</code> that desires to have the general options menu
  * shown have to extend this class.
  *
- * The <tt>MainMenuActivity</tt> is an <tt>OSGiActivity</tt>.
+ * The <code>MainMenuActivity</code> is an <code>OSGiActivity</code>.
  *
  * @author Eng Chong Meng
  */
@@ -88,7 +88,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     public static boolean disableMediaServiceOnFault = false;
 
     /*
-     * The {@link CallConference} instance depicted by this <tt>CallPanel</tt>.
+     * The {@link CallConference} instance depicted by this <code>CallPanel</code>.
      */
     // private final CallConference callConference = null;
     // private ProtocolProviderService preselectedProvider = null;
@@ -343,7 +343,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     //========================================================
 
     /**
-     * The <tt>VideoBridgeProviderMenuItem</tt> for each protocol provider.
+     * The <code>VideoBridgeProviderMenuItem</code> for each protocol provider.
      */
     private class VideoBridgeProviderMenuItem
     {
@@ -351,10 +351,10 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         private List<ProtocolProviderService> videoBridgeProviders;
 
         /**
-         * Creates an instance of <tt>VideoBridgeProviderMenuItem</tt>
+         * Creates an instance of <code>VideoBridgeProviderMenuItem</code>
          * <p>
          * // @param preselectedProvider
-         * the <tt>ProtocolProviderService</tt> that provides the video bridge
+         * the <code>ProtocolProviderService</code> that provides the video bridge
          */
         public VideoBridgeProviderMenuItem()
         {
@@ -411,10 +411,10 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     }
 
     /**
-     * Implements the <tt>ServiceListener</tt> method. Verifies whether the passed event concerns
-     * a <tt>ProtocolProviderService</tt> and adds the corresponding UI controls in the menu.
+     * Implements the <code>ServiceListener</code> method. Verifies whether the passed event concerns
+     * a <code>ProtocolProviderService</code> and adds the corresponding UI controls in the menu.
      *
-     * @param event The <tt>ServiceEvent</tt> object.
+     * @param event The <code>ServiceEvent</code> object.
      */
     public void serviceChanged(ServiceEvent event)
     {

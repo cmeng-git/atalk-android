@@ -17,7 +17,7 @@ public interface UriHandler
 {
     /**
      * The name of the property that we use in the service registration
-     * properties to store a protocol name when registering <tt>UriHandler</tt>s
+     * properties to store a protocol name when registering <code>UriHandler</code>s
      */
     public static final String PROTOCOL_PROPERTY = "ProtocolName";
 

@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * Class keeps up to date list of services that implement given interface.
- * Can be used as a replacement for expensive calls to <tt>getServiceReferences</tt>.
+ * Can be used as a replacement for expensive calls to <code>getServiceReferences</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -36,9 +36,9 @@ public class ServiceObserver<T>
     private final List<T> services = new ArrayList<T>();
 
     /**
-     * Creates new instance of <tt>ServiceObserver</tt> that will observe services of given <tt>className</tt>.
+     * Creates new instance of <code>ServiceObserver</code> that will observe services of given <code>className</code>.
      *
-     * @param clazz the <tt>Class</tt> of the service to observe.
+     * @param clazz the <code>Class</code> of the service to observe.
      */
     public ServiceObserver(Class<T> clazz)
     {

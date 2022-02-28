@@ -54,9 +54,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     private static GlobalDisplayDetailsService globalDisplayDetailsService;
 
     /**
-     * Returns the <tt>ConfigurationService</tt> currently registered.
+     * Returns the <code>ConfigurationService</code> currently registered.
      *
-     * @return the <tt>ConfigurationService</tt>
+     * @return the <code>ConfigurationService</code>
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -80,10 +80,10 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns the image corresponding to the given <tt>imageID</tt>.
+     * Returns the image corresponding to the given <code>imageID</code>.
      *
      * @param imageID the identifier of the image
-     * @return the image corresponding to the given <tt>imageID</tt>
+     * @return the image corresponding to the given <code>imageID</code>
      */
     public static BufferedImage getImage(String imageID)
     {
@@ -106,9 +106,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns the <tt>BrowserLauncherService</tt> obtained from the bundle context.
+     * Returns the <code>BrowserLauncherService</code> obtained from the bundle context.
      *
-     * @return the <tt>BrowserLauncherService</tt> obtained from the bundle context
+     * @return the <code>BrowserLauncherService</code> obtained from the bundle context
      */
     public static BrowserLauncherService getBrowserLauncher()
     {
@@ -119,11 +119,11 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Gets the <tt>UIService</tt> instance registered in the
-     * <tt>BundleContext</tt> of the <tt>UtilActivator</tt>.
+     * Gets the <code>UIService</code> instance registered in the
+     * <code>BundleContext</code> of the <code>UtilActivator</code>.
      *
-     * @return the <tt>UIService</tt> instance registered in the
-     * <tt>BundleContext</tt> of the <tt>UtilActivator</tt>
+     * @return the <code>UIService</code> instance registered in the
+     * <code>BundleContext</code> of the <code>UtilActivator</code>
      */
     public static UIService getUIService()
     {
@@ -133,9 +133,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
 //    /**
-//     * Returns the <tt>KeybindingsService</tt> currently registered.
+//     * Returns the <code>KeybindingsService</code> currently registered.
 //     *
-//     * @return the <tt>KeybindingsService</tt>
+//     * @return the <code>KeybindingsService</code>
 //     */
 //    public static KeybindingsService getKeybindingsService()
 //    {
@@ -147,9 +147,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
 //    }
 
     /**
-     * Returns the <tt>AccountManager</tt> obtained from the bundle context.
+     * Returns the <code>AccountManager</code> obtained from the bundle context.
      *
-     * @return the <tt>AccountManager</tt> obtained from the bundle context
+     * @return the <code>AccountManager</code> obtained from the bundle context
      */
     public static AccountManager getAccountManager()
     {
@@ -160,9 +160,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns the <tt>FileAccessService</tt> obtained from the bundle context.
+     * Returns the <code>FileAccessService</code> obtained from the bundle context.
      *
-     * @return the <tt>FileAccessService</tt> obtained from the bundle context
+     * @return the <code>FileAccessService</code> obtained from the bundle context
      */
     public static FileAccessService getFileAccessService()
     {
@@ -173,10 +173,10 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns an instance of the <tt>MediaService</tt> obtained from the
+     * Returns an instance of the <code>MediaService</code> obtained from the
      * bundle context.
      *
-     * @return an instance of the <tt>MediaService</tt> obtained from the
+     * @return an instance of the <code>MediaService</code> obtained from the
      * bundle context
      */
     public static MediaService getMediaService()
@@ -188,10 +188,10 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns the <tt>AudioNotifierService</tt> obtained from the bundle
+     * Returns the <code>AudioNotifierService</code> obtained from the bundle
      * context.
      *
-     * @return the <tt>AudioNotifierService</tt> obtained from the bundle
+     * @return the <code>AudioNotifierService</code> obtained from the bundle
      * context
      */
     public static AudioNotifierService getAudioNotifier()
@@ -203,9 +203,9 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Returns the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context.
+     * Returns the <code>GlobalDisplayDetailsService</code> obtained from the bundle context.
      *
-     * @return the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context
+     * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
     public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
     {
@@ -217,7 +217,7 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
     }
 
     /**
-     * Calls <tt>Thread.setUncaughtExceptionHandler()</tt>
+     * Calls <code>Thread.setUncaughtExceptionHandler()</code>
      *
      * @param context The execution context of the bundle being started
      * (unused).
@@ -299,7 +299,7 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
      *
      * @param certs the certificates list
      * @param title The title of the dialog; when null the resource
-     * <tt>service.gui.CERT_DIALOG_TITLE</tt> is loaded and used.
+     * <code>service.gui.CERT_DIALOG_TITLE</code> is loaded and used.
      * @param message A text that describes why the verification failed.
      */
     public VerifyCertificateDialog createDialog(
@@ -353,7 +353,7 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
          *
          * @param certs the certificates list
          * @param title The title of the dialog; when null the resource
-         * <tt>service.gui.CERT_DIALOG_TITLE</tt> is loaded and used.
+         * <code>service.gui.CERT_DIALOG_TITLE</code> is loaded and used.
          * @param message A text that describes why the verification failed.
          */
         private VerifyCertificateDialogCreator(
@@ -392,7 +392,7 @@ public class DesktopUtilActivator implements BundleActivator, VerifyCertificateD
         AuthenticationWindowService.AuthenticationWindow authenticationWindow;
 
         /**
-         * Creates an instance of the <tt>AuthenticationWindow</tt> implementation.
+         * Creates an instance of the <code>AuthenticationWindow</code> implementation.
          *
          * @param server the server name
          * @param isUserNameEditable indicates if the user name is editable

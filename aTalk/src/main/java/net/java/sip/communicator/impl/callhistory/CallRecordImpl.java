@@ -27,7 +27,7 @@ import java.util.Date;
 public class CallRecordImpl extends CallRecord
 {
     /**
-     * The <tt>Call</tt> source of this record.
+     * The <code>Call</code> source of this record.
      */
     private Call sourceCall = null;
 
@@ -94,8 +94,8 @@ public class CallRecordImpl extends CallRecord
     }
 
     /**
-     * Sets the given <tt>ProtocolProviderService</tt> used for the call.
-     * @param pps the <tt>ProtocolProviderService</tt> to set
+     * Sets the given <code>ProtocolProviderService</code> used for the call.
+     * @param pps the <code>ProtocolProviderService</code> to set
      */
     public void setProtocolProvider(ProtocolProviderService pps)
     {

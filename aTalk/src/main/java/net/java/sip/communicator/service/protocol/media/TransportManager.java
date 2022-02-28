@@ -20,10 +20,10 @@ import java.net.*;
 import timber.log.Timber;
 
 /**
- * <tt>TransportManager</tt>s are responsible for allocating ports, gathering local candidates and
+ * <code>TransportManager</code>s are responsible for allocating ports, gathering local candidates and
  * managing ICE whenever we are using it.
  *
- * @param <U> the peer extension class like for example <tt>CallPeerSipImpl</tt> or <tt>CallPeerJabberImpl</tt>
+ * @param <U> the peer extension class like for example <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -82,7 +82,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     /**
      * Returns the port tracker that we are supposed to use when binding ports for the specified {@link MediaType}.
      *
-     * @param mediaType the media type that we want to obtain the port tracker for. Use <tt>null</tt> to
+     * @param mediaType the media type that we want to obtain the port tracker for. Use <code>null</code> to
      * obtain the default port tracker.
      * @return the port tracker that we are supposed to use when binding ports for the specified {@link MediaType}.
      */
@@ -138,8 +138,8 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     private U callPeer;
 
     /**
-     * The RTP/RTCP socket couples that this <tt>TransportManager</tt> uses to send and receive
-     * media flows through indexed by <tt>MediaType</tt> (ordinal).
+     * The RTP/RTCP socket couples that this <code>TransportManager</code> uses to send and receive
+     * media flows through indexed by <code>MediaType</code> (ordinal).
      */
     private final StreamConnector[] streamConnectors = new StreamConnector[MediaType.values().length];
 
@@ -154,13 +154,13 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Returns the <tt>StreamConnector</tt> instance that this media handler should use for streams
-     * of the specified <tt>mediaType</tt>. The method would also create a new
-     * <tt>StreamConnector</tt> if no connector has been initialized for this <tt>mediaType</tt> yet
+     * Returns the <code>StreamConnector</code> instance that this media handler should use for streams
+     * of the specified <code>mediaType</code>. The method would also create a new
+     * <code>StreamConnector</code> if no connector has been initialized for this <code>mediaType</code> yet
      * or in case one of its underlying sockets has been closed.
      *
-     * @param mediaType the <tt>MediaType</tt> that we'd like to create a connector for.
-     * @return this media handler's <tt>StreamConnector</tt> for the specified <tt>mediaType</tt>.
+     * @param mediaType the <code>MediaType</code> that we'd like to create a connector for.
+     * @return this media handler's <code>StreamConnector</code> for the specified <code>mediaType</code>.
      * @throws OperationFailedException in case we failed to initialize our connector.
      */
     public StreamConnector getStreamConnector(MediaType mediaType)
@@ -191,10 +191,10 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Closes the existing <tt>StreamConnector</tt>, if any, associated with a specific
-     * <tt>MediaType</tt> and removes its reference from this <tt>TransportManager</tt>.
+     * Closes the existing <code>StreamConnector</code>, if any, associated with a specific
+     * <code>MediaType</code> and removes its reference from this <code>TransportManager</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> associated with the <tt>StreamConnector</tt> to close
+     * @param mediaType the <code>MediaType</code> associated with the <code>StreamConnector</code> to close
      */
     public void closeStreamConnector(MediaType mediaType)
     {
@@ -212,13 +212,13 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Closes a specific <tt>StreamConnector</tt> associated with a specific <tt>MediaType</tt>. If
-     * this <tt>TransportManager</tt> has a reference to the specified <tt>streamConnector</tt>, it
+     * Closes a specific <code>StreamConnector</code> associated with a specific <code>MediaType</code>. If
+     * this <code>TransportManager</code> has a reference to the specified <code>streamConnector</code>, it
      * remains. Allows extenders to override and perform additional customizations to the closing of
-     * the specified <tt>streamConnector</tt>.
+     * the specified <code>streamConnector</code>.
      *
-     * @param mediaType the <tt>MediaType</tt> associated with the specified <tt>streamConnector</tt>
-     * @param streamConnector the <tt>StreamConnector</tt> to be closed @see #closeStreamConnector(MediaType)
+     * @param mediaType the <code>MediaType</code> associated with the specified <code>streamConnector</code>
+     * @param streamConnector the <code>StreamConnector</code> to be closed @see #closeStreamConnector(MediaType)
      */
     protected void closeStreamConnector(MediaType mediaType, StreamConnector streamConnector)
             throws OperationFailedException
@@ -231,11 +231,11 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Creates a media <tt>StreamConnector</tt> for a stream of a specific <tt>MediaType</tt>. The
+     * Creates a media <code>StreamConnector</code> for a stream of a specific <code>MediaType</code>. The
      * minimum and maximum of the media port boundaries are taken into account.
      *
-     * @param mediaType the <tt>MediaType</tt> of the stream for which a <tt>StreamConnector</tt> is to be created
-     * @return a <tt>StreamConnector</tt> for the stream of the specified <tt>mediaType</tt>
+     * @param mediaType the <code>MediaType</code> of the stream for which a <code>StreamConnector</code> is to be created
+     * @return a <code>StreamConnector</code> for the stream of the specified <code>mediaType</code>
      * @throws OperationFailedException if the binding of the sockets fails
      */
     protected StreamConnector createStreamConnector(MediaType mediaType)
@@ -255,8 +255,8 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Creates <tt>DatagramSocket</tt> bind to <tt>localHostForPeer</tt>,
-     * used the port numbers provided by <tt>portTracker</tt> and update it with
+     * Creates <code>DatagramSocket</code> bind to <code>localHostForPeer</code>,
+     * used the port numbers provided by <code>portTracker</code> and update it with
      * the result socket port so we do not try to bind to occupied ports.
      *
      * @param portTracker the port tracker.
@@ -284,8 +284,8 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Tries to set the ranges of the <tt>PortTracker</tt>s (e.g. default, audio, video, data
-     * channel) to the values specified in the <tt>ConfigurationService</tt>.
+     * Tries to set the ranges of the <code>PortTracker</code>s (e.g. default, audio, video, data
+     * channel) to the values specified in the <code>ConfigurationService</code>.
      */
     protected synchronized static void initializePortNumbers()
     {
@@ -349,17 +349,17 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Returns the <tt>InetAddress</tt> that we are using in one of our <tt>StreamConnector</tt>s
+     * Returns the <code>InetAddress</code> that we are using in one of our <code>StreamConnector</code>s
      * or, in case we don't have any connectors yet the address returned by the our network address
-     * manager as the best local address to use when contacting the <tt>CallPeer</tt> associated
-     * with this <tt>MediaHandler</tt>. This method is primarily meant for use with the o= and c=
+     * manager as the best local address to use when contacting the <code>CallPeer</code> associated
+     * with this <code>MediaHandler</code>. This method is primarily meant for use with the o= and c=
      * fields of a newly created session description. The point is that we create our
-     * <tt>StreamConnector</tt>s when constructing the media descriptions so we already have a
+     * <code>StreamConnector</code>s when constructing the media descriptions so we already have a
      * specific local address assigned to them at the time we get ready to create the c= and o=
      * fields. It is therefore better to try and return one of these addresses before trying the net
      * address manager again and running the slight risk of getting a different address.
      *
-     * @return an <tt>InetAddress</tt> that we use in one of the <tt>StreamConnector</tt>s in this class.
+     * @return an <code>InetAddress</code> that we use in one of the <code>StreamConnector</code>s in this class.
      */
     public InetAddress getLastUsedLocalHost()
     {
@@ -379,7 +379,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * Sends empty UDP packets to target destination data/control ports in order
      * to open ports on NATs or and help RTP proxies latch onto our RTP ports.
      *
-     * @param target <tt>MediaStreamTarget</tt>
+     * @param target <code>MediaStreamTarget</code>
      * @param type the {@link MediaType} of the connector we'd like to send the hole punching packet through.
      */
     public void sendHolePunchPacket(MediaStreamTarget target, MediaType type)
@@ -391,7 +391,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
      * Sends empty UDP packets to target destination data/control ports in order
      * to open ports on NATs or/and help RTP proxies latch onto our RTP ports.
      *
-     * @param target <tt>MediaStreamTarget</tt>
+     * @param target <code>MediaStreamTarget</code>
      * @param type the {@link MediaType} of the connector we'd like to send the hole punching packet through.
      * @param packet (optional) use a pre-generated packet that will be sent
      */
@@ -441,14 +441,14 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "Error cannot send to remote peer for media: %s ; %s", type.name(), target);
+            Timber.e(e, "Error cannot send to remote peer for media: %s; %s", type.name(), target);
         }
     }
 
     /**
      * Set traffic class (QoS) for the RTP socket.
      *
-     * @param target <tt>MediaStreamTarget</tt>
+     * @param target <code>MediaStreamTarget</code>
      * @param type the {@link MediaType} of the connector we'd like to set traffic class
      */
     protected void setTrafficClass(MediaStreamTarget target, MediaType type)
@@ -486,10 +486,10 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Gets the SIP traffic class associated with a specific <tt>MediaType</tt> from the configuration.
+     * Gets the SIP traffic class associated with a specific <code>MediaType</code> from the configuration.
      *
-     * @param type the <tt>MediaType</tt> to get the associated SIP traffic class of
-     * @return the SIP traffic class associated with the specified <tt>MediaType</tt> or <tt>0</tt>
+     * @param type the <code>MediaType</code> to get the associated SIP traffic class of
+     * @return the SIP traffic class associated with the specified <code>MediaType</code> or <code>0</code>
      * if not configured
      */
     private int getDSCP(MediaType type)
@@ -512,15 +512,15 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Returns the <tt>InetAddress</tt> that is most likely to be used as a next hop when contacting
-     * the specified <tt>destination</tt>. This is an utility method that is used whenever we have
+     * Returns the <code>InetAddress</code> that is most likely to be used as a next hop when contacting
+     * the specified <code>destination</code>. This is an utility method that is used whenever we have
      * to choose one of our local addresses to put in the Via, Contact or (in the case of no
      * registrar accounts) From headers.
      *
      * @param peer the CallPeer that we would contact.
-     * @return the <tt>InetAddress</tt> that is most likely to be to be used as a next hop when
-     * contacting the specified <tt>destination</tt>.
-     * @throws IllegalArgumentException if <tt>destination</tt> is not a valid host/ip/fqdn
+     * @return the <code>InetAddress</code> that is most likely to be to be used as a next hop when
+     * contacting the specified <code>destination</code>.
+     * @throws IllegalArgumentException if <code>destination</code> is not a valid host/ip/fqdn
      */
     protected abstract InetAddress getIntendedDestination(U peer);
 
@@ -666,7 +666,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     }
 
     /**
-     * Creates an {@link IceMediaStream} with the specified <tt>media</tt> name.
+     * Creates an {@link IceMediaStream} with the specified <code>media</code> name.
      *
      * @param media the name of the stream we'd like to create.
      * @param agent the ICE {@link Agent} that we will be appending the stream to.

@@ -24,52 +24,52 @@ package org.atalk.util;
 public class OSUtils
 {
 
-    /* <tt>true</tt> if architecture is 32 bit. */
+    /* <code>true</code> if architecture is 32 bit. */
     public static final boolean IS_32_BIT;
 
-    /* <tt>true</tt> if architecture is 64 bit. */
+    /* <code>true</code> if architecture is 64 bit. */
     public static final boolean IS_64_BIT;
 
-    /* <tt>true</tt> if OS is Android */
+    /* <code>true</code> if OS is Android */
     public static final boolean IS_ANDROID;
 
-    /* <tt>true</tt> if OS is Linux. */
+    /* <code>true</code> if OS is Linux. */
     public static final boolean IS_LINUX;
 
-    /* <tt>true</tt> if OS is Linux 32-bit. */
+    /* <code>true</code> if OS is Linux 32-bit. */
     public static final boolean IS_LINUX32;
 
-    /* <tt>true</tt> if OS is Linux 64-bit. */
+    /* <code>true</code> if OS is Linux 64-bit. */
     public static final boolean IS_LINUX64;
 
-    /* <tt>true</tt> if OS is MacOSX. */
+    /* <code>true</code> if OS is MacOSX. */
     public static final boolean IS_MAC;
 
-    /* <tt>true</tt> if OS is MacOSX 32-bit. */
+    /* <code>true</code> if OS is MacOSX 32-bit. */
     public static final boolean IS_MAC32;
 
-    /* <tt>true</tt> if OS is MacOSX 64-bit. */
+    /* <code>true</code> if OS is MacOSX 64-bit. */
     public static final boolean IS_MAC64;
 
-    /* <tt>true</tt> if OS is Windows. */
+    /* <code>true</code> if OS is Windows. */
     public static final boolean IS_WINDOWS;
 
-    /* <tt>true</tt> if OS is Windows 32-bit. */
+    /* <code>true</code> if OS is Windows 32-bit. */
     public static final boolean IS_WINDOWS32;
 
-    /* <tt>true</tt> if OS is Windows 64-bit. */
+    /* <code>true</code> if OS is Windows 64-bit. */
     public static final boolean IS_WINDOWS64;
 
-    /* <tt>true</tt> if OS is Windows 7. */
+    /* <code>true</code> if OS is Windows 7. */
     public static final boolean IS_WINDOWS_7;
 
-    /* <tt>true</tt> if OS is Windows 8. */
+    /* <code>true</code> if OS is Windows 8. */
     public static final boolean IS_WINDOWS_8;
 
-    /* <tt>true</tt> if OS is Windows 10. */
+    /* <code>true</code> if OS is Windows 10. */
     public static final boolean IS_WINDOWS_10;
 
-    /* <tt>true</tt> if OS is FreeBSD. */
+    /* <code>true</code> if OS is FreeBSD. */
     public static final boolean IS_FREEBSD;
 
     static {
@@ -175,8 +175,8 @@ public class OSUtils
     }
 
     /*
-     * Allows the extending of the <tt>OSUtils</tt> class but disallows
-     * initializing non-extended <tt>OSUtils</tt> instances.
+     * Allows the extending of the <code>OSUtils</code> class but disallows
+     * initializing non-extended <code>OSUtils</code> instances.
      */
     protected OSUtils()
     {

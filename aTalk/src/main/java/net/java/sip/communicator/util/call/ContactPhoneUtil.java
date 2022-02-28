@@ -20,7 +20,7 @@ import timber.log.Timber;
 
 /**
  * Utility class used to check if there is a telephony service, video calls and
- * desktop sharing enabled for a protocol specific <tt>Contact</tt>.
+ * desktop sharing enabled for a protocol specific <code>Contact</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -33,7 +33,7 @@ public class ContactPhoneUtil
      * and will be used to inform for results.
      *
      * @param contact the contact to check.
-     * @param listener the <tt>DetailsResponseListener</tt> if we're interested
+     * @param listener the <code>DetailsResponseListener</code> if we're interested
      * in obtaining results that came later
      * @param onlyVideo whether to include only video phones.
      * @param localized whether to localize phones.

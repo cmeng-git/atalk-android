@@ -61,12 +61,12 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     private final LinkedList<TreeSet<MetaContact>> contacts;
 
     /**
-     * The <tt>MetaContactListService</tt>, which is the back end of this contact list adapter.
+     * The <code>MetaContactListService</code>, which is the back end of this contact list adapter.
      */
     private MetaContactListService contactListService;
 
     /**
-     * <tt>MetaContactRenderer</tt> instance used by this adapter.
+     * <code>MetaContactRenderer</code> instance used by this adapter.
      */
     private MetaContactRenderer contactRenderer;
 
@@ -152,7 +152,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Returns the group at the given <tt>groupPosition</tt>.
+     * Returns the group at the given <code>groupPosition</code>.
      *
      * @param groupPosition the index of the group
      */
@@ -176,10 +176,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Finds group index for given <tt>MetaContactGroup</tt>.
+     * Finds group index for given <code>MetaContactGroup</code>.
      *
      * @param group the group for which we need the index.
-     * @return index of given <tt>MetaContactGroup</tt> or -1 if not found
+     * @return index of given <code>MetaContactGroup</code> or -1 if not found
      */
     public int getGroupIndex(MetaContactGroup group)
     {
@@ -187,11 +187,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Finds <tt>MetaContact</tt> index in <tt>MetaContactGroup</tt> identified by given <tt>groupIndex</tt>.
+     * Finds <code>MetaContact</code> index in <code>MetaContactGroup</code> identified by given <code>groupIndex</code>.
      *
      * @param groupIndex index of group we want to search.
-     * @param contact the <tt>MetaContact</tt> to find inside the group.
-     * @return index of <tt>MetaContact</tt> inside group identified by given group index.
+     * @param contact the <code>MetaContact</code> to find inside the group.
+     * @return index of <code>MetaContact</code> inside group identified by given group index.
      */
     public int getChildIndex(int groupIndex, MetaContact contact)
     {
@@ -199,7 +199,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Returns the count of children contained in the group given by the <tt>groupPosition</tt>.
+     * Returns the count of children contained in the group given by the <code>groupPosition</code>.
      *
      * @param groupPosition the index of the group, which children we would like to count
      */
@@ -246,7 +246,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Adds all child contacts for the given <tt>group</tt>. Omit metaGroup of zero child
+     * Adds all child contacts for the given <code>group</code>. Omit metaGroup of zero child
      *
      * @param group the group, which child contacts to add
      */
@@ -270,10 +270,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Adds the given <tt>group</tt> to both the originalGroups and Groups with
+     * Adds the given <code>group</code> to both the originalGroups and Groups with
      * zero contact if no existing group is found
      *
-     * @param metaGroup the <tt>MetaContactGroup</tt> to add
+     * @param metaGroup the <code>MetaContactGroup</code> to add
      * @param filtered false will also create group if not found
      */
     private void addGroup(MetaContactGroup metaGroup, boolean filtered)
@@ -292,9 +292,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Remove an existing <tt>group</tt> from both the originalGroups and Groups
+     * Remove an existing <code>group</code> from both the originalGroups and Groups
      *
-     * @param metaGroup the <tt>MetaContactGroup</tt> to be removed
+     * @param metaGroup the <code>MetaContactGroup</code> to be removed
      */
     private void removeGroup(MetaContactGroup metaGroup)
     {
@@ -312,10 +312,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Adds all child contacts for the given <tt>group</tt>.
+     * Adds all child contacts for the given <code>group</code>.
      *
      * @param metaGroup the parent group of the child contact to add
-     * @param metaContact the <tt>MetaContact</tt> to add
+     * @param metaContact the <code>MetaContact</code> to add
      */
     private void addContact(MetaContactGroup metaGroup, MetaContact metaContact)
     {
@@ -350,7 +350,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     /**
      * Removes the contacts contained in the given group.
      *
-     * @param group the <tt>MetaContactGroup</tt>, which contacts we'd like to remove
+     * @param group the <code>MetaContactGroup</code>, which contacts we'd like to remove
      */
     private void removeContacts(MetaContactGroup group)
     {
@@ -367,10 +367,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Removes the given <tt>metaContact</tt> from both the original and the filtered list of this adapter.
+     * Removes the given <code>metaContact</code> from both the original and the filtered list of this adapter.
      *
-     * @param metaGroup the parent <tt>MetaContactGroup</tt> of the contact to remove
-     * @param metaContact the <tt>MetaContact</tt> to remove
+     * @param metaGroup the parent <code>MetaContactGroup</code> of the contact to remove
+     * @param metaContact the <code>MetaContact</code> to remove
      */
     private void removeContact(MetaContactGroup metaGroup, MetaContact metaContact)
     {
@@ -402,9 +402,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Updates the display name of the given <tt>metaContact</tt>.
+     * Updates the display name of the given <code>metaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which display name to update
+     * @param metaContact the <code>MetaContact</code>, which display name to update
      */
     private void updateDisplayName(MetaContact metaContact)
     {
@@ -417,9 +417,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Updates the avatar of the given <tt>metaContact</tt>.
+     * Updates the avatar of the given <code>metaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which avatar to update
+     * @param metaContact the <code>MetaContact</code>, which avatar to update
      */
     private void updateAvatar(MetaContact metaContact)
     {
@@ -432,9 +432,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Updates the status of the given <tt>metaContact</tt>.
+     * Updates the status of the given <code>metaContact</code>.
      *
-     * @param metaContact the <tt>MetaContact</tt>, which status to update
+     * @param metaContact the <code>MetaContact</code>, which status to update
      */
     private void updateStatus(MetaContact metaContact)
     {
@@ -448,9 +448,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> has been added to the list.
+     * Indicates that a <code>MetaContact</code> has been added to the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactAdded(MetaContactEvent evt)
     {
@@ -462,9 +462,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> has been modified.
+     * Indicates that a <code>MetaContact</code> has been modified.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactModified(MetaContactModifiedEvent evt)
     {
@@ -473,9 +473,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> has been removed from the list.
+     * Indicates that a <code>MetaContact</code> has been removed from the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactRemoved(MetaContactEvent evt)
     {
@@ -487,9 +487,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> has been moved.
+     * Indicates that a <code>MetaContact</code> has been moved.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactMoved(MetaContactMovedEvent evt)
     {
@@ -552,9 +552,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> has been removed from the list.
+     * Indicates that a <code>MetaContact</code> has been removed from the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactRenamed(final MetaContactRenamedEvent evt)
     {
@@ -563,9 +563,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> has been added to the list.
+     * Indicates that a protocol specific <code>Contact</code> has been added to the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void protoContactAdded(final ProtoContactEvent evt)
     {
@@ -574,9 +574,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> has been renamed.
+     * Indicates that a protocol specific <code>Contact</code> has been renamed.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void protoContactRenamed(ProtoContactEvent evt)
     {
@@ -585,9 +585,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> has been modified.
+     * Indicates that a protocol specific <code>Contact</code> has been modified.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void protoContactModified(ProtoContactEvent evt)
     {
@@ -596,9 +596,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> has been removed from the list.
+     * Indicates that a protocol specific <code>Contact</code> has been removed from the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void protoContactRemoved(final ProtoContactEvent evt)
     {
@@ -607,9 +607,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a protocol specific <tt>Contact</tt> has been moved.
+     * Indicates that a protocol specific <code>Contact</code> has been moved.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void protoContactMoved(final ProtoContactEvent evt)
     {
@@ -621,11 +621,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContactGroup</tt> has been added to the list.
+     * Indicates that a <code>MetaContactGroup</code> has been added to the list.
      * Need to do it asap, as this method is called as sub-dialog of the addContact and MoveContact
      * Otherwise has problem in i.e. both the originalGroups and Groups do not contain the new metaGroup
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      * @see #metaContactMoved(MetaContactMovedEvent)
      */
     public void metaContactGroupAdded(MetaContactGroupEvent evt)
@@ -639,9 +639,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContactGroup</tt> has been modified.
+     * Indicates that a <code>MetaContactGroup</code> has been modified.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactGroupModified(MetaContactGroupEvent evt)
     {
@@ -650,9 +650,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContactGroup</tt> has been removed from the list.
+     * Indicates that a <code>MetaContactGroup</code> has been removed from the list.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactGroupRemoved(MetaContactGroupEvent evt)
     {
@@ -664,12 +664,12 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that the child contacts of a given <tt>MetaContactGroup</tt> has been reordered.
+     * Indicates that the child contacts of a given <code>MetaContactGroup</code> has been reordered.
      * Note:
      * 1. add (insert) new before remove old data to avoid indexOutOfBound
      * 2. synchronized LinkList access to avoid ConcurrentModificationException
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void childContactsReordered(MetaContactGroupEvent evt)
     {
@@ -707,9 +707,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Indicates that a <tt>MetaContact</tt> avatar has changed and needs to be updated.
+     * Indicates that a <code>MetaContact</code> avatar has changed and needs to be updated.
      *
-     * @param evt the <tt>MetaContactEvent</tt> that notified us
+     * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void metaContactAvatarUpdated(final MetaContactAvatarUpdateEvent evt)
     {
@@ -718,12 +718,12 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Returns the contained object on the given <tt>groupPosition</tt> and <tt>childPosition</tt>.
+     * Returns the contained object on the given <code>groupPosition</code> and <code>childPosition</code>.
      * Note that this method must be called on UI thread.
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
-     * @return the contained object on the given <tt>groupPosition</tt> and <tt>childPosition</tt>
+     * @return the contained object on the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
     public Object getChild(int groupPosition, int childPosition)
@@ -761,7 +761,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Filters list data to match the given <tt>query</tt>.
+     * Filters list data to match the given <code>query</code>.
      *
      * @param query the query we'd like to match
      */
@@ -828,17 +828,17 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Checks if the given <tt>metaContact</tt> is matching the given <tt>query</tt>.
-     * A <tt>MetaContact</tt> would be matching the filter if one of the following is true:<br>
+     * Checks if the given <code>metaContact</code> is matching the given <code>query</code>.
+     * A <code>MetaContact</code> would be matching the filter if one of the following is true:<br>
      * - it is online or user chooses show offline contacts
      * - its display name contains the filter string
      * - at least one of its child protocol contacts has a display name or
      * - an address that contains the filter string.
      *
-     * @param metaContact the <tt>MetaContact</tt> to check
+     * @param metaContact the <code>MetaContact</code> to check
      * @param query the query string to check for matches
-     * @return <tt>true</tt> to indicate that the given <tt>metaContact</tt> is matching the
-     * current filter, otherwise returns <tt>false</tt>
+     * @return <code>true</code> to indicate that the given <code>metaContact</code> is matching the
+     * current filter, otherwise returns <code>false</code>
      */
     private boolean isMatching(MetaContact metaContact, String query)
     {
@@ -865,15 +865,15 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Checks if the given <tt>metaGroup</tt> is matching the current filter. A group is matching
-     * the current filter only if it contains at least one child <tt>MetaContact</tt>, which is
+     * Checks if the given <code>metaGroup</code> is matching the current filter. A group is matching
+     * the current filter only if it contains at least one child <code>MetaContact</code>, which is
      * matching the current filter.<br/>
      * Note that this method must be called on UI thread.
      *
-     * @param metaGroup the <tt>MetaContactGroup</tt> to check
+     * @param metaGroup the <code>MetaContactGroup</code> to check
      * @param query the query string to check for matches
-     * @return <tt>true</tt> to indicate that the given <tt>metaGroup</tt> is matching the current
-     * filter, otherwise returns <tt>false</tt>
+     * @return <code>true</code> to indicate that the given <code>metaGroup</code> is matching the current
+     * filter, otherwise returns <code>false</code>
      */
     private boolean isMatching(MetaContactGroup metaGroup, String query)
     {
@@ -903,7 +903,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * mDialog true indicates the contact list is shown for user multiple selection e.g. invite;
      * in this case do not refreshModelData() to sort, as items selected is tracked by their position
      *
-     * @param event the <tt>ContactPresenceStatusChangeEvent</tt> that notified us
+     * @param event the <code>ContactPresenceStatusChangeEvent</code> that notified us
      */
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent event)
@@ -944,10 +944,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Adds the given <tt>ContactPresenceStatusListener</tt> to listen for contact presence status change.
+     * Adds the given <code>ContactPresenceStatusListener</code> to listen for contact presence status change.
      *
-     * @param metaContact the <tt>MetaContact</tt> for which we add the listener
-     * @param l the <tt>MessageListener</tt> to add
+     * @param metaContact the <code>MetaContact</code> for which we add the listener
+     * @param l the <code>MessageListener</code> to add
      */
     private void addContactStatusListener(MetaContact metaContact, ContactPresenceStatusListener l)
     {
@@ -964,10 +964,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Remove the given <tt>ContactPresenceStatusListener</tt> to listen for contact presence status change.
+     * Remove the given <code>ContactPresenceStatusListener</code> to listen for contact presence status change.
      *
-     * @param metaContact the <tt>MetaContact</tt> for which we remove the listener
-     * @param l the <tt>MessageListener</tt> to remove
+     * @param metaContact the <code>MetaContact</code> for which we remove the listener
+     * @param l the <code>MessageListener</code> to remove
      */
     private void removeContactStatusListener(MetaContact metaContact, ContactPresenceStatusListener l)
     {
@@ -984,11 +984,11 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     /**
-     * Checks if given <tt>metaContact</tt> is considered to be selected. That is if the chat
-     * session with given <tt>metaContact</tt> is the one currently visible.
+     * Checks if given <code>metaContact</code> is considered to be selected. That is if the chat
+     * session with given <code>metaContact</code> is the one currently visible.
      *
-     * @param metaContact the <tt>MetaContact</tt> to check.
-     * @return <tt>true</tt> if given <tt>metaContact</tt> is considered to be selected.
+     * @param metaContact the <code>MetaContact</code> to check.
+     * @return <code>true</code> if given <code>metaContact</code> is considered to be selected.
      */
     public static boolean isContactSelected(MetaContact metaContact)
     {
@@ -1012,9 +1012,9 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     }
 
     //	/**
-    //	 * Sets the default filter to the given <tt>filter</tt>.
+    //	 * Sets the default filter to the given <code>filter</code>.
     //	 *
-    //	 * @param filter the <tt>ContactListFilter</tt> to set as default
+    //	 * @param filter the <code>ContactListFilter</code> to set as default
     //	 */
     //	public void setDefaultFilter(ContactListFilter filter) {
     //		this.defaultFilter = filter;
@@ -1083,7 +1083,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //	 * Adds the given contact source to the list of available contact sources.
     //	 *
     //	 * @param contactSource
-    //	 * 		the <tt>ContactSourceService</tt>
+    //	 * 		the <code>ContactSourceService</code>
     //	 */
     //	public void addContactSource(ContactSourceService contactSource) {
     ////		if (!(contactSource instanceof AsyncContactSourceService)
@@ -1127,12 +1127,12 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     ////	}
     //
     //	/**
-    //	 * Returns the <tt>ExternalContactSource</tt> corresponding to the given
-    //	 * <tt>ContactSourceService</tt>.
+    //	 * Returns the <code>ExternalContactSource</code> corresponding to the given
+    //	 * <code>ContactSourceService</code>.
     //	 *
-    //	 * @param contactSource the <tt>ContactSourceService</tt>, which
+    //	 * @param contactSource the <code>ContactSourceService</code>, which
     //	 * 		corresponding external source implementation we're looking for
-    //	 * @return the <tt>ExternalContactSource</tt> corresponding to the given <tt>ContactSourceService</tt>
+    //	 * @return the <code>ExternalContactSource</code> corresponding to the given <code>ContactSourceService</code>
     //	 */
     //	public ContactSourceService getContactSource(ContactSourceService contactSource) {
     ////		for (ContactSourceService extSource : mContactSources) {
@@ -1144,10 +1144,10 @@ public class MetaContactListAdapter extends BaseContactListAdapter
     //	}
     //
     //	/**
-    //	 * Returns all <tt>UIContactSource</tt>s of the given type.
+    //	 * Returns all <code>UIContactSource</code>s of the given type.
     //	 *
     //	 * @param type the type of sources we're looking for
-    //	 * @return a list of all <tt>UIContactSource</tt>s of the given type
+    //	 * @return a list of all <code>UIContactSource</code>s of the given type
     //	 */
     //	public List<ContactSourceService> getContactSources(int type) {
     ////		List<ContactSourceService> sources = new ArrayList<>();

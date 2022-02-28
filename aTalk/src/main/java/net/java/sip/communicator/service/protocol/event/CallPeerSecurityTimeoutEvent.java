@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * The <tt>CallPeerSecurityTimeoutEvent</tt> is triggered whenever a communication with a given peer
+ * The <code>CallPeerSecurityTimeoutEvent</code> is triggered whenever a communication with a given peer
  * cannot be established, the peer did not answer our tries to secure the connection.
  *
  * @author Damian Minkov

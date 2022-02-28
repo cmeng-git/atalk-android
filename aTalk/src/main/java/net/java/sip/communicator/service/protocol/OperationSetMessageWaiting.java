@@ -70,21 +70,21 @@ public interface OperationSetMessageWaiting extends OperationSet
     }
 
     /**
-     * Registers a <tt>MessageWaitingListener</tt> with this operation set so that it gets
+     * Registers a <code>MessageWaitingListener</code> with this operation set so that it gets
      * notifications of new and old messages waiting.
      *
      * @param type register the listener for certain type of messages.
-     * @param listener the <tt>MessageWaitingListener</tt> to register.
+     * @param listener the <code>MessageWaitingListener</code> to register.
      */
     public void addMessageWaitingNotificationListener(MessageType type,
             MessageWaitingListener listener);
 
     /**
-     * Unregisters <tt>listener</tt> so that it won't receive any further notifications upon new
+     * Unregisters <code>listener</code> so that it won't receive any further notifications upon new
      * messages waiting notifications delivery.
      *
      * @param type register the listener for certain type of messages.
-     * @param listener the <tt>MessageWaitingListener</tt> to unregister.
+     * @param listener the <code>MessageWaitingListener</code> to unregister.
      */
     public void removeMessageWaitingNotificationListener(MessageType type,
             MessageWaitingListener listener);

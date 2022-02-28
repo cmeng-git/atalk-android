@@ -21,7 +21,7 @@ import net.java.sip.communicator.service.protocol.*;
 import java.io.File;
 
 /**
- * The Jabber protocol HttpFileDownloadJabberImpl extension of the <tt>AbstractFileTransfer</tt>.
+ * The Jabber protocol HttpFileDownloadJabberImpl extension of the <code>AbstractFileTransfer</code>.
  *
  * @author Eng Chong Meng
  */
@@ -35,7 +35,7 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
     private long fileSize = -1;
 
     /**
-     * Creates an <tt>IncomingFileTransferJabberImpl</tt>.
+     * Creates an <code>IncomingFileTransferJabberImpl</code>.
      *
      * @param sendTo the recipient of the file
      * @param id the message Uuid uniquely identify  record in DB

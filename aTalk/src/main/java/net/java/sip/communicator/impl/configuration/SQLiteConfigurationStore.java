@@ -28,7 +28,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>ConfigurationStore</tt> which stores property name-value associations in an
+ * Implements a <code>ConfigurationStore</code> which stores property name-value associations in an
  * SQLite database.
  *
  * @author Lyubomir Marinov
@@ -47,7 +47,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
     private static SQLiteDatabase mDB = null;
 
     /**
-     * Initializes a new <tt>SQLiteConfigurationStore</tt> instance.
+     * Initializes a new <code>SQLiteConfigurationStore</code> instance.
      */
     public SQLiteConfigurationStore()
     {
@@ -62,15 +62,15 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 
     /**
      * Overrides {@link HashtableConfigurationStore#getProperty(String)}. If this
-     * <tt>ConfigurationStore</tt> contains a value associated with the specified property name,
+     * <code>ConfigurationStore</code> contains a value associated with the specified property name,
      * returns it. Otherwise, searches for a system property with the specified name and returns
      * its value. If property name starts with "acc", the look up the value in table
      * AccountID.TBL_PROPERTIES for the specified accountUuid, otherwise use table TABLE_NAME
      *
      * @param name the name of the property to get the value of
-     * @return the value in this <tt>ConfigurationStore</tt> of the property with the specified
-     * name; <tt>null</tt> if the property with the specified name does not have an association
-     * with a value in this <tt>ConfigurationStore</tt>
+     * @return the value in this <code>ConfigurationStore</code> of the property with the specified
+     * name; <code>null</code> if the property with the specified name does not have an association
+     * with a value in this <code>ConfigurationStore</code>
      * @see ConfigurationStore#getProperty(String)
      */
     @Override
@@ -115,10 +115,10 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 
     /**
      * Overrides {@link HashtableConfigurationStore#getPropertyNames(String)}. Gets the names of
-     * the properties which have values associated in this <tt>ConfigurationStore</tt>.
+     * the properties which have values associated in this <code>ConfigurationStore</code>.
      *
-     * @return an array of <tt>String</tt>s which specify the names of the properties that have
-     * values associated in this <tt>ConfigurationStore</tt>; an empty array if this instance
+     * @return an array of <code>String</code>s which specify the names of the properties that have
+     * values associated in this <code>ConfigurationStore</code>; an empty array if this instance
      * contains no property values
      * @see ConfigurationStore#getPropertyNames(String)
      */
@@ -149,7 +149,7 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 
     /**
      * Removes all property name-value associations currently present in this
-     * <tt>ConfigurationStore</tt> instance and de-serializes new property name-value
+     * <code>ConfigurationStore</code> instance and de-serializes new property name-value
      * associations from its underlying database (storage).
      *
      * @throws IOException if there is an input error while reading from the underlying database (storage)
@@ -163,12 +163,12 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
 
     /**
      * Overrides {@link HashtableConfigurationStore#removeProperty(String)}. Removes the value
-     * association in this <tt>ConfigurationStore</tt> of the property with a specific name. If
+     * association in this <code>ConfigurationStore</code> of the property with a specific name. If
      * the property with the specified name is not associated with a value in this
-     * <tt>ConfigurationStore</tt>, does nothing.
+     * <code>ConfigurationStore</code>, does nothing.
      *
      * @param name the name of the property which is to have its value association in this
-     * <tt>ConfigurationStore</tt> removed
+     * <code>ConfigurationStore</code> removed
      * @see ConfigurationStore#removeProperty(String)
      */
     public void removeProperty(String name)
@@ -201,9 +201,9 @@ public class SQLiteConfigurationStore extends DatabaseConfigurationStore
      * Overrides {@link HashtableConfigurationStore#setNonSystemProperty(String, Object)}.
      *
      * @param name the name of the non-system property to be set to the specified value in this
-     * <tt>ConfigurationStore</tt>
+     * <code>ConfigurationStore</code>
      * @param value the value to be assigned to the non-system property with the specified name in this
-     * <tt>ConfigurationStore</tt>
+     * <code>ConfigurationStore</code>
      * @see ConfigurationStore#setNonSystemProperty(String, Object)
      */
     @Override

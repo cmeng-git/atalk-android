@@ -160,7 +160,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     // ------------------------------------------------------------------------
 
     /**
-     * Initializes a new <tt>CertificateServiceImpl</tt> instance.
+     * Initializes a new <code>CertificateServiceImpl</code> instance.
      */
     public CertificateServiceImpl()
     {
@@ -579,8 +579,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
 
     /**
      * Creates a trustManager that validates the certificate based on the specified verifiers and
-     * asks the user when the validation fails. When <tt>null</tt> is passed as the
-     * <tt>identityToTest</tt> then no check is performed whether the certificate is valid for a
+     * asks the user when the validation fails. When <code>null</code> is passed as the
+     * <code>identityToTest</code> then no check is performed whether the certificate is valid for a
      * specific server or client.
      *
      * The trust manager which asks the client whether to trust particular certificate which is not

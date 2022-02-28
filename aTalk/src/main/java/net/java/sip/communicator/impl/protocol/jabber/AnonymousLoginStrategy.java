@@ -36,7 +36,7 @@ import javax.net.ssl.X509TrustManager;
 public class AnonymousLoginStrategy implements JabberLoginStrategy
 {
     /**
-     * <tt>UserCredentials</tt> used by accompanying services.
+     * <code>UserCredentials</code> used by accompanying services.
      */
     private final UserCredentials credentials;
     private ConnectionConfiguration.Builder<?, ?>  ccBuilder;
@@ -44,7 +44,7 @@ public class AnonymousLoginStrategy implements JabberLoginStrategy
     /**
      * Creates new anonymous login strategy instance.
      *
-     * @param login user login only for the purpose of returning <tt>UserCredentials</tt> that are used by
+     * @param login user login only for the purpose of returning <code>UserCredentials</code> that are used by
      * accompanying services.
      */
     public AnonymousLoginStrategy(String login, ConnectionConfiguration.Builder<?, ?>  ccBuilder)

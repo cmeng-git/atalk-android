@@ -20,7 +20,7 @@ import timber.log.Timber;
 
 /**
  * An abstract base implementation of {@link SCAudioClip} which is provided in order to aid
- * implementers by allowing them to extend <tt>AbstractSCAudioClip</tt> and focus on the task of
+ * implementers by allowing them to extend <code>AbstractSCAudioClip</code> and focus on the task of
  * playing actual audio once.
  *
  * @author Damian Minkov
@@ -30,14 +30,14 @@ import timber.log.Timber;
 public abstract class AbstractSCAudioClip implements SCAudioClip
 {
     /**
-     * The thread pool used by the <tt>AbstractSCAudioClip</tt> instances in order to reduce the
+     * The thread pool used by the <code>AbstractSCAudioClip</code> instances in order to reduce the
      * impact of thread creation/initialization.
      */
     private static ExecutorService executorService;
 
     /**
-     * The <tt>AudioNotifierService</tt> which has initialized this instance.
-     * <tt>AbstractSCAudioClip</tt> monitors its <tt>mute</tt> property/state in order to silence
+     * The <code>AudioNotifierService</code> which has initialized this instance.
+     * <code>AbstractSCAudioClip</code> monitors its <code>mute</code> property/state in order to silence
      * the played audio as appropriate/necessary.
      */
     private final AudioNotifierService audioNotifier;
@@ -57,8 +57,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * The interval of time in milliseconds between consecutive plays of this audio in a loop. If
      * negative, this audio is played once only. If non-negative, this audio may still be played
-     * once only if the <tt>loopCondition</tt> specified to {@link #play(int, Callable)} is
-     * <tt>null</tt> or its invocation fails.
+     * once only if the <code>loopCondition</code> specified to {@link #play(int, Callable)} is
+     * <code>null</code> or its invocation fails.
      */
     private int loopInterval;
 
@@ -68,7 +68,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     private boolean started;
 
     /**
-     * The <tt>Object</tt> used for internal synchronization purposes which arise because this
+     * The <code>Object</code> used for internal synchronization purposes which arise because this
      * instance does the actual playback of audio in a separate thread.
      * <p>
      * The synchronization root is exposed to extenders in case they would like to, for example,
@@ -77,8 +77,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     protected final Object sync = new Object();
 
     /**
-     * The <tt>String</tt> uri of the audio to be played by this instance.
-     * <tt>AbstractSCAudioClip</tt> does not use it and just remembers it in order to make it available to extenders.
+     * The <code>String</code> uri of the audio to be played by this instance.
+     * <code>AbstractSCAudioClip</code> does not use it and just remembers it in order to make it available to extenders.
      */
     protected final String uri;
 
@@ -100,7 +100,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * the playback of this audio is about to start playing this audio for the first time.
      * Regardless of whether this instance is to be played once or multiple times in a loop, the
      * method is called once in order to allow extenders/implementers to perform one-time
-     * initialization before this audio starts playing. The <tt>AbstractSCAudioClip</tt>
+     * initialization before this audio starts playing. The <code>AbstractSCAudioClip</code>
      * implementation does nothing.
      */
     protected void enterRunInPlayThread()
@@ -112,7 +112,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * the playback of this audio is about to stop playing this audio once. Regardless of whether
      * this instance is to be played once or multiple times in a loop, the method is called once
      * in order to allow extenders/implementers to perform one-time cleanup after this audio
-     * stops playing. The <tt>AbstractSCAudioClip</tt> implementation does nothing.
+     * stops playing. The <code>AbstractSCAudioClip</code> implementation does nothing.
      */
     protected void exitRunInPlayThread()
     {
@@ -123,7 +123,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * the playback of this audio is about the start playing this audio once. If this audio is to
      * be played in a loop, the method is invoked at the beginning of each iteration of the loop.
      * Allows extenders/implementers to perform per-loop iteration initialization. The
-     * <tt>AbstractSCAudioClip</tt> implementation does nothing.
+     * <code>AbstractSCAudioClip</code> implementation does nothing.
      */
     private void enterRunOnceInPlayThread()
     {
@@ -134,7 +134,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * the playback of this audio is about to stop playing this audio. If this audio is to be
      * played in a loop, the method is called at the end of each iteration of the loop. Allows
      * extenders/implementers to perform per-loop iteration cleanup. The
-     * <tt>AbstractSCAudioClip</tt> implementation does nothing.
+     * <code>AbstractSCAudioClip</code> implementation does nothing.
      */
     protected void exitRunOnceInPlayThread()
     {
@@ -143,10 +143,10 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * Plays this audio once.
      *
-     * @return <tt>true</tt> if subsequent plays of this audio and, respectively, the method are
-     * to be invoked if this audio is to be played in a loop; otherwise, <tt>false</tt>. The
+     * @return <code>true</code> if subsequent plays of this audio and, respectively, the method are
+     * to be invoked if this audio is to be played in a loop; otherwise, <code>false</code>. The
      * value reflects an implementation-specific loop condition, is not dependent on
-     * <tt>loopInterval</tt> and <tt>loopCondition</tt> and is combined with the latter in order
+     * <code>loopInterval</code> and <code>loopCondition</code> and is combined with the latter in order
      * to determine whether there will be a subsequent iteration of the playback loop.
      */
     protected abstract boolean runOnceInPlayThread();
@@ -154,9 +154,9 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * {@inheritDoc}
      * <p>
-     * Delegates to {@link #play(int, Callable)} with <tt>loopInterval</tt> <tt>-1</tt> and
-     * <tt>loopCondition</tt> <tt>null</tt> in order to conform with the contract for the
-     * behavior of this method specified by the interface <tt>SCAudioClip</tt>.
+     * Delegates to {@link #play(int, Callable)} with <code>loopInterval</code> <code>-1</code> and
+     * <code>loopCondition</code> <code>null</code> in order to conform with the contract for the
+     * behavior of this method specified by the interface <code>SCAudioClip</code>.
      */
     public void play()
     {
@@ -238,10 +238,10 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     }
 
     /**
-     * Determines whether this audio is started i.e. a <tt>play</tt> method was invoked and no
-     * subsequent <tt>stop</tt> has been invoked yet.
+     * Determines whether this audio is started i.e. a <code>play</code> method was invoked and no
+     * subsequent <code>stop</code> has been invoked yet.
      *
-     * @return <tt>true</tt> if this audio is started; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this audio is started; otherwise, <code>false</code>
      */
     public boolean isStarted()
     {
@@ -254,9 +254,9 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * Runs in a background/separate thread dedicated to the actual playback of this audio and
      * plays this audio once or in a loop.
      *
-     * @param loopCondition a <tt>Callback&lt;Boolean&gt;</tt> which represents the condition on which this
-     * audio will play more than once. If <tt>null</tt>, this audio will play once only. If an invocation of
-     * <tt>loopCondition</tt> throws a <tt>Throwable</tt>, this audio will discontinue playing.
+     * @param loopCondition a <code>Callback&lt;Boolean&gt;</code> which represents the condition on which this
+     * audio will play more than once. If <code>null</code>, this audio will play once only. If an invocation of
+     * <code>loopCondition</code> throws a <code>Throwable</code>, this audio will discontinue playing.
      */
     private void runInPlayThread(Callable<Boolean> loopCondition)
     {
@@ -380,9 +380,9 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
      * condition changes to stop playing if triggered
      * There is always a wait of 3 seconds for non-loop tone to complete playing at least once
      *
-     * @param loopCondition a <tt>Callback&lt;Boolean&gt;</tt> which represents the condition on which this
-     * audio will play more than once. If <tt>null</tt>, this audio will play once only. If an invocation of
-     * <tt>loopCondition</tt> throws a <tt>Throwable</tt>, this audio will discontinue playing.
+     * @param loopCondition a <code>Callback&lt;Boolean&gt;</code> which represents the condition on which this
+     * audio will play more than once. If <code>null</code>, this audio will play once only. If an invocation of
+     * <code>loopCondition</code> throws a <code>Throwable</code>, this audio will discontinue playing.
      */
     private void runInPlayRingtoneThread(Callable<Boolean> loopCondition)
     {
@@ -544,12 +544,12 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     }
 
     /**
-     * Determines whether this instance is invalid. <tt>AbstractSCAudioClip</tt> does not use the
-     * <tt>invalid</tt> property/state of this instance and merely remembers the value which was
-     * set on it by {@link #setInvalid(boolean)}. The default value is <tt>false</tt> i.e. this
+     * Determines whether this instance is invalid. <code>AbstractSCAudioClip</code> does not use the
+     * <code>invalid</code> property/state of this instance and merely remembers the value which was
+     * set on it by {@link #setInvalid(boolean)}. The default value is <code>false</code> i.e. this
      * instance is valid by default.
      *
-     * @return <tt>true</tt> if this instance is invalid; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this instance is invalid; otherwise, <code>false</code>
      */
     public boolean isInvalid()
     {
@@ -558,12 +558,12 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     /**
      * Sets the indicator which determines whether this instance is invalid.
-     * <tt>AbstractSCAudioClip</tt> does not use the <tt>invalid</tt> property/state of this
+     * <code>AbstractSCAudioClip</code> does not use the <code>invalid</code> property/state of this
      * instance and merely remembers the value which was set on it so that it can be retrieved by
-     * {@link #isInvalid()}. The default value is <tt>false</tt> i.e. this
+     * {@link #isInvalid()}. The default value is <code>false</code> i.e. this
      * instance is valid by default.
      *
-     * @param invalid <tt>true</tt> to mark this instance invalid or <tt>false</tt> to mark it valid
+     * @param invalid <code>true</code> to mark this instance invalid or <code>false</code> to mark it valid
      */
     public void setInvalid(boolean invalid)
     {
@@ -573,7 +573,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * Determines whether this instance plays the audio it represents in a loop.
      *
-     * @return <tt>true</tt> if this instance plays the audio it represents in a loop; <tt>false</tt>, otherwise
+     * @return <code>true</code> if this instance plays the audio it represents in a loop; <code>false</code>, otherwise
      */
     public boolean isLooping()
     {
@@ -583,11 +583,11 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * Sets the indicator which determines whether this audio is to play in a loop. Generally,
      * public invocation of the method is not necessary because the looping is controlled by the
-     * <tt>loopInterval</tt> property of this instance and the <tt>loopInterval</tt> and
-     * <tt>loopCondition</tt> parameters of {@link #play(int, Callable)} anyway.
+     * <code>loopInterval</code> property of this instance and the <code>loopInterval</code> and
+     * <code>loopCondition</code> parameters of {@link #play(int, Callable)} anyway.
      *
-     * @param looping <tt>true</tt> to mark this instance that it should play the audio it represents in a
-     * loop; otherwise, <tt>false</tt>
+     * @param looping <code>true</code> to mark this instance that it should play the audio it represents in a
+     * loop; otherwise, <code>false</code>
      */
     public void setLooping(boolean looping)
     {
@@ -613,8 +613,8 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     /**
      * Sets the interval of time in milliseconds between consecutive plays of this audio in a loop
      * . If negative, this audio is played once only. If non-negative, this audio may still be
-     * played once only if the <tt>loopCondition</tt> specified to {@link #play(int, Callable)}
-     * is <tt>null</tt> or its invocation fails.
+     * played once only if the <code>loopCondition</code> specified to {@link #play(int, Callable)}
+     * is <code>null</code> or its invocation fails.
      *
      * @param loopInterval the interval of time in milliseconds between consecutive plays of this audio in a loop
      * to be set on this instance

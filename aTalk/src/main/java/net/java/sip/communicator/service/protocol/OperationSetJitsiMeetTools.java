@@ -35,48 +35,48 @@ public interface OperationSetJitsiMeetTools extends OperationSet
     public void removeSupportedFeature(String featureName);
 
     /**
-     * Includes given <tt>ExtensionElement</tt> in multi user chat presence and sends presence
+     * Includes given <code>ExtensionElement</code> in multi user chat presence and sends presence
      * update packet to the chat room.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which the presence will be updated.
-     * @param extension the <tt>ExtensionElement</tt> to be included in MUC presence.
+     * @param chatRoom the <code>ChatRoom</code> for which the presence will be updated.
+     * @param extension the <code>ExtensionElement</code> to be included in MUC presence.
      */
     public void sendPresenceExtension(ChatRoom chatRoom, ExtensionElement extension);
 
     /**
-     * Removes given <tt>PacketExtension</tt> from the multi user chat presence
+     * Removes given <code>PacketExtension</code> from the multi user chat presence
      * and sends presence update packet to the chat room.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which the presence will be
+     * @param chatRoom the <code>ChatRoom</code> for which the presence will be
      *
-     * @param extension the <tt>PacketExtension</tt> to be removed from the MUC presence.
+     * @param extension the <code>PacketExtension</code> to be removed from the MUC presence.
      */
     public void removePresenceExtension(ChatRoom chatRoom, ExtensionElement extension);
 
     /**
      * Sets the status message of our MUC presence and sends presence status update packet to the server.
      *
-     * @param chatRoom the <tt>ChatRoom</tt> for which the presence status message will be changed.
+     * @param chatRoom the <code>ChatRoom</code> for which the presence status message will be changed.
      * @param statusMessage the text that will be used as our presence status message in the MUC.
      */
     public void setPresenceStatus(ChatRoom chatRoom, String statusMessage);
 
     /**
-     * Adds given <tt>listener</tt> to the list of {@link JitsiMeetRequestListener}s.
+     * Adds given <code>listener</code> to the list of {@link JitsiMeetRequestListener}s.
      *
      * @param listener the {@link JitsiMeetRequestListener} to be notified about future events.
      */
     public void addRequestListener(JitsiMeetRequestListener listener);
 
     /**
-     * Removes given <tt>listener</tt> from the list of {@link JitsiMeetRequestListener}s.
+     * Removes given <code>listener</code> from the list of {@link JitsiMeetRequestListener}s.
      *
      * @param listener the {@link JitsiMeetRequestListener} that will be no longer notified about Jitsi Meet events.
      */
     public void removeRequestListener(JitsiMeetRequestListener listener);
 
     /**
-     * Sends a JSON to the specified <tt>callPeer</tt>.
+     * Sends a JSON to the specified <code>callPeer</code>.
      *
      * @param callPeer the CallPeer to which we send the JSONObject to.
      * @param jsonObject the JSONObject that we send to the CallPeer.

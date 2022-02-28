@@ -18,7 +18,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.*;
 
 /**
- * <tt>MessageWaitingEvent<tt> indicates a message waiting event
+ * <code>MessageWaitingEvent<code> indicates a message waiting event
  * is received.
  *
  * @author Damian Minkov
@@ -128,9 +128,9 @@ public class MessageWaitingEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>ProtocolProviderService</tt> which originated this event.
+	 * Returns the <code>ProtocolProviderService</code> which originated this event.
 	 *
-	 * @return the source <tt>ProtocolProviderService</tt>
+	 * @return the source <code>ProtocolProviderService</code>
 	 */
 	public ProtocolProviderService getSourceProvider()
 	{

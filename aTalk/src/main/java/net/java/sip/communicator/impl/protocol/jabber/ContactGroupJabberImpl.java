@@ -19,9 +19,9 @@ import java.util.*;
 
 /**
  * The Jabber implementation of the ContactGroup interface. Instances of this class (contrary to
- * <tt>RootContactGroupJabberImpl</tt>) may only contain contacts and cannot have subgroups.
+ * <code>RootContactGroupJabberImpl</code>) may only contain contacts and cannot have subgroups.
  * Note that instances of this class only use the corresponding smack source group for reading their
- * names and only initially fill their <tt>contacts</tt> <tt>java.util.List</tt> with the
+ * names and only initially fill their <code>contacts</code> <code>java.util.List</code> with the
  * ContactJabberImpl objects corresponding to those contained in the source group at the moment it
  * is being created. They would, however, never try to sync or update their contents ulteriorly.
  * This would have to be done through the addContact()/removeContact() methods. The content of
@@ -72,7 +72,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     private final ServerStoredContactListJabberImpl ssclCallback;
 
     /**
-     * Creates an Jabber group using the specified <tt>RosterGroup</tt> as a source. The newly
+     * Creates an Jabber group using the specified <code>RosterGroup</code> as a source. The newly
      * created group will always return the name of the underlying RosterGroup and would thus
      * automatically adapt to changes. It would, however, not receive or try to poll for
      * modifications of the contacts it contains and would therefore have to be updated manually by
@@ -128,10 +128,10 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the number of <tt>Contact</tt> members of this <tt>ContactGroup</tt>
+     * Returns the number of <code>Contact</code> members of this <code>ContactGroup</code>
      *
-     * @return an int indicating the number of <tt>Contact</tt>s, members of this
-     * <tt>ContactGroup</tt>.
+     * @return an int indicating the number of <code>Contact</code>s, members of this
+     * <code>ContactGroup</code>.
      */
     public int countContacts()
     {
@@ -170,9 +170,9 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns an Iterator over all contacts, member of this <tt>ContactGroup</tt>.
+     * Returns an Iterator over all contacts, member of this <code>ContactGroup</code>.
      *
-     * @return a java.util.Iterator over all contacts inside this <tt>ContactGroup</tt>. In case the
+     * @return a java.util.Iterator over all contacts inside this <code>ContactGroup</code>. In case the
      * group doesn't contain any members it will return an empty iterator.
      */
     public Iterator<Contact> contacts()
@@ -181,10 +181,10 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns the <tt>Contact</tt> with the specified address or identifier.
+     * Returns the <code>Contact</code> with the specified address or identifier.
      *
-     * @param id the address or identifier of the <tt>Contact</tt> we are looking for.
-     * @return the <tt>Contact</tt> with the specified id or address.
+     * @param id the address or identifier of the <code>Contact</code> we are looking for.
+     * @return the <code>Contact</code> with the specified id or address.
      */
     public Contact getContact(String id)
     {
@@ -200,7 +200,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * The search is always based on BareJid
      *
      * @param jid the id for the contact we're looking for.
-     * @return the <tt>ContactJabberImpl</tt> corresponding to the specified screenName or null
+     * @return the <code>ContactJabberImpl</code> corresponding to the specified screenName or null
      * if no such contact existed.
      */
     public ContactJabberImpl findContact(Jid jid)
@@ -236,7 +236,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns the subgroup with the specified index (i.e. always null since this group may not contain subgroups).
      *
-     * @param index the index of the <tt>ContactGroup</tt> to retrieve.
+     * @param index the index of the <code>ContactGroup</code> to retrieve.
      * @return always null
      */
     public ContactGroup getGroup(int index)
@@ -247,8 +247,8 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     /**
      * Returns the subgroup with the specified name.
      *
-     * @param groupName the name of the <tt>ContactGroup</tt> to retrieve.
-     * @return the <tt>ContactGroup</tt> with the specified index.
+     * @param groupName the name of the <code>ContactGroup</code> to retrieve.
+     * @return the <code>ContactGroup</code> with the specified index.
      */
     public ContactGroup getGroup(String groupName)
     {
@@ -267,7 +267,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
 
     /**
      * Returns the number of subgroups contained by this group, which is always 0 since sub groups
-     * in the protocol may only be contained by the root group - <tt>RootContactGroupImpl</tt>.
+     * in the protocol may only be contained by the root group - <code>RootContactGroupImpl</code>.
      *
      * @return a 0 int.
      */
@@ -291,7 +291,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * Indicates whether some other object is "equal to" this group.
      *
      * @param obj the reference object with which to compare.
-     * @return <tt>true</tt> if this object is the same as the obj argument; <tt>false</tt> otherwise.
+     * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise.
      */
     @Override
     public boolean equals(Object obj)
@@ -357,7 +357,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
      * Returns the name of the group as it was at the last call of initNameCopy.
      *
      * @return a String containing a copy of the name of this group as it was last time when we
-     * called <tt>initNameCopy</tt>.
+     * called <code>initNameCopy</code>.
      */
     public String getNameCopy()
     {
@@ -438,7 +438,7 @@ public class ContactGroupJabberImpl extends AbstractContactGroupJabberImpl
     }
 
     /**
-     * Returns a <tt>String</tt> that uniquely represents the group. In this we use the name of the
+     * Returns a <code>String</code> that uniquely represents the group. In this we use the name of the
      * group as an identifier. This may cause problems though, in case the name is changed by some
      * other application between consecutive runs of the sip-communicator.
      *

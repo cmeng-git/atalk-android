@@ -6,12 +6,12 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * <tt>OperationFailedException</tt> indicates an exception that occurred in the API.
+ * <code>OperationFailedException</code> indicates an exception that occurred in the API.
  * <p>
- * <tt>OperationFailedException</tt> contains an error code that gives more information on the
+ * <code>OperationFailedException</code> contains an error code that gives more information on the
  * exception. The application can obtain the error code using
  * {@link OperationFailedException#getErrorCode()}. The error code values are defined in the
- * <tt>OperationFailedException</tt> fields.
+ * <code>OperationFailedException</code> fields.
  * </p>
  *
  * @author Emil Ivov

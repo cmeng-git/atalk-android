@@ -5,6 +5,8 @@
  */
 package org.jivesoftware.smackx.colibri;
 
+import androidx.annotation.NonNull;
+
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
 import org.atalk.android.util.ApiLib;
@@ -12,6 +14,7 @@ import org.atalk.service.neomedia.MediaDirection;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
 import org.jxmpp.jid.parts.Localpart;
 
 import java.util.*;
@@ -22,7 +25,7 @@ import javax.xml.namespace.QName;
 import timber.log.Timber;
 
 /**
- * Implements the Jitsi Videobridge <tt>conference</tt> IQ within the COnferencing with LIghtweight
+ * Implements the Jitsi Videobridge <code>conference</code> IQ within the COnferencing with LIghtweight
  * BRIdging. XEP-0340: COnferences with LIghtweight BRIdging (COLIBRI)
  *
  * @author Lyubomir Marinov
@@ -33,25 +36,25 @@ import timber.log.Timber;
 public class ColibriConferenceIQ extends IQ
 {
     /**
-     * The XML element name of the Jitsi Videobridge <tt>conference</tt> IQ.
+     * The XML element name of the Jitsi Videobridge <code>conference</code> IQ.
      */
     public static final String ELEMENT = "conference";
 
     /**
-     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <tt>conference</tt> IQ.
+     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <code>conference</code> IQ.
      */
     public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
 
     /**
-     * The XML name of the <tt>id</tt> attribute of the Jitsi Videobridge <tt>conference</tt> IQ
-     * which represents the value of the <tt>id</tt> property of <tt>ColibriConferenceIQ</tt>.
+     * The XML name of the <code>id</code> attribute of the Jitsi Videobridge <code>conference</code> IQ
+     * which represents the value of the <code>id</code> property of <code>ColibriConferenceIQ</code>.
      */
     public static final String ID_ATTR_NAME = "id";
 
     /**
-     * The XML name of the <tt>gid</tt> attribute of the Jitsi Videobridge
-     * <tt>conference</tt> IQ which represents the value of the <tt>gid</tt>
-     * property of <tt>ColibriConferenceIQ</tt>.
+     * The XML name of the <code>gid</code> attribute of the Jitsi Videobridge
+     * <code>conference</code> IQ which represents the value of the <code>gid</code>
+     * property of <code>ColibriConferenceIQ</code>.
      * This is a "global" ID of a conference, which is selected by the
      * conference organizer, as opposed to "id" which is specific to a single
      * Jitsi Videobridge and is selected by the bridge.
@@ -59,15 +62,15 @@ public class ColibriConferenceIQ extends IQ
     public static final String GID_ATTR_NAME = "gid";
 
     /**
-     * The XML name of the <tt>name</tt> attribute of the Jitsi Videobridge
-     * <tt>conference</tt> IQ which represents the value of the <tt>name</tt>
-     * property of <tt>ColibriConferenceIQ</tt> if available.
+     * The XML name of the <code>name</code> attribute of the Jitsi Videobridge
+     * <code>conference</code> IQ which represents the value of the <code>name</code>
+     * property of <code>ColibriConferenceIQ</code> if available.
      */
     public static final String NAME_ATTR_NAME = "name";
 
     /**
-     * An array of <tt>int</tt>s which represents the lack of any (RTP) SSRCs seen/received on a
-     * <tt>Channel</tt>. Explicitly defined to reduce unnecessary allocations.
+     * An array of <code>int</code>s which represents the lack of any (RTP) SSRCs seen/received on a
+     * <code>Channel</code>. Explicitly defined to reduce unnecessary allocations.
      */
     public static final int[] NO_SSRCS = new int[0];
 
@@ -77,7 +80,7 @@ public class ColibriConferenceIQ extends IQ
     private final Map<String, ChannelBundle> channelBundles = new ConcurrentHashMap<>();
 
     /**
-     * The list of {@link Content}s included into this <tt>conference</tt> IQ.
+     * The list of {@link Content}s included into this <code>conference</code> IQ.
      */
     private final List<Content> contents = new LinkedList<>();
 
@@ -114,7 +117,7 @@ public class ColibriConferenceIQ extends IQ
     private Localpart name;
 
     /**
-     * Initializes a new <tt>ColibriConferenceIQ</tt> instance.
+     * Initializes a new <code>ColibriConferenceIQ</code> instance.
      */
     public ColibriConferenceIQ()
     {
@@ -122,7 +125,7 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns an error response for given <tt>IQ</tt> that is returned by the videobridge after it
+     * Returns an error response for given <code>IQ</code> that is returned by the videobridge after it
      * has entered graceful shutdown mode and new conferences can no longer be created.
      *
      * @param request the IQ for which error response will be created.
@@ -146,10 +149,10 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Adds a specific {@link Content} instance to the list of <tt>Content</tt> instances included
-     * into this <tt>conference</tt> IQ.
+     * Adds a specific {@link Content} instance to the list of <code>Content</code> instances included
+     * into this <code>conference</code> IQ.
      *
-     * @param channelBundle the <tt>ChannelBundle</tt> to add.
+     * @param channelBundle the <code>ChannelBundle</code> to add.
      */
     public ChannelBundle addChannelBundle(ChannelBundle channelBundle)
     {
@@ -160,14 +163,14 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Adds a specific {@link Content} instance to the list of <tt>Content</tt> instances included
-     * into this <tt>conference</tt> IQ.
+     * Adds a specific {@link Content} instance to the list of <code>Content</code> instances included
+     * into this <code>conference</code> IQ.
      *
-     * @param content the <tt>Content</tt> instance to be added to this list of <tt>Content</tt> instances
-     * included into this <tt>conference</tt> IQ
-     * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise, <tt>false</tt>
-     * @throws NullPointerException if the specified <tt>content</tt> is <tt>null</tt>
+     * @param content the <code>Content</code> instance to be added to this list of <code>Content</code> instances
+     * included into this <code>conference</code> IQ
+     * @return <code>true</code> if the list of <code>Content</code> instances included into this
+     * <code>conference</code> IQ has been modified as a result of the method call; otherwise, <code>false</code>
+     * @throws NullPointerException if the specified <code>content</code> is <code>null</code>
      */
     public boolean addContent(Content content)
     {
@@ -177,11 +180,11 @@ public class ColibriConferenceIQ extends IQ
 
     /**
      * Initializes a new {@link Content} instance with a specific name and adds it to the list of
-     * <tt>Content</tt> instances included into this <tt>conference</tt> IQ.
+     * <code>Content</code> instances included into this <code>conference</code> IQ.
      *
-     * @param contentName the name which which the new <tt>Content</tt> instance is to be initialized
-     * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise, <tt>false</tt>
+     * @param contentName the name which which the new <code>Content</code> instance is to be initialized
+     * @return <code>true</code> if the list of <code>Content</code> instances included into this
+     * <code>conference</code> IQ has been modified as a result of the method call; otherwise, <code>false</code>
      */
     public boolean addContent(String contentName)
     {
@@ -224,10 +227,10 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Finds {@link Endpoint} identified by given <tt>endpointId</tt>.
+     * Finds {@link Endpoint} identified by given <code>endpointId</code>.
      *
-     * @param endpointId <tt>Endpoint</tt> identifier.
-     * @return {@link Endpoint} identified by given <tt>endpointId</tt> or <tt>null</tt> if not found.
+     * @param endpointId <code>Endpoint</code> identifier.
+     * @return {@link Endpoint} identified by given <code>endpointId</code> or <code>null</code> if not found.
      */
     public Endpoint getEndpoint(String endpointId)
     {
@@ -238,9 +241,9 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns an XML <tt>String</tt> representation of this <tt>IQ</tt>.
+     * Returns an XML <code>String</code> representation of this <code>IQ</code>.
      *
-     * @return an XML <tt>String</tt> representation of this <tt>IQ</tt>
+     * @return an XML <code>String</code> representation of this <code>IQ</code>
      */
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
@@ -282,13 +285,13 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns a <tt>Content</tt> from the list of <tt>Content</tt>s of this <tt>conference</tt> IQ
-     * which has a specific name. If no such <tt>Content</tt> exists, returns <tt>null</tt>.
+     * Returns a <code>Content</code> from the list of <code>Content</code>s of this <code>conference</code> IQ
+     * which has a specific name. If no such <code>Content</code> exists, returns <code>null</code>.
      *
-     * @param contentName the name of the <tt>Content</tt> to be returned
-     * @return a <tt>Content</tt> from the list of <tt>Content</tt>s of this <tt>conference</tt> IQ
-     * which has the specified <tt>contentName</tt> if such a <tt>Content</tt> exists;
-     * otherwise, <tt>null</tt>
+     * @param contentName the name of the <code>Content</code> to be returned
+     * @return a <code>Content</code> from the list of <code>Content</code>s of this <code>conference</code> IQ
+     * which has the specified <code>contentName</code> if such a <code>Content</code> exists;
+     * otherwise, <code>null</code>
      */
     public Content getContent(String contentName)
     {
@@ -301,9 +304,9 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns a list of the <tt>Content</tt>s included into this <tt>conference</tt> IQ.
+     * Returns a list of the <code>Content</code>s included into this <code>conference</code> IQ.
      *
-     * @return an unmodifiable <tt>List</tt> of the <tt>Content</tt>s included into this <tt>conference</tt> IQ
+     * @return an unmodifiable <code>List</code> of the <code>Content</code>s included into this <code>conference</code> IQ
      */
     public List<Content> getContents()
     {
@@ -311,9 +314,9 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns the list of <tt>Endpoint</tt>s included in this <tt>ColibriConferenceIQ</tt>.
+     * Returns the list of <code>Endpoint</code>s included in this <code>ColibriConferenceIQ</code>.
      *
-     * @return the list of <tt>Endpoint</tt>s included in this <tt>ColibriConferenceIQ</tt>.
+     * @return the list of <code>Endpoint</code>s included in this <code>ColibriConferenceIQ</code>.
      */
     public List<Endpoint> getEndpoints()
     {
@@ -339,14 +342,14 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns a <tt>Content</tt> from the list of <tt>Content</tt>s of this <tt>conference</tt> IQ
-     * which has a specific name. If no such <tt>Content</tt> exists at the time of the invocation
-     * of the method, initializes a new <tt>Content</tt> instance with the specified
-     * <tt>contentName</tt> and includes it into this <tt>conference</tt> IQ.
+     * Returns a <code>Content</code> from the list of <code>Content</code>s of this <code>conference</code> IQ
+     * which has a specific name. If no such <code>Content</code> exists at the time of the invocation
+     * of the method, initializes a new <code>Content</code> instance with the specified
+     * <code>contentName</code> and includes it into this <code>conference</code> IQ.
      *
-     * @param contentName the name of the <tt>Content</tt> to be returned
-     * @return a <tt>Content</tt> from the list of <tt>Content</tt>s of this <tt>conference</tt> IQ
-     * which has the specified <tt>contentName</tt>
+     * @param contentName the name of the <code>Content</code> to be returned
+     * @return a <code>Content</code> from the list of <code>Content</code>s of this <code>conference</code> IQ
+     * which has the specified <code>contentName</code>
      */
     public Content getOrCreateContent(String contentName)
     {
@@ -374,13 +377,13 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Removes a specific {@link Content} instance from the list of <tt>Content</tt> instances
-     * included into this <tt>conference</tt> IQ.
+     * Removes a specific {@link Content} instance from the list of <code>Content</code> instances
+     * included into this <code>conference</code> IQ.
      *
-     * @param content the <tt>Content</tt> instance to be removed from the list of <tt>Content</tt>
-     * instances included into this <tt>conference</tt> IQ
-     * @return <tt>true</tt> if the list of <tt>Content</tt> instances included into this
-     * <tt>conference</tt> IQ has been modified as a result of the method call; otherwise,  <tt>false</tt>
+     * @param content the <code>Content</code> instance to be removed from the list of <code>Content</code>
+     * instances included into this <code>conference</code> IQ
+     * @return <code>true</code> if the list of <code>Content</code> instances included into this
+     * <code>conference</code> IQ has been modified as a result of the method call; otherwise,  <code>false</code>
      */
     public boolean removeContent(Content content)
     {
@@ -425,7 +428,7 @@ public class ColibriConferenceIQ extends IQ
     /**
      * Sets whether this IQ should contain the information about graceful shutdown in progress status.
      *
-     * @param isGracefulShutdown <tt>true</tt> if graceful shutdown status should be indicated in this IQ.
+     * @param isGracefulShutdown <code>true</code> if graceful shutdown status should be indicated in this IQ.
      */
     public void setGracefulShutdown(boolean isGracefulShutdown)
     {
@@ -433,8 +436,8 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Returns <tt>true</tt> if graceful shutdown status info is indicated in this
-     * <tt>ColibriConferenceIQ</tt> instance.
+     * Returns <code>true</code> if graceful shutdown status info is indicated in this
+     * <code>ColibriConferenceIQ</code> instance.
      */
     public boolean isGracefulShutdown()
     {
@@ -462,25 +465,25 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Represents a <tt>channel</tt> included into a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
+     * Represents a <code>channel</code> included into a <code>content</code> of a Jitsi Videobridge <code>conference</code> IQ.
      */
     public static class Channel extends ChannelCommon
     {
         /**
-         * The name of the XML attribute of a <tt>channel</tt> which represents its direction.
+         * The name of the XML attribute of a <code>channel</code> which represents its direction.
          */
         public static final String DIRECTION_ATTR_NAME = "direction";
 
         /**
-         * The XML element name of a <tt>channel</tt> of a <tt>content</tt> of a Jitsi Videobridge
-         * <tt>conference</tt> IQ.
+         * The XML element name of a <code>channel</code> of a <code>content</code> of a Jitsi Videobridge
+         * <code>conference</code> IQ.
          */
         public static final String ELEMENT = "channel";
 
         /**
-         * The XML name of the <tt>host</tt> attribute of a <tt>channel</tt> of a <tt>content</tt>
-         * of a <tt>conference</tt> IQ which represents the value of the <tt>host</tt> property of
-         * <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>host</code> attribute of a <code>channel</code> of a <code>content</code>
+         * of a <code>conference</code> IQ which represents the value of the <code>host</code> property of
+         * <code>ColibriConferenceIQ.Channel</code>.
          *
          * @deprecated The attribute is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -489,38 +492,38 @@ public class ColibriConferenceIQ extends IQ
         public static final String HOST_ATTR_NAME = "host";
 
         /**
-         * The XML name of the <tt>last-n</tt> attribute of a video <tt>channel</tt> which specifies
+         * The XML name of the <code>last-n</code> attribute of a video <code>channel</code> which specifies
          * the maximum number of video RTP streams to be sent from Jitsi Videobridge to the endpoint
-         * associated with the video <tt>channel</tt>. The value of the <tt>last-n</tt> attribute is
+         * associated with the video <code>channel</code>. The value of the <code>last-n</code> attribute is
          * a positive number.
          */
         public static final String LAST_N_ATTR_NAME = "last-n";
 
         /*
-         * The XML name of the <tt>simulcast-mode</tt> attribute of a video <tt>channel</tt>.
+         * The XML name of the <code>simulcast-mode</code> attribute of a video <code>channel</code>.
          */
         public static final String SIMULCAST_MODE_ATTR_NAME = "simulcast-mode";
         /**
-         * The XML name of the <tt>receive-simulcast-layer</tt> attribute of a video
-         * <tt>Channel</tt> which specifies the target quality of the simulcast substreams to be
-         * sent from Jitsi Videobridge to the endpoint associated with the video <tt>Channel</tt>.
-         * The value of the <tt>receive-simulcast-layer</tt> attribute is an unsigned integer.
+         * The XML name of the <code>receive-simulcast-layer</code> attribute of a video
+         * <code>Channel</code> which specifies the target quality of the simulcast substreams to be
+         * sent from Jitsi Videobridge to the endpoint associated with the video <code>Channel</code>.
+         * The value of the <code>receive-simulcast-layer</code> attribute is an unsigned integer.
          * Typically used for debugging purposes.
          */
         public static final String RECEIVING_SIMULCAST_LAYER = "receive-simulcast-layer";
 
         /**
-         * The XML name of the <tt>packet-delay</tt> attribute of
-         * a <tt>channel</tt> of a <tt>content</tt> of a <tt>conference</tt> IQ
+         * The XML name of the <code>packet-delay</code> attribute of
+         * a <code>channel</code> of a <code>content</code> of a <code>conference</code> IQ
          * which represents the value of the {@link #packetDelay} property of
-         * <tt>ColibriConferenceIQ.Channel</tt>.
+         * <code>ColibriConferenceIQ.Channel</code>.
          */
         public static final String PACKET_DELAY_ATTR_NAME = "packet-delay";
 
         /**
-         * The XML name of the <tt>rtcpport</tt> attribute of a <tt>channel</tt> of a
-         * <tt>content</tt> of a <tt>conference</tt> IQ which represents the value of the
-         * <tt>rtcpPort</tt> property of <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>rtcpport</code> attribute of a <code>channel</code> of a
+         * <code>content</code> of a <code>conference</code> IQ which represents the value of the
+         * <code>rtcpPort</code> property of <code>ColibriConferenceIQ.Channel</code>.
          *
          * @deprecated The attribute is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -531,9 +534,9 @@ public class ColibriConferenceIQ extends IQ
         public static final String RTP_LEVEL_RELAY_TYPE_ATTR_NAME = "rtp-level-relay-type";
 
         /**
-         * The XML name of the <tt>rtpport</tt> attribute of a <tt>channel</tt> of a
-         * <tt>content</tt> of a <tt>conference</tt> IQ which represents the value of the
-         * <tt>rtpPort</tt> property of <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>rtpport</code> attribute of a <code>channel</code> of a
+         * <code>content</code> of a <code>conference</code> IQ which represents the value of the
+         * <code>rtpPort</code> property of <code>ColibriConferenceIQ.Channel</code>.
          *
          * @deprecated The attribute is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -543,17 +546,17 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * The name of the XML element which is a child of the &lt;channel&gt; element and which
-         * identifies/specifies an (RTP) SSRC which has been seen/received on the respective <tt>Channel</tt>.
+         * identifies/specifies an (RTP) SSRC which has been seen/received on the respective <code>Channel</code>.
          */
         public static final String SSRC_ELEMENT = "ssrc";
 
         /**
-         * The direction of the <tt>channel</tt> represented by this instance.
+         * The direction of the <code>channel</code> represented by this instance.
          */
         private MediaDirection direction;
 
         /**
-         * The host of the <tt>channel</tt> represented by this instance.
+         * The host of the <code>channel</code> represented by this instance.
          *
          * @deprecated The field is supported for the purposes of compatibility with legacy versions
          * of Jitsi and Jitsi Videobridge.
@@ -563,7 +566,7 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * The maximum number of video RTP streams to be sent from Jitsi Videobridge to the endpoint
-         * associated with this video <tt>Channel</tt>.
+         * associated with this video <code>Channel</code>.
          */
         private Integer lastN;
 
@@ -578,25 +581,25 @@ public class ColibriConferenceIQ extends IQ
         private Integer packetDelay;
 
         /**
-         * The <tt>payload-type</tt> elements defined by XEP-0167: Jingle RTP Sessions associated
-         * with this <tt>channel</tt>.
+         * The <code>payload-type</code> elements defined by XEP-0167: Jingle RTP Sessions associated
+         * with this <code>channel</code>.
          */
-        private final List<PayloadTypeExtension> payloadTypes = new ArrayList<>();
+        private final List<PayloadType> payloadTypes = new ArrayList<>();
 
         /**
-         * The <tt>rtp-hdrext</tt> elements defined by XEP-0294: Jingle RTP Header Extensions
+         * The <code>rtp-hdrext</code> elements defined by XEP-0294: Jingle RTP Header Extensions
          * Negotiation associated with this channel.
          */
-        private final Map<Integer, RTPHdrExtExtension> rtpHeaderExtensions = new HashMap<>();
+        private final Map<Integer, RtpHeader> rtpHeaders = new HashMap<>();
 
         /**
          * The target quality of the simulcast subStreams to be sent from Jitsi Videobridge to the
-         * endpoint associated with this video <tt>Channel</tt>.
+         * endpoint associated with this video <code>Channel</code>.
          */
         private Integer receivingSimulcastLayer;
 
         /**
-         * The RTCP port of the <tt>channel</tt> represented by this instance.
+         * The RTCP port of the <code>channel</code> represented by this instance.
          *
          * @deprecated The field is supported for the purposes of compatibility with legacy versions
          * of Jitsi and Jitsi Videobridge.
@@ -607,12 +610,12 @@ public class ColibriConferenceIQ extends IQ
         /**
          * The type of RTP-level relay (in the terms specified by RFC 3550 &quot;RTP: A Transport
          * Protocol for Real-Time Applications&quot; in section 2.3 &quot;Mixers and
-         * Translators&quot;) used for this <tt>Channel</tt>.
+         * Translators&quot;) used for this <code>Channel</code>.
          */
         private RTPLevelRelayType rtpLevelRelayType;
 
         /**
-         * The RTP port of the <tt>channel</tt> represented by this instance.
+         * The RTP port of the <code>channel</code> represented by this instance.
          *
          * @deprecated The field is supported for the purposes of compatibility with legacy versions
          * of Jitsi and Jitsi Videobridge.
@@ -621,23 +624,23 @@ public class ColibriConferenceIQ extends IQ
         private int rtpPort;
 
         /**
-         * The <tt>SourceGroupExtensionElement</tt>s of this channel.
+         * The <code>SdpSourceGroup</code>s of this channel.
          */
-        private List<SourceGroupExtension> sourceGroups;
+        private List<SdpSourceGroup> sourceGroups;
 
         /**
-         * The <tt>SourceExtensionElement</tt>s of this channel.
+         * The <code>SdpSourceGroup</code>s of this channel.
          */
-        private final List<SourceExtension> sources = new LinkedList<>();
+        private final List<SdpSource> sources = new LinkedList<>();
         /**
-         * The list of (RTP) SSRCs which have been seen/received on this <tt>Channel</tt> by now.
+         * The list of (RTP) SSRCs which have been seen/received on this <code>Channel</code> by now.
          * These may exclude SSRCs which are no longer active. Set by the Jitsi Videobridge server,
          * not its clients.
          */
         private int[] ssrcs = NO_SSRCS;
 
         /**
-         * Initializes a new <tt>Channel</tt> instance.
+         * Initializes a new <code>Channel</code> instance.
          */
         public Channel()
         {
@@ -645,92 +648,91 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions to this <tt>channel</tt>.
+         * Adds a <code>payload-type</code> element defined by XEP-0167: Jingle RTP Sessions to this <code>channel</code>.
          *
-         * @param payloadType the <tt>payload-type</tt> element to be added to this <tt>channel</tt>
-         * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
-         * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
-         * @throws NullPointerException if the specified <tt>payloadType</tt> is <tt>null</tt>
+         * @param payloadType the <code>payload-type</code> element to be added to this <code>channel</code>
+         * @return <code>true</code> if the list of <code>payload-type</code> elements associated with this
+         * <code>channel</code> has been modified as part of the method call; otherwise, <code>false</code>
+         * @throws NullPointerException if the specified <code>payloadType</code> is <code>null</code>
          */
-        public boolean addPayloadType(PayloadTypeExtension payloadType)
+        public boolean addPayloadType(PayloadType payloadType)
         {
             ApiLib.requireNonNull(payloadType, "payloadType");
 
             // Make sure that the COLIBRI namespace is used.
-            payloadType.setNamespace(null);
-            for (ParameterExtension p : payloadType.getParameters())
-                p.setNamespace(null);
+            // payloadType.setNamespace(null);
+            // for (ParameterElement p : payloadType.getParameters())
+            //    p.setNamespace(null);
 
             return !payloadTypes.contains(payloadType) && payloadTypes.add(payloadType);
         }
 
         /**
-         * Adds an <tt>rtp-hdrext</tt> element defined by XEP-0294: Jingle RTP Header Extensions
-         * Negotiation to this <tt>Channel</tt>.
+         * Adds an <code>rtp-hdrext</code> element defined by XEP-0294: Jingle RTP Header Extensions
+         * Negotiation to this <code>Channel</code>.
          *
-         * @param ext the <tt>payload-type</tt> element to be added to this <tt>channel</tt>
-         * @throws NullPointerException if the specified <tt>ext</tt> is <tt>null</tt>
+         * @param ext the <code>payload-type</code> element to be added to this <code>channel</code>
+         * @throws NullPointerException if the specified <code>ext</code> is <code>null</code>
          */
-        public void addRtpHeaderExtension(RTPHdrExtExtension ext)
+        public void addRtpHeaderExtension(RtpHeader ext)
         {
             ApiLib.requireNonNull(ext, "ext");
 
             // Create a new instance, because we are going to modify the NS
-            RTPHdrExtExtension newExt = RTPHdrExtExtension.clone(ext);
-
             // Make sure that the parent namespace (COLIBRI) is used.
-            newExt.setNamespace(null);
+            RtpHeader newExt = RtpHeader.clone(ext);
+
             int id = -1;
             try {
-                id = Integer.valueOf(newExt.getID());
+                id = Integer.parseInt(newExt.getId());
             } catch (NumberFormatException ex) {
                 ex.printStackTrace();
             }
 
             // Only accept valid extension IDs (4-bits, 0xF reserved)
             if (id < 0 || id > 14) {
-                Timber.w("Failed to add an RTP header extension element with an invalid ID: %s", newExt.getID());
+                Timber.w("Failed to add an RTP header extension element with an invalid ID: %s", newExt.getId());
                 return;
             }
-            rtpHeaderExtensions.put(id, newExt);
+            rtpHeaders.put(id, newExt);
         }
 
         /**
-         * Adds a <tt>SourceExtensionElement</tt> to the list of sources of this channel.
+         * Adds a <code>SdpSourceGroup</code> to the list of sources of this channel.
          *
-         * @param source the <tt>SourceExtensionElement</tt> to add to the list of sources of this channel
-         * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
-         * execution of the method; otherwise, <tt>false</tt>
+         * @param source the <code>SdpSourceGroup</code> to add to the list of sources of this channel
+         * @return <code>true</code> if the list of sources of this channel changed as a result of the
+         * execution of the method; otherwise, <code>false</code>
          */
-        public synchronized boolean addSource(SourceExtension source)
+        public synchronized boolean addSource(SdpSource source)
         {
             ApiLib.requireNonNull(source, "source");
             return !sources.contains(source) && sources.add(source);
         }
 
         /**
-         * Adds a <tt>SourceGroupExtensionElement</tt> to the list of source groups of this channel.
+         * Adds a <code>SdpSourceGroup</code> to the list of source groups of this channel.
          *
-         * @param sourceGroup the <tt>SourceExtensionElement</tt> to add to the list of sources of this channel
-         * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
-         * execution of the method; otherwise, <tt>false</tt>
+         * @param sourceGroup the <code>SdpSourceGroup</code> to add to the list of sources of this channel
+         * @return <code>true</code> if the list of sources of this channel changed as a result of the
+         * execution of the method; otherwise, <code>false</code>
          */
-        public synchronized boolean addSourceGroup(SourceGroupExtension sourceGroup)
+        public synchronized boolean addSourceGroup(SdpSourceGroup sourceGroup)
         {
             ApiLib.requireNonNull(sourceGroup, "sourceGroup");
             if (sourceGroups == null)
-                sourceGroups = new LinkedList<SourceGroupExtension>();
+                sourceGroups = new LinkedList<>();
 
             return !sourceGroups.contains(sourceGroup) && sourceGroups.add(sourceGroup);
         }
 
         /**
-         * Adds a specific (RTP) SSRC to the list of SSRCs seen/received on this <tt>Channel</tt>.
+         * Adds a specific (RTP) SSRC to the list of SSRCs seen/received on this <code>Channel</code>.
          * Invoked by the Jitsi Videobridge server, not its clients.
          *
-         * @param ssrc the (RTP) SSRC to be added to the list of SSRCs seen/received on this <tt>Channel</tt>
-         * @return <tt>true</tt> if the list of SSRCs seen/received on this <tt>Channel</tt> has
-         * been modified as part of the method call; otherwise, <tt>false</tt>
+         * @param ssrc the (RTP) SSRC to be added to the list of SSRCs seen/received on this <code>Channel</code>
+         * @return <code>true</code> if the list of SSRCs seen/received on this <code>Channel</code> has
+         * been modified as part of the method call; otherwise, <code>false</code>
          */
         public synchronized boolean addSSRC(int ssrc)
         {
@@ -749,9 +751,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the <tt>direction</tt> of this <tt>Channel</tt>.
+         * Gets the <code>direction</code> of this <code>Channel</code>.
          *
-         * @return the <tt>direction</tt> of this <tt>Channel</tt>.
+         * @return the <code>direction</code> of this <code>Channel</code>.
          */
         public MediaDirection getDirection()
         {
@@ -759,11 +761,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the IP address (as a <tt>String</tt> value) of the host on which the
-         * <tt>channel</tt> represented by this instance has been allocated.
+         * Gets the IP address (as a <code>String</code> value) of the host on which the
+         * <code>channel</code> represented by this instance has been allocated.
          *
-         * @return a <tt>String</tt> value which represents the IP address of the host on which the
-         * <tt>channel</tt> represented by this instance has been allocated
+         * @return a <code>String</code> value which represents the IP address of the host on which the
+         * <code>channel</code> represented by this instance has been allocated
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
          */
@@ -775,10 +777,10 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Gets the maximum number of video RTP streams to be sent from Jitsi Videobridge to the
-         * endpoint associated with this video <tt>Channel</tt>.
+         * endpoint associated with this video <code>Channel</code>.
          *
          * @return the maximum number of video RTP streams to be sent from Jitsi Videobridge to the
-         * endpoint associated with this video <tt>Channel</tt>
+         * endpoint associated with this video <code>Channel</code>
          */
         public Integer getLastN()
         {
@@ -796,10 +798,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns an <tt>Integer</tt> which stands for the amount of delay
+         * Returns an <code>Integer</code> which stands for the amount of delay
          * added to the RTP stream in a number of packets.
          *
-         * @return <tt>Integer</tt> with the value or <tt>null</tt> if
+         * @return <code>Integer</code> with the value or <code>null</code> if
          * unspecified.
          */
         public Integer getPacketDelay()
@@ -808,35 +810,35 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets a list of <tt>payload-type</tt> elements defined by XEP-0167: Jingle RTP Sessions
-         * added to this <tt>channel</tt>.
+         * Gets a list of <code>payload-type</code> elements defined by XEP-0167: Jingle RTP Sessions
+         * added to this <code>channel</code>.
          *
-         * @return an unmodifiable <tt>List</tt> of <tt>payload-type</tt> elements defined by
-         * XEP-0167: Jingle RTP Sessions added to this <tt>channel</tt>
+         * @return an unmodifiable <code>List</code> of <code>payload-type</code> elements defined by
+         * XEP-0167: Jingle RTP Sessions added to this <code>channel</code>
          */
-        public List<PayloadTypeExtension> getPayloadTypes()
+        public List<PayloadType> getPayloadTypes()
         {
             return Collections.unmodifiableList(payloadTypes);
         }
 
         /**
-         * Gets a list of <tt>rtp-hdrext</tt> elements defined by XEP-0294: Jingle RTP Header
-         * Extensions Negotiation added to this <tt>channel</tt>.
+         * Gets a list of <code>rtp-hdrext</code> elements defined by XEP-0294: Jingle RTP Header
+         * Extensions Negotiation added to this <code>channel</code>.
          *
-         * @return an unmodifiable <tt>List</tt> of <tt>rtp-hdrext</tt> elements defined by
-         * XEP-0294: Jingle RTP Header Extensions Negotiation added to this <tt>channel</tt>
+         * @return an unmodifiable <code>List</code> of <code>rtp-hdrext</code> elements defined by
+         * XEP-0294: Jingle RTP Header Extensions Negotiation added to this <code>channel</code>
          */
-        public Collection<RTPHdrExtExtension> getRtpHeaderExtensions()
+        public Collection<RtpHeader> getRtpHeaders()
         {
-            return Collections.unmodifiableCollection(rtpHeaderExtensions.values());
+            return Collections.unmodifiableCollection(rtpHeaders.values());
         }
 
         /**
          * Gets the target quality of the simulcast substreams to be sent from Jitsi Videobridge to
-         * the endpoint associated with this video <tt>Channel</tt>.
+         * the endpoint associated with this video <code>Channel</code>.
          *
          * @return the target quality of the simulcast substreams to be sent from Jitsi Videobridge
-         * to the endpoint associated with this video <tt>Channel</tt>.
+         * to the endpoint associated with this video <code>Channel</code>.
          */
         public Integer getReceivingSimulcastLayer()
         {
@@ -844,9 +846,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the port which has been allocated to this <tt>channel</tt> for the purposes of transmitting RTCP packets.
+         * Gets the port which has been allocated to this <code>channel</code> for the purposes of transmitting RTCP packets.
          *
-         * @return the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * @return the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTCP packets
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -860,9 +862,9 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Gets the type of RTP-level relay (in the terms specified by RFC 3550 &quot;RTP: A
          * Transport Protocol for Real-Time Applications&quot; in section 2.3 &quot;Mixers and
-         * Translators&quot;) used for this <tt>Channel</tt>.
+         * Translators&quot;) used for this <code>Channel</code>.
          *
-         * @return the type of RTP-level relay used for this <tt>Channel</tt>
+         * @return the type of RTP-level relay used for this <code>Channel</code>
          */
         public RTPLevelRelayType getRTPLevelRelayType()
         {
@@ -870,10 +872,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * Gets the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTP packets.
          *
-         * @return the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * @return the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTP packets
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -885,31 +887,31 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the list of <tt>SourceGroupPacketExtensions</tt>s which represent the source groups of this channel.
+         * Gets the list of <code>SourceGroupPacketExtensions</code>s which represent the source groups of this channel.
          *
-         * @return a <tt>List</tt> of <tt>SourceGroupExtensionElement</tt>s which represent the
+         * @return a <code>List</code> of <code>SdpSourceGroup</code>s which represent the
          * source groups of this channel
          */
-        public synchronized List<SourceGroupExtension> getSourceGroups()
+        public synchronized List<SdpSourceGroup> getSourceGroups()
         {
             return (sourceGroups == null) ? null : new ArrayList<>(sourceGroups);
         }
 
         /**
-         * Gets the list of <tt>SourcePacketExtensions</tt>s which represent the sources of this channel.
+         * Gets the list of <code>SourcePacketExtensions</code>s which represent the sources of this channel.
          *
-         * @return a <tt>List</tt> of <tt>SourceExtensionElement</tt>s which represent the sources of this channel
+         * @return a <code>List</code> of <code>SdpSourceGroup</code>s which represent the sources of this channel
          */
-        public synchronized List<SourceExtension> getSources()
+        public synchronized List<SdpSource> getSources()
         {
             return new ArrayList<>(sources);
         }
 
         /**
-         * Gets (a copy of) the list of (RTP) SSRCs seen/received on this <tt>Channel</tt>.
+         * Gets (a copy of) the list of (RTP) SSRCs seen/received on this <code>Channel</code>.
          *
-         * @return an array of <tt>int</tt>s which represents (a copy of) the list of (RTP) SSRCs
-         * seen/received on this <tt>Channel</tt>
+         * @return an array of <code>int</code>s which represents (a copy of) the list of (RTP) SSRCs
+         * seen/received on this <code>Channel</code>
          */
         public synchronized int[] getSSRCs()
         {
@@ -919,15 +921,15 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected boolean hasContent()
         {
-            List<PayloadTypeExtension> payloadTypes = getPayloadTypes();
+            List<PayloadType> payloadTypes = getPayloadTypes();
             if (!payloadTypes.isEmpty())
                 return true;
 
-            List<SourceGroupExtension> sourceGroups = getSourceGroups();
+            List<SdpSourceGroup> sourceGroups = getSourceGroups();
             if (sourceGroups != null && !getSourceGroups().isEmpty())
                 return true;
 
-            List<SourceExtension> sources = getSources();
+            List<SdpSource> sources = getSources();
             if (!sources.isEmpty())
                 return true;
 
@@ -987,23 +989,23 @@ public class ColibriConferenceIQ extends IQ
         @Override
         protected IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml)
         {
-            List<PayloadTypeExtension> payloadTypes = getPayloadTypes();
-            Collection<RTPHdrExtExtension> rtpHdrExtPacketExtensions = getRtpHeaderExtensions();
-            List<SourceExtension> sources = getSources();
-            List<SourceGroupExtension> sourceGroups = getSourceGroups();
+            List<PayloadType> payloadTypes = getPayloadTypes();
+            Collection<RtpHeader> rtpHdrExtPacketExtensions = getRtpHeaders();
+            List<SdpSource> sources = getSources();
+            List<SdpSourceGroup> sourceGroups = getSourceGroups();
             int[] ssrcs = getSSRCs();
 
-            for (PayloadTypeExtension payloadType : payloadTypes)
+            for (PayloadType payloadType : payloadTypes)
                 xml.append(payloadType.toXML(XmlEnvironment.EMPTY));
 
-            for (RTPHdrExtExtension ext : rtpHdrExtPacketExtensions)
+            for (RtpHeader ext : rtpHdrExtPacketExtensions)
                 xml.append(ext.toXML(XmlEnvironment.EMPTY));
 
-            for (SourceExtension source : sources)
+            for (SdpSource source : sources)
                 xml.append(source.toXML(XmlEnvironment.EMPTY));
 
             if (sourceGroups != null && sourceGroups.size() != 0)
-                for (SourceGroupExtension sourceGroup : sourceGroups)
+                for (SdpSourceGroup sourceGroup : sourceGroups)
                     xml.append(sourceGroup.toXML(XmlEnvironment.EMPTY));
 
             for (int ssrc : ssrcs) {
@@ -1014,54 +1016,54 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Removes a <tt>payload-type</tt> element defined by XEP-0167: Jingle RTP Sessions from this <tt>channel</tt>.
+         * Removes a <code>payload-type</code> element defined by XEP-0167: Jingle RTP Sessions from this <code>channel</code>.
          *
-         * @param payloadType the <tt>payload-type</tt> element to be removed from this <tt>channel</tt>
-         * @return <tt>true</tt> if the list of <tt>payload-type</tt> elements associated with this
-         * <tt>channel</tt> has been modified as part of the method call; otherwise, <tt>false</tt>
+         * @param payloadType the <code>payload-type</code> element to be removed from this <code>channel</code>
+         * @return <code>true</code> if the list of <code>payload-type</code> elements associated with this
+         * <code>channel</code> has been modified as part of the method call; otherwise, <code>false</code>
          */
-        public boolean removePayloadType(PayloadTypeExtension payloadType)
+        public boolean removePayloadType(PayloadType payloadType)
         {
             return payloadTypes.remove(payloadType);
         }
 
         /**
-         * Removes a <tt>rtp-hdrext</tt> element defined by XEP-0294: Jingle RTP Header Extensions
-         * Negotiation from this <tt>channel</tt>.
+         * Removes a <code>rtp-hdrext</code> element defined by XEP-0294: Jingle RTP Header Extensions
+         * Negotiation from this <code>channel</code>.
          *
-         * @param ext the <tt>rtp-hdrext</tt> element to be removed from this <tt>channel</tt>
+         * @param ext the <code>rtp-hdrext</code> element to be removed from this <code>channel</code>
          */
-        public void removeRtpHeaderExtension(RTPHdrExtExtension ext)
+        public void removeRtpHeaderExtension(RtpHeader ext)
         {
             int id;
             try {
-                id = Integer.valueOf(ext.getID());
+                id = Integer.parseInt(ext.getId());
             } catch (NumberFormatException nfe) {
-                Timber.w("Invalid ID: %s", ext.getID());
+                Timber.w("Invalid ID: %s", ext.getId());
                 return;
             }
-            rtpHeaderExtensions.remove(id);
+            rtpHeaders.remove(id);
         }
 
         /**
-         * Removes a <tt>SourceExtensionElement</tt> from the list of sources of this channel.
+         * Removes a <code>SdpSourceGroup</code> from the list of sources of this channel.
          *
-         * @param source the <tt>SourceExtensionElement</tt> to remove from the list of sources of this channel
-         * @return <tt>true</tt> if the list of sources of this channel changed as a result of the
-         * execution of the method; otherwise, <tt>false</tt>
+         * @param source the <code>SdpSourceGroup</code> to remove from the list of sources of this channel
+         * @return <code>true</code> if the list of sources of this channel changed as a result of the
+         * execution of the method; otherwise, <code>false</code>
          */
-        public synchronized boolean removeSource(SourceExtension source)
+        public synchronized boolean removeSource(SdpSource source)
         {
             return sources.remove(source);
         }
 
         /**
          * Removes a specific (RTP) SSRC from the list of SSRCs seen/received on this
-         * <tt>Channel</tt>. Invoked by the Jitsi Videobridge server, not its clients.
+         * <code>Channel</code>. Invoked by the Jitsi Videobridge server, not its clients.
          *
-         * @param ssrc the (RTP) SSRC to be removed from the list of SSRCs seen/received on this <tt>Channel</tt>
-         * @return <tt>true</tt> if the list of SSRCs seen/received on this <tt>Channel</tt> has
-         * been modified as part of the method call; otherwise, <tt>false</tt>
+         * @param ssrc the (RTP) SSRC to be removed from the list of SSRCs seen/received on this <code>Channel</code>
+         * @return <code>true</code> if the list of SSRCs seen/received on this <code>Channel</code> has
+         * been modified as part of the method call; otherwise, <code>false</code>
          */
         public synchronized boolean removeSSRC(int ssrc)
         {
@@ -1091,9 +1093,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the <tt>direction</tt> of this <tt>Channel</tt>
+         * Sets the <code>direction</code> of this <code>Channel</code>
          *
-         * @param direction the <tt>MediaDirection</tt> to set the <tt>direction</tt> of this <tt>Channel</tt> to.
+         * @param direction the <code>MediaDirection</code> to set the <code>direction</code> of this <code>Channel</code> to.
          */
         public void setDirection(MediaDirection direction)
         {
@@ -1101,11 +1103,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the IP address (as a <tt>String</tt> value) of the host on which the
-         * <tt>channel</tt> represented by this instance has been allocated.
+         * Sets the IP address (as a <code>String</code> value) of the host on which the
+         * <code>channel</code> represented by this instance has been allocated.
          *
-         * @param host a <tt>String</tt> value which represents the IP address of the host on which the
-         * <tt>channel</tt> represented by this instance has been allocated
+         * @param host a <code>String</code> value which represents the IP address of the host on which the
+         * <code>channel</code> represented by this instance has been allocated
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
          */
@@ -1117,10 +1119,10 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Sets the maximum number of video RTP streams to be sent from Jitsi Videobridge to the
-         * endpoint associated with this video <tt>Channel</tt>.
+         * endpoint associated with this video <code>Channel</code>.
          *
          * @param lastN the maximum number of video RTP streams to be sent from Jitsi Videobridge to the
-         * endpoint associated with this video <tt>Channel</tt>
+         * endpoint associated with this video <code>Channel</code>
          */
         public void setLastN(Integer lastN)
         {
@@ -1131,8 +1133,8 @@ public class ColibriConferenceIQ extends IQ
          * Configures channel's packet delay which tells by how many packets
          * the RTP streams will be delayed.
          *
-         * @param packetDelay an <tt>Integer</tt> value which stands for
-         * the packet delay that will be set or <tt>null</tt> to leave undefined
+         * @param packetDelay an <code>Integer</code> value which stands for
+         * the packet delay that will be set or <code>null</code> to leave undefined
          */
         public void setPacketDelay(Integer packetDelay)
         {
@@ -1151,10 +1153,10 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Sets the target quality of the simulcast substreams to be sent from Jitsi Videobridge to
-         * the endpoint associated with this video <tt>Channel</tt>.
+         * the endpoint associated with this video <code>Channel</code>.
          *
          * @param simulcastLayer the target quality of the simulcast substreams to be sent from Jitsi Videobridge
-         * to the endpoint associated with this video <tt>Channel</tt>.
+         * to the endpoint associated with this video <code>Channel</code>.
          */
         public void setReceivingSimulcastLayer(Integer simulcastLayer)
         {
@@ -1162,10 +1164,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * Sets the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTCP packets.
          *
-         * @param rtcpPort the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * @param rtcpPort the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTCP packets
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -1179,9 +1181,9 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Sets the type of RTP-level relay (in the terms specified by RFC 3550 &quot;RTP: A
          * Transport Protocol for Real-Time Applications&quot; in section 2.3 &quot;Mixers and
-         * Translators&quot;) used for this <tt>Channel</tt>.
+         * Translators&quot;) used for this <code>Channel</code>.
          *
-         * @param rtpLevelRelayType the type of RTP-level relay used for this <tt>Channel</tt>
+         * @param rtpLevelRelayType the type of RTP-level relay used for this <code>Channel</code>
          */
         public void setRTPLevelRelayType(RTPLevelRelayType rtpLevelRelayType)
         {
@@ -1191,9 +1193,9 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Sets the type of RTP-level relay (in the terms specified by RFC 3550 &quot;RTP: A
          * Transport Protocol for Real-Time Applications&quot; in section 2.3 &quot;Mixers and
-         * Translators&quot;) used for this <tt>Channel</tt>.
+         * Translators&quot;) used for this <code>Channel</code>.
          *
-         * @param s the type of RTP-level relay used for this <tt>Channel</tt>
+         * @param s the type of RTP-level relay used for this <code>Channel</code>
          */
         public void setRTPLevelRelayType(String s)
         {
@@ -1201,10 +1203,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * Sets the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTP packets.
          *
-         * @param rtpPort the port which has been allocated to this <tt>channel</tt> for the purposes of
+         * @param rtpPort the port which has been allocated to this <code>channel</code> for the purposes of
          * transmitting RTP packets
          * @deprecated The method is supported for the purposes of compatibility with legacy
          * versions of Jitsi and Jitsi Videobridge.
@@ -1216,9 +1218,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the list of (RTP) SSRCs seen/received on this <tt>Channel</tt>.
+         * Sets the list of (RTP) SSRCs seen/received on this <code>Channel</code>.
          *
-         * @param ssrcs the list of (RTP) SSRCs to be set as seen/received on this <tt>Channel</tt>
+         * @param ssrcs the list of (RTP) SSRCs to be set as seen/received on this <code>Channel</code>
          */
         public void setSSRCs(int[] ssrcs)
         {
@@ -1343,17 +1345,17 @@ public class ColibriConferenceIQ extends IQ
         public static final String ID_ATTR_NAME = "id";
 
         /**
-         * The ID of this <tt>ChannelBundle</tt>.
+         * The ID of this <code>ChannelBundle</code>.
          */
         private String id;
 
         /**
-         * The transport element of this <tt>ChannelBundle</tt>.
+         * The transport element of this <code>ChannelBundle</code>.
          */
-        private IceUdpTransportExtension transport;
+        private IceUdpTransport transport;
 
         /**
-         * Initializes a new <tt>ChannelBundle</tt> with the given ID.
+         * Initializes a new <code>ChannelBundle</code> with the given ID.
          *
          * @param id the ID.
          */
@@ -1363,9 +1365,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns the ID of this <tt>ChannelBundle</tt>.
+         * Returns the ID of this <code>ChannelBundle</code>.
          *
-         * @return the ID of this <tt>ChannelBundle</tt>.
+         * @return the ID of this <code>ChannelBundle</code>.
          */
         public String getId()
         {
@@ -1373,17 +1375,17 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns the transport element of this <tt>ChannelBundle</tt>.
+         * Returns the transport element of this <code>ChannelBundle</code>.
          *
-         * @return the transport element of this <tt>ChannelBundle</tt>.
+         * @return the transport element of this <code>ChannelBundle</code>.
          */
-        public IceUdpTransportExtension getTransport()
+        public IceUdpTransport getTransport()
         {
             return transport;
         }
 
         /**
-         * Sets the ID of this <tt>ChannelBundle</tt>.
+         * Sets the ID of this <code>ChannelBundle</code>.
          *
          * @param id the ID to set.
          */
@@ -1393,19 +1395,19 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the transport element of this <tt>ChannelBundle</tt>.
+         * Sets the transport element of this <code>ChannelBundle</code>.
          *
          * @param transport the transport to set.
          */
-        public void setTransport(IceUdpTransportExtension transport)
+        public void setTransport(IceUdpTransport transport)
         {
             this.transport = transport;
         }
 
         /**
-         * Appends an XML representation of this <tt>ChannelBundle</tt> to <tt>xml</tt>.
+         * Appends an XML representation of this <code>ChannelBundle</code> to <code>xml</code>.
          *
-         * @param xml the <tt>StringBuilder</tt> to append to.
+         * @param xml the <code>StringBuilder</code> to append to.
          */
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
@@ -1425,7 +1427,7 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Class contains common code for both <tt>Channel</tt> and <tt>SctpConnection</tt> IQ classes.
+     * Class contains common code for both <code>Channel</code> and <code>SctpConnection</code> IQ classes.
      *
      * @author Pawel Domas
      */
@@ -1437,37 +1439,37 @@ public class ColibriConferenceIQ extends IQ
         public static final String CHANNEL_BUNDLE_ID_ATTR_NAME = "channel-bundle-id";
 
         /**
-         * The XML name of the <tt>endpoint</tt> attribute which specifies the optional identifier
-         * of the endpoint of the conference participant associated with a <tt>channel</tt>. The
-         * value of the <tt>endpoint</tt> attribute is an opaque <tt>String</tt> from the point of
+         * The XML name of the <code>endpoint</code> attribute which specifies the optional identifier
+         * of the endpoint of the conference participant associated with a <code>channel</code>. The
+         * value of the <code>endpoint</code> attribute is an opaque <code>String</code> from the point of
          * view of Jitsi Videobridge.
          */
         public static final String ENDPOINT_ATTR_NAME = "endpoint";
 
         /**
-         * The XML name of the <tt>expire</tt> attribute of a <tt>channel</tt> of a <tt>content</tt>
-         * of a <tt>conference</tt> IQ which represents the value of the <tt>expire</tt> property of
-         * <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>expire</code> attribute of a <code>channel</code> of a <code>content</code>
+         * of a <code>conference</code> IQ which represents the value of the <code>expire</code> property of
+         * <code>ColibriConferenceIQ.Channel</code>.
          */
         public static final String EXPIRE_ATTR_NAME = "expire";
 
         /**
-         * The value of the <tt>expire</tt> property of <tt>ColibriConferenceIQ.Channel</tt> which
+         * The value of the <code>expire</code> property of <code>ColibriConferenceIQ.Channel</code> which
          * indicates that no actual value has been specified for the property in question.
          */
         public static final int EXPIRE_NOT_SPECIFIED = -1;
 
         /**
-         * The XML name of the <tt>id</tt> attribute of a <tt>channel</tt> of a <tt>content</tt> of
-         * a <tt>conference</tt> IQ which represents the value of the <tt>id</tt> property of
-         * <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>id</code> attribute of a <code>channel</code> of a <code>content</code> of
+         * a <code>conference</code> IQ which represents the value of the <code>id</code> property of
+         * <code>ColibriConferenceIQ.Channel</code>.
          */
         public static final String ID_ATTR_NAME = "id";
 
         /**
-         * The XML name of the <tt>initiator</tt> attribute of a <tt>channel</tt> of a
-         * <tt>content</tt> of a <tt>conference</tt> IQ which represents the value of the
-         * <tt>initiator</tt> property of <tt>ColibriConferenceIQ.Channel</tt>.
+         * The XML name of the <code>initiator</code> attribute of a <code>channel</code> of a
+         * <code>content</code> of a <code>conference</code> IQ which represents the value of the
+         * <code>initiator</code> property of <code>ColibriConferenceIQ.Channel</code>.
          */
         public static final String INITIATOR_ATTR_NAME = "initiator";
 
@@ -1477,7 +1479,7 @@ public class ColibriConferenceIQ extends IQ
         public static final String TYPE_ATTR_NAME = "type";
 
         /**
-         * The channel-bundle-id attribute of this <tt>CommonChannel</tt>.
+         * The channel-bundle-id attribute of this <code>CommonChannel</code>.
          */
         private String channelBundleId = null;
 
@@ -1487,7 +1489,7 @@ public class ColibriConferenceIQ extends IQ
         private String elementName;
 
         /**
-         * The identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>.
+         * The identifier of the endpoint of the conference participant associated with this <code>Channel</code>.
          */
         private String endpoint;
 
@@ -1497,13 +1499,13 @@ public class ColibriConferenceIQ extends IQ
         private String type;
 
         /**
-         * The number of seconds of inactivity after which the <tt>channel</tt>
+         * The number of seconds of inactivity after which the <code>channel</code>
          * represented by this instance expires.
          */
         private int expire = EXPIRE_NOT_SPECIFIED;
 
         /**
-         * The ID of the <tt>channel</tt> represented by this instance.
+         * The ID of the <code>channel</code> represented by this instance.
          */
         private String id;
 
@@ -1513,10 +1515,10 @@ public class ColibriConferenceIQ extends IQ
          */
         private Boolean initiator;
 
-        private IceUdpTransportExtension transport;
+        private IceUdpTransport transport;
 
         /**
-         * Initializes this class with given XML <tt>elementName</tt>.
+         * Initializes this class with given XML <code>elementName</code>.
          *
          * @param elementName XML element name to be used for producing XML representation of derived IQ class.
          */
@@ -1526,9 +1528,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Get the channel-bundle-id attribute of this <tt>CommonChannel</tt>.
+         * Get the channel-bundle-id attribute of this <code>CommonChannel</code>.
          *
-         * @return the channel-bundle-id attribute of this <tt>CommonChannel</tt>.
+         * @return the channel-bundle-id attribute of this <code>CommonChannel</code>.
          */
         public String getChannelBundleId()
         {
@@ -1537,9 +1539,9 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Gets the identifier of the endpoint of the conference participant associated with this
-         * <tt>Channel</tt>.
+         * <code>Channel</code>.
          *
-         * @return the identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>
+         * @return the identifier of the endpoint of the conference participant associated with this <code>Channel</code>
          */
         public String getEndpoint()
         {
@@ -1556,9 +1558,9 @@ public class ColibriConferenceIQ extends IQ
 
         /**
          * Gets the number of seconds of inactivity after which the
-         * <tt>channel</tt> represented by this instance expires.
+         * <code>channel</code> represented by this instance expires.
          *
-         * @return the number of seconds of inactivity after which the <tt>channel</tt> represented
+         * @return the number of seconds of inactivity after which the <code>channel</code> represented
          * by this instance expires
          */
         public int getExpire()
@@ -1567,28 +1569,28 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the ID of the <tt>channel</tt> represented by this instance.
+         * Gets the ID of the <code>channel</code> represented by this instance.
          *
-         * @return the ID of the <tt>channel</tt> represented by this instance
+         * @return the ID of the <code>channel</code> represented by this instance
          */
         public String getID()
         {
             return id;
         }
 
-        public IceUdpTransportExtension getTransport()
+        public IceUdpTransport getTransport()
         {
             return transport;
         }
 
         /**
          * Indicates whether there are some contents that should be printed as
-         * child elements of this IQ. If <tt>true</tt> is returned
+         * child elements of this IQ. If <code>true</code> is returned
          * {@link #printContent(IQChildElementXmlStringBuilder)} method will be
          * called when XML representation of this IQ is being constructed.
          *
-         * @return <tt>true</tt> if there are content to be printed as child elements of this IQ or
-         * <tt>false</tt> otherwise.
+         * @return <code>true</code> if there are content to be printed as child elements of this IQ or
+         * <code>false</code> otherwise.
          */
         protected abstract boolean hasContent();
 
@@ -1598,8 +1600,8 @@ public class ColibriConferenceIQ extends IQ
          *
          * @return {@link Boolean#TRUE} if the conference focus is the initiator/offerer of the
          * media negotiation associated with this instance, {@link Boolean#FALSE} if the
-         * conference focus is the responder/answerer or <tt>null</tt> if the
-         * <tt>initiator</tt> state is unspecified
+         * conference focus is the responder/answerer or <code>null</code> if the
+         * <code>initiator</code> state is unspecified
          */
         public Boolean isInitiator()
         {
@@ -1609,23 +1611,23 @@ public class ColibriConferenceIQ extends IQ
         /**
          * Derived class implements this method in order to print additional attributes to main XML element.
          *
-         * @param xml <the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of
-         * this <tt>Channel</tt> is to be appended</tt>
+         * @param xml <the <code>StringBuilder</code> to which the XML <code>String</code> representation of
+         * this <code>Channel</code> is to be appended</code>
          */
         protected abstract IQChildElementXmlStringBuilder printAttributes(IQChildElementXmlStringBuilder xml);
 
         /**
          * Implement in order to print content child elements of this IQ using given
-         * <tt>StringBuilder</tt>. Called during construction of XML representation if
-         * {@link #hasContent()} returns <tt>true</tt>.
+         * <code>StringBuilder</code>. Called during construction of XML representation if
+         * {@link #hasContent()} returns <code>true</code>.
          *
-         * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
-         * <tt>Channel</tt> is to be appended</tt></tt>.
+         * @param xml the <code>StringBuilder</code> to which the XML <code>String</code> representation of this
+         * <code>Channel</code> is to be appended</code></code>.
          */
         protected abstract IQChildElementXmlStringBuilder printContent(IQChildElementXmlStringBuilder xml);
 
         /**
-         * Sets the channel-bundle-id attribute of this <tt>CommonChannel</tt>.
+         * Sets the channel-bundle-id attribute of this <code>CommonChannel</code>.
          *
          * @param channelBundleId the value to set.
          */
@@ -1635,10 +1637,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the identifier of the endpoint of the conference participant associated with this <tt>Channel</tt>.
+         * Sets the identifier of the endpoint of the conference participant associated with this <code>Channel</code>.
          *
          * @param endpoint the identifier of the endpoint of the conference participant associated with this
-         * <tt>Channel</tt>
+         * <code>Channel</code>
          */
         public void setEndpoint(String endpoint)
         {
@@ -1656,11 +1658,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the number of seconds of inactivity after which the <tt>channel</tt> represented by this instance expires.
+         * Sets the number of seconds of inactivity after which the <code>channel</code> represented by this instance expires.
          *
-         * @param expire the number of seconds of activity after which the <tt>channel</tt> represented by
+         * @param expire the number of seconds of activity after which the <code>channel</code> represented by
          * this instance expires
-         * @throws IllegalArgumentException if the value of the specified <tt>expire</tt> is other than
+         * @throws IllegalArgumentException if the value of the specified <code>expire</code> is other than
          * {@link #EXPIRE_NOT_SPECIFIED} and negative
          */
         public void setExpire(int expire)
@@ -1671,9 +1673,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /*
-         * Sets the ID of the <tt>channel</tt> represented by this instance.
+         * Sets the ID of the <code>channel</code> represented by this instance.
          *
-         * @param id the ID of the <tt>channel</tt> represented by this instance
+         * @param id the ID of the <code>channel</code> represented by this instance
          */
         public void setID(String id)
         {
@@ -1686,23 +1688,23 @@ public class ColibriConferenceIQ extends IQ
          *
          * @param initiator {@link Boolean#TRUE} if the conference focus is the initiator/offerer of the media
          * negotiation associated with this instance, {@link Boolean#FALSE} if the conference
-         * focus is the responder/answerer or <tt>null</tt> if the <tt>initiator</tt> state is to be unspecified
+         * focus is the responder/answerer or <code>null</code> if the <code>initiator</code> state is to be unspecified
          */
         public void setInitiator(Boolean initiator)
         {
             this.initiator = initiator;
         }
 
-        public void setTransport(IceUdpTransportExtension transport)
+        public void setTransport(IceUdpTransport transport)
         {
             this.transport = transport;
         }
 
         /**
-         * Appends the XML <tt>String</tt> representation of this <tt>Channel</tt> to a specific <tt>StringBuilder</tt>.
+         * Appends the XML <code>String</code> representation of this <code>Channel</code> to a specific <code>StringBuilder</code>.
          *
-         * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
-         * <tt>Channel</tt> is to be appended
+         * @param xml the <code>StringBuilder</code> to which the XML <code>String</code> representation of this
+         * <code>Channel</code> is to be appended
          */
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
@@ -1725,7 +1727,7 @@ public class ColibriConferenceIQ extends IQ
             // Print derived class attributes
             printAttributes(xml);
 
-            IceUdpTransportExtension transport = getTransport();
+            IceUdpTransport transport = getTransport();
             boolean hasTransport = (transport != null);
             if (hasTransport || hasContent()) {
                 xml.rightAngleBracket();
@@ -1745,45 +1747,45 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Represents a <tt>content</tt> included into a Jitsi Videobridge <tt>conference</tt> IQ.
+     * Represents a <code>content</code> included into a Jitsi Videobridge <code>conference</code> IQ.
      */
     public static class Content
     {
         /**
-         * The XML element name of a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
+         * The XML element name of a <code>content</code> of a Jitsi Videobridge <code>conference</code> IQ.
          */
         public static final String ELEMENT = "content";
 
         /**
-         * The XML name of the <tt>name</tt> attribute of a <tt>content</tt> of a
-         * <tt>conference</tt> IQ which represents the <tt>name</tt> property of <tt>ColibriConferenceIQ.Content</tt>.
+         * The XML name of the <code>name</code> attribute of a <code>content</code> of a
+         * <code>conference</code> IQ which represents the <code>name</code> property of <code>ColibriConferenceIQ.Content</code>.
          */
         public static final String NAME_ATTR_NAME = "name";
 
         /**
-         * The list of {@link Channel}s included into this <tt>content</tt> of a <tt>conference</tt> IQ.
+         * The list of {@link Channel}s included into this <code>content</code> of a <code>conference</code> IQ.
          */
         private final List<Channel> channels = new LinkedList<>();
 
         /**
-         * The name of the <tt>content</tt> represented by this instance.
+         * The name of the <code>content</code> represented by this instance.
          */
         private String name;
 
         /**
-         * The list of {@link SctpConnection}s included into this <tt>content</tt> of a <tt>conference</tt> IQ.
+         * The list of {@link SctpConnection}s included into this <code>content</code> of a <code>conference</code> IQ.
          */
         private final List<SctpConnection> sctpConnections = new LinkedList<>();
 
         /**
-         * Initializes a new <tt>Content</tt> instance without a name and channels.
+         * Initializes a new <code>Content</code> instance without a name and channels.
          */
         public Content()
         {
         }
 
         /**
-         * Initializes a new <tt>Content</tt> instance with a specific name and without channels.
+         * Initializes a new <code>Content</code> instance with a specific name and without channels.
          *
          * @param name the name to initialize the new instance with
          */
@@ -1793,13 +1795,13 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds a specific <tt>Channel</tt> to the list of <tt>Channel</tt>s included into this <tt>Content</tt>.
+         * Adds a specific <code>Channel</code> to the list of <code>Channel</code>s included into this <code>Content</code>.
          *
-         * @param channel the <tt>Channel</tt> to be included into this <tt>Content</tt>
-         * @return <tt>true</tt> if the list of <tt>Channel</tt>s included into this
-         * <tt>Content</tt> was modified as a result of the execution of the method;
-         * otherwise, <tt>false</tt>
-         * @throws NullPointerException if the specified <tt>channel</tt> is <tt>null</tt>
+         * @param channel the <code>Channel</code> to be included into this <code>Content</code>
+         * @return <code>true</code> if the list of <code>Channel</code>s included into this
+         * <code>Content</code> was modified as a result of the execution of the method;
+         * otherwise, <code>false</code>
+         * @throws NullPointerException if the specified <code>channel</code> is <code>null</code>
          */
         public boolean addChannel(Channel channel)
         {
@@ -1808,11 +1810,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds <tt>ChannelCommon</tt> to this <tt>Content</tt>.
+         * Adds <code>ChannelCommon</code> to this <code>Content</code>.
          *
          * @param channelCommon {@link ChannelCommon} instance to be added to this content.
-         * @return <tt>true</tt> if given <tt>channelCommon</tt> has been
-         * actually added to this <tt>Content</tt> instance.
+         * @return <code>true</code> if given <code>channelCommon</code> has been
+         * actually added to this <code>Content</code> instance.
          */
         public boolean addChannelCommon(ChannelCommon channelCommon)
         {
@@ -1825,13 +1827,13 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Adds a specific <tt>SctpConnection</tt> to the list of <tt>SctpConnection</tt>s included
-         * into this <tt>Content</tt>.
+         * Adds a specific <code>SctpConnection</code> to the list of <code>SctpConnection</code>s included
+         * into this <code>Content</code>.
          *
-         * @param conn the <tt>SctpConnection</tt> to be included into this <tt>Content</tt>
-         * @return <tt>true</tt> if the list of <tt>SctpConnection</tt>s included into this
-         * <tt>Content</tt> was modified as a result of the execution of the method; otherwise, <tt>false</tt>
-         * @throws NullPointerException if the specified <tt>conn</tt> is <tt>null</tt>
+         * @param conn the <code>SctpConnection</code> to be included into this <code>Content</code>
+         * @return <code>true</code> if the list of <code>SctpConnection</code>s included into this
+         * <code>Content</code> was modified as a result of the execution of the method; otherwise, <code>false</code>
+         * @throws NullPointerException if the specified <code>conn</code> is <code>null</code>
          */
         public boolean addSctpConnection(SctpConnection conn)
         {
@@ -1840,13 +1842,13 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the <tt>Channel</tt> at a specific index/position within the list of
-         * <tt>Channel</tt>s included in this <tt>Content</tt>.
+         * Gets the <code>Channel</code> at a specific index/position within the list of
+         * <code>Channel</code>s included in this <code>Content</code>.
          *
-         * @param channelIndex the index/position within the list of <tt>Channel</tt>s included in this
-         * <tt>Content</tt> of the <tt>Channel</tt> to be returned
-         * @return the <tt>Channel</tt> at the specified <tt>channelIndex</tt> within the list of
-         * <tt>Channel</tt>s included in this <tt>Content</tt>
+         * @param channelIndex the index/position within the list of <code>Channel</code>s included in this
+         * <code>Content</code> of the <code>Channel</code> to be returned
+         * @return the <code>Channel</code> at the specified <code>channelIndex</code> within the list of
+         * <code>Channel</code>s included in this <code>Content</code>
          */
         public Channel getChannel(int channelIndex)
         {
@@ -1854,12 +1856,12 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets a <tt>Channel</tt> which is included into this <tt>Content</tt> and which has a
+         * Gets a <code>Channel</code> which is included into this <code>Content</code> and which has a
          * specific ID.
          *
-         * @param channelID the ID of the <tt>Channel</tt> included into this <tt>Content</tt> to be returned
-         * @return the <tt>Channel</tt> which is included into this <tt>Content</tt> and which has
-         * the specified <tt>channelID</tt> if such a <tt>Channel</tt> exists; otherwise, <tt>null</tt>
+         * @param channelID the ID of the <code>Channel</code> included into this <code>Content</code> to be returned
+         * @return the <code>Channel</code> which is included into this <code>Content</code> and which has
+         * the specified <code>channelID</code> if such a <code>Channel</code> exists; otherwise, <code>null</code>
          */
         public Channel getChannel(String channelID)
         {
@@ -1871,10 +1873,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Finds an SCTP connection identified by given <tt>connectionID</tt>.
+         * Finds an SCTP connection identified by given <code>connectionID</code>.
          *
          * @param connectionID the ID of the SCTP connection to find.
-         * @return <tt>SctpConnection</tt> instance identified by given ID or <tt>null</tt> if no
+         * @return <code>SctpConnection</code> instance identified by given ID or <code>null</code> if no
          * such connection is contained in this IQ.
          */
         public SctpConnection getSctpConnection(String connectionID)
@@ -1886,9 +1888,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the number of <tt>Channel</tt>s included into/associated with this <tt>Content</tt>.
+         * Gets the number of <code>Channel</code>s included into/associated with this <code>Content</code>.
          *
-         * @return the number of <tt>Channel</tt>s included into/associated with this <tt>Content</tt>
+         * @return the number of <code>Channel</code>s included into/associated with this <code>Content</code>
          */
         public int getChannelCount()
         {
@@ -1896,10 +1898,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets a list of the <tt>Channel</tt> included into/associated with this <tt>Content</tt>.
+         * Gets a list of the <code>Channel</code> included into/associated with this <code>Content</code>.
          *
-         * @return an unmodifiable <tt>List</tt> of the <tt>Channel</tt>s included into/associated
-         * with this <tt>Content</tt>
+         * @return an unmodifiable <code>List</code> of the <code>Channel</code>s included into/associated
+         * with this <code>Content</code>
          */
         public List<Channel> getChannels()
         {
@@ -1907,9 +1909,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the name of the <tt>content</tt> represented by this instance.
+         * Gets the name of the <code>content</code> represented by this instance.
          *
-         * @return the name of the <tt>content</tt> represented by this instance
+         * @return the name of the <code>content</code> represented by this instance
          */
         public String getName()
         {
@@ -1917,11 +1919,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets a list of the <tt>SctpConnection</tt>s included into/associated with this
-         * <tt>Content</tt>.
+         * Gets a list of the <code>SctpConnection</code>s included into/associated with this
+         * <code>Content</code>.
          *
-         * @return an unmodifiable <tt>List</tt> of the <tt>SctpConnection</tt>s included
-         * into/associated with this <tt>Content</tt>
+         * @return an unmodifiable <code>List</code> of the <code>SctpConnection</code>s included
+         * into/associated with this <code>Content</code>
          */
         public List<SctpConnection> getSctpConnections()
         {
@@ -1929,12 +1931,12 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Removes a specific <tt>Channel</tt> from the list of <tt>Channel</tt>s included into this
-         * <tt>Content</tt>.
+         * Removes a specific <code>Channel</code> from the list of <code>Channel</code>s included into this
+         * <code>Content</code>.
          *
-         * @param channel the <tt>Channel</tt> to be excluded from this <tt>Content</tt>
-         * @return <tt>true</tt> if the list of <tt>Channel</tt>s included into this
-         * <tt>Content</tt> was modified as a result of the execution of the method; otherwise, <tt>false</tt>
+         * @param channel the <code>Channel</code> to be excluded from this <code>Content</code>
+         * @return <code>true</code> if the list of <code>Channel</code>s included into this
+         * <code>Content</code> was modified as a result of the execution of the method; otherwise, <code>false</code>
          */
         public boolean removeChannel(Channel channel)
         {
@@ -1942,10 +1944,10 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the name of the <tt>content</tt> represented by this instance.
+         * Sets the name of the <code>content</code> represented by this instance.
          *
-         * @param name the name of the <tt>content</tt> represented by this instance
-         * @throws NullPointerException if the specified <tt>name</tt> is <tt>null</tt>
+         * @param name the name of the <code>content</code> represented by this instance
+         * @throws NullPointerException if the specified <code>name</code> is <code>null</code>
          */
         public void setName(String name)
         {
@@ -1955,11 +1957,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Appends the XML <tt>String</tt> representation of this <tt>Content</tt> to a specific
-         * <tt>StringBuilder</tt>.
+         * Appends the XML <code>String</code> representation of this <code>Content</code> to a specific
+         * <code>StringBuilder</code>.
          *
-         * @param xml the <tt>StringBuilder</tt> to which the XML <tt>String</tt> representation of this
-         * <tt>Content</tt> is to be appended
+         * @param xml the <code>StringBuilder</code> to which the XML <code>String</code> representation of this
+         * <code>Content</code> is to be appended
          */
         public IQChildElementXmlStringBuilder toXML(IQChildElementXmlStringBuilder xml)
         {
@@ -1990,7 +1992,7 @@ public class ColibriConferenceIQ extends IQ
          * Removes given SCTP connection from this IQ.
          *
          * @param connection the SCTP connection instance to be removed.
-         * @return <tt>true</tt> if given <tt>connection</tt> was contained in this IQ and has been removed successfully.
+         * @return <code>true</code> if given <code>connection</code> was contained in this IQ and has been removed successfully.
          */
         public boolean removeSctpConnection(SctpConnection connection)
         {
@@ -2024,22 +2026,22 @@ public class ColibriConferenceIQ extends IQ
         public static final String STATS_ID_ATTR_NAME = "stats-id";
 
         /**
-         * The 'display name' of this <tt>Endpoint</tt>.
+         * The 'display name' of this <code>Endpoint</code>.
          */
         private String displayName;
 
         /**
-         * The 'id' of this <tt>Endpoint</tt>.
+         * The 'id' of this <code>Endpoint</code>.
          */
         private String id;
 
         /**
-         * The 'stats-id' of this <tt>Endpoint</tt>.
+         * The 'stats-id' of this <code>Endpoint</code>.
          */
         private String statsId;
 
         /**
-         * Initializes a new <tt>Endpoint</tt> with the given ID and display
+         * Initializes a new <code>Endpoint</code> with the given ID and display
          * name.
          *
          * @param id the ID.
@@ -2054,9 +2056,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns the display name of this <tt>Endpoint</tt>.
+         * Returns the display name of this <code>Endpoint</code>.
          *
-         * @return the display name of this <tt>Endpoint</tt>.
+         * @return the display name of this <code>Endpoint</code>.
          */
         public String getDisplayName()
         {
@@ -2064,9 +2066,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns the ID of this <tt>Endpoint</tt>.
+         * Returns the ID of this <code>Endpoint</code>.
          *
-         * @return the ID of this <tt>Endpoint</tt>.
+         * @return the ID of this <code>Endpoint</code>.
          */
         public String getId()
         {
@@ -2074,9 +2076,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Returns the stats ID of this <tt>Endpoint</tt>.
+         * Returns the stats ID of this <code>Endpoint</code>.
          *
-         * @return the stats ID of this <tt>Endpoint</tt>.
+         * @return the stats ID of this <code>Endpoint</code>.
          */
         public String getStatsId()
         {
@@ -2084,7 +2086,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the display name of this <tt>Endpoint</tt>.
+         * Sets the display name of this <code>Endpoint</code>.
          *
          * @param displayName the display name to set.
          */
@@ -2094,7 +2096,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the ID of this <tt>Endpoint</tt>.
+         * Sets the ID of this <code>Endpoint</code>.
          *
          * @param id the ID to set.
          */
@@ -2104,7 +2106,7 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the stats ID of this <tt>Endpoint</tt>.
+         * Sets the stats ID of this <code>Endpoint</code>.
          *
          * @param statsId the stats ID to set.
          */
@@ -2114,11 +2116,11 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Appends the XML <tt>String</tt> representation of this
-         * <tt>Endpoint</tt> to <tt>xml</tt>.
+         * Appends the XML <code>String</code> representation of this
+         * <code>Endpoint</code> to <code>xml</code>.
          *
-         * @param xml the <tt>StringBuilder</tt> to which the XML
-         * <tt>String</tt> representation of this <tt>Endpoint</tt> is to be appended
+         * @param xml the <code>StringBuilder</code> to which the XML
+         * <code>String</code> representation of this <code>Endpoint</code> is to be appended
          */
         public IQChildElementXmlStringBuilder toXML(
                 IQChildElementXmlStringBuilder xml)
@@ -2134,27 +2136,27 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Represents a <tt>recording</tt> element.
+     * Represents a <code>recording</code> element.
      */
     public static class Recording
     {
         /**
-         * The XML name of the <tt>recording</tt> element.
+         * The XML name of the <code>recording</code> element.
          */
         public static final String ELEMENT = "recording";
 
         /**
-         * The XML name of the <tt>path</tt> attribute.
+         * The XML name of the <code>path</code> attribute.
          */
         public static final String DIRECTORY_ATTR_NAME = "directory";
 
         /**
-         * The XML name of the <tt>state</tt> attribute.
+         * The XML name of the <code>state</code> attribute.
          */
         public static final String STATE_ATTR_NAME = "state";
 
         /**
-         * The XML name of the <tt>token</tt> attribute.
+         * The XML name of the <code>token</code> attribute.
          */
         public static final String TOKEN_ATTR_NAME = "token";
 
@@ -2166,7 +2168,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * State of the recording..
          */
-        private State state;
+        private final State state;
 
         /**
          * Access token.
@@ -2290,6 +2292,7 @@ public class ColibriConferenceIQ extends IQ
              *
              * @return returns state name.
              */
+            @NonNull
             public String toString()
             {
                 return name;
@@ -2357,22 +2360,22 @@ public class ColibriConferenceIQ extends IQ
     }
 
     /**
-     * Represents a <tt>SCTP connection</tt> included into a <tt>content</tt> of a Jitsi Videobridge
-     * <tt>conference</tt> IQ.
+     * Represents a <code>SCTP connection</code> included into a <code>content</code> of a Jitsi Videobridge
+     * <code>conference</code> IQ.
      *
      * @author Pawel Domas
      */
     public static class SctpConnection extends ChannelCommon
     {
         /**
-         * The XML element name of a <tt>content</tt> of a Jitsi Videobridge <tt>conference</tt> IQ.
+         * The XML element name of a <code>content</code> of a Jitsi Videobridge <code>conference</code> IQ.
          */
         public static final String ELEMENT = "sctpconnection";
 
         /**
-         * The XML name of the <tt>port</tt> attribute of a <tt>SctpConnection</tt> of a
-         * <tt>conference</tt> IQ which represents the SCTP port property of
-         * <tt>ColibriConferenceIQ.SctpConnection</tt>.
+         * The XML name of the <code>port</code> attribute of a <code>SctpConnection</code> of a
+         * <code>conference</code> IQ which represents the SCTP port property of
+         * <code>ColibriConferenceIQ.SctpConnection</code>.
          */
         public static final String PORT_ATTR_NAME = "port";
 
@@ -2382,7 +2385,7 @@ public class ColibriConferenceIQ extends IQ
         private int port = 5000;
 
         /**
-         * Initializes a new <tt>SctpConnection</tt> instance without an endpoint name and with
+         * Initializes a new <code>SctpConnection</code> instance without an endpoint name and with
          * default port value set.
          */
         public SctpConnection()
@@ -2391,9 +2394,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Gets the SCTP port of the <tt>SctpConnection</tt> described by this instance.
+         * Gets the SCTP port of the <code>SctpConnection</code> described by this instance.
          *
-         * @return the SCTP port of the <tt>SctpConnection</tt> represented by this instance.
+         * @return the SCTP port of the <code>SctpConnection</code> represented by this instance.
          */
         public int getPort()
         {
@@ -2403,7 +2406,7 @@ public class ColibriConferenceIQ extends IQ
         /**
          * {@inheritDoc}
          *
-         * No content other than transport for <tt>SctpConnection</tt>.
+         * No content other than transport for <code>SctpConnection</code>.
          */
         @Override
         protected boolean hasContent()
@@ -2429,9 +2432,9 @@ public class ColibriConferenceIQ extends IQ
         }
 
         /**
-         * Sets the SCTP port of the <tt>SctpConnection</tt> represented by this instance.
+         * Sets the SCTP port of the <code>SctpConnection</code> represented by this instance.
          *
-         * @param port the SCTP port of the <tt>SctpConnection</tt> represented by this instance
+         * @param port the SCTP port of the <code>SctpConnection</code> represented by this instance
          */
         public void setPort(int port)
         {

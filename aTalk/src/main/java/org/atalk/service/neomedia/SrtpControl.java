@@ -20,22 +20,22 @@ public interface SrtpControl
     public static final String RTP_SAVPF = "RTP/SAVPF";
 
     /**
-     * Adds a <tt>cleanup()</tt> method to
-     * <tt>TransformEngine</tt> which is to go in hand with the
-     * <tt>cleanup()</tt> method of <tt>SrtpControl</tt>.
+     * Adds a <code>cleanup()</code> method to
+     * <code>TransformEngine</code> which is to go in hand with the
+     * <code>cleanup()</code> method of <code>SrtpControl</code>.
      *
      * @author Lyubomir Marinov
      */
     interface TransformEngine extends org.atalk.impl.neomedia.transform.TransformEngine
     {
         /**
-         * Cleans up this <tt>TransformEngine</tt> and prepares it for garbage collection.
+         * Cleans up this <code>TransformEngine</code> and prepares it for garbage collection.
          */
         void cleanup();
     }
 
     /**
-     * Cleans up this <tt>SrtpControl</tt> and its <tt>TransformEngine</tt>.
+     * Cleans up this <code>SrtpControl</code> and its <code>TransformEngine</code>.
      *
      * @param user the instance which requests the clean up.
      */
@@ -49,16 +49,16 @@ public interface SrtpControl
     boolean getSecureCommunicationStatus();
 
     /**
-     * Gets the <tt>SrtpControlType</tt> of this instance.
+     * Gets the <code>SrtpControlType</code> of this instance.
      *
-     * @return the <tt>SrtpControlType</tt> of this instance
+     * @return the <code>SrtpControlType</code> of this instance
      */
     SrtpControlType getSrtpControlType();
 
     /**
-     * Returns the <tt>SrtpListener</tt> which listens for security events.
+     * Returns the <code>SrtpListener</code> which listens for security events.
      *
-     * @return the <tt>SrtpListener</tt> which listens for security events
+     * @return the <code>SrtpListener</code> which listens for security events
      */
     SrtpListener getSrtpListener();
 
@@ -72,14 +72,14 @@ public interface SrtpControl
     /**
      * Indicates if the key exchange method is dependent on secure transport of the signaling channel.
      *
-     * @return <tt>true</tt> when secure signaling is required to make the encryption secure; <tt>false</tt>, otherwise.
+     * @return <code>true</code> when secure signaling is required to make the encryption secure; <code>false</code>, otherwise.
      */
     boolean requiresSecureSignalingTransport();
 
     /**
-     * Sets the <tt>RTPConnector</tt> which is to use or uses this SRTP engine.
+     * Sets the <code>RTPConnector</code> which is to use or uses this SRTP engine.
      *
-     * @param connector the <tt>RTPConnector</tt> which is to use or uses this SRTP engine
+     * @param connector the <code>RTPConnector</code> which is to use or uses this SRTP engine
      */
     void setConnector(AbstractRTPConnector connector);
 
@@ -99,9 +99,9 @@ public interface SrtpControl
     void setMultistream(SrtpControl master);
 
     /**
-     * Sets a <tt>SrtpListener</tt> that will listen for security events.
+     * Sets a <code>SrtpListener</code> that will listen for security events.
      *
-     * @param srtpListener the <tt>SrtpListener</tt> that will receive the events
+     * @param srtpListener the <code>SrtpListener</code> that will receive the events
      */
     void setSrtpListener(SrtpListener srtpListener);
 
@@ -113,7 +113,7 @@ public interface SrtpControl
     void start(MediaType mediaType);
 
     /**
-     * Registers <tt>user</tt> as an instance which is currently using this <tt>SrtpControl</tt>.
+     * Registers <code>user</code> as an instance which is currently using this <code>SrtpControl</code>.
      *
      * @param user
      */

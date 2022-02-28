@@ -25,8 +25,8 @@ import org.atalk.android.aTalkApp;
 import java.util.*;
 
 /**
- * The <tt>StringContactSourceServiceImpl</tt> is an implementation of the
- * <tt>ContactSourceService</tt> that returns the searched string as a result contact.
+ * The <code>StringContactSourceServiceImpl</code> is an implementation of the
+ * <code>ContactSourceService</code> that returns the searched string as a result contact.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -49,7 +49,7 @@ public class StringContactSourceServiceImpl implements ContactSourceService
     private boolean disableDisplayDetails = true;
 
     /**
-     * Creates an instance of <tt>StringContactSourceServiceImpl</tt>.
+     * Creates an instance of <code>StringContactSourceServiceImpl</code>.
      *
      * @param protocolProvider the protocol provider to be used with this string
      * contact source
@@ -84,7 +84,7 @@ public class StringContactSourceServiceImpl implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>queryString</tt>.
+     * Creates query for the given <code>queryString</code>.
      *
      * @param queryString the string to search for
      * @return the created query
@@ -95,7 +95,7 @@ public class StringContactSourceServiceImpl implements ContactSourceService
     }
 
     /**
-     * Creates query for the given <tt>queryString</tt>.
+     * Creates query for the given <code>queryString</code>.
      *
      * @param queryString the string to search for
      * @param contactCount the maximum count of result contacts

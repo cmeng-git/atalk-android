@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * The <tt>ServerChatRoomQuery</tt> is a query over the <tt>ServerChatRoomContactSourceService</tt>.
+ * The <code>ServerChatRoomQuery</code> is a query over the <code>ServerChatRoomContactSourceService</code>.
  *
  * @author Hristo Terezov
  */
@@ -54,7 +54,7 @@ public class ServerChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     private ChatRoomProviderWrapper provider;
 
     /**
-     * Creates an instance of <tt>ChatRoomQuery</tt> by specifying the parent contact source, the query string
+     * Creates an instance of <code>ChatRoomQuery</code> by specifying the parent contact source, the query string
      * to match and the maximum result contacts to return.
      *
      * @param contactSource the parent contact source
@@ -216,7 +216,7 @@ public class ServerChatRoomQuery extends AsyncContactQuery<ContactSourceService>
     }
 
     /**
-     * Cancels this <tt>ContactQuery</tt>.
+     * Cancels this <code>ContactQuery</code>.
      *
      * @see ContactQuery#cancel()
      */
@@ -263,7 +263,7 @@ public class ServerChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      *
      * @param chatRoomID the chat room id associated with the contact.
      * @param pps the provider of the chat room contact.
-     * @return <tt>true</tt> if the result should be added to the results and <tt>false</tt> if not.
+     * @return <code>true</code> if the result should be added to the results and <code>false</code> if not.
      */
     public boolean isMatching(String chatRoomID, ProtocolProviderService pps)
     {

@@ -28,12 +28,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * The <tt>AccountRegistrationWizard</tt> is meant to provide a wizard which will guide the user
- * through a protocol account registration. Each <tt>AccountRegistrationWizard</tt> should
- * provide a set of <tt>WizardPage</tt>s, an icon, the name and the description of the
+ * The <code>AccountRegistrationWizard</code> is meant to provide a wizard which will guide the user
+ * through a protocol account registration. Each <code>AccountRegistrationWizard</code> should
+ * provide a set of <code>WizardPage</code>s, an icon, the name and the description of the
  * corresponding protocol.
  *
- * Note that the <tt>AccountRegistrationWizard</tt> is NOT a real wizard, it doesn't handle
+ * Note that the <code>AccountRegistrationWizard</code> is NOT a real wizard, it doesn't handle
  * wizard events. Each UI Service implementation should provide its own wizard UI control, which
  * should manage all the events, panels and buttons, etc.
  *
@@ -91,10 +91,10 @@ public abstract class AccountRegistrationWizard
     public abstract String getUserNameExample();
 
     /**
-     * Loads all data concerning the given <tt>ProtocolProviderService</tt>. This method is meant
+     * Loads all data concerning the given <code>ProtocolProviderService</code>. This method is meant
      * to be used when a modification in an already created account is needed.
      *
-     * @param protocolProvider The <tt>ProtocolProviderService</tt> to load data from.
+     * @param protocolProvider The <code>ProtocolProviderService</code> to load data from.
      */
     public abstract void loadAccount(ProtocolProviderService protocolProvider);
 
@@ -126,7 +126,7 @@ public abstract class AccountRegistrationWizard
      * Defines the operations that will be executed when the user clicks on the wizard "Signin"
      * button.
      *
-     * @return the created <tt>ProtocolProviderService</tt> corresponding to the new account
+     * @return the created <code>ProtocolProviderService</code> corresponding to the new account
      * @throws OperationFailedException if the operation didn't succeed
      */
     public abstract ProtocolProviderService signin()
@@ -139,14 +139,14 @@ public abstract class AccountRegistrationWizard
      * @param userName the user name to sign in with
      * @param password the password to sign in with
      * @param accountProperties additional account parameter for login
-     * @return the created <tt>ProtocolProviderService</tt> corresponding to the new account
+     * @return the created <code>ProtocolProviderService</code> corresponding to the new account
      * @throws OperationFailedException if the operation didn't succeed
      */
     public abstract ProtocolProviderService signin(String userName, String password, Map<String, String> accountProperties)
             throws OperationFailedException;
 
     /**
-     * Indicates that the account corresponding to the given <tt>protocolProvider</tt> has been removed.
+     * Indicates that the account corresponding to the given <code>protocolProvider</code> has been removed.
      *
      * @param protocolProvider the protocol provider that has been removed
      */
@@ -282,7 +282,7 @@ public abstract class AccountRegistrationWizard
     /**
      * Indicates if this wizard is for the preferred protocol.
      *
-     * @return <tt>true</tt> if this wizard corresponds to the preferred protocol, otherwise returns <tt>false</tt>
+     * @return <code>true</code> if this wizard corresponds to the preferred protocol, otherwise returns <code>false</code>
      */
     public boolean isPreferredProtocol()
     {
@@ -295,7 +295,7 @@ public abstract class AccountRegistrationWizard
      * Indicates if a wizard is hidden. This may be used if we don't want that a wizard appears
      * in the list of available networks.
      *
-     * @return <tt>true</tt> to indicate that a wizard is hidden, <tt>false</tt> otherwise
+     * @return <code>true</code> to indicate that a wizard is hidden, <code>false</code> otherwise
      */
     public boolean isHidden()
     {

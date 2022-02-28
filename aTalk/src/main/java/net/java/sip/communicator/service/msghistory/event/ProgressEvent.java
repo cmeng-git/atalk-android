@@ -32,7 +32,7 @@ public class ProgressEvent extends java.util.EventObject
 	 * Constructor.
 	 *
 	 * @param source
-	 *        source <tt>Object</tt>
+	 *        source <code>Object</code>
 	 * @param evt
 	 *        the event
 	 * @param progress

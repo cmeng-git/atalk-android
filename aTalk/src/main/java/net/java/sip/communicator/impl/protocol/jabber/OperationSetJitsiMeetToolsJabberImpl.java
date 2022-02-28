@@ -34,7 +34,7 @@ public class OperationSetJitsiMeetToolsJabberImpl implements OperationSetJitsiMe
     private final List<JitsiMeetRequestListener> requestHandlers = new CopyOnWriteArrayList<>();
 
     /**
-     * Creates new instance of <tt>OperationSetJitsiMeetToolsJabberImpl</tt>.
+     * Creates new instance of <code>OperationSetJitsiMeetToolsJabberImpl</code>.
      *
      * @param parentProvider parent Jabber protocol provider service instance.
      */

@@ -1,5 +1,35 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.0 (209000)
+Release Date:   02/28/2022
+Author:         cmeng
+- Replace deprecated LifecycleObserver with LifecycleEventObserver in android-youtube-player
+- Update deprecated ConnectivityManager in android-youtube-player
+- Use NetworkCallBack in place of deprecated Broadcast Receiver in android-youtube-player
+- Must use runOnUiThread for ChatActivity#localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent)
+  triggered by ChatRoomJabberImpl#onJoinSuccess()
+- Hide video call option if the android device does not have camera support
+- Enhance aTalk media call handler to support conversations media call unique implementation:
+  a. sending leading/trailing single candidate per transport-info stanza; in both session-initiate or session-accept instance
+  b. sending candidates for both RTP and RTCP with rtcp-mux option enabled; to cater for non rtcp-mux callee
+  @See https://github.com/iNPUTmice/Conversations/issues/4285
+  Still having problem as responder in sending audio, even Pair validated: 192.168.1.167:5009/udp/host -> 192.168.1.37:33079/udp/host (audio.RTP)
+  No found for Selected pair for stream audio.RTP: the problem seems to be from conversation no sending nominationConfirmed for aTalk validated audio candidate i.e.
+  Response from conversations indicates that we have received a response to a request that either contained the <tt>USE-CANDIDATE</tt> attribute
+  #sendHolePunchPacket: Error cannot send to remote peer for media: AUDIO; MediaStreamTarget with dataAddress null and controlAddress null
+  see: https://github.com/iNPUTmice/Conversations/issues/4285 & https://github.com/iNPUTmice/Conversations/issues/4287
+- Conversations implementation: JingleContent.Name <> RtpDescription.getMedia()
+  CallJabberImpl.#processSessionInitiate(): must get mediaType from RtpDescription.getMedia() instead of JingleContent.getName();
+  conversations JingleContent.getName() does not contain mediaType
+- Must check callPeer not null before proceed processJingleSynchronize#transport_info case;
+  Caller prematurely terminated call clear the callPeer or transport-info sent before session-initiate.
+- ice44j pending on android devices API version has problem handling a mixed for ip4 and ip6 public address - need more work.
+  e.g. Note10 aTalk send public ip in IPV6 format, old device cannot handle IPV6 address, hence failed.
+- Clean up JavaDoc for all java classes
+- Major changes to all jingle classes with two new implemented base classes
+  i.e. AbstractXmlElement and Default XmlElementProvider using builder approach
+
+=========================================================================
 Version:        2.8.1 (208010)
 Release Date:   01/18/2022
 Author:         cmeng

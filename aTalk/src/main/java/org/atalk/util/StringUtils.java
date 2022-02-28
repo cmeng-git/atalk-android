@@ -19,7 +19,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 /**
- * Implements utility functions to facilitate work with <tt>String</tt>s.
+ * Implements utility functions to facilitate work with <code>String</code>s.
  *
  * @author Grigorii Balutsel
  * @author Emil Ivov
@@ -30,18 +30,18 @@ import java.nio.charset.Charset;
 public final class StringUtils
 {
     /**
-     * Prevents the initialization of <tt>StringUtils</tt> instances because the
-     * <tt>StringUtils</tt> class implements utility function only.
+     * Prevents the initialization of <code>StringUtils</code> instances because the
+     * <code>StringUtils</code> class implements utility function only.
      */
     private StringUtils()
     {
     }
 
     /**
-     * Creates <tt>InputStream</tt> from the string in UTF8 encoding.
+     * Creates <code>InputStream</code> from the string in UTF8 encoding.
      *
      * @param string the string to convert.
-     * @return the <tt>InputStream</tt>.
+     * @return the <code>InputStream</code>.
      * @throws UnsupportedEncodingException if UTF8 is unsupported.
      */
     public static InputStream fromString(String string)
@@ -51,11 +51,11 @@ public final class StringUtils
     }
 
     /**
-     * Creates <tt>InputStream</tt> from the string in the specified encoding.
+     * Creates <code>InputStream</code> from the string in the specified encoding.
      *
      * @param string the string to convert.
      * @param encoding the encoding
-     * @return the <tt>InputStream</tt>.
+     * @return the <code>InputStream</code>.
      * @throws UnsupportedEncodingException if the encoding is unsupported.
      */
     public static InputStream fromString(String string, String encoding)
@@ -65,10 +65,10 @@ public final class StringUtils
     }
 
     /**
-     * Initializes a new <tt>String</tt> instance by decoding a specified array of bytes (mostly used by JNI).
+     * Initializes a new <code>String</code> instance by decoding a specified array of bytes (mostly used by JNI).
      *
-     * @param bytes the bytes to be decoded into characters/a new <tt>String</tt> instance
-     * @return a new <tt>String</tt> instance whose characters are decoded from the specified <tt>bytes</tt>
+     * @param bytes the bytes to be decoded into characters/a new <code>String</code> instance
+     * @return a new <code>String</code> instance whose characters are decoded from the specified <code>bytes</code>
      */
     public static String newString(byte[] bytes)
     {

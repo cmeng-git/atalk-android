@@ -24,8 +24,8 @@ import java.util.regex.Pattern;
 import timber.log.Timber;
 
 /**
- * A straightforward implementation of the <tt>ConfigurationService</tt> using an XML or a
- * .properties file for storing properties. Currently only <tt>String</tt> properties are
+ * A straightforward implementation of the <code>ConfigurationService</code> using an XML or a
+ * .properties file for storing properties. Currently only <code>String</code> properties are
  * meaningfully saved (we should probably consider how and whether we should take care of the
  * rest).
  *
@@ -39,8 +39,8 @@ import timber.log.Timber;
 public class ConfigurationServiceImpl implements ConfigurationService
 {
     /**
-     * The name of the <tt>ConfigurationStore</tt> class to be used as the default when no
-     * specific <tt>ConfigurationStore</tt> class is determined as necessary.
+     * The name of the <code>ConfigurationStore</code> class to be used as the default when no
+     * specific <code>ConfigurationStore</code> class is determined as necessary.
      */
     private static final String DEFAULT_CONFIGURATION_STORE_CLASS_NAME
             = "net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore";
@@ -88,8 +88,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
     /**
      * A set of properties deployed with the application during install time. Contrary to the
      * properties in {@link #immutableDefaultProperties} the ones in this map can be overridden
-     * with call to the <tt>setProperty()</tt> methods. Still, re-setting one of these properties
-     * to <tt>null</tt> would cause for its initial value to be restored.
+     * with call to the <code>setProperty()</code> methods. Still, re-setting one of these properties
+     * to <code>null</code> would cause for its initial value to be restored.
      */
     private Map<String, String> defaultProperties = new HashMap<>();
 
@@ -99,15 +99,15 @@ public class ConfigurationServiceImpl implements ConfigurationService
     private final ChangeEventDispatcher changeEventDispatcher = new ChangeEventDispatcher(this);
 
     /**
-     * A (cached) reference to a <tt>FileAccessService</tt> implementation used by this
-     * <tt>ConfigurationService</tt> implementation.
+     * A (cached) reference to a <code>FileAccessService</code> implementation used by this
+     * <code>ConfigurationService</code> implementation.
      */
     private FileAccessService faService;
 
     /**
      * The indicator which determines whether this instance has assigned a value to
      * {@link #faService}. Introduced in order to avoid multiple attempts to query for a
-     * <tt>FileAccessService</tt> implementation while still delaying the initial query.
+     * <code>FileAccessService</code> implementation while still delaying the initial query.
      */
     private boolean faServiceIsAssigned = false;
 
@@ -238,8 +238,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param propertyName the name of the property which is to be set to a specific value
      * @param property the value to be assigned to the property with the specified name
-     * @param isSystem <tt>true</tt> if the property with the specified name is to be set as a system
-     * property; <tt>false</tt>, otherwise
+     * @param isSystem <code>true</code> if the property with the specified name is to be set as a system
+     * property; <code>false</code>, otherwise
      */
     private void doSetProperty(String propertyName, Object property, boolean isSystem)
     {
@@ -350,9 +350,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing all property names.
+     * Returns a <code>java.util.List</code> of <code>String</code>s containing all property names.
      *
-     * @return a <tt>java.util.List</tt>containing all property names
+     * @return a <code>java.util.List</code>containing all property names
      */
     @Override
     public List<String> getAllPropertyNames(String name)
@@ -363,10 +363,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Returns a <tt>java.util.List</tt> of <tt>String</tt>s containing the all property names
-     * that have the specified prefix. Depending on the value of the <tt>exactPrefixMatch</tt>
+     * Returns a <code>java.util.List</code> of <code>String</code>s containing the all property names
+     * that have the specified prefix. Depending on the value of the <code>exactPrefixMatch</code>
      * parameter the method will (when false) or will not (when exactPrefixMatch is true) include
-     * property names that have prefixes longer than the specified <tt>prefix</tt> param.
+     * property names that have prefixes longer than the specified <code>prefix</code> param.
      *
      * Example:
      *
@@ -387,9 +387,9 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
-     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * a prefix that is an exact match of the the <code>prefix</code> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
-     * @return a <tt>java.util.List</tt>containing all property name String-s matching the
+     * @return a <code>java.util.List</code>containing all property name String-s matching the
      * specified conditions.
      */
     @Override
@@ -420,16 +420,16 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Updates the specified <tt>String</tt> <tt>resultSet</tt> to contain all property names in
-     * the <tt>names</tt> array that partially or completely match the specified prefix.
-     * Depending on the value of the <tt>exactPrefixMatch</tt> parameter the method will (when
+     * Updates the specified <code>String</code> <code>resultSet</code> to contain all property names in
+     * the <code>names</code> array that partially or completely match the specified prefix.
+     * Depending on the value of the <code>exactPrefixMatch</code> parameter the method will (when
      * false) or will not (when exactPrefixMatch is true) include property names that have prefixes
-     * longer than the specified <tt>prefix</tt> param.
+     * longer than the specified <code>prefix</code> param.
      *
      * @param prefix a String containing the prefix (the non dotted non-caps part of a property name) that
      * we're looking for.
      * @param exactPrefixMatch a boolean indicating whether the returned property names should all have
-     * a prefix that is an exact match of the the <tt>prefix</tt> param or whether properties with
+     * a prefix that is an exact match of the the <code>prefix</code> param or whether properties with
      * prefixes that contain it but are longer than it are also accepted.
      * @param names the list of names that we'd like to search.
      * @return a reference to the updated result set.
@@ -456,7 +456,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Returns a <tt>List</tt> of <tt>String</tt>s containing the property names that have the
+     * Returns a <code>List</code> of <code>String</code>s containing the property names that have the
      * specified suffix. A suffix is considered to be everything after the last dot in the property name.
      *
      * For example, imagine a configuration service instance containing two properties only:
@@ -466,13 +466,13 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * net.java.sip.communicator.service.protocol.PROP1=value2
      * }
      *
-     * A call to this method with <tt>suffix</tt> equal to "PROP1" will return both properties,
-     * whereas the call with <tt>suffix</tt> equal to "communicator.PROP1" or "PROP2" will return
-     * an empty <tt>List</tt>. Thus, if the <tt>suffix</tt> argument contains a dot, nothing will be found.
+     * A call to this method with <code>suffix</code> equal to "PROP1" will return both properties,
+     * whereas the call with <code>suffix</code> equal to "communicator.PROP1" or "PROP2" will return
+     * an empty <code>List</code>. Thus, if the <code>suffix</code> argument contains a dot, nothing will be found.
      *
      * @param suffix the suffix for the property names to be returned
-     * @return a <tt>List</tt> of <tt>String</tt>s containing the property names which contain the
-     * specified <tt>suffix</tt>
+     * @return a <code>List</code> of <code>String</code>s containing the property names which contain the
+     * specified <code>suffix</code>
      */
     @Override
     public List<String> getPropertyNamesBySuffix(String suffix)
@@ -907,8 +907,8 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param extension the extension of the file name of the configuration file. The specified extension may
      * not be taken into account if the the configuration file name is forced through a system property.
-     * @param create <tt>true</tt> to create the configuration file with the determined file name if it
-     * does not exist; <tt>false</tt> to only figure out the file name of the configuration file without creating it
+     * @param create <code>true</code> to create the configuration file with the determined file name if it
+     * does not exist; <code>false</code> to only figure out the file name of the configuration file without creating it
      * @return the configuration file currently used by the implementation.
      */
     private File getConfigurationFile(String extension, boolean create)
@@ -969,11 +969,11 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Gets the <tt>ConfigurationStore</tt> <tt>Class</tt> to be used as the default when no
-     * specific <tt>ConfigurationStore</tt> <tt>Class</tt> is determined as necessary.
+     * Gets the <code>ConfigurationStore</code> <code>Class</code> to be used as the default when no
+     * specific <code>ConfigurationStore</code> <code>Class</code> is determined as necessary.
      *
-     * @return the <tt>ConfigurationStore</tt> <tt>Class</tt> to be used as the default when no
-     * specific <tt>ConfigurationStore</tt> <tt>Class</tt> is determined as necessary
+     * @return the <code>ConfigurationStore</code> <code>Class</code> to be used as the default when no
+     * specific <code>ConfigurationStore</code> <code>Class</code> is determined as necessary
      */
     @SuppressWarnings("unchecked")
     private static Class<? extends ConfigurationStore> getDefaultConfigurationStoreClass()
@@ -1048,7 +1048,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      *
      * @param propertyName the name of the property that is being queried.
      * @return the result of calling the property's toString method and null in case there was no
-     * value mapped against the specified <tt>propertyName</tt>, or the returned string had zero
+     * value mapped against the specified <code>propertyName</code>, or the returned string had zero
      * length or contained whitespaces only.
      */
     @Override
@@ -1070,7 +1070,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
      * @param defaultValue the value to be returned if the specified property name is not associated with a value
      * in this {@code ConfigurationService}
      * @return the result of calling the property's toString method and {@code defaultValue}
-     * in case there was no value mapped against the specified <tt>propertyName</tt>, or the
+     * in case there was no value mapped against the specified <code>propertyName</code>, or the
      * returned string had zero length or contained whitespaces only.
      */
     @Override
@@ -1091,10 +1091,10 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Gets a (cached) reference to a <tt>FileAccessService</tt> implementation to be used by this
-     * <tt>ConfigurationService</tt> implementation.
+     * Gets a (cached) reference to a <code>FileAccessService</code> implementation to be used by this
+     * <code>ConfigurationService</code> implementation.
      *
-     * @return a (cached) reference to a <tt>FileAccessService</tt> implementation
+     * @return a (cached) reference to a <code>FileAccessService</code> implementation
      */
     private synchronized FileAccessService getFileAccessService()
     {
@@ -1107,20 +1107,20 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
     /**
      * Gets the value of a specific property as a signed decimal integer. If the specified
-     * property name is associated with a value in this <tt>ConfigurationService</tt>, the string
+     * property name is associated with a value in this <code>ConfigurationService</code>, the string
      * representation of the value is parsed into a signed decimal integer according to the rules
      * of {@link Integer#parseInt(String)} . If parsing the value as a signed decimal integer
      * fails or there is no value associated with the specified property name,
-     * <tt>defaultValue</tt> is returned.
+     * <code>defaultValue</code> is returned.
      *
      * @param propertyName the name of the property to get the value of as a signed decimal integer
      * @param defaultValue the value to be returned if parsing the value of the specified property name as a
      * signed decimal integer fails or there is no value associated with the specified
-     * property name in this <tt>ConfigurationService</tt>
+     * property name in this <code>ConfigurationService</code>
      * @return the value of the property with the specified name in this
-     * <tt>ConfigurationService</tt> as a signed decimal integer; <tt>defaultValue</tt> if
+     * <code>ConfigurationService</code> as a signed decimal integer; <code>defaultValue</code> if
      * parsing the value of the specified property name fails or no value is associated in this
-     * <tt>ConfigurationService</tt> with the specified property name
+     * <code>ConfigurationService</code> with the specified property name
      */
     @Override
     public int getInt(String propertyName, int defaultValue)
@@ -1161,21 +1161,21 @@ public class ConfigurationServiceImpl implements ConfigurationService
 
     /**
      * Gets the value of a specific property as a signed decimal long integer. If the specified
-     * property name is associated with a value in this <tt>ConfigurationService</tt>, the string
+     * property name is associated with a value in this <code>ConfigurationService</code>, the string
      * representation of the value is parsed into a signed decimal long integer according to
      * the rules of {@link Long#parseLong(String)} . If parsing the value as a signed decimal long
      * integer fails or there is no value associated with the specified property name,
-     * <tt>defaultValue</tt> is returned.
+     * <code>defaultValue</code> is returned.
      *
      * @param propertyName the name of the property to get the value of as a signed decimal long integer
      * @param defaultValue the value to be returned if parsing the value of the specified property name as a
      * signed decimal long integer fails or there is no value associated with the specified
      * property name in this
-     * <tt>ConfigurationService</tt>
+     * <code>ConfigurationService</code>
      * @return the value of the property with the specified name in this
-     * <tt>ConfigurationService</tt> as a signed decimal long integer;
-     * <tt>defaultValue</tt> if parsing the value of the specified property name fails or no value
-     * is associated in this <tt>ConfigurationService</tt> with the specified property name
+     * <code>ConfigurationService</code> as a signed decimal long integer;
+     * <code>defaultValue</code> if parsing the value of the specified property name fails or no value
+     * is associated in this <code>ConfigurationService</code> with the specified property name
      */
     @Override
     public long getLong(String propertyName, long defaultValue)
@@ -1195,7 +1195,7 @@ public class ConfigurationServiceImpl implements ConfigurationService
     }
 
     /**
-     * Determines whether the property with the specified <tt>propertyName</tt> has been
+     * Determines whether the property with the specified <code>propertyName</code> has been
      * previously declared as System
      *
      * @param propertyName the name of the property to verify

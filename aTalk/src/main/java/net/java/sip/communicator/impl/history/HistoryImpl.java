@@ -41,7 +41,7 @@ public class HistoryImpl implements History
     private HistoryReader reader;
 
     /**
-     * The <tt>InteractiveHistoryReader</tt>.
+     * The <code>InteractiveHistoryReader</code>.
      */
     private InteractiveHistoryReader interactiveReader;
 
@@ -50,8 +50,8 @@ public class HistoryImpl implements History
     private SortedMap<String, Object> historyDocuments = new TreeMap<>();
 
     /**
-     * Creates an instance of <tt>HistoryImpl</tt> by specifying the history identifier, the directory, the
-     * <tt>HistoryRecordStructure</tt> to use and the parent <tt>HistoryServiceImpl</tt>.
+     * Creates an instance of <code>HistoryImpl</code> by specifying the history identifier, the directory, the
+     * <code>HistoryRecordStructure</code> to use and the parent <code>HistoryServiceImpl</code>.
      *
      * @param id the identifier
      * @param directory the directory
@@ -88,9 +88,9 @@ public class HistoryImpl implements History
     }
 
     /**
-     * Returns the current <tt>HistoryRecordStructure</tt>.
+     * Returns the current <code>HistoryRecordStructure</code>.
      *
-     * @return the current <tt>HistoryRecordStructure</tt>
+     * @return the current <code>HistoryRecordStructure</code>
      */
     public HistoryRecordStructure getHistoryRecordsStructure()
     {
@@ -98,9 +98,9 @@ public class HistoryImpl implements History
     }
 
     /**
-     * Sets the given <tt>structure</tt> to be the new history records structure used in this history implementation.
+     * Sets the given <code>structure</code> to be the new history records structure used in this history implementation.
      *
-     * @param structure the new <tt>HistoryRecordStructure</tt> to use
+     * @param structure the new <code>HistoryRecordStructure</code> to use
      */
     public void setHistoryRecordsStructure(HistoryRecordStructure structure)
     {
@@ -124,9 +124,9 @@ public class HistoryImpl implements History
     }
 
     /**
-     * Returns an object that can be used to read and query this history. The <tt>InteractiveHistoryReader</tt> differs
-     * from the <tt>HistoryReader</tt> in the way it manages query results. It allows to cancel a search at any time and
-     * to track history results through a <tt>HistoryQueryListener</tt>.
+     * Returns an object that can be used to read and query this history. The <code>InteractiveHistoryReader</code> differs
+     * from the <code>HistoryReader</code> in the way it manages query results. It allows to cancel a search at any time and
+     * to track history results through a <code>HistoryQueryListener</code>.
      *
      * @return an object that can be used to read and query this history
      */

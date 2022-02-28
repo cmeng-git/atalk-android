@@ -12,8 +12,8 @@ import java.net.Socket;
 import timber.log.Timber;
 
 /**
- * Represents a default implementation of <tt>StreamConnector</tt> which is initialized with a
- * specific pair of control and data <tt>Socket</tt>s and which closes them (if they exist) when its
+ * Represents a default implementation of <code>StreamConnector</code> which is initialized with a
+ * specific pair of control and data <code>Socket</code>s and which closes them (if they exist) when its
  * {@link #close()} is invoked.
  *
  * @author Lubomir Marinov
@@ -22,23 +22,23 @@ import timber.log.Timber;
 public class DefaultTCPStreamConnector implements StreamConnector
 {
     /**
-     * The <tt>Socket</tt> that a stream should use for control data (e.g. RTCP) traffic.
+     * The <code>Socket</code> that a stream should use for control data (e.g. RTCP) traffic.
      */
     protected Socket controlSocket;
 
     /**
-     * The <tt>Socket</tt> that a stream should use for data (e.g. RTP) traffic.
+     * The <code>Socket</code> that a stream should use for data (e.g. RTP) traffic.
      */
     protected Socket dataSocket;
 
     /**
-     * Whether this <tt>DefaultStreamConnector</tt> uses rtcp-mux.
+     * Whether this <code>DefaultStreamConnector</code> uses rtcp-mux.
      */
     protected boolean rtcpmux;
 
     /**
-     * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance with no control and data
-     * <tt>Socket</tt>s.
+     * Initializes a new <code>DefaultTCPStreamConnector</code> instance with no control and data
+     * <code>Socket</code>s.
      * <p>
      * Suitable for extenders willing to delay the creation of the control and data sockets. For
      * example, they could override {@link #getControlSocket()} and/or {@link #getDataSocket()} and
@@ -50,11 +50,11 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance which is to represent a
-     * specific pair of control and data <tt>Socket</tt>s.
+     * Initializes a new <code>DefaultTCPStreamConnector</code> instance which is to represent a
+     * specific pair of control and data <code>Socket</code>s.
      *
-     * @param dataSocket the <tt>Socket</tt> to be used for data (e.g. RTP) traffic
-     * @param controlSocket the <tt>Socket</tt> to be used for control data (e.g. RTCP) traffic
+     * @param dataSocket the <code>Socket</code> to be used for data (e.g. RTP) traffic
+     * @param controlSocket the <code>Socket</code> to be used for control data (e.g. RTCP) traffic
      */
     public DefaultTCPStreamConnector(Socket dataSocket, Socket controlSocket)
     {
@@ -62,11 +62,11 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Initializes a new <tt>DefaultTCPStreamConnector</tt> instance which is to represent a
-     * specific pair of control and data <tt>Socket</tt>s.
+     * Initializes a new <code>DefaultTCPStreamConnector</code> instance which is to represent a
+     * specific pair of control and data <code>Socket</code>s.
      *
-     * @param dataSocket the <tt>Socket</tt> to be used for data (e.g. RTP) traffic
-     * @param controlSocket the <tt>Socket</tt> to be used for control data (e.g. RTCP) traffic
+     * @param dataSocket the <code>Socket</code> to be used for data (e.g. RTP) traffic
+     * @param controlSocket the <code>Socket</code> to be used for control data (e.g. RTCP) traffic
      * @param rtcpmux whether rtcpmux is used.
      */
     public DefaultTCPStreamConnector(Socket dataSocket, Socket controlSocket, boolean rtcpmux)
@@ -96,10 +96,10 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
+     * Returns a reference to the <code>DatagramSocket</code> that a stream should use for control data
      * (e.g. RTCP) traffic.
      *
-     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for control data
+     * @return a reference to the <code>DatagramSocket</code> that a stream should use for control data
      * (e.g. RTCP) traffic
      * @see StreamConnector#getControlSocket()
      */
@@ -110,10 +110,10 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
+     * Returns a reference to the <code>DatagramSocket</code> that a stream should use for data (e.g.
      * RTP) traffic.
      *
-     * @return a reference to the <tt>DatagramSocket</tt> that a stream should use for data (e.g.
+     * @return a reference to the <code>DatagramSocket</code> that a stream should use for data (e.g.
      * RTP) traffic
      * @see StreamConnector#getDataSocket()
      */
@@ -124,10 +124,10 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
+     * Returns a reference to the <code>Socket</code> that a stream should use for data (e.g. RTP)
      * traffic.
      *
-     * @return a reference to the <tt>Socket</tt> that a stream should use for data (e.g. RTP)
+     * @return a reference to the <code>Socket</code> that a stream should use for data (e.g. RTP)
      * traffic.
      */
     @Override
@@ -137,10 +137,10 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
+     * Returns a reference to the <code>Socket</code> that a stream should use for control data (e.g.
      * RTCP).
      *
-     * @return a reference to the <tt>Socket</tt> that a stream should use for control data (e.g.
+     * @return a reference to the <code>Socket</code> that a stream should use for control data (e.g.
      * RTCP).
      */
     @Override
@@ -150,9 +150,9 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Returns the protocol of this <tt>StreamConnector</tt>.
+     * Returns the protocol of this <code>StreamConnector</code>.
      *
-     * @return the protocol of this <tt>StreamConnector</tt>
+     * @return the protocol of this <code>StreamConnector</code>
      */
     @Override
     public Protocol getProtocol()
@@ -161,7 +161,7 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Notifies this instance that utilization of its <tt>Socket</tt>s for data and/or control
+     * Notifies this instance that utilization of its <code>Socket</code>s for data and/or control
      * traffic has started.
      *
      * @see StreamConnector#started()
@@ -172,7 +172,7 @@ public class DefaultTCPStreamConnector implements StreamConnector
     }
 
     /**
-     * Notifies this instance that utilization of its <tt>Socket</tt>s for data and/or control
+     * Notifies this instance that utilization of its <code>Socket</code>s for data and/or control
      * traffic has temporarily stopped. This instance should be prepared to be started at a later
      * time again though.
      *

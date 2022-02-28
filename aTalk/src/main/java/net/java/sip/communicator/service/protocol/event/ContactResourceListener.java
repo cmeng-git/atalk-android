@@ -14,8 +14,8 @@
 package net.java.sip.communicator.service.protocol.event;
 
 /**
- * The <tt>ContactResourceListener</tt> listens for events related to <tt>ContactResource</tt>-s. It
- * is notified each time a <tt>ContactResource</tt> has been added, removed or modified.
+ * The <code>ContactResourceListener</code> listens for events related to <code>ContactResource</code>-s. It
+ * is notified each time a <code>ContactResource</code> has been added, removed or modified.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -23,23 +23,23 @@ package net.java.sip.communicator.service.protocol.event;
 public interface ContactResourceListener
 {
     /**
-     * Called when a new <tt>ContactResource</tt> has been added to the list of available <tt>Contact</tt> resources.
+     * Called when a new <code>ContactResource</code> has been added to the list of available <code>Contact</code> resources.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     void contactResourceAdded(ContactResourceEvent event);
 
     /**
-     * Called when a <tt>ContactResource</tt> has been removed to the list of available <tt>Contact</tt> resources.
+     * Called when a <code>ContactResource</code> has been removed to the list of available <code>Contact</code> resources.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     void contactResourceRemoved(ContactResourceEvent event);
 
     /**
-     * Called when a <tt>ContactResource</tt> in the list of available <tt>Contact</tt> resources has been modified.
+     * Called when a <code>ContactResource</code> in the list of available <code>Contact</code> resources has been modified.
      *
-     * @param event the <tt>ContactResourceEvent</tt> that notified us
+     * @param event the <code>ContactResourceEvent</code> that notified us
      */
     void contactResourceModified(ContactResourceEvent event);
 }

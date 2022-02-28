@@ -64,13 +64,13 @@ public class ProtoContactEvent extends PropertyChangeEvent
     public static final String PROTO_CONTACT_RENAMED = "ProtoContactRenamed";
 
     /**
-     * Creates an instance of this <tt>ProtoContactEvent</tt>.
-     * @param source the proto <tt>Contact</tt> that this event is about.
+     * Creates an instance of this <code>ProtoContactEvent</code>.
+     * @param source the proto <code>Contact</code> that this event is about.
      * @param eventName the name of the event, one of the PROTO_CONTACT_XXX fields.
-     * @param oldParent the <tt>MetaContact</tt> that was parent of the source
+     * @param oldParent the <code>MetaContact</code> that was parent of the source
      * contact before the event occurred or null for a new contact or when
      * irrelevant.
-     * @param newParent the <tt>MetaContact</tt> that is parent of the source
+     * @param newParent the <code>MetaContact</code> that is parent of the source
      * contact after the event occurred or null for a removed contact or when irrelevant.
      */
     public ProtoContactEvent(Contact source, String eventName, MetaContact oldParent, MetaContact newParent)
@@ -80,7 +80,7 @@ public class ProtoContactEvent extends PropertyChangeEvent
 
     /**
      * Returns the protoContact that this event is about.
-     * @return he <tt>Contact</tt> that this event is about.
+     * @return he <code>Contact</code> that this event is about.
      */
     public Contact getProtoContact()
     {
@@ -88,10 +88,10 @@ public class ProtoContactEvent extends PropertyChangeEvent
     }
 
     /**
-     * Returns the <tt>MetaContact</tt> that was parent of the source contact
+     * Returns the <code>MetaContact</code> that was parent of the source contact
      * before the event occurred or null for a new contact or when irrelevant.
      *
-     * @return the <tt>MetaContact</tt> that was parent of the source contact
+     * @return the <code>MetaContact</code> that was parent of the source contact
      * before the event occurred or null for a new contact or when irrelevant.
      */
     public MetaContact getOldParent()
@@ -100,10 +100,10 @@ public class ProtoContactEvent extends PropertyChangeEvent
     }
 
     /**
-     * Returns the <tt>MetaContact</tt> that is parent of the source contact
+     * Returns the <code>MetaContact</code> that is parent of the source contact
      * after the event occurred or null for a removed contact or when irrelevant.
      *
-     * @return the <tt>MetaContact</tt> that is parent of the source contact
+     * @return the <code>MetaContact</code> that is parent of the source contact
      * after the event occurred or null for a removed contact or when irrelevant.
      */
     public MetaContact getNewParent()
@@ -112,11 +112,11 @@ public class ProtoContactEvent extends PropertyChangeEvent
     }
 
     /**
-     * Returns the <tt>MetaContact</tt> that is the most relevant parent of
-     * the source proto <tt>Contact</tt>. In the case of a moved or newly
-     * added <tt>Contact</tt> the method would return same as getNewParent()
-     * and would return the contact's old parent in the case of a <tt>PROTO_CONTACT_REMOVED</tt> event.
-     * @return  the <tt>MetaContact</tt> that is most apt to be called parent to the source <tt>Contact</tt>.
+     * Returns the <code>MetaContact</code> that is the most relevant parent of
+     * the source proto <code>Contact</code>. In the case of a moved or newly
+     * added <code>Contact</code> the method would return same as getNewParent()
+     * and would return the contact's old parent in the case of a <code>PROTO_CONTACT_REMOVED</code> event.
+     * @return  the <code>MetaContact</code> that is most apt to be called parent to the source <code>Contact</code>.
      */
     public MetaContact getParent()
     {

@@ -70,7 +70,7 @@ public abstract class NotificationAction
 
 	/**
 	 * Returns TRUE if this notification action handler is enabled and FALSE otherwise. While the notification handler
-	 * for the sound action type is disabled no sounds will be played when the <tt>fireNotification</tt> method is
+	 * for the sound action type is disabled no sounds will be played when the <code>fireNotification</code> method is
 	 * called.
 	 *
 	 * @return TRUE if this notification action handler is enabled and FALSE otherwise
@@ -82,7 +82,7 @@ public abstract class NotificationAction
 
 	/**
 	 * Enables or disables this notification handler. While the notification handler for the sound action type is
-	 * disabled no sounds will be played when the <tt>fireNotification</tt> method is called.
+	 * disabled no sounds will be played when the <code>fireNotification</code> method is called.
 	 *
 	 * @param isEnabled
 	 *        TRUE to enable this notification handler, FALSE to disable it.

@@ -49,8 +49,8 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * The <tt>EntityListHelper</tt> is the class through which we make operations with the
- * <tt>MetaContact</tt> or <tt>ChatRoomWrapper</tt> in the list. All methods in this class are static.
+ * The <code>EntityListHelper</code> is the class through which we make operations with the
+ * <code>MetaContact</code> or <code>ChatRoomWrapper</code> in the list. All methods in this class are static.
  *
  * @author Eng Chong Meng
  */
@@ -62,7 +62,7 @@ public class EntityListHelper
     public static final int ALL_ENTITIES = 2;
 
     /**
-     * Removes given <tt>metaContact</tt> from the contact list. Asks the user for confirmation before proceed.
+     * Removes given <code>metaContact</code> from the contact list. Asks the user for confirmation before proceed.
      * a. Remove all the chat messages and chatSession records from the database.
      * b. Remove metaContact from the roster in DB.
      *
@@ -126,9 +126,9 @@ public class EntityListHelper
     }
 
     /**
-     * Removes the given <tt>MetaContactGroup</tt> from the list.
+     * Removes the given <code>MetaContactGroup</code> from the list.
      *
-     * @param group the <tt>MetaContactGroup</tt> to remove
+     * @param group the <code>MetaContactGroup</code> to remove
      */
     public static void removeMetaContactGroup(final MetaContactGroup group)
     {

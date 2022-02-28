@@ -12,8 +12,8 @@ import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import java.util.*;
 
 /**
- * The <tt>MetaContactQuery</tt> corresponds to a particular query made through
- * the <tt>MetaContactListSource</tt>. Each query once started could be
+ * The <code>MetaContactQuery</code> corresponds to a particular query made through
+ * the <code>MetaContactListSource</code>. Each query once started could be
  * canceled. One could also register a listener in order to be notified for
  * changes in query status and query contact results.
  *
@@ -41,9 +41,9 @@ public class MetaContactQuery
     }
 
     /**
-     * Returns <tt>true</tt> if this query has been canceled, otherwise returns <tt>false</tt>.
+     * Returns <code>true</code> if this query has been canceled, otherwise returns <code>false</code>.
      *
-     * @return <tt>true</tt> if this query has been canceled, otherwise returns <tt>false</tt>.
+     * @return <code>true</code> if this query has been canceled, otherwise returns <code>false</code>.
      */
     public boolean isCanceled()
     {
@@ -73,13 +73,13 @@ public class MetaContactQuery
     }
 
     /**
-     * Adds the given <tt>MetaContactQueryListener</tt> to the list of
-     * registered listeners. The <tt>MetaContactQueryListener</tt> would be
-     * notified each time a new <tt>MetaContactQuery</tt> result has been
+     * Adds the given <code>MetaContactQueryListener</code> to the list of
+     * registered listeners. The <code>MetaContactQueryListener</code> would be
+     * notified each time a new <code>MetaContactQuery</code> result has been
      * received or if the query has been completed or has been canceled by user
      * or for any other reason.
      *
-     * @param l the <tt>MetaContactQueryListener</tt> to add
+     * @param l the <code>MetaContactQueryListener</code> to add
      */
     public void addContactQueryListener(MetaContactQueryListener l)
     {
@@ -89,13 +89,13 @@ public class MetaContactQuery
     }
 
     /**
-     * Removes the given <tt>MetaContactQueryListener</tt> to the list of
-     * registered listeners. The <tt>MetaContactQueryListener</tt> would be
-     * notified each time a new <tt>MetaContactQuery</tt> result has been
+     * Removes the given <code>MetaContactQueryListener</code> to the list of
+     * registered listeners. The <code>MetaContactQueryListener</code> would be
+     * notified each time a new <code>MetaContactQuery</code> result has been
      * received or if the query has been completed or has been canceled by user
      * or for any other reason.
      *
-     * @param l the <tt>MetaContactQueryListener</tt> to remove
+     * @param l the <code>MetaContactQueryListener</code> to remove
      */
     public void removeContactQueryListener(MetaContactQueryListener l)
     {
@@ -105,10 +105,10 @@ public class MetaContactQuery
     }
 
     /**
-     * Notifies the <tt>MetaContactQueryListener</tt> that a new
-     * <tt>MetaContact</tt> has been received as a result of a search.
+     * Notifies the <code>MetaContactQueryListener</code> that a new
+     * <code>MetaContact</code> has been received as a result of a search.
      *
-     * @param metaContact the received <tt>MetaContact</tt>
+     * @param metaContact the received <code>MetaContact</code>
      */
     public void fireQueryEvent(MetaContact metaContact)
     {
@@ -125,10 +125,10 @@ public class MetaContactQuery
     }
 
     /**
-     * Notifies the <tt>MetaContactQueryListener</tt> that a new
-     * <tt>MetaGroup</tt> has been received as a result of a search.
+     * Notifies the <code>MetaContactQueryListener</code> that a new
+     * <code>MetaGroup</code> has been received as a result of a search.
      *
-     * @param metaGroup the received <tt>MetaGroup</tt>
+     * @param metaGroup the received <code>MetaGroup</code>
      */
     public void fireQueryEvent(MetaContactGroup metaGroup)
     {
@@ -145,7 +145,7 @@ public class MetaContactQuery
     }
 
     /**
-     * Notifies the <tt>MetaContactQueryListener</tt> that this query has changed its status.
+     * Notifies the <code>MetaContactQueryListener</code> that this query has changed its status.
      *
      * @param queryStatus the new query status
      */

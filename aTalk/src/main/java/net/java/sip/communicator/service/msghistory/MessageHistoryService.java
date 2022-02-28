@@ -172,13 +172,13 @@ public interface MessageHistoryService
     Collection<ChatSessionRecord> findSessionByEndDate(String accountUid, Date endDate);
 
     /**
-     * Returns the messages for the recently contacted <tt>count</tt> contacts.
+     * Returns the messages for the recently contacted <code>count</code> contacts.
      *
      * @param count contacts count
      * @param providerToFilter can be filtered by provider e.g. Jabber:abc123@atalk.org,
-     * or <tt>null</tt> to search for all  providers
+     * or <code>null</code> to search for all  providers
      * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org,
-     * or <tt>null</tt> to search for all contacts
+     * or <code>null</code> to search for all contacts
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
@@ -355,7 +355,7 @@ public interface MessageHistoryService
     boolean isHistoryLoggingEnabled();
 
     /**
-     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt>.
+     * Updates the "isHistoryLoggingEnabled" property through the <code>ConfigurationService</code>.
      *
      * @param isEnabled indicates if the history logging is enabled.
      */
@@ -363,16 +363,16 @@ public interface MessageHistoryService
 
     /**
      * Returns <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
-     * <tt>id</tt>, otherwise - returns <code>false</code>. Indicates to the user interface
+     * <code>id</code>, otherwise - returns <code>false</code>. Indicates to the user interface
      * whether the history logging is enabled for the supplied id (id for metaContact or for chat room).
      *
      * @return <code>true</code> if the "IS_MESSAGE_HISTORY_ENABLED" property is true for the
-     * <tt>id</tt>, otherwise - returns <code>false</code>.
+     * <code>id</code>, otherwise - returns <code>false</code>.
      */
     boolean isHistoryLoggingEnabled(String id);
 
     /**
-     * Updates the "isHistoryLoggingEnabled" property through the <tt>ConfigurationService</tt> for the contact.
+     * Updates the "isHistoryLoggingEnabled" property through the <code>ConfigurationService</code> for the contact.
      *
      * @param isEnabled indicates if the history logging is enabled for the contact.
      */

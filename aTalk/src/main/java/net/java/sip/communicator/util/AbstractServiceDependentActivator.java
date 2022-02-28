@@ -23,7 +23,7 @@ public abstract class AbstractServiceDependentActivator implements BundleActivat
     /**
      * Starts the bundle.
      *
-     * @param bundleContext the currently valid <tt>BundleContext</tt>.
+     * @param bundleContext the currently valid <code>BundleContext</code>.
      */
     @Override
     public void start(BundleContext bundleContext)
@@ -84,7 +84,7 @@ public abstract class AbstractServiceDependentActivator implements BundleActivat
     }
 
     /**
-     * Implements a <tt>ServiceListener</tt> which waits for an
+     * Implements a <code>ServiceListener</code> which waits for an
      * the dependent service implementation to become available, invokes
      * {@link #start(Object)} and un-registers itself.
      */

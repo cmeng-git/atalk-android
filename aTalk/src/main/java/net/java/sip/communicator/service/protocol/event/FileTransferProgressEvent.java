@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.FileTransfer;
 import java.util.EventObject;
 
 /**
- * The <tt>FileTransferProgressEvent</tt> indicates the progress of a file transfer.
+ * The <code>FileTransferProgressEvent</code> indicates the progress of a file transfer.
  *
  * @author Yana Stamcheva
  */
@@ -32,7 +32,7 @@ public class FileTransferProgressEvent extends EventObject
     private long timestamp;
 
     /**
-     * Creates a <tt>FileTransferProgressEvent</tt> by specifying the source file transfer object,
+     * Creates a <code>FileTransferProgressEvent</code> by specifying the source file transfer object,
      * that triggered the event and the new progress value.
      *
      * @param fileTransfer the source file transfer object, that triggered the event
@@ -47,9 +47,9 @@ public class FileTransferProgressEvent extends EventObject
     }
 
     /**
-     * Returns the source <tt>FileTransfer</tt> that triggered this event.
+     * Returns the source <code>FileTransfer</code> that triggered this event.
      *
-     * @return the source <tt>FileTransfer</tt> that triggered this event
+     * @return the source <code>FileTransfer</code> that triggered this event
      */
     public FileTransfer getFileTransfer()
     {

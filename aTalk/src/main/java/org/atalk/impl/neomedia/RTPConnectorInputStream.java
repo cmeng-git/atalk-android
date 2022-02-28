@@ -37,13 +37,13 @@ import timber.log.Timber;
 public abstract class RTPConnectorInputStream<T extends Closeable> implements PushSourceStream, Closeable
 {
     /**
-     * The value of the property <tt>controls</tt> of <tt>RTPConnectorInputStream</tt> when there
+     * The value of the property <code>controls</code> of <code>RTPConnectorInputStream</code> when there
      * are no controls. Explicitly defined in order to reduce unnecessary allocations.
      */
     private static final Object[] EMPTY_CONTROLS = new Object[0];
 
     /**
-     * The length in bytes of the buffers of <tt>RTPConnectorInputStream</tt> receiving packets from the network.
+     * The length in bytes of the buffers of <code>RTPConnectorInputStream</code> receiving packets from the network.
      */
     public static final int PACKET_RECEIVE_BUFFER_LENGTH = 4 * 1024;
 
@@ -54,10 +54,10 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     public static final String SO_RCVBUF_PNAME = RTPConnectorInputStream.class.getName() + ".SO_RCVBUF";
 
     /**
-     * Sets a specific priority on a specific <tt>Thread</tt>.
+     * Sets a specific priority on a specific <code>Thread</code>.
      *
-     * @param thread the <tt>Thread</tt> to set the specified <tt>priority</tt> on
-     * @param priority the priority to set on the specified <tt>thread</tt>
+     * @param thread the <code>Thread</code> to set the specified <code>priority</code> on
+     * @param priority the priority to set on the specified <code>thread</code>
      */
     public static void setThreadPriority(Thread thread, int priority)
     {
@@ -93,13 +93,13 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     private boolean closed;
 
     /**
-     * The <tt>DatagramPacketFilter</tt>s which allow dropping <tt>DatagramPacket</tt>s before they
-     * are converted into <tt>RawPacket</tt>s.
+     * The <code>DatagramPacketFilter</code>s which allow dropping <code>DatagramPacket</code>s before they
+     * are converted into <code>RawPacket</code>s.
      */
     private DatagramPacketFilter[] datagramPacketFilters;
 
     /**
-     * Whether this <tt>RTPConnectorInputStream</tt> is enabled or disabled.
+     * Whether this <code>RTPConnectorInputStream</code> is enabled or disabled.
      * While disabled, the stream does not accept any packets.
      */
     private boolean enabled = true;
@@ -120,22 +120,22 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     private RawPacket pkt;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #pkt}.
+     * The <code>Object</code> which synchronizes the access to {@link #pkt}.
      */
     private final Object pktSyncRoot = new Object();
 
     /**
-     * The adapter of this <tt>PushSourceStream</tt> to the <tt>PushBufferStream</tt> interface.
+     * The adapter of this <code>PushSourceStream</code> to the <code>PushBufferStream</code> interface.
      */
     private final PushBufferStream pushBufferStream;
 
     /**
-     * The pool of <tt>RawPacket</tt> instances to reduce their allocations and garbage collection.
+     * The pool of <code>RawPacket</code> instances to reduce their allocations and garbage collection.
      */
     private final Queue<RawPacket> rawPacketPool = new ArrayBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
 
     /**
-     * The background/daemon <tt>Thread</tt> which invokes {@link #receive(DatagramPacket)}.
+     * The background/daemon <code>Thread</code> which invokes {@link #receive(DatagramPacket)}.
      */
     private Thread receiveThread;
 
@@ -147,12 +147,12 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     private SourceTransferHandler transferHandler;
 
     /**
-     * The time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>.
+     * The time in milliseconds of the last activity related to this <code>RTPConnectorInputStream</code>.
      */
     private final MonotonicAtomicLong lastActivityTime = new MonotonicAtomicLong();
 
     /**
-     * Initializes a new <tt>RTPConnectorInputStream</tt> which is to receive packet data from a specific UDP socket.
+     * Initializes a new <code>RTPConnectorInputStream</code> which is to receive packet data from a specific UDP socket.
      *
      * @param socket
      */
@@ -198,9 +198,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Gets the time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>.
+     * Gets the time in milliseconds of the last activity related to this <code>RTPConnectorInputStream</code>.
      *
-     * @return the time in milliseconds of the last activity related to this <tt>RTPConnectorInputStream</tt>
+     * @return the time in milliseconds of the last activity related to this <code>RTPConnectorInputStream</code>
      */
     public long getLastActivityTime()
     {
@@ -209,11 +209,11 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Determines whether all {@link #datagramPacketFilters} accept a received
-     * <tt>DatagramPacket</tt> for pushing out of this <tt>PushSourceStream</tt> . In other words,
-     * determines whether <tt>p</tt> is to be discarded/dropped/ignored.
+     * <code>DatagramPacket</code> for pushing out of this <code>PushSourceStream</code> . In other words,
+     * determines whether <code>p</code> is to be discarded/dropped/ignored.
      *
-     * @param p the <tt>DatagramPacket</tt> to be considered for acceptance by all <tt>datagramPacketFilters</tt>
-     * @return <tt>true</tt> if all <tt>datagramPacketFilters</tt> accept <tt>p</tt>; otherwise, <tt>false</tt>
+     * @param p the <code>DatagramPacket</code> to be considered for acceptance by all <code>datagramPacketFilters</code>
+     * @return <code>true</code> if all <code>datagramPacketFilters</code> accept <code>p</code>; otherwise, <code>false</code>
      */
     private boolean accept(DatagramPacket p)
     {
@@ -251,11 +251,11 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Adds a <tt>DatagramPacketFilter</tt> which allows dropping <tt>DatagramPacket</tt>s before
-     * they are converted into <tt>RawPacket</tt> s.
+     * Adds a <code>DatagramPacketFilter</code> which allows dropping <code>DatagramPacket</code>s before
+     * they are converted into <code>RawPacket</code> s.
      *
-     * @param datagramPacketFilter the <tt>DatagramPacketFilter</tt> which allows dropping <tt>DatagramPacket</tt>s
-     * before they are converted into <tt>RawPacket</tt>s
+     * @param datagramPacketFilter the <code>DatagramPacketFilter</code> which allows dropping <code>DatagramPacket</code>s
+     * before they are converted into <code>RawPacket</code>s
      */
     public synchronized void addDatagramPacketFilter(DatagramPacketFilter datagramPacketFilter)
     {
@@ -285,16 +285,16 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Creates a new <tt>RawPacket</tt> from a specific <tt>DatagramPacket</tt> in order to have
+     * Creates a new <code>RawPacket</code> from a specific <code>DatagramPacket</code> in order to have
      * this instance receive its packet data through its {@link #read(byte[], int, int)} method.
-     * Returns an array of <tt>RawPacket</tt> with the created packet as its first element (and
-     * <tt>null</tt> for the other elements).
+     * Returns an array of <code>RawPacket</code> with the created packet as its first element (and
+     * <code>null</code> for the other elements).
      * <p>
      * Allows extenders to intercept the packet data and possibly filter and/or modify it.
      *
-     * @param datagramPacket the <tt>DatagramPacket</tt> containing the packet data
-     * @return an array of <tt>RawPacket</tt> containing the <tt>RawPacket</tt> which contains the
-     * packet data of the specified <tt>DatagramPacket</tt> as its first element.
+     * @param datagramPacket the <code>DatagramPacket</code> containing the packet data
+     * @return an array of <code>RawPacket</code> containing the <code>RawPacket</code> which contains the
+     * packet data of the specified <code>DatagramPacket</code> as its first element.
      */
     protected RawPacket[] createRawPacket(DatagramPacket datagramPacket)
     {
@@ -323,9 +323,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Provides a dummy implementation to {@link RTPConnectorInputStream#endOfStream()} that always
-     * returns <tt>false</tt>.
+     * returns <code>false</code>.
      *
-     * @return <tt>false</tt>, no matter what.
+     * @return <code>false</code>, no matter what.
      */
     public boolean endOfStream()
     {
@@ -334,9 +334,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Provides a dummy implementation to {@link RTPConnectorInputStream#getContentDescriptor()}
-     * that always returns <tt>null</tt>.
+     * that always returns <code>null</code>.
      *
-     * @return <tt>null</tt>, no matter what.
+     * @return <code>null</code>, no matter what.
      */
     public ContentDescriptor getContentDescriptor()
     {
@@ -345,9 +345,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Provides a dummy implementation to {@link RTPConnectorInputStream#getContentLength()} that
-     * always returns <tt>LENGTH_UNKNOWN</tt>.
+     * always returns <code>LENGTH_UNKNOWN</code>.
      *
-     * @return <tt>LENGTH_UNKNOWN</tt>, no matter what.
+     * @return <code>LENGTH_UNKNOWN</code>, no matter what.
      */
     public long getContentLength()
     {
@@ -356,10 +356,10 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Provides a dummy implementation of {@link RTPConnectorInputStream#getControl(String)} that
-     * always returns <tt>null</tt>.
+     * always returns <code>null</code>.
      *
      * @param controlType ignored.
-     * @return <tt>null</tt>, no matter what.
+     * @return <code>null</code>, no matter what.
      */
     public Object getControl(String controlType)
     {
@@ -373,9 +373,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Provides a dummy implementation of {@link RTPConnectorInputStream#getControls()} that always
-     * returns <tt>EMPTY_CONTROLS</tt>.
+     * returns <code>EMPTY_CONTROLS</code>.
      *
-     * @return <tt>EMPTY_CONTROLS</tt>, no matter what.
+     * @return <code>EMPTY_CONTROLS</code>, no matter what.
      */
     public Object[] getControls()
     {
@@ -383,11 +383,11 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Gets the <tt>DatagramPacketFilter</tt>s which allow dropping <tt>DatagramPacket</tt>s before
-     * they are converted into <tt>RawPacket</tt>s.
+     * Gets the <code>DatagramPacketFilter</code>s which allow dropping <code>DatagramPacket</code>s before
+     * they are converted into <code>RawPacket</code>s.
      *
-     * @return the <tt>DatagramPacketFilter</tt>s which allow dropping <tt>DatagramPacket</tt>s
-     * before they are converted into <tt>RawPacket</tt>s.
+     * @return the <code>DatagramPacketFilter</code>s which allow dropping <code>DatagramPacket</code>s
+     * before they are converted into <code>RawPacket</code>s.
      */
     protected synchronized DatagramPacketFilter[] getDatagramPacketFilters()
     {
@@ -397,9 +397,9 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     /**
      * Provides a dummy implementation of {@link
      * PushSourceStream#getMinimumTransferSize()} that always returns
-     * <tt>2 * 1024</tt>.
+     * <code>2 * 1024</code>.
      *
-     * @return <tt>2 * 1024</tt>, no matter what.
+     * @return <code>2 * 1024</code>, no matter what.
      */
     @Override
     public int getMinimumTransferSize()
@@ -442,11 +442,11 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Pools the specified <tt>RawPacket</tt> in order to avoid future allocations and to reduce
+     * Pools the specified <code>RawPacket</code> in order to avoid future allocations and to reduce
      * the
      * effects of garbage collection.
      *
-     * @param pkt the <tt>RawPacket</tt> to be offered to {@link #rawPacketPool}
+     * @param pkt the <code>RawPacket</code> to be offered to {@link #rawPacketPool}
      */
     private void poolRawPacket(RawPacket pkt)
     {
@@ -457,17 +457,17 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Copies the content of the most recently received packet into <tt>data</tt>.
+     * Copies the content of the most recently received packet into <code>data</code>.
      *
-     * @param buffer an optional <tt>Buffer</tt> instance associated with the specified <tt>data</tt>,
-     * <tt>offset</tt> and <tt>length</tt> and provided to the method in case the
-     * implementation would like to provide additional <tt>Buffer</tt> properties such as
-     * <tt>flags</tt>
-     * @param data the <tt>byte[]</tt> that we'd like to copy the content of the packet to.
-     * @param offset the position where we are supposed to start writing in <tt>data</tt>.
-     * @param length the number of <tt>byte</tt>s available for writing in <tt>data</tt>.
+     * @param buffer an optional <code>Buffer</code> instance associated with the specified <code>data</code>,
+     * <code>offset</code> and <code>length</code> and provided to the method in case the
+     * implementation would like to provide additional <code>Buffer</code> properties such as
+     * <code>flags</code>
+     * @param data the <code>byte[]</code> that we'd like to copy the content of the packet to.
+     * @param offset the position where we are supposed to start writing in <code>data</code>.
+     * @param length the number of <code>byte</code>s available for writing in <code>data</code>.
      * @return the number of bytes read
-     * @throws IOException if <tt>length</tt> is less than the size of the packet.
+     * @throws IOException if <code>length</code> is less than the size of the packet.
      */
     protected int read(Buffer buffer, byte[] data, int offset, int length)
             throws IOException
@@ -536,13 +536,13 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Copies the content of the most recently received packet into <tt>buffer</tt>.
+     * Copies the content of the most recently received packet into <code>buffer</code>.
      *
-     * @param buffer the <tt>byte[]</tt> that we'd like to copy the content of the packet to.
-     * @param offset the position where we are supposed to start writing in <tt>buffer</tt>.
-     * @param length the number of <tt>byte</tt>s available for writing in <tt>buffer</tt>.
+     * @param buffer the <code>byte[]</code> that we'd like to copy the content of the packet to.
+     * @param offset the position where we are supposed to start writing in <code>buffer</code>.
+     * @param length the number of <code>byte</code>s available for writing in <code>buffer</code>.
      * @return the number of bytes read
-     * @throws IOException if <tt>length</tt> is less than the size of the packet.
+     * @throws IOException if <code>length</code> is less than the size of the packet.
      */
     @Override
     public int read(byte[] buffer, int offset, int length)
@@ -561,8 +561,8 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
             throws IOException;
 
     /**
-     * Listens for incoming datagram packets, stores them for reading by the <tt>read</tt> method
-     * and notifies the local <tt>transferHandler</tt> that there's data to be read.
+     * Listens for incoming datagram packets, stores them for reading by the <code>read</code> method
+     * and notifies the local <code>transferHandler</code> that there's data to be read.
      */
     private void runInReceiveThread()
     {
@@ -602,10 +602,10 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
     }
 
     /**
-     * Enables or disables this <tt>RTPConnectorInputStream</tt>. While the stream is disabled, it
+     * Enables or disables this <code>RTPConnectorInputStream</code>. While the stream is disabled, it
      * does not accept any packets.
      *
-     * @param enabled <tt>true</tt> to enable, <tt>false</tt> to disable.
+     * @param enabled <code>true</code> to enable, <code>false</code> to disable.
      */
     public void setEnabled(boolean enabled)
     {
@@ -631,10 +631,10 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
             throws IOException;
 
     /**
-     * Sets the <tt>transferHandler</tt> that this connector should be notifying when new data is
+     * Sets the <code>transferHandler</code> that this connector should be notifying when new data is
      * available for reading.
      *
-     * @param transferHandler the <tt>transferHandler</tt> that this connector should be notifying when new data is
+     * @param transferHandler the <code>transferHandler</code> that this connector should be notifying when new data is
      * available for reading.
      */
     @Override
@@ -648,10 +648,10 @@ public abstract class RTPConnectorInputStream<T extends Closeable> implements Pu
 
     /**
      * Invokes {@link SourceTransferHandler#transferData(PushSourceStream)} on
-     * {@link #transferHandler} for each of <tt>pkts</tt> in order to consecutively push them out
-     * of/make them available outside this <tt>PushSourceStream</tt>.
+     * {@link #transferHandler} for each of <code>pkts</code> in order to consecutively push them out
+     * of/make them available outside this <code>PushSourceStream</code>.
      *
-     * @param pkts the set of <tt>RawPacket</tt>s to push out of this <tt>PushSourceStream</tt>
+     * @param pkts the set of <code>RawPacket</code>s to push out of this <code>PushSourceStream</code>
      */
     private void transferData(RawPacket[] pkts)
     {

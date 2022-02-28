@@ -16,7 +16,7 @@ import net.java.sip.communicator.util.UtilActivator;
 import java.util.Iterator;
 
 /**
- * The <tt>AccountStatusUtils</tt> provides utility methods for account status management.
+ * The <code>AccountStatusUtils</code> provides utility methods for account status management.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -133,9 +133,9 @@ public class AccountStatusUtils {
 	}
 
 	/**
-	 * Returns the <tt>GlobalStatusService</tt> obtained from the bundle context.
+	 * Returns the <code>GlobalStatusService</code> obtained from the bundle context.
 	 *
-	 * @return the <tt>GlobalStatusService</tt> obtained from the bundle context
+	 * @return the <code>GlobalStatusService</code> obtained from the bundle context
 	 */
 	public static GlobalStatusService getGlobalStatusService() {
 		if (globalStatusService == null) {

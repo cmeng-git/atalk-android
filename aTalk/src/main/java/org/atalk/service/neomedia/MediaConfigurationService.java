@@ -10,42 +10,42 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.util.MediaType;
 
 /**
- * An interface that exposes the <tt>Component</tt>s used in media configuration user interfaces.
+ * An interface that exposes the <code>Component</code>s used in media configuration user interfaces.
  *
  * @author Boris Grozev
  */
 public interface MediaConfigurationService
 {
 	/**
-	 * Returns a <tt>Component</tt> for audio configuration
+	 * Returns a <code>Component</code> for audio configuration
 	 *
-	 * @return A <tt>Component</tt> for audio configuration
+	 * @return A <code>Component</code> for audio configuration
 	 */
 	public Component createAudioConfigPanel();
 
 	/**
-	 * Returns a <tt>Component</tt> for video configuration
+	 * Returns a <code>Component</code> for video configuration
 	 *
-	 * @return A <tt>Component</tt> for video configuration
+	 * @return A <code>Component</code> for video configuration
 	 */
 	public Component createVideoConfigPanel();
 
 	/**
-	 * Returns a <tt>Component</tt> for encodings configuration (either audio or video)
+	 * Returns a <code>Component</code> for encodings configuration (either audio or video)
 	 *
 	 * @param mediaType
 	 *        The type of media -- either MediaType.AUDIO or MediaType.VIDEO
 	 * @param encodingConfiguration
-	 *        The <tt>EncodingConfiguration</tt> instance to use.
-	 * @return The <tt>Component</tt> for encodings configuration
+	 *        The <code>EncodingConfiguration</code> instance to use.
+	 * @return The <code>Component</code> for encodings configuration
 	 */
 	public Component createEncodingControls(MediaType mediaType,
 		EncodingConfiguration encodingConfiguration);
 
 	/**
-	 * Returns the <tt>MediaService</tt> instance
+	 * Returns the <code>MediaService</code> instance
 	 *
-	 * @return the <tt>MediaService</tt> instance
+	 * @return the <code>MediaService</code> instance
 	 */
 	public MediaService getMediaService();
 }

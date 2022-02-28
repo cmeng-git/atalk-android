@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.media.Format;
 
 /**
- * Encapsulates format information for video data. The attributes of a <tt>VideoFormat</tt>
+ * Encapsulates format information for video data. The attributes of a <code>VideoFormat</code>
  * include the encoding type, frame size, frame rate, and the data type.
  */
 public class VideoFormat extends Format
@@ -105,9 +105,9 @@ public class VideoFormat extends Format
     protected float frameRate = NOT_SPECIFIED;
 
     /**
-     * Constructs a <tt>VideoFormat</tt> with the specified encoding type.
+     * Constructs a <code>VideoFormat</code> with the specified encoding type.
      *
-     * @param encoding A <tt>String</tt> that describes the encoding type for this <tt>VideoFormat</tt>.
+     * @param encoding A <code>String</code> that describes the encoding type for this <code>VideoFormat</code>.
      */
     public VideoFormat(String encoding)
     {
@@ -115,9 +115,9 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Constructs a <tt>VideoFormat</tt> with the specified attributes.
+     * Constructs a <code>VideoFormat</code> with the specified attributes.
      *
-     * @param encoding A <tt>String</tt> that describes the encoding type for this <tt>VideoFormat</tt>.
+     * @param encoding A <code>String</code> that describes the encoding type for this <code>VideoFormat</code>.
      * @param size The size of a video frame.
      * @param maxDataLength The maximum length of a data chunk.
      * @param dataType The type of data. For example, byte array.
@@ -134,9 +134,9 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Creates a clone of this <tt>VideoFormat</tt> by copying each field to the clone.
+     * Creates a clone of this <code>VideoFormat</code> by copying each field to the clone.
      *
-     * @return A clone of this <tt>VideoFormat</tt>.
+     * @return A clone of this <code>VideoFormat</code>.
      */
     @Override
     public Object clone()
@@ -148,9 +148,9 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Copies the attributes from the specified <tt>Format</tt> into this <tt>VideoFormat</tt>.
+     * Copies the attributes from the specified <code>Format</code> into this <code>VideoFormat</code>.
      *
-     * @param f The <tt>Format</tt> to copy the attributes from.
+     * @param f The <code>Format</code> to copy the attributes from.
      */
     @Override
     protected void copy(Format f)
@@ -164,13 +164,13 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Compares the specified <tt>Format</tt> with this <tt>VideoFormat</tt>.
-     * Returns <tt>true</tt> only if the specified <tt>Format</tt> is a
-     * <tt>VideoFormat</tt> object and all of its attributes are identical to
-     * the attributes in this <tt>VideoFormat</tt>.
+     * Compares the specified <code>Format</code> with this <code>VideoFormat</code>.
+     * Returns <code>true</code> only if the specified <code>Format</code> is a
+     * <code>VideoFormat</code> object and all of its attributes are identical to
+     * the attributes in this <code>VideoFormat</code>.
      *
-     * @param format The <tt>Format</tt> to compare.
-     * @return true if the specified <tt>Format</tt> is the same as this one.
+     * @param format The <code>Format</code> to compare.
+     * @return true if the specified <code>Format</code> is the same as this one.
      */
     @Override
     public boolean equals(Object format)
@@ -194,7 +194,7 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets the frame rate associated with this <tt>VideoFormat</tt>.
+     * Gets the frame rate associated with this <code>VideoFormat</code>.
      *
      * @return The frame rate.
      */
@@ -204,9 +204,9 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets the length of the largest data chunk associated with this <tt>VideoFormat</tt>.
+     * Gets the length of the largest data chunk associated with this <code>VideoFormat</code>.
      *
-     * @return The maximum length of a data chunk in this <tt>VideoFormat</tt>.
+     * @return The maximum length of a data chunk in this <code>VideoFormat</code>.
      */
     public int getMaxDataLength()
     {
@@ -214,9 +214,9 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets the dimensions of a video frame in this <tt>VideoFormat</tt>.
+     * Gets the dimensions of a video frame in this <code>VideoFormat</code>.
      *
-     * @return A <tt>Dimension</tt> that specifies the frame size.
+     * @return A <code>Dimension</code> that specifies the frame size.
      */
     public Dimension getSize()
     {
@@ -224,7 +224,7 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Sets the dimensions of a video frame for this <tt>VideoFormat</tt>.
+     * Sets the dimensions of a video frame for this <code>VideoFormat</code>.
      */
     public void setVideoSize(Dimension vSize) // cmeng added
     {
@@ -232,12 +232,12 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Finds the attributes shared by two matching <tt>Format</tt> objects. If
-     * the specified <tt>Format</tt> does not match this one, the result is undefined.
+     * Finds the attributes shared by two matching <code>Format</code> objects. If
+     * the specified <code>Format</code> does not match this one, the result is undefined.
      *
-     * @param format The matching <tt>Format</tt> to intersect with this <tt>VideoFormat</tt>.
-     * @return A <tt>Format</tt> object with its attributes set to those
-     * attributes common to both <tt>Format</tt> objects.
+     * @param format The matching <code>Format</code> to intersect with this <code>VideoFormat</code>.
+     * @return A <code>Format</code> object with its attributes set to those
+     * attributes common to both <code>Format</code> objects.
      * @see #matches
      */
     @Override
@@ -257,17 +257,17 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Checks whether the specified <tt>Format</tt> <EM>matches</EM> this
-     * <tt>VideoFormat</tt>. Matches only compares the attributes that are
-     * defined in the specified <tt>Format</tt>, unspecified attributes are ignored.
+     * Checks whether the specified <code>Format</code> <EM>matches</EM> this
+     * <code>VideoFormat</code>. Matches only compares the attributes that are
+     * defined in the specified <code>Format</code>, unspecified attributes are ignored.
      * <p/>
-     * The two <tt>Format</tt> objects do not have to be of the same class to
+     * The two <code>Format</code> objects do not have to be of the same class to
      * match. For example, if "A" are "B" are being compared, a match is
      * possible if "A" is derived from "B" or "B" is derived from "A". (The
-     * compared attributes must still match, or <tt>matches</tt> fails.)
+     * compared attributes must still match, or <code>matches</code> fails.)
      *
-     * @param format The <tt>Format</tt> to compare with this one.
-     * @return <tt>true</tt> if the specified <tt>Format</tt> matches this one, <tt>false</tt> if it does not.
+     * @param format The <code>Format</code> to compare with this one.
+     * @return <code>true</code> if the specified <code>Format</code> matches this one, <code>false</code> if it does not.
      */
     @Override
     public boolean matches(Format format)
@@ -287,7 +287,7 @@ public class VideoFormat extends Format
      * Generate a format that's less restrictive than this format but contains
      * the basic attributes that will make this resulting format useful for format matching.
      *
-     * @return A <tt>Format</tt> that's less restrictive than this format.
+     * @return A <code>Format</code> that's less restrictive than this format.
      */
     @Override
     public Format relax()
@@ -304,10 +304,10 @@ public class VideoFormat extends Format
     }
 
     /**
-     * Gets a <tt>String</tt> representation of the attributes of this <tt>VideoFormat</tt>.
+     * Gets a <code>String</code> representation of the attributes of this <code>VideoFormat</code>.
      * For example: "RGB, 352x240, ...".
      *
-     * @return A <tt>String</tt> that describes the <tt>VideoFormat</tt> attributes.
+     * @return A <code>String</code> that describes the <code>VideoFormat</code> attributes.
      */
     @Override
     public String toString()

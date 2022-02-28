@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import java.net.InetSocketAddress;
 
 /**
- * An <tt>OperationSet</tt> that allows access to connection information used by the protocol provider.
+ * An <code>OperationSet</code> that allows access to connection information used by the protocol provider.
  *
  * @author Markus Kilas
  * @author Eng Chong Meng

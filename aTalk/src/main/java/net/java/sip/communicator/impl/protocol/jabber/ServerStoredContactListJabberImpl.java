@@ -161,11 +161,11 @@ public class ServerStoredContactListJabberImpl
 
     /**
      * Returns the roster entry associated with the given XMPP address or
-     * <tt>null</tt> if the user is not an entry in the roster.
+     * <code>null</code> if the user is not an entry in the roster.
      *
      * @param userJid the XMPP address of the user (e.g. "jsmith@example.com"). The address could be in any
      * valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
-     * @return the roster entry or <tt>null</tt> if it does not exist.
+     * @return the roster entry or <code>null</code> if it does not exist.
      */
     RosterEntry getRosterEntry(BareJid userJid)
     {
@@ -173,7 +173,7 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Returns the roster group with the specified name, or <tt>null</tt> if the group doesn't exist.
+     * Returns the roster group with the specified name, or <code>null</code> if the group doesn't exist.
      *
      * @param name the name of the group.
      * @return the roster group with the specified name.
@@ -211,7 +211,7 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Creates the corresponding event and notifies all <tt>ServerStoredGroupListener</tt>s that
+     * Creates the corresponding event and notifies all <code>ServerStoredGroupListener</code>s that
      * the source group has been removed, changed, renamed or whatever happened to it.
      *
      * @param group the ContactGroup that has been created/modified/removed
@@ -355,7 +355,7 @@ public class ServerStoredContactListJabberImpl
      * Returns the Contact with the specified id or null if no such id was found.
      *
      * @param id the contactJid of the contact to find (BareJid in actual search).
-     * @return the <tt>Contact</tt> carrying the specified <tt>screenName</tt> or <tt>null</tt> if
+     * @return the <code>Contact</code> carrying the specified <code>screenName</code> or <code>null</code> if
      * no such contact exits.
      */
     public ContactJabberImpl findContactById(Jid id)
@@ -389,7 +389,7 @@ public class ServerStoredContactListJabberImpl
      * Returns the ContactGroup containing the specified contact or null if no such group or contact exist.
      *
      * @param child the contact whose parent group we're looking for.
-     * @return the <tt>ContactGroup</tt> containing the specified <tt>contact</tt> or <tt>null</tt>
+     * @return the <code>ContactGroup</code> containing the specified <code>contact</code> or <code>null</code>
      * if no such group or contact exist.
      */
     public ContactGroup findContactGroup(ContactJabberImpl child)
@@ -520,7 +520,7 @@ public class ServerStoredContactListJabberImpl
      * @param id the address of the contact to create.
      * @param isPrivateMessagingContact indicates if the contact should be private messaging contact or not.
      * @param displayName the display name of the contact
-     * @return the newly created volatile <tt>ContactImpl</tt>
+     * @return the newly created volatile <code>ContactImpl</code>
      */
     ContactJabberImpl createVolatileContact(Jid id, boolean isPrivateMessagingContact, String displayName)
     {
@@ -550,7 +550,7 @@ public class ServerStoredContactListJabberImpl
      * Checks if the contact address is associated with private messaging contact or not.
      *
      * @param contactJid the address of the contact.
-     * @return <tt>true</tt> the contact address is associated with private messaging contact and <tt>false</tt> if not.
+     * @return <code>true</code> the contact address is associated with private messaging contact and <code>false</code> if not.
      */
     public boolean isPrivateMessagingContact(Jid contactJid)
     {
@@ -571,7 +571,7 @@ public class ServerStoredContactListJabberImpl
      *
      * @param parentGroup the group where the unresolved contact is to be created
      * @param id the Address of the contact to create.
-     * @return the newly created unresolved <tt>ContactImpl</tt>
+     * @return the newly created unresolved <code>ContactImpl</code>
      */
     synchronized ContactJabberImpl createUnresolvedContact(ContactGroup parentGroup, Jid id)
     {
@@ -598,7 +598,7 @@ public class ServerStoredContactListJabberImpl
      * updated instead of creating the whole group again.
      *
      * @param groupName the name of the group to create.
-     * @return the newly created unresolved <tt>ContactGroupImpl</tt>
+     * @return the newly created unresolved <code>ContactGroupImpl</code>
      */
     synchronized ContactGroupJabberImpl createUnresolvedContactGroup(String groupName)
     {
@@ -736,7 +736,7 @@ public class ServerStoredContactListJabberImpl
     }
 
     /**
-     * Moves the specified <tt>contact</tt> to the group indicated by <tt>newParent</tt>.
+     * Moves the specified <code>contact</code> to the group indicated by <code>newParent</code>.
      *
      * @param contact the contact that we'd like moved under the new group.
      * @param newParent the group where we'd like the parent placed.

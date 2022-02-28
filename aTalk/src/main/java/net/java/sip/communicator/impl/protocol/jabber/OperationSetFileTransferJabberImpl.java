@@ -36,7 +36,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * The Jabber implementation of the <tt>OperationSetFileTransfer</tt> interface.
+ * The Jabber implementation of the <code>OperationSetFileTransfer</code> interface.
  *
  * @author Gregory Bande
  * @author Nicolas Riegel
@@ -94,7 +94,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Sends a file transfer request to the given <tt>toContact</tt>.
+     * Sends a file transfer request to the given <code>toContact</code>.
      *
      * @param contact the contact that should receive the file
      * @param file file to send
@@ -175,8 +175,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Sends a file transfer request to the given <tt>toContact</tt> by specifying the local and
-     * remote file path and the <tt>fromContact</tt>, sending the file.
+     * Sends a file transfer request to the given <code>toContact</code> by specifying the local and
+     * remote file path and the <code>fromContact</code>, sending the file.
      *
      * @param toContact the contact that should receive the file
      * @param fromContact the contact sending the file
@@ -192,10 +192,10 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Adds the given <tt>ScFileTransferListener</tt> that would listen for file transfer requests
+     * Adds the given <code>ScFileTransferListener</code> that would listen for file transfer requests
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to add
+     * @param listener the <code>ScFileTransferListener</code> to add
      */
     public void addFileTransferListener(ScFileTransferListener listener)
     {
@@ -207,10 +207,10 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Removes the given <tt>ScFileTransferListener</tt> that listens for file transfer requests and
+     * Removes the given <code>ScFileTransferListener</code> that listens for file transfer requests and
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to remove
+     * @param listener the <code>ScFileTransferListener</code> to remove
      */
     public void removeFileTransferListener(ScFileTransferListener listener)
     {
@@ -348,7 +348,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     /**
      * Delivers the specified event to all registered file transfer listeners.
      *
-     * @param request the <tt>IncomingFileTransferRequestJabberImpl</tt> that we'd like delivered to all
+     * @param request the <code>IncomingFileTransferRequestJabberImpl</code> that we'd like delivered to all
      * registered file transfer listeners.
      */
     void fireFileTransferRequest(IncomingFileTransferRequestJabberImpl request)
@@ -371,7 +371,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     /**
      * Delivers the specified event to all registered file transfer listeners.
      *
-     * @param event the <tt>EventObject</tt> that we'd like delivered to all registered file transfer
+     * @param event the <code>EventObject</code> that we'd like delivered to all registered file transfer
      * listeners.
      */
     void fireFileTransferRequestRejected(FileTransferRequestEvent event)
@@ -391,7 +391,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      * Delivers the specified event to all registered file transfer listeners.
      * Note: this is not standard XMPP FileTransfer protocol
      *
-     * @param event the <tt>EventObject</tt> that we'd like delivered to all
+     * @param event the <code>EventObject</code> that we'd like delivered to all
      * registered file transfer listeners.
      */
     void fireFileTransferRequestCanceled(FileTransferRequestEvent event)
@@ -410,7 +410,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     /**
      * Delivers the file transfer to all registered listeners.
      *
-     * @param event the <tt>FileTransferEvent</tt> that we'd like delivered to all registered file
+     * @param event the <code>FileTransferEvent</code> that we'd like delivered to all registered file
      * transfer listeners.
      */
     void fireFileTransferCreated(FileTransferCreatedEvent event)
@@ -526,7 +526,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Parses the given Jabber status to a <tt>FileTransfer</tt> interface status.
+     * Parses the given Jabber status to a <code>FileTransfer</code> interface status.
      *
      * @param jabberStatus the Jabber status to parse
      * @return the parsed status

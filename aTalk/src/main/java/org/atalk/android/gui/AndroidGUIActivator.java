@@ -35,8 +35,8 @@ import org.osgi.framework.*;
 import java.util.*;
 
 /**
- * Creates <tt>LoginManager</tt> and registers <tt>AlertUIService</tt>. It's moved here from
- * launcher <tt>Activity</tt> because it could be created multiple times and result in multiple
+ * Creates <code>LoginManager</code> and registers <code>AlertUIService</code>. It's moved here from
+ * launcher <code>Activity</code> because it could be created multiple times and result in multiple
  * objects/registrations for those services. It also guarantees that they wil be registered
  * each time OSGI service starts.
  *
@@ -73,7 +73,7 @@ public class AndroidGUIActivator implements BundleActivator
     private static MetaHistoryService metaHistoryService;
 
     /**
-     * <tt>MetaContactListService</tt> cached instance.
+     * <code>MetaContactListService</code> cached instance.
      */
     private static MetaContactListService metaCListService;
     private static SystrayService systrayService;
@@ -82,7 +82,7 @@ public class AndroidGUIActivator implements BundleActivator
 
     private static DemuxContactSourceService demuxContactSourceService;
     /**
-     * <tt>GlobalDisplayDetailsService</tt> instance.
+     * <code>GlobalDisplayDetailsService</code> instance.
      */
     private static GlobalDisplayDetailsService globalDisplayService;
     private static CredentialsStorageService credentialsService;
@@ -157,9 +157,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>ConfigurationService</tt>.
+     * Returns the <code>ConfigurationService</code>.
      *
-     * @return the <tt>ConfigurationService</tt>.
+     * @return the <code>ConfigurationService</code>.
      */
     public static ConfigurationService getConfigurationService()
     {
@@ -170,9 +170,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>MetaHistoryService</tt> obtained from the bundle context.
+     * Returns the <code>MetaHistoryService</code> obtained from the bundle context.
      *
-     * @return the <tt>MetaHistoryService</tt> obtained from the bundle context
+     * @return the <code>MetaHistoryService</code> obtained from the bundle context
      */
     public static MetaHistoryService getMetaHistoryService()
     {
@@ -183,9 +183,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns <tt>MetaContactListService</tt>.
+     * Returns <code>MetaContactListService</code>.
      *
-     * @return the <tt>MetaContactListService</tt>.
+     * @return the <code>MetaContactListService</code>.
      */
     public static MetaContactListService getContactListService()
     {
@@ -196,9 +196,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>GlobalStatusService</tt> obtained from the bundle context.
+     * Returns the <code>GlobalStatusService</code> obtained from the bundle context.
      *
-     * @return the <tt>GlobalStatusService</tt> obtained from the bundle context
+     * @return the <code>GlobalStatusService</code> obtained from the bundle context
      */
     public static GlobalStatusService getGlobalStatusService()
     {
@@ -221,9 +221,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns <tt>SystrayService</tt> instance.
+     * Returns <code>SystrayService</code> instance.
      *
-     * @return <tt>SystrayService</tt> instance.
+     * @return <code>SystrayService</code> instance.
      */
     public static SystrayService getSystrayService()
     {
@@ -234,9 +234,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>LoginManager</tt> for Android application.
+     * Returns the <code>LoginManager</code> for Android application.
      *
-     * @return the <tt>LoginManager</tt> for Android application.
+     * @return the <code>LoginManager</code> for Android application.
      */
     public static LoginManager getLoginManager()
     {
@@ -254,9 +254,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>DemuxContactSourceService</tt> obtained from the bundle context.
+     * Returns the <code>DemuxContactSourceService</code> obtained from the bundle context.
      *
-     * @return the <tt>DemuxContactSourceService</tt> obtained from the bundle context
+     * @return the <code>DemuxContactSourceService</code> obtained from the bundle context
      */
     public static DemuxContactSourceService getDemuxContactSourceService()
     {
@@ -267,9 +267,9 @@ public class AndroidGUIActivator implements BundleActivator
     }
 
     /**
-     * Returns the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context.
+     * Returns the <code>GlobalDisplayDetailsService</code> obtained from the bundle context.
      *
-     * @return the <tt>GlobalDisplayDetailsService</tt> obtained from the bundle context
+     * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
     public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
     {
@@ -298,9 +298,9 @@ public class AndroidGUIActivator implements BundleActivator
 
 
     /**
-     * Returns an instance of the <tt>MediaService</tt> obtained from the bundle context.
+     * Returns an instance of the <code>MediaService</code> obtained from the bundle context.
      *
-     * @return an instance of the <tt>MediaService</tt> obtained from the bundle context
+     * @return an instance of the <code>MediaService</code> obtained from the bundle context
      */
     public static MediaService getMediaService()
     {

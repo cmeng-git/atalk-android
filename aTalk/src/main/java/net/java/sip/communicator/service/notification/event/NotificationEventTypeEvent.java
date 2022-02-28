@@ -46,7 +46,7 @@ public class NotificationEventTypeEvent extends EventObject
 	 * Creates an instance of this event according to the specified type.
 	 *
 	 * @param source
-	 *        the <tt>NotificationService</tt> that dispatched this event
+	 *        the <code>NotificationService</code> that dispatched this event
 	 * @param eventType
 	 *        the type of this event. One of the static fields declared in this class
 	 * @param sourceEventType
@@ -60,9 +60,9 @@ public class NotificationEventTypeEvent extends EventObject
 	}
 
 	/**
-	 * Returns the <tt>eventType</tt>, for which this event is about.
+	 * Returns the <code>eventType</code>, for which this event is about.
 	 *
-	 * @return the <tt>eventType</tt>, for which this event is about.
+	 * @return the <code>eventType</code>, for which this event is about.
 	 */
 	public String getSourceEventType()
 	{

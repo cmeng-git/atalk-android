@@ -20,8 +20,8 @@ import java.io.File;
 public interface OperationSetFileTransfer extends OperationSet
 {
     /**
-     * Sends a file transfer request to the given <tt>toContact</tt> by specifying the local and
-     * remote file path and the <tt>fromContact</tt>, sending the file.
+     * Sends a file transfer request to the given <code>toContact</code> by specifying the local and
+     * remote file path and the <code>fromContact</code>, sending the file.
      *
      * @param toContact the contact that should receive the file
      * @param file the file to send
@@ -36,8 +36,8 @@ public interface OperationSetFileTransfer extends OperationSet
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException;
 
     /**
-     * Sends a file transfer request to the given <tt>toContact</tt> by specifying the local and
-     * remote file path and the <tt>fromContact</tt>, sending the file.
+     * Sends a file transfer request to the given <code>toContact</code> by specifying the local and
+     * remote file path and the <code>fromContact</code>, sending the file.
      *
      * @param toContact the contact that should receive the file
      * @param fromContact the contact sending the file
@@ -54,18 +54,18 @@ public interface OperationSetFileTransfer extends OperationSet
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException;
 
     /**
-     * Adds the given <tt>ScFileTransferListener</tt> that would listen for file transfer requests and
+     * Adds the given <code>ScFileTransferListener</code> that would listen for file transfer requests and
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to add
+     * @param listener the <code>ScFileTransferListener</code> to add
      */
     void addFileTransferListener(ScFileTransferListener listener);
 
     /**
-     * Removes the given <tt>ScFileTransferListener</tt> that listens for file transfer requests and
+     * Removes the given <code>ScFileTransferListener</code> that listens for file transfer requests and
      * created file transfers.
      *
-     * @param listener the <tt>ScFileTransferListener</tt> to remove
+     * @param listener the <code>ScFileTransferListener</code> to remove
      */
     void removeFileTransferListener(ScFileTransferListener listener);
 

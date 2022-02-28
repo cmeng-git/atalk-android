@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.notification;
 
 /**
- * An implementation of the <tt>SoundNotificationHandlerImpl</tt> interface.
+ * An implementation of the <code>SoundNotificationHandlerImpl</code> interface.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -39,7 +39,7 @@ public class SoundNotificationAction extends NotificationAction
     private boolean isSoundPCSpeakerEnabled;
 
     /**
-     * Creates an instance of <tt>SoundNotification</tt> by specifying the sound file descriptor and the loop interval.
+     * Creates an instance of <code>SoundNotification</code> by specifying the sound file descriptor and the loop interval.
      * By default is enabling simulation output to notification and playback device.
      *
      * @param soundDescriptor the sound file descriptor
@@ -51,7 +51,7 @@ public class SoundNotificationAction extends NotificationAction
     }
 
     /**
-     * Creates an instance of <tt>SoundNotification</tt> by specifying the sound file descriptor and the loop interval.
+     * Creates an instance of <code>SoundNotification</code> by specifying the sound file descriptor and the loop interval.
      *
      * @param soundDescriptor the sound file descriptor
      * @param loopInterval the loop interval

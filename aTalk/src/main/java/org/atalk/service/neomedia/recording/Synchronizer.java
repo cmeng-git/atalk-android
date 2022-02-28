@@ -31,43 +31,43 @@ public interface Synchronizer
 	public void setEndpoint(long ssrc, String endpointId);
 
 	/**
-	 * Notifies this <tt>Synchronizer</tt> that the RTP timestamp <tt>rtpTime</tt> (for SSRC
-	 * <tt>ssrc</tt>) corresponds to the NTP timestamp <tt>ntpTime</tt>.
+	 * Notifies this <code>Synchronizer</code> that the RTP timestamp <code>rtpTime</code> (for SSRC
+	 * <code>ssrc</code>) corresponds to the NTP timestamp <code>ntpTime</code>.
 	 * 
 	 * @param ssrc
 	 *        the SSRC.
 	 * @param rtpTime
-	 *        the RTP timestamp which corresponds to <tt>ntpTime</tt>.
+	 *        the RTP timestamp which corresponds to <code>ntpTime</code>.
 	 * @param ntpTime
-	 *        the NTP timestamp which corresponds to <tt>rtpTime</tt>.
+	 *        the NTP timestamp which corresponds to <code>rtpTime</code>.
 	 */
 	public void mapRtpToNtp(long ssrc, long rtpTime, double ntpTime);
 
 	/**
-	 * Notifies this <tt>Synchronizer</tt> that the local timestamp <tt>localTime</tt> corresponds
-	 * to the NTP timestamp <tt>ntpTime</tt> (for SSRC <tt>ssrc</tt>).
+	 * Notifies this <code>Synchronizer</code> that the local timestamp <code>localTime</code> corresponds
+	 * to the NTP timestamp <code>ntpTime</code> (for SSRC <code>ssrc</code>).
 	 * 
 	 * @param ssrc
 	 *        the SSRC.
 	 * @param localTime
-	 *        the local timestamp which corresponds to <tt>ntpTime</tt>.
+	 *        the local timestamp which corresponds to <code>ntpTime</code>.
 	 * @param ntpTime
-	 *        the NTP timestamp which corresponds to <tt>localTime</tt>.
+	 *        the NTP timestamp which corresponds to <code>localTime</code>.
 	 */
 	public void mapLocalToNtp(long ssrc, long localTime, double ntpTime);
 
 	/**
-	 * Tries to find the local time (as returned by <tt>System.currentTimeMillis()</tt>) that
-	 * corresponds to the RTP timestamp <tt>rtpTime</tt> for the SSRC <tt>ssrc</tt>.
+	 * Tries to find the local time (as returned by <code>System.currentTimeMillis()</code>) that
+	 * corresponds to the RTP timestamp <code>rtpTime</code> for the SSRC <code>ssrc</code>.
 	 *
 	 * Returns -1 if the local time cannot be found (for example because not enough information for
-	 * the SSRC has been previously provided to the <tt>Synchronizer</tt>).
+	 * the SSRC has been previously provided to the <code>Synchronizer</code>).
 	 *
 	 * @param ssrc
-	 *        the SSRC with which <tt>rtpTime</tt> is associated.
+	 *        the SSRC with which <code>rtpTime</code> is associated.
 	 * @param rtpTime
 	 *        the RTP timestamp
-	 * @return the local time corresponding to <tt>rtpTime</tt> for SSRC <tt>ssrc</tt> if it can be
+	 * @return the local time corresponding to <code>rtpTime</code> for SSRC <code>ssrc</code> if it can be
 	 *         calculated, and -1 otherwise.
 	 */
 	public long getLocalTime(long ssrc, long rtpTime);

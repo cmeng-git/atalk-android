@@ -16,7 +16,7 @@ import java.util.*;
 public interface FormatParametersAwareCodec extends Control
 {
 	/**
-	 * Sets the format parameters to <tt>fmtps</tt>
+	 * Sets the format parameters to <code>fmtps</code>
 	 *
 	 * @param fmtps
 	 *        The format parameters to set

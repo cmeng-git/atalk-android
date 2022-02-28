@@ -32,7 +32,7 @@ public class ProgressEvent extends java.util.EventObject
     private static final long serialVersionUID = 0L;
 
     /**
-     * The <tt>ProgressEvent</tt>.
+     * The <code>ProgressEvent</code>.
      */
     private net.java.sip.communicator.service.history.event.ProgressEvent evt;
 
@@ -45,7 +45,7 @@ public class ProgressEvent extends java.util.EventObject
      * Constructor.
      *
      * @param source source object
-     * @param evt the <tt>ProgressEvent</tt>
+     * @param evt the <code>ProgressEvent</code>
      * @param progress initial progress value
      */
     public ProgressEvent(Object source, net.java.sip.communicator.service.history.event.ProgressEvent evt, int progress)

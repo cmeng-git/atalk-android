@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 /**
- * The <tt>SIPCommButton</tt> is a very flexible <tt>JButton</tt> that allows
+ * The <code>SIPCommButton</code> is a very flexible <code>JButton</code> that allows
  * to configure its background, its icon, the look when a mouse is over it, etc.
  *
  * @author Yana Stamcheva

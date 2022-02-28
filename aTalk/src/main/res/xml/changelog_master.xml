@@ -6,8 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.8.1 (01/18/2022)" versioncode="208010">
+    <release version="2.9.0 (02/28/2022)" versioncode="209000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Hide video call option if the android device disables/does not have camera support</change>
+        <change>Enhance aTalk media call handler to support conversations media call unique implementation (conversations needs bugs fixed)</change>
+        <change>Upgrade and replace deprecated classes in android-youtube-player</change>
+        <change>Upgrade jingle java classes to sync with smack implementation (major)</change>
+        <change>Clean up JavaDoc for all aTalk java classes</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.8.1 (01/18/2022)" versioncode="208010">
         <change>Enhance Call History UI to allow deletion of records order than the specified timestamp</change>
         <change>Check to ensure chatRoom creation cannot have subject set to null (smack 4.4.4 Bookmarks assert value != null)</change>
         <change>Change FilePathHelper#getRealPath to use MediaStore.MediaColumns.DATA to retrieve filePath disregard of the content type</change>

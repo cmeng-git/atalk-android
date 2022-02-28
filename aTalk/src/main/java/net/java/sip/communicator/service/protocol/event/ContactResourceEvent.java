@@ -19,15 +19,15 @@ import net.java.sip.communicator.service.protocol.ContactResource;
 import java.util.EventObject;
 
 /**
- * The <tt>ContactResourceEvent</tt> is the event that notifies for any changes in the
- * <tt>ContactResource</tt>-s for a certain <tt>Contact</tt>.
+ * The <code>ContactResourceEvent</code> is the event that notifies for any changes in the
+ * <code>ContactResource</code>-s for a certain <code>Contact</code>.
  *
  * @author Yana Stamcheva
  */
 public class ContactResourceEvent extends EventObject
 {
     /**
-     * The <tt>ContactResource</tt> that is concerned by the change.
+     * The <code>ContactResource</code> that is concerned by the change.
      */
     private final ContactResource contactResource;
 
@@ -37,27 +37,27 @@ public class ContactResourceEvent extends EventObject
     private final int eventType;
 
     /**
-     * Indicates that the <tt>ContactResourceEvent</tt> instance was triggered by the add of a <tt>ContactResource</tt>.
+     * Indicates that the <code>ContactResourceEvent</code> instance was triggered by the add of a <code>ContactResource</code>.
      */
     public static final int RESOURCE_ADDED = 0;
 
     /**
-     * Indicates that the <tt>ContactResourceEvent</tt> instance was triggered by the removal of a <tt>ContactResource</tt>.
+     * Indicates that the <code>ContactResourceEvent</code> instance was triggered by the removal of a <code>ContactResource</code>.
      */
     public static final int RESOURCE_REMOVED = 1;
 
     /**
-     * Indicates that the <tt>ContactResourceEvent</tt> instance was triggered by the modification
-     * of a <tt>ContactResource</tt>.
+     * Indicates that the <code>ContactResourceEvent</code> instance was triggered by the modification
+     * of a <code>ContactResource</code>.
      */
     public static final int RESOURCE_MODIFIED = 2;
 
     /**
-     * Creates an instance of <tt>ContactResourceEvent</tt> by specifying the source, where this
-     * event occurred and the concerned <tt>ContactSource</tt>.
+     * Creates an instance of <code>ContactResourceEvent</code> by specifying the source, where this
+     * event occurred and the concerned <code>ContactSource</code>.
      *
      * @param source the source where this event occurred
-     * @param contactResource the <tt>ContactResource</tt> that is concerned by the change
+     * @param contactResource the <code>ContactResource</code> that is concerned by the change
      * @param eventType an integer representing the type of this event. One of the types defined in this
      * class: RESOURCE_ADDED, RESOURCE_REMOVED, RESOURCE_MODIFIED.
      */
@@ -70,9 +70,9 @@ public class ContactResourceEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>Contact</tt>, which is the source of this event.
+     * Returns the <code>Contact</code>, which is the source of this event.
      *
-     * @return the <tt>Contact</tt>, which is the source of this event
+     * @return the <code>Contact</code>, which is the source of this event
      */
     public Contact getContact()
     {
@@ -80,9 +80,9 @@ public class ContactResourceEvent extends EventObject
     }
 
     /**
-     * Returns the <tt>ContactResource</tt> that is concerned by the change.
+     * Returns the <code>ContactResource</code> that is concerned by the change.
      *
-     * @return the <tt>ContactResource</tt> that is concerned by the change
+     * @return the <code>ContactResource</code> that is concerned by the change
      */
     public ContactResource getContactResource()
     {

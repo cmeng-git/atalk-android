@@ -14,7 +14,7 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 import timber.log.Timber;
 
 /**
- * Implements <tt>OperationSetVideoTelephony</tt> in order to give access to video-specific
+ * Implements <code>OperationSetVideoTelephony</code> in order to give access to video-specific
  * functionality in the Jabber protocol implementation.
  *
  * @author Emil Ivov
@@ -25,11 +25,11 @@ public class OperationSetVideoTelephonyJabberImpl
         ProtocolProviderServiceJabberImpl, CallJabberImpl, CallPeerJabberImpl>
 {
     /**
-     * Initializes a new <tt>OperationSetVideoTelephonyJabberImpl</tt> instance which builds upon
+     * Initializes a new <code>OperationSetVideoTelephonyJabberImpl</code> instance which builds upon
      * the telephony-related functionality of a specific
-     * <tt>OperationSetBasicTelephonyJabberImpl</tt>.
+     * <code>OperationSetBasicTelephonyJabberImpl</code>.
      *
-     * @param basicTelephony the <tt>OperationSetBasicTelephonyJabberImpl</tt> the new extension should build upon
+     * @param basicTelephony the <code>OperationSetBasicTelephonyJabberImpl</code> the new extension should build upon
      */
     public OperationSetVideoTelephonyJabberImpl(OperationSetBasicTelephonyJabberImpl basicTelephony)
     {
@@ -42,7 +42,7 @@ public class OperationSetVideoTelephonyJabberImpl
      * re-invites all CallPeers to re-negotiate the modified media setup.
      *
      * @param call the call where we'd like to allow sending local video.
-     * @param allowed <tt>true</tt> if local video transmission is allowed and <tt>false</tt> otherwise.
+     * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      * @throws OperationFailedException if video initialization fails.
      */
     @Override

@@ -136,7 +136,7 @@ public class ProvisioningServiceImpl implements ProvisioningService
     /**
      * Indicates if the provisioning has been enabled.
      *
-     * @return <tt>true</tt> if the provisioning is enabled, <tt>false</tt> - otherwise
+     * @return <code>true</code> if the provisioning is enabled, <code>false</code> - otherwise
      */
     public String getProvisioningMethod()
     {

@@ -32,7 +32,7 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * aTalk update service implementation. It checks for an update and schedules .apk download using <tt>DownloadManager</tt>.
+ * aTalk update service implementation. It checks for an update and schedules .apk download using <code>DownloadManager</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -74,12 +74,12 @@ public class UpdateServiceImpl implements UpdateService
     // private String changesLink;
 
     /**
-     * <tt>SharedPreferences</tt> used to store download ids.
+     * <code>SharedPreferences</code> used to store download ids.
      */
     private SharedPreferences store;
 
     /**
-     * Name of <tt>SharedPreferences</tt> entry used to store old download ids. Ids are stored in
+     * Name of <code>SharedPreferences</code> entry used to store old download ids. Ids are stored in
      * single string separated by ",".
      */
     private static final String ENTRY_NAME = "apk_ids";
@@ -87,8 +87,8 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Checks for updates.
      *
-     * @param notifyAboutNewestVersion <tt>true</tt> if the user is to be notified if they have the
-     * newest version already; otherwise, <tt>false</tt>
+     * @param notifyAboutNewestVersion <code>true</code> if the user is to be notified if they have the
+     * newest version already; otherwise, <code>false</code>
      */
     @Override
     public void checkForUpdates(boolean notifyAboutNewestVersion)
@@ -225,7 +225,7 @@ public class UpdateServiceImpl implements UpdateService
     }
 
     /**
-     * Queries the <tt>DownloadManager</tt> for the status of download job identified by given <tt>id</tt>.
+     * Queries the <code>DownloadManager</code> for the status of download job identified by given <code>id</code>.
      *
      * @param id download identifier which status will be returned.
      * @return download status of the job identified by given id. If given job is not found
@@ -412,7 +412,7 @@ public class UpdateServiceImpl implements UpdateService
     /**
      * Determines whether we are currently running the latest version.
      *
-     * @return <tt>true</tt> if current running application is the latest version; otherwise, <tt>false</tt>
+     * @return <code>true</code> if current running application is the latest version; otherwise, <code>false</code>
      */
     @Override
     public boolean isLatestVersion()

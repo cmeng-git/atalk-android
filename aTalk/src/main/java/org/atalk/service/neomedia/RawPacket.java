@@ -34,7 +34,7 @@ import java.util.Iterator;
  * Besides packet info storage, RawPacket also provides some other operations
  * such as readInt() to ease the development process.
  *
- * FIXME This class needs to be split/merged into RTPHeader, RTCPHeader,
+ * FIXME This class needs to be split/merged into RtpHeader, RTCPHeader,
  * ByteBufferUtils, etc.
  *
  * @author Werner Dittmann (Werner.Dittmann@t-online.de)
@@ -84,8 +84,8 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * The bitmap/flag mask that specifies the set of boolean attributes enabled
-     * for this <tt>RawPacket</tt>. The value is the logical sum of all of the
-     * set flags. The possible flags are defined by the <tt>FLAG_XXX</tt>
+     * for this <code>RawPacket</code>. The value is the logical sum of all of the
+     * set flags. The possible flags are defined by the <code>FLAG_XXX</code>
      * constants of FMJ's {@link javax.media.Buffer} class.
      */
     private int flags;
@@ -109,7 +109,7 @@ public class RawPacket implements ByteArrayBuffer
     private HeaderExtensions headerExtensions;
 
     /**
-     * Initializes a new empty <tt>RawPacket</tt> instance.
+     * Initializes a new empty <code>RawPacket</code> instance.
      */
     public RawPacket()
     {
@@ -117,12 +117,12 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Initializes a new <tt>RawPacket</tt> instance with a specific <tt>byte</tt> array buffer.
+     * Initializes a new <code>RawPacket</code> instance with a specific <code>byte</code> array buffer.
      *
-     * @param buffer the <tt>byte</tt> array to be the buffer of the new instance
-     * @param offset the offset in <tt>buffer</tt> at which the actual data to
+     * @param buffer the <code>byte</code> array to be the buffer of the new instance
+     * @param offset the offset in <code>buffer</code> at which the actual data to
      * be represented by the new instance starts
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * constitute the actual data to be represented by the new instance
      */
     public RawPacket(byte[] buffer, int offset, int length)
@@ -204,9 +204,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Test whether the RTP Marker bit is set
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return true if the RTP Marker bit is set, false otherwise.
      */
     public static boolean isPacketMarked(byte[] buffer, int offset, int length)
@@ -220,11 +220,11 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Perform checks on the packet represented by this instance and
-     * return <tt>true</tt> if it is found to be invalid. A return value of
-     * <tt>false</tt> does not necessarily mean that the packet is valid.
+     * return <code>true</code> if it is found to be invalid. A return value of
+     * <code>false</code> does not necessarily mean that the packet is valid.
      *
-     * @return <tt>true</tt> if the RTP/RTCP packet represented by this
-     * instance is found to be invalid, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the RTP/RTCP packet represented by this
+     * instance is found to be invalid, <code>false</code> otherwise.
      */
     public static boolean isInvalid(byte[] buffer, int offset, int length)
     {
@@ -537,7 +537,7 @@ public class RawPacket implements ByteArrayBuffer
      * party that sent this packet.
      *
      * @param csrcExtID the ID of the extension that's transporting csrc audio
-     * levels in the session that this <tt>RawPacket</tt> belongs to.
+     * levels in the session that this <code>RawPacket</code> belongs to.
      * @return an array representing a map binding CSRC IDs to audio levels as
      * reported by the remote party that sent this packet. The entries of the
      * map are contained in consecutive elements of the returned array where
@@ -606,10 +606,10 @@ public class RawPacket implements ByteArrayBuffer
      * this packet and carried in this packet.
      *
      * @param ssrcExtID the ID of the extension that's transporting ssrc audio
-     * levels in the session that this <tt>RawPacket</tt> belongs to
+     * levels in the session that this <code>RawPacket</code> belongs to
      * @return the source audio level reported by the remote party which sent
      * this packet and carried in this packet or a negative value if this packet
-     * contains no extension such as the specified by <tt>ssrcExtID</tt>
+     * contains no extension such as the specified by <code>ssrcExtID</code>
      */
     public byte extractSsrcAudioLevel(byte ssrcExtID)
     {
@@ -628,11 +628,11 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Returns the index of the element in this packet's buffer where the
-     * content of the header with the specified <tt>extensionID</tt> starts.
+     * content of the header with the specified <code>extensionID</code> starts.
      *
      * @param extensionID the ID of the extension whose content we are looking for.
      * @return the index of the first byte of the content of the extension
-     * with the specified <tt>extensionID</tt> or -1 if no such extension was found.
+     * with the specified <code>extensionID</code> or -1 if no such extension was found.
      */
     private int findExtension(int extensionID)
     {
@@ -706,15 +706,15 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Returns the CSRC level at the specified index or <tt>defaultValue</tt>
+     * Returns the CSRC level at the specified index or <code>defaultValue</code>
      * if there was no level at that index.
      *
      * @param csrcExtID the ID of the extension that's transporting csrc audio
-     * levels in the session that this <tt>RawPacket</tt> belongs to.
+     * levels in the session that this <code>RawPacket</code> belongs to.
      * @param index the sequence number of the CSRC audio level extension to
      * return.
      * @return the CSRC audio level at the specified index of the csrc audio
-     * level option or <tt>0</tt> if there was no level at that index.
+     * level option or <code>0</code> if there was no level at that index.
      */
     private byte getCsrcAudioLevel(byte csrcExtID, int index, byte defaultValue)
     {
@@ -751,7 +751,7 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Returns the number of CSRC identifiers currently included in this packet.
      *
-     * @return the CSRC count for this <tt>RawPacket</tt>.
+     * @return the CSRC count for this <code>RawPacket</code>.
      */
     public int getCsrcCount()
     {
@@ -761,10 +761,10 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Returns the number of CSRC identifiers currently included in this packet.
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
-     * @return the CSRC count for this <tt>RawPacket</tt>.
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
+     * @return the CSRC count for this <code>RawPacket</code>.
      */
     public static int getCsrcCount(byte[] buffer, int offset, int length)
     {
@@ -775,11 +775,11 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Returns <tt>true</tt> if the extension bit of this packet has been set
-     * and <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the extension bit of this packet has been set
+     * and <code>false</code> otherwise.
      *
-     * @return <tt>true</tt> if the extension bit of this packet has been set
-     * and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the extension bit of this packet has been set
+     * and <code>false</code> otherwise.
      */
     public boolean getExtensionBit()
     {
@@ -787,12 +787,12 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Returns <tt>true</tt> if the extension bit of this packet has been set and <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the extension bit of this packet has been set and <code>false</code> otherwise.
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
-     * @return <tt>true</tt> if the extension bit of this packet has been set and <tt>false</tt> otherwise.
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
+     * @return <code>true</code> if the extension bit of this packet has been set and <code>false</code> otherwise.
      */
     public static boolean getExtensionBit(byte[] buffer, int offset, int length)
     {
@@ -801,11 +801,11 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Returns the length of the extension header being used in this packet or
-     * <tt>-1</tt> in case there were no extension headers here or we didn't
+     * <code>-1</code> in case there were no extension headers here or we didn't
      * understand the kind of extension being used.
      *
      * @return the length of the extension header being used in this packet or
-     * <tt>-1</tt> in case there were no extension headers here or we didn't
+     * <code>-1</code> in case there were no extension headers here or we didn't
      * understand the kind of extension being used.
      */
     private int getExtensionHeaderLength()
@@ -855,9 +855,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Returns the length of the extensions currently added to this packet.
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return the length of the extensions currently added to this packet.
      */
     public static int getExtensionLength(byte[] buffer, int offset, int length)
@@ -889,10 +889,10 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Gets the bitmap/flag mask that specifies the set of boolean attributes
-     * enabled for this <tt>RawPacket</tt>.
+     * enabled for this <code>RawPacket</code>.
      *
      * @return the bitmap/flag mask that specifies the set of boolean attributes
-     * enabled for this <tt>RawPacket</tt>
+     * enabled for this <code>RawPacket</code>
      */
     public int getFlags()
     {
@@ -925,9 +925,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP header length from a RTP packet
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return RTP header length from source RTP packet
      */
     public static int getHeaderLength(byte[] buffer, int offset, int length)
@@ -965,16 +965,16 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Returns the length of the header extension that is carrying the content
-     * starting at <tt>contentStart</tt>. In other words this method checks the
+     * starting at <code>contentStart</code>. In other words this method checks the
      * size of extension headers in this packet and then either returns the
-     * value of the byte right before <tt>contentStart</tt> or its lower 4 bits.
+     * value of the byte right before <code>contentStart</code> or its lower 4 bits.
      * This is a very basic method so if you are using it - make sure u know
      * what you are doing.
      *
      * @param contentStart the index of the first element of the content of
      * the extension whose size we are trying to obtain.
      * @return the length of the extension carrying the content starting at
-     * <tt>contentStart</tt>.
+     * <code>contentStart</code>.
      */
     private int getLengthForExtension(int contentStart)
     {
@@ -1039,7 +1039,7 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get the RTP payload (bytes) of this RTP packet.
      *
-     * @return an array of <tt>byte</tt>s which represents the RTP payload of
+     * @return an array of <code>byte</code>s which represents the RTP payload of
      * this RTP packet
      */
     public byte[] getPayload()
@@ -1073,9 +1073,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP payload length from a RTP packet
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return RTP payload length from source RTP packet
      */
     public static int getPayloadLength(byte[] buffer, int offset, int length)
@@ -1086,9 +1086,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP payload length from a RTP packet
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @param removePadding remove padding
      * @return RTP payload length from source RTP packet
      */
@@ -1126,9 +1126,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get the RTP payload offset of an RTP packet.
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return the RTP payload offset of an RTP packet.
      */
     public static int getPayloadOffset(byte[] buffer, int offset, int length)
@@ -1205,9 +1205,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP sequence number from a RTP packet
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return RTP sequence num from source packet
      */
     public static int getSequenceNumber(byte[] buffer, int offset, int length)
@@ -1232,8 +1232,8 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Set sequence number for an RTP buffer
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
      * @param seq the buffer sequence number
      */
     public static void setSequenceNumber(byte[] buffer, int offset, int seq)
@@ -1258,9 +1258,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Set the RTP timestamp for an RTP buffer.
      *
-     * @param buf the <tt>byte</tt> array that holds the RTP packet.
-     * @param off the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param len the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buf the <code>byte</code> array that holds the RTP packet.
+     * @param off the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param len the number of <code>byte</code>s in <code>buffer</code> which
      * constitute the actual RTP data.
      * @param ts the timestamp to set in the RTP buffer.
      */
@@ -1320,9 +1320,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Get RTP SSRC from a RTP packet
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return RTP SSRC from source RTP packet
      */
     public static int getSSRC(byte[] buffer, int offset, int length)
@@ -1351,9 +1351,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Returns a {@code long} representation of the SSRC of this RTP packet.
      *
-     * @param buffer the <tt>byte</tt> array that holds the RTP packet.
-     * @param offset the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buffer the <code>byte</code> array that holds the RTP packet.
+     * @param offset the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param length the number of <code>byte</code>s in <code>buffer</code> which
      * @return a {@code long} representation of the SSRC of this RTP packet.
      */
     public static long getSSRCAsLong(byte[] buffer, int offset, int length)
@@ -1362,9 +1362,9 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Returns the timestamp for this RTP <tt>RawPacket</tt>.
+     * Returns the timestamp for this RTP <code>RawPacket</code>.
      *
-     * @return the timestamp for this RTP <tt>RawPacket</tt>.
+     * @return the timestamp for this RTP <code>RawPacket</code>.
      */
     public long getTimestamp()
     {
@@ -1374,9 +1374,9 @@ public class RawPacket implements ByteArrayBuffer
     /**
      * Gets the RTP timestamp for an RTP buffer.
      *
-     * @param buf the <tt>byte</tt> array that holds the RTP packet.
-     * @param off the offset in <tt>buffer</tt> at which the actual RTP data begins.
-     * @param len the number of <tt>byte</tt>s in <tt>buffer</tt> which
+     * @param buf the <code>byte</code> array that holds the RTP packet.
+     * @param off the offset in <code>buffer</code> at which the actual RTP data begins.
+     * @param len the number of <code>byte</code>s in <code>buffer</code> which
      * constitute the actual RTP data.
      * @return the timestamp in the RTP buffer.
      */
@@ -1426,11 +1426,11 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Perform checks on the packet represented by this instance and
-     * return <tt>true</tt> if it is found to be invalid. A return value of
-     * <tt>false</tt> does not necessarily mean that the packet is valid.
+     * return <code>true</code> if it is found to be invalid. A return value of
+     * <code>false</code> does not necessarily mean that the packet is valid.
      *
-     * @return <tt>true</tt> if the RTP/RTCP packet represented by this
-     * instance is found to be invalid, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the RTP/RTCP packet represented by this
+     * instance is found to be invalid, <code>false</code> otherwise.
      */
     @Override
     public boolean isInvalid()
@@ -1569,12 +1569,12 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Replaces the existing CSRC list (even if empty) with <tt>newCsrcList</tt>
-     * and updates the CC (CSRC count) field of this <tt>RawPacket</tt>
+     * Replaces the existing CSRC list (even if empty) with <code>newCsrcList</code>
+     * and updates the CC (CSRC count) field of this <code>RawPacket</code>
      * accordingly.
      *
      * @param newCsrcList the list of CSRC identifiers that we'd like to set for
-     * this <tt>RawPacket</tt>.
+     * this <code>RawPacket</code>.
      */
     public void setCsrcList(long[] newCsrcList)
     {
@@ -1621,9 +1621,9 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Raises the extension bit of this packet is <tt>extBit</tt> is
-     * <tt>true</tt> or set it to <tt>0</tt> if <tt>extBit</tt> is
-     * <tt>false</tt>.
+     * Raises the extension bit of this packet is <code>extBit</code> is
+     * <code>true</code> or set it to <code>0</code> if <code>extBit</code> is
+     * <code>false</code>.
      *
      * @param extBit the flag that indicates whether we are to set or clear
      * the extension bit of this packet.
@@ -1638,10 +1638,10 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Sets the bitmap/flag mask that specifies the set of boolean attributes
-     * enabled for this <tt>RawPacket</tt>.
+     * enabled for this <code>RawPacket</code>.
      *
      * @param flags the bitmap/flag mask that specifies the set of boolean
-     * attributes enabled for this <tt>RawPacket</tt>
+     * attributes enabled for this <code>RawPacket</code>
      */
     public void setFlags(int flags)
     {
@@ -1659,10 +1659,10 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Sets or resets the marker bit of this packet according to the
-     * <tt>marker</tt> parameter.
+     * <code>marker</code> parameter.
      *
-     * @param marker <tt>true</tt> if we are to raise the marker bit and
-     * <tt>false</tt> otherwise.
+     * @param marker <code>true</code> if we are to raise the marker bit and
+     * <code>false</code> otherwise.
      */
     public void setMarker(boolean marker)
     {

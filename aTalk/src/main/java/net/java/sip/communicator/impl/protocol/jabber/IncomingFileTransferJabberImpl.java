@@ -13,7 +13,7 @@ import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import java.io.File;
 
 /**
- * The Jabber protocol extension of the <tt>AbstractFileTransfer</tt>.
+ * The Jabber protocol extension of the <code>AbstractFileTransfer</code>.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -30,7 +30,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     private IncomingFileTransfer jabberTransfer;
 
     /**
-     * Creates an <tt>IncomingFileTransferJabberImpl</tt>.
+     * Creates an <code>IncomingFileTransferJabberImpl</code>.
      *
      * @param id the identifier of this transfer
      * @param sender the sender of the file

@@ -27,7 +27,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Copy of <tt>OSGiActivity</tt> that extends <tt>PreferenceActivity</tt>.
+ * Copy of <code>OSGiActivity</code> that extends <code>PreferenceActivity</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -43,7 +43,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
     private ServiceConnection serviceConnection;
 
     /**
-     * EXIT action listener that triggers closes the <tt>Activity</tt>
+     * EXIT action listener that triggers closes the <code>Activity</code>
      */
     private final ExitActionListener exitListener = new ExitActionListener();
 
@@ -55,7 +55,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
     /**
      * Starts this osgi activity.
      *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @param bundleContext the osgi <code>BundleContext</code>
      * @throws Exception
      */
     private void internalStart(BundleContext bundleContext)
@@ -75,7 +75,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
     /**
      * Stops this osgi activity.
      *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @param bundleContext the osgi <code>BundleContext</code>
      * @throws Exception
      */
     private void internalStop(BundleContext bundleContext)
@@ -246,9 +246,9 @@ public class OSGiPreferenceActivity extends OSGiActivity
     }
 
     /**
-     * Registers child <tt>OSGiUiPart</tt> to be notified on startup.
+     * Registers child <code>OSGiUiPart</code> to be notified on startup.
      *
-     * @param fragment child <tt>OSGiUiPart</tt> contained in this <tt>Activity</tt>.
+     * @param fragment child <code>OSGiUiPart</code> contained in this <code>Activity</code>.
      */
     public void registerOSGiFragment(OSGiUiPart fragment)
     {
@@ -266,9 +266,9 @@ public class OSGiPreferenceActivity extends OSGiActivity
     }
 
     /**
-     * Unregisters child <tt>OSGiUiPart</tt>.
+     * Unregisters child <code>OSGiUiPart</code>.
      *
-     * @param fragment the <tt>OSGiUiPart</tt> that will be unregistered.
+     * @param fragment the <code>OSGiUiPart</code> that will be unregistered.
      */
     public void unregisterOSGiFragment(OSGiUiPart fragment)
     {
@@ -283,7 +283,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
     }
 
     /**
-     * Convenience method which starts a new activity for given <tt>activityClass</tt> class
+     * Convenience method which starts a new activity for given <code>activityClass</code> class
      *
      * @param activityClass the activity class
      */
@@ -307,7 +307,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
     /**
      * Convenience method that switches from one activity to another.
      *
-     * @param activityIntent the next activity <tt>Intent</tt>
+     * @param activityIntent the next activity <code>Intent</code>
      */
     protected void switchActivity(Intent activityIntent)
     {
@@ -344,9 +344,9 @@ public class OSGiPreferenceActivity extends OSGiActivity
     }
 
     /**
-     * Returns OSGI <tt>BundleContext</tt>.
+     * Returns OSGI <code>BundleContext</code>.
      *
-     * @return OSGI <tt>BundleContext</tt>.
+     * @return OSGI <code>BundleContext</code>.
      */
     protected BundleContext getBundlecontext()
     {
@@ -354,9 +354,9 @@ public class OSGiPreferenceActivity extends OSGiActivity
     }
 
     /**
-     * Returns the content <tt>View</tt>.
+     * Returns the content <code>View</code>.
      *
-     * @return the content <tt>View</tt>.
+     * @return the content <code>View</code>.
      */
     protected View getContentView()
     {
@@ -365,7 +365,7 @@ public class OSGiPreferenceActivity extends OSGiActivity
 
     /**
      * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this
-     * <tt>Activity</tt>
+     * <code>Activity</code>
      * .
      */
     class ExitActionListener extends BroadcastReceiver

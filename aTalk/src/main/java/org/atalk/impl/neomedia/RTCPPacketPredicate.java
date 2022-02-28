@@ -14,7 +14,7 @@
 package org.atalk.impl.neomedia;
 
 /**
- * Represents a predicate (boolean-valued function) of a <tt>RawPacket</tt>.
+ * Represents a predicate (boolean-valued function) of a <code>RawPacket</code>.
  *
  * @author George Politis
  */

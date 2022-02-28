@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import java.security.cert.Certificate;
 
 /**
- * An <tt>OperationSet</tt> that allows access to information about TLS used by the protocol provider.
+ * An <code>OperationSet</code> that allows access to information about TLS used by the protocol provider.
  *
  * @author Markus Kilas
  */

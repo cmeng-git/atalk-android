@@ -25,25 +25,25 @@ import java.util.EventListener;
 public interface WhiteboardObjectListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>WhiteboardObject</tt> has been received.
+     * Called when a new incoming <code>WhiteboardObject</code> has been received.
      *
-     * @param evt the <tt>WhiteboardObjectReceivedEvent</tt> containing the newly received
+     * @param evt the <code>WhiteboardObjectReceivedEvent</code> containing the newly received
      * WhiteboardObject, its sender and other details.
      */
     void whiteboardObjectReceived(WhiteboardObjectReceivedEvent evt);
 
     /**
-     * Called when a deleted <tt>WhiteboardObject</tt> has been received.
+     * Called when a deleted <code>WhiteboardObject</code> has been received.
      *
-     * @param evt the <tt>WhiteboardObjectDeletedEvent</tt> containing the identification of the deleted
+     * @param evt the <code>WhiteboardObjectDeletedEvent</code> containing the identification of the deleted
      * WhiteboardObject, its sender and other details.
      */
     void whiteboardObjectDeleted(WhiteboardObjectDeletedEvent evt);
 
     /**
-     * Called when a modified <tt>WhiteboardObject</tt> has been modified remotely.
+     * Called when a modified <code>WhiteboardObject</code> has been modified remotely.
      *
-     * @param evt the <tt>WhiteboardObjectModifiedEvent</tt> containing the modified WhiteboardObject,
+     * @param evt the <code>WhiteboardObjectModifiedEvent</code> containing the modified WhiteboardObject,
      * its sender and other details.
      */
     void whiteboardObjecModified(WhiteboardObjectModifiedEvent evt);
@@ -59,9 +59,9 @@ public interface WhiteboardObjectListener extends EventListener
 
     /**
      * Called to indicated that delivery of a WhiteboardObject sent earlier has failed. Reason code
-     * and phrase are contained by the <tt>WhiteboardObjectDeliveryFailedEvent</tt>
+     * and phrase are contained by the <code>WhiteboardObjectDeliveryFailedEvent</code>
      *
-     * @param evt the <tt>WhiteboardObjectDeliveryFailedEvent</tt> containing the ID of the
+     * @param evt the <code>WhiteboardObjectDeliveryFailedEvent</code> containing the ID of the
      * WhiteboardObject whose delivery has failed.
      */
     void whiteboardObjectDeliveryFailed(WhiteboardObjectDeliveryFailedEvent evt);

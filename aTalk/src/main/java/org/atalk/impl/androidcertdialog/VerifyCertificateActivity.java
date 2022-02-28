@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 /**
  * Activity displays the certificate to the user and asks him whether to trust the certificate.
- * It also uses <tt>CertificateInfoDialog</tt> to display detailed information about the certificate.
+ * It also uses <code>CertificateInfoDialog</code> to display detailed information about the certificate.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -75,7 +75,7 @@ public class VerifyCertificateActivity extends OSGiActivity
     /**
      * Method fired when "show certificate info" button is clicked.
      *
-     * @param v button's <tt>View</tt>
+     * @param v button's <code>View</code>
      */
     public void onShowCertClicked(View v)
     {
@@ -85,7 +85,7 @@ public class VerifyCertificateActivity extends OSGiActivity
     /**
      * Method fired when continue button is clicked.
      *
-     * @param v button's <tt>View</tt>
+     * @param v button's <code>View</code>
      */
     public void onContinueClicked(View v)
     {
@@ -96,7 +96,7 @@ public class VerifyCertificateActivity extends OSGiActivity
     /**
      * Method fired when cancel button is clicked.
      *
-     * @param v button's <tt>View</tt>
+     * @param v button's <code>View</code>
      */
     public void onCancelClicked(View v)
     {
@@ -130,11 +130,11 @@ public class VerifyCertificateActivity extends OSGiActivity
     }
 
     /**
-     * Creates new parametrized <tt>Intent</tt> for <tt>VerifyCertificateActivity</tt>.
+     * Creates new parametrized <code>Intent</code> for <code>VerifyCertificateActivity</code>.
      *
      * @param ctx Android context.
      * @param requestId request identifier of dialog model.
-     * @return new parametrized <tt>Intent</tt> for <tt>VerifyCertificateActivity</tt>.
+     * @return new parametrized <code>Intent</code> for <code>VerifyCertificateActivity</code>.
      */
     public static Intent createIntent(Context ctx, Long requestId)
     {

@@ -26,9 +26,9 @@ public class AndroidMergedPopup extends AndroidPopup
     private List<AndroidPopup> mergedPopups = new ArrayList<>();
 
     /**
-     * Creates new instance of <tt>AndroidMergedPopup</tt> with given <tt>AndroidPopup</tt> as root.
+     * Creates new instance of <code>AndroidMergedPopup</code> with given <code>AndroidPopup</code> as root.
      *
-     * @param rootPopup root <tt>AndroidPopup</tt>.
+     * @param rootPopup root <code>AndroidPopup</code>.
      */
     AndroidMergedPopup(AndroidPopup rootPopup)
     {

@@ -53,7 +53,7 @@ public class MetaGroupExpandHandler implements ExpandableListView.OnGroupExpandL
 	private final ExpandableListView contactListView;
 
 	/**
-	 * Creates new instance of <tt>MetaGroupExpandHandler</tt>.
+	 * Creates new instance of <code>MetaGroupExpandHandler</code>.
 	 *
 	 * @param contactList
 	 *        contact list data model.

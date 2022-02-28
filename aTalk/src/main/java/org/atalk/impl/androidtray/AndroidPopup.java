@@ -37,7 +37,7 @@ import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 /**
- * Class manages displayed notification for given <tt>PopupMessage</tt>.
+ * Class manages displayed notification for given <code>PopupMessage</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -50,7 +50,7 @@ public class AndroidPopup
     protected final NotificationPopupHandler handler;
 
     /**
-     * Displayed <tt>PopupMessage</tt>.
+     * Displayed <code>PopupMessage</code>.
      */
     protected PopupMessage popupMessage;
 
@@ -65,7 +65,7 @@ public class AndroidPopup
     protected int id;
 
     /**
-     * Optional chatTransport descriptor if supplied by <tt>PopupMessage</tt>.
+     * Optional chatTransport descriptor if supplied by <code>PopupMessage</code>.
      */
     private Object mDescriptor;
 
@@ -88,7 +88,7 @@ public class AndroidPopup
     private Long muteEndTime;
 
     /**
-     * Creates new instance of <tt>AndroidPopup</tt>.
+     * Creates new instance of <code>AndroidPopup</code>.
      *
      * @param handler parent notifications handler that manages displayed notifications.
      * @param popupMessage the popup message that will be displayed by this instance.
@@ -150,9 +150,9 @@ public class AndroidPopup
     }
 
     /**
-     * Returns displayed <tt>PopupMessage</tt>.
+     * Returns displayed <code>PopupMessage</code>.
      *
-     * @return displayed <tt>PopupMessage</tt>.
+     * @return displayed <code>PopupMessage</code>.
      */
     public PopupMessage getPopupMessage()
     {
@@ -176,10 +176,10 @@ public class AndroidPopup
     }
 
     /**
-     * Returns <tt>true</tt> if this popup is related to given <tt>ChatPanel</tt>.
+     * Returns <code>true</code> if this popup is related to given <code>ChatPanel</code>.
      *
-     * @param chatPanel the <tt>ChatPanel</tt> to check.
-     * @return <tt>true</tt> if this popup is related to given <tt>ChatPanel</tt>.
+     * @param chatPanel the <code>ChatPanel</code> to check.
+     * @return <code>true</code> if this popup is related to given <code>ChatPanel</code>.
      */
     public boolean isChatRelated(ChatPanel chatPanel)
     {
@@ -205,11 +205,11 @@ public class AndroidPopup
     }
 
     /**
-     * Creates new <tt>AndroidPopup</tt> for given parameters.
+     * Creates new <code>AndroidPopup</code> for given parameters.
      *
      * @param handler notifications manager.
-     * @param popupMessage the popup message that will be displayed by returned <tt>AndroidPopup</tt>
-     * @return new <tt>AndroidPopup</tt> for given parameters.
+     * @param popupMessage the popup message that will be displayed by returned <code>AndroidPopup</code>
+     * @return new <code>AndroidPopup</code> for given parameters.
      */
     static public AndroidPopup createNew(NotificationPopupHandler handler, PopupMessage popupMessage)
     {
@@ -217,11 +217,11 @@ public class AndroidPopup
     }
 
     /**
-     * Tries to merge given <tt>PopupMessage</tt> with this instance. Will return merged
-     * <tt>AndroidPopup</tt> or <tt>null</tt> otherwise.
+     * Tries to merge given <code>PopupMessage</code> with this instance. Will return merged
+     * <code>AndroidPopup</code> or <code>null</code> otherwise.
      *
-     * @param popupMessage the <tt>PopupMessage</tt> to merge.
-     * @return merged <tt>AndroidPopup</tt> with given <tt>PopupMessage</tt> or <tt>null</tt> otherwise.
+     * @param popupMessage the <code>PopupMessage</code> to merge.
+     * @return merged <code>AndroidPopup</code> with given <code>PopupMessage</code> or <code>null</code> otherwise.
      */
     public AndroidPopup tryMerge(PopupMessage popupMessage)
     {
@@ -234,10 +234,10 @@ public class AndroidPopup
     }
 
     /**
-     * Merges this instance with given <tt>PopupMessage</tt>.
+     * Merges this instance with given <code>PopupMessage</code>.
      *
-     * @param popupMessage the <tt>PopupMessage</tt> to merge.
-     * @return merge result for this <tt>AndroidPopup</tt> and given <tt>PopupMessage</tt>.
+     * @param popupMessage the <code>PopupMessage</code> to merge.
+     * @return merge result for this <code>AndroidPopup</code> and given <code>PopupMessage</code>.
      */
     protected AndroidPopup mergePopup(PopupMessage popupMessage)
     {
@@ -253,10 +253,10 @@ public class AndroidPopup
     }
 
     /**
-     * Checks whether <tt>Contact</tt> of this instance matches with given <tt>PopupMessage</tt>.
+     * Checks whether <code>Contact</code> of this instance matches with given <code>PopupMessage</code>.
      *
-     * @param popupMessage the <tt>PopupMessage</tt> to check.
-     * @return <tt>true</tt> if <tt>Contact</tt>s for this instance and given <tt>PopupMessage</tt> are the same.
+     * @param popupMessage the <code>PopupMessage</code> to check.
+     * @return <code>true</code> if <code>Contact</code>s for this instance and given <code>PopupMessage</code> are the same.
      */
     private boolean isSenderTheSame(PopupMessage popupMessage)
     {
@@ -264,10 +264,10 @@ public class AndroidPopup
     }
 
     /**
-     * Checks whether group of this instance matches with given <tt>PopupMessage</tt>.
+     * Checks whether group of this instance matches with given <code>PopupMessage</code>.
      *
-     * @param popupMessage the <tt>PopupMessage</tt> to check.
-     * @return <tt>true</tt> if group of this instance and given <tt>PopupMessage</tt> are the same.
+     * @param popupMessage the <code>PopupMessage</code> to check.
+     * @return <code>true</code> if group of this instance and given <code>PopupMessage</code> are the same.
      */
     private boolean isGroupTheSame(PopupMessage popupMessage)
     {
@@ -347,9 +347,9 @@ public class AndroidPopup
     }
 
     /**
-     * Returns the <tt>PendingIntent</tt> that should be trigger when user clicks the notification.
+     * Returns the <code>PendingIntent</code> that should be trigger when user clicks the notification.
      *
-     * @return the <tt>PendingIntent</tt> that should be trigger by notification
+     * @return the <code>PendingIntent</code> that should be trigger by notification
      */
     public PendingIntent createContentIntent()
     {
@@ -395,7 +395,7 @@ public class AndroidPopup
     }
 
     /**
-     * Method fired when large notification view using <tt>InboxStyle</tt> is being built.
+     * Method fired when large notification view using <code>InboxStyle</code> is being built.
      *
      * @param inboxStyle the inbox style instance used for building large notification view.
      */

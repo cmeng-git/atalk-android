@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol.event;
 import java.util.EventObject;
 
 /**
- * The <tt>CallPeerSecurityFailedEvent</tt> is triggered whenever a problem has occurred during call security process.
+ * The <code>CallPeerSecurityFailedEvent</code> is triggered whenever a problem has occurred during call security process.
  *
  * @author Yana Stamcheva
  * @author Werner Dittmann
@@ -36,7 +36,7 @@ public class CallPeerSecurityMessageEvent extends EventObject
     private final int eventSeverity;
 
     /**
-     * Creates a <tt>CallPeerSecurityFailedEvent</tt> by specifying the call peer, event type and
+     * Creates a <code>CallPeerSecurityFailedEvent</code> by specifying the call peer, event type and
      * message associated with this event.
      *
      * @param source the object on which the event initially occurred

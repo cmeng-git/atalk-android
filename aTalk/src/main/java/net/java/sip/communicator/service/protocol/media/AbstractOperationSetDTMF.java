@@ -17,7 +17,7 @@ import org.atalk.util.MediaType;
 import java.util.Iterator;
 
 /**
- * Represents a default/base implementation of <tt>OperationSetDTMF</tt> which attempts to make it
+ * Represents a default/base implementation of <code>OperationSetDTMF</code> which attempts to make it
  * easier for implementers to provide complete solutions while focusing on implementation-specific
  * functionality.
  *
@@ -46,7 +46,7 @@ public abstract class AbstractOperationSetDTMF implements OperationSetDTMF
     protected int volume;
 
     /**
-     * Creates the <tt>AbstractOperationSetDTMF</tt> and initialize some settings.
+     * Creates the <code>AbstractOperationSetDTMF</code> and initialize some settings.
      *
      * @param pps the protocol provider.
      */

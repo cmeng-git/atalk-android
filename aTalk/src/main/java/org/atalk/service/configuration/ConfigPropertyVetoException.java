@@ -25,7 +25,7 @@ public class ConfigPropertyVetoException extends RuntimeException
     private final PropertyChangeEvent evt;
 
     /**
-     * Constructs a <tt>PropertyVetoException</tt> with a detailed message.
+     * Constructs a <code>PropertyVetoException</code> with a detailed message.
      *
      * @param message Descriptive message
      * @param evt A PropertyChangeEvent describing the vetoed change.
@@ -37,7 +37,7 @@ public class ConfigPropertyVetoException extends RuntimeException
     }
 
     /**
-     * Gets the vetoed <tt>PropertyChangeEvent</tt>.
+     * Gets the vetoed <code>PropertyChangeEvent</code>.
      *
      * @return A PropertyChangeEvent describing the vetoed change.
      */

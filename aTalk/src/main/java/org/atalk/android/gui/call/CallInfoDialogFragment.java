@@ -67,7 +67,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     private View viewContainer;
 
     /**
-     * Factory method that creates new dialog fragment and injects the <tt>callKey</tt> into the dialog arguments
+     * Factory method that creates new dialog fragment and injects the <code>callKey</code> into the dialog arguments
      * bundle.
      *
      * @param callKey the key string that identifies active call in {@link CallManager}.
@@ -113,11 +113,11 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     /**
-     * Sets given <tt>text</tt> on the <tt>TextView</tt> identified by the <tt>id</tt>. The <tt>TextView</tt> must be
+     * Sets given <code>text</code> on the <code>TextView</code> identified by the <code>id</code>. The <code>TextView</code> must be
      * inside the view hierarchy.
      *
-     * @param id the id of <tt>TextView</tt> we want to edit.
-     * @param text string value that will be set on the <tt>TextView</tt>.
+     * @param id the id of <code>TextView</code> we want to edit.
+     * @param text string value that will be set on the <code>TextView</code>.
      */
     private void setTextViewValue(int id, String text)
     {
@@ -125,12 +125,12 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     /**
-     * Sets given <tt>text</tt> on the <tt>TextView</tt> identified by the <tt>id</tt>. The <tt>TextView</tt> must be
-     * inside <tt>container</tt> view hierarchy.
+     * Sets given <code>text</code> on the <code>TextView</code> identified by the <code>id</code>. The <code>TextView</code> must be
+     * inside <code>container</code> view hierarchy.
      *
-     * @param container the <tt>View</tt> that contains the <tt>TextView</tt>.
-     * @param id the id of <tt>TextView</tt> we want to edit.
-     * @param text string value that will be set on the <tt>TextView</tt>.
+     * @param container the <code>View</code> that contains the <code>TextView</code>.
+     * @param id the id of <code>TextView</code> we want to edit.
+     * @param text string value that will be set on the <code>TextView</code>.
      */
     private void setTextViewValue(View container, int id, String text)
     {
@@ -138,11 +138,11 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     /**
-     * Ensures that the <tt>View</tt> is currently in visible or hidden state which depends on <tt>isVisible</tt> flag.
+     * Ensures that the <code>View</code> is currently in visible or hidden state which depends on <code>isVisible</code> flag.
      *
-     * @param container parent <tt>View</tt> that contains displayed <tt>View</tt>.
-     * @param viewId the id of <tt>View</tt> that will be shown/hidden.
-     * @param isVisible flag telling whether the <tt>View</tt> has to be shown or hidden.
+     * @param container parent <code>View</code> that contains displayed <code>View</code>.
+     * @param viewId the id of <code>View</code> that will be shown/hidden.
+     * @param isVisible flag telling whether the <code>View</code> has to be shown or hidden.
      */
     private void ensureVisible(View container, int viewId, boolean isVisible)
     {
@@ -179,7 +179,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     /**
      * Constructs peer info.
      *
-     * @param callPeer the <tt>CallPeer</tt>, for which we'll construct the info.
+     * @param callPeer the <code>CallPeer</code>, for which we'll construct the info.
      */
     private void constructPeerInfo(CallPeer callPeer)
     {
@@ -204,7 +204,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     }
 
     /**
-     * Updates section displaying ICE information for given <tt>callPeerMediaHandler</tt>.
+     * Updates section displaying ICE information for given <code>callPeerMediaHandler</code>.
      *
      * @param callPeerMediaHandler the call peer for which ICE information will be displayed.
      */
@@ -292,7 +292,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
      * AUDIO or VIDEO).
      *
      * @param callPeerMediaHandler The media handler containing the different media streams.
-     * @param mediaStream the <tt>MediaStream</tt> that gives us access to audio/video info.
+     * @param mediaStream the <code>MediaStream</code> that gives us access to audio/video info.
      * @param mediaType The media type used to determine which stream of the media handler must returns it encryption method.
      */
     private String getStreamEncryptionMethod(CallPeerMediaHandler<?> callPeerMediaHandler, MediaStream mediaStream, MediaType mediaType)
@@ -329,7 +329,7 @@ public class CallInfoDialogFragment extends OSGiDialogFragment
     /**
      * Updates audio video peer info.
      *
-     * @param callPeerMediaHandler The <tt>CallPeerMadiaHandler</tt> containing the AUDIO/VIDEO stream.
+     * @param callPeerMediaHandler The <code>CallPeerMadiaHandler</code> containing the AUDIO/VIDEO stream.
      * @param mediaType The media type used to determine which stream of the media handler will be used.
      */
     private void updateAudioVideoInfo(CallPeerMediaHandler<?> callPeerMediaHandler, MediaType mediaType)

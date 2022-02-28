@@ -36,7 +36,7 @@ import javax.net.ssl.SSLHandshakeException;
 import timber.log.Timber;
 
 /**
- * The single chat implementation of the <tt>ChatTransport</tt> interface that provides abstraction
+ * The single chat implementation of the <code>ChatTransport</code> interface that provides abstraction
  * to protocol provider access and its supported features available to the metaContact.
  *
  * @author Yana Stamcheva
@@ -45,19 +45,19 @@ import timber.log.Timber;
 public class MetaContactChatTransport implements ChatTransport, ContactPresenceStatusListener
 {
     /**
-     * The parent <tt>ChatSession</tt>, where this transport is available.
+     * The parent <code>ChatSession</code>, where this transport is available.
      */
     private final MetaContactChatSession parentChatSession;
 
     private OperationSetFileTransferJabberImpl ftOpSet;
 
     /**
-     * The associated protocol <tt>Contact</tt>.
+     * The associated protocol <code>Contact</code>.
      */
     private final Contact contact;
 
     /**
-     * The associated protocol provider service for the <tt>Contact</tt>.
+     * The associated protocol provider service for the <code>Contact</code>.
      */
     private final ProtocolProviderService mPPS;
 
@@ -69,13 +69,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private ContactResource contactResource;
 
     /**
-     * <tt>true</tt> when a contact sends a message with XEP-0164 message delivery receipt;
+     * <code>true</code> when a contact sends a message with XEP-0164 message delivery receipt;
      * override contact disco#info no XEP-0184 feature advertised.
      */
     private boolean isDeliveryReceiptSupported;
 
     /**
-     * <tt>true</tt> when a contact sends a message with XEP-0085 chat state notifications;
+     * <code>true</code> when a contact sends a message with XEP-0085 chat state notifications;
      * override contact disco#info no XEP-0085 feature advertised.
      */
     private static boolean isChatStateSupported = false;
@@ -101,11 +101,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private boolean isDisplayResourceOnly;
 
     /**
-     * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
-     * <tt>chatSession</tt> and the <tt>contact</tt> associated with the transport.
+     * Creates an instance of <code>MetaContactChatTransport</code> by specifying the parent
+     * <code>chatSession</code> and the <code>contact</code> associated with the transport.
      *
-     * @param chatSession the parent <tt>ChatSession</tt>
-     * @param contact the <tt>Contact</tt> associated with this transport
+     * @param chatSession the parent <code>ChatSession</code>
+     * @param contact the <code>Contact</code> associated with this transport
      */
     public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact)
     {
@@ -113,13 +113,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Creates an instance of <tt>MetaContactChatTransport</tt> by specifying the parent
-     * <tt>chatSession</tt>, <tt>contact</tt>, and the <tt>contactResource</tt>
+     * Creates an instance of <code>MetaContactChatTransport</code> by specifying the parent
+     * <code>chatSession</code>, <code>contact</code>, and the <code>contactResource</code>
      * associated with the transport.
      *
-     * @param chatSession the parent <tt>ChatSession</tt>
-     * @param contact the <tt>Contact</tt> associated with this transport
-     * @param contactResource the <tt>ContactResource</tt> associated with the contact
+     * @param chatSession the parent <code>ChatSession</code>
+     * @param contact the <code>Contact</code> associated with this transport
+     * @param contactResource the <code>ContactResource</code> associated with the contact
      * @param isDisplayResourceOnly indicates if only the resource name should be displayed
      */
     public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact,
@@ -273,9 +273,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * Returns the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      *
-     * @return the <tt>ProtocolProviderService</tt>, corresponding to this chat transport.
+     * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
     public ProtocolProviderService getProtocolProvider()
     {
@@ -419,7 +419,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Sends <tt>message</tt> as a message correction through this transport, specifying the mime
+     * Sends <code>message</code> as a message correction through this transport, specifying the mime
      * type (html or plain text) and the id of the message to replace.
      *
      * @param message The message to send.
@@ -451,7 +451,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Determines whether this chat transport supports the supplied content type
      *
      * @param mimeType the mime type we want to check
-     * @return <tt>true</tt> if the chat transport supports it and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType)
     {
@@ -479,7 +479,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Whether a dialog need to be opened so the user can enter the destination number.
      *
-     * @return <tt>true</tt> if dialog needs to be open.
+     * @return <code>true</code> if dialog needs to be open.
      */
     public boolean askForSMSNumber()
     {
@@ -537,7 +537,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -582,7 +582,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
@@ -597,7 +597,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileSendConversation xferCon)
@@ -651,7 +651,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
-     * @return the <tt>FileTransfer</tt> or HTTPFileUpload object charged to transfer the given <tt>file</tt>.
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
@@ -696,7 +696,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns the parent session of this chat transport. A <tt>ChatSession</tt> could contain
+     * Returns the parent session of this chat transport. A <code>ChatSession</code> could contain
      * more than one transports.
      *
      * @return the parent session of this chat transport

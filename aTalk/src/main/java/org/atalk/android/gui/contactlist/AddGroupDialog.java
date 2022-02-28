@@ -41,11 +41,11 @@ public class AddGroupDialog extends OSGiFragment
 
     /**
      * Displays create contact group dialog. If the source wants to be notified about the result
-     * should pass the listener here or <tt>null</tt> otherwise.
+     * should pass the listener here or <code>null</code> otherwise.
      *
-     * @param parent the parent <tt>Activity</tt>
+     * @param parent the parent <code>Activity</code>
      * @param createListener listener for contact group created event that will receive newly created instance of
-     * the contact group or <tt>null</tt> in case user cancels the dialog.
+     * the contact group or <code>null</code> in case user cancels the dialog.
      */
     public static void showCreateGroupDialog(Activity parent, EventListener<MetaContactGroup> createListener)
     {
@@ -57,7 +57,7 @@ public class AddGroupDialog extends OSGiFragment
     }
 
     /**
-     * Implements <tt>DialogActivity.DialogListener</tt> interface and handles contact group creation process.
+     * Implements <code>DialogActivity.DialogListener</code> interface and handles contact group creation process.
      */
     static class DialogListenerImpl implements DialogActivity.DialogListener
     {
@@ -77,7 +77,7 @@ public class AddGroupDialog extends OSGiFragment
         private Thread createThread;
 
         /**
-         * Creates new instance of <tt>DialogListenerImpl</tt>.
+         * Creates new instance of <code>DialogListenerImpl</code>.
          *
          * @param createListener create group listener if any.
          */
@@ -153,7 +153,7 @@ public class AddGroupDialog extends OSGiFragment
             String groupName;
 
             /**
-             * Creates new instance of <tt>AddGroupDialog</tt>.
+             * Creates new instance of <code>AddGroupDialog</code>.
              *
              * @param mcl contact list service instance.
              * @param groupName name of the contact group to create.

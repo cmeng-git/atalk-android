@@ -11,7 +11,7 @@ import org.atalk.util.event.PropertyChangeNotifier;
 import java.util.Map;
 
 /**
- * Provides the default implementation of the <tt>ConferenceMember</tt> interface.
+ * Provides the default implementation of the <code>ConferenceMember</code> interface.
  *
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
@@ -63,7 +63,7 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     public static final String PENDING = "pending";
 
     /**
-     * The protocol address of this <tt>ConferenceMember</tt>.
+     * The protocol address of this <code>ConferenceMember</code>.
      */
     private final String address;
 
@@ -74,22 +74,22 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 
     /**
      * The status in both directions of the audio RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>.
+     * <code>ConferenceMember</code>.
      */
     private MediaDirection audioStatus = MediaDirection.INACTIVE;
 
     /**
-     * The <tt>CallPeer</tt> which is the conference focus of this <tt>ConferenceMember</tt>.
+     * The <code>CallPeer</code> which is the conference focus of this <code>ConferenceMember</code>.
      */
     private final CallPeer conferenceFocusCallPeer;
 
     /**
-     * The user-friendly display name of this <tt>ConferenceMember</tt> in the conference.
+     * The user-friendly display name of this <code>ConferenceMember</code> in the conference.
      */
     private String displayName;
 
     /**
-     * The state of the device and signaling session of this <tt>ConferenceMember</tt> in the
+     * The state of the device and signaling session of this <code>ConferenceMember</code> in the
      * conference.
      */
     private ConferenceMemberState state = ConferenceMemberState.UNKNOWN;
@@ -101,17 +101,17 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 
     /**
      * The status in both directions of the video RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>.
+     * <code>ConferenceMember</code>.
      */
     private MediaDirection videoStatus = MediaDirection.INACTIVE;
 
     /**
-     * Creates an instance of <tt>AbstractConferenceMember</tt> by specifying the corresponding
-     * <tt>conferenceFocusCallPeer</tt>, to which this member is connected.
+     * Creates an instance of <code>AbstractConferenceMember</code> by specifying the corresponding
+     * <code>conferenceFocusCallPeer</code>, to which this member is connected.
      *
-     * @param conferenceFocusCallPeer the <tt>CallPeer</tt> to which this member is connected
-     * @param address the protocol address of this <tt>ConferenceMember</tt>
-     * @throws NullPointerException if <tt>conferenceFocusCallPeer</tt> or <tt>address</tt> is <tt>null</tt>
+     * @param conferenceFocusCallPeer the <code>CallPeer</code> to which this member is connected
+     * @param address the protocol address of this <code>ConferenceMember</code>
+     * @throws NullPointerException if <code>conferenceFocusCallPeer</code> or <code>address</code> is <code>null</code>
      */
     public AbstractConferenceMember(CallPeer conferenceFocusCallPeer, String address)
     {
@@ -125,9 +125,9 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     }
 
     /**
-     * Returns the protocol address of this <tt>ConferenceMember</tt>.
+     * Returns the protocol address of this <code>ConferenceMember</code>.
      *
-     * @return the protocol address of this <tt>ConferenceMember</tt>
+     * @return the protocol address of this <code>ConferenceMember</code>
      */
     public String getAddress()
     {
@@ -164,7 +164,7 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 
     /**
      * Returns the display name of this conference member. Implements
-     * <tt>ConferenceMember#getDisplayName()</tt>.
+     * <code>ConferenceMember#getDisplayName()</code>.
      *
      * @return the display name of this conference member
      */
@@ -182,7 +182,7 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     }
 
     /**
-     * Returns the state of this conference member. Implements <tt>ConferenceMember#getState()</tt>.
+     * Returns the state of this conference member. Implements <code>ConferenceMember#getState()</code>.
      *
      * @return the state of this conference member
      */
@@ -267,10 +267,10 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 
     /**
      * Sets the status in both directions of the audio RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>.
+     * <code>ConferenceMember</code>.
      *
      * @param status the status in both directions of the audio RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>. If <tt>null</tt>, the method executes as if
+     * <code>ConferenceMember</code>. If <code>null</code>, the method executes as if
      * {@link MediaDirection#INACTIVE}. was specified.
      */
     public void setAudioStatus(MediaDirection status)
@@ -288,11 +288,11 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     }
 
     /**
-     * Sets the user-friendly display name of this <tt>ConferenceMember</tt> in the conference and
-     * fires a new <tt>PropertyChangeEvent</tt> for the property
-     * <tt>#DISPLAY_NAME_PROPERTY_NAME</tt>.
+     * Sets the user-friendly display name of this <code>ConferenceMember</code> in the conference and
+     * fires a new <code>PropertyChangeEvent</code> for the property
+     * <code>#DISPLAY_NAME_PROPERTY_NAME</code>.
      *
-     * @param displayName the user-friendly display name of this <tt>ConferenceMember</tt> in the conference
+     * @param displayName the user-friendly display name of this <code>ConferenceMember</code> in the conference
      */
     public void setDisplayName(String displayName)
     {
@@ -307,11 +307,11 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     }
 
     /**
-     * Sets the <tt>state</tt> property of this <tt>ConferenceMember</tt> by translating it from its
+     * Sets the <code>state</code> property of this <code>ConferenceMember</code> by translating it from its
      * conference-info XML endpoint status.
      *
-     * @param endpointStatus the conference-info XML endpoint status of this <tt>ConferenceMember</tt> indicated by
-     * its <tt>conferenceFocusCallPeer</tt>
+     * @param endpointStatus the conference-info XML endpoint status of this <code>ConferenceMember</code> indicated by
+     * its <code>conferenceFocusCallPeer</code>
      */
     public void setEndpointStatus(String endpointStatus)
     {
@@ -383,11 +383,11 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
     }
 
     /**
-     * Sets the state of the device and signaling session of this <tt>ConferenceMember</tt> in the
-     * conference and fires a new <tt>PropertyChangeEvent</tt> for the property
-     * <tt>#STATE_PROPERTY_NAME</tt>.
+     * Sets the state of the device and signaling session of this <code>ConferenceMember</code> in the
+     * conference and fires a new <code>PropertyChangeEvent</code> for the property
+     * <code>#STATE_PROPERTY_NAME</code>.
      *
-     * @param state the state of the device and signaling session of this <tt>ConferenceMember</tt> in the
+     * @param state the state of the device and signaling session of this <code>ConferenceMember</code> in the
      * conference
      */
     public void setState(ConferenceMemberState state)
@@ -419,10 +419,10 @@ public class AbstractConferenceMember extends PropertyChangeNotifier implements 
 
     /**
      * Sets the status in both directions of the video RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>.
+     * <code>ConferenceMember</code>.
      *
      * @param status the status in both directions of the video RTP stream from the point of view of this
-     * <tt>ConferenceMember</tt>. If <tt>null</tt>, the method executes as if
+     * <code>ConferenceMember</code>. If <code>null</code>, the method executes as if
      * {@link MediaDirection#INACTIVE}. was specified.
      */
     public void setVideoStatus(MediaDirection status)

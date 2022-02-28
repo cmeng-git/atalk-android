@@ -27,7 +27,7 @@ public interface RemoteControlListener
 	 * This method is called when remote control has been granted.
 	 *
 	 * @param event
-	 *        <tt>RemoteControlGrantedEvent</tt>
+	 *        <code>RemoteControlGrantedEvent</code>
 	 */
 	public void remoteControlGranted(RemoteControlGrantedEvent event);
 
@@ -35,14 +35,14 @@ public interface RemoteControlListener
 	 * This method is called when remote control has been revoked.
 	 *
 	 * @param event
-	 *        <tt>RemoteControlRevokedEvent</tt>
+	 *        <code>RemoteControlRevokedEvent</code>
 	 */
 	public void remoteControlRevoked(RemoteControlRevokedEvent event);
 
 	/**
-	 * Returns the remote-controlled <tt>CallPeer</tt>.
+	 * Returns the remote-controlled <code>CallPeer</code>.
 	 *
-	 * @return the remote-controlled <tt>CallPeer</tt>
+	 * @return the remote-controlled <code>CallPeer</code>
 	 */
 	public CallPeer getCallPeer();
 }

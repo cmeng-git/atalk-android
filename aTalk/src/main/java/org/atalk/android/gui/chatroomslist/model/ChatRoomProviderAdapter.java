@@ -32,8 +32,8 @@ import org.atalk.android.gui.util.CollectionAdapter;
 import java.util.*;
 
 /**
- * This adapter displays all <tt>chatRoom Group</tt> items. If in the constructor
- * <tt>AdapterView</tt> id will be passed it will include "create new group" functionality. That
+ * This adapter displays all <code>chatRoom Group</code> items. If in the constructor
+ * <code>AdapterView</code> id will be passed it will include "create new group" functionality. That
  * means extra item "create group.." will be appended on the last position and when selected
  * create group dialog will popup automatically. When new group is eventually created it is
  * implicitly included into this adapter.
@@ -58,18 +58,18 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
     private int itemLayout;
 
     /**
-     * Instance of used <tt>AdapterView</tt>.
+     * Instance of used <code>AdapterView</code>.
      */
     private AdapterView adapterView;
 
     /**
-     * Creates new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
-     * currently available <tt>MetaContactGroup</tt>.
+     * Creates new instance of <code>MetaContactGroupAdapter</code>. It will be filled with all
+     * currently available <code>MetaContactGroup</code>.
      *
-     * @param parent the parent <tt>Activity</tt>.
-     * @param adapterViewId id of the <tt>AdapterView</tt>.
-     * @param includeRoot <tt>true</tt> if "No group" item should be included
-     * @param includeCreate <tt>true</tt> if "Create group" item should be included
+     * @param parent the parent <code>Activity</code>.
+     * @param adapterViewId id of the <code>AdapterView</code>.
+     * @param includeRoot <code>true</code> if "No group" item should be included
+     * @param includeCreate <code>true</code> if "Create group" item should be included
      */
     public ChatRoomProviderAdapter(Activity parent, int adapterViewId, boolean includeRoot,
             boolean includeCreate)
@@ -81,13 +81,13 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
     }
 
     /**
-     * Creates new instance of <tt>MetaContactGroupAdapter</tt>. It will be filled with all
-     * currently available <tt>MetaContactGroup</tt>.
+     * Creates new instance of <code>MetaContactGroupAdapter</code>. It will be filled with all
+     * currently available <code>MetaContactGroup</code>.
      *
-     * @param parent the parent <tt>Activity</tt>.
-     * @param adapterView the <tt>AdapterView</tt> that will be used.
-     * @param includeRoot <tt>true</tt> if "No group" item should be included
-     * @param includeCreate <tt>true</tt> if "Create group" item should be included
+     * @param parent the parent <code>Activity</code>.
+     * @param adapterView the <code>AdapterView</code> that will be used.
+     * @param includeRoot <code>true</code> if "No group" item should be included
+     * @param includeCreate <code>true</code> if "Create group" item should be included
      */
     public ChatRoomProviderAdapter(Activity parent, AdapterView adapterView, boolean includeRoot, boolean includeCreate)
     {
@@ -129,11 +129,11 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
     }
 
     /**
-     * Returns the list of all currently available <tt>MetaContactGroup</tt>.
+     * Returns the list of all currently available <code>MetaContactGroup</code>.
      *
      * @param includeRoot indicates whether "No group" item should be included in the list.
      * @param includeCreateNew indicates whether "create new group" item should be included in the list.
-     * @return the list of all currently available <tt>MetaContactGroup</tt>.
+     * @return the list of all currently available <code>MetaContactGroup</code>.
      */
     private static List<Object> getAllContactGroups(boolean includeRoot, boolean includeCreateNew)
     {
@@ -184,7 +184,7 @@ public class ChatRoomProviderAdapter extends CollectionAdapter<Object>
      * Handles on new group created event by append item into the list and notifying about data
      * set change.
      *
-     * @param newGroup new contact group if was created or <tt>null</tt> if user cancelled the dialog.
+     * @param newGroup new contact group if was created or <code>null</code> if user cancelled the dialog.
      */
     private void onNewGroupCreated(MetaContactGroup newGroup)
     {

@@ -24,15 +24,15 @@ import java.beans.PropertyChangeEvent;
 public class CallChangeEvent extends PropertyChangeEvent
 {
     /**
-     * The type of <tt>CallChangeEvent</tt> which indicates that the state of the associated
-     * <tt>Call</tt> has changed.
+     * The type of <code>CallChangeEvent</code> which indicates that the state of the associated
+     * <code>Call</code> has changed.
      */
     public static final String CALL_STATE_CHANGE = "CallState";
 
     /**
-     * The type of <tt>CallChangeEvent</tt> which indicates that there was some kind of change in
-     * the participants in the associated <tt>Call</tt> (e.g. a <tt>CallPeer</tt> participating in
-     * the <tt>Call</tt> has enabled or disabled video)
+     * The type of <code>CallChangeEvent</code> which indicates that there was some kind of change in
+     * the participants in the associated <code>Call</code> (e.g. a <code>CallPeer</code> participating in
+     * the <code>Call</code> has enabled or disabled video)
      */
     public static final String CALL_PARTICIPANTS_CHANGE = "CallParticipantsChanged";
 
@@ -42,8 +42,8 @@ public class CallChangeEvent extends PropertyChangeEvent
     private static final long serialVersionUID = 0L;
 
     /**
-     * The <tt>CallPeerChangeEvent</tt>, if any, which is the cause for this <tt>CallChangeEvent</tt> to be fired.
-     * For example, when the last <tt>CallPeer</tt> in a <tt>Call</tt> is disconnected, the <tt>Call</tt> will end.
+     * The <code>CallPeerChangeEvent</code>, if any, which is the cause for this <code>CallChangeEvent</code> to be fired.
+     * For example, when the last <code>CallPeer</code> in a <code>Call</code> is disconnected, the <code>Call</code> will end.
      */
     private final CallPeerChangeEvent cause;
 
@@ -79,7 +79,7 @@ public class CallChangeEvent extends PropertyChangeEvent
      * The event which was the cause for current event, like last peer removed from call will hangup
      * current call, if any, otherwise is null.
      *
-     * @return <tt>CallPeerChangeEvent</tt> that represents the cause
+     * @return <code>CallPeerChangeEvent</code> that represents the cause
      */
     public CallPeerChangeEvent getCause()
     {

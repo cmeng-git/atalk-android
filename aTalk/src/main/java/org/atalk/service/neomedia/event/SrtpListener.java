@@ -9,9 +9,9 @@ import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
 
 /**
- * The <tt>SrtpListener</tt> is meant to be used by the media stream creator, as the name indicates
+ * The <code>SrtpListener</code> is meant to be used by the media stream creator, as the name indicates
  * in order to be notified when a security event has occurred that concerns a secure (media)
- * transport i.e. <tt>SrtpControl</tt> such as ZRTP, SDES and DTLS-SRTP.
+ * transport i.e. <code>SrtpControl</code> such as ZRTP, SDES and DTLS-SRTP.
  *
  * @author Yana Stamcheva
  * @author Eng Chong Meng
@@ -44,7 +44,7 @@ public interface SrtpListener
      * the data needed for the slave streams to establish their sessions. If this is a
      * securityTurnedOn event on non master stream the multiStreamData is null.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      * @param cipher the security cipher that encrypts the call
      * @param sender the control that initiated the event.
      */
@@ -53,7 +53,7 @@ public interface SrtpListener
     /**
      * Indicates that the security has been turned off.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      */
     void securityTurnedOff(MediaType mediaType);
 
@@ -70,14 +70,14 @@ public interface SrtpListener
     /**
      * Indicates that the other party has timed out replying to our offer to secure the connection.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      */
     void securityTimeout(MediaType mediaType);
 
     /**
      * Indicates that we started the process of securing the connection.
      *
-     * @param mediaType the <tt>MediaType</tt> of the call session
+     * @param mediaType the <code>MediaType</code> of the call session
      * @param sender the control that initiated the event.
      */
     void securityNegotiationStarted(MediaType mediaType, SrtpControl sender);

@@ -359,7 +359,7 @@ public abstract class Logger
     }
 
     /**
-     * Set logging level for all handlers to <tt>level</tt>
+     * Set logging level for all handlers to <code>level</code>
      *
      * @param level the level to set for all logger handlers
      */

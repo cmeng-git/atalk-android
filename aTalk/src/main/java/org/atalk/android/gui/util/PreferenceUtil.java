@@ -8,7 +8,7 @@ package org.atalk.android.gui.util;
 import androidx.preference.*;
 
 /**
- * Utility class exposing methods to operate on <tt>Preference</tt> subclasses.
+ * Utility class exposing methods to operate on <code>Preference</code> subclasses.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -16,11 +16,11 @@ import androidx.preference.*;
 public class PreferenceUtil
 {
     /**
-     * Sets the <tt>CheckBoxPreference</tt> "checked" property.
+     * Sets the <code>CheckBoxPreference</code> "checked" property.
      *
-     * @param screen the <tt>PreferenceScreen</tt> containing the <tt>CheckBoxPreference</tt> we want to edit.
-     * @param prefKey preference key id from <tt>R.string</tt>.
-     * @param isChecked the value we want to set to the "checked" property of <tt>CheckBoxPreference</tt>.
+     * @param screen the <code>PreferenceScreen</code> containing the <code>CheckBoxPreference</code> we want to edit.
+     * @param prefKey preference key id from <code>R.string</code>.
+     * @param isChecked the value we want to set to the "checked" property of <code>CheckBoxPreference</code>.
      */
     static public void setCheckboxVal(PreferenceScreen screen, String prefKey, boolean isChecked)
     {
@@ -29,11 +29,11 @@ public class PreferenceUtil
     }
 
     /**
-     * Sets the text of <tt>EditTextPreference</tt> identified by given preference key string.
+     * Sets the text of <code>EditTextPreference</code> identified by given preference key string.
      *
-     * @param screen the <tt>PreferenceScreen</tt> containing the <tt>EditTextPreference</tt> we want to edit.
-     * @param prefKey preference key id from <tt>R.string</tt>.
-     * @param txtValue the text value we want to set on <tt>EditTextPreference</tt>
+     * @param screen the <code>PreferenceScreen</code> containing the <code>EditTextPreference</code> we want to edit.
+     * @param prefKey preference key id from <code>R.string</code>.
+     * @param txtValue the text value we want to set on <code>EditTextPreference</code>
      */
     public static void setEditTextVal(PreferenceScreen screen, String prefKey, String txtValue)
     {
@@ -42,11 +42,11 @@ public class PreferenceUtil
     }
 
     /**
-     * Sets the value of <tt>ListPreference</tt> identified by given preference key string.
+     * Sets the value of <code>ListPreference</code> identified by given preference key string.
      *
-     * @param screen the <tt>PreferenceScreen</tt> containing the <tt>ListPreference</tt> we want to edit.
-     * @param prefKey preference key id from <tt>R.string</tt>.
-     * @param value the value we want to set on <tt>ListPreference</tt>
+     * @param screen the <code>PreferenceScreen</code> containing the <code>ListPreference</code> we want to edit.
+     * @param prefKey preference key id from <code>R.string</code>.
+     * @param value the value we want to set on <code>ListPreference</code>
      */
     public static void setListVal(PreferenceScreen screen, String prefKey, String value)
     {

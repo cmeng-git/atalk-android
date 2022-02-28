@@ -10,7 +10,7 @@ import net.java.sip.communicator.service.protocol.*;
 import org.atalk.service.neomedia.SrtpControl;
 
 /**
- * The <tt>CallPeerSecurityNegotiationStartedEvent</tt> is triggered whenever a communication with a
+ * The <code>CallPeerSecurityNegotiationStartedEvent</code> is triggered whenever a communication with a
  * given peer is established, we started securing the connection.
  *
  * @author Damian Minkov

@@ -6,7 +6,7 @@
 package net.java.sip.communicator.service.protocol;
 
 /**
- * An <tt>OperationSet</tt> defining operations that allow transferring calls to a new location.
+ * An <code>OperationSet</code> defining operations that allow transferring calls to a new location.
  *
  * @author Emil Ivov
  */

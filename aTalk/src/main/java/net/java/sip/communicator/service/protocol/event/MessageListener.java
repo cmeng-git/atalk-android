@@ -24,9 +24,9 @@ import java.util.EventListener;
 public interface MessageListener extends EventListener
 {
     /**
-     * Called when a new incoming <tt>IMessage</tt> has been received.
+     * Called when a new incoming <code>IMessage</code> has been received.
      *
-     * @param evt the <tt>MessageReceivedEvent</tt> containing the newly received message, its sender
+     * @param evt the <code>MessageReceivedEvent</code> containing the newly received message, its sender
      * and other details.
      */
     void messageReceived(MessageReceivedEvent evt);
@@ -41,9 +41,9 @@ public interface MessageListener extends EventListener
 
     /**
      * Called to indicated that delivery of a message sent earlier has failed. Reason code and
-     * phrase are contained by the <tt>MessageFailedEvent</tt>
+     * phrase are contained by the <code>MessageFailedEvent</code>
      *
-     * @param evt the <tt>MessageFailedEvent</tt> containing the ID of the message whose delivery has failed.
+     * @param evt the <code>MessageFailedEvent</code> containing the ID of the message whose delivery has failed.
      */
     void messageDeliveryFailed(MessageDeliveryFailedEvent evt);
 }

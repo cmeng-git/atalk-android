@@ -30,7 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * The <tt>ChatStateNotificationHandler</tt> is the class that handles chat state notification
+ * The <code>ChatStateNotificationHandler</code> is the class that handles chat state notification
  * events and launches the corresponding user interface.
  *
  * @author Eng Chong Meng

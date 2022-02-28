@@ -9,21 +9,21 @@ import java.awt.Dimension;
 
 /**
  * The interface represents a video format. Video formats characterize video streams and the
- * <tt>VideoMediaFormat</tt> interface gives access to some of their properties such as encoding and clock rate.
+ * <code>VideoMediaFormat</code> interface gives access to some of their properties such as encoding and clock rate.
  *
  * @author Emil Ivov
  */
 public interface VideoMediaFormat extends MediaFormat
 {
     /**
-     * Returns the size of the image that this <tt>VideoMediaFormat</tt> describes.
+     * Returns the size of the image that this <code>VideoMediaFormat</code> describes.
      *
-     * @return a <tt>java.awt.Dimension</tt> instance indicating the image size (in pixels) of this <tt>VideoMediaFormat</tt>.
+     * @return a <code>java.awt.Dimension</code> instance indicating the image size (in pixels) of this <code>VideoMediaFormat</code>.
      */
     public Dimension getSize();
 
     /**
-     * Returns the frame rate associated with this <tt>MediaFormat</tt>.
+     * Returns the frame rate associated with this <code>MediaFormat</code>.
      *
      * @return The frame rate associated with this format.
      */

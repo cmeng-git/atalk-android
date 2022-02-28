@@ -13,7 +13,7 @@ import org.atalk.android.aTalkApp;
 import java.util.logging.*;
 
 /**
- * Android console handler that outputs to <tt>android.util.Log</tt>.
+ * Android console handler that outputs to <code>android.util.Log</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

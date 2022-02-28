@@ -28,7 +28,7 @@ public class RTCPConnectorInputStream extends RTPConnectorUDPInputStream
 	private final List<RTCPFeedbackMessageListener> listeners = new ArrayList<>();
 
 	/**
-	 * Initializes a new <tt>RTCPConnectorInputStream</tt> which is to receive packet data from a
+	 * Initializes a new <code>RTCPConnectorInputStream</code> which is to receive packet data from a
 	 * specific UDP socket.
 	 *
 	 * @param socket
@@ -40,7 +40,7 @@ public class RTCPConnectorInputStream extends RTPConnectorUDPInputStream
 	}
 
 	/**
-	 * Add an <tt>RTCPFeedbackMessageListener</tt>.
+	 * Add an <code>RTCPFeedbackMessageListener</code>.
 	 *
 	 * @param listener
 	 *        object that will listen to incoming RTCP feedback messages.
@@ -54,23 +54,23 @@ public class RTCPConnectorInputStream extends RTPConnectorUDPInputStream
 	}
 
 	/**
-	 * Notifies a specific list of <tt>RTCPFeedbackMessageListener</tt>s about a specific RTCP
-	 * feedback message if such a message can be parsed out of a specific <tt>byte</tt> buffer.
+	 * Notifies a specific list of <code>RTCPFeedbackMessageListener</code>s about a specific RTCP
+	 * feedback message if such a message can be parsed out of a specific <code>byte</code> buffer.
 	 *
 	 * @param source
-	 *        the object to be reported as the source of the <tt>RTCPFeedbackMessageEvent</tt> to be
+	 *        the object to be reported as the source of the <code>RTCPFeedbackMessageEvent</code> to be
 	 *        fired
 	 * @param buffer
-	 *        the <tt>byte</tt> buffer which may specific an RTCP feedback message
+	 *        the <code>byte</code> buffer which may specific an RTCP feedback message
 	 * @param offset
-	 *        the offset in <tt>buffer</tt> at which the reading of bytes is to begin
+	 *        the offset in <code>buffer</code> at which the reading of bytes is to begin
 	 * @param length
-	 *        the number of bytes in <tt>buffer</tt> to be read for the purposes of parsing an RTCP
-	 *        feedback message and firing an <tt>RTPCFeedbackEvent</tt>
+	 *        the number of bytes in <code>buffer</code> to be read for the purposes of parsing an RTCP
+	 *        feedback message and firing an <code>RTPCFeedbackEvent</code>
 	 * @param listeners
-	 *        the list of <tt>RTCPFeedbackMessageListener</tt>s to be notified about the specified
+	 *        the list of <code>RTCPFeedbackMessageListener</code>s to be notified about the specified
 	 *        RTCP feedback message if such a message can be parsed out of the specified
-	 *        <tt>buffer</tt>
+	 *        <code>buffer</code>
 	 */
 	public static void fireRTCPFeedbackMessageReceived(Object source, byte[] buffer, int offset,
 		int length, List<RTCPFeedbackMessageListener> listeners)
@@ -97,7 +97,7 @@ public class RTCPConnectorInputStream extends RTPConnectorUDPInputStream
 	}
 
 	/**
-	 * Remove an <tt>RTCPFeedbackMessageListener</tt>.
+	 * Remove an <code>RTCPFeedbackMessageListener</code>.
 	 *
 	 * @param listener
 	 *        object to remove from listening RTCP feedback messages.

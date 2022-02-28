@@ -19,8 +19,8 @@ import javax.media.*;
 import timber.log.Timber;
 
 /**
- * Provides a basic implementation of <tt>VolumeControl</tt> which stores the volume level/value set
- * on it in the <tt>ConfigurationService</tt>.
+ * Provides a basic implementation of <code>VolumeControl</code> which stores the volume level/value set
+ * on it in the <code>ConfigurationService</code>.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -29,33 +29,33 @@ import timber.log.Timber;
 public class BasicVolumeControl implements VolumeControl, GainControl
 {
     /**
-     * The maximum volume level accepted by <tt>AbstractVolumeControl</tt>.
+     * The maximum volume level accepted by <code>AbstractVolumeControl</code>.
      */
     protected static final float MAX_VOLUME_LEVEL = 1.0F;
 
     /**
-     * The maximum volume level expressed in percent accepted by <tt>AbstractVolumeControl</tt>.
+     * The maximum volume level expressed in percent accepted by <code>AbstractVolumeControl</code>.
      */
     public static final int MAX_VOLUME_PERCENT = 200;
 
     /**
-     * The minimum volume level accepted by <tt>AbstractVolumeControl</tt>.
+     * The minimum volume level accepted by <code>AbstractVolumeControl</code>.
      */
     protected static final float MIN_VOLUME_LEVEL = 0.0F;
 
     /**
-     * The minimum volume level expressed in percent accepted by <tt>AbstractVolumeControl</tt>.
+     * The minimum volume level expressed in percent accepted by <code>AbstractVolumeControl</code>.
      */
     public static final int MIN_VOLUME_PERCENT = 0;
 
     /**
-     * Applies the gain specified by <tt>gainControl</tt> to the signal defined by the
-     * <tt>length</tt> number of samples given in <tt>buffer</tt> starting at <tt>offset</tt>.
+     * Applies the gain specified by <code>gainControl</code> to the signal defined by the
+     * <code>length</code> number of samples given in <code>buffer</code> starting at <code>offset</code>.
      *
-     * @param gainControl the <tt>GainControl</tt> which specifies the gain to apply
+     * @param gainControl the <code>GainControl</code> which specifies the gain to apply
      * @param buffer the samples of the signal to apply the gain to
-     * @param offset the start of the samples of the signal in <tt>buffer</tt>
-     * @param length the number of samples of the signal given in <tt>buffer</tt>
+     * @param offset the start of the samples of the signal in <code>buffer</code>
+     * @param length the number of samples of the signal given in <code>buffer</code>
      */
     public static void applyGain(GainControl gainControl, byte[] buffer, int offset, int length)
     {
@@ -162,12 +162,12 @@ public class BasicVolumeControl implements VolumeControl, GainControl
     private boolean mute = false;
 
     /**
-     * The <tt>VolumeChangeListener</tt>s interested in volume change events through the
-     * <tt>VolumeControl</tt> interface.
+     * The <code>VolumeChangeListener</code>s interested in volume change events through the
+     * <code>VolumeControl</code> interface.
      * <p>
-     * Because the instances of <tt>AbstractVolumeControl</tt> are global at the time of this
-     * writing and, consequently, they cause the <tt>VolumeChangeListener</tt>s to be leaked, the
-     * listeners are referenced using <tt>WeakReference</tt>s.
+     * Because the instances of <code>AbstractVolumeControl</code> are global at the time of this
+     * writing and, consequently, they cause the <code>VolumeChangeListener</code>s to be leaked, the
+     * listeners are referenced using <code>WeakReference</code>s.
      * </p>
      */
     private final List<WeakReference<VolumeChangeListener>> volumeChangeListeners
@@ -180,7 +180,7 @@ public class BasicVolumeControl implements VolumeControl, GainControl
 
     /**
      * The name of the configuration property which specifies the value of the volume level of this
-     * <tt>AbstractVolumeControl</tt>.
+     * <code>AbstractVolumeControl</code>.
      */
     private final String volumeLevelConfigurationPropertyName;
 
@@ -218,7 +218,7 @@ public class BasicVolumeControl implements VolumeControl, GainControl
     }
 
     /**
-     * Adds a <tt>VolumeChangeListener</tt> to be informed for any change in the volume levels.
+     * Adds a <code>VolumeChangeListener</code> to be informed for any change in the volume levels.
      *
      * @param listener volume change listener.
      */
@@ -242,8 +242,8 @@ public class BasicVolumeControl implements VolumeControl, GainControl
     }
 
     /**
-     * Fires a new <tt>GainChangeEvent</tt> to the <tt>GainChangeListener</tt>s added to this
-     * instance to notify about a change in the level of this <tt>GainControl</tt>.
+     * Fires a new <code>GainChangeEvent</code> to the <code>GainChangeListener</code>s added to this
+     * instance to notify about a change in the level of this <code>GainControl</code>.
      */
     private void fireGainChange()
     {
@@ -256,8 +256,8 @@ public class BasicVolumeControl implements VolumeControl, GainControl
     }
 
     /**
-     * Fires a new <tt>VolumeChangeEvent</tt> to the <tt>VolumeChangeListener</tt>s added to this
-     * instance to notify about a change in the volume (level) of this <tt>VolumeControl</tt>.
+     * Fires a new <code>VolumeChangeEvent</code> to the <code>VolumeChangeListener</code>s added to this
+     * instance to notify about a change in the volume (level) of this <code>VolumeControl</code>.
      */
     private void fireVolumeChange()
     {
@@ -388,7 +388,7 @@ public class BasicVolumeControl implements VolumeControl, GainControl
     }
 
     /**
-     * Removes a <tt>VolumeChangeListener</tt>.
+     * Removes a <code>VolumeChangeListener</code>.
      *
      * @param listener the volume change listener to be removed.
      */

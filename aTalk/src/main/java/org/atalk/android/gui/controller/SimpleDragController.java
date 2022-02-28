@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * The controller when set as <tt>View.OnTouchListener</tt> of given <tt>View</tt> makes it draggable on the screen.
+ * The controller when set as <code>View.OnTouchListener</code> of given <code>View</code> makes it draggable on the screen.
  *
  * @author Pawel domas
  */

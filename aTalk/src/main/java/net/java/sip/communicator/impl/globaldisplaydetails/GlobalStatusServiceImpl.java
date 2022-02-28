@@ -98,12 +98,12 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
     }
 
     /**
-     * Returns the <tt>GlobalStatusEnum</tt> corresponding to the given status. For the
-     * status constants we use here are the values defined in the <tt>PresenceStatus</tt>,
+     * Returns the <code>GlobalStatusEnum</code> corresponding to the given status. For the
+     * status constants we use here are the values defined in the <code>PresenceStatus</code>,
      * but this is only for convenience.
      *
      * @param status the status to which the item should correspond
-     * @return the <tt>GlobalStatusEnum</tt> corresponding to the given status
+     * @return the <code>GlobalStatusEnum</code> corresponding to the given status
      */
     private PresenceStatus getPresenceStatus(int status)
     {
@@ -465,7 +465,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * Waits for providers to register and then checks for its last status saved if any and
      * used it to restore its status.
      *
-     * @param evt a <tt>RegistrationStateChangeEvent</tt> which describes the
+     * @param evt a <code>RegistrationStateChangeEvent</code> which describes the
      */
     @Override
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
@@ -503,7 +503,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
         private OperationSetPresence presence;
 
         /**
-         * Publishes the given <tt>status</tt> through the given <tt>presence</tt> operation set.
+         * Publishes the given <code>status</code> through the given <code>presence</code> operation set.
          *
          * @param presence the operation set through which we publish the status
          * @param status the status to publish

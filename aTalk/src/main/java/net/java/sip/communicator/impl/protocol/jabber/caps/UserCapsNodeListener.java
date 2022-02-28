@@ -9,7 +9,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * Represents a listener of events notifying about changes in the list of user caps nodes of
- * <tt>EntityCapsManager</tt>.
+ * <code>EntityCapsManager</code>.
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
@@ -17,7 +17,7 @@ import org.jxmpp.jid.Jid;
 public interface UserCapsNodeListener
 {
     /**
-     * Notifies this listener that an <tt>EntityCapsManager</tt>'s caps node record for a specific
+     * Notifies this listener that an <code>EntityCapsManager</code>'s caps node record for a specific
      * user may have changed. The listener will take the appropriate actions that deems necessary
      *
      * @param userJid the contact FullJid

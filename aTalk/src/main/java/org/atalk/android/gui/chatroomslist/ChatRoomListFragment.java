@@ -94,7 +94,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     private ExpandableListView chatRoomListView;
 
     /**
-     * Stores last clicked <tt>chatRoom</tt>.
+     * Stores last clicked <code>chatRoom</code>.
      */
     private ChatRoomWrapper mClickedChatRoom;
 
@@ -116,7 +116,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     private Context mContext = null;
 
     /**
-     * Creates a new instance of <tt>ContactListFragment</tt>.
+     * Creates a new instance of <code>ContactListFragment</code>.
      */
     public ChatRoomListFragment()
     {
@@ -415,7 +415,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     /**
      * Method fired when given chat is being closed.
      *
-     * @param closedChat closed <tt>ChatPanel</tt>.
+     * @param closedChat closed <code>ChatPanel</code>.
      */
     private void onCloseChat(ChatPanel closedChat)
     {
@@ -469,13 +469,13 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     }
 
     /**
-     * Expands/collapses the group given by <tt>groupPosition</tt>.
+     * Expands/collapses the group given by <code>groupPosition</code>.
      *
      * @param parent the parent expandable list view
      * @param v the view
      * @param groupPosition the position of the group
      * @param id the identifier
-     * @return <tt>true</tt> if the group click action has been performed
+     * @return <code>true</code> if the group click action has been performed
      */
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
     {
@@ -488,7 +488,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     }
 
     /**
-     * Filters chatRoom list for given <tt>query</tt>.
+     * Filters chatRoom list for given <code>query</code>.
      *
      * @param query the query string that will be used for filtering chat rooms.
      */
@@ -529,7 +529,7 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
     }
 
     /**
-     * Class used to implement <tt>SearchView</tt> listeners for compatibility purposes.
+     * Class used to implement <code>SearchView</code> listeners for compatibility purposes.
      */
     private class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener
     {

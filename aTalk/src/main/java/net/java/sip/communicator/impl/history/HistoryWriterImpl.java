@@ -135,8 +135,8 @@ public class HistoryWriterImpl implements HistoryWriter
 	}
 
 	/**
-	 * Creates a record element for the supplied <tt>doc</tt> and populates it with the property names from
-	 * <tt>propertyNames</tt> and corresponding values from <tt>propertyValues</tt>. The <tt>date</tt> will be used for
+	 * Creates a record element for the supplied <code>doc</code> and populates it with the property names from
+	 * <code>propertyNames</code> and corresponding values from <code>propertyValues</code>. The <code>date</code> will be used for
 	 * the record timestamp attribute.
 	 * 
 	 * @param doc
@@ -215,7 +215,7 @@ public class HistoryWriterImpl implements HistoryWriter
 	}
 
 	/**
-	 * Inserts a record from the passed <tt>propertyValues</tt> complying with the current historyRecordStructure. First
+	 * Inserts a record from the passed <code>propertyValues</code> complying with the current historyRecordStructure. First
 	 * searches for the file to use to import the record, as files hold records with consecutive times and this fact is
 	 * used for searching and filtering records by date. This is why when inserting an old record we need to insert it
 	 * on the correct position.
@@ -420,11 +420,11 @@ public class HistoryWriterImpl implements HistoryWriter
 	}
 
 	/**
-	 * Updates history record using given <tt>HistoryRecordUpdater</tt> instance to find which is the record to be
+	 * Updates history record using given <code>HistoryRecordUpdater</code> instance to find which is the record to be
 	 * updated and to get the new values for the fields
 	 * 
 	 * @param updater
-	 *        the <tt>HistoryRecordUpdater</tt> instance.
+	 *        the <code>HistoryRecordUpdater</code> instance.
 	 */
 	public void updateRecord(HistoryRecordUpdater updater)
 		throws IOException
@@ -484,11 +484,11 @@ public class HistoryWriterImpl implements HistoryWriter
 	}
 
 	/**
-	 * Creates <tt>HistoryRecord</tt> instance from <tt>Node</tt> object.
+	 * Creates <code>HistoryRecord</code> instance from <code>Node</code> object.
 	 * 
 	 * @param node
 	 *        the node
-	 * @return the <tt>HistoryRecord</tt> instance
+	 * @return the <code>HistoryRecord</code> instance
 	 */
 	private HistoryRecord createHistoryRecordFromNode(Node node)
 	{
