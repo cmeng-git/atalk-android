@@ -15,7 +15,12 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPCompoundPacket;
+import net.sf.fmj.media.rtp.RTCPPacket;
+import net.sf.fmj.media.rtp.RTCPRRPacket;
+import net.sf.fmj.media.rtp.RTCPReportBlock;
+import net.sf.fmj.media.rtp.SSRCCache;
+import net.sf.fmj.media.rtp.SSRCInfo;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaStreamImpl;
@@ -23,14 +28,23 @@ import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.rtp.remotebitrateestimator.RemoteBitrateEstimatorWrapper;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
-import org.atalk.util.*;
+import org.atalk.util.ArrayUtils;
+import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.RTCPUtils;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.media.rtp.ReceiveStream;
 
@@ -61,12 +75,12 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
     private static final long REPORT_PERIOD_MS = 500;
 
     /**
-     * The generator that generates <tt>RawPacket</tt>s from <tt>RTCPCompoundPacket</tt>s.
+     * The generator that generates <code>RawPacket</code>s from <code>RTCPCompoundPacket</code>s.
      */
     private final RTCPGenerator generator = new RTCPGenerator();
 
     /**
-     * A reusable array that holds {@link #MIN_RTCP_REPORT_BLOCKS} <tt>RTCPReportBlock</tt>s.
+     * A reusable array that holds {@link #MIN_RTCP_REPORT_BLOCKS} <code>RTCPReportBlock</code>s.
      */
     private static final RTCPReportBlock[] MIN_RTCP_REPORT_BLOCKS_ARRAY
             = new RTCPReportBlock[MIN_RTCP_REPORT_BLOCKS];
@@ -159,9 +173,9 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
     }
 
     /**
-     * Makes <tt>RTCPRRPacket</tt>s using information in FMJ.
+     * Makes <code>RTCPRRPacket</code>s using information in FMJ.
      *
-     * @return A <tt>List</tt> of <tt>RTCPRRPacket</tt>s to inject into the <tt>MediaStream</tt>.
+     * @return A <code>List</code> of <code>RTCPRRPacket</code>s to inject into the <code>MediaStream</code>.
      */
     private RTCPRRPacket[] makeRRs(long senderSSRC)
     {
@@ -194,8 +208,8 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
     }
 
     /**
-     * Iterate through all the <tt>ReceiveStream</tt>s that this <tt>MediaStream</tt> has and
-     * make <tt>RTCPReportBlock</tt>s for all of them.
+     * Iterate through all the <code>ReceiveStream</code>s that this <code>MediaStream</code> has and
+     * make <code>RTCPReportBlock</code>s for all of them.
      *
      * cmeng: rptTranslator is currently disabled for Android or peer is not the conference focus.
      *
@@ -268,10 +282,10 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
     }
 
     /**
-     * Makes an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
+     * Makes an <code>RTCPREMBPacket</code> that provides receiver feedback to the
      * endpoint from which we receive.
      *
-     * @return an <tt>RTCPREMBPacket</tt> that provides receiver feedback to the
+     * @return an <code>RTCPREMBPacket</code> that provides receiver feedback to the
      * endpoint from which we receive.
      */
     private RTCPREMBPacket makeREMB(long senderSSRC)

@@ -8,10 +8,15 @@ package org.atalk.impl.neomedia.device;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
-import org.atalk.impl.neomedia.quicktime.*;
+import org.atalk.impl.neomedia.quicktime.QTCaptureDevice;
+import org.atalk.impl.neomedia.quicktime.QTFormatDescription;
+import org.atalk.impl.neomedia.quicktime.QTMediaType;
 import org.atalk.util.MediaType;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.MediaLocator;
 import javax.media.format.RGBFormat;
 
 import timber.log.Timber;
@@ -25,12 +30,12 @@ import timber.log.Timber;
 public class QuickTimeSystem extends DeviceSystem
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying QuickTime/QTKit capture devices.
+     * The protocol of the <code>MediaLocator</code>s identifying QuickTime/QTKit capture devices.
      */
     private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_QUICKTIME;
 
     /**
-     * Initializes a new <tt>QuickTimeSystem</tt> instance which discovers and registers
+     * Initializes a new <code>QuickTimeSystem</code> instance which discovers and registers
      * QuickTime/QTKit capture devices with JMF.
      *
      * @throws Exception if anything goes wrong while discovering and registering QuickTime/QTKit capture defines with JMF

@@ -15,20 +15,32 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.RTCPPacketPredicate;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;
 import org.atalk.impl.neomedia.rtcp.RTCPIterator;
-import org.atalk.impl.neomedia.rtp.*;
+import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
+import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
+import org.atalk.impl.neomedia.rtp.RawPacketCache;
+import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.stats.MediaStreamStats2Impl;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.logging.Logger;
+import org.atalk.util.ByteArrayBuffer;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -51,7 +63,7 @@ public class RtxTransformer implements TransformEngine
     public static final String DISABLE_NACK_TERMINATION_PNAME = "neomedia.rtcp.DISABLE_NACK_TERMINATION";
 
     /**
-     * The <tt>MediaStream</tt> for the transformer.
+     * The <code>MediaStream</code> for the transformer.
      */
     private MediaStreamImpl mediaStream;
 
@@ -82,9 +94,9 @@ public class RtxTransformer implements TransformEngine
     private final RTCPTransformer rtcpTransformer = new RTCPTransformer();
 
     /**
-     * Initializes a new <tt>RtxTransformer</tt> with a specific <tt>MediaStreamImpl</tt>.
+     * Initializes a new <code>RtxTransformer</code> with a specific <code>MediaStreamImpl</code>.
      *
-     * @param mediaStream the <tt>MediaStreamImpl</tt> for the transformer.
+     * @param mediaStream the <code>MediaStreamImpl</code> for the transformer.
      */
     public RtxTransformer(MediaStreamImpl mediaStream)
     {
@@ -147,7 +159,7 @@ public class RtxTransformer implements TransformEngine
      *
      * @param ssrc the SSRC of the RTX stream for the packet.
      * @return the sequence number which should be used for the next RTX
-     * packet sent using SSRC <tt>ssrc</tt>.
+     * packet sent using SSRC <code>ssrc</code>.
      */
     private int getNextRtxSequenceNumber(long ssrc)
     {
@@ -332,10 +344,10 @@ public class RtxTransformer implements TransformEngine
     }
 
     /**
-     * Returns the SSRC paired with <tt>ssrc</tt> in an FID source-group, if
+     * Returns the SSRC paired with <code>ssrc</code> in an FID source-group, if
      * any. If none is found, returns -1.
      *
-     * @return the SSRC paired with <tt>ssrc</tt> in an FID source-group, if
+     * @return the SSRC paired with <code>ssrc</code> in an FID source-group, if
      * any. If none is found, returns -1.
      */
     private long getPrimarySsrc(long rtxSSRC)

@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -119,7 +120,9 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
     }
 
     /**
-     * Creates a new <code>IceUdpTransportCandidate</code>; required by DefaultXmlElementProvider()
+     * Creates a new <code>IceUdpTransportCandidate</code>; required by DefaultXmlElementProvider().
+     *
+     * @param build
      */
     public IceUdpTransportCandidate(Builder build)
     {
@@ -202,7 +205,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
     }
 
     /**
-     * This candidate's priority as defined in ICE's RFC 5245
+     * This candidate's priority as defined in ICE's RFC 5245.
      *
      * @return this candidate's priority
      */
@@ -256,6 +259,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
 
     /**
      * Gets the TCP type for this <code>IceUdpTransportCandidate</code>.
+     * @return TcpType string
      */
     public String getTcpType()
     {
@@ -268,6 +272,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return 0 if the type are equal. -1 if this instance type is preferred. Otherwise 1.
      */
+    @Override
     public int compareTo(IceUdpTransportCandidate iceUdpCandidate)
     {
         // If the types are different.
@@ -296,20 +301,14 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
         return 0;
     }
 
-    /*
-     * <candidate foundation='1' component='1' protocol='udp' priority='2130706431' generation='0' id='1' ip='fe80::362d:dff:fe00:ae96' port='5000' type='host' network='0'/>
-     * <candidate foundation='2' component='1' protocol='udp' priority='2130706431' generation='0' id='2' ip='192.168.1.37' port='5000' type='host' network='0'/>
-     * <candidate foundation='3' component='1' protocol='udp' priority='1677724415' generation='0' id='3' ip='42.60.7.13' port='3947' type='srflx' rel-addr='192.168.1.37' rel-port='5000' network='0'/>
-     * <candidate foundation='4' component='1' protocol='udp' priority='1677724415' generation='0' id='4' ip='42.60.7.13' port='3948' type='srflx' rel-addr='192.168.1.37' rel-port='5000' network='0'/>
-     */
     public static Builder builder()
     {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
     /**
-     * Builder for IceUdpTransportCandidate. Use {@link AbstractXmlElement#builder()} to
-     * obtain a new instance and {@link #build} to build the IceUdpTransportCandidate.
+     * Builder for IceUdpTransportCandidate. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the IceUdpTransportCandidate.
      */
     public static class Builder extends AbstractXmlElement.Builder<Builder, IceUdpTransportCandidate>
     {
@@ -322,6 +321,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets a component ID as defined in ICE-CORE.
          *
          * @param component a component ID as defined in ICE-CORE.
+         * @return builder instance
          */
         public Builder setComponent(int component)
         {
@@ -333,6 +333,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets the candidate foundation as defined in ICE-CORE.
          *
          * @param foundation the candidate foundation as defined in ICE-CORE.
+         * @return builder instance
          */
         public Builder setFoundation(String foundation)
         {
@@ -346,6 +347,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * details, see the ICE Restarts section of XEP-0176.
          *
          * @param generation this candidate's generation index.
+         * @return builder instance
          */
         public Builder setGeneration(int generation)
         {
@@ -357,6 +359,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets this candidates' unique identifier <code>String</code>.
          *
          * @param id this candidates' unique identifier <code>String</code>
+         * @return builder instance
          */
         public Builder setID(String id)
         {
@@ -369,6 +372,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * an IPv6 address.
          *
          * @param ip this candidate's IPv4 or IPv6 address.
+         * @return builder instance
          */
         public Builder setIP(String ip)
         {
@@ -382,6 +386,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Network Interface Card.
          *
          * @param network the network index indicating the interface that the candidate belongs to.
+         * @return builder instance
          */
         public Builder setNetwork(int network)
         {
@@ -393,6 +398,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets this candidate's port number.
          *
          * @param port this candidate's port number.
+         * @return builder instance
          */
         public Builder setPort(int port)
         {
@@ -404,9 +410,10 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
         }
 
         /**
-         * This candidate's priority as defined in ICE's RFC 5245
+         * This candidate's priority as defined in ICE's RFC 5245.
          *
          * @param priority this candidate's priority
+         * @return builder instance
          */
         public Builder setPriority(long priority)
         {
@@ -421,6 +428,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets this candidate's transport protocol.
          *
          * @param protocol this candidate's transport protocol.
+         * @return builder instance
          */
         public Builder setProtocol(String protocol)
         {
@@ -432,6 +440,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets this candidate's related address as described by ICE's RFC 5245.
          *
          * @param relAddr this candidate's related address as described by ICE's RFC 5245.
+         * @return builder instance
          */
         public Builder setRelAddr(String relAddr)
         {
@@ -443,6 +452,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets this candidate's related port as described by ICE's RFC 5245.
          *
          * @param relPort this candidate's related port as described by ICE's RFC 5245.
+         * @return builder instance
          */
         public Builder setRelPort(int relPort)
         {
@@ -457,6 +467,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * {@link CandidateType} enum.
          *
          * @param type the candidates' type as per ICE's RFC 5245.
+         * @return builder instance
          */
         public Builder setType(CandidateType type)
         {
@@ -468,6 +479,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * Sets the TCP type for this <code>IceUdpTransportCandidate</code>.
          *
          * @param tcpType TCP Type
+         * @return builder instance
          */
         public Builder setTcpType(String tcpType)
         {

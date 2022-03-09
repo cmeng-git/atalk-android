@@ -12,7 +12,10 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AbstractSrtpControl;
+import org.atalk.service.neomedia.DtlsControl;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.ConfigUtils;
 import org.atalk.util.MediaType;
@@ -28,10 +31,15 @@ import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
 import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
-import org.bouncycastle.operator.*;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.bc.BcDefaultDigestProvider;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.bouncycastle.tls.*;
+import org.bouncycastle.tls.AlertDescription;
+import org.bouncycastle.tls.AlertLevel;
+import org.bouncycastle.tls.SRTPProtectionProfile;
+import org.bouncycastle.tls.TlsPeer;
 import org.bouncycastle.tls.crypto.TlsCertificate;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCertificate;
 import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
@@ -39,7 +47,9 @@ import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -59,7 +69,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private static final Map<String, String[]> HASH_FUNCTION_UPGRADES = new HashMap<>();
 
     /**
-     * The table which maps half-<tt>byte</tt>s to their hex characters.
+     * The table which maps half-<code>byte</code>s to their hex characters.
      */
     private static final char[] HEX_ENCODE_TABLE = {
             '0', '1', '2', '3', '4', '5', '6', '7',
@@ -138,7 +148,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     public static final BigInteger RSA_KEY_PUBLIC_EXPONENT = new BigInteger("10001", 16);
 
     /**
-     * The <tt>SRTPProtectionProfile</tt>s supported by <tt>DtlsControlImpl</tt>.
+     * The <code>SRTPProtectionProfile</code>s supported by <code>DtlsControlImpl</code>.
      */
     static final int[] SRTP_PROTECTION_PROFILES = {
             SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80,
@@ -198,10 +208,10 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Chooses the first from a list of <tt>SRTPProtectionProfile</tt>s that is supported by <tt>DtlsControlImpl</tt>.
+     * Chooses the first from a list of <code>SRTPProtectionProfile</code>s that is supported by <code>DtlsControlImpl</code>.
      *
-     * @param theirs the list of <tt>SRTPProtectionProfile</tt>s to choose from
-     * @return the first from the specified <tt>theirs</tt> that is supported by <tt>DtlsControlImpl</tt>
+     * @param theirs the list of <code>SRTPProtectionProfile</code>s to choose from
+     * @return the first from the specified <code>theirs</code> that is supported by <code>DtlsControlImpl</code>
      */
     static int chooseSRTPProtectionProfile(int... theirs)
     {
@@ -221,8 +231,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      *
      * @param certificate the certificate the fingerprint of which is to be computed
      * @param hashFunction the hash function to be used in order to compute the fingerprint
-     * of the specified <tt>certificate</tt>
-     * @return the fingerprint of the specified <tt>certificate</tt> computed using the specified <tt>hashFunction</tt>
+     * of the specified <code>certificate</code>
+     * @return the fingerprint of the specified <code>certificate</code> computed using the specified <code>hashFunction</code>
      */
     private static String computeFingerprint(Certificate certificate, String hashFunction)
     {
@@ -256,7 +266,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * algorithm of a specific certificate.
      *
      * @param certificate the certificate the hash function of which is to be determined
-     * @return the hash function of the specified <tt>certificate</tt> written in lower case
+     * @return the hash function of the specified <code>certificate</code> written in lower case
      */
     private static String findHashFunction(Certificate certificate)
     {
@@ -326,10 +336,10 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Generates a new subject for a self-signed certificate to be generated by <tt>DtlsControlImpl</tt>.
+     * Generates a new subject for a self-signed certificate to be generated by <code>DtlsControlImpl</code>.
      *
-     * @return an <tt>X500Name</tt> which is to be used as the subject of a self-signed certificate
-     * to be generated by <tt>DtlsControlImpl</tt>
+     * @return an <code>X500Name</code> which is to be used as the subject of a self-signed certificate
+     * to be generated by <code>DtlsControlImpl</code>
      */
     private static X500Name generateCN()
     {
@@ -374,7 +384,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      *
      * @param subject the subject (and issuer) of the new certificate to be generated
      * @param keyPair the pair of private and public keys of the certificate to be generated
-     * @return a new self-signed certificate with the specified <tt>subject</tt> and <tt>keyPair</tt>
+     * @return a new self-signed certificate with the specified <code>subject</code> and <code>keyPair</code>
      */
     private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
     {
@@ -413,12 +423,12 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Gets the <tt>String</tt> representation of a fingerprint specified in the form of an
-     * array of <tt>byte</tt>s in accord with RFC 4572.
+     * Gets the <code>String</code> representation of a fingerprint specified in the form of an
+     * array of <code>byte</code>s in accord with RFC 4572.
      *
-     * @param fingerprint an array of <tt>bytes</tt> which represents a fingerprint the <tt>String</tt>
+     * @param fingerprint an array of <code>bytes</code> which represents a fingerprint the <code>String</code>
      * representation in accord with RFC 4572 of which is to be returned
-     * @return the <tt>String</tt> representation in accord with RFC 4572 of the specified <tt>fingerprint</tt>
+     * @return the <code>String</code> representation in accord with RFC 4572 of the specified <code>fingerprint</code>
      */
     private static String toHex(byte[] fingerprint)
     {
@@ -462,7 +472,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private final Properties properties;
 
     /**
-     * Initializes a new <tt>DtlsControlImpl</tt> instance.
+     * Initializes a new <code>DtlsControlImpl</code> instance.
      * By default aTalk works in DTLS/SRTP mode.
      */
     public DtlsControlImpl()
@@ -471,10 +481,10 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Initializes a new <tt>DtlsControlImpl</tt> instance.
+     * Initializes a new <code>DtlsControlImpl</code> instance.
      *
-     * @param srtpDisabled <tt>true</tt> if pure DTLS mode without SRTP
-     * extensions is to be used; otherwise, <tt>false</tt>
+     * @param srtpDisabled <code>true</code> if pure DTLS mode without SRTP
+     * extensions is to be used; otherwise, <code>false</code>
      */
     public DtlsControlImpl(boolean srtpDisabled)
     {
@@ -499,11 +509,11 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Initializes a new <tt>DtlsTransformEngine</tt> instance to be associated with and used by
-     * this <tt>DtlsControlImpl</tt> instance. The method is implemented as a factory.
+     * Initializes a new <code>DtlsTransformEngine</code> instance to be associated with and used by
+     * this <code>DtlsControlImpl</code> instance. The method is implemented as a factory.
      *
-     * @return a new <tt>DtlsTransformEngine</tt> instance to be associated with
-     * and used by this <tt>DtlsControlImpl</tt> instance
+     * @return a new <code>DtlsTransformEngine</code> instance to be associated with
+     * and used by this <code>DtlsControlImpl</code> instance
      */
     @Override
     protected DtlsTransformEngine createTransformEngine()
@@ -594,7 +604,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     /**
      * {@inheritDoc}
      * <p>
-     * The implementation of <tt>DtlsControlImpl</tt> always returns <tt>true</tt>.
+     * The implementation of <code>DtlsControlImpl</code> always returns <code>true</code>.
      */
     @Override
     public boolean requiresSecureSignalingTransport()
@@ -683,12 +693,12 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Notifies this instance that the DTLS record layer associated with a specific <tt>TlsPeer</tt> has raised an alert.
+     * Notifies this instance that the DTLS record layer associated with a specific <code>TlsPeer</code> has raised an alert.
      *
      * @param alertLevel {@link AlertLevel} has similar values as SrtpListener
      * @param alertDescription {@link AlertDescription}
-     * @param message a human-readable message explaining what caused the alert. May be <tt>null</tt>.
-     * @param cause the exception that caused the alert to be raised. May be <tt>null</tt>.
+     * @param message a human-readable message explaining what caused the alert. May be <code>null</code>.
+     * @param cause the exception that caused the alert to be raised. May be <code>null</code>.
      */
     protected void notifyAlertRaised(TlsPeer tlsPeer, short alertLevel, short alertDescription,
             String message, Throwable cause)
@@ -696,7 +706,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         SrtpListener srtpListener = getSrtpListener();
         String errDescription = AlertDescription.getName(alertDescription);
 
-        int srtError = SrtpListener.INFORMATION;;
+        int srtError = SrtpListener.INFORMATION;
         if (AlertLevel.fatal == alertLevel) {
             srtError = SrtpListener.SEVERE;
         }
@@ -728,7 +738,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      *
      * @param certificate the certificate to be verified and validated against the fingerprints
      * presented by the remote endpoint via the signaling path
-     * @throws Exception if the specified <tt>certificate</tt> failed to verify and validate
+     * @throws Exception if the specified <code>certificate</code> failed to verify and validate
      * against the fingerprints presented by the remote endpoint via the signaling path
      */
     private void verifyAndValidateCertificate(Certificate certificate)
@@ -801,7 +811,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      *
      * @param certificate the certificate to be verified and validated against the fingerprints
      * presented by the remote endpoint via the signaling path
-     * @throws Exception if the specified <tt>certificate</tt> failed to verify and validate against the
+     * @throws Exception if the specified <code>certificate</code> failed to verify and validate against the
      * fingerprints presented by the remote endpoint over the signaling path
      */
     public void verifyAndValidateCertificate(org.bouncycastle.tls.Certificate certificate)

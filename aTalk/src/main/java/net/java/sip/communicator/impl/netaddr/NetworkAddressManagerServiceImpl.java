@@ -507,10 +507,10 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
             throw new IllegalArgumentException("Invalid numComponents value: " + numComponents);
 
         IceMediaStream stream = agent.createMediaStream(streamName);
-        agent.createComponent(stream, Transport.UDP, portBase, portBase, portBase + 100);
+        agent.createComponent(stream, portBase, portBase, portBase + 100);
 
         if (numComponents > 1) {
-            agent.createComponent(stream, Transport.UDP, portBase + 1, portBase + 1, portBase + 101);
+            agent.createComponent(stream, portBase + 1, portBase + 1, portBase + 101);
         }
         return stream;
     }

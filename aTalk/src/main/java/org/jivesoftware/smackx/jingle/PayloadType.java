@@ -1,11 +1,12 @@
 /**
- * Copyright 2017 Jive Software
+ *
+ * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,10 +18,8 @@ package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smackx.AbstractXmlElement;
 
-import java.util.List;
-
 /**
- * Represents the <code>payload-type</code> elements described in
+ * Represents the <code>payload-type</code> elements described.
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  *
  * @author Emil Ivov
@@ -36,32 +35,32 @@ public class PayloadType extends AbstractXmlElement
 
     /**
      * The name of the <code>channels</code> <code>payload-type</code> argument.
-     * If omitted, it MUST be assumed to contain one channel
+     * If omitted, it MUST be assumed to contain one channel.
      */
     public static final String ATTR_CHANNELS = "channels";
 
     /**
-     * The name of the <code>clockrate</code> SDP argument. The sampling frequency in Hertz
+     * The name of the <code>clockrate</code> SDP argument. The sampling frequency in Hertz.
      */
     public static final String ATTR_CLOCKRATE = "clockrate";
 
     /**
-     * The name of the payload <code>id</code> SDP argument. The payload identifier
+     * The name of the payload <code>id</code> SDP argument. The payload identifier.
      */
     public static final String ATTR_ID = "id";
 
     /**
-     * The name of the <code>maxptime</code> SDP argument. Maximum packet time as specified in RFC 4566
+     * The name of the <code>maxptime</code> SDP argument. Maximum packet time as specified in RFC 4566.
      */
     public static final String ATTR_MAXPTIME = "maxptime";
 
     /**
-     * The name of the <code>name</code> SDP argument. The appropriate subtype of the MIME type
+     * The name of the <code>name</code> SDP argument. The appropriate subtype of the MIME type.
      */
     public static final String ATTR_NAME = "name";
 
     /**
-     * The name of the <code>ptime</code> SDP argument. Packet time as specified in RFC 4566
+     * The name of the <code>ptime</code> SDP argument. Packet time as specified in RFC 4566.
      */
     public static final String ATTR_PTIME = "ptime";
 
@@ -69,9 +68,8 @@ public class PayloadType extends AbstractXmlElement
      * Creates a new {@link PayloadType} instance.
      *
      * The namespace of the "payload-type" element;
-     * PayloadType is currently a child element of standard RtpDescription; also
-     *
-     * @see org.jivesoftware.smackx.colibri.ColibriConferenceIQ
+     * PayloadType is currently a child element of standard RtpDescription;
+     * // @see org.jivesoftware.smackx.colibri.ColibriConferenceIQ
      */
     public PayloadType()
     {
@@ -167,8 +165,8 @@ public class PayloadType extends AbstractXmlElement
     }
 
     /**
-     * Builder for JingleContentTransport. Use {@link AbstractXmlElement#builder()} to
-     * obtain a new instance and {@link #build} to build the JingleContentTransport.
+     * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the JingleContentTransport.
      */
     public static class Builder extends AbstractXmlElement.Builder<Builder, PayloadType>
     {
@@ -181,6 +179,7 @@ public class PayloadType extends AbstractXmlElement
          * Sets the number of channels in this payload type. If omitted, it will be assumed to contain one channel.
          *
          * @param channels the number of channels in this payload type.
+         * @return builder instance
          */
         public Builder setChannels(int channels)
         {
@@ -192,6 +191,7 @@ public class PayloadType extends AbstractXmlElement
          * Specifies the sampling frequency in Hertz used by this encoding.
          *
          * @param clockrate the sampling frequency in Hertz used by this encoding.
+         * @return builder instance
          */
         public Builder setClockrate(int clockrate)
         {
@@ -203,6 +203,7 @@ public class PayloadType extends AbstractXmlElement
          * Specifies the payload identifier for this encoding.
          *
          * @param id the payload type id
+         * @return builder instance
          */
         public Builder setId(int id)
         {
@@ -214,6 +215,7 @@ public class PayloadType extends AbstractXmlElement
          * Sets the maximum packet time as specified in RFC 4566.
          *
          * @param maxptime the maximum packet time as specified in RFC 4566
+         * @return builder instance
          */
         public Builder setMaxptime(int maxptime)
         {
@@ -225,6 +227,7 @@ public class PayloadType extends AbstractXmlElement
          * Sets the packet time as specified in RFC 4566.
          *
          * @param ptime the packet time as specified in RFC 4566
+         * @return builder instance
          */
         public Builder setPtime(int ptime)
         {
@@ -237,6 +240,7 @@ public class PayloadType extends AbstractXmlElement
          * Setting this field is RECOMMENDED for static payload types, REQUIRED for dynamic payload types.
          *
          * @param name the name of this encoding.
+         * @return builder instance
          */
         public Builder setName(String name)
         {
@@ -248,6 +252,7 @@ public class PayloadType extends AbstractXmlElement
          * Adds an SDP parameter to the list that we already have registered for this payload type.
          *
          * @param parameter an SDP parameter for this encoding.
+         * @return builder instance
          */
         public Builder addParameter(ParameterElement parameter)
         {
@@ -260,6 +265,7 @@ public class PayloadType extends AbstractXmlElement
          * Adds an RTCP feedback type to the list that we already have registered for this payload type.
          *
          * @param rtcpFbPacketExtension RTCP feedback type for this encoding.
+         * @return builder instance
          */
         public Builder addRtcpFeedbackType(RtcpFb rtcpFbPacketExtension)
         {

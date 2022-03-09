@@ -9,15 +9,22 @@ import androidx.annotation.NonNull;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.Renderer;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
@@ -25,11 +32,11 @@ import timber.log.Timber;
 
 /**
  * Represents the base of a supported device system/backend such as DirectShow, PortAudio,
- * PulseAudio, QuickTime, video4linux2. A <tt>DeviceSystem</tt> is initialized at a certain time
- * (usually, during the initialization of the <tt>MediaService</tt> implementation which is going to
- * use it) and it registers with FMJ the <tt>CaptureDevice</tt>s it will provide. In addition to
- * providing the devices for the purposes of capture, a <tt>DeviceSystem</tt> also provides the
- * devices on which playback is to be performed i.e. it acts as a <tt>Renderer</tt> factory via its
+ * PulseAudio, QuickTime, video4linux2. A <code>DeviceSystem</code> is initialized at a certain time
+ * (usually, during the initialization of the <code>MediaService</code> implementation which is going to
+ * use it) and it registers with FMJ the <code>CaptureDevice</code>s it will provide. In addition to
+ * providing the devices for the purposes of capture, a <code>DeviceSystem</code> also provides the
+ * devices on which playback is to be performed i.e. it acts as a <code>Renderer</code> factory via its
  * {@link #createRenderer()} method.
  *
  * @author Lyubomir Marinov
@@ -38,13 +45,13 @@ import timber.log.Timber;
 public abstract class DeviceSystem extends PropertyChangeNotifier
 {
     /**
-     * The list of <tt>DeviceSystem</tt>s which have been initialized.
+     * The list of <code>DeviceSystem</code>s which have been initialized.
      */
     private static final List<DeviceSystem> deviceSystems = new LinkedList<>();
 
     /**
      * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
-     * respective <tt>DeviceSystem</tt> supports invoking its {@link #initialize()} more than once.
+     * respective <code>DeviceSystem</code> supports invoking its {@link #initialize()} more than once.
      */
     public static final int FEATURE_REINITIALIZE = 1;
 
@@ -57,7 +64,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public static final String LOCATOR_PROTOCOL_IMGSTREAMING = "imgstreaming";
 
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>MediaRecorder</tt> capture devices.
+     * The protocol of the <code>MediaLocator</code>s identifying <code>MediaRecorder</code> capture devices.
      */
     public static final String LOCATOR_PROTOCOL_MEDIARECORDER = "mediarecorder";
 
@@ -66,7 +73,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public static final String LOCATOR_PROTOCOL_VIDEO4LINUX2 = "video4linux2";
 
     /**
-     * The list of <tt>CaptureDeviceInfo</tt>s representing the devices of this instance at the time
+     * The list of <code>CaptureDeviceInfo</code>s representing the devices of this instance at the time
      * its {@link #preInitialize()} method was last invoked.
      */
     private static List<CaptureDeviceInfo> preInitializeDevices;
@@ -74,15 +81,15 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     public static final String PROP_DEVICES = "devices";
 
     /**
-     * Returns a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of a specific
-     * <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s and have a specific <tt>MediaLocator</tt> protocol.
+     * Returns a <code>List</code> of <code>CaptureDeviceInfo</code>s which are elements of a specific
+     * <code>List</code> of <code>CaptureDeviceInfo</code>s and have a specific <code>MediaLocator</code> protocol.
      *
-     * @param deviceList the <tt>List</tt> of <tt>CaptureDeviceInfo</tt> which are to be filtered based on the
-     * specified <tt>MediaLocator</tt> protocol
-     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s
+     * @param deviceList the <code>List</code> of <code>CaptureDeviceInfo</code> which are to be filtered based on the
+     * specified <code>MediaLocator</code> protocol
+     * @param locatorProtocol the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s
      * which are to be returned
-     * @return a <tt>List</tt> of <tt>CaptureDeviceInfo</tt>s which are elements of the specified
-     * <tt>deviceList</tt> and have the specified <tt>locatorProtocol</tt>
+     * @return a <code>List</code> of <code>CaptureDeviceInfo</code>s which are elements of the specified
+     * <code>deviceList</code> and have the specified <code>locatorProtocol</code>
      */
     protected static List<CaptureDeviceInfo> filterDeviceListByLocatorProtocol(
             List<CaptureDeviceInfo> deviceList, String locatorProtocol)
@@ -114,11 +121,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes the <tt>DeviceSystem</tt> instances which are to represent the supported device
+     * Initializes the <code>DeviceSystem</code> instances which are to represent the supported device
      * systems/backends such as DirectShow, PortAudio, PulseAudio, QuickTime, video4linux2. The
-     * method may be invoked multiple times. If a <tt>DeviceSystem</tt> has been initialized by a
+     * method may be invoked multiple times. If a <code>DeviceSystem</code> has been initialized by a
      * previous invocation of the method, its {@link #initialize()} method will be called again as
-     * part of the subsequent invocation only if the <tt>DeviceSystem</tt> in question returns a set
+     * part of the subsequent invocation only if the <code>DeviceSystem</code> in question returns a set
      * of flags from its {@link #getFeatures()} method which contains the constant/flag
      * {@link #FEATURE_REINITIALIZE}.
      */
@@ -144,11 +151,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes the <tt>DeviceSystem</tt> instances which are to represent the supported device
+     * Initializes the <code>DeviceSystem</code> instances which are to represent the supported device
      * systems/backends which are to capable of capturing and playing back media of a specific type
      * such as audio or video.
      *
-     * @param mediaType the <tt>MediaType</tt> of the <tt>DeviceSystem</tt>s to be initialized
+     * @param mediaType the <code>MediaType</code> of the <code>DeviceSystem</code>s to be initialized
      */
     public static void initializeDeviceSystems(MediaType mediaType)
     {
@@ -185,14 +192,14 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes the <tt>DeviceSystem</tt> instances specified by the names of the classes which
-     * implement them. If a <tt>DeviceSystem</tt> instance has already been initialized for a
+     * Initializes the <code>DeviceSystem</code> instances specified by the names of the classes which
+     * implement them. If a <code>DeviceSystem</code> instance has already been initialized for a
      * specific class name, no new instance of the class in question will be initialized and rather
-     * the {@link #initialize()} method of the existing <tt>DeviceSystem</tt> instance will be
-     * invoked if the <tt>DeviceSystem</tt> instance returns a set of flags from its
+     * the {@link #initialize()} method of the existing <code>DeviceSystem</code> instance will be
+     * invoked if the <code>DeviceSystem</code> instance returns a set of flags from its
      * {@link #getFeatures()} which contains {@link #FEATURE_REINITIALIZE}.
      *
-     * @param classNames the names of the classes which extend the <tt>DeviceSystem</tt> class
+     * @param classNames the names of the classes which extend the <code>DeviceSystem</code> class
      * and instances of which are to be initialized.
      */
     private static void initializeDeviceSystems(String[] classNames)
@@ -271,12 +278,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Invokes {@link #initialize()} on a specific <tt>DeviceSystem</tt>. The method returns after
+     * Invokes {@link #initialize()} on a specific <code>DeviceSystem</code>. The method returns after
      * the invocation returns.
      *
-     * @param deviceSystem the <tt>DeviceSystem</tt> to invoke <tt>initialize()</tt> on
-     * @throws Exception if an error occurs during the initialization of <tt>initialize()</tt> on the
-     * specified <tt>deviceSystem</tt>
+     * @param deviceSystem the <code>DeviceSystem</code> to invoke <code>initialize()</code> on
+     * @throws Exception if an error occurs during the initialization of <code>initialize()</code> on the
+     * specified <code>deviceSystem</code>
      */
     static void invokeDeviceSystemInitialize(DeviceSystem deviceSystem)
             throws Exception
@@ -285,13 +292,13 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Invokes {@link #initialize()} on a specific <tt>DeviceSystem</tt>.
+     * Invokes {@link #initialize()} on a specific <code>DeviceSystem</code>.
      *
-     * @param deviceSystem the <tt>DeviceSystem</tt> to invoke <tt>initialize()</tt> on
-     * @param asynchronous <tt>true</tt> if the invocation is to be performed in a separate thread and the method
-     * is to return immediately without waiting for the invocation to return; otherwise, <tt>false</tt>
-     * @throws Exception if an error occurs during the initialization of <tt>initialize()</tt> on the
-     * specified <tt>deviceSystem</tt>
+     * @param deviceSystem the <code>DeviceSystem</code> to invoke <code>initialize()</code> on
+     * @param asynchronous <code>true</code> if the invocation is to be performed in a separate thread and the method
+     * is to return immediately without waiting for the invocation to return; otherwise, <code>false</code>
+     * @throws Exception if an error occurs during the initialization of <code>initialize()</code> on the
+     * specified <code>deviceSystem</code>
      */
     private static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
             throws Exception
@@ -360,21 +367,21 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     /**
      * The set of flags indicating which optional features are supported by this
-     * <tt>DeviceSystem</tt>. For example, the presence of the flag {@link #FEATURE_REINITIALIZE}
+     * <code>DeviceSystem</code>. For example, the presence of the flag {@link #FEATURE_REINITIALIZE}
      * indicates that this instance is able to deal with multiple consecutive invocations of its
      * {@link #initialize()} method.
      */
     private final int features;
 
     /**
-     * The protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt>s (to be)
-     * registered (with FMJ) by this <tt>DeviceSystem</tt>. The protocol is a unique identifier of a
-     * <tt>DeviceSystem</tt>.
+     * The protocol of the <code>MediaLocator</code> of the <code>CaptureDeviceInfo</code>s (to be)
+     * registered (with FMJ) by this <code>DeviceSystem</code>. The protocol is a unique identifier of a
+     * <code>DeviceSystem</code>.
      */
     private final String locatorProtocol;
 
     /**
-     * The <tt>MediaType</tt> of this <tt>DeviceSystem</tt> i.e. the type of the media that this
+     * The <code>MediaType</code> of this <code>DeviceSystem</code> i.e. the type of the media that this
      * instance supports for capture and playback such as audio or video.
      */
     private final MediaType mediaType;
@@ -400,11 +407,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes a new <tt>Renderer</tt> instance which is to perform playback on a device
+     * Initializes a new <code>Renderer</code> instance which is to perform playback on a device
      * contributed by this system.
      *
-     * @return a new <tt>Renderer</tt> instance which is to perform playback on a device contributed
-     * by this system or <tt>null</tt>
+     * @return a new <code>Renderer</code> instance which is to perform playback on a device contributed
+     * by this system or <code>null</code>
      */
     public Renderer createRenderer()
     {
@@ -425,23 +432,23 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     /**
      * Invoked by {@link #initialize()} to perform the very logic of the initialization of this
-     * <tt>DeviceSystem</tt>. This instance has been prepared for initialization by an earlier call
+     * <code>DeviceSystem</code>. This instance has been prepared for initialization by an earlier call
      * to {@link #preInitialize()} and the initialization will be completed with a subsequent call
      * to {@link #postInitialize()}.
      *
      * @throws Exception if an error occurs during the initialization of this instance. The initialization of
-     * this instance will be completed with a subsequent call to <tt>postInitialize()</tt>
-     * regardless of any <tt>Exception</tt> thrown by <tt>doInitialize()</tt>.
+     * this instance will be completed with a subsequent call to <code>postInitialize()</code>
+     * regardless of any <code>Exception</code> thrown by <code>doInitialize()</code>.
      */
     protected abstract void doInitialize()
             throws Exception;
 
     /**
-     * Gets the flags indicating the optional features supported by this <tt>DeviceSystem</tt>.
+     * Gets the flags indicating the optional features supported by this <code>DeviceSystem</code>.
      *
-     * @return the flags indicating the optional features supported by this <tt>DeviceSystem</tt>.
-     * The possible flags are among the <tt>FEATURE_XXX</tt> constants defined by the
-     * <tt>DeviceSystem</tt> class and its extenders.
+     * @return the flags indicating the optional features supported by this <code>DeviceSystem</code>.
+     * The possible flags are among the <code>FEATURE_XXX</code> constants defined by the
+     * <code>DeviceSystem</code> class and its extenders.
      */
     public final int getFeatures()
     {
@@ -473,12 +480,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s (to be)
-     * registered (with FMJ) by this <tt>DeviceSystem</tt>. The protocol is a unique identifier of a
-     * <tt>DeviceSystem</tt>.
+     * Gets the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s (to be)
+     * registered (with FMJ) by this <code>DeviceSystem</code>. The protocol is a unique identifier of a
+     * <code>DeviceSystem</code>.
      *
-     * @return the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s (to be)
-     * registered (with FMJ) by this <tt>DeviceSystem</tt>
+     * @return the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s (to be)
+     * registered (with FMJ) by this <code>DeviceSystem</code>
      */
     public final String getLocatorProtocol()
     {
@@ -491,14 +498,14 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the name of the class which implements the <tt>Renderer</tt> interface to render media
-     * on a playback or notification device associated with this <tt>DeviceSystem</tt>. Invoked by
+     * Gets the name of the class which implements the <code>Renderer</code> interface to render media
+     * on a playback or notification device associated with this <code>DeviceSystem</code>. Invoked by
      * {@link #createRenderer()}.
      *
-     * @return the name of the class which implements the <tt>Renderer</tt> interface to render
-     * media on a playback or notification device associated with this <tt>DeviceSystem</tt>
-     * or <tt>null</tt> if no <tt>Renderer</tt> instance is to be created by the
-     * <tt>DeviceSystem</tt> implementation or <tt>createRenderer(boolean) is overridden.
+     * @return the name of the class which implements the <code>Renderer</code> interface to render
+     * media on a playback or notification device associated with this <code>DeviceSystem</code>
+     * or <code>null</code> if no <code>Renderer</code> instance is to be created by the
+     * <code>DeviceSystem</code> implementation or <code>createRenderer(boolean) is overridden.
      */
     protected String getRendererClassName()
     {
@@ -506,15 +513,15 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes this <tt>DeviceSystem</tt> i.e. represents the native/system devices in the terms
+     * Initializes this <code>DeviceSystem</code> i.e. represents the native/system devices in the terms
      * of the application so that they may be utilized. For example, the capture devices are
-     * represented as <tt>CaptureDeviceInfo</tt> instances registered with FMJ.
+     * represented as <code>CaptureDeviceInfo</code> instances registered with FMJ.
      * <p>
      * <b>Note</b>: The method is synchronized on this instance in order to guarantee that the whole
      * initialization procedure (which includes {@link #doInitialize()}) executes once at any given time.
      * </p>
      *
-     * @throws Exception if an error occurs during the initialization of this <tt>DeviceSystem</tt>
+     * @throws Exception if an error occurs during the initialization of this <code>DeviceSystem</code>
      */
     protected final synchronized void initialize()
             throws Exception
@@ -530,7 +537,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     /**
      * Invoked as part of the execution of {@link #initialize()} after the execution of
      * {@link #doInitialize()} regardless of whether the latter completed successfully. The
-     * implementation of <tt>DeviceSystem</tt> fires a new <tt>PropertyChangeEvent</tt> to notify
+     * implementation of <code>DeviceSystem</code> fires a new <code>PropertyChangeEvent</code> to notify
      * that the value of the property {@link #PROP_DEVICES} of this instance may have changed i.e.
      * that the list of devices detected by this instance may have changed.
      */
@@ -570,8 +577,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
     /**
      * Invoked as part of the execution of {@link #initialize()} before the execution of
-     * {@link #doInitialize()}. The implementation of <tt>DeviceSystem</tt> removes from FMJ's
-     * <tt>CaptureDeviceManager</tt> the <tt>CaptureDeviceInfo</tt>s whose <tt>MediaLocator</tt> has
+     * {@link #doInitialize()}. The implementation of <code>DeviceSystem</code> removes from FMJ's
+     * <code>CaptureDeviceManager</code> the <code>CaptureDeviceInfo</code>s whose <code>MediaLocator</code> has
      * the same protocol as {@link #getLocatorProtocol()} of this instance.
      */
     protected void preInitialize()
@@ -605,11 +612,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     }
 
     /**
-     * Returns a human-readable representation of this <tt>DeviceSystem</tt>. The implementation of
-     * <tt>DeviceSystem</tt> returns the protocol of the <tt>MediaLocator</tt>s of the
-     * <tt>CaptureDeviceInfo</tt>s (to be) registered by this <tt>DeviceSystem</tt>.
+     * Returns a human-readable representation of this <code>DeviceSystem</code>. The implementation of
+     * <code>DeviceSystem</code> returns the protocol of the <code>MediaLocator</code>s of the
+     * <code>CaptureDeviceInfo</code>s (to be) registered by this <code>DeviceSystem</code>.
      *
-     * @return a <tt>String</tt> which represents this <tt>DeviceSystem</tt> in a human-readable form
+     * @return a <code>String</code> which represents this <code>DeviceSystem</code> in a human-readable form
      */
     @NonNull
     @Override

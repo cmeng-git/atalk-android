@@ -7,22 +7,28 @@ package org.atalk.impl.neomedia.recording;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
+import org.atalk.util.MediaType;
 
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.DataSink;
+import javax.media.IncompatibleSourceException;
+import javax.media.MediaLocator;
 import javax.media.datasink.DataSinkListener;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 import timber.log.Timber;
 
 /**
- * A <tt>DataSink</tt> implementation which writes output in webm format.
+ * A <code>DataSink</code> implementation which writes output in webm format.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -35,7 +41,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private static final boolean USE_RECORDING_ENDED_EVENTS = false;
 
     /**
-     * The <tt>WebmWriter</tt> which we use to write the frames to a file.
+     * The <code>WebmWriter</code> which we use to write the frames to a file.
      */
     private WebmWriter writer = null;
 
@@ -43,7 +49,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private long ssrc = -1;
 
     /**
-     * Whether this <tt>DataSink</tt> is open and should write to its <tt>WebmWriter</tt>.
+     * Whether this <code>DataSink</code> is open and should write to its <code>WebmWriter</code>.
      */
     private boolean open = false;
     private final Object openCloseSyncRoot = new Object();
@@ -64,14 +70,14 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private int width = 0;
 
     /**
-     * A <tt>Buffer</tt> used to transfer frames.
+     * A <code>Buffer</code> used to transfer frames.
      */
     private Buffer buffer = new Buffer();
 
     private WebmWriter.FrameDescriptor fd = new WebmWriter.FrameDescriptor();
 
     /**
-     * Our <tt>DataSource</tt>.
+     * Our <code>DataSource</code>.
      */
     private DataSource dataSource = null;
 
@@ -86,7 +92,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private long firstFrameRtpTimestamp = -1;
 
     /**
-     * The time as returned by <tt>System.currentTimeMillis()</tt> of the first frame written to
+     * The time as returned by <code>System.currentTimeMillis()</code> of the first frame written to
      * the output webm file.
      */
     private long firstFrameTime = -1;
@@ -97,7 +103,7 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private long lastFramePts = -1;
 
     /**
-     * The <tt>KeyFrameControl</tt> which we will use to request a keyframe.
+     * The <code>KeyFrameControl</code> which we will use to request a keyframe.
      */
     private KeyFrameControl keyFrameControl = null;
 
@@ -118,10 +124,10 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     private int autoKeyframeRequestInterval = 0;
 
     /**
-     * Initialize a new <tt>WebmDataSink</tt> instance.
+     * Initialize a new <code>WebmDataSink</code> instance.
      *
      * @param filename the name of the file into which to write.
-     * @param dataSource the <tt>DataSource</tt> to use.
+     * @param dataSource the <code>DataSource</code> to use.
      */
     public WebmDataSink(String filename, DataSource dataSource)
     {
@@ -407,13 +413,13 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     }
 
     /**
-     * Returns <tt>true</tt> if the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt> is a keyframe. TODO: move it to a more general class?
+     * Returns <code>true</code> if the VP8 compressed frame contained in <code>buf</code> at offset
+     * <code>offset</code> is a keyframe. TODO: move it to a more general class?
      *
      * @param buf the buffer containing a compressed VP8 frame.
-     * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return <tt>true</tt>if the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt> is a keyframe.
+     * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     * @return <code>true</code>if the VP8 compressed frame contained in <code>buf</code> at offset
+     * <code>offset</code> is a keyframe.
      */
     private boolean isKeyFrame(byte[] buf, int offset)
     {
@@ -421,13 +427,13 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     }
 
     /**
-     * Returns <tt>true</tt> if the VP8 compressed keyframe contained in <tt>buf</tt> at offset
-     * <tt>offset</tt> is valid. TODO: move it to a more general class?
+     * Returns <code>true</code> if the VP8 compressed keyframe contained in <code>buf</code> at offset
+     * <code>offset</code> is valid. TODO: move it to a more general class?
      *
      * @param buf the buffer containing a compressed VP8 frame.
-     * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return <tt>true</tt>if the VP8 compressed keyframe contained in <tt>buf</tt> at offset
-     * <tt>offset</tt> is valid.
+     * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     * @return <code>true</code>if the VP8 compressed keyframe contained in <code>buf</code> at offset
+     * <code>offset</code> is valid.
      */
     private boolean isKeyFrameValid(byte[] buf, int offset)
     {
@@ -437,13 +443,13 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     }
 
     /**
-     * Returns the width of the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt>. See the format defined in RFC6386. TODO: move it to a more general class?
+     * Returns the width of the VP8 compressed frame contained in <code>buf</code> at offset
+     * <code>offset</code>. See the format defined in RFC6386. TODO: move it to a more general class?
      *
      * @param buf the buffer containing a compressed VP8 frame.
-     * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return the width of the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt>.
+     * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     * @return the width of the VP8 compressed frame contained in <code>buf</code> at offset
+     * <code>offset</code>.
      */
     private int getWidth(byte[] buf, int offset)
     {
@@ -451,12 +457,12 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     }
 
     /**
-     * Returns the height of the VP8 compressed frame contained in <tt>buf</tt> at offset
-     * <tt>offset</tt>. See the format defined in RFC6386. TODO: move it to a more general class?
+     * Returns the height of the VP8 compressed frame contained in <code>buf</code> at offset
+     * <code>offset</code>. See the format defined in RFC6386. TODO: move it to a more general class?
      *
      * @param buf the buffer containing a compressed VP8 frame.
-     * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return the height of the VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>.
+     * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     * @return the height of the VP8 compressed frame contained in <code>buf</code> at offset <code>offset</code>.
      */
     private int getHeight(byte[] buf, int offset)
     {
@@ -464,14 +470,14 @@ public class WebmDataSink implements DataSink, BufferTransferHandler
     }
 
     /**
-     * Returns the value of the <tt>show_frame</tt> field from the "uncompressed data chunk" in the
-     * VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>. RFC6386 isn't
+     * Returns the value of the <code>show_frame</code> field from the "uncompressed data chunk" in the
+     * VP8 compressed frame contained in <code>buf</code> at offset <code>offset</code>. RFC6386 isn't
      * clear about the format, so the interpretation of
      *
      * @param buf the buffer containing a compressed VP8 frame.
-     * @param offset the offset in <tt>buf</tt> where the VP8 compressed frame starts.
-     * @return the value of the <tt>show_frame</tt> field from the "uncompressed data chunk" in the
-     * VP8 compressed frame contained in <tt>buf</tt> at offset <tt>offset</tt>.
+     * @param offset the offset in <code>buf</code> where the VP8 compressed frame starts.
+     * @return the value of the <code>show_frame</code> field from the "uncompressed data chunk" in the
+     * VP8 compressed frame contained in <code>buf</code> at offset <code>offset</code>.
      * @{link https://tools.ietf.org/html/draft-ietf-payload-vp8-11} is used.
      */
     private boolean isShowFrame(byte[] buf, int offset)

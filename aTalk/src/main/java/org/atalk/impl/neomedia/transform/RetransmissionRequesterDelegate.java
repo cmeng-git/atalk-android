@@ -17,20 +17,28 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;
-import org.atalk.service.neomedia.*;
-import org.atalk.util.*;
-import org.atalk.util.concurrent.RecurringRunnable;
-import org.atalk.util.concurrent.RecurringRunnableExecutor;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.TransmissionFailedException;
+import org.atalk.util.RTPUtils;
 import org.atalk.util.logging.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.atalk.util.TimeProvider;
+import org.atalk.util.concurrent.RecurringRunnable;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
 /**
- * Detects lost RTP packets for a particular <tt>RtpChannel</tt> and requests
+ * Detects lost RTP packets for a particular <code>RtpChannel</code> and requests
  * their retransmission by sending RTCP NACK packets.
  *
  * @author Boris Grozev
@@ -41,7 +49,7 @@ import timber.log.Timber;
 public class RetransmissionRequesterDelegate implements RecurringRunnable
 {
     /**
-     * If more than <tt>MAX_MISSING</tt> consecutive packets are lost, we will
+     * If more than <code>MAX_MISSING</code> consecutive packets are lost, we will
      * not request retransmissions for them, but reset our state instead.
      */
     public static final int MAX_MISSING = 100;
@@ -67,7 +75,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
     public static final long WAKEUP_INTERVAL_MILLIS = 1000;
 
     /**
-     * Maps an SSRC to the <tt>Requester</tt> instance corresponding to it.
+     * Maps an SSRC to the <code>Requester</code> instance corresponding to it.
      * TODO: purge these somehow (RTCP BYE? Timeout?)
      */
     private final Map<Long, Requester> requesters = new HashMap<>();
@@ -92,7 +100,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
     protected Runnable workReadyCallback = null;
 
     /**
-     * Initializes a new <tt>RetransmissionRequesterDelegate</tt> for the given <tt>RtpChannel</tt>.
+     * Initializes a new <code>RetransmissionRequesterDelegate</code> for the given <code>RtpChannel</code>.
      *
      * @param stream the {@link MediaStream} that the instance belongs to.
      */
@@ -296,7 +304,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
         private final Map<Integer, Request> requests = new HashMap<>();
 
         /**
-         * Initializes a new <tt>Requester</tt> instance for the given SSRC.
+         * Initializes a new <code>Requester</code> instance for the given SSRC.
          */
         private Requester(long ssrc)
         {
@@ -446,7 +454,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
         int timesRequested = 0;
 
         /**
-         * Initializes a new <tt>Request</tt> instance with the given RTP
+         * Initializes a new <code>Request</code> instance with the given RTP
          * sequence number.
          *
          * @param seq the RTP sequence number.

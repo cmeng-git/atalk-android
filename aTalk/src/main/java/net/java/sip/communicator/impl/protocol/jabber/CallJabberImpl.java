@@ -5,8 +5,16 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicAutoAnswer;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetIncomingDTMF;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallEvent;
+import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCall;
 import net.java.sip.communicator.service.protocol.media.MediaHandler;
 
@@ -14,21 +22,46 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.DtlsControl;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.SrtpControlType;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.StreamConnectorFactory;
 import org.atalk.util.MediaType;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.*;
-import org.jivesoftware.smackx.jingle.element.*;
+import org.jivesoftware.smackx.jingle.CoinExtension;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.JingleUtil;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.PayloadType;
+import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle.SdpTransfer;
+import org.jivesoftware.smackx.jingle.SrtpFingerprint;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import timber.log.Timber;
 

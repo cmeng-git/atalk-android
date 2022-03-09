@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 
-import org.atalk.service.osgi.OSGiActivity;
-
 import androidx.annotation.NonNull;
 
+import org.atalk.service.osgi.OSGiActivity;
 
 public abstract class EasyLocationActivity extends OSGiActivity implements EasyLocationListener
 {

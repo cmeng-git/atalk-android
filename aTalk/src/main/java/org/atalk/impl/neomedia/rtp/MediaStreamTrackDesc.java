@@ -15,9 +15,9 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ArrayUtils;
+import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 
 /**

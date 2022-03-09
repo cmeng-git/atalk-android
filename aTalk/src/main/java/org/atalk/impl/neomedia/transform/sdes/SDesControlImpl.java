@@ -6,14 +6,20 @@
 package org.atalk.impl.neomedia.transform.sdes;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AbstractSrtpControl;
+import org.atalk.service.neomedia.SDesControl;
+import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.MediaType;
 
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import ch.imvs.sdes4j.srtp.*;
+import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
+import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
+import ch.imvs.sdes4j.srtp.SrtpSDesFactory;
 
 /**
  * Default implementation of {@link SDesControl} that supports the crypto suites of the original
@@ -102,11 +108,11 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     }
 
     /**
-     * Initializes a new <tt>SDesTransformEngine</tt> instance to be associated with and used by
-     * this <tt>SDesControlImpl</tt> instance.
+     * Initializes a new <code>SDesTransformEngine</code> instance to be associated with and used by
+     * this <code>SDesControlImpl</code> instance.
      *
-     * @return a new <tt>SDesTransformEngine</tt> instance to be associated with and used by this
-     * <tt>SDesControlImpl</tt> instance
+     * @return a new <code>SDesTransformEngine</code> instance to be associated with and used by this
+     * <code>SDesControlImpl</code> instance
      * @see AbstractSrtpControl#createTransformEngine()
      */
     protected SDesTransformEngine createTransformEngine()
@@ -139,7 +145,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * {@link #getInitiatorCryptoAttributes()}) based on the peer's first matching cipher suite.
      *
      * @param peerAttributes The peer's crypto offers.
-     * @return A SrtpCryptoAttribute when a matching cipher suite was found; <tt>null</tt>, otherwise.
+     * @return A SrtpCryptoAttribute when a matching cipher suite was found; <code>null</code>, otherwise.
      */
     public SrtpCryptoAttribute initiatorSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes)
     {
@@ -159,9 +165,9 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     }
 
     /**
-     * Returns <tt>true</tt>, SDES always requires the secure transport of its keys.
+     * Returns <code>true</code>, SDES always requires the secure transport of its keys.
      *
-     * @return <tt>true</tt>
+     * @return <code>true</code>
      */
     public boolean requiresSecureSignalingTransport()
     {
@@ -173,7 +179,7 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
      * the local crypto attribute. Used when the control is running in the role as responder.
      *
      * @param peerAttributes The peer's crypto attribute offering.
-     * @return The local crypto attribute for the answer of the offer or <tt>null</tt> if no
+     * @return The local crypto attribute for the answer of the offer or <code>null</code> if no
      * matching cipher suite could be found.
      */
     public SrtpCryptoAttribute responderSelectAttribute(Iterable<SrtpCryptoAttribute> peerAttributes)
@@ -196,8 +202,8 @@ public class SDesControlImpl extends AbstractSrtpControl<SDesTransformEngine> im
     /**
      * {@inheritDoc}
      *
-     * The implementation of <tt>SDesControlImpl</tt> does nothing because <tt>SDesControlImpl</tt>
-     * does not utilize the <tt>RTPConnector</tt>.
+     * The implementation of <code>SDesControlImpl</code> does nothing because <code>SDesControlImpl</code>
+     * does not utilize the <code>RTPConnector</code>.
      */
     public void setConnector(AbstractRTPConnector connector)
     {

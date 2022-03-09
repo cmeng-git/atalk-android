@@ -27,7 +27,7 @@ import javax.media.protocol.DataSource;
 import timber.log.Timber;
 
 /**
- * Extends <tt>MediaDeviceImpl</tt> with audio-specific functionality.
+ * Extends <code>MediaDeviceImpl</code> with audio-specific functionality.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -35,20 +35,20 @@ import timber.log.Timber;
 public class AudioMediaDeviceImpl extends MediaDeviceImpl
 {
     /**
-     * The <tt>AudioMixer</tt> which enables sharing an exclusive <tt>CaptureDevice</tt> such as
-     * JavaSound between multiple <tt>CaptureDevice</tt> users.
+     * The <code>AudioMixer</code> which enables sharing an exclusive <code>CaptureDevice</code> such as
+     * JavaSound between multiple <code>CaptureDevice</code> users.
      */
     private AudioMixer captureDeviceSharing;
 
     /**
-     * The <tt>List</tt> of RTP extensions supported by this device (at the time of writing this
-     * list is only filled for audio devices and is <tt>null</tt> otherwise).
+     * The <code>List</code> of RTP extensions supported by this device (at the time of writing this
+     * list is only filled for audio devices and is <code>null</code> otherwise).
      */
     private List<RTPExtension> rtpExtensions = null;
 
     /**
-     * Initializes a new <tt>AudioMediaDeviceImpl</tt> instance which represents a <tt>MediaDevice</tt> with
-     * <tt>MediaType</tt> <tt>AUDIO</tt> and a <tt>MediaDirection</tt> which does not allow sending.
+     * Initializes a new <code>AudioMediaDeviceImpl</code> instance which represents a <code>MediaDevice</code> with
+     * <code>MediaType</code> <code>AUDIO</code> and a <code>MediaDirection</code> which does not allow sending.
      */
     public AudioMediaDeviceImpl()
     {
@@ -56,12 +56,12 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Initializes a new <tt>AudioMediaDeviceImpl</tt> which is to provide an implementation of
-     * <tt>MediaDevice</tt> with <tt>MediaType</tt> <tt>AUDIO</tt> to a <tt>CaptureDevice</tt> with
-     * a specific <tt>CaptureDeviceInfo</tt>.
+     * Initializes a new <code>AudioMediaDeviceImpl</code> which is to provide an implementation of
+     * <code>MediaDevice</code> with <code>MediaType</code> <code>AUDIO</code> to a <code>CaptureDevice</code> with
+     * a specific <code>CaptureDeviceInfo</code>.
      *
-     * @param captureDeviceInfo the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> to which the new instance
-     * is to provide an implementation of <tt>MediaDevice</tt>
+     * @param captureDeviceInfo the <code>CaptureDeviceInfo</code> of the <code>CaptureDevice</code> to which the new instance
+     * is to provide an implementation of <code>MediaDevice</code>
      */
     public AudioMediaDeviceImpl(CaptureDeviceInfo captureDeviceInfo)
     {
@@ -69,10 +69,10 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Connects to a specific <tt>CaptureDevice</tt> given in the form of a <tt>DataSource</tt>.
+     * Connects to a specific <code>CaptureDevice</code> given in the form of a <code>DataSource</code>.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> to be connected to
-     * @throws IOException if anything wrong happens while connecting to the specified <tt>captureDevice</tt>
+     * @param captureDevice the <code>CaptureDevice</code> to be connected to
+     * @throws IOException if anything wrong happens while connecting to the specified <code>captureDevice</code>
      * @see AbstractMediaDevice#connect(DataSource)
      */
     @Override
@@ -99,11 +99,11 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Creates the JMF <tt>CaptureDevice</tt> this instance represents and provides an
-     * implementation of <tt>MediaDevice</tt> for.
+     * Creates the JMF <code>CaptureDevice</code> this instance represents and provides an
+     * implementation of <code>MediaDevice</code> for.
      *
-     * @return the JMF <tt>CaptureDevice</tt> this instance represents and provides an
-     * implementation of <tt>MediaDevice</tt> for; <tt>null</tt> if the creation fails
+     * @return the JMF <code>CaptureDevice</code> this instance represents and provides an
+     * implementation of <code>MediaDevice</code> for; <code>null</code> if the creation fails
      */
     @Override
     protected synchronized CaptureDevice createCaptureDevice()
@@ -134,10 +134,10 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Creates a new <tt>AudioMixer</tt> which is to enable the sharing of a specific explicit <tt>CaptureDevice</tt>
+     * Creates a new <code>AudioMixer</code> which is to enable the sharing of a specific explicit <code>CaptureDevice</code>
      *
-     * @param captureDevice an exclusive <tt>CaptureDevice</tt> for which sharing is to be enabled
-     * @return a new <tt>AudioMixer</tt> which enables the sharing of the specified exclusive <tt>captureDevice</tt>
+     * @param captureDevice an exclusive <code>CaptureDevice</code> for which sharing is to be enabled
+     * @return a new <code>AudioMixer</code> which enables the sharing of the specified exclusive <code>captureDevice</code>
      */
     private AudioMixer createCaptureDeviceSharing(CaptureDevice captureDevice)
     {
@@ -162,12 +162,12 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     /**
      * {@inheritDoc}
      * <p>
-     * Tries to delegate the initialization of a new <tt>Renderer</tt> instance to the
-     * <tt>AudioSystem</tt> which provides the <tt>CaptureDevice</tt> of this instance. This way
+     * Tries to delegate the initialization of a new <code>Renderer</code> instance to the
+     * <code>AudioSystem</code> which provides the <code>CaptureDevice</code> of this instance. This way
      * both the capture and the playback are given a chance to happen within the same
-     * <tt>AudioSystem</tt>. If the discovery of the delegate fails, the implementation of
-     * <tt>MediaDeviceImpl</tt> is executed and it currently leaves it to FMJ to choose a
-     * <tt>Renderer</tt> irrespective of this <tt>MediaDevice</tt>.
+     * <code>AudioSystem</code>. If the discovery of the delegate fails, the implementation of
+     * <code>MediaDeviceImpl</code> is executed and it currently leaves it to FMJ to choose a
+     * <code>Renderer</code> irrespective of this <code>MediaDevice</code>.
      */
     @Override
     protected Renderer createRenderer()
@@ -190,15 +190,15 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Returns a <tt>List</tt> containing extension descriptor indicating
-     * <tt>RECVONLY</tt> support for mixer-to-client audio levels,
-     * and extension descriptor indicating <tt>SENDRECV</tt> support for
+     * Returns a <code>List</code> containing extension descriptor indicating
+     * <code>RECVONLY</code> support for mixer-to-client audio levels,
+     * and extension descriptor indicating <code>SENDRECV</code> support for
      * client-to-mixer audio levels.
      * We add the ssrc audio levels as first element, in order when making offer
      * to be the first one (id 1) as some other systems have this hardcoded it as 1 (jicofo).
      *
-     * @return a <tt>List</tt> containing the <tt>CSRC_AUDIO_LEVEL_URN</tt>
-     * and  <tt>SSRC_AUDIO_LEVEL_URN</tt> extension descriptor.
+     * @return a <code>List</code> containing the <code>CSRC_AUDIO_LEVEL_URN</code>
+     * and  <code>SSRC_AUDIO_LEVEL_URN</code> extension descriptor.
      */
     @Override
     public List<RTPExtension> getSupportedExtensions()
@@ -253,12 +253,12 @@ public class AudioMediaDeviceImpl extends MediaDeviceImpl
     }
 
     /**
-     * Invokes the super (with respect to the <tt>AudioMediaDeviceImpl</tt> class)
+     * Invokes the super (with respect to the <code>AudioMediaDeviceImpl</code> class)
      * implementation of {@link MediaDeviceImpl#createCaptureDevice()}. Allows this instance to
-     * customize the very <tt>CaptureDevice</tt> which is to be possibly further wrapped by this instance.
+     * customize the very <code>CaptureDevice</code> which is to be possibly further wrapped by this instance.
      *
-     * @return the <tt>CaptureDevice</tt> returned by the call to the super implementation of
-     * <tt>MediaDeviceImpl#createCaptureDevice</tt>.
+     * @return the <code>CaptureDevice</code> returned by the call to the super implementation of
+     * <code>MediaDeviceImpl#createCaptureDevice</code>.
      */
     protected CaptureDevice superCreateCaptureDevice()
     {

@@ -5,8 +5,8 @@
  */
 package org.atalk.service.neomedia.event;
 
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.util.MediaType;
 
 /**
  * The <code>SrtpListener</code> is meant to be used by the media stream creator, as the name indicates

@@ -15,36 +15,72 @@
  */
 package net.java.sip.communicator.impl.certificate;
 
-import android.annotation.SuppressLint;
-
-import net.java.sip.communicator.service.certificate.*;
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateMatcher;
+import net.java.sip.communicator.service.certificate.CertificateService;
+import net.java.sip.communicator.service.certificate.KeyStoreType;
+import net.java.sip.communicator.service.certificate.VerifyCertificateDialogService;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.httputil.HttpUtils;
+import org.atalk.service.httputil.HttpConnectionManager;
 import org.atalk.util.OSUtils;
 import org.bouncycastle.asn1.DERIA5String;
+import org.bouncycastle.asn1.x509.AccessDescription;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.*;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.KeyStore.Builder;
+import java.security.KeyStoreException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
-import java.security.cert.*;
-import java.util.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
-import javax.net.ssl.*;
-import javax.security.auth.callback.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 
 import timber.log.Timber;
 
@@ -108,12 +144,12 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
     /**
      * Stores the certificates that are trusted as long as this service lives.
      */
-    private Map<String, List<String>> sessionAllowedCertificates = new HashMap<>();
+    private final Map<String, List<String>> sessionAllowedCertificates = new HashMap<>();
 
     /**
      * Caches retrievals of AIA information (downloaded certs or failures).
      */
-    private Map<URI, AiaCacheEntry> aiaCache = new HashMap<>();
+    private final Map<URI, AiaCacheEntry> aiaCache = new HashMap<>();
 
     // ------------------------------------------------------------------------
     // Map access helpers
@@ -184,7 +220,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         String tsPassword = credService.loadPassword(PNAME_TRUSTSTORE_PASSWORD);
 
         // use the OS store as default store on Windows
-        if (((tsType == null) || !"meta:default".equals(tsType)) && OSUtils.IS_WINDOWS) {
+        if ((!"meta:default".equals(tsType)) && OSUtils.IS_WINDOWS) {
             tsType = "Windows-ROOT";
             config.setProperty(PNAME_TRUSTSTORE_TYPE, tsType);
         }
@@ -643,7 +679,9 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 try {
                     chain = tryBuildChain(chain);
                 } catch (Exception e) {
-                } // don't care and take the chain as is
+                    // don't care and take the chain as is
+                    Timber.e("Build chain exception: %s", e.getMessage());
+                }
 
                 /*
                  * Domain specific configurations require that hostname aware
@@ -655,12 +693,15 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                 else
                     tm.checkClientTrusted(chain, authType);
 
-                if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext())
-                    return;
-                else if (serverCheck)
+                if ((identitiesToTest == null) || !identitiesToTest.iterator().hasNext()) {
+                    Timber.d("None check is required!");
+                }
+                else if (serverCheck) {
                     serverVerifier.verify(identitiesToTest, chain[0]);
-                else
+                }
+                else {
                     clientVerifier.verify(identitiesToTest, chain[0]);
+                }
                 // ok, globally valid cert
             } catch (CertificateException e) {
                 String thumbprint = getThumbprint(chain[0], THUMBPRINT_HASH_ALGORITHM);
@@ -797,14 +838,17 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                         Timber.d("Downloading parent certificate for <%s> from <%s>",
                                 current.getSubjectDN(), uri);
                         try {
-                            InputStream is = HttpUtils.openURLConnection(uri.toString()).getContent();
-                            cert = (X509Certificate) certFactory.generateCertificate(is);
+                            InputStream is = HttpConnectionManager.open(uri.toString(), false);
+                            if (is != null) {
+                                cert = (X509Certificate) certFactory.generateCertificate(is);
+                            }
                         } catch (Exception e) {
-                            Timber.d("Could not download from <" + uri + ">");
+                            Timber.e("No response body found: %s", uri);
                         }
                         // cache for 10mins
                         aiaCache.put(uri, new AiaCacheEntry(new Date(new Date().getTime() + 10 * 60 * 1000), cert));
                     }
+
                     if (cert != null) {
                         if (!cert.getIssuerDN().equals(cert.getSubjectDN())) {
                             newChain.add(cert);
@@ -823,7 +867,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         }
     }
 
-    protected class BrowserLikeHostnameMatcher implements CertificateMatcher
+    protected static class BrowserLikeHostnameMatcher implements CertificateMatcher
     {
         public void verify(Iterable<String> identitiesToTest, X509Certificate cert)
                 throws CertificateException
@@ -836,6 +880,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     oneMatched = true;
                     break;
                 } catch (SSLException e) {
+                    Timber.e("Timber SSLException: %s", e.getMessage());
                 }
             }
 
@@ -845,7 +890,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         }
     }
 
-    protected class EMailAddressMatcher implements CertificateMatcher
+    protected static class EMailAddressMatcher implements CertificateMatcher
     {
         public void verify(Iterable<String> identitiesToTest, X509Certificate cert)
                 throws CertificateException
@@ -862,9 +907,10 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                     }
                 }
             }
-            if (!oneMatched)
+            if (!oneMatched) {
                 throw new CertificateException("The peer provided certificate with Subject <"
                         + cert.getSubjectDN() + "> contains no SAN for <" + identitiesToTest + ">");
+            }
         }
     }
 
@@ -908,9 +954,8 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
      * @param cert The certificate to hash.
      * @param algorithm The hash algorithm to use.
      * @return The SHA-1 hash of the certificate.
-     * @throws CertificateException
+     * @throws CertificateException Certificate exception
      */
-    @SuppressLint("NewApi")
     private static String getThumbprint(Certificate cert, String algorithm)
             throws CertificateException
     {

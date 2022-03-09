@@ -15,11 +15,16 @@ package org.atalk.util.dsi;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.concurrent.ExecutorUtils;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 /**

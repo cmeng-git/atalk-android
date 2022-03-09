@@ -15,6 +15,8 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.ArrayUtils;
@@ -23,8 +25,6 @@ import org.ice4j.util.RateStatistics;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import androidx.annotation.NonNull;
 
 /**
  * Keeps track of how many channels receive it, its subjective quality index,

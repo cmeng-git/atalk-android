@@ -6,29 +6,39 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.MediaServiceImpl;
+import org.atalk.impl.neomedia.MediaUtils;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
 import org.atalk.impl.neomedia.protocol.CaptureDeviceDelegatePushBufferDataSource;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.QualityPreset;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
 
+import java.awt.Dimension;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoDataSourceException;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
 
 import timber.log.Timber;
 
 /**
- * Implements <tt>MediaDevice</tt> for the JMF <tt>CaptureDevice</tt>.
+ * Implements <code>MediaDevice</code> for the JMF <code>CaptureDevice</code>.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
@@ -37,11 +47,11 @@ import timber.log.Timber;
 public class MediaDeviceImpl extends AbstractMediaDevice
 {
     /**
-     * Creates a new <tt>CaptureDevice</tt> which traces calls to a specific <tt>CaptureDevice</tt>
+     * Creates a new <code>CaptureDevice</code> which traces calls to a specific <code>CaptureDevice</code>
      * for debugging purposes.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> which is to have its calls traced for debugging output
-     * @return a new <tt>CaptureDevice</tt> which traces the calls to the specified <tt>captureDevice</tt>
+     * @param captureDevice the <code>CaptureDevice</code> which is to have its calls traced for debugging output
+     * @return a new <code>CaptureDevice</code> which traces the calls to the specified <code>captureDevice</code>
      */
     public static CaptureDevice createTracingCaptureDevice(CaptureDevice captureDevice)
     {
@@ -83,10 +93,10 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Returns a human-readable representation of a specific <tt>CaptureDevice</tt> in the form of a <tt>String</tt> value.
+     * Returns a human-readable representation of a specific <code>CaptureDevice</code> in the form of a <code>String</code> value.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> to get a human-readable representation of
-     * @return a <tt>String</tt> value which gives a human-readable representation of the specified <tt>captureDevice</tt>
+     * @param captureDevice the <code>CaptureDevice</code> to get a human-readable representation of
+     * @return a <code>String</code> value which gives a human-readable representation of the specified <code>captureDevice</code>
      */
     private static String toString(CaptureDevice captureDevice)
     {
@@ -106,23 +116,23 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * The <tt>CaptureDeviceInfo</tt> of the device that this instance is representing.
+     * The <code>CaptureDeviceInfo</code> of the device that this instance is representing.
      */
     private final CaptureDeviceInfo captureDeviceInfo;
 
     /**
-     * The <tt>MediaType</tt> of this instance and the <tt>CaptureDevice</tt> that it wraps.
+     * The <code>MediaType</code> of this instance and the <code>CaptureDevice</code> that it wraps.
      */
     private final MediaType mediaType;
 
     /**
-     * Initializes a new <tt>MediaDeviceImpl</tt> instance which is to provide an implementation of
-     * <tt>MediaDevice</tt> for a <tt>CaptureDevice</tt> with a specific <tt>CaptureDeviceInfo</tt>
-     * and which is of a specific <tt>MediaType</tt>.
+     * Initializes a new <code>MediaDeviceImpl</code> instance which is to provide an implementation of
+     * <code>MediaDevice</code> for a <code>CaptureDevice</code> with a specific <code>CaptureDeviceInfo</code>
+     * and which is of a specific <code>MediaType</code>.
      *
-     * @param captureDeviceInfo the <tt>CaptureDeviceInfo</tt> of the JMF <tt>CaptureDevice</tt> the new instance is
-     * to provide an implementation of <tt>MediaDevice</tt> for
-     * @param mediaType the <tt>MediaType</tt> of the new instance
+     * @param captureDeviceInfo the <code>CaptureDeviceInfo</code> of the JMF <code>CaptureDevice</code> the new instance is
+     * to provide an implementation of <code>MediaDevice</code> for
+     * @param mediaType the <code>MediaType</code> of the new instance
      */
     public MediaDeviceImpl(CaptureDeviceInfo captureDeviceInfo, MediaType mediaType)
     {
@@ -136,10 +146,10 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Initializes a new <tt>MediaDeviceImpl</tt> instance with a specific <tt>MediaType</tt> and
-     * with <tt>MediaDirection</tt> which does not allow sending.
+     * Initializes a new <code>MediaDeviceImpl</code> instance with a specific <code>MediaType</code> and
+     * with <code>MediaDirection</code> which does not allow sending.
      *
-     * @param mediaType the <tt>MediaType</tt> of the new instance
+     * @param mediaType the <code>MediaType</code> of the new instance
      */
     public MediaDeviceImpl(MediaType mediaType)
     {
@@ -148,11 +158,11 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Creates the JMF <tt>CaptureDevice</tt> this instance represents and provides an
-     * implementation of <tt>MediaDevice</tt> for.
+     * Creates the JMF <code>CaptureDevice</code> this instance represents and provides an
+     * implementation of <code>MediaDevice</code> for.
      *
-     * @return the JMF <tt>CaptureDevice</tt> this instance represents and provides an
-     * implementation of <tt>MediaDevice</tt> for; <tt>null</tt> if the creation fails
+     * @return the JMF <code>CaptureDevice</code> this instance represents and provides an
+     * implementation of <code>MediaDevice</code> for; <code>null</code> if the creation fails
      */
     protected CaptureDevice createCaptureDevice()
     {
@@ -183,9 +193,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Creates a <tt>DataSource</tt> instance for this <tt>MediaDevice</tt> which gives access to the captured media.
+     * Creates a <code>DataSource</code> instance for this <code>MediaDevice</code> which gives access to the captured media.
      *
-     * @return a <tt>DataSource</tt> instance which gives access to the media captured by this <tt>MediaDevice</tt>
+     * @return a <code>DataSource</code> instance which gives access to the media captured by this <code>MediaDevice</code>
      * @see AbstractMediaDevice#createOutputDataSource()
      */
     @Override
@@ -195,9 +205,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of the JMF <tt>CaptureDevice</tt> represented by this instance.
+     * Gets the <code>CaptureDeviceInfo</code> of the JMF <code>CaptureDevice</code> represented by this instance.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> represented by this instance
+     * @return the <code>CaptureDeviceInfo</code> of the <code>CaptureDevice</code> represented by this instance
      */
     public CaptureDeviceInfo getCaptureDeviceInfo()
     {
@@ -205,9 +215,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt> represented by this instance.
+     * Gets the protocol of the <code>MediaLocator</code> of the <code>CaptureDeviceInfo</code> represented by this instance.
      *
-     * @return the protocol of the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo</tt> represented by this instance
+     * @return the protocol of the <code>MediaLocator</code> of the <code>CaptureDeviceInfo</code> represented by this instance
      */
     public String getCaptureDeviceInfoLocatorProtocol()
     {
@@ -222,11 +232,11 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Returns the <tt>MediaDirection</tt> supported by this device.
+     * Returns the <code>MediaDirection</code> supported by this device.
      *
      * @return {@link MediaDirection#SENDONLY} if this is a read-only device,
      * {@link MediaDirection#RECVONLY} if this is a write-only device or
-     * {@link MediaDirection#SENDRECV} if this <tt>MediaDevice</tt> can both capture and render media
+     * {@link MediaDirection#SENDRECV} if this <code>MediaDevice</code> can both capture and render media
      * @see MediaDevice#getDirection()
      */
     public MediaDirection getDirection()
@@ -238,9 +248,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt> in which this <tt>MediaDevice</tt> captures media.
+     * Gets the <code>MediaFormat</code> in which this <code>MediaDevice</code> captures media.
      *
-     * @return the <tt>MediaFormat</tt> in which this <tt>MediaDevice</tt> captures media
+     * @return the <code>MediaFormat</code> in which this <code>MediaDevice</code> captures media
      * @see MediaDevice#getFormat()
      */
     public MediaFormat getFormat()
@@ -260,7 +270,7 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>MediaType</tt> that this device supports.
+     * Gets the <code>MediaType</code> that this device supports.
      *
      * @return {@link MediaType#AUDIO} if this is an audio device or {@link MediaType#VIDEO} if this is a video device
      * @see MediaDevice#getMediaType()
@@ -271,10 +281,10 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt> and enabled in <tt>encodingConfiguration</tt>.
+     * Gets the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code> and enabled in <code>encodingConfiguration</code>.
      *
-     * @param encodingConfiguration the <tt>EncodingConfiguration</tt> instance to use
-     * @return the list of <tt>MediaFormat</tt>s supported by this device and enabled in <tt>encodingConfiguration</tt>.
+     * @param encodingConfiguration the <code>EncodingConfiguration</code> instance to use
+     * @return the list of <code>MediaFormat</code>s supported by this device and enabled in <code>encodingConfiguration</code>.
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats(EncodingConfiguration encodingConfiguration)
@@ -283,12 +293,12 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>. Uses the
-     * current <tt>EncodingConfiguration</tt> from the media service (i.e. the global configuration).
+     * Gets the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code>. Uses the
+     * current <code>EncodingConfiguration</code> from the media service (i.e. the global configuration).
      *
      * @param sendPreset the preset used to set some of the format parameters, used for video and settings.
      * @param receivePreset the preset used to set the receive format parameters, used for video and settings.
-     * @return the list of <tt>MediaFormat</tt>s supported by this device
+     * @return the list of <code>MediaFormat</code>s supported by this device
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset)
@@ -298,13 +308,13 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt> and enabled in
-     * <tt>encodingConfiguration</tt>.
+     * Gets the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code> and enabled in
+     * <code>encodingConfiguration</code>.
      *
      * @param sendPreset the preset used to set some of the format parameters, used for video and settings.
      * @param receivePreset the preset used to set the receive format parameters, used for video and settings.
-     * @param encodingConfiguration the <tt>EncodingConfiguration</tt> instance to use
-     * @return the list of <tt>MediaFormat</tt>s supported by this device and enabled in <tt>encodingConfiguration</tt>.
+     * @param encodingConfiguration the <code>EncodingConfiguration</code> instance to use
+     * @return the list of <code>MediaFormat</code>s supported by this device and enabled in <code>encodingConfiguration</code>.
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset,
@@ -363,9 +373,9 @@ public class MediaDeviceImpl extends AbstractMediaDevice
     }
 
     /**
-     * Gets a human-readable <tt>String</tt> representation of this instance.
+     * Gets a human-readable <code>String</code> representation of this instance.
      *
-     * @return a <tt>String</tt> providing a human-readable representation of this instance
+     * @return a <code>String</code> providing a human-readable representation of this instance
      */
     @Override
     public String toString()

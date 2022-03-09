@@ -5,21 +5,27 @@
  */
 package org.atalk.impl.neomedia;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.EncodingConfigurationImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.device.ScreenDeviceImpl;
-import org.atalk.impl.neomedia.format.*;
+import org.atalk.impl.neomedia.format.AudioMediaFormatImpl;
+import org.atalk.impl.neomedia.format.MediaFormatImpl;
+import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
+import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.OSUtils;
+import org.atalk.util.MediaType;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.media.Format;
 import javax.media.format.AudioFormat;

@@ -12,12 +12,15 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2.DataSource;
 import org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2.Video4Linux2;
 import org.atalk.util.MediaType;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.MediaLocator;
 
 import timber.log.Timber;
 
 /**
- * Discovers and registers <tt>CaptureDevice</tt>s which implement the Video for Linux Two API
+ * Discovers and registers <code>CaptureDevice</code>s which implement the Video for Linux Two API
  * Specification with JMF.
  *
  * @author Lyubomir Marinov
@@ -26,16 +29,16 @@ import timber.log.Timber;
 public class Video4Linux2System extends DeviceSystem
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>CaptureDevice</tt> which implement
+     * The protocol of the <code>MediaLocator</code>s identifying <code>CaptureDevice</code> which implement
      * the Video for Linux Two API Specification.
      */
     private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_VIDEO4LINUX2;
 
     /**
-     * Initializes a new <tt>Video4Linux2System</tt> instance which discovers and registers
-     * <tt>CaptureDevice</tt>s which implement the Video for Linux Two API Specification with JMF.
+     * Initializes a new <code>Video4Linux2System</code> instance which discovers and registers
+     * <code>CaptureDevice</code>s which implement the Video for Linux Two API Specification with JMF.
      *
-     * @throws Exception if anything goes wrong while discovering and registering <tt>CaptureDevice</tt>s
+     * @throws Exception if anything goes wrong while discovering and registering <code>CaptureDevice</code>s
      * which implement the Video for Linux Two API Specification with JMF
      */
     public Video4Linux2System()
@@ -45,16 +48,16 @@ public class Video4Linux2System extends DeviceSystem
     }
 
     /**
-     * Discovers and registers a <tt>CaptureDevice</tt> implementing the Video for Linux Two API
+     * Discovers and registers a <code>CaptureDevice</code> implementing the Video for Linux Two API
      * Specification with a specific device name with JMF.
      *
-     * @param deviceName the device name of a candidate for a <tt>CaptureDevice</tt> implementing the Video for
+     * @param deviceName the device name of a candidate for a <code>CaptureDevice</code> implementing the Video for
      * Linux Two API Specification to be discovered and registered with JMF
-     * @return <tt>true</tt> if a <tt>CaptureDeviceInfo</tt> for the specified
-     * <tt>CaptureDevice</tt> has been added to <tt>CaptureDeviceManager</tt>; otherwise,
-     * <tt>false</tt>
+     * @return <code>true</code> if a <code>CaptureDeviceInfo</code> for the specified
+     * <code>CaptureDevice</code> has been added to <code>CaptureDeviceManager</code>; otherwise,
+     * <code>false</code>
      * @throws Exception if anything goes wrong while discovering and registering the specified
-     * <tt>CaptureDevice</tt> with JMF
+     * <code>CaptureDevice</code> with JMF
      */
     private boolean discoverAndRegister(String deviceName)
             throws Exception
@@ -99,17 +102,17 @@ public class Video4Linux2System extends DeviceSystem
     }
 
     /**
-     * Registers a <tt>CaptureDevice</tt> implementing the Video for Linux Two API Specification
-     * with a specific device name, a specific <tt>open()</tt> file descriptor and a specific
-     * <tt>v4l2_capability</tt> with JMF.
+     * Registers a <code>CaptureDevice</code> implementing the Video for Linux Two API Specification
+     * with a specific device name, a specific <code>open()</code> file descriptor and a specific
+     * <code>v4l2_capability</code> with JMF.
      *
      * @param deviceName name of the device (i.e. /dev/videoX)
      * @param fd file descriptor of the device
      * @param v4l2_capability device V4L2 capability
-     * @return <tt>true</tt> if a <tt>CaptureDeviceInfo</tt> for the specified
-     * <tt>CaptureDevice</tt> has been added to <tt>CaptureDeviceManager</tt>; otherwise,
-     * <tt>false</tt>
-     * @throws Exception if anything goes wrong while registering the specified <tt>CaptureDevice</tt> with
+     * @return <code>true</code> if a <code>CaptureDeviceInfo</code> for the specified
+     * <code>CaptureDevice</code> has been added to <code>CaptureDeviceManager</code>; otherwise,
+     * <code>false</code>
+     * @throws Exception if anything goes wrong while registering the specified <code>CaptureDevice</code> with
      * JMF
      */
     private boolean register(String deviceName, int fd, long v4l2_capability)

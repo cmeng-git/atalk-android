@@ -19,7 +19,10 @@ package org.atalk.impl.neomedia.device;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
-import android.hardware.camera2.*;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.text.TextUtils;
 import android.util.Size;
@@ -30,7 +33,6 @@ import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
@@ -39,14 +41,19 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.MediaType;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.MediaLocator;
 
 import timber.log.Timber;
 
 /**
- * Discovers and registers <tt>MediaRecorder</tt> capture devices with FMJ.
+ * Discovers and registers <code>MediaRecorder</code> capture devices with FMJ.
  * Not further use in aTalk since v2.8.0; after android API 23, android drops support for non-seekable
  * file descriptors i.e. mediaRecorder.setOutputFile(createLocalSocket());
  *
@@ -64,11 +71,11 @@ public class MediaRecorderSystem extends DeviceSystem
     private static boolean isMediaRecorderInitialized = false;
 
     /**
-     * Initializes a new <tt>MediaRecorderSystem</tt> instance which discovers and registers
-     * <tt>MediaRecorder</tt> capture devices with FMJ.
+     * Initializes a new <code>MediaRecorderSystem</code> instance which discovers and registers
+     * <code>MediaRecorder</code> capture devices with FMJ.
      *
      * @throws Exception if anything goes wrong while discovering and registering
-     * <tt>MediaRecorder</tt> capture devices with FMJ
+     * <code>MediaRecorder</code> capture devices with FMJ
      */
     public MediaRecorderSystem()
             throws Exception

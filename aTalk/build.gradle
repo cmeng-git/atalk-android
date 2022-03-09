@@ -218,8 +218,8 @@ android {
 
 ext {
     // for official maven release
-    // smackVersion = '4.4.0-beta2'
-    smackVersion = '4.4.4'
+    // smackVersion = '4.5.0-alpha1'
+    smackVersion = '4.4.5'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -265,13 +265,12 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.1'
-    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
     implementation 'org.apache.james:apache-mime4j-core:0.8.5'
     implementation 'org.bitlet:weupnp:0.1.4'
 
@@ -305,6 +304,10 @@ dependencies {
     // note: bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
     implementation 'org.jitsi:zrtp4j-light:4.1.2'
 
+    // for ice4j_3.0 only
+    // implementation 'org.jitsi:jicoco-config:1.1-103-g7b1cd54'
+    // implementation 'org.jitsi:jitsi-metaconfig:1.0-9-g5e1b624'
+
     // Required for provisioning discovery
     implementation 'org.jmdns:jmdns:3.5.7'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
@@ -325,6 +328,7 @@ dependencies {
 
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
+
 
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
@@ -354,38 +358,72 @@ dependencies {
         classDelete 'javax.media.Manager**'
     }
 
-    // The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
-    // ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-    // so remove System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-
-    // ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
-    // see https://github.com/bitletorg/weupnp/issues/20
-    // must include System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
+    /*
+    * see NetaddrActivator#start(BundleContext) for the actual settings:
+    * ? ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+    * The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
+    * so remove System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
+    *
+    * ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
+    * see https://github.com/bitletorg/weupnp/issues/20
+    * must include System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
+     */
     implementation jarjar.repackage {
         // Do not use the latest master-SNAPSHOT => not compatible with aTalk
         // Use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
         // == 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
         from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
-        // from('org.jitsi:ice4j:3.0-46-g64a7ca8') {
+        // from('org.jitsi:ice4j:3.0-54-g2baae57') {
             transitive = false
         }
         // destinationDir new File("${projectDir}/libs")
-        destinationName "ice4j-2.0.0-SNAPSHOT.jar"
+        destinationName "ice4j-2.0-SNAPSHOT.jar"
+        // for ice4j_3.0 only
+        // classRename 'org.jitsi.utils.**', 'org.atalk.util.@1'
 
         // Consumer was introduced in API-24
-        classRename 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
+        classRename 'java.util.function.Consumer', 'org.atalk.util.function.Consumer'
 
         // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
         classRename 'java.time.Duration', 'org.threeten.bp.Duration'
 
         // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
         classDelete 'org.ice4j.ice.harvest.UPNPHarvester**'
-        // classDelete 'org.ice4j.ice.ConnectivityCheckClient**'
 
         // For testing/debug only
-        // classDelete 'org.ice4j.ice.Agent**'
-        // classDelete 'org.ice4j.ice.ConnectivityCheckClient'
-        // classDelete 'org.ice4j.ice.ConnectivityCheckServer'
+        classDelete 'org.ice4j.ice.attribute.AttributeDecoder**'
+        classDelete 'org.ice4j.ice.attribute.MessageIntegrityAttributes**'
+
+        classDelete 'org.ice4j.harvest.AbstractTcpListener**'
+        classDelete 'org.ice4j.harvest.AbstractUdpListener**'
+        classDelete 'org.ice4j.harvest.AwsCandidateHarvester**'
+        classDelete 'org.ice4j.harvest.CandidateHarvesterSet**'
+        classDelete 'org.ice4j.harvest.HostCandidateHarvester**'
+        classDelete 'org.ice4j.harvest.MappingCandidateHarvester**'
+        classDelete 'org.ice4j.harvest.MappingCandidateHarvesters**'
+        classDelete 'org.ice4j.harvest.SingleMappingCandidateHarvester**'
+        classDelete 'org.ice4j.harvest.StunMappingCandidateHarvester**'
+
+        classDelete 'org.ice4j.ice.Agent**'
+        classDelete 'org.ice4j.ice.CheckList'
+        classDelete 'org.ice4j.ice.Component**'
+        classDelete 'org.ice4j.ice.ComponentSocket**'
+        classDelete 'org.ice4j.ice.ConnectivityCheckClient**'
+        classDelete 'org.ice4j.ice.ConnectivityCheckServer'
+        classDelete 'org.ice4j.ice.DefaultNominator**'
+        classDelete 'org.ice4j.ice.IceMediaStream**'
+        classDelete 'org.ice4j.ice.LocalCandidate**'
+        classDelete 'org.ice4j.ice.NominationStrategy**'
+
+        classDelete 'org.ice4j.socket.MergingDatagramSocket**'
+        classDelete 'org.ice4j.socket.MuxServerSocketChannelFactory**'
+
+        classDelete 'org.ice4j.stack.Connector**'
+        classDelete 'org.ice4j.stack.NetAccessManager**'
+        classDelete 'org.ice4j.stack.StunClientTransaction**'
+        classDelete 'org.ice4j.stack.StunStack**'
+
+        classDelete 'org.ice4j.StackProperties**'
     }
 
     // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
@@ -445,8 +483,8 @@ dependencies {
 //}
 
 /*
- * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
- * executed at least once to generate all the static libraries before the aTalk apk build process.
+ * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this task needs to be
+ * executed at least once to generate all the static libraries prior to aTalk apk build process.
  */
 task getJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/"
@@ -472,6 +510,10 @@ task initJniLibs(type: Exec) {
     // executable './build-ffmpeg4android.sh'
 }
 
+/*
+ * Generate the versionupdate.properties file with the actual build versionName and versionCode.
+ * The versionupdate.properties is retrieved during app update check to asses if there is a new update
+ */
 task updateVersionFile(type: Copy) {
     description '<!-- Generate versionupdate.properties file -->'
 

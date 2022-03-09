@@ -5,16 +5,18 @@
  */
 package org.atalk.impl.neomedia.format;
 
-import java.awt.Dimension;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.service.neomedia.format.MediaFormatFactory;
+import org.atalk.service.neomedia.format.VideoMediaFormat;
 import org.atalk.util.MediaType;
-import org.atalk.service.neomedia.format.*;
 
+import java.awt.Dimension;
 import java.util.Map;
 
 import javax.media.format.VideoFormat;
 
 /**
- * Implements <tt>VideoMediaFormat</tt> for the JMF <tt>VideoFormat</tt>.
+ * Implements <code>VideoMediaFormat</code> for the JMF <code>VideoFormat</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -23,7 +25,7 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
 {
 
     /**
-     * The default value of the <tt>clockRate</tt> property of <tt>VideoMediaFormatImpl</tt>.
+     * The default value of the <code>clockRate</code> property of <code>VideoMediaFormatImpl</code>.
      */
     public static final double DEFAULT_CLOCK_RATE = 90000;
 
@@ -35,14 +37,14 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     public static final String H264_SPROP_PARAMETER_SETS_FMTP = "sprop-parameter-sets";
 
     /**
-     * The clock rate of this <tt>VideoMediaFormat</tt>.
+     * The clock rate of this <code>VideoMediaFormat</code>.
      */
     private final double clockRate;
 
     /**
-     * Initializes a new <tt>VideoMediaFormatImpl</tt> instance with a specific encoding.
+     * Initializes a new <code>VideoMediaFormatImpl</code> instance with a specific encoding.
      *
-     * @param encoding the encoding of the new <tt>VideoMediaFormatImpl</tt> instance
+     * @param encoding the encoding of the new <code>VideoMediaFormatImpl</code> instance
      */
     VideoMediaFormatImpl(String encoding)
     {
@@ -50,11 +52,11 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Initializes a new <tt>VideoMediaFormatImpl</tt> instance with a specific encoding and a
+     * Initializes a new <code>VideoMediaFormatImpl</code> instance with a specific encoding and a
      * specific clock rate.
      *
-     * @param encoding the encoding of the new <tt>VideoMediaFormatImpl</tt> instance
-     * @param clockRate the clock rate of the new <tt>VideoMediaFormatImpl</tt> instance
+     * @param encoding the encoding of the new <code>VideoMediaFormatImpl</code> instance
+     * @param clockRate the clock rate of the new <code>VideoMediaFormatImpl</code> instance
      */
     VideoMediaFormatImpl(String encoding, double clockRate)
     {
@@ -62,11 +64,11 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Initializes a new <tt>VideoMediaFormatImpl</tt> instance which is to provide an
-     * implementation of <tt>VideoMediaFormat</tt> for a specific JMF <tt>VideoFormat</tt>.
+     * Initializes a new <code>VideoMediaFormatImpl</code> instance which is to provide an
+     * implementation of <code>VideoMediaFormat</code> for a specific JMF <code>VideoFormat</code>.
      *
-     * @param format the JMF <tt>VideoFormat</tt> the new instance is to wrap and provide an implementation
-     * of <tt>VideoMediaFormat</tt> for
+     * @param format the JMF <code>VideoFormat</code> the new instance is to wrap and provide an implementation
+     * of <code>VideoMediaFormat</code> for
      */
     VideoMediaFormatImpl(VideoFormat format)
     {
@@ -74,13 +76,13 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Initializes a new <tt>VideoMediaFormatImpl</tt> instance which is to provide an
-     * implementation of <tt>VideoMediaFormat</tt> for a specific JMF <tt>VideoFormat</tt> and to
+     * Initializes a new <code>VideoMediaFormatImpl</code> instance which is to provide an
+     * implementation of <code>VideoMediaFormat</code> for a specific JMF <code>VideoFormat</code> and to
      * have a specific clock rate.
      *
-     * @param format the JMF <tt>VideoFormat</tt> the new instance is to wrap and provide an implementation
-     * of <tt>VideoMediaFormat</tt> for
-     * @param clockRate the clock rate of the new <tt>VideoMediaFormatImpl</tt> instance
+     * @param format the JMF <code>VideoFormat</code> the new instance is to wrap and provide an implementation
+     * of <code>VideoMediaFormat</code> for
+     * @param clockRate the clock rate of the new <code>VideoMediaFormatImpl</code> instance
      */
     VideoMediaFormatImpl(VideoFormat format, double clockRate)
     {
@@ -88,14 +90,14 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Initializes a new <tt>VideoMediaFormatImpl</tt> instance which is to provide an
-     * implementation of <tt>VideoMediaFormat</tt> for a specific JMF <tt>VideoFormat</tt> and to
+     * Initializes a new <code>VideoMediaFormatImpl</code> instance which is to provide an
+     * implementation of <code>VideoMediaFormat</code> for a specific JMF <code>VideoFormat</code> and to
      * have specific clock rate and set of format-specific parameters.
      *
-     * @param format the JMF <tt>VideoFormat</tt> the new instance is to wrap and provide an implementation
-     * of <tt>VideoMediaFormat</tt> for
-     * @param clockRate the clock rate of the new <tt>VideoMediaFormatImpl</tt> instance
-     * @param frameRate the frame rate of the new <tt>VideoMediaFormatImpl</tt> instance
+     * @param format the JMF <code>VideoFormat</code> the new instance is to wrap and provide an implementation
+     * of <code>VideoMediaFormat</code> for
+     * @param clockRate the clock rate of the new <code>VideoMediaFormatImpl</code> instance
+     * @param frameRate the frame rate of the new <code>VideoMediaFormatImpl</code> instance
      * @param formatParameters the set of format-specific parameters of the new instance
      * @param advancedParameters set of advanced parameters of the new instance
      */
@@ -115,12 +117,12 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Implements <tt>MediaFormat#equals(Object)</tt> and actually compares the encapsulated JMF
-     * <tt>Format</tt> instances.
+     * Implements <code>MediaFormat#equals(Object)</code> and actually compares the encapsulated JMF
+     * <code>Format</code> instances.
      *
-     * @param mediaFormat the object that we'd like to compare <tt>this</tt> one to
-     * @return <tt>true</tt> if the JMF <tt>Format</tt> instances encapsulated by this instance and
-     * their other characteristics are equal; <tt>false</tt>, otherwise.
+     * @param mediaFormat the object that we'd like to compare <code>this</code> one to
+     * @return <code>true</code> if the JMF <code>Format</code> instances encapsulated by this instance and
+     * their other characteristics are equal; <code>false</code>, otherwise.
      * @see MediaFormatImpl#equals(Object)
      */
     @Override
@@ -164,20 +166,20 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     /**
      * Determines whether a specific set of format parameters is equal to another set of format
      * parameters in the sense that they define an equal number of parameters and assign them equal
-     * values. Since the values are <tt>String</tt> s, presumes that a value of <tt>null</tt> is
-     * equal to the empty <tt>String</tt>.
+     * values. Since the values are <code>String</code> s, presumes that a value of <code>null</code> is
+     * equal to the empty <code>String</code>.
      * <p>
-     * The two <tt>Map</tt> instances of format parameters to be checked for equality are presumed
-     * to be modifiable in the sense that if the lack of a format parameter in a given <tt>Map</tt>
+     * The two <code>Map</code> instances of format parameters to be checked for equality are presumed
+     * to be modifiable in the sense that if the lack of a format parameter in a given <code>Map</code>
      * is equivalent to it having a specific value, an association of the format parameter to the
-     * value in question may be added to or removed from the respective <tt>Map</tt> instance for
+     * value in question may be added to or removed from the respective <code>Map</code> instance for
      * the purposes of determining equality.
      * </p>
      *
      * @param encoding the encoding (name) related to the two sets of format parameters to be tested for equality
      * @param fmtps1 the first set of format parameters to be tested for equality
      * @param fmtps2 the second set of format parameters to be tested for equality
-     * @return <tt>true</tt> if the specified sets of format parameters are equal; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified sets of format parameters are equal; <code>false</code>, otherwise
      */
     public static boolean formatParametersAreEqual(String encoding, Map<String, String> fmtps1,
             Map<String, String> fmtps2)
@@ -208,16 +210,16 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Determines whether the format parameters of this <tt>MediaFormat</tt> match a specific
+     * Determines whether the format parameters of this <code>MediaFormat</code> match a specific
      * set of format parameters.
      * <p>
-     * <tt>VideoMediaFormat</tt> reflects the fact that the <tt>packetization-mode</tt> format
+     * <code>VideoMediaFormat</code> reflects the fact that the <code>packetization-mode</code> format
      * parameter distinguishes H.264 payload types.
      * </p>
      *
-     * @param fmtps the set of format parameters to match to the format parameters of this <tt>MediaFormat</tt>
-     * @return <tt>true</tt> if this <tt>MediaFormat</tt> considers <tt>fmtps</tt> matching its
-     * format parameters; otherwise, <tt>false</tt>
+     * @param fmtps the set of format parameters to match to the format parameters of this <code>MediaFormat</code>
+     * @return <code>true</code> if this <code>MediaFormat</code> considers <code>fmtps</code> matching its
+     * format parameters; otherwise, <code>false</code>
      */
     @Override
     public boolean formatParametersMatch(Map<String, String> fmtps)
@@ -230,10 +232,10 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
      * Determines whether two sets of format parameters match in the context of a specific encoding.
      *
      * @param encoding the encoding (name) related to the two sets of format parameters to be matched.
-     * @param fmtps1 the first set of format parameters which is to be matched against <tt>fmtps2</tt>
-     * @param fmtps2 the second set of format parameters which is to be matched against <tt>fmtps1</tt>
-     * @return <tt>true</tt> if the two sets of format parameters match in the context of the
-     * specified <tt>encoding</tt>; otherwise, <tt>false</tt>
+     * @param fmtps1 the first set of format parameters which is to be matched against <code>fmtps2</code>
+     * @param fmtps2 the second set of format parameters which is to be matched against <code>fmtps1</code>
+     * @return <code>true</code> if the two sets of format parameters match in the context of the
+     * specified <code>encoding</code>; otherwise, <code>false</code>
      */
     public static boolean formatParametersMatch(String encoding, Map<String, String> fmtps1, Map<String, String> fmtps2)
     {
@@ -259,9 +261,9 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Gets the clock rate associated with this <tt>MediaFormat</tt>.
+     * Gets the clock rate associated with this <code>MediaFormat</code>.
      *
-     * @return the clock rate associated with this <tt>MediaFormat</tt>
+     * @return the clock rate associated with this <code>MediaFormat</code>
      * @see MediaFormat#getClockRate()
      */
     public double getClockRate()
@@ -270,9 +272,9 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Gets the frame rate associated with this <tt>MediaFormat</tt>.
+     * Gets the frame rate associated with this <code>MediaFormat</code>.
      *
-     * @return the frame rate associated with this <tt>MediaFormat</tt>
+     * @return the frame rate associated with this <code>MediaFormat</code>
      * @see VideoMediaFormat#getFrameRate()
      */
     public float getFrameRate()
@@ -281,11 +283,11 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Gets the type of this <tt>MediaFormat</tt> which is {@link MediaType#VIDEO} for
-     * <tt>AudioMediaFormatImpl</tt> instances.
+     * Gets the type of this <code>MediaFormat</code> which is {@link MediaType#VIDEO} for
+     * <code>AudioMediaFormatImpl</code> instances.
      *
-     * @return the <tt>MediaType</tt> that this format represents and which is
-     * <tt>MediaType.VIDEO</tt> for <tt>AudioMediaFormatImpl</tt> instances
+     * @return the <code>MediaType</code> that this format represents and which is
+     * <code>MediaType.VIDEO</code> for <code>AudioMediaFormatImpl</code> instances
      * @see MediaFormat#getMediaType()
      */
     public final MediaType getMediaType()
@@ -294,9 +296,9 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Gets the size of the image that this <tt>VideoMediaFormat</tt> describes.
+     * Gets the size of the image that this <code>VideoMediaFormat</code> describes.
      *
-     * @return a {@link Dimension} instance indicating the image size (in pixels) of this <tt>VideoMediaFormat</tt>
+     * @return a {@link Dimension} instance indicating the image size (in pixels) of this <code>VideoMediaFormat</code>
      * @see VideoMediaFormat#getSize()
      */
     public Dimension getSize()
@@ -305,9 +307,9 @@ public class VideoMediaFormatImpl extends MediaFormatImpl<VideoFormat>
     }
 
     /**
-     * Overrides <tt>MediaFormatImpl#hashCode()</tt> because <tt>Object#equals(Object)</tt> is overridden.
+     * Overrides <code>MediaFormatImpl#hashCode()</code> because <code>Object#equals(Object)</code> is overridden.
      *
-     * @return a hash code value for this <tt>VideoMediaFormatImpl</tt>
+     * @return a hash code value for this <code>VideoMediaFormatImpl</code>
      * @see MediaFormatImpl#hashCode()
      */
     @Override

@@ -5,29 +5,53 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
+import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Component;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AudioMediaStream;
+import org.atalk.service.neomedia.DTMFTone;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
-import org.atalk.service.neomedia.event.*;
+import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
+import org.atalk.service.neomedia.event.DTMFToneEvent;
+import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.event.VideoEvent;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.event.VideoNotifierSupport;
 import org.atalk.util.MediaType;
-import org.atalk.util.event.*;
+import org.atalk.util.event.PropertyChangeNotifier;
 
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
-
-import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 /**
  * Implements media control code which allows state sharing among multiple <code>CallPeerMediaHandler</code>s.

@@ -11,11 +11,20 @@ import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.DefaultStreamConnector;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.StreamConnector;
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.IceMediaStream;
+import org.ice4j.ice.LocalCandidate;
 import org.atalk.util.MediaType;
-import org.ice4j.ice.*;
 
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 import timber.log.Timber;
 

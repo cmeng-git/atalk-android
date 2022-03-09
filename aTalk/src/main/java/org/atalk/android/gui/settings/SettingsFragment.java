@@ -5,7 +5,6 @@
  */
 package org.atalk.android.gui.settings;
 
-import android.app.Activity;
 import android.content.*;
 import android.os.Build;
 import android.os.Bundle;

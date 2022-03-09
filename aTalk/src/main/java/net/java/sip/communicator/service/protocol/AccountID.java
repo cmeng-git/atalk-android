@@ -20,14 +20,19 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

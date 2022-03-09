@@ -5,8 +5,23 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractCall;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.CallState;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerListener;
+import net.java.sip.communicator.service.protocol.event.DTMFListener;
+import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
 import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.RTPTranslator;

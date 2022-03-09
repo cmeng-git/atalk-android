@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicAutoAnswer;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Call;
 
 import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.service.neomedia.MediaDirection;

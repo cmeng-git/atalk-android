@@ -9,10 +9,14 @@ import net.sf.fmj.media.rtp.RTPHeader;
 
 import org.atalk.impl.neomedia.AudioMediaStreamImpl;
 import org.atalk.impl.neomedia.MediaStreamImpl;
-import org.atalk.impl.neomedia.transform.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.RawPacket;
 
 import java.util.Map;
 
@@ -31,15 +35,15 @@ import javax.media.Buffer;
 public class SsrcTransformEngine extends SinglePacketTransformerAdapter implements TransformEngine
 {
     /**
-     * The name of the <tt>ConfigurationService</tt> property which specifies whether
-     * <tt>SsrcTransformEngine</tt> is to drop RTP packets indicated as generated from a muted
+     * The name of the <code>ConfigurationService</code> property which specifies whether
+     * <code>SsrcTransformEngine</code> is to drop RTP packets indicated as generated from a muted
      * audio source in {@link #reverseTransform(RawPacket)}.
      */
     public static final String DROP_MUTED_AUDIO_SOURCE_IN_REVERSE_TRANSFORM
             = SsrcTransformEngine.class.getName() + ".dropMutedAudioSourceInReverseTransform";
 
     /**
-     * The indicator which determines whether <tt>SsrcTransformEngine</tt> is to drop RTP packets
+     * The indicator which determines whether <code>SsrcTransformEngine</code> is to drop RTP packets
      * indicated as generated from a muted audio source in {@link #reverseTransform(RawPacket)}.
      */
     private static boolean dropMutedAudioSourceInReverseTransform = false;
@@ -47,7 +51,7 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     /**
      * The indicator which determines whether the method
      * {@link #readConfigurationServicePropertiesOnce()} is to read the values of certain
-     * <tt>ConfigurationService</tt> properties of concern to <tt>SsrcTransformEngine</tt> once
+     * <code>ConfigurationService</code> properties of concern to <code>SsrcTransformEngine</code> once
      * during the initialization of the first instance.
      */
     private static boolean readConfigurationServicePropertiesOnce = true;
@@ -58,7 +62,7 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     private final CsrcAudioLevelDispatcher csrcAudioLevelDispatcher;
 
     /**
-     * The <tt>MediaDirection</tt> in which this RTP header extension is active.
+     * The <code>MediaDirection</code> in which this RTP header extension is active.
      */
     private MediaDirection ssrcAudioLevelDirection = MediaDirection.INACTIVE;
 
@@ -68,9 +72,9 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     private byte ssrcAudioLevelExtID = -1;
 
     /**
-     * Initializes a new <tt>SsrcTransformEngine</tt> to be utilized by a specific <tt>MediaStreamImpl</tt>.
+     * Initializes a new <code>SsrcTransformEngine</code> to be utilized by a specific <code>MediaStreamImpl</code>.
      *
-     * @param mediaStream the <tt>MediaStreamImpl</tt> to utilize the new instance
+     * @param mediaStream the <code>MediaStreamImpl</code> to utilize the new instance
      */
     public SsrcTransformEngine(MediaStreamImpl mediaStream)
     {
@@ -103,7 +107,7 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     }
 
     /**
-     * Closes this <tt>PacketTransformer</tt> i.e. releases the resources allocated by it and
+     * Closes this <code>PacketTransformer</code> i.e. releases the resources allocated by it and
      * prepares it for garbage collection.
      */
     @Override
@@ -114,9 +118,9 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     }
 
     /**
-     * Always returns <tt>null</tt> since this engine does not require any RTCP transformations.
+     * Always returns <code>null</code> since this engine does not require any RTCP transformations.
      *
-     * @return <tt>null</tt> since this engine does not require any RTCP transformations.
+     * @return <code>null</code> since this engine does not require any RTCP transformations.
      */
     @Override
     public PacketTransformer getRTCPTransformer()
@@ -127,7 +131,7 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     /**
      * Returns a reference to this class since it is performing RTP transformations in here.
      *
-     * @return a reference to <tt>this</tt> instance of the <tt>SsrcTransformEngine</tt>.
+     * @return a reference to <code>this</code> instance of the <code>SsrcTransformEngine</code>.
      */
     @Override
     public PacketTransformer getRTPTransformer()
@@ -136,8 +140,8 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     }
 
     /**
-     * Reads the values of certain <tt>ConfigurationService</tt> properties of concern to
-     * <tt>SsrcTransformEngine</tt> once during the initialization of the first instance.
+     * Reads the values of certain <code>ConfigurationService</code> properties of concern to
+     * <code>SsrcTransformEngine</code> once during the initialization of the first instance.
      */
     private static synchronized void readConfigurationServicePropertiesOnce()
     {
@@ -156,12 +160,12 @@ public class SsrcTransformEngine extends SinglePacketTransformerAdapter implemen
     }
 
     /**
-     * Extracts the list of CSRC identifiers and passes it to the <tt>MediaStream</tt> associated
+     * Extracts the list of CSRC identifiers and passes it to the <code>MediaStream</code> associated
      * with this engine. Other than that the method does not do any transformations since CSRC
      * lists are part of RFC 3550 and they shouldn't be disrupting the rest of the application.
      *
-     * @param pkt the RTP <tt>RawPacket</tt> that we are to extract a SSRC list from.
-     * @return the same <tt>RawPacket</tt> that was received as a parameter since we don't need to
+     * @param pkt the RTP <code>RawPacket</code> that we are to extract a SSRC list from.
+     * @return the same <code>RawPacket</code> that was received as a parameter since we don't need to
      * worry about hiding the SSRC list from the rest of the RTP stack.
      */
     @Override

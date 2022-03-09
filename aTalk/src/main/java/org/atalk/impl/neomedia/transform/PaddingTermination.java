@@ -19,7 +19,10 @@ import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.LRUCache;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * De-duplicates RTP packets from incoming RTP streams. A more space-efficient

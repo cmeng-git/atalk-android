@@ -15,8 +15,10 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.AbstractRTPConnector;
+import org.atalk.service.neomedia.AbstractSrtpControl;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.MediaType;
 
 /**
@@ -26,7 +28,7 @@ import org.atalk.util.MediaType;
  * @author Boris Grozev
  */
 public class NullSrtpControl
-    extends AbstractSrtpControl<SrtpControl.TransformEngine>
+        extends AbstractSrtpControl<SrtpControl.TransformEngine>
 {
     /**
      * Initializes a new {@link NullSrtpControl} instance.

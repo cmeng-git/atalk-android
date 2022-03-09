@@ -16,15 +16,32 @@
 
 package org.atalk.android.plugin.geolocation;
 
-import android.hardware.*;
+import static org.atalk.android.R.id.map;
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Surface;
 
-import com.google.android.gms.maps.*;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.StreetViewPanorama.OnStreetViewPanoramaChangeListener;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.SupportStreetViewPanoramaFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -33,8 +50,6 @@ import org.atalk.service.osgi.OSGiActivity;
 import java.util.ArrayList;
 
 import timber.log.Timber;
-
-import static org.atalk.android.R.id.map;
 
 /**
  * This shows how to create a simple activity with streetView and a map
@@ -50,7 +65,13 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     private GoogleMap mMap;
 
     private SensorManager mSensorManager;
+    private Sensor accelerometer;
+    private Sensor magnetometer;
+
+    private float[] mGravity;
+    private float[] mGeomagnetic;
     private double mAngle;
+
     private ArrayList<LatLng> markerList = new ArrayList<>();
     private Thread mThread = null;
 
@@ -59,6 +80,10 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.split_street_view_panorama_and_map);
+
+        mSensorManager = aTalkApp.getSensorManager();
+        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         final LatLng markerPosition;
         if (savedInstanceState == null) {
@@ -101,7 +126,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
+    protected void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putParcelable(MARKER_POSITION_KEY, mMarker.getPosition());
@@ -112,11 +137,10 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     protected void onResume()
     {
         super.onResume();
-        mSensorManager = aTalkApp.getSensorManager();
-        if (mSensorManager != null)
-            mSensorManager.registerListener(this,
-                    mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                    SensorManager.SENSOR_DELAY_GAME);
+        if (mSensorManager != null) {
+            mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        }
         aTalkApp.setCurrentActivity(this);
     }
 
@@ -136,7 +160,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
 
 
     @Override
-    public void onStreetViewPanoramaChange(StreetViewPanoramaLocation location)
+    public void onStreetViewPanoramaChange(@NonNull StreetViewPanoramaLocation location)
     {
         if (location != null) {
             mMarker.setPosition(location.position);
@@ -144,7 +168,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     }
 
     @Override
-    public void onMarkerDragStart(Marker marker)
+    public void onMarkerDragStart(@NonNull Marker marker)
     {
     }
 
@@ -155,7 +179,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     }
 
     @Override
-    public void onMarkerDrag(Marker marker)
+    public void onMarkerDrag(@NonNull Marker marker)
     {
     }
 
@@ -170,22 +194,52 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
-            float bearing = Math.round(event.values[0]);
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            mGravity = event.values;
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            mGeomagnetic = event.values;
 
-            // Realign bearing direction if system is in landscape mode
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            if (rotation == Surface.ROTATION_90)
-                bearing += 90.0f;
-            else if (rotation == Surface.ROTATION_270)
-                bearing -= 90.0f;
+        if (mGravity != null && mGeomagnetic != null) {
+            float[] R = new float[9];
+            float[] I = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            if (success) {
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                // orientation contains: azimut, pitch and roll
+                float azimut = orientation[0];
+                float bearing = (float) Math.toDegrees(azimut);
 
-            if (Math.abs(bearing - mAngle) > 1.0) {
-                updateMapCamera(bearing);
-                updateSVPCamera(bearing);
-                mAngle = bearing;
+                if (Math.abs(bearing - mAngle) > 2.0) {
+                    // Realign bearing direction if system is in landscape mode
+                    int rotation = getWindowManager().getDefaultDisplay().getRotation();
+                    if (rotation == Surface.ROTATION_90)
+                        bearing += 90.0f;
+                    else if (rotation == Surface.ROTATION_270)
+                        bearing -= 90.0f;
+
+                    updateMapCamera(bearing);
+                    updateSVPCamera(bearing);
+                    mAngle = bearing;
+                }
             }
         }
+//        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+//            float bearing = Math.round(event.values[0]);
+//
+//            // Realign bearing direction if system is in landscape mode
+//            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+//            if (rotation == Surface.ROTATION_90)
+//                bearing += 90.0f;
+//            else if (rotation == Surface.ROTATION_270)
+//                bearing -= 90.0f;
+//
+//            if (Math.abs(bearing - mAngle) > 1.0) {
+//                updateMapCamera(bearing);
+//                updateSVPCamera(bearing);
+//                mAngle = bearing;
+//            }
+//        }
     }
 
     @Override

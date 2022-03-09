@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.0a (209001)
+Release Date:   03/09/2022
+Author:         cmeng
+- Use GoogleMap latest Renderer: MapsInitializer.initialize(getApplicationContext(), Renderer.LATEST, this);
+- Update implementation for deprecated Sensor.TYPE_ORIENTATION with Sensor.TYPE_ACCELEROMETER and Sensor.TYPE_MAGNETIC_FIELD
+- Remove unused ApiLib; Implemented functions are available since API-19
+- Update MediaAwareCallPeer, MediaStreamStats2 and StatisticsEngine; add skipStats option i.e. statistics sending
+- Port ice4j 3.0-55-g32a8aad source into ice4j 2.0; see gradle has problem handling both com.github compile and jarjar at the same time:
+  java.lang.NoSuchMethodError: No static method decode([BCC)Lorg/ice4j/message/Message; (2.9.0a is still having this problem)
+- Migration apache httpclient5:5.1 to okhttp3:okhttp:4.9.3: Upgrade HttpUtils and add HttpConnectionManager
+  * okhttp 4.x handles redirect and authentication; see https://square.github.io/okhttp/features/calls/#follow-up-requests
+  HttpUtils not tested (used by CertificateServiceImpl & ProvisioningServiceImpl);
+  Both classes are not active in aTalk; need more work when deploy.
+- Clear up smack jingle java document
+
+=========================================================================
 Version:        2.9.0 (209000)
 Release Date:   02/28/2022
 Author:         cmeng

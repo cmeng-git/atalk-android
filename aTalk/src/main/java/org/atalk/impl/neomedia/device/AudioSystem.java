@@ -25,7 +25,7 @@ import javax.sound.sampled.*;
 import timber.log.Timber;
 
 /**
- * Represents a <tt>DeviceSystem</tt> which provides support for the devices to capture and play
+ * Represents a <code>DeviceSystem</code> which provides support for the devices to capture and play
  * back audio (media). Examples include implementations which integrate the native PortAudio,
  * PulseAudio libraries.
  *
@@ -37,8 +37,8 @@ import timber.log.Timber;
 public abstract class AudioSystem extends DeviceSystem
 {
     /**
-     * Enumerates the different types of media data flow of <tt>CaptureDeviceInfo2</tt>s contributed
-     * by an <tt>AudioSystem</tt>.
+     * Enumerates the different types of media data flow of <code>CaptureDeviceInfo2</code>s contributed
+     * by an <code>AudioSystem</code>.
      *
      * @author Lyubomir Marinov
      */
@@ -49,7 +49,7 @@ public abstract class AudioSystem extends DeviceSystem
 
     /**
      * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
-     * respective <tt>AudioSystem</tt> supports toggling its automatic gain control (AGC)
+     * respective <code>AudioSystem</code> supports toggling its automatic gain control (AGC)
      * functionality between on and off. The UI will look for the presence of the flag in order to
      * determine whether a check box is to be shown to the user to enable toggling the automatic
      * gain control (AGC) functionality.
@@ -58,7 +58,7 @@ public abstract class AudioSystem extends DeviceSystem
 
     /**
      * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
-     * respective <tt>AudioSystem</tt> supports toggling its denoise functionality between on and
+     * respective <code>AudioSystem</code> supports toggling its denoise functionality between on and
      * off. The UI will look for the presence of the flag in order to determine whether a check box
      * is to be shown to the user to enable toggling the denoise functionality.
      */
@@ -66,7 +66,7 @@ public abstract class AudioSystem extends DeviceSystem
 
     /**
      * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
-     * respective <tt>AudioSystem</tt> supports toggling its echo cancellation functionality between
+     * respective <code>AudioSystem</code> supports toggling its echo cancellation functionality between
      * on and off. The UI will look for the presence of the flag in order to determine whether a
      * check box is to be shown to the user to enable toggling the echo cancellation functionality.
      */
@@ -74,7 +74,7 @@ public abstract class AudioSystem extends DeviceSystem
 
     /**
      * The constant/flag (to be) returned by {@link #getFeatures()} in order to indicate that the
-     * respective <tt>AudioSystem</tt> differentiates between playback and notification audio
+     * respective <code>AudioSystem</code> differentiates between playback and notification audio
      * devices. The UI, for example, will look for the presence of the flag in order to determine
      * whether separate combo boxes are to be shown to the user to allow the configuration of the
      * preferred playback and notification audio devices.
@@ -82,7 +82,7 @@ public abstract class AudioSystem extends DeviceSystem
     public static final int FEATURE_NOTIFY_AND_PLAYBACK_DEVICES = 1 << 3;
 
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>AudioRecord</tt> capture devices.
+     * The protocol of the <code>MediaLocator</code>s identifying <code>AudioRecord</code> capture devices.
      */
     public static final String LOCATOR_PROTOCOL_AUDIORECORD = "audiorecord";
 
@@ -91,13 +91,13 @@ public abstract class AudioSystem extends DeviceSystem
     public static final String LOCATOR_PROTOCOL_JAVASOUND = "javasound";
 
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>CaptureDeviceInfo</tt>s
-     * contributed by <tt>MacCoreaudioSystem</tt>.
+     * The protocol of the <code>MediaLocator</code>s identifying <code>CaptureDeviceInfo</code>s
+     * contributed by <code>MacCoreaudioSystem</code>.
      */
     public static final String LOCATOR_PROTOCOL_MACCOREAUDIO = "maccoreaudio";
 
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying OpenSL ES capture devices.
+     * The protocol of the <code>MediaLocator</code>s identifying OpenSL ES capture devices.
      */
     public static final String LOCATOR_PROTOCOL_OPENSLES = "opensles";
 
@@ -106,25 +106,25 @@ public abstract class AudioSystem extends DeviceSystem
     public static final String LOCATOR_PROTOCOL_PULSEAUDIO = "pulseaudio";
 
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying <tt>CaptureDeviceInfo</tt>s
-     * contributed by <tt>WASAPISystem</tt>.
+     * The protocol of the <code>MediaLocator</code>s identifying <code>CaptureDeviceInfo</code>s
+     * contributed by <code>WASAPISystem</code>.
      */
     public static final String LOCATOR_PROTOCOL_WASAPI = "wasapi";
 
     /**
-     * The (base) name of the <tt>ConfigurationService</tt> property which indicates whether
+     * The (base) name of the <code>ConfigurationService</code> property which indicates whether
      * automatic gain control (AGC) is to be performed for the captured audio.
      */
     private static final String PNAME_AGC = "automaticgaincontrol";
 
     /**
-     * The (base) name of the <tt>ConfigurationService</tt> property which indicates whether noise
+     * The (base) name of the <code>ConfigurationService</code> property which indicates whether noise
      * suppression is to be performed for the captured audio.
      */
     protected static final String PNAME_DENOISE = "denoise";
 
     /**
-     * The (base) name of the <tt>ConfigurationService</tt> property which indicates whether noise
+     * The (base) name of the <code>ConfigurationService</code> property which indicates whether noise
      * cancellation is to be performed for the captured audio.
      */
     protected static final String PNAME_ECHOCANCEL = "echocancel";
@@ -163,7 +163,7 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * The list of devices detected by this <tt>AudioSystem</tt> indexed by their category which is
+     * The list of devices detected by this <code>AudioSystem</code> indexed by their category which is
      * among {@link DataFlow#CAPTURE}, {@link DataFlow#NOTIFY} and {@link DataFlow#PLAYBACK}.
      */
     private Devices[] devices;
@@ -183,7 +183,7 @@ public abstract class AudioSystem extends DeviceSystem
     /**
      * {@inheritDoc}
      *
-     * Delegates to {@link #createRenderer(boolean)} with the value of the <tt>playback</tt> argument set to true.
+     * Delegates to {@link #createRenderer(boolean)} with the value of the <code>playback</code> argument set to true.
      */
     @Override
     public Renderer createRenderer()
@@ -192,14 +192,14 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * Initializes a new <tt>Renderer</tt> instance which is to either perform playback on or sound
+     * Initializes a new <code>Renderer</code> instance which is to either perform playback on or sound
      * a notification through a device contributed by this system. The (default) implementation of
-     * <tt>AudioSystem</tt> ignores the value of the <tt>playback</tt> argument and delegates to
+     * <code>AudioSystem</code> ignores the value of the <code>playback</code> argument and delegates to
      * {@link DeviceSystem#createRenderer()}.
      *
-     * @param playback <tt>true</tt> if the new instance is to perform playback or <tt>false</tt> if the new
+     * @param playback <code>true</code> if the new instance is to perform playback or <code>false</code> if the new
      * instance is to sound a notification
-     * @return a new <tt>Renderer</tt> instance which is to either perform playback on or sound a
+     * @return a new <code>Renderer</code> instance which is to either perform playback on or sound a
      * notification through a device contributed by this system
      */
     public Renderer createRenderer(boolean playback)
@@ -338,14 +338,14 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * Gets a <tt>CaptureDeviceInfo2</tt> which has been contributed by this <tt>AudioSystem</tt>,
+     * Gets a <code>CaptureDeviceInfo2</code> which has been contributed by this <code>AudioSystem</code>,
      * supports a specific flow of media data (i.e. capture, notify or playback) and is identified
-     * by a specific <tt>MediaLocator</tt>.
+     * by a specific <code>MediaLocator</code>.
      *
-     * @param dataFlow the flow of the media data supported by the <tt>CaptureDeviceInfo2</tt> to be returned
-     * @param locator the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo2</tt> to be returned
-     * @return a <tt>CaptureDeviceInfo2</tt> which has been contributed by this instance, supports
-     * the specified <tt>dataFlow</tt> and is identified by the specified <tt>locator</tt>
+     * @param dataFlow the flow of the media data supported by the <code>CaptureDeviceInfo2</code> to be returned
+     * @param locator the <code>MediaLocator</code> of the <code>CaptureDeviceInfo2</code> to be returned
+     * @return a <code>CaptureDeviceInfo2</code> which has been contributed by this instance, supports
+     * the specified <code>dataFlow</code> and is identified by the specified <code>locator</code>
      */
     public CaptureDeviceInfo2 getDevice(DataFlow dataFlow, MediaLocator locator)
     {
@@ -356,7 +356,7 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the list of devices with a specific data flow: capture, notify or playback.
      *
      * @param dataFlow the data flow of the devices to retrieve: capture, notify or playback
-     * @return the list of devices with the specified <tt>dataFlow</tt>
+     * @return the list of devices with the specified <code>dataFlow</code>
      */
     public List<CaptureDeviceInfo2> getDevices(DataFlow dataFlow)
     {
@@ -364,10 +364,10 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * Returns the FMJ format of a specific <tt>InputStream</tt> providing audio media.
+     * Returns the FMJ format of a specific <code>InputStream</code> providing audio media.
      *
-     * @param audioInputStream the <tt>InputStream</tt> providing audio media to determine the FMJ format of
-     * @return the FMJ format of the specified <tt>audioInputStream</tt> or <tt>null</tt> if such an
+     * @param audioInputStream the <code>InputStream</code> providing audio media to determine the FMJ format of
+     * @return the FMJ format of the specified <code>audioInputStream</code> or <code>null</code> if such an
      * FMJ format could not be determined
      */
     public javax.media.format.AudioFormat getFormat(InputStream audioInputStream)
@@ -382,13 +382,13 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * Gets the (full) name of the <tt>ConfigurationService</tt> property which is associated with a
-     * (base) <tt>AudioSystem</tt>-specific property name.
+     * Gets the (full) name of the <code>ConfigurationService</code> property which is associated with a
+     * (base) <code>AudioSystem</code>-specific property name.
      *
-     * @param basePropertyName the (base) <tt>AudioSystem</tt>-specific property name of which the associated (full)
-     * <tt>ConfigurationService</tt> property name is to be returned
-     * @return the (full) name of the <tt>ConfigurationService</tt> property which is associated
-     * with the (base) <tt>AudioSystem</tt> -specific property name
+     * @param basePropertyName the (base) <code>AudioSystem</code>-specific property name of which the associated (full)
+     * <code>ConfigurationService</code> property name is to be returned
+     * @return the (full) name of the <code>ConfigurationService</code> property which is associated
+     * with the (base) <code>AudioSystem</code> -specific property name
      */
     protected String getPropertyName(String basePropertyName)
     {
@@ -399,7 +399,7 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the selected device for a specific data flow: capture, notify or playback.
      *
      * @param dataFlow the data flow of the selected device to retrieve: capture, notify or playback.
-     * @return the selected device for the specified <tt>dataFlow</tt>
+     * @return the selected device for the specified <code>dataFlow</code>
      */
     public CaptureDeviceInfo2 getSelectedDevice(DataFlow dataFlow)
     {
@@ -410,8 +410,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the indicator which determines whether automatic gain control (AGC) is to be performed
      * for captured audio.
      *
-     * @return <tt>true</tt> if automatic gain control (AGC) is to be performed for captured audio;
-     * otherwise, <tt>false</tt>
+     * @return <code>true</code> if automatic gain control (AGC) is to be performed for captured audio;
+     * otherwise, <code>false</code>
      */
     public boolean isAutomaticGainControl()
     {
@@ -427,8 +427,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the indicator which determines whether noise suppression is to be performed for captured
      * audio.
      *
-     * @return <tt>true</tt> if noise suppression is to be performed for captured audio; otherwise,
-     * <tt>false</tt>
+     * @return <code>true</code> if noise suppression is to be performed for captured audio; otherwise,
+     * <code>false</code>
      */
     public boolean isDenoise()
     {
@@ -444,8 +444,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Gets the indicator which determines whether echo cancellation is to be performed for captured
      * audio.
      *
-     * @return <tt>true</tt> if echo cancellation is to be performed for captured audio; otherwise,
-     * <tt>false</tt>
+     * @return <code>true</code> if echo cancellation is to be performed for captured audio; otherwise,
+     * <code>false</code>
      */
     public boolean isEchoCancel()
     {
@@ -460,9 +460,9 @@ public abstract class AudioSystem extends DeviceSystem
     /**
      * {@inheritDoc}
      *
-     * Because <tt>AudioSystem</tt> may support playback and notification audio devices apart from
-     * capture audio devices, fires more specific <tt>PropertyChangeEvent</tt>s than
-     * <tt>DeviceSystem</tt>
+     * Because <code>AudioSystem</code> may support playback and notification audio devices apart from
+     * capture audio devices, fires more specific <code>PropertyChangeEvent</code>s than
+     * <code>DeviceSystem</code>
      */
     @Override
     protected void postInitialize()
@@ -511,7 +511,7 @@ public abstract class AudioSystem extends DeviceSystem
      * {@inheritDoc}
      *
      * Removes any capture, playback and notification devices previously detected by this
-     * <tt>AudioSystem</tt> and prepares it for the execution of its
+     * <code>AudioSystem</code> and prepares it for the execution of its
      * {@link DeviceSystem#doInitialize()} implementation (which detects all devices to be provided
      * by this instance).
      */
@@ -530,13 +530,13 @@ public abstract class AudioSystem extends DeviceSystem
     }
 
     /**
-     * Fires a new <tt>PropertyChangeEvent</tt> to the <tt>PropertyChangeListener</tt>s registered
-     * with this <tt>PropertyChangeNotifier</tt> in order to notify about a change in the value of a
+     * Fires a new <code>PropertyChangeEvent</code> to the <code>PropertyChangeListener</code>s registered
+     * with this <code>PropertyChangeNotifier</code> in order to notify about a change in the value of a
      * specific property which had its old value modified to a specific new value.
-     * <tt>PropertyChangeNotifier</tt> does not check whether the specified <tt>oldValue</tt> and
-     * <tt>newValue</tt> are indeed different.
+     * <code>PropertyChangeNotifier</code> does not check whether the specified <code>oldValue</code> and
+     * <code>newValue</code> are indeed different.
      *
-     * @param property the name of the property of this <tt>PropertyChangeNotifier</tt> which had its value
+     * @param property the name of the property of this <code>PropertyChangeNotifier</code> which had its value
      * changed
      * @param oldValue the value of the property with the specified name before the change
      * @param newValue the value of the property with the specified name after the change
@@ -550,8 +550,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Sets the indicator which determines whether automatic gain control (AGC) is to be performed
      * for captured audio.
      *
-     * @param automaticGainControl <tt>true</tt> if automatic gain control (AGC) is to be performed for captured audio;
-     * otherwise, <tt>false</tt>
+     * @param automaticGainControl <code>true</code> if automatic gain control (AGC) is to be performed for captured audio;
+     * otherwise, <code>false</code>
      */
     public void setAutomaticGainControl(boolean automaticGainControl)
     {
@@ -574,8 +574,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Sets the indicator which determines whether noise suppression is to be performed for captured
      * audio.
      *
-     * @param denoise <tt>true</tt> if noise suppression is to be performed for captured audio; otherwise,
-     * <tt>false</tt>
+     * @param denoise <code>true</code> if noise suppression is to be performed for captured audio; otherwise,
+     * <code>false</code>
      */
     public void setDenoise(boolean denoise)
     {
@@ -600,8 +600,8 @@ public abstract class AudioSystem extends DeviceSystem
      * Sets the indicator which determines whether echo cancellation is to be performed for captured
      * audio.
      *
-     * @param echoCancel <tt>true</tt> if echo cancellation is to be performed for captured audio; otherwise,
-     * <tt>false</tt>
+     * @param echoCancel <code>true</code> if echo cancellation is to be performed for captured audio; otherwise,
+     * <code>false</code>
      */
     public void setEchoCancel(boolean echoCancel)
     {

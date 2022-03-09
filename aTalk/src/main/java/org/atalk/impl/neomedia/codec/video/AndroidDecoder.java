@@ -25,7 +25,7 @@ import javax.media.format.YUVFormat;
 import timber.log.Timber;
 
 /**
- * The video decoder based on <tt>MediaCodec</tt>.
+ * The video decoder based on <code>MediaCodec</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -38,12 +38,12 @@ public class AndroidDecoder extends AndroidCodec
     public static final String HW_DECODING_ENABLE_PROPERTY = "neomedia.android.hw_decode";
 
     /**
-     * Name of configuration property that enables decoding directly into provided <tt>Surface</tt> object.
+     * Name of configuration property that enables decoding directly into provided <code>Surface</code> object.
      */
     public static final String DIRECT_SURFACE_DECODE_PROPERTY = "neomedia.android.surface_decode";
 
     /**
-     * Remembers if this instance is using decoding into the <tt>Surface</tt>.
+     * Remembers if this instance is using decoding into the <code>Surface</code>.
      */
     private final boolean useOutputSurface;
 
@@ -53,7 +53,7 @@ public class AndroidDecoder extends AndroidCodec
     private Dimension outputSize;
 
     /**
-     * Surface provider used to obtain <tt>SurfaceView</tt> object that will be used for decoded remote video rendering.
+     * Surface provider used to obtain <code>SurfaceView</code> object that will be used for decoded remote video rendering.
      */
     public static PreviewSurfaceProvider renderSurfaceProvider;
 
@@ -68,7 +68,7 @@ public class AndroidDecoder extends AndroidCodec
             new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0")};
 
     /**
-     * Create a new instance of <tt>AndroidDecoder</tt>.
+     * Create a new instance of <code>AndroidDecoder</code>.
      */
     public AndroidDecoder()
     {
@@ -105,9 +105,9 @@ public class AndroidDecoder extends AndroidCodec
     }
 
     /**
-     * Returns <tt>true</tt> if hardware decoding is supported and enabled.
+     * Returns <code>true</code> if hardware decoding is supported and enabled.
      *
-     * @return <tt>true</tt> if hardware decoding is supported and enabled.
+     * @return <code>true</code> if hardware decoding is supported and enabled.
      */
     public static boolean isHwDecodingEnabled()
     {
@@ -115,9 +115,9 @@ public class AndroidDecoder extends AndroidCodec
     }
 
     /**
-     * Returns <tt>true</tt> if decoding into the <tt>Surface</tt> is enabled.
+     * Returns <code>true</code> if decoding into the <code>Surface</code> is enabled.
      *
-     * @return <tt>true</tt> if decoding into the <tt>Surface</tt> is enabled.
+     * @return <code>true</code> if decoding into the <code>Surface</code> is enabled.
      */
     public static boolean isDirectSurfaceEnabled()
     {
@@ -197,11 +197,11 @@ public class AndroidDecoder extends AndroidCodec
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+     * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)

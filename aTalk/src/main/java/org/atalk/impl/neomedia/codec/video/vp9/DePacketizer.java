@@ -46,51 +46,51 @@ public class DePacketizer extends AbstractCodec2
     private final SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
-     * Stores unused <tt>Container</tt>'s.
+     * Stores unused <code>Container</code>'s.
      */
     private final Queue<Container> free = new ArrayBlockingQueue<>(100);
 
     /**
-     * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
+     * Stores the first (earliest) sequence number stored in <code>data</code>, or -1 if <code>data</code> is empty.
      */
     private int firstSeq = -1;
 
     /**
-     * Stores the last (latest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
+     * Stores the last (latest) sequence number stored in <code>data</code>, or -1 if <code>data</code> is empty.
      */
     private int lastSeq = -1;
 
     /**
-     * Stores the value of the <tt>PictureID</tt> field for the VP9 compressed
-     * frame, parts of which are currently stored in <tt>data</tt>, or -1 if
-     * the <tt>PictureID</tt> field is not in use or <tt>data</tt> is empty.
+     * Stores the value of the <code>PictureID</code> field for the VP9 compressed
+     * frame, parts of which are currently stored in <code>data</code>, or -1 if
+     * the <code>PictureID</code> field is not in use or <code>data</code> is empty.
      */
     private int pictureId = -1;
 
     /**
-     * Stores the RTP timestamp of the packets stored in <tt>data</tt>, or -1 if they don't have a timestamp set.
+     * Stores the RTP timestamp of the packets stored in <code>data</code>, or -1 if they don't have a timestamp set.
      */
     private long timestamp = -1L;
 
     /**
-     * Whether we have stored any packets in <tt>data</tt>. Equivalent to <tt>data.isEmpty()</tt>.
+     * Whether we have stored any packets in <code>data</code>. Equivalent to <code>data.isEmpty()</code>.
      */
     private boolean empty = true;
 
     /**
-     * Whether we have stored in <tt>data</tt> the last RTP packet of the VP9
-     * compressed frame, parts of which are currently stored in <tt>data</tt>.
+     * Whether we have stored in <code>data</code> the last RTP packet of the VP9
+     * compressed frame, parts of which are currently stored in <code>data</code>.
      */
     private boolean haveEnd = false;
 
     /**
-     * Whether we have stored in <tt>data</tt> the first RTP packet of the VP9
-     * compressed frame, parts of which are currently stored in <tt>data</tt>.
+     * Whether we have stored in <code>data</code> the first RTP packet of the VP9
+     * compressed frame, parts of which are currently stored in <code>data</code>.
      */
     private boolean haveStart = false;
 
     /**
-     * Stores the sum of the lengths of the data stored in <tt>data</tt>, that
+     * Stores the sum of the lengths of the data stored in <code>data</code>, that
      * is the total length of the VP9 compressed frame to be constructed.
      */
     private int frameLength = 0;
@@ -103,13 +103,13 @@ public class DePacketizer extends AbstractCodec2
     private static int pid = Math.abs(new Random().nextInt());
 
     /**
-     * Initializes a new <tt>AbstractCodec2</tt> instance with a specific <tt>PlugIn</tt> name, a
-     * specific <tt>Class</tt> of input and output <tt>Format</tt>s, and a specific list of
-     * <tt>Format</tt>s supported as output.
+     * Initializes a new <code>AbstractCodec2</code> instance with a specific <code>PlugIn</code> name, a
+     * specific <code>Class</code> of input and output <code>Format</code>s, and a specific list of
+     * <code>Format</code>s supported as output.
      *
-     * name: the <tt>PlugIn</tt> name of the new instance
-     * VideoFormat.class: the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * VideoFormat: the list of <tt>Format</tt>s supported by the new instance as output @Super parameters
+     * name: the <code>PlugIn</code> name of the new instance
+     * VideoFormat.class: the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
+     * VideoFormat: the list of <code>Format</code>s supported by the new instance as output @Super parameters
      */
     public DePacketizer()
     {
@@ -137,7 +137,7 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Re-initializes the fields which store information about the currently held data. Empties <tt>data</tt>.
+     * Re-initializes the fields which store information about the currently held data. Empties <code>data</code>.
      */
     private void reinit()
     {
@@ -159,9 +159,9 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * Checks whether the currently held VP8 compressed frame is complete (e.g all its packets
-     * are stored in <tt>data</tt>).
+     * are stored in <code>data</code>).
      *
-     * @return <tt>true</tt> if the currently help VP8 compressed frame is complete, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the currently help VP8 compressed frame is complete, <code>false</code> otherwise.
      */
     private boolean frameComplete()
     {
@@ -169,11 +169,11 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Checks whether there are packets with sequence numbers between <tt>firstSeq</tt> and
-     * <tt>lastSeq</tt> which are *not* stored in <tt>data</tt>.
+     * Checks whether there are packets with sequence numbers between <code>firstSeq</code> and
+     * <code>lastSeq</code> which are *not* stored in <code>data</code>.
      *
-     * @return <tt>true</tt> if there are packets with sequence numbers between
-     * <tt>firstSeq</tt> and <tt>lastSeq</tt> which are *not* stored in <tt>data</tt>.
+     * @return <code>true</code> if there are packets with sequence numbers between
+     * <code>firstSeq</code> and <code>lastSeq</code> which are *not* stored in <code>data</code>.
      */
     private boolean haveMissing()
     {
@@ -339,12 +339,12 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Returns true if the buffer contains a VP9 key frame at offset <tt>offset</tt>.
+     * Returns true if the buffer contains a VP9 key frame at offset <code>offset</code>.
      *
      * @param buf the byte buffer to check
      * @param off the offset in the byte buffer where the actual data starts
      * @param len the length of the data in the byte buffer
-     * @return true if the buffer contains a VP9 key frame at offset <tt>offset</tt>.
+     * @return true if the buffer contains a VP9 key frame at offset <code>offset</code>.
      */
     public static boolean isKeyFrame(byte[] buf, int off, int len)
     {
@@ -485,12 +485,12 @@ public class DePacketizer extends AbstractCodec2
         public static final int MAX_LENGTH = 23;  // practical length in aTalk
 
         /**
-         * Returns <tt>true</tt> if the B bit from the first byte of the payload descriptor has value 0.
+         * Returns <code>true</code> if the B bit from the first byte of the payload descriptor has value 0.
          *
          * @param buf the byte buffer that holds the VP9 payload.
          * @param off the offset in the byte buffer where the VP9 payload starts.
          * @param len the length of the VP9 payload.
-         * @return <tt>true</tt> if the B bit from the first byte of the payload descriptor has value 0, false otherwise.
+         * @return <code>true</code> if the B bit from the first byte of the payload descriptor has value 0, false otherwise.
          */
         public static boolean isStartOfFrame(byte[] buf, int off, int len)
         {
@@ -499,12 +499,12 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Returns <tt>true</tt> if the E bit from the first byte of the payload descriptor has value 0.
+         * Returns <code>true</code> if the E bit from the first byte of the payload descriptor has value 0.
          *
          * @param buf the byte buffer that holds the VP9 payload.
          * @param off the offset in the byte buffer where the VP9 payload starts.
          * @param len the length of the VP9 payload.
-         * @return <tt>true</tt> if the E bit from the first byte of the payload descriptor has value 0, false otherwise.
+         * @return <code>true</code> if the E bit from the first byte of the payload descriptor has value 0, false otherwise.
          */
         public static boolean isEndOfFrame(byte[] buf, int off, int len)
         {
@@ -605,11 +605,11 @@ public class DePacketizer extends AbstractCodec2
 
         /**
          * Returns a simple Payload Descriptor, the 'start of a Frame' bit set
-         * according to <tt>startOfFrame</tt>, and all other bits set to 0.
+         * according to <code>startOfFrame</code>, and all other bits set to 0.
          *
          * @param startOfFrame create start of frame header with B-bit set and more header info
          * @return a simple Payload Descriptor, with 'start of a Frame' bit set
-         * according to <tt>startOfFrame</tt>, and all other bits set to 0.
+         * according to <code>startOfFrame</code>, and all other bits set to 0.
          */
         // SYNC_CODE /* equal to 0x498342 */
         // D/(DePacketizer.java:214)#doProcess: VP9: DePacketizer: VP9/RTP, fmtps={} 11 1032:
@@ -651,11 +651,11 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * The size in bytes of the Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * The size in bytes of the Payload Descriptor at offset <code>offset</code> in <code>input</code>.
          *
-         * @param baBuffer the <tt>ByteArrayBuffer</tt> that holds the VP9 payload descriptor.
+         * @param baBuffer the <code>ByteArrayBuffer</code> that holds the VP9 payload descriptor.
          * @return The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>, or -1 if the input is not a valid VP9 Payload Descriptor.
+         * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid VP9 Payload Descriptor.
          */
         public static int getSize(ByteArrayBuffer baBuffer)
         {
@@ -666,13 +666,13 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * The size in bytes of the Payload Descriptor at offset <tt>off</tt> in <tt>buf</tt>.
+         * The size in bytes of the Payload Descriptor at offset <code>off</code> in <code>buf</code>.
          *
          * @param buf the byte buffer that contains the VP9 payload.
          * @param off the offset in the byte buffer where the VP9 payload starts.
          * @param len the length of the VP9 payload in the byte buffer.
          * @return The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>, or -1 if the input is not a valid VP9 Payload Descriptor.
+         * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid VP9 Payload Descriptor.
          */
         public static int getSize(byte[] buf, int off, int len)
         {
@@ -820,12 +820,12 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Returns <tt>true</tt> if the arguments specify a valid non-empty buffer.
+         * Returns <code>true</code> if the arguments specify a valid non-empty buffer.
          *
          * @param buf the byte buffer that holds the VP9 payload.
          * @param off the offset in the byte buffer where the VP9 payload starts.
          * @param len the length of the VP9 payload.
-         * @return <tt>true</tt> if the arguments specify a valid non-empty buffer.
+         * @return <code>true</code> if the arguments specify a valid non-empty buffer.
          */
         private static boolean isValid(byte[] buf, int off, int len)
         {
@@ -903,11 +903,11 @@ public class DePacketizer extends AbstractCodec2
         private static final byte P_BIT = (byte) 0x01;
 
         /**
-         * Returns true if the <tt>P</tt> (inverse key frame flag) field of the
-         * VP9 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0.
+         * Returns true if the <code>P</code> (inverse key frame flag) field of the
+         * VP9 Payload Header at offset <code>offset</code> in <code>input</code> is 0.
          *
-         * @return true if the <tt>P</tt> (inverse key frame flag) field of the
-         * VP9 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0, false otherwise.
+         * @return true if the <code>P</code> (inverse key frame flag) field of the
+         * VP9 Payload Header at offset <code>offset</code> in <code>input</code> is 0, false otherwise.
          */
         public static boolean isKeyFrame(byte[] input, int offset)
         {
@@ -944,12 +944,12 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * A simple container for a <tt>byte[]</tt> and an integer.
+     * A simple container for a <code>byte[]</code> and an integer.
      */
     private static class Container
     {
         /**
-         * This <tt>Container</tt>'s data.
+         * This <code>Container</code>'s data.
          */
         private byte[] buf;
 

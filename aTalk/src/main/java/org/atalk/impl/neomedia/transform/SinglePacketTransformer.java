@@ -6,8 +6,8 @@
 package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.function.Predicate;
+import org.atalk.util.ByteArrayBuffer;
 import org.jivesoftware.smack.util.Function;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,10 +15,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import timber.log.Timber;
 
 /**
- * Extends the <tt>PacketTransformer</tt> interface with methods which allow the transformation of a
+ * Extends the <code>PacketTransformer</code> interface with methods which allow the transformation of a
  * single packet into a single packet.
  *
- * Eases the implementation of <tt>PacketTransformer<tt>-s which transform each
+ * Eases the implementation of <code>PacketTransformer<code>-s which transform each
  * packet into a single transformed packet (as opposed to an array of possibly more than one packet).
  *
  * Need API-24 for new implementation (Use Function from smack).
@@ -30,8 +30,8 @@ import timber.log.Timber;
 public abstract class SinglePacketTransformer implements PacketTransformer
 {
     /**
-     * The number of <tt>Throwable</tt>s to log with a single call to <tt>logger</tt>. If every
-     * <tt>Throwable</tt> is logged in either of {@link #reverseTransform(RawPacket)} and
+     * The number of <code>Throwable</code>s to log with a single call to <code>logger</code>. If every
+     * <code>Throwable</code> is logged in either of {@link #reverseTransform(RawPacket)} and
      * {@link #transform(RawPacket)}, the logging may be overwhelming.
      */
     private static final int EXCEPTIONS_TO_LOG = 1000;
@@ -47,8 +47,8 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     private AtomicInteger exceptionsInTransform = new AtomicInteger();
 
     /**
-     * The idea is to have <tt>PacketTransformer</tt> implementations strictly associated with a
-     * <tt>Predicate</tt> so that they only process packets that they're supposed to process. For
+     * The idea is to have <code>PacketTransformer</code> implementations strictly associated with a
+     * <code>Predicate</code> so that they only process packets that they're supposed to process. For
      * example, transformers that transform RTP packets should not transform RTCP packets, if, by
      * mistake, they happen to be passed RTCP packets.
      */
@@ -70,7 +70,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
      * Ctor.
      *
      * XXX At some point ideally we would get rid of this ctor and all the inheritors will use the
-     * parametrized ctor. Also, we might want to move this check inside the <tt>TransformEngineChain</tt>
+     * parametrized ctor. Also, we might want to move this check inside the <code>TransformEngineChain</code>
      * so that we only make the check once per packet: The RTCP transformer is only supposed only to (reverse)
      * transform RTCP packets and the RTP transformer is only supposed to modify RTP packets.
      */
@@ -82,7 +82,7 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     /**
      * Ctor.
      *
-     * @param packetPredicate the <tt>PacketPredicate</tt> to use to match packets to (reverse) transform.
+     * @param packetPredicate the <code>PacketPredicate</code> to use to match packets to (reverse) transform.
      */
     public SinglePacketTransformer(Predicate<ByteArrayBuffer> packetPredicate)
     {

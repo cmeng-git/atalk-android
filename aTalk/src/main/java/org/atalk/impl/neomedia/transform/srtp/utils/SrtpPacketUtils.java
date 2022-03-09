@@ -15,13 +15,12 @@
  */
 package org.atalk.impl.neomedia.transform.srtp.utils;
 
+import static org.atalk.util.ByteArrayUtils.readInt;
+import static org.atalk.util.ByteArrayUtils.readUint16;
 
 import org.atalk.util.ByteArrayBuffer;
 
-import java.util.*;
-
-import static org.atalk.util.ByteArrayUtils.readInt;
-import static org.atalk.util.ByteArrayUtils.readUint16;
+import java.util.Formatter;
 
 /**
  * SrtpPacket is the low-level utilities to get the data fields needed by SRTP.
@@ -40,12 +39,12 @@ public class SrtpPacketUtils
 
 
     /**
-     * Returns <tt>true</tt> if the extension bit of an SRTP packet has been set
-     * and <tt>false</tt> otherwise.
+     * Returns <code>true</code> if the extension bit of an SRTP packet has been set
+     * and <code>false</code> otherwise.
      *
      * @param buf The SRTP packet.
-     * @return  <tt>true</tt> if the extension bit of this packet has been set
-     * and <tt>false</tt> otherwise.
+     * @return <code>true</code> if the extension bit of this packet has been set
+     * and <code>false</code> otherwise.
      */
     static boolean getExtensionBit(ByteArrayBuffer buf)
     {
@@ -61,7 +60,6 @@ public class SrtpPacketUtils
      * Note: this does not verify that the packet is indeed long enough for the claimed number of CSRCs.
      *
      * @param buf The SRTP packet.
-     *
      * @return the CSRC count for this packet.
      */
     static int getCsrcCount(ByteArrayBuffer buf)
@@ -128,30 +126,25 @@ public class SrtpPacketUtils
     {
         int length = buf.getLength();
         int neededLength = FIXED_HEADER_SIZE + authTagLen;
-        if (length < neededLength)
-        {
+        if (length < neededLength) {
             return false;
         }
 
         int cc = getCsrcCount(buf);
-        neededLength += cc*4;
-        if (length < neededLength)
-        {
+        neededLength += cc * 4;
+        if (length < neededLength) {
             return false;
         }
 
-        if (getExtensionBit(buf))
-        {
+        if (getExtensionBit(buf)) {
             neededLength += EXT_HEADER_SIZE;
-            if (length < neededLength)
-            {
+            if (length < neededLength) {
                 return false;
             }
 
             int extLen = getExtensionLength(buf);
             neededLength += extLen;
-            if (length < neededLength)
-            {
+            if (length < neededLength) {
                 return false;
             }
         }
@@ -165,10 +158,9 @@ public class SrtpPacketUtils
      */
     public static int getTotalHeaderLength(ByteArrayBuffer buf)
     {
-        int length = FIXED_HEADER_SIZE + getCsrcCount(buf)*4;
+        int length = FIXED_HEADER_SIZE + getCsrcCount(buf) * 4;
 
-        if (getExtensionBit(buf))
-        {
+        if (getExtensionBit(buf)) {
             length += EXT_HEADER_SIZE + getExtensionLength(buf);
         }
 
@@ -185,12 +177,9 @@ public class SrtpPacketUtils
         formatter.format("maxIdx=%d, window=0x%016x: [", maxIdx, replayWindow);
 
         boolean printedSomething = false;
-        for (long i = replayWindowSize - 1; i >= 0; i--)
-        {
-            if (((replayWindow >> i) & 0x1) != 0)
-            {
-                if (printedSomething)
-                {
+        for (long i = replayWindowSize - 1; i >= 0; i--) {
+            if (((replayWindow >> i) & 0x1) != 0) {
+                if (printedSomething) {
                     out.append(", ");
                 }
                 printedSomething = true;

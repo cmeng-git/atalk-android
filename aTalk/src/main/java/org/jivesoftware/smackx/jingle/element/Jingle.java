@@ -1,11 +1,12 @@
 /**
- * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
+ *
+ * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -248,10 +249,9 @@ public final class Jingle extends IQ
         if (contents == null) {
             contents = new ArrayList<>(1);
         }
-
-        synchronized (contents) {
-            contents.add(content);
-        }
+        // synchronized (contents) {
+        contents.add(content);
+        // }
     }
 
     /**
@@ -331,6 +331,7 @@ public final class Jingle extends IQ
          * <code>JingleAction</code> is <code>session-accept</code>.
          *
          * @param initiator the full JID of the initiator.
+         * @return builder instance
          */
         public Builder setInitiator(FullJid initiator)
         {
@@ -348,6 +349,7 @@ public final class Jingle extends IQ
          * Adds <code>contentPacket</code> to this IQ's content list.
          *
          * @param content the content packet extension we'd like to add to this element's content list.
+         * @return builder instance
          */
         public Builder addJingleContent(JingleContent content)
         {
@@ -363,6 +365,7 @@ public final class Jingle extends IQ
          * provides machine and possibly human -readable information about the reason for the action.
          *
          * @param reason this IQ's <code>reason</code> extension.
+         * @return builder instance
          */
         public Builder setReason(JingleReason.Reason reason)
         {
@@ -375,6 +378,7 @@ public final class Jingle extends IQ
          * provides machine and possibly human -readable information about the reason for the action.
          *
          * @param reason this IQ's <code>JingleReason</code> extension.
+         * @return builder instance
          */
         public Builder setReason(JingleReason reason)
         {
@@ -386,6 +390,7 @@ public final class Jingle extends IQ
          * Sets <code>si</code> as the session info extension for this packet.
          *
          * @param si a {@link SessionInfo} that we'd like to add here.
+         * @return builder instance
          */
         public Builder setSessionInfo(SessionInfo si)
         {

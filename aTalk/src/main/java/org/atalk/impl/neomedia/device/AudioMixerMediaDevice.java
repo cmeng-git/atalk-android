@@ -34,7 +34,7 @@ import javax.media.rtp.ReceiveStream;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>MediaDevice</tt> which performs audio mixing using {@link AudioMixer}.
+ * Implements a <code>MediaDevice</code> which performs audio mixing using {@link AudioMixer}.
  *
  * @author Lyubomir Marinov
  * @author Emil Ivov
@@ -44,24 +44,24 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         implements MediaDeviceWrapper
 {
     /**
-     * The <tt>AudioMixer</tt> which performs audio mixing in this <tt>MediaDevice</tt> (and rather
+     * The <code>AudioMixer</code> which performs audio mixing in this <code>MediaDevice</code> (and rather
      * the session that it represents).
      */
     private AudioMixer audioMixer;
 
     /**
-     * The actual <tt>AudioMediaDeviceImpl</tt> wrapped by this instance for the purposes of audio
-     * mixing and used by {@link #audioMixer} as its <tt>CaptureDevice</tt>.
+     * The actual <code>AudioMediaDeviceImpl</code> wrapped by this instance for the purposes of audio
+     * mixing and used by {@link #audioMixer} as its <code>CaptureDevice</code>.
      */
     private final AudioMediaDeviceImpl device;
 
     /**
-     * The <tt>MediaDeviceSession</tt> of this <tt>AudioMixer</tt> with {@link #device}.
+     * The <code>MediaDeviceSession</code> of this <code>AudioMixer</code> with {@link #device}.
      */
     private AudioMixerMediaDeviceSession deviceSession;
 
     /**
-     * The <tt>SimpleAudioLevelListener</tt> which is registered (or is to be registered) with
+     * The <code>SimpleAudioLevelListener</code> which is registered (or is to be registered) with
      * {@link #localUserAudioLevelDispatcher} and which delivers each of the audio level changes to
      * {@link #localUserAudioLevelListeners}.
      */
@@ -81,21 +81,21 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
             "Local User Audio Level Dispatcher (Mixer Edition)");
 
     /**
-     * The <tt>List</tt> where we store all listeners interested in changes of the local audio
+     * The <code>List</code> where we store all listeners interested in changes of the local audio
      * level and the number of times each one of them has been added. We wrap listeners because
      * we may have multiple subscriptions with the same listener and we would only store it once.
      * If one of the multiple subscriptions of a particular listener is removed, however, we
-     * wouldn't want to reset the listener to <tt>null</tt> as there are others still interested,
-     * and hence the <tt>referenceCount</tt> in the wrapper.
+     * wouldn't want to reset the listener to <code>null</code> as there are others still interested,
+     * and hence the <code>referenceCount</code> in the wrapper.
      * <p>
-     * <b>Note</b>: <tt>localUserAudioLevelListeners</tt> is a copy-on-write storage and access to
+     * <b>Note</b>: <code>localUserAudioLevelListeners</code> is a copy-on-write storage and access to
      * it is synchronized by {@link #localUserAudioLevelListenersSyncRoot}.
      * </p>
      */
     private List<SimpleAudioLevelListenerWrapper> localUserAudioLevelListeners = new ArrayList<>();
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #localUserAudioLevelListeners}.
+     * The <code>Object</code> which synchronizes the access to {@link #localUserAudioLevelListeners}.
      */
     private final Object localUserAudioLevelListenersSyncRoot = new Object();
 
@@ -110,28 +110,28 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     private int lastMeasuredLocalUserAudioLevel = 0;
 
     /**
-     * The <tt>List</tt> of RTP extensions supported by this device (at the time of writing this
-     * list is only filled for audio devices and is <tt>null</tt> otherwise).
+     * The <code>List</code> of RTP extensions supported by this device (at the time of writing this
+     * list is only filled for audio devices and is <code>null</code> otherwise).
      */
     private List<RTPExtension> rtpExtensions = null;
 
     /**
-     * The <tt>Map</tt> where we store audio level dispatchers and the streams they are interested
+     * The <code>Map</code> where we store audio level dispatchers and the streams they are interested
      * in.
      */
     private final Map<ReceiveStream, AudioLevelEventDispatcher> streamAudioLevelListeners = new HashMap<>();
 
     /**
-     * The <tt>ReceiveStreamBufferListener</tt> which gets notified when this
-     * <tt>MediaDevice</tt> reads from the <tt>CaptureDevice</tt> to the <tt>AudioMixer</tt>
+     * The <code>ReceiveStreamBufferListener</code> which gets notified when this
+     * <code>MediaDevice</code> reads from the <code>CaptureDevice</code> to the <code>AudioMixer</code>
      */
     private ReceiveStreamBufferListener receiveStreamBufferListener;
 
     /**
-     * Initializes a new <tt>AudioMixerMediaDevice</tt> instance which is to enable audio mixing on
-     * a specific <tt>AudioMediaDeviceImpl</tt> .
+     * Initializes a new <code>AudioMixerMediaDevice</code> instance which is to enable audio mixing on
+     * a specific <code>AudioMediaDeviceImpl</code> .
      *
-     * @param device the <tt>AudioMediaDeviceImpl</tt> which the new instance is to enable audio mixing on
+     * @param device the <code>AudioMediaDeviceImpl</code> which the new instance is to enable audio mixing on
      */
     public AudioMixerMediaDevice(AudioMediaDeviceImpl device)
     {
@@ -146,10 +146,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Connects to a specific <tt>CaptureDevice</tt> given in the form of a <tt>DataSource</tt>.
+     * Connects to a specific <code>CaptureDevice</code> given in the form of a <code>DataSource</code>.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> to be connected to
-     * @throws IOException if anything wrong happens while connecting to the specified <tt>captureDevice</tt>
+     * @param captureDevice the <code>CaptureDevice</code> to be connected to
+     * @throws IOException if anything wrong happens while connecting to the specified <code>captureDevice</code>
      * @see AbstractMediaDevice#connect(DataSource)
      */
     @Override
@@ -175,11 +175,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Creates a <tt>DataSource</tt> instance for this <tt>MediaDevice</tt> which gives access to
+     * Creates a <code>DataSource</code> instance for this <code>MediaDevice</code> which gives access to
      * the captured media.
      *
-     * @return a <tt>DataSource</tt> instance which gives access to the media captured by this
-     * <tt>MediaDevice</tt>
+     * @return a <code>DataSource</code> instance which gives access to the media captured by this
+     * <code>MediaDevice</code>
      * @see AbstractMediaDevice#createOutputDataSource()
      */
     @Override
@@ -192,7 +192,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * {@inheritDoc}
      * <p>
      * Delegates to the {@link AbstractMediaDevice#createPlayer(DataSource)} implementation of the
-     * <tt>MediaDevice</tt> on which this instance enables mixing i.e. {@link #getWrappedDevice()}.
+     * <code>MediaDevice</code> on which this instance enables mixing i.e. {@link #getWrappedDevice()}.
      */
     @Override
     protected Processor createPlayer(DataSource dataSource)
@@ -205,7 +205,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
      * {@inheritDoc}
      * <p>
      * Delegates to the {@link AbstractMediaDevice#createRenderer()} implementation of the
-     * <tt>MediaDevice</tt> on which this instance enables mixing i.e. {@link #getWrappedDevice()}.
+     * <code>MediaDevice</code> on which this instance enables mixing i.e. {@link #getWrappedDevice()}.
      */
     @Override
     protected Renderer createRenderer()
@@ -214,11 +214,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Creates a new <tt>MediaDeviceSession</tt> instance which is to represent the use of this
-     * <tt>MediaDevice</tt> by a <tt>MediaStream</tt>.
+     * Creates a new <code>MediaDeviceSession</code> instance which is to represent the use of this
+     * <code>MediaDevice</code> by a <code>MediaStream</code>.
      *
-     * @return a new <tt>MediaDeviceSession</tt> instance which is to represent the use of this
-     * <tt>MediaDevice</tt> by a <tt>MediaStream</tt>
+     * @return a new <code>MediaDeviceSession</code> instance which is to represent the use of this
+     * <code>MediaDevice</code> by a <code>MediaStream</code>
      * @see AbstractMediaDevice#createSession()
      */
     @Override
@@ -230,7 +230,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Notifies the <tt>SimpleAudioLevelListener</tt>s registered with this instance about the
+     * Notifies the <code>SimpleAudioLevelListener</code>s registered with this instance about the
      * new/current audio level of the local media stream.
      *
      * @param level the new/current audio level of the local media stream.
@@ -259,10 +259,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>AudioMixer</tt> which performs audio mixing in this <tt>MediaDevice</tt>
+     * Gets the <code>AudioMixer</code> which performs audio mixing in this <code>MediaDevice</code>
      * (and rather the session it represents). If it still does not exist, it is created.
      *
-     * @return the <tt>AudioMixer</tt> which performs audio mixing in this <tt>MediaDevice</tt>
+     * @return the <code>AudioMixer</code> which performs audio mixing in this <code>MediaDevice</code>
      * (and rather the session it represents)
      */
     private synchronized AudioMixer getAudioMixer()
@@ -340,11 +340,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Returns the <tt>MediaDirection</tt> supported by this device.
+     * Returns the <code>MediaDirection</code> supported by this device.
      *
      * @return {@link MediaDirection#SENDONLY} if this is a read-only device,
      * {@link MediaDirection#RECVONLY} if this is a write-only device or
-     * {@link MediaDirection#SENDRECV} if this <tt>MediaDevice</tt> can both capture and
+     * {@link MediaDirection#SENDRECV} if this <code>MediaDevice</code> can both capture and
      * render media
      * @see MediaDevice#getDirection()
      */
@@ -354,9 +354,9 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt> in which this <t>MediaDevice</tt> captures media.
+     * Gets the <code>MediaFormat</code> in which this <t>MediaDevice</code> captures media.
      *
-     * @return the <tt>MediaFormat</tt> in which this <tt>MediaDevice</tt> captures media
+     * @return the <code>MediaFormat</code> in which this <code>MediaDevice</code> captures media
      * @see MediaDevice#getFormat()
      */
     public MediaFormat getFormat()
@@ -365,7 +365,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the <tt>MediaType</tt> that this device supports.
+     * Gets the <code>MediaType</code> that this device supports.
      *
      * @return {@link MediaType#AUDIO} if this is an audio device or {@link MediaType#VIDEO} if
      * this is a video device
@@ -377,10 +377,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Returns a <tt>List</tt> containing (at the time of writing) a single extension descriptor
-     * indicating <tt>SENDRECV</tt> for mixer-to-client audio levels.
+     * Returns a <code>List</code> containing (at the time of writing) a single extension descriptor
+     * indicating <code>SENDRECV</code> for mixer-to-client audio levels.
      *
-     * @return a <tt>List</tt> containing the <tt>CSRC_AUDIO_LEVEL_URN</tt> extension descriptor.
+     * @return a <code>List</code> containing the <code>CSRC_AUDIO_LEVEL_URN</code> extension descriptor.
      */
     @Override
     public List<RTPExtension> getSupportedExtensions()
@@ -411,11 +411,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>.
+     * Gets the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code>.
      *
      * @param sendPreset not used
      * @param receivePreset not used
-     * @return the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>
+     * @return the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code>
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset, QualityPreset receivePreset)
@@ -424,10 +424,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Set the listener which gets notified when this <tt>MediaDevice</tt>
-     * reads data from a <tt>ReceiveStream</tt>
+     * Set the listener which gets notified when this <code>MediaDevice</code>
+     * reads data from a <code>ReceiveStream</code>
      *
-     * @param listener the <tt>ReceiveStreamBufferListener</tt> which gets notified
+     * @param listener the <code>ReceiveStreamBufferListener</code> which gets notified
      */
     public void setReceiveStreamBufferListener(ReceiveStreamBufferListener listener)
     {
@@ -435,14 +435,14 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt> and enabled in
-     * <tt>encodingConfiguration</tt>.
+     * Gets the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code> and enabled in
+     * <code>encodingConfiguration</code>.
      *
      * @param sendPreset not used
      * @param receivePreset not used
-     * @param encodingConfiguration the <tt>EncodingConfiguration</tt> instance to use
-     * @return the list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt> and enabled
-     * in <tt>encodingConfiguration</tt>.
+     * @param encodingConfiguration the <code>EncodingConfiguration</code> instance to use
+     * @return the list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code> and enabled
+     * in <code>encodingConfiguration</code>.
      * @see MediaDevice#getSupportedFormats(QualityPreset, QualityPreset, EncodingConfiguration)
      */
     public List<MediaFormat> getSupportedFormats(QualityPreset sendPreset,
@@ -452,10 +452,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Gets the actual <tt>MediaDevice</tt> which this <tt>MediaDevice</tt> is effectively built on
+     * Gets the actual <code>MediaDevice</code> which this <code>MediaDevice</code> is effectively built on
      * top of and forwarding to.
      *
-     * @return the actual <tt>MediaDevice</tt> which this <tt>MediaDevice</tt> is effectively built
+     * @return the actual <code>MediaDevice</code> which this <code>MediaDevice</code> is effectively built
      * on top of and forwarding to
      * @see MediaDeviceWrapper#getWrappedDevice()
      */
@@ -465,11 +465,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Removes the <tt>DataSource</tt> accepted by a specific <tt>DataSourceFilter</tt> from the
-     * list of input <tt>DataSource</tt> of the <tt>AudioMixer</tt> of this
-     * <tt>AudioMixerMediaDevice</tt> from which it reads audio to be mixed.
+     * Removes the <code>DataSource</code> accepted by a specific <code>DataSourceFilter</code> from the
+     * list of input <code>DataSource</code> of the <code>AudioMixer</code> of this
+     * <code>AudioMixerMediaDevice</code> from which it reads audio to be mixed.
      *
-     * @param dataSourceFilter the <tt>DataSourceFilter</tt> which selects the <tt>DataSource</tt>s to be removed
+     * @param dataSourceFilter the <code>DataSourceFilter</code> which selects the <code>DataSource</code>s to be removed
      */
     private void removeInputDataSources(DataSourceFilter dataSourceFilter)
     {
@@ -479,26 +479,26 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Represents the one and only <tt>MediaDeviceSession</tt> with the <tt>MediaDevice</tt> of
-     * this <tt>AudioMixer</tt>
+     * Represents the one and only <code>MediaDeviceSession</code> with the <code>MediaDevice</code> of
+     * this <code>AudioMixer</code>
      */
     private class AudioMixerMediaDeviceSession extends MediaDeviceSession
     {
         /**
-         * The list of <tt>MediaDeviceSession</tt>s of <tt>MediaStream</tt>s which use this
-         * <tt>AudioMixer</tt>.
+         * The list of <code>MediaDeviceSession</code>s of <code>MediaStream</code>s which use this
+         * <code>AudioMixer</code>.
          */
         private final List<MediaStreamMediaDeviceSession> mediaStreamMediaDeviceSessions = new LinkedList<>();
 
         /**
-         * The <tt>VolumeControl</tt> which is to control the volume (level) of the audio (to be)
+         * The <code>VolumeControl</code> which is to control the volume (level) of the audio (to be)
          * played back by this instance.
          */
         private VolumeControl outputVolumeControl;
 
         /**
-         * Initializes a new <tt>AudioMixingMediaDeviceSession</tt> which is to represent the
-         * <tt>MediaDeviceSession</tt> of this <tt>AudioMixer</tt> with its <tt>MediaDevice</tt>
+         * Initializes a new <code>AudioMixingMediaDeviceSession</code> which is to represent the
+         * <code>MediaDeviceSession</code> of this <code>AudioMixer</code> with its <code>MediaDevice</code>
          */
         public AudioMixerMediaDeviceSession()
         {
@@ -506,8 +506,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds <tt>l</tt> to the list of listeners that are being notified of new local audio
-         * levels as they change. If <tt>l</tt> is added multiple times it would only be registered  once.
+         * Adds <code>l</code> to the list of listeners that are being notified of new local audio
+         * levels as they change. If <code>l</code> is added multiple times it would only be registered  once.
          *
          * @param l the listener we'd like to add.
          */
@@ -546,10 +546,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds a specific <tt>MediaStreamMediaDeviceSession</tt> to the mix represented by this
+         * Adds a specific <code>MediaStreamMediaDeviceSession</code> to the mix represented by this
          * instance so that it knows when it is in use.
          *
-         * @param mediaStreamMediaDeviceSession the <tt>MediaStreamMediaDeviceSession</tt> to be added to the mix represented by
+         * @param mediaStreamMediaDeviceSession the <code>MediaStreamMediaDeviceSession</code> to be added to the mix represented by
          * this instance
          */
         void addMediaStreamMediaDeviceSession(
@@ -565,11 +565,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds a specific <tt>DataSource</tt> providing remote audio to the mix produced by the
-         * associated <tt>MediaDevice</tt>.
+         * Adds a specific <code>DataSource</code> providing remote audio to the mix produced by the
+         * associated <code>MediaDevice</code>.
          *
-         * @param playbackDataSource the <tt>DataSource</tt> providing remote audio to be added to the mix produced by
-         * the associated <tt>MediaDevice</tt>
+         * @param playbackDataSource the <code>DataSource</code> providing remote audio to be added to the mix produced by
+         * the associated <code>MediaDevice</code>
          */
         @Override
         public void addPlaybackDataSource(DataSource playbackDataSource)
@@ -582,13 +582,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds a specific <tt>ReceiveStream</tt> to the list of <tt>ReceiveStream</tt>s known to
+         * Adds a specific <code>ReceiveStream</code> to the list of <code>ReceiveStream</code>s known to
          * this instance to be contributing audio to the mix produced by its associated
-         * <tt>AudioMixer</tt>.
+         * <code>AudioMixer</code>.
          *
-         * @param receiveStream the <tt>ReceiveStream</tt> to be added to the list of <tt>ReceiveStream</tt>s
+         * @param receiveStream the <code>ReceiveStream</code> to be added to the list of <code>ReceiveStream</code>s
          * known to this instance to be contributing audio to the mix produced by its
-         * associated <tt>AudioMixer</tt>
+         * associated <code>AudioMixer</code>
          */
         @Override
         public void addReceiveStream(ReceiveStream receiveStream)
@@ -597,14 +597,14 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Creates the <tt>DataSource</tt> that this instance is to read captured media from. Since
-         * this is the <tt>MediaDeviceSession</tt> of this <tt>AudioMixer</tt> with its
-         * <tt>MediaDevice</tt>, returns the <tt>localOutputDataSource</tt> of the
-         * <tt>AudioMixer</tt> i.e. the <tt>DataSource</tt> which represents the mix of all
-         * <tt>ReceiveStream</tt>s and excludes the captured data from the <tt>MediaDevice</tt> of
-         * the <tt>AudioMixer</tt>.
+         * Creates the <code>DataSource</code> that this instance is to read captured media from. Since
+         * this is the <code>MediaDeviceSession</code> of this <code>AudioMixer</code> with its
+         * <code>MediaDevice</code>, returns the <code>localOutputDataSource</code> of the
+         * <code>AudioMixer</code> i.e. the <code>DataSource</code> which represents the mix of all
+         * <code>ReceiveStream</code>s and excludes the captured data from the <code>MediaDevice</code> of
+         * the <code>AudioMixer</code>.
          *
-         * @return the <tt>DataSource</tt> that this instance is to read captured media from
+         * @return the <code>DataSource</code> that this instance is to read captured media from
          * @see MediaDeviceSession#createCaptureDevice()
          */
         @Override
@@ -627,10 +627,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio (to
+         * Sets the <code>VolumeControl</code> which is to control the volume (level) of the audio (to
          * be) played back by this instance.
          *
-         * @param outputVolumeControl the <tt>VolumeControl</tt> which is to be control the volume (level) of the audio
+         * @param outputVolumeControl the <code>VolumeControl</code> which is to be control the volume (level) of the audio
          * (to be) played back by this instance
          */
         void setOutputVolumeControl(VolumeControl outputVolumeControl)
@@ -639,11 +639,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Sets <tt>listener</tt> as the list of listeners that will receive notifications of audio
-         * level event changes in the data arriving from <tt>stream</tt>.
+         * Sets <code>listener</code> as the list of listeners that will receive notifications of audio
+         * level event changes in the data arriving from <code>stream</code>.
          *
-         * @param stream the stream that <tt>l</tt> would like to register as an audio level listener for.
-         * @param listener the listener we'd like to register for notifications from <tt>stream</tt>.
+         * @param stream the stream that <code>l</code> would like to register as an audio level listener for.
+         * @param listener the listener we'd like to register for notifications from <code>stream</code>.
          */
         void setStreamAudioLevelListener(ReceiveStream stream, SimpleAudioLevelListener listener)
         {
@@ -675,8 +675,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         /**
          * {@inheritDoc}
          * <p>
-         * Overrides the super implementation in order to configure the <tt>VolumeControl</tt> of
-         * the returned <tt>Renderer</tt> for the purposes of having call/telephony
+         * Overrides the super implementation in order to configure the <code>VolumeControl</code> of
+         * the returned <code>Renderer</code> for the purposes of having call/telephony
          * conference-specific volume (levels).
          */
         @Override
@@ -690,8 +690,8 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Removes <tt>l</tt> from the list of listeners that are being notified of local audio
-         * levels.If <tt>l</tt> is not in the list, the method has no effect.
+         * Removes <code>l</code> from the list of listeners that are being notified of local audio
+         * levels.If <code>l</code> is not in the list, the method has no effect.
          *
          * @param l the listener we'd like to remove.
          */
@@ -728,12 +728,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Removes a specific <tt>MediaStreamMediaDeviceSession</tt> from the mix represented by
-         * this instance. When the last <tt>MediaStreamMediaDeviceSession</tt> is removed from this
+         * Removes a specific <code>MediaStreamMediaDeviceSession</code> from the mix represented by
+         * this instance. When the last <code>MediaStreamMediaDeviceSession</code> is removed from this
          * instance, it is no longer in use and closes itself thus signaling to its
-         * <tt>MediaDevice</tt> that it is no longer in use.
+         * <code>MediaDevice</code> that it is no longer in use.
          *
-         * @param mediaStreamMediaDeviceSession the <tt>MediaStreamMediaDeviceSession</tt> to be removed from the mix represented
+         * @param mediaStreamMediaDeviceSession the <code>MediaStreamMediaDeviceSession</code> to be removed from the mix represented
          * by this instance
          */
         void removeMediaStreamMediaDeviceSession(
@@ -749,11 +749,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Removes a specific <tt>DataSource</tt> providing remote audio from the mix produced by
-         * the associated <tt>AudioMixer</tt>.
+         * Removes a specific <code>DataSource</code> providing remote audio from the mix produced by
+         * the associated <code>AudioMixer</code>.
          *
-         * @param playbackDataSource the <tt>DataSource</tt> providing remote audio to be removed from the mix produced
-         * by the associated <tt>AudioMixer</tt>
+         * @param playbackDataSource the <code>DataSource</code> providing remote audio to be removed from the mix produced
+         * by the associated <code>AudioMixer</code>
          */
         @Override
         public void removePlaybackDataSource(final DataSource playbackDataSource)
@@ -769,13 +769,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Removes a specific <tt>ReceiveStream</tt> from the list of <tt>ReceiveStream</tt>s known
+         * Removes a specific <code>ReceiveStream</code> from the list of <code>ReceiveStream</code>s known
          * to this instance to be contributing audio to the mix produced by its associated
-         * <tt>AudioMixer</tt>.
+         * <code>AudioMixer</code>.
          *
-         * @param receiveStream the <tt>ReceiveStream</tt> to be removed from the list of <tt>ReceiveStream</tt>s
+         * @param receiveStream the <code>ReceiveStream</code> to be removed from the list of <code>ReceiveStream</code>s
          * known to this instance to be contributing audio to the mix produced by its
-         * associated <tt>AudioMixer</tt>
+         * associated <code>AudioMixer</code>
          */
         @Override
         public void removeReceiveStream(ReceiveStream receiveStream)
@@ -789,49 +789,49 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Represents the work of a <tt>MediaStream</tt> with the <tt>MediaDevice</tt> of an
-     * <tt>AudioMixer</tt> and the contribution of that <tt>MediaStream</tt> to the mix.
+     * Represents the work of a <code>MediaStream</code> with the <code>MediaDevice</code> of an
+     * <code>AudioMixer</code> and the contribution of that <code>MediaStream</code> to the mix.
      */
     private static class MediaStreamMediaDeviceSession extends AudioMediaDeviceSession
             implements PropertyChangeListener
     {
         /**
-         * The <tt>MediaDeviceSession</tt> of the <tt>AudioMixer</tt> that this instance exposes to
-         * a <tt>MediaStream</tt>. While there are multiple
-         * <tt>MediaStreamMediaDeviceSession<tt>s each servicing a specific
-         * <tt>MediaStream</tt>, they all share and delegate to one and the same
-         * <tt>AudioMixerMediaDeviceSession</tt> so that they all contribute to the mix.
+         * The <code>MediaDeviceSession</code> of the <code>AudioMixer</code> that this instance exposes to
+         * a <code>MediaStream</code>. While there are multiple
+         * <code>MediaStreamMediaDeviceSession<code>s each servicing a specific
+         * <code>MediaStream</code>, they all share and delegate to one and the same
+         * <code>AudioMixerMediaDeviceSession</code> so that they all contribute to the mix.
          */
         private final AudioMixerMediaDeviceSession audioMixerMediaDeviceSession;
 
         /**
          * We use this field to keep a reference to the listener that we've registered with the
          * audio mixer for local audio level notifications. We use this reference so that we could
-         * unregister it if someone resets it or sets it to <tt>null</tt>.
+         * unregister it if someone resets it or sets it to <code>null</code>.
          */
         private SimpleAudioLevelListener localUserAudioLevelListener = null;
 
         /**
          * We use this field to keep a reference to the listener that we've registered with the
          * audio mixer for stream audio level notifications. We use this reference so because at
-         * the time we get it from the <tt>MediaStream</tt> it might be too early to register it with
+         * the time we get it from the <code>MediaStream</code> it might be too early to register it with
          * the mixer as it is like that we don't have a receive stream yet. If that's the case, we
-         * hold on to the listener and register it only when we get the <tt>ReceiveStream</tt>.
+         * hold on to the listener and register it only when we get the <code>ReceiveStream</code>.
          */
         private SimpleAudioLevelListener streamAudioLevelListener = null;
 
         /**
-         * The <tt>Object</tt> that we use to lock operations on <tt>streamAudioLevelListener</tt>.
+         * The <code>Object</code> that we use to lock operations on <code>streamAudioLevelListener</code>.
          */
         private final Object streamAudioLevelListenerLock = new Object();
 
         /**
-         * Initializes a new <tt>MediaStreamMediaDeviceSession</tt> which is to represent the work
-         * of a <tt>MediaStream</tt> with the <tt>MediaDevice</tt> of this <tt>AudioMixer</tt> and
+         * Initializes a new <code>MediaStreamMediaDeviceSession</code> which is to represent the work
+         * of a <code>MediaStream</code> with the <code>MediaDevice</code> of this <code>AudioMixer</code> and
          * its contribution to the mix.
          *
-         * @param audioMixerMediaDeviceSession the <tt>MediaDeviceSession</tt> of the <tt>AudioMixer</tt> with its
-         * <tt>MediaDevice</tt> which the new instance is to delegate to in order to
+         * @param audioMixerMediaDeviceSession the <code>MediaDeviceSession</code> of the <code>AudioMixer</code> with its
+         * <code>MediaDevice</code> which the new instance is to delegate to in order to
          * contribute to the mix
          */
         public MediaStreamMediaDeviceSession(
@@ -861,11 +861,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Creates a new <tt>Player</tt> for a specific <tt>DataSource</tt> so that it is played
-         * back on the <tt>MediaDevice</tt> represented by this instance.
+         * Creates a new <code>Player</code> for a specific <code>DataSource</code> so that it is played
+         * back on the <code>MediaDevice</code> represented by this instance.
          *
-         * @param dataSource the <tt>DataSource</tt> to create a new <tt>Player</tt> for
-         * @return a new <tt>Player</tt> for the specified <tt>dataSource</tt>
+         * @param dataSource the <code>DataSource</code> to create a new <code>Player</code> for
+         * @return a new <code>Player</code> for the specified <code>dataSource</code>
          * @see MediaDeviceSession#createPlayer(DataSource)
          */
         @Override
@@ -884,7 +884,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * that we are sending out. Note that since this is a pseudo device we would simply be
          * delegating the call to the corresponding method of the master mixer device session.
          *
-         * @return a <tt>long[]</tt> array of SSRC identifiers that are currently contributing to
+         * @return a <code>long[]</code> array of SSRC identifiers that are currently contributing to
          * the mixer encapsulated by this device session.
          */
         @Override
@@ -894,11 +894,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been added for
-         * playback on the represented <tt>MediaDevice</tt>.
+         * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been added for
+         * playback on the represented <code>MediaDevice</code>.
          *
-         * @param playbackDataSource the <tt>DataSource</tt> which has been added for playback on the represented
-         * <tt>MediaDevice</tt>
+         * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
+         * <code>MediaDevice</code>
          * @see MediaDeviceSession#playbackDataSourceAdded(DataSource)
          */
         @Override
@@ -919,11 +919,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been removed
-         * from playback on the represented <tt>MediaDevice</tt>.
+         * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been removed
+         * from playback on the represented <code>MediaDevice</code>.
          *
-         * @param playbackDataSource the <tt>DataSource</tt> which has been removed from playback on the represented
-         * <tt>MediaDevice</tt>
+         * @param playbackDataSource the <code>DataSource</code> which has been removed from playback on the represented
+         * <code>MediaDevice</code>
          * @see MediaDeviceSession#playbackDataSourceRemoved(DataSource)
          */
         @Override
@@ -934,9 +934,9 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been updated.
+         * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been updated.
          *
-         * @param playbackDataSource the <tt>DataSource</tt> which has been updated.
+         * @param playbackDataSource the <code>DataSource</code> which has been updated.
          * @see MediaDeviceSession#playbackDataSourceUpdated(DataSource)
          */
         @Override
@@ -957,11 +957,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * The method relays <tt>PropertyChangeEvent</tt>s indicating a change in the SSRC_LIST in
-         * the encapsulated mixer device so that the <tt>MediaStream</tt> that uses this device
+         * The method relays <code>PropertyChangeEvent</code>s indicating a change in the SSRC_LIST in
+         * the encapsulated mixer device so that the <code>MediaStream</code> that uses this device
          * session can update its CSRC list.
          *
-         * @param evt that <tt>PropertyChangeEvent</tt> whose old and new value we will be relaying to
+         * @param evt that <code>PropertyChangeEvent</code> whose old and new value we will be relaying to
          * the stream.
          */
         public void propertyChange(PropertyChangeEvent evt)
@@ -973,13 +973,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Notifies this instance that a specific <tt>ReceiveStream</tt> has been added to the list
-         * of playbacks of <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by
-         * respective <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance.
+         * Notifies this instance that a specific <code>ReceiveStream</code> has been added to the list
+         * of playbacks of <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by
+         * respective <code>Player</code>s on the <code>MediaDevice</code> represented by this instance.
          *
-         * @param receiveStream the <tt>ReceiveStream</tt> which has been added to the list of playbacks of
-         * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-         * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+         * @param receiveStream the <code>ReceiveStream</code> which has been added to the list of playbacks of
+         * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+         * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
          */
         @Override
         protected void receiveStreamAdded(ReceiveStream receiveStream)
@@ -1000,13 +1000,13 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Notifies this instance that a specific <tt>ReceiveStream</tt> has been removed from the
-         * list of playbacks of <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by
-         * respective <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance.
+         * Notifies this instance that a specific <code>ReceiveStream</code> has been removed from the
+         * list of playbacks of <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by
+         * respective <code>Player</code>s on the <code>MediaDevice</code> represented by this instance.
          *
-         * @param receiveStream the <tt>ReceiveStream</tt> which has been removed from the list of playbacks of
-         * <tt>ReceiveStream</tt> s and/or <tt>DataSource</tt>s performed by respective
-         * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+         * @param receiveStream the <code>ReceiveStream</code> which has been removed from the list of playbacks of
+         * <code>ReceiveStream</code> s and/or <code>DataSource</code>s performed by respective
+         * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
          */
         @Override
         protected void receiveStreamRemoved(ReceiveStream receiveStream)
@@ -1027,10 +1027,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds a specific <tt>SoundLevelListener</tt> to the list of listeners interested in and
+         * Adds a specific <code>SoundLevelListener</code> to the list of listeners interested in and
          * notified about changes in local sound level related information.
          *
-         * @param l the <tt>SoundLevelListener</tt> to add
+         * @param l the <code>SoundLevelListener</code> to add
          */
         @Override
         public void setLocalUserAudioLevelListener(SimpleAudioLevelListener l)
@@ -1055,7 +1055,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
          * {@inheritDoc}
          * <p>
          * Overrides the super implementation to redirect/delegate the invocation to the
-         * master/audioMixerMediaDeviceSession because <tt>MediaStreamMediaDeviceSession</tt> does
+         * master/audioMixerMediaDeviceSession because <code>MediaStreamMediaDeviceSession</code> does
          * not perform playback/rendering.
          */
         @Override
@@ -1065,12 +1065,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Adds <tt>listener</tt> to the list of <tt>SimpleAudioLevelListener</tt>s registered with
+         * Adds <code>listener</code> to the list of <code>SimpleAudioLevelListener</code>s registered with
          * the mixer session that this "slave session" encapsulates. This class does not keep a
-         * reference to <tt>listener</tt>.
+         * reference to <code>listener</code>.
          *
-         * @param listener the <tt>SimpleAudioLevelListener</tt> that we are to pass to the mixer device
-         * session or <tt>null</tt> if we are trying to unregister it.
+         * @param listener the <code>SimpleAudioLevelListener</code> that we are to pass to the mixer device
+         * session or <code>null</code> if we are trying to unregister it.
          */
         @Override
         public void setStreamAudioLevelListener(SimpleAudioLevelListener listener)
@@ -1091,11 +1091,11 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
 
         /**
          * Returns the last audio level that was measured by the underlying mixer for the specified
-         * <tt>csrc</tt>.
+         * <code>csrc</code>.
          *
          * @param csrc the CSRC ID whose last measured audio level we'd like to retrieve.
          * @return the audio level that was last measured by the underlying mixer for the specified
-         * <tt>csrc</tt> or <tt>-1</tt> if the <tt>csrc</tt> does not belong to neither of
+         * <code>csrc</code> or <code>-1</code> if the <code>csrc</code> does not belong to neither of
          * the conference participants.
          */
         @Override
@@ -1116,12 +1116,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Sets the indicator which determines whether this <tt>MediaDeviceSession</tt> is set to
-         * output "silence" instead of the actual media fed from its <tt>CaptureDevice</tt>. If we
+         * Sets the indicator which determines whether this <code>MediaDeviceSession</code> is set to
+         * output "silence" instead of the actual media fed from its <code>CaptureDevice</code>. If we
          * are muted we just remove the local level listener from the session.
          *
-         * @param mute <tt>true</tt> to set this <tt>MediaDeviceSession</tt> to output "silence" instead
-         * of the actual media fed from its <tt>CaptureDevice</tt>; otherwise, <tt>false</tt>
+         * @param mute <code>true</code> to set this <code>MediaDeviceSession</code> to output "silence" instead
+         * of the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
          */
         @Override
         public void setMute(boolean mute)
@@ -1160,7 +1160,7 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         int referenceCount;
 
         /**
-         * Creates a wrapper of the <tt>l</tt> listener.
+         * Creates a wrapper of the <code>l</code> listener.
          *
          * @param l the listener we'd like to wrap;
          */
@@ -1171,10 +1171,10 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
         }
 
         /**
-         * Returns <tt>true</tt> if <tt>obj</tt> is a wrapping the same listener as ours.
+         * Returns <code>true</code> if <code>obj</code> is a wrapping the same listener as ours.
          *
          * @param obj the wrapper we'd like to compare to this instance
-         * @return <tt>true</tt> if <tt>obj</tt> is a wrapping the same listener as ours.
+         * @return <code>true</code> if <code>obj</code> is a wrapping the same listener as ours.
          */
         @Override
         public boolean equals(Object obj)
@@ -1201,12 +1201,12 @@ public class AudioMixerMediaDevice extends AbstractMediaDevice
     }
 
     /**
-     * Returns the <tt>TranscodingDataSource</tt> associated with <tt>inputDataSource</tt> in this
-     * object's <tt>AudioMixer</tt>.
+     * Returns the <code>TranscodingDataSource</code> associated with <code>inputDataSource</code> in this
+     * object's <code>AudioMixer</code>.
      *
-     * @param inputDataSource the <tt>DataSource</tt> to search for
-     * @return Returns the <tt>TranscodingDataSource</tt> associated with <tt>inputDataSource</tt>
-     * in this object's <tt>AudioMixer</tt>
+     * @param inputDataSource the <code>DataSource</code> to search for
+     * @return Returns the <code>TranscodingDataSource</code> associated with <code>inputDataSource</code>
+     * in this object's <code>AudioMixer</code>
      * @see AudioMixer#getTranscodingDataSource(javax.media.protocol.DataSource)
      */
     public TranscodingDataSource getTranscodingDataSource(DataSource inputDataSource)

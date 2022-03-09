@@ -16,9 +16,12 @@
 package org.atalk.impl.neomedia.transform.fec;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.*;
+import org.atalk.util.RTPUtils;
+import org.atalk.util.ArrayUtils;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 

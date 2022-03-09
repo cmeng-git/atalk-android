@@ -14,16 +14,28 @@ import net.java.sip.communicator.util.NetworkUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.service.neomedia.*;
-import org.atalk.service.neomedia.format.*;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.format.AudioMediaFormat;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.service.neomedia.format.MediaFormatFactory;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Creator;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 
-import java.net.*;
-import java.util.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -196,8 +208,8 @@ public class JingleUtils
 
     /**
      * Converts the specified media <code>direction</code> into the corresponding {@link JingleContent.Senders}
-     * value so that we could add it to a content element. The <code>initiatorPerspectice</code> allows
-     * callers to specify whether the direction is to be considered from the session initator's
+     * value so that we could add it to a content element. The <code>initiatorPerspective</code> allows
+     * callers to specify whether the direction is to be considered from the session initiator's
      * perspective or that of the responder.
      *
      * Example: A {@link MediaDirection#SENDONLY} value would be translated to
@@ -237,7 +249,7 @@ public class JingleUtils
      * Determines the direction of the media stream that <code>content</code> describes and returns the
      * corresponding <code>MediaDirection</code> enum entry. The method looks for a direction specifier
      * attribute (i.e. the content 'senders' attribute) or the absence thereof and returns the
-     * corresponding <code>MediaDirection</code> entry. The <code>initiatorPerspectice</code> allows callers
+     * corresponding <code>MediaDirection</code> entry. The <code>initiatorPerspective</code> allows callers
      * to specify whether the direction is to be considered from the session initiator's perspective
      * or that of the responder.
      *

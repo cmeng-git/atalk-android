@@ -4,7 +4,6 @@ import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import net.java.sip.communicator.util.OrderedProperties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hc.core5.http.NameValuePair;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -12,12 +11,24 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.httputil.HttpUtils;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -227,18 +238,17 @@ public class ProvisioningServiceImpl implements ProvisioningService
      * configuration file is retrieved from the network or if an exception happen
      *
      * @param url provisioning URL
-     * @param parameters the already filled parameters if any.
+     * @param jsonParameters the already filled parameters if any.
      * @return Stream of provisioning data
      */
-    private InputStream retrieveConfigurationFile(String url, List<NameValuePair> parameters)
+    private InputStream retrieveConfigurationFile(String url, JSONObject jsonParameters)
     {
         try {
             String arg;
             String[] args = null;
 
-            URL u = new URL(url);
             InetAddress ipaddr = ProvisioningActivator.getNetworkAddressManagerService()
-                    .getLocalHost(InetAddress.getByName(u.getHost()));
+                    .getLocalHost(InetAddress.getByName(new URL(url).getHost()));
 
             // Get any system environment identified by ${env.xyz}
             Pattern p = Pattern.compile("\\$\\{env\\.([^}]*)}");
@@ -336,7 +346,6 @@ public class ProvisioningServiceImpl implements ProvisioningService
                      * find the hardware address of the interface that has this IP address
                      */
                     Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-
                     while (en.hasMoreElements()) {
                         NetworkInterface iface = en.nextElement();
 
@@ -345,14 +354,11 @@ public class ProvisioningServiceImpl implements ProvisioningService
                             InetAddress inet = enInet.nextElement();
 
                             if (inet.equals(ipaddr)) {
-                                byte[] hw = ProvisioningActivator.getNetworkAddressManagerService()
-                                        .getHardwareAddress(iface);
-
+                                byte[] hw = ProvisioningActivator.getNetworkAddressManagerService().getHardwareAddress(iface);
                                 if (hw == null || hw.length == 0)
                                     continue;
 
                                 StringBuilder buf = new StringBuilder();
-
                                 for (byte h : hw) {
                                     int hi = h >= 0 ? h : h + 256;
                                     String t = (hi <= 0xf) ? "0" : "";
@@ -360,11 +366,8 @@ public class ProvisioningServiceImpl implements ProvisioningService
                                     buf.append(t);
                                     buf.append(":");
                                 }
-
                                 buf.deleteCharAt(buf.length() - 1);
-
                                 url = url.replace("${hwaddr}", buf.toString());
-
                                 break;
                             }
                         }
@@ -383,103 +386,62 @@ public class ProvisioningServiceImpl implements ProvisioningService
                 url = url.substring(0, url.indexOf('?'));
             }
 
-            ArrayList<String> paramNames = null;
-            ArrayList<String> paramValues = null;
-            int usernameIx = -1;
-            int passwordIx = -1;
+            String username = null;
+            String password = null;
+            JSONObject jsonBody = new JSONObject();
 
             if (args != null && args.length > 0) {
-                paramNames = new ArrayList<>(args.length);
-                paramValues = new ArrayList<>(args.length);
-
                 String usernameParam = "${username}";
                 String passwordParam = "${password}";
 
-                for (String arg1 : args) {
-                    String s = arg1;
+                for (String param : args) {
+                    String paramValue = "";
 
-                    int equalsIndex = s.indexOf("=");
-                    String currentParamName = null;
-
-                    if (equalsIndex > -1) {
-                        currentParamName = s.substring(0, equalsIndex);
+                    String[] params = param.split("=");
+                    String paramName = params[0];
+                    if (params.length == 2) {
+                        paramValue = params[1];
                     }
 
                     // pre loaded value we will reuse.
-                    String preloadedParamValue = getParamValue(parameters, currentParamName);
+                    String preloadedParamValue = getParamValue(jsonParameters, paramName);
 
                     // If we find the username or password parameter at this stage we replace it
                     // with an empty string. or if we have an already filled value we will reuse it.
-                    if (s.contains(usernameParam)) {
-                        if (preloadedParamValue != null) {
-                            s = s.replace(usernameParam, preloadedParamValue);
-                        }
-                        else
-                            s = s.replace(usernameParam, "");
-                        usernameIx = paramNames.size();
+                    if (param.contains(usernameParam)) {
+                        username = (preloadedParamValue != null) ? preloadedParamValue : paramValue;
+                        continue;
                     }
-                    else if (s.contains(passwordParam)) {
-                        if (preloadedParamValue != null) {
-                            s = s.replace(passwordParam, preloadedParamValue);
-                        }
-                        else
-                            s = s.replace(passwordParam, "");
-                        passwordIx = paramNames.size();
+                    else if (param.contains(passwordParam)) {
+                        password = (preloadedParamValue != null) ? preloadedParamValue : paramValue;
+                        continue;
                     }
-
-                    if (equalsIndex > -1) {
-                        paramNames.add(currentParamName);
-                        paramValues.add(s.substring(equalsIndex + 1));
-                    }
-                    else {
-                        Timber.i("Invalid provisioning request parameter: '%s', is replaced by '%s='", s, s);
-                        paramNames.add(s);
-                        paramValues.add("");
-                    }
+                    jsonBody.put(paramName, paramValue);
                 }
             }
+
             HttpUtils.HTTPResponseResult res = null;
-            Throwable errorWhileProvisioning = null;
+            IOException errorWhileProvisioning = null;
             try {
-                res = HttpUtils.postForm(url, PROPERTY_PROVISIONING_USERNAME,
-                        PROPERTY_PROVISIONING_PASSWORD, paramNames, paramValues, usernameIx, passwordIx,
-                        new HttpUtils.RedirectHandler()
-                        {
-                            @Override
-                            public boolean handleRedirect(String location, List<NameValuePair> parameters)
-                            {
-                                if (!hasParams(location))
-                                    return false;
-
-                                // if we have parameters proceed
-                                retrieveConfigurationFile(location, parameters);
-                                return true;
-                            }
-
-                            @Override
-                            public boolean hasParams(String location)
-                            {
-                                return location.contains("${");
-                            }
-                        });
-            } catch (Throwable t) {
-                Timber.e(t, "Error posting form");
-                errorWhileProvisioning = t;
+                res = HttpUtils.postForm(url, PROPERTY_PROVISIONING_USERNAME, PROPERTY_PROVISIONING_PASSWORD,
+                        jsonBody, username, password, null, null);
+            } catch (IOException e) {
+                Timber.e("Error posting form: %s", e.getMessage());
+                errorWhileProvisioning = e;
             }
 
             // if there was an error in retrieving stop
+            // if canceled, lets check whether provisioning is mandatory
             if (res == null) {
-                // if canceled, lets check whether provisioning is mandatory
-                if (ProvisioningActivator.getConfigurationService()
-                        .getBoolean(PROPERTY_PROVISIONING_MANDATORY, false)) {
+                if (ProvisioningActivator.getConfigurationService().getBoolean(PROPERTY_PROVISIONING_MANDATORY, false)) {
                     String errorMsg;
                     if (errorWhileProvisioning != null)
                         errorMsg = errorWhileProvisioning.getLocalizedMessage();
                     else
                         errorMsg = "";
 
-                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
-                            R.string.plugin_provisioning_PROV_FAILED, R.string.plugin_provisioning_PROV_FAILED_MSG);
+                    DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.plugin_provisioning_PROV_FAILED,
+                            R.string.plugin_provisioning_PROV_FAILED_MSG, errorMsg);
 
                     // as shutdown service is not started and other bundles are scheduled to start, stop all of them
                     {
@@ -531,18 +493,19 @@ public class ProvisioningServiceImpl implements ProvisioningService
     /**
      * Search param value for the supplied name.
      *
-     * @param parameters the parameters can be null.
+     * @param jsonObject the JSONOBject can be null.
      * @param paramName the name to search.
      * @return the corresponding parameter value.
      */
-    private static String getParamValue(List<NameValuePair> parameters, String paramName)
+    private static String getParamValue(JSONObject jsonObject, String paramName)
     {
-        if (parameters == null || paramName == null)
+        if (jsonObject == null || paramName == null)
             return null;
 
-        for (NameValuePair nv : parameters) {
-            if (nv.getName().equals(paramName))
-                return nv.getValue();
+        try {
+            return jsonObject.get(paramName).toString();
+        } catch (JSONException e) {
+            Timber.e("JSONObject exception: %s", e.getMessage());
         }
         return null;
     }

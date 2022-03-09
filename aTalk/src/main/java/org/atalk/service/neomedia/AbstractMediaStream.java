@@ -14,7 +14,9 @@ import org.atalk.util.ByteArrayBuffer;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Abstract base implementation of <code>MediaStream</code> to ease the implementation of the interface.
@@ -155,7 +157,7 @@ public abstract class AbstractMediaStream implements MediaStream
 
     /**
      * Sets the name of this stream. Stream names are used by some protocols, for diagnostic purposes mostly.
-	 * In XMPP for example this is the name of the content element that describes a stream.
+     * In XMPP for example this is the name of the content element that describes a stream.
      *
      * @param name the name of this stream or <code>null</code> if no name has been set.
      */

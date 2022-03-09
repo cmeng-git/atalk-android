@@ -5,10 +5,21 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.akhgupta.easylocation.*;
+import androidx.annotation.NonNull;
+
+import com.akhgupta.easylocation.EasyLocationActivity;
+import com.akhgupta.easylocation.EasyLocationRequest;
+import com.akhgupta.easylocation.EasyLocationRequestBuilder;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.atalk.android.R;
@@ -17,10 +28,10 @@ import org.atalk.android.aTalkApp;
 import timber.log.Timber;
 
 public class GeoLocation extends EasyLocationActivity
-        implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
+        implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, OnMapsSdkInitializedCallback
 {
     public static String SEND_LOCATION = "Send_Location";
-    private static String SEND_CONT = "Send_Continuous";
+    private static final String SEND_CONT = "Send_Continuous";
 
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
@@ -31,10 +42,10 @@ public class GeoLocation extends EasyLocationActivity
     private boolean mSVP_Started;
     private boolean sendLocation = false;
     private boolean sendContinuous;
-    private int gpsMinDistance = 50;    // meters
-    private int gpsDistanceStep = 5;   // meters
-    private int sendTimeInterval = 60; // seconds
-    private int timeIntervalStep = 10; // seconds
+    private int gpsMinDistance = 50;        // meters
+    private final int gpsDistanceStep = 5;  // meters
+    private int sendTimeInterval = 60;      // seconds
+    private final int timeIntervalStep = 10; // seconds
     private Button mSendSingle;
     private Button mSendCont;
     private CheckBox mGpsTrack;
@@ -52,6 +63,7 @@ public class GeoLocation extends EasyLocationActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
         if (savedInstanceState != null) {
             sendContinuous = savedInstanceState.getBoolean(SEND_CONT);
             sendLocation = savedInstanceState.getBoolean(SEND_LOCATION);
@@ -99,7 +111,7 @@ public class GeoLocation extends EasyLocationActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
+    protected void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SEND_CONT, sendContinuous);
@@ -160,7 +172,7 @@ public class GeoLocation extends EasyLocationActivity
                     toggleSendButton(true);
                     stopLocationUpdates();
                 }
-                locationRequest = new LocationRequest()
+                locationRequest = LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
                         .setInterval(5000)
                         .setFastestInterval(5000);
@@ -178,14 +190,14 @@ public class GeoLocation extends EasyLocationActivity
 
                 if (!sendContinuous) {
                     toggleSendButton(false);
-                    locationRequest = new LocationRequest()
+                    locationRequest = LocationRequest.create()
                             .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-                            .setInterval(sendTimeInterval * 1000)
-                            .setFastestInterval(sendTimeInterval * 1000);
+                            .setInterval(sendTimeInterval * 1000L)
+                            .setFastestInterval(sendTimeInterval * 1000L);
                     easyLocationRequest = new EasyLocationRequestBuilder()
                             .setLocationRequest(locationRequest)
                             .setAddressRequest(true)
-                            .setFallBackToLastLocationTime(sendTimeInterval * 500)
+                            .setFallBackToLastLocationTime(sendTimeInterval * 500L)
                             .build();
                     requestLocationUpdates(easyLocationRequest);
                 }
@@ -361,5 +373,18 @@ public class GeoLocation extends EasyLocationActivity
     public interface LocationListener
     {
         void onResult(Location location, String locAddress);
+    }
+
+    @Override
+    public void onMapsSdkInitialized(@NonNull MapsInitializer.Renderer renderer)
+    {
+        switch (renderer) {
+            case LATEST:
+                Timber.d("GoogleMap: The latest version of the renderer is used.");
+                break;
+            case LEGACY:
+                Timber.d("GoogleMap: The legacy version of the renderer is used.");
+                break;
+        }
     }
 }

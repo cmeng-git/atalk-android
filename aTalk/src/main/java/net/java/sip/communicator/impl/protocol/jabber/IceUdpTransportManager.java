@@ -6,33 +6,59 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.StunServerDescriptor;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.DefaultStreamConnector;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.*;
-import org.ice4j.ice.harvest.*;
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.Candidate;
+import org.ice4j.ice.CandidatePair;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.IceMediaStream;
+import org.ice4j.ice.IceProcessingState;
+import org.ice4j.ice.LocalCandidate;
+import org.ice4j.ice.RemoteCandidate;
+import org.ice4j.ice.harvest.StunCandidateHarvester;
+import org.ice4j.ice.harvest.TurnCandidateHarvester;
+import org.ice4j.ice.harvest.UPNPHarvester;
 import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingle.CandidateType;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle.RtcpMux;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

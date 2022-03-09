@@ -35,12 +35,12 @@ public class JNIEncoder extends AbstractCodec2
         implements FormatParametersAwareCodec, PacketLossAwareEncoder
 {
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JNIEncoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of sample rates of audio data supported as input by <tt>JNIEncoder</tt> instances.
+     * The list of sample rates of audio data supported as input by <code>JNIEncoder</code> instances.
      * <p>
      * The implementation does support 8, 12, 16, 24 and 48kHz but the lower sample rates are not
      * listed to prevent FMJ from defaulting to them.
@@ -49,7 +49,7 @@ public class JNIEncoder extends AbstractCodec2
     static final double[] SUPPORTED_INPUT_SAMPLE_RATES = new double[]{48000};
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JNIEncoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{new AudioFormat(
             Constants.OPUS_RTP,
@@ -137,7 +137,7 @@ public class JNIEncoder extends AbstractCodec2
 
     /**
      * The size in bytes of an audio frame input by this instance. Automatically calculated, based
-     * on {@link #frameSizeInMillis} and the <tt>inputFormat</tt> of this instance.
+     * on {@link #frameSizeInMillis} and the <code>inputFormat</code> of this instance.
      */
     private int frameSizeInBytes;
 
@@ -149,7 +149,7 @@ public class JNIEncoder extends AbstractCodec2
 
     /**
      * The size in samples per channel of an audio frame input by this instance. Automatically
-     * calculated, based on {@link #frameSizeInMillis} and the <tt>inputFormat</tt> of this instance.
+     * calculated, based on {@link #frameSizeInMillis} and the <code>inputFormat</code> of this instance.
      */
     private int frameSizeInSamplesPerChannel;
 
@@ -159,10 +159,10 @@ public class JNIEncoder extends AbstractCodec2
     private int minPacketLoss = 0;
 
     /**
-     * The bytes from an input <tt>Buffer</tt> from a previous call to
-     * {@link #process(Buffer, Buffer)} that this <tt>Codec</tt> didn't process because the total
+     * The bytes from an input <code>Buffer</code> from a previous call to
+     * {@link #process(Buffer, Buffer)} that this <code>Codec</code> didn't process because the total
      * number of bytes was less than {@link #inputFrameSize()} need to be prepended to a subsequent
-     * input <tt>Buffer</tt> in order to process a total of {@link #inputFrameSize()} bytes.
+     * input <code>Buffer</code> in order to process a total of {@link #inputFrameSize()} bytes.
      */
     private byte[] prevIn = null;
 
@@ -187,7 +187,7 @@ public class JNIEncoder extends AbstractCodec2
     private boolean useVbr;
 
     /**
-     * Initializes a new <tt>JNIEncoder</tt> instance.
+     * Initializes a new <code>JNIEncoder</code> instance.
      */
     public JNIEncoder()
     {
@@ -211,12 +211,12 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
      * @see AbstractCodec2#doOpen()
      */
     @Override
@@ -297,11 +297,11 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Processes (i.e. encodes) a specific input <tt>Buffer</tt>.
+     * Processes (i.e. encodes) a specific input <code>Buffer</code>.
      *
-     * @param inBuffer the <tt>Buffer</tt> from which the media to be encoded is to be read
-     * @param outBuffer the <tt>Buffer</tt> into which the encoded media is to be written
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>inBuffer</tt> has been processed successfully
+     * @param inBuffer the <code>Buffer</code> from which the media to be encoded is to be read
+     * @param outBuffer the <code>Buffer</code> into which the encoded media is to be written
+     * @return <code>BUFFER_PROCESSED_OK</code> if the specified <code>inBuffer</code> has been processed successfully
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
@@ -394,10 +394,10 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Implements {@link Control#getControlComponent()}. <tt>JNIEncoder</tt> does not provide user
+     * Implements {@link Control#getControlComponent()}. <code>JNIEncoder</code> does not provide user
      * interface of its own.
      *
-     * @return <tt>null</tt> to signify that <tt>JNIEncoder</tt> does not provide user interface of its own
+     * @return <code>null</code> to signify that <code>JNIEncoder</code> does not provide user interface of its own
      */
     @Override
     public Component getControlComponent()
@@ -406,9 +406,9 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Gets the <tt>Format</tt> of the media output by this <tt>Codec</tt>.
+     * Gets the <code>Format</code> of the media output by this <code>Codec</code>.
      *
-     * @return the <tt>Format</tt> of the media output by this <tt>Codec</tt>
+     * @return the <code>Format</code> of the media output by this <code>Codec</code>
      * @see net.sf.fmj.media.AbstractCodec#getOutputFormat()
      */
     @Override
@@ -435,8 +435,8 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Updates the encoder's expected packet loss percentage to the bigger of <tt>percentage</tt>
-     * and <tt>this.minPacketLoss</tt>.
+     * Updates the encoder's expected packet loss percentage to the bigger of <code>percentage</code>
+     * and <code>this.minPacketLoss</code>.
      *
      * @param percentage the expected packet loss percentage to set
      */

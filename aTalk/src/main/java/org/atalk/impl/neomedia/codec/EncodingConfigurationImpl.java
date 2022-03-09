@@ -47,11 +47,11 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     private void initializeFormatPreferences()
     {
         // first init default preferences for video codecs
-        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1300);
-        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1200);
-        setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,1100);
-        setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,950);
-        setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE,800);
+        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1300);
+        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1200);
+        setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1100);
+        setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 950);
+        setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 800);
 
         // audio codecs
         setEncodingPreference("opus", 48000, 750);
@@ -76,7 +76,7 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     }
 
     /**
-     * Sets <tt>pref</tt> as the preference associated with the <tt>encoding</tt>. Use this method for
+     * Sets <code>pref</code> as the preference associated with the <code>encoding</code>. Use this method for
      * both audio and video encodings and don't worry if preferences are equal since we rarely need
      * to compare prefs of video encodings to those of audio encodings.
      *
@@ -105,11 +105,11 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
     }
 
     /**
-     * Returns all the available encodings for a specific <tt>MediaType</tt>. This includes
+     * Returns all the available encodings for a specific <code>MediaType</code>. This includes
      * disabled ones (ones with priority 0).
      *
-     * @param type the <tt>MediaType</tt> we would like to know the available encodings of
-     * @return array of <tt>MediaFormat</tt> supported for the <tt>MediaType</tt>
+     * @param type the <code>MediaType</code> we would like to know the available encodings of
+     * @return array of <code>MediaFormat</code> supported for the <code>MediaType</code>
      */
     @Override
     public MediaFormat[] getAllEncodings(MediaType type)
