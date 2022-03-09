@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,17 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.AbstractXmlElement;
 
 import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import timber.log.Timber;
-
 /**
- * Implements <code>AbstractExtensionElement</code> for the <code>source</code> element defined in
+ * Implements <code>AbstractExtensionElement</code> for the <code>source</code> element defined below.
  * @see <a href="https://xmpp.org/extensions/xep-0339.html">XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1 (2021-10-23)</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5576">Source-Specific Media Attributes in the Session Description Protocol (SDP)</a>
  *
@@ -59,7 +57,7 @@ public class SdpSource extends AbstractXmlElement
     public static final String ATTR_SSRC = "ssrc";
 
     /**
-     * <code>SdpSource</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc
+     * <code>SdpSource</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
     public SdpSource()
     {
@@ -67,7 +65,7 @@ public class SdpSource extends AbstractXmlElement
     }
 
     /**
-     * Initializes a new <code>SdpSource</code> instance.; required by DefaultXmlElementProvider()
+     * Initializes a new <code>SdpSource</code> instance.; required by DefaultXmlElementProvider().
      *
      * @param build the builder for this extension element.
      */
@@ -114,7 +112,7 @@ public class SdpSource extends AbstractXmlElement
     }
 
     /**
-     * Check if this source has an ssrc
+     * Check if this source has an ssrc.
      *
      * @return true if it has an ssrc, false otherwise
      */
@@ -124,7 +122,7 @@ public class SdpSource extends AbstractXmlElement
     }
 
     /**
-     * Gets the rid of this source, if it has one
+     * Gets the rid of this source, if it has one.
      *
      * @return the rid of the source or null
      */
@@ -134,7 +132,7 @@ public class SdpSource extends AbstractXmlElement
     }
 
     /**
-     * Check if this source has an rid
+     * Check if this source has an rid.
      *
      * @return true if it has an rid, false otherwise
      */
@@ -145,7 +143,7 @@ public class SdpSource extends AbstractXmlElement
 
     /**
      * Check if this source matches the given one with regards to
-     * matching source identifiers (ssrc or rid)
+     * matching source identifiers (ssrc or rid).
      *
      * @param other the other SdpSourceGroup to compare to
      * @return true if this SdpSourceGroup and the one
@@ -169,8 +167,8 @@ public class SdpSource extends AbstractXmlElement
     }
 
     /**
-     * Builder for SdpSource. Use {@link AbstractXmlElement#builder()} to
-     * obtain a new instance and {@link #build} to build the SdpSource.
+     * Builder for SdpSource. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the SdpSource.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpSource>
     {
@@ -183,6 +181,7 @@ public class SdpSource extends AbstractXmlElement
          * Adds a specific parameter (as defined by Source-Specific Media Attributes in Jingle) to this source.
          *
          * @param parameter the <code>ParameterElement</code> to add to this source
+         * @return builder instance
          */
         public Builder addParameter(ParameterElement parameter)
         {
@@ -194,6 +193,7 @@ public class SdpSource extends AbstractXmlElement
          * Sets the synchronization source (SSRC) ID of this source.
          *
          * @param ssrc the synchronization source (SSRC) ID to be set on this source
+         * @return builder instance
          */
         public Builder setSsrc(long ssrc)
         {
@@ -207,9 +207,10 @@ public class SdpSource extends AbstractXmlElement
         }
 
         /**
-         * Sets the rid of this source
+         * Sets the rid of this source.
          *
          * @param rid the rid to be set (or null to clear the existing rid)
+         * @return builder instance
          */
         public Builder setRid(String rid)
         {

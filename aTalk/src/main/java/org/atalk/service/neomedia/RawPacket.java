@@ -17,9 +17,9 @@ package org.atalk.service.neomedia;
 
 import net.sf.fmj.media.rtp.RTPHeader;
 
-import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 import org.jetbrains.annotations.NotNull;
+import org.atalk.util.ByteArrayBuffer;
 
 import java.util.Iterator;
 
@@ -34,8 +34,7 @@ import java.util.Iterator;
  * Besides packet info storage, RawPacket also provides some other operations
  * such as readInt() to ease the development process.
  *
- * FIXME This class needs to be split/merged into RtpHeader, RTCPHeader,
- * ByteBufferUtils, etc.
+ * FIXME This class needs to be split/merged into RtpHeader, RTCPHeader, ByteBufferUtils, etc.
  *
  * @author Werner Dittmann (Werner.Dittmann@t-online.de)
  * @author Bing SU (nova.su@gmail.com)
@@ -59,8 +58,7 @@ public class RawPacket implements ByteArrayBuffer
     public static final int FIXED_HEADER_SIZE = 12;
 
     /**
-     * The minimum size in bytes of a valid RTCP packet. An empty Receiver
-     * Report is 8 bytes long.
+     * The minimum size in bytes of a valid RTCP packet. An empty Receiver Report is 8 bytes long.
      */
     private static final int RTCP_MIN_SIZE = 8;
 
@@ -76,9 +74,8 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Byte array storing the content of this Packet
-     * Note that if this instance changes, then {@link #headerExtensions} MUST
-     * be reinitialized. It is best to use {@link #setBuffer(byte[])} instead of
-     * accessing this field directly.
+     * Note that if this instance changes, then {@link #headerExtensions} MUST be reinitialized.
+     * It is best to use {@link #setBuffer(byte[])} instead of accessing this field directly.
      */
     private byte[] buffer;
 
@@ -103,13 +100,17 @@ public class RawPacket implements ByteArrayBuffer
     private int offset;
 
     /**
-     * A {@link HeaderExtensions} instance, used to iterate over the RTP header
-     * extensions of this {@link RawPacket}.
+     * A {@link HeaderExtensions} instance, used to iterate over the RTP header extensions of this {@link RawPacket}.
      */
     private HeaderExtensions headerExtensions;
 
     /**
-     * Initializes a new empty <code>RawPacket</code> instance.
+     * A flag to skip packet statistics for this packet.
+     */
+    private boolean skipStats = false;
+
+    /**
+     * Initializes a new empty <tt>RawPacket</tt> instance.
      */
     public RawPacket()
     {
@@ -171,7 +172,6 @@ public class RawPacket implements ByteArrayBuffer
         if (baf == null) {
             return -1;
         }
-
         return getVersion(baf.getBuffer(), baf.getOffset(), baf.getLength());
     }
 
@@ -197,7 +197,6 @@ public class RawPacket implements ByteArrayBuffer
         if (baf == null) {
             return false;
         }
-
         return isPacketMarked(baf.getBuffer(), baf.getOffset(), baf.getLength());
     }
 
@@ -214,7 +213,6 @@ public class RawPacket implements ByteArrayBuffer
         if (buffer == null || buffer.length < offset + length || length < 2) {
             return false;
         }
-
         return (buffer[offset + 1] & 0x80) != 0;
     }
 
@@ -239,7 +237,6 @@ public class RawPacket implements ByteArrayBuffer
             // This is an RTP packet.
             return length < FIXED_HEADER_SIZE;
         }
-
         return false;
     }
 
@@ -253,7 +250,6 @@ public class RawPacket implements ByteArrayBuffer
         if (baf == null || baf.isInvalid()) {
             return -1;
         }
-
         return getRTCPSSRC(baf.getBuffer(), baf.getOffset(), baf.getLength());
     }
 
@@ -267,7 +263,6 @@ public class RawPacket implements ByteArrayBuffer
         if (buf == null || buf.length < off + len || len < 8) {
             return -1;
         }
-
         return RTPUtils.readUint32AsLong(buf, off + 4);
     }
 
@@ -288,7 +283,6 @@ public class RawPacket implements ByteArrayBuffer
         if (isInvalid(buf, off, len)) {
             return false;
         }
-
         int version = getVersion(buf, off, len);
         return (version == RTPHeader.VERSION);
     }
@@ -1376,8 +1370,7 @@ public class RawPacket implements ByteArrayBuffer
      *
      * @param buf the <code>byte</code> array that holds the RTP packet.
      * @param off the offset in <code>buffer</code> at which the actual RTP data begins.
-     * @param len the number of <code>byte</code>s in <code>buffer</code> which
-     * constitute the actual RTP data.
+     * @param len the number of <code>byte</code>s in <code>buffer</code> which constitute the actual RTP data.
      * @return the timestamp in the RTP buffer.
      */
     public static long getTimestamp(byte[] buf, int off, int len)
@@ -1551,11 +1544,9 @@ public class RawPacket implements ByteArrayBuffer
 
         int extHeaderLen = getExtensionLength() + EXT_HEADER_SIZE;
 
-        System.arraycopy(buffer, payloadOffset,
-                buffer, payloadOffset - extHeaderLen, getPayloadLength());
+        System.arraycopy(buffer, payloadOffset, buffer, payloadOffset - extHeaderLen, getPayloadLength());
 
         this.length -= extHeaderLen;
-
         setExtensionBit(false);
     }
 
@@ -1570,8 +1561,7 @@ public class RawPacket implements ByteArrayBuffer
 
     /**
      * Replaces the existing CSRC list (even if empty) with <code>newCsrcList</code>
-     * and updates the CC (CSRC count) field of this <code>RawPacket</code>
-     * accordingly.
+     * and updates the CC (CSRC count) field of this <code>RawPacket</code> accordingly.
      *
      * @param newCsrcList the list of CSRC identifiers that we'd like to set for
      * this <code>RawPacket</code>.
@@ -1588,7 +1578,6 @@ public class RawPacket implements ByteArrayBuffer
         }
 
         int oldCsrcCount = getCsrcCount();
-
         byte[] oldBuffer = this.getBuffer();
 
         //the new buffer needs to be bigger than the new one in order to
@@ -1621,9 +1610,8 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Raises the extension bit of this packet is <code>extBit</code> is
-     * <code>true</code> or set it to <code>0</code> if <code>extBit</code> is
-     * <code>false</code>.
+     * Raises the extension bit of this packet is <code>extBit</code> is <code>true</code>
+     * or set it to <code>0</code> if <code>extBit</code> is <code>false</code>.
      *
      * @param extBit the flag that indicates whether we are to set or clear
      * the extension bit of this packet.
@@ -1658,11 +1646,9 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
-     * Sets or resets the marker bit of this packet according to the
-     * <code>marker</code> parameter.
+     * Sets or resets the marker bit of this packet according to the <code>marker</code> parameter.
      *
-     * @param marker <code>true</code> if we are to raise the marker bit and
-     * <code>false</code> otherwise.
+     * @param marker <code>true</code> if we are to raise the marker bit and <code>false</code> otherwise.
      */
     public void setMarker(boolean marker)
     {
@@ -1820,6 +1806,26 @@ public class RawPacket implements ByteArrayBuffer
     }
 
     /**
+     * Whether to skip packet statistics.
+     *
+     * @return returns true if we want to skip stats for this packet.
+     */
+    public boolean isSkipStats()
+    {
+        return skipStats;
+    }
+
+    /**
+     * Changes the skipStats flag.
+     *
+     * @param skipStats the new value.
+     */
+    public void setSkipStats(boolean skipStats)
+    {
+        this.skipStats = skipStats;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @NotNull
@@ -1911,8 +1917,7 @@ public class RawPacket implements ByteArrayBuffer
      * Implements an iterator over the RTP header extensions of a
      * {@link RawPacket}.
      */
-    public class HeaderExtensions
-            implements Iterator<HeaderExtension>
+    public class HeaderExtensions implements Iterator<HeaderExtension>
     {
         /**
          * The offset of the next extension.
@@ -1943,8 +1948,7 @@ public class RawPacket implements ByteArrayBuffer
                 return;
             }
 
-            nextOff
-                    = offset
+            nextOff = offset
                     + FIXED_HEADER_SIZE
                     + getCsrcCount(buffer, offset, length) * 4
                     + EXT_HEADER_SIZE;
@@ -1953,7 +1957,7 @@ public class RawPacket implements ByteArrayBuffer
 
         /**
          * {@inheritDoc}
-         * </p>
+         *
          * Returns true if this {@RawPacket} contains another header extension.
          */
         @Override
@@ -1962,13 +1966,8 @@ public class RawPacket implements ByteArrayBuffer
             if (remainingLen <= 0 || nextOff < 0) {
                 return false;
             }
-
             int len = getExtLength(buffer, nextOff, remainingLen);
-            if (len <= 0) {
-                return false;
-            }
-
-            return true;
+            return len > 0;
         }
 
         /**
@@ -1983,8 +1982,7 @@ public class RawPacket implements ByteArrayBuffer
                 return -1;
             }
 
-            // len=0 indicates 1 byte of data; add 1 more byte for the id/len
-            // field itself.
+            // len=0 indicates 1 byte of data; add 1 more byte for the id/len field itself.
             int extLen = (buf[off] & 0x0f) + 2;
 
             if (extLen > len) {
@@ -2003,15 +2001,13 @@ public class RawPacket implements ByteArrayBuffer
             // Prepare this.headerExtension
             int extLen = getExtLength(buffer, nextOff, remainingLen);
             if (extLen <= 0) {
-                throw new IllegalStateException(
-                        "Invalid extension length. Did hasNext() return true?");
+                throw new IllegalStateException("Invalid extension length. Did hasNext() return true?");
             }
             headerExtension.setOffsetLength(nextOff, extLen);
 
             // Advance "next"
             nextOff += extLen;
             remainingLen -= extLen;
-
             return headerExtension;
         }
     }

@@ -15,12 +15,13 @@
  */
 package org.jivesoftware.smackx.jibri;
 
-import org.atalk.android.util.ApiLib;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import java.util.Objects;
+
 /**
- * Wraps Smack's <tt>XMPPError</tt> into <tt>PacketExtension</tt>, so that it
+ * Wraps Smack's <code>XMPPError</code> into <code>PacketExtension</code>, so that it
  * can be easily inserted into {@link RecordingStatus}.
  *
  * * @author Eng Chong Meng
@@ -28,15 +29,15 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class XMPPErrorPE implements ExtensionElement
 {
     /**
-     * <tt>XMPPError</tt> wrapped into this <tt>XMPPErrorPE</tt>.
+     * <code>XMPPError</code> wrapped into this <code>XMPPErrorPE</code>.
      */
     private StanzaError error;
 
     /**
-     * Creates new instance of <tt>XMPPErrorPE</tt>.
+     * Creates new instance of <code>XMPPErrorPE</code>.
      *
-     * @param stanzaError the instance of <tt>XMPPError</tt> that will be wrapped
-     * by the newly created <tt>XMPPErrorPE</tt>.
+     * @param stanzaError the instance of <code>XMPPError</code> that will be wrapped
+     * by the newly created <code>XMPPErrorPE</code>.
      */
     public XMPPErrorPE(StanzaError stanzaError)
     {
@@ -44,7 +45,7 @@ public class XMPPErrorPE implements ExtensionElement
     }
 
     /**
-     * Returns the underlying instance of <tt>XMPPError</tt>.
+     * Returns the underlying instance of <code>XMPPError</code>.
      */
     public StanzaError getError()
     {
@@ -52,14 +53,14 @@ public class XMPPErrorPE implements ExtensionElement
     }
 
     /**
-     * Sets new instance of <tt>XMPPError</tt> to be wrapped by this <tt>XMPPErrorPE</tt>.
+     * Sets new instance of <code>XMPPError</code> to be wrapped by this <code>XMPPErrorPE</code>.
      *
-     * @param error <tt>XMPPError</tt> that will be wrapped by this <TT>XMPPErrorPE</TT>.
+     * @param error <code>XMPPError</code> that will be wrapped by this <TT>XMPPErrorPE</TT>.
      */
 
     public void setError(StanzaError error)
     {
-        ApiLib.requireNonNull(error, "error");
+        Objects.requireNonNull(error, "error");
         this.error = error;
     }
 

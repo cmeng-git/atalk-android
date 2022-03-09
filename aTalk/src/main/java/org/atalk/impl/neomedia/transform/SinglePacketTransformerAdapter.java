@@ -14,8 +14,8 @@
 package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.function.Predicate;
+import org.atalk.util.ByteArrayBuffer;
 
 // import java.util.function.Predicate;  // cmeng: required API-24
 
@@ -35,7 +35,7 @@ public class SinglePacketTransformerAdapter extends SinglePacketTransformer
     /**
      * Ctor.
      *
-     * @param packetPredicate the <tt>PacketPredicate</tt> uses to match packets to (reverse) transform.
+     * @param packetPredicate the <code>PacketPredicate</code> uses to match packets to (reverse) transform.
      */
     public SinglePacketTransformerAdapter(Predicate<ByteArrayBuffer> packetPredicate)
     {

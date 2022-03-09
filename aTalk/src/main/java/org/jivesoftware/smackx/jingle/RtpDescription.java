@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,8 +18,6 @@ package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.AbstractXmlElement;
-
-import java.util.List;
 
 /**
  * Represents the content <code>description</code> elements described in
@@ -52,11 +51,6 @@ public class RtpDescription extends AbstractXmlElement
      */
     public static final String ATTR_SSRC = "ssrc";
 
-    /**
-     * The combined list of all child elements that this extension contains.
-     */
-    private List<ExtensionElement> children;
-
     public RtpDescription()
     {
         super(builder());
@@ -64,6 +58,7 @@ public class RtpDescription extends AbstractXmlElement
 
     /**
      * Creates a new <code>RtpDescription</code>.
+     * @param build Builder instance
      */
     public RtpDescription(Builder build)
     {
@@ -109,8 +104,8 @@ public class RtpDescription extends AbstractXmlElement
     }
 
     /**
-     * Builder for RtpDescription. Use {@link AbstractXmlElement#builder()} to
-     * obtain a new instance and {@link #build} to build the RtpDescription.
+     * Builder for RtpDescription. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the RtpDescription.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, RtpDescription>
     {
@@ -123,6 +118,7 @@ public class RtpDescription extends AbstractXmlElement
          * Specify the media type for the stream that this description element represents, such as "audio" or "video".
          *
          * @param media the media type for the stream that this element represents such as "audio" or "video".
+         * @return builder instance
          */
         public Builder setMedia(String media)
         {
@@ -135,6 +131,7 @@ public class RtpDescription extends AbstractXmlElement
          * description element will be using.
          *
          * @param ssrc the SSRC ID that the RTP stream represented here will be using.
+         * @return builder instance
          */
         public Builder setSsrc(String ssrc)
         {
@@ -145,7 +142,8 @@ public class RtpDescription extends AbstractXmlElement
         /**
          * Set the optional encryption element that contains encryption parameters for this session.
          *
-         * @param encryption the encryption {@link ExtensionElement} we'd like to add to this packet.
+         * @param srtpEncryption the encryption {@link ExtensionElement} we'd like to add to this packet.
+         * @return builder instance
          */
         public Builder addEncryption(SrtpEncryption srtpEncryption)
         {
@@ -157,6 +155,7 @@ public class RtpDescription extends AbstractXmlElement
          * Set the optional rtcpmux element that contains rtcpmux parameters for this session.
          *
          * @param rtcpmux the rtcpmux {@link ExtensionElement} we'd like to add to this packet.
+         * @return builder instance
          */
         public Builder addRtcpMux(RtcpMux rtcpmux)
         {
@@ -169,6 +168,7 @@ public class RtpDescription extends AbstractXmlElement
          * use by this application type.
          *
          * @param bandwidth the max/preferred bandwidth indication that we'd like to add to this packet.
+         * @return builder instance
          */
         public Builder addBandwidth(SdpBandwidth bandwidth)
         {
@@ -180,6 +180,7 @@ public class RtpDescription extends AbstractXmlElement
          * Adds an optional <code>rtpHeader</code> element that allows negotiation RTP extension headers as per RFC 5282.
          *
          * @param rtpHeader an optional <code>rtpHeader</code> element that allows negotiation RTP extension headers as per RFC 5282.
+         * @return builder instance
          */
         public Builder addRtpHeader(RtpHeader rtpHeader)
         {
@@ -191,6 +192,7 @@ public class RtpDescription extends AbstractXmlElement
          * Adds a new payload type to this description element.
          *
          * @param payloadType the new payload to add.
+         * @return builder instance
          */
         public Builder addPayloadType(PayloadType payloadType)
         {

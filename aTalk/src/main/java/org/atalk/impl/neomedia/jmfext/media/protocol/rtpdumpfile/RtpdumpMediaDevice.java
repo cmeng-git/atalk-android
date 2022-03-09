@@ -14,18 +14,24 @@
 
 package org.atalk.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
-import org.atalk.impl.neomedia.device.*;
-import org.atalk.util.MediaType;
+import org.atalk.impl.neomedia.device.AudioMediaDeviceImpl;
+import org.atalk.impl.neomedia.device.AudioMediaDeviceSession;
+import org.atalk.impl.neomedia.device.MediaDeviceImpl;
+import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.Processor;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
 /**
- * This class contains the method <tt>createRtpdumpMediaDevice</tt> that can create
- * <tt>MediaDevice</tt>s that will read the rtpdump file given. This static method is here for
+ * This class contains the method <code>createRtpdumpMediaDevice</code> that can create
+ * <code>MediaDevice</code>s that will read the rtpdump file given. This static method is here for
  * convenience.
  *
  * @author Thomas Kuntz
@@ -33,15 +39,15 @@ import javax.media.format.VideoFormat;
 public class RtpdumpMediaDevice
 {
     /**
-     * Create a new video <tt>MediaDevice</tt> instance which will read the rtpdump file located at
-     * <tt>filePath</tt>, and which will have the encoding format <tt>encodingConstant</tt>.
+     * Create a new video <code>MediaDevice</code> instance which will read the rtpdump file located at
+     * <code>filePath</code>, and which will have the encoding format <code>encodingConstant</code>.
      *
      * @param filePath the location of the rtpdump file
-     * @param rtpEncodingConstant the format this <tt>MediaDevice</tt> will have. You can find the
-     * list of possible format in the class <tt>Constants</tt> of libjitsi (ex : Constants.VP8_RTP).
-     * @param format the <tt>MediaFormat</tt> of the data contained in the payload of the recorded rtp
+     * @param rtpEncodingConstant the format this <code>MediaDevice</code> will have. You can find the
+     * list of possible format in the class <code>Constants</code> of libjitsi (ex : Constants.VP8_RTP).
+     * @param format the <code>MediaFormat</code> of the data contained in the payload of the recorded rtp
      * packet in the rtpdump file.
-     * @return a <tt>MediaDevice</tt> that will read the rtpdump file given.
+     * @return a <code>MediaDevice</code> that will read the rtpdump file given.
      */
     public static MediaDevice createRtpdumpVideoMediaDevice(String filePath,
             String rtpEncodingConstant, MediaFormat format)
@@ -65,11 +71,11 @@ public class RtpdumpMediaDevice
     }
 
     /**
-     * Create a new audio <tt>MediaDevice</tt> instance which will read the rtpdump file located at
-     * <tt>filePath</tt>, and which will have the encoding format <tt>format</tt>.
+     * Create a new audio <code>MediaDevice</code> instance which will read the rtpdump file located at
+     * <code>filePath</code>, and which will have the encoding format <code>format</code>.
      * <p>
-     * Note: for proper function, <tt>format</tt> has to implement correctly the
-     * <tt>computeDuration(long)</tt> method, because FMJ insists on using this to compute its own RTP timestamps.
+     * Note: for proper function, <code>format</code> has to implement correctly the
+     * <code>computeDuration(long)</code> method, because FMJ insists on using this to compute its own RTP timestamps.
      * <p>
      * Note: The RtpdumpStream instance needs to know the RTP clock rate to correctly interpret the
      * RTP timestamps. We use the sampleRate field of AudioFormat, or the frameRate field of
@@ -77,9 +83,9 @@ public class RtpdumpMediaDevice
      * {@link RtpdumpStream#RtpdumpStream(DataSource, javax.media.control.FormatControl)} TODO: Avoid this hack...
      *
      * @param filePath the location of the rtpdump file
-     * @param format the <tt>AudioFormat</tt> of the data contained in the payload of the recorded rtp
+     * @param format the <code>AudioFormat</code> of the data contained in the payload of the recorded rtp
      * packet in the rtpdump file.
-     * @return a <tt>MediaDevice</tt> that will read the rtpdump file given.
+     * @return a <code>MediaDevice</code> that will read the rtpdump file given.
      */
     public static MediaDevice createRtpdumpAudioMediaDevice(String filePath, AudioFormat format)
     {
@@ -88,12 +94,12 @@ public class RtpdumpMediaDevice
     }
 
     /**
-     * An implementation of <tt>AudioMediaDevice</tt>.
+     * An implementation of <code>AudioMediaDevice</code>.
      */
     private static class MyAudioMediaDeviceImpl extends AudioMediaDeviceImpl
     {
         /**
-         * Initializes a new <tt>MyAudioMediaDeviceImpl</tt>.
+         * Initializes a new <code>MyAudioMediaDeviceImpl</code>.
          *
          * @param captureDeviceInfo
          */
@@ -105,9 +111,9 @@ public class RtpdumpMediaDevice
         /**
          * {@inheritDoc}
          * <p>
-         * Makes sure that the <tt>MediaDeviceSession</tt> created by this <tt>AudioMediaDevice</tt>
-         * does not try to register an <tt>AudioLevelEffect</tt>, because this causes media to be
-         * re-encoded (as <tt>AudioLevelEffect</tt> only works with raw audio formats).
+         * Makes sure that the <code>MediaDeviceSession</code> created by this <code>AudioMediaDevice</code>
+         * does not try to register an <code>AudioLevelEffect</code>, because this causes media to be
+         * re-encoded (as <code>AudioLevelEffect</code> only works with raw audio formats).
          */
         @Override
         public MediaDeviceSession createSession()

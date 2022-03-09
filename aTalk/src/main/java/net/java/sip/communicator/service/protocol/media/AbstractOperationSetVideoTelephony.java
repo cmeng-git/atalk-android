@@ -5,13 +5,23 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.ConferenceMember;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
+import org.atalk.service.neomedia.MediaUseCase;
+import org.atalk.service.neomedia.QualityControl;
+import org.atalk.service.neomedia.QualityPreset;
+import org.atalk.service.neomedia.VideoMediaStream;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.MediaType;
 
 import java.awt.Component;
-import org.atalk.service.neomedia.*;
-import org.atalk.util.MediaType;
-import org.atalk.util.event.VideoListener;
-
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.util.List;
@@ -25,7 +35,6 @@ import java.util.List;
  * @param <U> the implementation specific provider class like for example <code>ProtocolProviderServiceSipImpl</code>.
  * @param <V> the <code>MediaAwareCall</code> implementation like <code>CallSipImpl</code> or <code>CallJabberImpl</code>.
  * @param <W> the <code>MediaAwarePeerCall</code> implementation like <code>CallPeerSipImpl</code> or <code>CallPeerJabberImpl</code>.
- *
  * @author Emil Ivov
  * @author Sebastien Vincent
  */

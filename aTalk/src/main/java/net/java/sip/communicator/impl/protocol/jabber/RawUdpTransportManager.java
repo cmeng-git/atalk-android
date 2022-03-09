@@ -13,12 +13,19 @@ import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.CandidateType;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.RawUdpTransport;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A {@link TransportManagerJabberImpl} implementation that would only gather a single candidate

@@ -6,45 +6,83 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.AbstractRTPConnector;
+import org.atalk.impl.neomedia.MediaStreamImpl;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
+import org.atalk.impl.neomedia.RTCPFeedbackMessagePacket;
+import org.atalk.impl.neomedia.VideoMediaStreamImpl;
 import org.atalk.impl.neomedia.codec.video.HFlip;
 import org.atalk.impl.neomedia.codec.video.SwScale;
-import org.atalk.impl.neomedia.codec.video.h264.*;
+import org.atalk.impl.neomedia.codec.video.h264.DePacketizer;
+import org.atalk.impl.neomedia.codec.video.h264.JNIDecoder;
+import org.atalk.impl.neomedia.codec.video.h264.JNIEncoder;
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.impl.neomedia.transform.ControlTransformInputStream;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
-import org.atalk.service.neomedia.event.*;
+import org.atalk.service.neomedia.event.RTCPFeedbackMessageCreateListener;
+import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
+import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.VideoMediaFormat;
 import org.atalk.service.resources.ResourceManagementService;
+import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
-import org.atalk.util.event.*;
+import org.atalk.util.event.SizeChangeVideoEvent;
+import org.atalk.util.event.VideoEvent;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.event.VideoNotifierSupport;
 import org.atalk.util.swing.VideoLayout;
 
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import javax.media.*;
-import javax.media.control.*;
+import javax.media.Buffer;
+import javax.media.Codec;
+import javax.media.ConfigureCompleteEvent;
+import javax.media.Controller;
+import javax.media.ControllerEvent;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NotConfiguredError;
+import javax.media.NotRealizedError;
+import javax.media.Player;
+import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
+import javax.media.SizeChangeEvent;
+import javax.media.UnsupportedPlugInException;
+import javax.media.control.FormatControl;
+import javax.media.control.FrameRateControl;
+import javax.media.control.TrackControl;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
+import javax.media.protocol.SourceCloneable;
 import javax.media.rtp.OutputDataStream;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 import timber.log.Timber;
 
 /**
- * Extends <tt>MediaDeviceSession</tt> to add video-specific functionality.
+ * Extends <code>MediaDeviceSession</code> to add video-specific functionality.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -56,19 +94,19 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
         implements RTCPFeedbackMessageCreateListener
 {
     /**
-     * The image ID of the icon which is to be displayed as the local visual <tt>Component</tt>
+     * The image ID of the icon which is to be displayed as the local visual <code>Component</code>
      * depicting the streaming of the desktop of the local peer to the remote peer.
      */
     private static final String DESKTOP_STREAMING_ICON = "impl.media.DESKTOP_STREAMING_ICON";
 
     /**
-     * Gets the visual <tt>Component</tt> of a specific <tt>Player</tt> if it has one and
-     * ignores the failure to access it if the specified <tt>Player</tt> is unrealized.
+     * Gets the visual <code>Component</code> of a specific <code>Player</code> if it has one and
+     * ignores the failure to access it if the specified <code>Player</code> is unrealized.
      *
-     * @param player the <tt>Player</tt> to get the visual <tt>Component</tt> of if it has one
-     * @return the visual <tt>Component</tt> of the specified <tt>Player</tt> if it has one;
-     * <tt>null</tt> if the specified <tt>Player</tt> does not have a visual
-     * <tt>Component</tt> or the <tt>Player</tt> is unrealized
+     * @param player the <code>Player</code> to get the visual <code>Component</code> of if it has one
+     * @return the visual <code>Component</code> of the specified <code>Player</code> if it has one;
+     * <code>null</code> if the specified <code>Player</code> does not have a visual
+     * <code>Component</code> or the <code>Player</code> is unrealized
      */
     private static Component getVisualComponent(Player player)
     {
@@ -85,30 +123,30 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * <tt>RTCPFeedbackMessageListener</tt> instance that will be passed to
+     * <code>RTCPFeedbackMessageListener</code> instance that will be passed to
      * {@link #rtpConnector} to handle RTCP PLI requests.
      */
     private RTCPFeedbackMessageListener encoder = null;
 
     /**
-     * The <tt>KeyFrameControl</tt> used by this<tt>VideoMediaDeviceSession</tt> as a means to
+     * The <code>KeyFrameControl</code> used by this<code>VideoMediaDeviceSession</code> as a means to
      * control its key frame-related logic.
      */
     private KeyFrameControl keyFrameControl;
 
     /**
-     * The <tt>KeyFrameRequester</tt> implemented by this <tt>VideoMediaDeviceSession</tt> and
+     * The <code>KeyFrameRequester</code> implemented by this <code>VideoMediaDeviceSession</code> and
      * provided to {@link #keyFrameControl} .
      */
     private KeyFrameControl.KeyFrameRequester keyFrameRequester;
 
     /**
-     * The <tt>Player</tt> which provides the local visual/video <tt>Component</tt>.
+     * The <code>Player</code> which provides the local visual/video <code>Component</code>.
      */
     private Player localPlayer;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #localPlayer} .
+     * The <code>Object</code> which synchronizes the access to {@link #localPlayer} .
      */
     private final Object localPlayerSyncRoot = new Object();
 
@@ -127,7 +165,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     private Dimension outputSize;
 
     /**
-     * The <tt>SwScale</tt> inserted into the codec chain of the <tt>Player</tt> rendering the
+     * The <code>SwScale</code> inserted into the codec chain of the <code>Player</code> rendering the
      * media received from the remote peer and enabling the explicit setting of the video size.
      */
     private SwScale playerScaler;
@@ -138,13 +176,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     private long remoteSSRC = -1;
 
     /**
-     * The list of <tt>RTCPFeedbackMessageCreateListener</tt> which will be notified when a
-     * <tt>RTCPFeedbackMessageListener</tt> is created.
+     * The list of <code>RTCPFeedbackMessageCreateListener</code> which will be notified when a
+     * <code>RTCPFeedbackMessageListener</code> is created.
      */
     final private List<RTCPFeedbackMessageCreateListener> rtcpFeedbackMessageCreateListeners = new LinkedList<>();
 
     /**
-     * The <tt>RTPConnector</tt> with which the <tt>RTPManager</tt> of this instance is to be or is
+     * The <code>RTPConnector</code> with which the <code>RTPManager</code> of this instance is to be or is
      * already initialized.
      */
     private AbstractRTPConnector rtpConnector;
@@ -156,16 +194,16 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     private boolean useRTCPFeedbackPLI = false;
 
     /**
-     * The facility which aids this instance in managing a list of <tt>VideoListener</tt>s and
-     * firing <tt>VideoEvent</tt>s to them.
+     * The facility which aids this instance in managing a list of <code>VideoListener</code>s and
+     * firing <code>VideoEvent</code>s to them.
      */
     private final VideoNotifierSupport videoNotifierSupport = new VideoNotifierSupport(this, false);
 
     /**
-     * Initializes a new <tt>VideoMediaDeviceSession</tt> instance which is to represent the work
-     * of a <tt>MediaStream</tt> with a specific video <tt>MediaDevice</tt>.
+     * Initializes a new <code>VideoMediaDeviceSession</code> instance which is to represent the work
+     * of a <code>MediaStream</code> with a specific video <code>MediaDevice</code>.
      *
-     * @param device the video <tt>MediaDevice</tt> the use of which by a <tt>MediaStream</tt> is to be
+     * @param device the video <code>MediaDevice</code> the use of which by a <code>MediaStream</code> is to be
      * represented by the new instance
      */
     public VideoMediaDeviceSession(AbstractMediaDevice device)
@@ -174,7 +212,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Adds <tt>RTCPFeedbackMessageCreateListener</tt>.
+     * Adds <code>RTCPFeedbackMessageCreateListener</code>.
      *
      * @param listener the listener to add
      */
@@ -189,14 +227,14 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Adds a specific <tt>VideoListener</tt> to this instance in order to receive notifications
-     * when visual/video <tt>Component</tt>s are being added and removed.
+     * Adds a specific <code>VideoListener</code> to this instance in order to receive notifications
+     * when visual/video <code>Component</code>s are being added and removed.
      * <p>
      * Adding a listener which has already been added does nothing i.e. it is not added more than
-     * once and thus does not receive one and the same <tt>VideoEvent</tt> multiple times.
+     * once and thus does not receive one and the same <code>VideoEvent</code> multiple times.
      * </p>
      *
-     * @param listener the <tt>VideoListener</tt> to be notified when visual/video <tt>Component</tt>s are
+     * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s are
      * being added or removed in this instance
      */
     public void addVideoListener(VideoListener listener)
@@ -205,12 +243,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Asserts that a specific <tt>MediaDevice</tt> is acceptable to be set as the
-     * <tt>MediaDevice</tt> of this instance. Makes sure that its <tt>MediaType</tt> is
+     * Asserts that a specific <code>MediaDevice</code> is acceptable to be set as the
+     * <code>MediaDevice</code> of this instance. Makes sure that its <code>MediaType</code> is
      * {@link MediaType#VIDEO}.
      *
-     * @param device the <tt>MediaDevice</tt> to be checked for suitability to become the
-     * <tt>MediaDevice</tt> of this instance
+     * @param device the <code>MediaDevice</code> to be checked for suitability to become the
+     * <code>MediaDevice</code> of this instance
      * @see MediaDeviceSession#checkDevice(AbstractMediaDevice)
      */
     @Override
@@ -221,12 +259,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets notified about <tt>ControllerEvent</tt>s generated by {@link #localPlayer}.
+     * Gets notified about <code>ControllerEvent</code>s generated by {@link #localPlayer}.
      *
-     * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt which is the source of
+     * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</tt which is the source of
      * the event and the very type of the event
-     * @param hflip <tt>true</tt> if the image displayed in the local visual <tt>Component</tt> is to be
-     * horizontally flipped; otherwise, <tt>false</tt>
+     * @param hflip <code>true</code> if the image displayed in the local visual <code>Component</code> is to be
+     * horizontally flipped; otherwise, <code>false</code>
      */
     private void controllerUpdateForCreateLocalVisualComponent(ControllerEvent ev, boolean hflip)
     {
@@ -295,9 +333,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Creates the <tt>DataSource</tt> that this instance is to read captured media from.
+     * Creates the <code>DataSource</code> that this instance is to read captured media from.
      *
-     * @return the <tt>DataSource</tt> that this instance is to read captured media from
+     * @return the <code>DataSource</code> that this instance is to read captured media from
      */
     @Override
     protected DataSource createCaptureDevice()
@@ -356,11 +394,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Initializes a new <tt>Player</tt> instance which is to provide the local visual/video
-     * <tt>Component</tt>. The new instance is initialized to render the media of the
-     * <tt>captureDevice</tt> of this <tt>MediaDeviceSession</tt>.
+     * Initializes a new <code>Player</code> instance which is to provide the local visual/video
+     * <code>Component</code>. The new instance is initialized to render the media of the
+     * <code>captureDevice</code> of this <code>MediaDeviceSession</code>.
      *
-     * @return a new <tt>Player</tt> instance which is to provide the local visual/video <tt>Component</tt>
+     * @return a new <code>Player</code> instance which is to provide the local visual/video <code>Component</code>
      */
     private Player createLocalPlayer()
     {
@@ -368,12 +406,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Initializes a new <tt>Player</tt> instance which is to provide the local visual/video
-     * <tt>Component</tt>. The new instance is initialized to render the media of a specific <tt>DataSource</tt>.
+     * Initializes a new <code>Player</code> instance which is to provide the local visual/video
+     * <code>Component</code>. The new instance is initialized to render the media of a specific <code>DataSource</code>.
      *
-     * @param captureDevice the <tt>DataSource</tt> which is to have its media rendered by the new instance as the
-     * local visual/video <tt>Component</tt>
-     * @return a new <tt>Player</tt> instance which is to provide the local visual/video <tt>Component</tt>
+     * @param captureDevice the <code>DataSource</code> which is to have its media rendered by the new instance as the
+     * local visual/video <code>Component</code>
+     * @return a new <code>Player</code> instance which is to provide the local visual/video <code>Component</code>
      */
     protected Player createLocalPlayer(DataSource captureDevice)
     {
@@ -410,13 +448,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Creates the visual <tt>Component</tt> depicting the video being streamed from the local peer
+     * Creates the visual <code>Component</code> depicting the video being streamed from the local peer
      * to the remote peer.
      *
-     * @return the visual <tt>Component</tt> depicting the video being streamed from the local peer
-     * to the remote peer if it was immediately created or <tt>null</tt> if it was not
+     * @return the visual <code>Component</code> depicting the video being streamed from the local peer
+     * to the remote peer if it was immediately created or <code>null</code> if it was not
      * immediately created and it is to be delivered to the currently registered
-     * <tt>VideoListener</tt>s in a <tt>VideoEvent</tt> with type
+     * <code>VideoListener</code>s in a <code>VideoEvent</code> with type
      * {@link VideoEvent#VIDEO_ADDED} and origin {@link VideoEvent#LOCAL}
      */
     protected Component createLocalVisualComponent()
@@ -463,10 +501,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Creates the visual <tt>Component</tt> to depict the streaming of the desktop of the local
+     * Creates the visual <code>Component</code> to depict the streaming of the desktop of the local
      * peer to the remote peer.
      *
-     * @return the visual <tt>Component</tt> to depict the streaming of the desktop of the local
+     * @return the visual <code>Component</code> to depict the streaming of the desktop of the local
      * peer to the remote peer
      */
     private Component createLocalVisualComponentForDesktopStreaming()
@@ -545,13 +583,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Releases the resources allocated by a specific local <tt>Player</tt> in the course of its
-     * execution and prepares it to be garbage collected. If the specified <tt>Player</tt> is
-     * rendering video, notifies the <tt>VideoListener</tt>s of this instance that its visual
-     * <tt>Component</tt> is to no longer be used by firing a {@link VideoEvent#VIDEO_REMOVED}
-     * <tt>VideoEvent</tt>.
+     * Releases the resources allocated by a specific local <code>Player</code> in the course of its
+     * execution and prepares it to be garbage collected. If the specified <code>Player</code> is
+     * rendering video, notifies the <code>VideoListener</code>s of this instance that its visual
+     * <code>Component</code> is to no longer be used by firing a {@link VideoEvent#VIDEO_REMOVED}
+     * <code>VideoEvent</code>.
      *
-     * @param player the <tt>Player</tt> to dispose of
+     * @param player the <code>Player</code> to dispose of
      * @see MediaDeviceSession#disposePlayer(Player)
      */
     protected void disposeLocalPlayer(Player player)
@@ -578,9 +616,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Disposes of the local visual <tt>Component</tt> of the local peer.
+     * Disposes of the local visual <code>Component</code> of the local peer.
      *
-     * @param component the local visual <tt>Component</tt> of the local peer to dispose of
+     * @param component the local visual <code>Component</code> of the local peer to dispose of
      */
     protected void disposeLocalVisualComponent(Component component)
     {
@@ -610,13 +648,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Releases the resources allocated by a specific <tt>Player</tt> in the course of its
-     * execution and prepares it to be garbage collected. If the specified <tt>Player</tt>
-     * is rendering video, notifies the <tt>VideoListener</tt>s of this instance that its
-     * visual <tt>Component</tt> is to no longer be used by firing a
-     * {@link VideoEvent#VIDEO_REMOVED} <tt>VideoEvent</tt>.
+     * Releases the resources allocated by a specific <code>Player</code> in the course of its
+     * execution and prepares it to be garbage collected. If the specified <code>Player</code>
+     * is rendering video, notifies the <code>VideoListener</code>s of this instance that its
+     * visual <code>Component</code> is to no longer be used by firing a
+     * {@link VideoEvent#VIDEO_REMOVED} <code>VideoEvent</code>.
      *
-     * @param player the <tt>Player</tt> to dispose of
+     * @param player the <code>Player</code> to dispose of
      * @see MediaDeviceSession#disposePlayer(Player)
      */
     @Override
@@ -635,22 +673,22 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notify the <tt>VideoListener</tt>s registered with this instance about a specific type of
-     * change in the availability of a specific visual <tt>Component</tt> depicting video.
+     * Notify the <code>VideoListener</code>s registered with this instance about a specific type of
+     * change in the availability of a specific visual <code>Component</code> depicting video.
      *
-     * @param type the type of change as defined by <tt>VideoEvent</tt> in the availability of the
-     * specified visual <tt>Component</tt> depicting video
-     * @param visualComponent the visual <tt>Component</tt> depicting video which has been added
+     * @param type the type of change as defined by <code>VideoEvent</code> in the availability of the
+     * specified visual <code>Component</code> depicting video
+     * @param visualComponent the visual <code>Component</code> depicting video which has been added
      * or removed in this instance
      * @param origin {@link VideoEvent#LOCAL} if the origin of the video is local (e.g. it is being locally
      * captured); {@link VideoEvent#REMOTE} if the origin of the video is remote (e.g. a
      * remote peer is streaming it)
-     * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
-     * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
-     * @return <tt>true</tt> if this event and, more specifically, the visual <tt>Component</tt> it
+     * @param wait <code>true</code> if the call is to wait till the specified <code>VideoEvent</code> has been
+     * delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
+     * @return <code>true</code> if this event and, more specifically, the visual <code>Component</code> it
      * describes have been consumed and should be considered owned, referenced (which is
-     * important because <tt>Component</tt>s belong to a single <tt>Container</tt> at a
-     * time); otherwise, <tt>false</tt>
+     * important because <code>Component</code>s belong to a single <code>Container</code> at a
+     * time); otherwise, <code>false</code>
      */
     protected boolean fireVideoEvent(int type, Component visualComponent, int origin, boolean wait)
     {
@@ -660,12 +698,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notifies the <tt>VideoListener</tt>s registered with this instance about a specific <tt>VideoEvent</tt>.
+     * Notifies the <code>VideoListener</code>s registered with this instance about a specific <code>VideoEvent</code>.
      *
-     * @param videoEvent the <tt>VideoEvent</tt> to be fired to the <tt>VideoListener</tt>s registered with
+     * @param videoEvent the <code>VideoEvent</code> to be fired to the <code>VideoListener</code>s registered with
      * this instance
-     * @param wait <tt>true</tt> if the call is to wait till the specified <tt>VideoEvent</tt> has been
-     * delivered to the <tt>VideoListener</tt>s; otherwise, <tt>false</tt>
+     * @param wait <code>true</code> if the call is to wait till the specified <code>VideoEvent</code> has been
+     * delivered to the <code>VideoListener</code>s; otherwise, <code>false</code>
      */
     protected void fireVideoEvent(VideoEvent videoEvent, boolean wait)
     {
@@ -673,9 +711,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets the JMF <tt>Format</tt> of the <tt>captureDevice</tt> of this <tt>MediaDeviceSession</tt>.
+     * Gets the JMF <code>Format</code> of the <code>captureDevice</code> of this <code>MediaDeviceSession</code>.
      *
-     * @return the JMF <tt>Format</tt> of the <tt>captureDevice</tt> of this <tt>MediaDeviceSession</tt>
+     * @return the JMF <code>Format</code> of the <code>captureDevice</code> of this <code>MediaDeviceSession</code>
      */
     private Format getCaptureDeviceFormat()
     {
@@ -705,11 +743,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets the visual <tt>Component</tt>, if any, depicting the video streamed from the local peer
+     * Gets the visual <code>Component</code>, if any, depicting the video streamed from the local peer
      * to the remote peer.
      *
-     * @return the visual <tt>Component</tt> depicting the local video if local video is actually
-     * being streamed from the local peer to the remote peer; otherwise, <tt>null</tt>
+     * @return the visual <code>Component</code> depicting the local video if local video is actually
+     * being streamed from the local peer to the remote peer; otherwise, <code>null</code>
      */
     public Component getLocalVisualComponent()
     {
@@ -719,10 +757,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Returns the FMJ <tt>Format</tt> of the video we are receiving from the remote peer.
+     * Returns the FMJ <code>Format</code> of the video we are receiving from the remote peer.
      *
-     * @return the FMJ <tt>Format</tt> of the video we are receiving from the remote peer or
-     * <tt>null</tt> if we are not receiving any video or the FMJ <tt>Format</tt> of the
+     * @return the FMJ <code>Format</code> of the video we are receiving from the remote peer or
+     * <code>null</code> if we are not receiving any video or the FMJ <code>Format</code> of the
      * video we are receiving from the remote peer cannot be determined
      */
     public VideoFormat getReceivedVideoFormat()
@@ -759,11 +797,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets the visual <tt>Component</tt>s rendering the <tt>ReceiveStream</tt> corresponding to
+     * Gets the visual <code>Component</code>s rendering the <code>ReceiveStream</code> corresponding to
      * the given ssrc.
      *
-     * @param ssrc the src-id of the receive stream, which visual <tt>Component</tt> we're looking for
-     * @return the visual <tt>Component</tt> rendering the <tt>ReceiveStream</tt> corresponding to
+     * @param ssrc the src-id of the receive stream, which visual <code>Component</code> we're looking for
+     * @return the visual <code>Component</code> rendering the <code>ReceiveStream</code> corresponding to
      * the given ssrc
      */
     public Component getVisualComponent(long ssrc)
@@ -773,9 +811,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets the visual <tt>Component</tt>s where video from the remote peer is being rendered.
+     * Gets the visual <code>Component</code>s where video from the remote peer is being rendered.
      *
-     * @return the visual <tt>Component</tt>s where video from the remote peer is being rendered
+     * @return the visual <code>Component</code>s where video from the remote peer is being rendered
      */
     public List<Component> getVisualComponents()
     {
@@ -801,10 +839,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
      * Implements {@link KeyFrameControl.KeyFrameRequester#requestKeyFrame()} of
      * {@link #keyFrameRequester}.
      *
-     * @param keyFrameRequester the <tt>KeyFrameControl.KeyFrameRequester</tt> on which the method is invoked
-     * @return <tt>true</tt> if this <tt>KeyFrameRequester</tt> has indeed requested a key frame
-     * from the remote peer of the associated <tt>VideoMediaStream</tt> in response to the
-     * call; otherwise, <tt>false</tt>
+     * @param keyFrameRequester the <code>KeyFrameControl.KeyFrameRequester</code> on which the method is invoked
+     * @return <code>true</code> if this <code>KeyFrameRequester</code> has indeed requested a key frame
+     * from the remote peer of the associated <code>VideoMediaStream</code> in response to the
+     * call; otherwise, <code>false</code>
      */
     private boolean keyFrameRequesterRequestKeyFrame(KeyFrameControl.KeyFrameRequester keyFrameRequester)
     {
@@ -829,7 +867,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notifies this <tt>VideoMediaDeviceSession</tt> of a new <tt>RTCPFeedbackListener</tt>
+     * Notifies this <code>VideoMediaDeviceSession</code> of a new <code>RTCPFeedbackListener</code>
      *
      * @param rtcpFeedbackMessageListener the listener to be added.
      */
@@ -848,10 +886,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notifies this instance that a specific <tt>Player</tt> of remote content has generated a
-     * <tt>ConfigureCompleteEvent</tt>.
+     * Notifies this instance that a specific <code>Player</code> of remote content has generated a
+     * <code>ConfigureCompleteEvent</code>.
      *
-     * @param player the <tt>Player</tt> which is the source of a <tt>ConfigureCompleteEvent</tt>
+     * @param player the <code>Player</code> which is the source of a <code>ConfigureCompleteEvent</code>
      * @see MediaDeviceSession#playerConfigureComplete(Processor)
      */
     @Override
@@ -911,9 +949,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Gets notified about <tt>ControllerEvent</tt>s generated by a specific <tt>Player</tt> of remote content.
+     * Gets notified about <code>ControllerEvent</code>s generated by a specific <code>Player</code> of remote content.
      *
-     * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is the source of
+     * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is the source of
      * the event and the very type of the event
      * @see MediaDeviceSession#playerControllerUpdate(ControllerEvent)
      */
@@ -935,10 +973,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notifies this instance that a specific <tt>Player</tt> of remote content has generated a
-     * <tt>RealizeCompleteEvent</tt>.
+     * Notifies this instance that a specific <code>Player</code> of remote content has generated a
+     * <code>RealizeCompleteEvent</code>.
      *
-     * @param player the <tt>Player</tt> which is the source of a <tt>RealizeCompleteEvent</tt>.
+     * @param player the <code>Player</code> which is the source of a <code>RealizeCompleteEvent</code>.
      * @see MediaDeviceSession#playerRealizeComplete(Processor)
      */
     @Override
@@ -967,13 +1005,13 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notify this instance that a specific <tt>Player</tt> of local or remote content/video has
-     * generated a <tt>SizeChangeEvent</tt>.
+     * Notify this instance that a specific <code>Player</code> of local or remote content/video has
+     * generated a <code>SizeChangeEvent</code>.
      * cmeng: trigger by user?
      *
-     * @param sourceController the <tt>Player</tt> which is the source of the event
+     * @param sourceController the <code>Player</code> which is the source of the event
      * @param origin {@link VideoEvent#LOCAL} or {@link VideoEvent#REMOTE} which specifies the origin of
-     * the visual <tt>Component</tt> displaying video which is concerned
+     * the visual <code>Component</code> displaying video which is concerned
      * @param width the width reported in the event
      * @param height the height reported in the event
      * @see SizeChangeEvent
@@ -1017,11 +1055,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notify this instance that the visual <tt>Component</tt> of a <tt>Player</tt> rendering
+     * Notify this instance that the visual <code>Component</code> of a <code>Player</code> rendering
      * remote content has been resized.
      *
-     * @param player the <tt>Player</tt> rendering remote content the visual <tt>Component</tt> of which has been resized
-     * @param ev a <tt>ComponentEvent</tt> which specifies the resized <tt>Component</tt>
+     * @param player the <code>Player</code> rendering remote content the visual <code>Component</code> of which has been resized
+     * @param ev a <code>ComponentEvent</code> which specifies the resized <code>Component</code>
      */
     private void playerVisualComponentResized(Processor player, ComponentEvent ev)
     {
@@ -1114,7 +1152,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Removes <tt>RTCPFeedbackMessageCreateListener</tt>.
+     * Removes <code>RTCPFeedbackMessageCreateListener</code>.
      *
      * @param listener the listener to remove
      */
@@ -1126,11 +1164,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Removes a specific <tt>VideoListener</tt> from this instance in order to have to no longer
-     * receive notifications when visual/video <tt>Component</tt>s are being added and removed.
+     * Removes a specific <code>VideoListener</code> from this instance in order to have to no longer
+     * receive notifications when visual/video <code>Component</code>s are being added and removed.
      *
-     * @param listener the <tt>VideoListener</tt> to no longer be notified when visual/video
-     * <tt>Component</tt>s are being added or removed in this instance
+     * @param listener the <code>VideoListener</code> to no longer be notified when visual/video
+     * <code>Component</code>s are being added or removed in this instance
      */
     public void removeVideoListener(VideoListener listener)
     {
@@ -1138,7 +1176,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Sets the <tt>RTPConnector</tt> that will be used to initialize some codec for RTCP feedback.
+     * Sets the <code>RTPConnector</code> that will be used to initialize some codec for RTCP feedback.
      *
      * @param rtpConnector the RTP connector
      */
@@ -1148,11 +1186,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Sets the <tt>MediaFormat</tt> in which this <tt>MediaDeviceSession</tt> outputs the media
-     * captured by its <tt>MediaDevice</tt>.
+     * Sets the <code>MediaFormat</code> in which this <code>MediaDeviceSession</code> outputs the media
+     * captured by its <code>MediaDevice</code>.
      *
-     * @param format the <tt>MediaFormat</tt> in which this <tt>MediaDeviceSession</tt> is to output the
-     * media captured by its <tt>MediaDevice</tt>
+     * @param format the <code>MediaFormat</code> in which this <code>MediaDeviceSession</code> is to output the
+     * media captured by its <code>MediaDevice</code>
      */
     @Override
     public void setFormat(MediaFormat format)
@@ -1178,10 +1216,10 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Sets the <tt>KeyFrameControl</tt> to be used by this <tt>VideoMediaDeviceSession</tt> as a
+     * Sets the <code>KeyFrameControl</code> to be used by this <code>VideoMediaDeviceSession</code> as a
      * means of control over its key frame-related logic.
      *
-     * @param keyFrameControl the <tt>KeyFrameControl</tt> to be used by this <tt>VideoMediaDeviceSession</tt> as a
+     * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>VideoMediaDeviceSession</code> as a
      * means of control over its key frame-related logic
      */
     public void setKeyFrameControl(KeyFrameControl keyFrameControl)
@@ -1223,11 +1261,11 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Sets the <tt>MediaFormatImpl</tt> in which a specific <tt>Processor</tt> producing media to
+     * Sets the <code>MediaFormatImpl</code> in which a specific <code>Processor</code> producing media to
      * be streamed to the remote peer is to output.
      *
-     * @param processor the <tt>Processor</tt> to set the output <tt>MediaFormatImpl</tt> of
-     * @param mediaFormat the <tt>MediaFormatImpl</tt> to set on <tt>processor</tt>
+     * @param processor the <code>Processor</code> to set the output <code>MediaFormatImpl</code> of
+     * @param mediaFormat the <code>MediaFormatImpl</code> to set on <code>processor</code>
      * @see MediaDeviceSession#setProcessorFormat(Processor, MediaFormatImpl)
      */
     @Override
@@ -1268,24 +1306,24 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Sets the <tt>MediaFormatImpl</tt> of a specific <tt>TrackControl</tt> of the
-     * <tt>Processor</tt> which produces the media to be streamed by this <tt>MediaDeviceSession</tt>
+     * Sets the <code>MediaFormatImpl</code> of a specific <code>TrackControl</code> of the
+     * <code>Processor</code> which produces the media to be streamed by this <code>MediaDeviceSession</code>
      * to the remote peer. Allows extenders to override the set procedure and to detect when the
-     * JMF <tt>Format</tt> of the specified <tt>TrackControl</tt> changes.
+     * JMF <code>Format</code> of the specified <code>TrackControl</code> changes.
      *
-     * @param trackControl the <tt>TrackControl</tt> to set the JMF <tt>Format</tt> of
-     * @param mediaFormat the <tt>MediaFormatImpl</tt> to be set on the specified <tt>TrackControl</tt>. Though
-     * <tt>mediaFormat</tt> encapsulates a JMF <tt>Format</tt>, <tt>format</tt> is to be set
-     * on the specified <tt>trackControl</tt> because it may be more specific. In any case,
-     * the two JMF <tt>Format</tt>s match. The <tt>MediaFormatImpl</tt> is provided anyway
+     * @param trackControl the <code>TrackControl</code> to set the JMF <code>Format</code> of
+     * @param mediaFormat the <code>MediaFormatImpl</code> to be set on the specified <code>TrackControl</code>. Though
+     * <code>mediaFormat</code> encapsulates a JMF <code>Format</code>, <code>format</code> is to be set
+     * on the specified <code>trackControl</code> because it may be more specific. In any case,
+     * the two JMF <code>Format</code>s match. The <code>MediaFormatImpl</code> is provided anyway
      * because it carries additional information such as format parameters.
-     * @param format the JMF <tt>Format</tt> to be set on the specified <tt>TrackControl</tt>. Though
-     * <tt>mediaFormat</tt> encapsulates a JMF <tt>Format</tt>, the specified <tt>format</tt>
-     * is to be set on the specified <tt>trackControl</tt> because it may be more specific
-     * than the JMF <tt>Format</tt> of the <tt>mediaFormat</tt>
-     * @return the JMF <tt>Format</tt> set on <tt>TrackControl</tt> after the attempt to set the
-     * specified <tt>mediaFormat</tt> or <tt>null</tt> if the specified <tt>format</tt> was
-     * found to be incompatible with <tt>trackControl</tt>
+     * @param format the JMF <code>Format</code> to be set on the specified <code>TrackControl</code>. Though
+     * <code>mediaFormat</code> encapsulates a JMF <code>Format</code>, the specified <code>format</code>
+     * is to be set on the specified <code>trackControl</code> because it may be more specific
+     * than the JMF <code>Format</code> of the <code>mediaFormat</code>
+     * @return the JMF <code>Format</code> set on <code>TrackControl</code> after the attempt to set the
+     * specified <code>mediaFormat</code> or <code>null</code> if the specified <code>format</code> was
+     * found to be incompatible with <code>trackControl</code>
      * @see MediaDeviceSession#setProcessorFormat(TrackControl, MediaFormatImpl, Format)
      */
     @Override
@@ -1379,7 +1417,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
      * Sets the indicator which determines whether RTCP feedback Picture Loss Indication (PLI) is
      * to be used to request keyframes.
      *
-     * @param useRTCPFeedbackPLI <tt>true</tt> to use PLI; otherwise, <tt>false</tt>
+     * @param useRTCPFeedbackPLI <code>true</code> to use PLI; otherwise, <code>false</code>
      */
     public void setRTCPFeedbackPLI(boolean useRTCPFeedbackPLI)
     {
@@ -1409,12 +1447,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Notify this instance that the value of its <tt>startedDirection</tt> property has changed
-     * from a specific <tt>oldValue</tt> to a specific <tt>newValue</tt>.
+     * Notify this instance that the value of its <code>startedDirection</code> property has changed
+     * from a specific <code>oldValue</code> to a specific <code>newValue</code>.
      *
-     * @param oldValue the <tt>MediaDirection</tt> which used to be the value of the
-     * <tt>startedDirection</tt> property of this instance
-     * @param newValue the <tt>MediaDirection</tt> which is the value of the <tt>startedDirection</tt>
+     * @param oldValue the <code>MediaDirection</code> which used to be the value of the
+     * <code>startedDirection</code> property of this instance
+     * @param newValue the <code>MediaDirection</code> which is the value of the <code>startedDirection</code>
      * property of this instance
      */
     @Override
@@ -1483,9 +1521,9 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Return the <tt>Player</tt> instance which provides the local visual/video <tt>Component</tt>.
+     * Return the <code>Player</code> instance which provides the local visual/video <code>Component</code>.
      *
-     * @return the <tt>Player</tt> instance which provides the local visual/video <tt>Component</tt>
+     * @return the <code>Player</code> instance which provides the local visual/video <code>Component</code>
      * .
      */
     protected Player getLocalPlayer()
@@ -1496,26 +1534,26 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
     }
 
     /**
-     * Extends <tt>SwScale</tt> in order to provide scaling with high quality to a specific
-     * <tt>Player</tt> of remote video.
+     * Extends <code>SwScale</code> in order to provide scaling with high quality to a specific
+     * <code>Player</code> of remote video.
      */
     private class PlayerScaler extends SwScale
     {
         /**
-         * The last size reported in the form of a <tt>SizeChangeEvent</tt>.
+         * The last size reported in the form of a <code>SizeChangeEvent</code>.
          */
         private Dimension lastSize;
 
         /**
-         * The <tt>Player</tt> into the codec chain of which this <tt>SwScale</tt> is set.
+         * The <code>Player</code> into the codec chain of which this <code>SwScale</code> is set.
          */
         private final Player player;
 
         /**
-         * Initializes a new <tt>PlayerScaler</tt> instance which is to provide scaling with high
-         * quality to a specific <tt>Player</tt> of remote video.
+         * Initializes a new <code>PlayerScaler</code> instance which is to provide scaling with high
+         * quality to a specific <code>Player</code> of remote video.
          *
-         * @param player the <tt>Player</tt> of remote video into the codec chain of which the new instance
+         * @param player the <code>Player</code> of remote video into the codec chain of which the new instance
          * is to be set
          */
         public PlayerScaler(Player player)
@@ -1526,12 +1564,12 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
 
         /**
          * Determines when the input video sizes changes and reports it as a
-         * <tt>SizeChangeVideoEvent</tt> because <tt>Player</tt> is unable to do it when this
-         * <tt>SwScale</tt> is scaling to a specific <tt>outputSize</tt>.
+         * <code>SizeChangeVideoEvent</code> because <code>Player</code> is unable to do it when this
+         * <code>SwScale</code> is scaling to a specific <code>outputSize</code>.
          *
          * @param input input buffer
          * @param output output buffer
-         * @return the native <tt>PaSampleFormat</tt>
+         * @return the native <code>PaSampleFormat</code>
          * @see SwScale#process(Buffer, Buffer)
          */
         @Override
@@ -1555,7 +1593,7 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
         }
 
         /**
-         * Ensures that this <tt>SwScale</tt> preserves the aspect ratio of its input video when scaling.
+         * Ensures that this <code>SwScale</code> preserves the aspect ratio of its input video when scaling.
          *
          * @param inputFormat format to set
          * @return format

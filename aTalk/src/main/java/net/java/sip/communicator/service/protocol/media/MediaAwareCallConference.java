@@ -8,17 +8,24 @@ package net.java.sip.communicator.service.protocol.media;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.BasicVolumeControl;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaUseCase;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Extends <code>CallConference</code> to represent the media-specific information associated with the

@@ -64,7 +64,7 @@ public class JNIEncoder extends AbstractCodec2
     public static final String BASELINE_PROFILE = "baseline";
 
     /**
-     * The default value of the {@link #DEFAULT_INTRA_REFRESH_PNAME} <tt>ConfigurationService</tt> property.
+     * The default value of the {@link #DEFAULT_INTRA_REFRESH_PNAME} <code>ConfigurationService</code> property.
      */
     public static final boolean DEFAULT_DEFAULT_INTRA_REFRESH = true;
 
@@ -74,18 +74,18 @@ public class JNIEncoder extends AbstractCodec2
     public static final String MAIN_PROFILE = "main";
 
     /**
-     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <tt>ConfigurationService</tt> property.
+     * The default value of the {@link #DEFAULT_PROFILE_PNAME} <code>ConfigurationService</code> property.
      */
     public static final String DEFAULT_DEFAULT_PROFILE = BASELINE_PROFILE;
 
     /**
-     * The frame rate to be assumed by <tt>JNIEncoder</tt> instances in the absence of any other frame rate indication.
+     * The frame rate to be assumed by <code>JNIEncoder</code> instances in the absence of any other frame rate indication.
      */
     public static final int DEFAULT_FRAME_RATE = 15;
 
     /**
-     * The name of the boolean <tt>ConfigurationService</tt> property which specifies whether Periodic
-     * Intra Refresh is to be used by default. The default value is <tt>true</tt>.
+     * The name of the boolean <code>ConfigurationService</code> property which specifies whether Periodic
+     * Intra Refresh is to be used by default. The default value is <code>true</code>.
      * The value may be overridden by {@link #setAdditionalCodecSettings(Map)}.
      */
     public static final String DEFAULT_INTRA_REFRESH_PNAME = "neomedia.codec.video.h264.defaultIntraRefresh";
@@ -97,12 +97,12 @@ public class JNIEncoder extends AbstractCodec2
     public static final int DEFAULT_KEYINT = 150;
 
     /**
-     * The default value of the {@link #PRESET_PNAME} <tt>ConfigurationService</tt> property.
+     * The default value of the {@link #PRESET_PNAME} <code>ConfigurationService</code> property.
      */
     public static final String DEFAULT_PRESET = AVAILABLE_PRESETS[0];
 
     /**
-     * The name of the <tt>ConfigurationService</tt> property which specifies the H.264 (encoding)
+     * The name of the <code>ConfigurationService</code> property which specifies the H.264 (encoding)
      * profile to be used in the absence of negotiation. Though it seems that RFC 3984 "RTP
      * Payload Format for H.264 Video" specifies the baseline profile as the default, we have
      * till the time of this writing defaulted to the main profile and we do not currently want
@@ -116,9 +116,9 @@ public class JNIEncoder extends AbstractCodec2
     public static final String HIGH_PROFILE = "high";
 
     /**
-     * The name of the integer <tt>ConfigurationService</tt> property which specifies the maximum
+     * The name of the integer <code>ConfigurationService</code> property which specifies the maximum
      * GOP (group of pictures) size i.e. the maximum interval between keyframes. FFmpeg calls it
-     * <tt>gop_size</tt>, x264 refers to it as <tt>keyint</tt> or <tt>i_keyint_max</tt>.
+     * <code>gop_size</code>, x264 refers to it as <code>keyint</code> or <code>i_keyint_max</code>.
      */
     public static final String KEYINT_PNAME = "neomedia.codec.video.h264.keyint";
 
@@ -128,15 +128,15 @@ public class JNIEncoder extends AbstractCodec2
     private static final long PLI_INTERVAL = 3000;
 
     /**
-     * The name of the <tt>ConfigurationService</tt> property which specifies the x264 preset to
-     * be used by <tt>JNIEncoder</tt>. A preset is a collection of x264 options that will provide
+     * The name of the <code>ConfigurationService</code> property which specifies the x264 preset to
+     * be used by <code>JNIEncoder</code>. A preset is a collection of x264 options that will provide
      * a certain encoding speed to compression ratio. A slower preset will provide better
      * compression i.e. quality per size.
      */
     public static final String PRESET_PNAME = "neomedia.codec.video.h264.preset";
 
     /**
-     * The list of <tt>Formats</tt> supported by <tt>JNIEncoder</tt> instances as output.
+     * The list of <code>Formats</code> supported by <code>JNIEncoder</code> instances as output.
      */
     static final Format[] SUPPORTED_OUTPUT_FORMATS = {
             new ParameterizedVideoFormat(Constants.H264, VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP, "0"),
@@ -163,7 +163,7 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * The additional settings of this <tt>Codec</tt>.
+     * The additional settings of this <code>Codec</code>.
      */
     private Map<String, String> additionalCodecSettings;
 
@@ -180,12 +180,12 @@ public class JNIEncoder extends AbstractCodec2
     /**
      * The indicator which determines whether the generation of a keyframe is to be forced during
      * a subsequent execution of {@link #process(Buffer, Buffer)}. The first frame to undergo
-     * encoding is naturally a keyframe and, for the sake of clarity, the initial value is <tt>true</tt>.
+     * encoding is naturally a keyframe and, for the sake of clarity, the initial value is <code>true</code>.
      */
     private boolean forceKeyFrame = true;
 
     /**
-     * The <tt>KeyFrameControl</tt> used by this <tt>JNIEncoder</tt> to control its key frame-related logic.
+     * The <code>KeyFrameControl</code> used by this <code>JNIEncoder</code> to control its key frame-related logic.
      */
     private KeyFrameControl keyFrameControl;
 
@@ -194,7 +194,7 @@ public class JNIEncoder extends AbstractCodec2
     /**
      * The maximum GOP (group of pictures) size i.e. the maximum interval between keyframes (with
      * which {@link #open()} has been invoked without an intervening {@link #close()}). FFmpeg
-     * calls it <tt>gop_size</tt>, x264 refers to it as <tt>keyint</tt> or <tt>i_keyint_max</tt>.
+     * calls it <code>gop_size</code>, x264 refers to it as <code>keyint</code> or <code>i_keyint_max</code>.
      */
     private int keyint;
 
@@ -209,7 +209,7 @@ public class JNIEncoder extends AbstractCodec2
     private long lastKeyFrameRequestTime = System.currentTimeMillis();
 
     /**
-     * The packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>,
+     * The packetization mode to be used for the H.264 RTP payload output by this <code>JNIEncoder</code>,
      * and the associated packetizer. RFC 3984 "RTP Payload Format for H.264 Video" says that
      * "when the value of packetization-mode is equal to 0 or packetization-mode is not present,
      * the single NAL mode, as defined in section 6.2 of RFC 3984, MUST be used."
@@ -242,7 +242,7 @@ public class JNIEncoder extends AbstractCodec2
     private int mHeight = DeviceConfiguration.DEFAULT_VIDEO_WIDTH;
 
     /**
-     * Initializes a new <tt>JNIEncoder</tt> instance.
+     * Initializes a new <code>JNIEncoder</code> instance.
      */
     public JNIEncoder()
     {
@@ -263,7 +263,7 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Closes this <tt>Codec</tt>.
+     * Closes this <code>Codec</code>.
      */
     @Override
     protected void doClose()
@@ -291,7 +291,7 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Codec</tt>.
+     * Opens this <code>Codec</code>.
      */
     @Override
     protected void doOpen() throws ResourceUnavailableException
@@ -465,7 +465,7 @@ public class JNIEncoder extends AbstractCodec2
      *
      * @param inBuffer input buffer
      * @param outBuffer output buffer
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if buffer has been successfully processed
+     * @return <code>BUFFER_PROCESSED_OK</code> if buffer has been successfully processed
      */
     @Override
     protected int doProcess(Buffer inBuffer, Buffer outBuffer)
@@ -547,10 +547,10 @@ public class JNIEncoder extends AbstractCodec2
 
     /**
      * Determines whether the encoding of {@link #avFrame} is to produce a keyframe. The returned
-     * value will be set on <tt>avFrame</tt> via a call to
+     * value will be set on <code>avFrame</code> via a call to
      * {@link FFmpeg#avframe_set_key_frame(long, boolean)}.
      *
-     * @return <tt>true</tt> if the encoding of <tt>avFrame</tt> is to produce a keyframe; otherwise <tt>false</tt>
+     * @return <code>true</code> if the encoding of <code>avFrame</code> is to produce a keyframe; otherwise <code>false</code>
      */
     private boolean isKeyFrame()
     {
@@ -586,9 +586,9 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Notifies this <tt>JNIEncoder</tt> that the remote peer has requested a key frame from this Local peer.
+     * Notifies this <code>JNIEncoder</code> that the remote peer has requested a key frame from this Local peer.
      *
-     * @return <tt>true</tt> if this <tt>JNIEncoder</tt> has honored the request for a key frame; otherwise <tt>false</tt>
+     * @return <code>true</code> if this <code>JNIEncoder</code> has honored the request for a key frame; otherwise <code>false</code>
      */
     private boolean keyFrameRequest()
     {
@@ -602,9 +602,9 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Notifies this <tt>RTCPFeedbackListener</tt> that an RTCP feedback message has been received
+     * Notifies this <code>RTCPFeedbackListener</code> that an RTCP feedback message has been received
      *
-     * @param ev an <tt>RTCPFeedbackMessageEvent</tt> which specifies the details of the notification
+     * @param ev an <code>RTCPFeedbackMessageEvent</code> which specifies the details of the notification
      * event such as the feedback message type and the payload type
      */
     @Override
@@ -628,9 +628,9 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Sets additional settings on this <tt>Codec</tt>.
+     * Sets additional settings on this <code>Codec</code>.
      *
-     * @param additionalCodecSettings the additional settings to be set on this <tt>Codec</tt>
+     * @param additionalCodecSettings the additional settings to be set on this <code>Codec</code>
      */
     public void setAdditionalCodecSettings(Map<String, String> additionalCodecSettings)
     {
@@ -638,10 +638,10 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>KeyFrameControl</tt> to be used by this <tt>JNIEncoder</tt> as a means of
+     * Sets the <code>KeyFrameControl</code> to be used by this <code>JNIEncoder</code> as a means of
      * control over its key frame-related logic.
      *
-     * @param keyFrameControl the <tt>KeyFrameControl</tt> to be used by this <tt>JNIEncoder</tt> as a means of
+     * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>JNIEncoder</code> as a means of
      * control over its key frame-related logic
      */
     public void setKeyFrameControl(KeyFrameControl keyFrameControl)
@@ -658,11 +658,11 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+     * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)
@@ -707,11 +707,11 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Sets the packetization mode to be used for the H.264 RTP payload output by this <tt>JNIEncoder</tt>,
+     * Sets the packetization mode to be used for the H.264 RTP payload output by this <code>JNIEncoder</code>,
      * and the associated packetizer.
      *
      * @param packetizationMode the packetization mode to be used for the H.264 RTP payload output by this
-     * <tt>JNIEncoder</tt> and the associated packetizer
+     * <code>JNIEncoder</code> and the associated packetizer
      */
     public void setPacketizationMode(String packetizationMode)
     {

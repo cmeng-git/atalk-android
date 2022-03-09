@@ -17,7 +17,9 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.impl.neomedia.rtp.MediaStreamTrackReceiver;
 import org.atalk.impl.neomedia.rtp.RTPEncodingDesc;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.RetransmissionRequester;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.TimeProvider;
@@ -26,7 +28,7 @@ import org.atalk.util.concurrent.RecurringRunnableExecutor;
 import timber.log.Timber;
 
 /**
- * Detects lost RTP packets for a particular <tt>RtpChannel</tt> and requests their retransmission
+ * Detects lost RTP packets for a particular <code>RtpChannel</code> and requests their retransmission
  * by sending RTCP NACK packets.
  *
  * @author Boris Grozev
@@ -41,7 +43,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
     private boolean enabled = true;
 
     /**
-     * Whether this <tt>PacketTransformer</tt> has been closed.
+     * Whether this <code>PacketTransformer</code> has been closed.
      */
     private boolean closed = false;
 
@@ -64,7 +66,7 @@ public class RetransmissionRequesterImpl extends SinglePacketTransformerAdapter
             = new RecurringRunnableExecutor(RetransmissionRequesterImpl.class.getSimpleName());
 
     /**
-     * Initializes a new <tt>RetransmissionRequester</tt> for the given <tt>RtpChannel</tt>.
+     * Initializes a new <code>RetransmissionRequester</code> for the given <code>RtpChannel</code>.
      *
      * @param stream the {@link MediaStream} that the instance belongs to.
      */

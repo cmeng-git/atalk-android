@@ -8,8 +8,13 @@ package org.atalk.impl.neomedia.transform.dtmf;
 import net.sf.fmj.media.rtp.RTPHeader;
 
 import org.atalk.impl.neomedia.AudioMediaStreamImpl;
-import org.atalk.impl.neomedia.transform.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.service.neomedia.AudioMediaStream;
+import org.atalk.service.neomedia.DTMFMethod;
+import org.atalk.service.neomedia.DTMFRtpTone;
+import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
@@ -33,7 +38,7 @@ import timber.log.Timber;
 public class DtmfTransformEngine extends SinglePacketTransformer implements TransformEngine
 {
     /**
-     * The <tt>AudioMediaStreamImpl</tt> that this transform engine was created by and that it's
+     * The <code>AudioMediaStreamImpl</code> that this transform engine was created by and that it's
      * going to deliver DTMF packets for.
      */
     private final AudioMediaStreamImpl mediaStream;
@@ -130,7 +135,7 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     private boolean lastMinimalDuration = false;
 
     /**
-     * The minimal DTMF tone duration. The default value is <tt>560</tt> corresponding to 70 ms.
+     * The minimal DTMF tone duration. The default value is <code>560</code> corresponding to 70 ms.
      * This can be changed by using the "neomedia.transform.dtmf.minimalToneDuration" property.
      */
     private int minimalToneDuration;
@@ -150,7 +155,7 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     /**
      * Creates an engine instance that will be replacing audio packets with DTMF ones upon request.
      *
-     * @param stream the <tt>AudioMediaStream</tt> whose RTP packets we are going to be replacing with DTMF.
+     * @param stream the <code>AudioMediaStream</code> whose RTP packets we are going to be replacing with DTMF.
      */
     public DtmfTransformEngine(AudioMediaStreamImpl stream)
     {
@@ -196,9 +201,9 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     }
 
     /**
-     * Always returns <tt>null</tt> since this engine does not require any RTCP transformations.
+     * Always returns <code>null</code> since this engine does not require any RTCP transformations.
      *
-     * @return <tt>null</tt> since this engine does not require any RTCP transformations.
+     * @return <code>null</code> since this engine does not require any RTCP transformations.
      */
     public PacketTransformer getRTCPTransformer()
     {
@@ -208,7 +213,7 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     /**
      * Returns a reference to this class since it is performing RTP transformations in here.
      *
-     * @return a reference to <tt>this</tt> instance of the <tt>DtmfTransformEngine</tt>.
+     * @return a reference to <code>this</code> instance of the <code>DtmfTransformEngine</code>.
      */
     public PacketTransformer getRTPTransformer()
     {
@@ -219,7 +224,7 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
      * A stub meant to handle incoming DTMF packets.
      *
      * @param pkt an incoming packet that we need to parse and handle in case we determine it to be DTMF.
-     * @return the <tt>pkt</tt> if it is not a DTMF tone and <tt>null</tt> otherwise since we will
+     * @return the <code>pkt</code> if it is not a DTMF tone and <code>null</code> otherwise since we will
      * be handling the packet ourselves and their's no point in feeding it to the application.
      */
     @Override
@@ -243,11 +248,11 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     }
 
     /**
-     * Replaces <tt>pkt</tt> with a DTMF packet if this engine is in a DTMF transmission mode or
+     * Replaces <code>pkt</code> with a DTMF packet if this engine is in a DTMF transmission mode or
      * returns it unchanged otherwise.
      *
      * @param pkt the audio packet that we may want to replace with a DTMF one.
-     * @return <tt>pkt</tt> with a DTMF packet if this engine is in a DTMF transmission mode or
+     * @return <code>pkt</code> with a DTMF packet if this engine is in a DTMF transmission mode or
      * returns it unchanged otherwise.
      */
     @Override
@@ -378,8 +383,8 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
     }
 
     /**
-     * Interrupts transmission of a <tt>DTMFRtpTone</tt> started with the
-     * <tt>startSendingDTMF()</tt> method. Has no effect if no tone is currently being sent.
+     * Interrupts transmission of a <code>DTMFRtpTone</code> started with the
+     * <code>startSendingDTMF()</code> method. Has no effect if no tone is currently being sent.
      *
      * @see AudioMediaStream#stopSendingDTMF(DTMFMethod dtmfMethod)
      */
@@ -423,7 +428,7 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
 
     /**
      * A simple thread that waits for new tones to be reported from incoming RTP packets and then
-     * delivers them to the <tt>AudioMediaStream</tt> associated with this engine. The reason we
+     * delivers them to the <code>AudioMediaStream</code> associated with this engine. The reason we
      * need to do this in a separate thread is of course the time sensitive nature of incoming RTP
      * packets.
      */
@@ -456,14 +461,14 @@ public class DtmfTransformEngine extends SinglePacketTransformer implements Tran
         private int QUEUE_SIZE = 100;
 
         /**
-         * The queue of <tt>DtmfRawPacket</tt>s pending processing
+         * The queue of <code>DtmfRawPacket</code>s pending processing
          */
         private final LinkedBlockingQueue<DtmfRawPacket> queue = new LinkedBlockingQueue<>(QUEUE_SIZE);
 
         /**
          * Waits for new tone events to be reported via the
-         * <tt>addTonePacket()</tt> method and delivers them as start / end
-         * events to the <tt>AudioMediaStream</tt> that we are associated with.
+         * <code>addTonePacket()</code> method and delivers them as start / end
+         * events to the <code>AudioMediaStream</code> that we are associated with.
          */
         public void run()
         {

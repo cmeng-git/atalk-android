@@ -16,9 +16,11 @@
 
 package org.atalk.impl.neomedia.rtcp;
 
-import org.atalk.impl.neomedia.*;
-import org.atalk.impl.neomedia.transform.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.RTCPPacketPredicate;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ByteArrayBuffer;
 
 /**
@@ -65,12 +67,10 @@ public class AudioRTCPTermination implements TransformEngine
         public RawPacket transform(RawPacket pkt)
         {
             RTCPIterator it = new RTCPIterator(pkt);
-            while (it.hasNext())
-            {
+            while (it.hasNext()) {
                 ByteArrayBuffer baf = it.next();
                 // We want to terminate all REMB packets
-                if (RTCPREMBPacket.isREMBPacket(baf))
-                {
+                if (RTCPREMBPacket.isREMBPacket(baf)) {
                     it.remove();
                 }
             }

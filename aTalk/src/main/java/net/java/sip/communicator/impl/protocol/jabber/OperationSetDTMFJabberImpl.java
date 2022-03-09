@@ -9,7 +9,9 @@ import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetDTMF;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AudioMediaStream;
+import org.atalk.service.neomedia.DTMFMethod;
+import org.atalk.service.neomedia.DTMFTone;
 import org.atalk.util.MediaType;
 
 import timber.log.Timber;

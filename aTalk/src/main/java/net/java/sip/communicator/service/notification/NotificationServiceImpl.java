@@ -5,7 +5,6 @@
  */
 package net.java.sip.communicator.service.notification;
 
-import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.service.systray.SystrayService;

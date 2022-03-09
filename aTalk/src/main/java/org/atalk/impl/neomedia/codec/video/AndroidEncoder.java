@@ -31,7 +31,7 @@ import javax.media.protocol.DataSource;
 import timber.log.Timber;
 
 /**
- * Video encoder based on <tt>MediaCodec</tt>.
+ * Video encoder based on <code>MediaCodec</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -44,17 +44,17 @@ public class AndroidEncoder extends AndroidCodec
     public static final String HW_ENCODING_ENABLE_PROPERTY = "neomedia.android.hw_encode";
 
     /**
-     * Name of configuration property that enables usage of <tt>Surface</tt> object as a source of video data.
+     * Name of configuration property that enables usage of <code>Surface</code> object as a source of video data.
      */
     public static final String DIRECT_SURFACE_ENCODE_PROPERTY = "neomedia.android.surface_encode";
 
     /**
-     * Indicates if this instance is using <tt>Surface</tt> for data source.
+     * Indicates if this instance is using <code>Surface</code> for data source.
      */
     private final boolean useInputSurface;
 
     /**
-     * Input <tt>Surface</tt> object.
+     * Input <code>Surface</code> object.
      */
     private Surface mInputSurface;
 
@@ -80,7 +80,7 @@ public class AndroidEncoder extends AndroidCodec
     }
 
     /**
-     * Creates new instance of <tt>AndroidEncoder</tt>.
+     * Creates new instance of <code>AndroidEncoder</code>.
      */
     public AndroidEncoder()
     {
@@ -150,9 +150,9 @@ public class AndroidEncoder extends AndroidCodec
     }
 
     /**
-     * Returns <tt>true</tt> if hardware encoding is enabled.
+     * Returns <code>true</code> if hardware encoding is enabled.
      *
-     * @return <tt>true</tt> if hardware encoding is enabled.
+     * @return <code>true</code> if hardware encoding is enabled.
      */
     private static boolean isHwEncodingEnabled()
     {
@@ -161,9 +161,9 @@ public class AndroidEncoder extends AndroidCodec
     }
 
     /**
-     * Returns <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
+     * Returns <code>true</code> if input <code>Surface</code> mode is enabled.
      *
-     * @return <tt>true</tt> if input <tt>Surface</tt> mode is enabled.
+     * @return <code>true</code> if input <code>Surface</code> mode is enabled.
      */
     public static boolean isDirectSurfaceEnabled()
     {
@@ -233,11 +233,11 @@ public class AndroidEncoder extends AndroidCodec
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+     * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)

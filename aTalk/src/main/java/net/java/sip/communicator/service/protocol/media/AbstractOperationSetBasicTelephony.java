@@ -5,17 +5,26 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.recording.Recorder;
+import org.atalk.util.MediaType;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

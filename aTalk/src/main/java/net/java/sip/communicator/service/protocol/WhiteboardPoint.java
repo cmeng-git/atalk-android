@@ -12,7 +12,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.atalk.android.util.ApiLib;
+import java.util.Objects;
 
 /**
  * A point representing a location in {@code (x,y)} coordinate space, specified in integer
@@ -131,7 +131,7 @@ public class WhiteboardPoint implements Cloneable
     @Override
     public int hashCode()
     {
-        return ApiLib.hash(x, y);
+        return Objects.hash(x, y);
     }
 
 	/**

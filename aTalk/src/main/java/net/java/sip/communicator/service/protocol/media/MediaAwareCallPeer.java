@@ -5,17 +5,43 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractCallPeer;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.CallState;
+import net.java.sip.communicator.service.protocol.ConferenceMember;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
+import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelEvent;
+import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelListener;
+import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
-import org.atalk.service.neomedia.*;
-import org.atalk.service.neomedia.event.*;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
+import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.XMPPConnection;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -1023,6 +1049,31 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
         if (videoStream != null)
             videoStream.removeReceiveStreamForSsrc(conferenceMember.getVideoSsrc());
 
+        MediaStream audioStream = getMediaHandler().getStream(MediaType.AUDIO);
+        if (audioStream != null) {
+            audioStream.removeReceiveStreamForSsrc(conferenceMember.getAudioSsrc());
+        }
+
+        // if there is a conference call we need to clear same ssrc from the sender stats
+        if (this.getCall() != null) {
+            MediaAwareCallConference callConference = this.getCall().getConference();
+
+            if (callConference != null) {
+                for (CallPeer cp : callConference.getCallPeers()) {
+                    if (cp instanceof MediaAwareCallPeer) {
+                        MediaAwareCallPeer<?, ?, ?> pm = (MediaAwareCallPeer<?, ?, ?>) cp;
+                        MediaStream as = pm.getMediaHandler().getStream(MediaType.AUDIO);
+                        if (as != null) {
+                            as.getMediaStreamStats().clearSendSsrc(conferenceMember.getAudioSsrc());
+                        }
+                        MediaStream vs = pm.getMediaHandler().getStream(MediaType.VIDEO);
+                        if (vs != null) {
+                            vs.getMediaStreamStats().clearSendSsrc(conferenceMember.getVideoSsrc());
+                        }
+                    }
+                }
+            }
+        }
         super.removeConferenceMember(conferenceMember);
     }
 

@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
@@ -156,8 +155,8 @@ public class ColibriConferenceIQ extends IQ
      */
     public ChannelBundle addChannelBundle(ChannelBundle channelBundle)
     {
-        ApiLib.requireNonNull(channelBundle, "channelBundle");
-        String id = ApiLib.requireNonNull(channelBundle.getId(), "channelBundle ID");
+        Objects.requireNonNull(channelBundle, "channelBundle");
+        String id = Objects.requireNonNull(channelBundle.getId(), "channelBundle ID");
 
         return channelBundles.put(id, channelBundle);
     }
@@ -174,7 +173,7 @@ public class ColibriConferenceIQ extends IQ
      */
     public boolean addContent(Content content)
     {
-        ApiLib.requireNonNull(content, "content");
+        Objects.requireNonNull(content, "content");
         return !contents.contains(content) && contents.add(content);
     }
 
@@ -202,8 +201,8 @@ public class ColibriConferenceIQ extends IQ
      */
     public Endpoint addEndpoint(Endpoint endpoint)
     {
-        ApiLib.requireNonNull(endpoint, "endpoint");
-        String id = ApiLib.requireNonNull(endpoint.getId(), "endpoint ID");
+        Objects.requireNonNull(endpoint, "endpoint");
+        String id = Objects.requireNonNull(endpoint.getId(), "endpoint ID");
 
         return endpoints.put(id, endpoint);
     }
@@ -222,7 +221,7 @@ public class ColibriConferenceIQ extends IQ
      */
     public ChannelBundle getChannelBundle(String channelBundleId)
     {
-        ApiLib.requireNonNull(channelBundleId, "channelBundleId");
+        Objects.requireNonNull(channelBundleId, "channelBundleId");
         return channelBundles.get(channelBundleId);
     }
 
@@ -657,7 +656,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public boolean addPayloadType(PayloadType payloadType)
         {
-            ApiLib.requireNonNull(payloadType, "payloadType");
+            Objects.requireNonNull(payloadType, "payloadType");
 
             // Make sure that the COLIBRI namespace is used.
             // payloadType.setNamespace(null);
@@ -676,7 +675,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public void addRtpHeaderExtension(RtpHeader ext)
         {
-            ApiLib.requireNonNull(ext, "ext");
+            Objects.requireNonNull(ext, "ext");
 
             // Create a new instance, because we are going to modify the NS
             // Make sure that the parent namespace (COLIBRI) is used.
@@ -706,7 +705,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public synchronized boolean addSource(SdpSource source)
         {
-            ApiLib.requireNonNull(source, "source");
+            Objects.requireNonNull(source, "source");
             return !sources.contains(source) && sources.add(source);
         }
 
@@ -719,7 +718,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public synchronized boolean addSourceGroup(SdpSourceGroup sourceGroup)
         {
-            ApiLib.requireNonNull(sourceGroup, "sourceGroup");
+            Objects.requireNonNull(sourceGroup, "sourceGroup");
             if (sourceGroups == null)
                 sourceGroups = new LinkedList<>();
 
@@ -1805,7 +1804,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public boolean addChannel(Channel channel)
         {
-            ApiLib.requireNonNull(channel, "channel");
+            Objects.requireNonNull(channel, "channel");
             return !channels.contains(channel) && channels.add(channel);
         }
 
@@ -1837,7 +1836,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public boolean addSctpConnection(SctpConnection conn)
         {
-            ApiLib.requireNonNull(conn, "conn");
+            Objects.requireNonNull(conn, "conn");
             return !sctpConnections.contains(conn) && sctpConnections.add(conn);
         }
 
@@ -1951,7 +1950,7 @@ public class ColibriConferenceIQ extends IQ
          */
         public void setName(String name)
         {
-            ApiLib.requireNonNull(name, "name");
+            Objects.requireNonNull(name, "name");
 
             this.name = name;
         }

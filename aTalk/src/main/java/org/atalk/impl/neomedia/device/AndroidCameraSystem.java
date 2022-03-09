@@ -20,7 +20,10 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
-import android.hardware.camera2.*;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.text.TextUtils;
 import android.util.Size;
@@ -41,9 +44,13 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.MediaType;
 
 import java.awt.Dimension;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.MediaLocator;
 import javax.media.format.VideoFormat;
 import javax.media.format.YUVFormat;
 
@@ -68,7 +75,7 @@ public class AndroidCameraSystem extends DeviceSystem
     public static boolean isCameraInitialized = false;
 
     /**
-     * Creates a new instance of <tt>AndroidCameraSystem</tt>.
+     * Creates a new instance of <code>AndroidCameraSystem</code>.
      *
      * @throws Exception from super
      */

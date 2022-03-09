@@ -51,17 +51,15 @@ public class LaunchArgHandler
 
     /**
      * Returned by the <code>handleArgs</code> method when parsing the arguments
-     * has failed or if no arguments were passed and an instance of SC was
-     * already launched. If this is the code returned by handleArgs, then the
-     * <code>getErrorCode</code> method would return an error code indicating what
-     * the error was.
+     * has failed or if no arguments were passed and an instance of SC was already
+     * launched. If this is the code returned by handleArgs, then the <code>getErrorCode</code>
+     * method would return an error code indicating what the error was.
      */
     public static final int ACTION_ERROR = 2;
 
     /**
-     * Returned by the <code>handleArgs</code> methods when all arguments have been
-     * successfully parsed and one of them indicates that the user has requested
-     * a multi instance launch.
+     * Returned by the <code>handleArgs</code> methods when all arguments have been successfully
+     * parsed and one of them indicates that the user has requested a multi instance launch.
      */
     public static final int ACTION_CONTINUE_LOCK_DISABLED = 3;
 
@@ -71,9 +69,8 @@ public class LaunchArgHandler
     public static final int ERROR_CODE_UNKNOWN_ARG = 1;
 
     /**
-     * The error code returned when we try to launch SIP Communicator while
-     * there is already a running instance and there were no arguments that we
-     * forward to that instance.
+     * The error code returned when we try to launch SIP Communicator while there is already
+     * a running instance and there were no arguments that we forward to that instance.
      */
     public static final int ERROR_CODE_ALREADY_STARTED = 2;
 
@@ -84,8 +81,7 @@ public class LaunchArgHandler
     public static final int ERROR_CODE_CREATE_DIR_FAILED = 3;
 
     /**
-     * The property name containing the name of the application
-     * (e.g. SIP Communicator)
+     * The property name containing the name of the application (e.g. SIP Communicator)
      */
     private static final String PNAME_APPLICATION_NAME = "APPLICATION_NAME";
 
@@ -100,14 +96,12 @@ public class LaunchArgHandler
     private static final String PNAME_VERSION = "APPLICATION_VERSION";
 
     /**
-     * The name of the file containing version properties for use with the
-     * argument handler.
+     * The name of the file containing version properties for use with the argument handler.
      */
     private static final String VERSION_PROPERTIES = "version.properties";
 
     /**
-     * The errorCode identifying the error that occurred last time
-     * <code>handleArgs</code> was called.
+     * The errorCode identifying the error that occurred last time <code>handleArgs</code> was called.
      */
     private int errorCode = 0;
 
@@ -156,14 +150,12 @@ public class LaunchArgHandler
          * but it is now in libjitsi.jar which is not in the classpath.
          */
         String osName = System.getProperty("os.name");
-
         if ((osName != null) && osName.startsWith("Mac"))
             new AEGetURLEventHandler(this);
     }
 
     /**
-     * Creates a singleton instance of the LauncherArgHandler if necessary and
-     * returns a reference to it.
+     * Creates a singleton instance of the LauncherArgHandler if necessary and returns a reference to it.
      *
      * @return the singleton instance of the LauncherArgHandler.
      */
@@ -179,11 +171,9 @@ public class LaunchArgHandler
     /**
      * Does the actual argument handling.
      *
-     * @param args the arguments the way we have received them from the main()
-     * method.
+     * @param args the arguments the way we have received them from the main() method.
      * @return one of the ACTION_XXX fields defined here, intended to indicate
-     * to the caller they action that they are supposed as a result of the arg
-     * handling.
+     * to the caller they action that they are supposed as a result of the arg handling.
      */
     public int handleArgs(String[] args)
     {
@@ -264,8 +254,7 @@ public class LaunchArgHandler
     }
 
     /**
-     * Forces use of IPv6 addresses where possible. (This should one day
-     * become a default mode of operation.)
+     * Forces use of IPv6 addresses where possible. (This should one day become a default mode of operation.)
      */
     private void handleIPv6Enforcement()
     {
@@ -303,8 +292,7 @@ public class LaunchArgHandler
         //first enable standard out printing
         ScStdOut.setStdOutPrintingEnabled(true);
 
-        //then find a console handler (or create a new one) and set its level
-        //to FINEST
+        //then find a console handler (or create a new one) and set its level to FINEST
         java.util.logging.Logger rootLogger = java.util.logging.Logger.getAnonymousLogger().getParent();
         ConsoleHandler conHan = null;
 
@@ -348,8 +336,7 @@ public class LaunchArgHandler
         System.setProperty(ConfigurationService.PNAME_SC_LOG_DIR_LOCATION, configDir.getParent());
         System.setProperty(ConfigurationService.PNAME_SC_HOME_DIR_NAME, configDir.getName());
 
-        //we instantiated our class logger before we had a chance to change
-        //the dir so we need to reset it now.
+        //we instantiated our class logger before we had a chance to change the dir so we need to reset it now.
         logger.reset();
 
         return ACTION_CONTINUE;
@@ -358,8 +345,7 @@ public class LaunchArgHandler
     /**
      * Prints the name and the version of this application. This method uses the
      * version.properties file which is created by ant during the build process.
-     * If this file does not exist the method would print a default name and
-     * version string.
+     * If this file does not exist the method would print a default name and version string.
      */
     private void handleVersionArg()
     {
@@ -378,11 +364,9 @@ public class LaunchArgHandler
     }
 
     /**
-     * Returns the version of the SIP Communicator instance that we are
-     * currently running.
+     * Returns the version of the SIP Communicator instance that we are currently running.
      *
-     * @return a String containing the version of the SC instance we are
-     * currently running.
+     * @return a String containing the version of the SC instance we are currently running.
      */
     private String getVersion()
     {
@@ -393,8 +377,7 @@ public class LaunchArgHandler
     /**
      * Returns the name of the application. That should be aTalk most of the time but who knows ..
      *
-     * @return the name of the application (i.e. SIP Communicator until we
-     * change our name some day.)
+     * @return the name of the application (i.e. SIP Communicator until we change our name some day.)
      */
     private String getApplicationName()
     {
@@ -403,8 +386,7 @@ public class LaunchArgHandler
     }
 
     /**
-     * Returns the package name of the application. That should be jitsi
-     * most of the time but who knows ..
+     * Returns the package name of the application. That should be jitsi most of the time but who knows ..
      *
      * @return the package name of the application.
      */
@@ -483,14 +465,12 @@ public class LaunchArgHandler
     {
         //if we have 1 or more args then we only care about the last one since
         //the only interinstance arg we currently know how to handle are URIs.
-        //Change this if one day we implement fun stuff like inter instance
-        //command execution.
+        //Change this if one day we implement fun stuff like inter instance command execution.
         if (args.length >= 1
                 && !args[args.length - 1].startsWith("-")) {
             this.argDelegator.handleUri(args[args.length - 1]);
         }
-        //otherwise, we simply notify SC of the request so that it could do
-        //stuff like showing the contact list for example.
+        //otherwise, we simply notify SC of the request so that it could do stuff like showing the contact list for example.
         else {
             this.argDelegator.handleConcurrentInvocationRequest();
         }

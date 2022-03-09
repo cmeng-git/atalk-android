@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.contactsource.DemuxContactSourceService
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
-import net.java.sip.communicator.service.gui.AlertUIService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
@@ -22,11 +21,9 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.LoginManager;
 
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.login.AndroidSecurityAuthority;
-import org.atalk.android.gui.util.AlertUIServiceImpl;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;

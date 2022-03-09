@@ -7,29 +7,54 @@ package net.java.sip.communicator.service.protocol.media;
 
 import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AudioMediaStream;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaStreamTarget;
+import org.atalk.service.neomedia.QualityPreset;
+import org.atalk.service.neomedia.RTPExtension;
+import org.atalk.service.neomedia.RawPacket;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.VideoMediaStream;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.service.neomedia.event.*;
+import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
+import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
+import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.event.VideoEvent;
+import org.atalk.util.event.VideoListener;
+import org.atalk.util.event.VideoNotifierSupport;
 import org.atalk.util.MediaType;
-import org.atalk.util.event.*;
+import org.atalk.util.event.PropertyChangeNotifier;
 import org.jxmpp.jid.Jid;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 

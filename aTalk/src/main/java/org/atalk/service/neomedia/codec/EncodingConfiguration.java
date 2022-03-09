@@ -5,11 +5,15 @@
  */
 package org.atalk.service.neomedia.codec;
 
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;
+import org.atalk.util.MediaType;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import timber.log.Timber;
 

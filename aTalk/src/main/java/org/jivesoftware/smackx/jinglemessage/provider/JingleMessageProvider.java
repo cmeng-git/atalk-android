@@ -29,7 +29,7 @@ import java.io.IOException;
 
 /**
  * The JingleMessageProvider parses Jingle Message extension.
- * XEP-0353: Jingle Message Initiation 0.3 (2017-09-11)
+ * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  *
  * @author Eng Chong Meng
  */
@@ -43,7 +43,6 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
         String elementName = null;
         String id = null;
 
-        outerloop:
         while (true) {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
@@ -60,7 +59,7 @@ public class JingleMessageProvider extends ExtensionElementProvider<JingleMessag
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
-                    break outerloop;
+                    break;
                 }
             }
         }

@@ -5,12 +5,13 @@
  */
 package org.jivesoftware.smackx.colibri;
 
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.JingleUtils;
-
 import org.atalk.util.MediaType;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -157,8 +158,8 @@ public class ColibriAnalyser
     }
 
     /**
-     * Utility method for getting actual channel bundle. If <tt>currentBundle</tt> is <tt>null</tt>
-     * then <tt>channels</tt> bundle is returned(and vice-versa). If both channel's and given
+     * Utility method for getting actual channel bundle. If <code>currentBundle</code> is <code>null</code>
+     * then <code>channels</code> bundle is returned(and vice-versa). If both channel's and given
      * bundle IDs are not null then they are compared and error is logged, but channel's bundle is
      * returned in the last place anyway.
      */

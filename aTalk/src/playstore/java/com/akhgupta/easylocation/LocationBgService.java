@@ -2,21 +2,30 @@ package com.akhgupta.easylocation;
 
 import android.app.Service;
 import android.content.Intent;
-import android.location.*;
-import android.os.*;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.gms.location.*;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.atalk.android.aTalkApp;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 

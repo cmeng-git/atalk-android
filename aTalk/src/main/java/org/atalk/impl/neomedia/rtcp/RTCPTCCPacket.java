@@ -18,7 +18,9 @@ package org.atalk.impl.neomedia.rtcp;
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.ByteArrayBufferImpl;
-import org.atalk.util.*;
+import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.RTCPUtils;
+import org.atalk.util.RTPUtils;
 import org.atalk.util.logging.DiagnosticContext;
 
 import java.util.Map;
@@ -476,7 +478,7 @@ public class RTCPTCCPacket extends RTCPFBPacket
     private PacketMap packets = null;
 
     /**
-     * Initializes a new <tt>RTCPTCCPacket</tt> instance.
+     * Initializes a new <code>RTCPTCCPacket</code> instance.
      *
      * @param base
      */

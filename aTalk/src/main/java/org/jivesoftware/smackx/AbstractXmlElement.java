@@ -1,11 +1,12 @@
 /**
- * Copyright 2015-2022 Jive Software
+ *
+ * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,6 +21,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -32,9 +34,8 @@ import timber.log.Timber;
  * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
  * {@link AbstractXmlElement(Builder)} to build these elements.
- * <p>
+ *
  * Note this is meant as base class to ease most jingle extension elements creation.
- * </p>
  *
  * @author Florian Schmaus
  * @author Eng Chong Meng
@@ -98,12 +99,13 @@ public class AbstractXmlElement implements ExtensionElement
      * @return the set mBuilder or a modified mBuilder with the given namespace
      * @see DefaultXmlElementProvider on usage
      */
-    public AbstractXmlElement.Builder<?, ?> getBuilder(String namespace)
+    public <B extends Builder<?, ?>> B getBuilder(String namespace)
+    // public AbstractXmlElement.Builder<?, ?> getBuilder(String namespace)
     {
         if (namespace != null) {
             mBuilder.namespace = namespace;
         }
-        return mBuilder;
+        return (B) mBuilder;
     }
 
     /**
@@ -196,8 +198,8 @@ public class AbstractXmlElement implements ExtensionElement
     public <T extends ExtensionElement> T getFirstChildElement(Class<T> type)
     {
         try {
-            return (T) elements.getFirst(type.newInstance().getQName());
-        } catch (IllegalAccessException | InstantiationException e) {
+            return (T) elements.getFirst(type.getDeclaredConstructor().newInstance().getQName());
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             Timber.e("getFirstChildElement(Class<T> %s) exception: %s", type.getSimpleName(), e.getMessage());
             return null;
         }
@@ -245,8 +247,9 @@ public class AbstractXmlElement implements ExtensionElement
     public <T extends ExtensionElement> List<T> getChildElements(Class<T> type)
     {
         try {
-            return (elements == null) ? Collections.emptyList() : (List<T>) elements.getAll(type.newInstance().getQName());
-        } catch (IllegalAccessException | InstantiationException e) {
+            QName qName = type.getDeclaredConstructor().newInstance().getQName();
+            return (elements == null) ? Collections.emptyList() : (List<T>) elements.getAll(qName);
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             Timber.e("getChildElements(Class<T> %s) exception: %s", type.getSimpleName(), e.getMessage());
             return Collections.emptyList();
         }
@@ -256,6 +259,7 @@ public class AbstractXmlElement implements ExtensionElement
      * Clones the attributes, elements and text of a specific <code>AbstractXmlElement</code>
      * into a new <code>AbstractXmlElement</code> instance of the same run-time type.
      *
+     * @param <T> the specific type of <code>ExtensionElement</code> to be returned
      * @param src the <code>AbstractXmlElement</code> to be cloned
      * @return a new <code>AbstractXmlElement</code> instance of the run-time type of the specified
      * <code>src</code> which has the same attributes, elements and text
@@ -265,12 +269,12 @@ public class AbstractXmlElement implements ExtensionElement
     {
         T dst;
         try {
-            dst = (T) src.getClass().newInstance();  // getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            dst = (T) src.getClass().getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
-        T.Builder<?, ?> dstBuilder = dst.getBuilder(src.getNamespace())
+        Builder<?, ?> dstBuilder = dst.getBuilder(src.getNamespace())
                 .addAttributes(src.getAttributes())
                 .addChildElements(src.getChildElements());
 

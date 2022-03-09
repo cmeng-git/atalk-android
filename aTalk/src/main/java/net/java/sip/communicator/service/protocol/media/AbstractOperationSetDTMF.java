@@ -5,7 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSetDTMF;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;

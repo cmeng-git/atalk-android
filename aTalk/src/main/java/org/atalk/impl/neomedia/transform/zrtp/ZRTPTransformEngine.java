@@ -7,8 +7,13 @@ package org.atalk.impl.neomedia.transform.zrtp;
 
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.impl.neomedia.RTPConnectorOutputStream;
-import org.atalk.impl.neomedia.transform.*;
-import org.atalk.impl.neomedia.transform.srtp.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.neomedia.transform.srtp.SRTCPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SRTPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SrtpContextFactory;
+import org.atalk.impl.neomedia.transform.srtp.SrtpPolicy;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -18,9 +23,18 @@ import org.atalk.service.neomedia.SrtpControl;
 import java.io.File;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import gnu.java.zrtp.*;
+import gnu.java.zrtp.ZRtp;
+import gnu.java.zrtp.ZrtpCallback;
+import gnu.java.zrtp.ZrtpCodes;
+import gnu.java.zrtp.ZrtpConfigure;
+import gnu.java.zrtp.ZrtpConstants;
+import gnu.java.zrtp.ZrtpSrtpSecrets;
+import gnu.java.zrtp.ZrtpStateClass;
 import gnu.java.zrtp.zidfile.ZidFile;
 import timber.log.Timber;
 
@@ -360,7 +374,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     /**
      * The indicator which determines whether {@link SrtpControl.TransformEngine#cleanup()} has
      * been invoked on this instance to prepare it for garbage collection. Disallows
-     * {@link #getRTCPTransformer()} to initialize a new <tt>ZRTCPTransformer</tt> instance which
+     * {@link #getRTCPTransformer()} to initialize a new <code>ZRTCPTransformer</code> instance which
      * cannot possibly be correctly used after the disposal of this instance anyway.
      */
     private boolean disposed = false;
@@ -390,7 +404,7 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     }
 
     /**
-     * Returns an instance of <tt>ZRTPCTransformer</tt>.
+     * Returns an instance of <code>ZRTPCTransformer</code>.
      *
      * @see TransformEngine#getRTCPTransformer()
      */

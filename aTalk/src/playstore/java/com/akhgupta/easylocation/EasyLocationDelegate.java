@@ -5,7 +5,9 @@ import static com.akhgupta.easylocation.AppConstants.SINGLE_FIX;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;

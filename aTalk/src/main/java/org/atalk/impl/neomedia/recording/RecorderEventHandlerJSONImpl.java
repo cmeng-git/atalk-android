@@ -5,19 +5,24 @@
  */
 package org.atalk.impl.neomedia.recording;
 
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
+import org.atalk.util.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 import timber.log.Timber;
 
 /**
- * Implements a <tt>RecorderEventHandler</tt> which handles <tt>RecorderEvents</tt> by writing them
+ * Implements a <code>RecorderEventHandler</code> which handles <code>RecorderEvents</code> by writing them
  * to a file in JSON format.
  *
  * @author Boris Grozev
@@ -26,7 +31,7 @@ import timber.log.Timber;
 public class RecorderEventHandlerJSONImpl implements RecorderEventHandler
 {
     /**
-     * Compares <tt>RecorderEvent</tt>s by their instant (e.g. timestamp).
+     * Compares <code>RecorderEvent</code>s by their instant (e.g. timestamp).
      */
     private static final Comparator<RecorderEvent> eventComparator = new Comparator<RecorderEvent>()
     {

@@ -11,13 +11,18 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.AbstractSrtpControl;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.SrtpControlType;
+import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.util.MediaType;
 import org.jxmpp.jid.BareJid;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.EnumSet;
 
 import gnu.java.zrtp.ZrtpCodes;
@@ -203,11 +208,11 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     }
 
     /**
-     * Initializes a new <tt>ZRTPTransformEngine</tt> instance to be associated with and used by
-     * this <tt>ZrtpControlImpl</tt> instance.
+     * Initializes a new <code>ZRTPTransformEngine</code> instance to be associated with and used by
+     * this <code>ZrtpControlImpl</code> instance.
      *
-     * @return a new <tt>ZRTPTransformEngine</tt> instance to be associated with and used by this
-     * <tt>ZrtpControlImpl</tt> instance
+     * @return a new <code>ZRTPTransformEngine</code> instance to be associated with and used by this
+     * <code>ZrtpControlImpl</code> instance
      */
     protected ZRTPTransformEngine createTransformEngine()
     {
@@ -244,9 +249,9 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
     }
 
     /**
-     * Sets the <tt>RTPConnector</tt> which is to use or uses this ZRTP engine.
+     * Sets the <code>RTPConnector</code> which is to use or uses this ZRTP engine.
      *
-     * @param connector the <tt>RTPConnector</tt> which is to use or uses this ZRTP engine
+     * @param connector the <code>RTPConnector</code> which is to use or uses this ZRTP engine
      */
     public void setConnector(AbstractRTPConnector connector)
     {
@@ -399,15 +404,15 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
 
     /**
      * Generate a new ZID salt if none is defined for the accountId (happen in testing.
-     * @param accountID Use the ZID salt value for this account
      *
+     * @param accountID Use the ZID salt value for this account
      * @return the found or new ZIDSalt
      */
     private static String getAccountZIDSalt(AccountID accountID)
     {
         String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
         if (ZIDSalt == null) {
-            ZIDSalt =  new BigInteger(256, new SecureRandom()).toString(32);
+            ZIDSalt = new BigInteger(256, new SecureRandom()).toString(32);
             accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, ZIDSalt);
         }
         return ZIDSalt;

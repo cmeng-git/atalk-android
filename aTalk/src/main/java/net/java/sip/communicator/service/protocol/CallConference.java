@@ -5,11 +5,20 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceAdapter;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.util.event.PropertyChangeNotifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents the telephony conference-related state of a <code>Call</code>. Multiple <code>Call</code>

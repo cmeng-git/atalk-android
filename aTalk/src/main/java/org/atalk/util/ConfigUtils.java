@@ -18,6 +18,8 @@ package org.atalk.util;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.io.File;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author George Politis
@@ -214,5 +216,58 @@ public class ConfigUtils
             ret = getString(cfg, propertyAlternative, defaultValue);
         }
         return ret;
+    }
+
+    /**
+     * Specify names of command line arguments which are password, so that their
+     * values will be masked when 'sun.java.command' is printed to the logs.
+     * Separate each name with a comma.
+     */
+    // @SuppressFBWarnings({"UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD", "MS_SHOULD_BE_FINAL"})
+    public static String PASSWORD_CMD_LINE_ARGS;
+
+    /**
+     * Set this filed value to a regular expression which will be used to select
+     * system properties keys whose values should be masked when printed out to
+     * the logs.
+     */
+    // @SuppressFBWarnings({"UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD", "MS_SHOULD_BE_FINAL"})
+    public static String PASSWORD_SYS_PROPS;
+
+    /**
+     * Goes over all system properties and builds a string of their names and
+     * values for debug purposes.
+     */
+    public static String getSystemPropertiesDebugString()
+    {
+        StringBuilder str = new StringBuilder();
+        try {
+            // Password system properties
+            Pattern exclusion = null;
+            if (PASSWORD_SYS_PROPS != null) {
+                exclusion = Pattern.compile(PASSWORD_SYS_PROPS, Pattern.CASE_INSENSITIVE);
+            }
+            // Password command line arguments
+            String[] passwordArgs = null;
+            if (PASSWORD_CMD_LINE_ARGS != null)
+                passwordArgs = PASSWORD_CMD_LINE_ARGS.split(",");
+
+            for (Map.Entry<Object, Object> e : System.getProperties().entrySet()) {
+                String key = String.valueOf(e.getKey());
+                String value = String.valueOf(e.getValue());
+                // Check if this key value should be masked
+                if (exclusion != null && exclusion.matcher(key).find()) {
+                    value = "**********";
+                }
+                // Mask command line arguments
+                if (passwordArgs != null && "sun.java.command".equals(key)) {
+                    value = PasswordUtil.replacePasswords(value, passwordArgs);
+                }
+                str.append(key).append("=").append(value).append("\n");
+            }
+        } catch (RuntimeException e) {
+            str.append("An exception occurred while writing debug info").append(e.toString());
+        }
+        return str.toString();
     }
 }

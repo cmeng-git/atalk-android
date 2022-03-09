@@ -18,7 +18,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements the SILK encoder as an FMJ/JMF <tt>Codec</tt>.
+ * Implements the SILK encoder as an FMJ/JMF <code>Codec</code>.
  *
  * @author Dingxin Xu
  * @author Boris Grozev
@@ -36,17 +36,17 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     static final int MAX_BYTES_PER_FRAME = 250;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JavaEncoder</code> instances.
      */
     static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JavaEncoder</code> instances.
      */
     static final Format[] SUPPORTED_OUTPUT_FORMATS;
 
     /**
-     * The list of sample rates of audio data supported as input and output by <tt>JavaEncoder</tt>
+     * The list of sample rates of audio data supported as input and output by <code>JavaEncoder</code>
      * instances.
      */
     private static final double[] SUPPORTED_SAMPLE_RATES = new double[]{8000, 12000, 16000, 24000};
@@ -57,7 +57,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     private static final boolean USE_DTX = false;
 
     /**
-     * If <tt>alwaysExpectPacketLoss</tt> is <tt>true</tt> the expected packet loss will always be
+     * If <code>alwaysExpectPacketLoss</code> is <code>true</code> the expected packet loss will always be
      * set at or above this threshold.
      */
     private static final int MIN_PACKET_LOSS_PERCENTAGE = 3;
@@ -69,12 +69,12 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
 
     /**
      * Whether to always assume packet loss and set the encoder's expected packet loss over
-     * <tt>MIN_PACKET_LOSS_PERCENTAGE</tt>.
+     * <code>MIN_PACKET_LOSS_PERCENTAGE</code>.
      */
     private boolean alwaysAssumePacketLoss = true;
 
     /**
-     * The duration an output <tt>Buffer</tt> produced by this <tt>Codec</tt> in nanosecond.
+     * The duration an output <code>Buffer</code> produced by this <code>Codec</code> in nanosecond.
      */
     private int duration = JavaDecoder.FRAME_DURATION * 1000000;
 
@@ -311,7 +311,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     }
 
     /**
-     * Updates the encoder's packet loss percentage. Takes into account <tt>this.alwaysAssumePacketLoss</tt>.
+     * Updates the encoder's packet loss percentage. Takes into account <code>this.alwaysAssumePacketLoss</code>.
      *
      * @param percentage the expected packet loss percentage to set.
      */
@@ -326,7 +326,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
     }
 
     /**
-     * Stub. Only added in order to implement the <tt>PacketLossAwareEncoder</tt> interface.
+     * Stub. Only added in order to implement the <code>PacketLossAwareEncoder</code> interface.
      *
      * @return null
      */

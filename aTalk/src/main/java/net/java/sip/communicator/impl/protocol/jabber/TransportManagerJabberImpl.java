@@ -5,7 +5,10 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.media.TransportManager;
 
 import org.atalk.service.neomedia.MediaStreamTarget;
@@ -15,12 +18,17 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jxmpp.jid.Jid;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <code>TransportManager</code>s gather local candidates for incoming and outgoing calls. Their work

@@ -3,7 +3,10 @@ package org.atalk.impl.neomedia.stats;
 
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.MediaStreamStatsImpl;
-import org.atalk.service.neomedia.stats.*;
+import org.atalk.service.neomedia.stats.MediaStreamStats2;
+import org.atalk.service.neomedia.stats.ReceiveTrackStats;
+import org.atalk.service.neomedia.stats.SendTrackStats;
+import org.atalk.service.neomedia.stats.TrackStats;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,6 +35,11 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * Hold per-SSRC statistics for sent streams.
      */
     private final Map<Long, SendTrackStatsImpl> sendSsrcStats = new ConcurrentHashMap<>();
+
+    /**
+     * Hold per-SSRC time after which we can clean them.
+     */
+    private final Map<Long, Long> sendSsrcStatsToClean = new ConcurrentHashMap<>();
 
     /**
      * Global (aggregated) statistics for received streams.
@@ -112,9 +120,14 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
      * @param ssrc the SSRC of the packet.
      * @param seq the RTP sequence number of the packet.
      * @param length the length in bytes of the packet.
+     * @param skipStats whether to skip this packet.
      */
-    public void rtpPacketSent(long ssrc, int seq, int length)
+    public void rtpPacketSent(long ssrc, int seq, int length, boolean skipStats)
     {
+        if (skipStats) {
+            return;
+        }
+
         synchronized (sendStats) {
             getSendStats(ssrc).rtpPacketSent(seq, length);
             sendStats.packetProcessed(length, System.currentTimeMillis(), true);
@@ -134,6 +147,27 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
         synchronized (sendStats) {
             getSendStats(ssrc).rtcpReceiverReportReceived(fractionLost);
         }
+
+        this.cleanSendStatsOld();
+    }
+
+    /**
+     * Clean old send stats.
+     */
+    private void cleanSendStatsOld()
+    {
+        if (this.sendSsrcStatsToClean.isEmpty()) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        this.sendSsrcStatsToClean.entrySet().stream().forEach(entry ->
+        {
+            if (entry.getValue() > now) {
+                sendSsrcStats.remove(entry.getKey());
+                sendSsrcStatsToClean.remove(entry.getKey());
+            }
+        });
     }
 
     /**
@@ -310,6 +344,26 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
     public Collection<? extends ReceiveTrackStats> getAllReceiveStats()
     {
         return receiveSsrcStats.values();
+    }
+
+    /**
+     * Clears ssrc from receiver stats.
+     *
+     * @param ssrc the ssrc to process.
+     */
+    public void removeReceiveSsrc(long ssrc)
+    {
+        receiveSsrcStats.remove(ssrc);
+    }
+
+    /**
+     * Schedules ssrc for clear from the send stats per ssrc.
+     *
+     * @param ssrc the ssrc to clear.
+     */
+    public void clearSendSsrc(long ssrc)
+    {
+        sendSsrcStatsToClean.put(ssrc, System.currentTimeMillis() + INTERVAL);
     }
 
     /**

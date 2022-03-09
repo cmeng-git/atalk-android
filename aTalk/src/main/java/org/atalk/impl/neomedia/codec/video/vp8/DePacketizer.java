@@ -38,51 +38,51 @@ public class DePacketizer extends AbstractCodec2
     private final SortedMap<Integer, Container> data = new TreeMap<>(RTPUtils.sequenceNumberComparator);
 
     /**
-     * Stores unused <tt>Container</tt>'s.
+     * Stores unused <code>Container</code>'s.
      */
     private final Queue<Container> free = new ArrayBlockingQueue<>(100);
 
     /**
-     * Stores the first (earliest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
+     * Stores the first (earliest) sequence number stored in <code>data</code>, or -1 if <code>data</code> is empty.
      */
     private int firstSeq = -1;
 
     /**
-     * Stores the last (latest) sequence number stored in <tt>data</tt>, or -1 if <tt>data</tt> is empty.
+     * Stores the last (latest) sequence number stored in <code>data</code>, or -1 if <code>data</code> is empty.
      */
     private int lastSeq = -1;
 
     /**
-     * Stores the value of the <tt>PictureID</tt> field for the VP8 compressed
-     * frame, parts of which are currently stored in <tt>data</tt>, or -1 if
-     * the <tt>PictureID</tt> field is not in use or <tt>data</tt> is empty.
+     * Stores the value of the <code>PictureID</code> field for the VP8 compressed
+     * frame, parts of which are currently stored in <code>data</code>, or -1 if
+     * the <code>PictureID</code> field is not in use or <code>data</code> is empty.
      */
     private int pictureId = -1;
 
     /**
-     * Stores the RTP timestamp of the packets stored in <tt>data</tt>, or -1 if they don't have a timestamp set.
+     * Stores the RTP timestamp of the packets stored in <code>data</code>, or -1 if they don't have a timestamp set.
      */
     private long timestamp = -1L;
 
     /**
-     * Whether we have stored any packets in <tt>data</tt>. Equivalent to <tt>data.isEmpty()</tt>.
+     * Whether we have stored any packets in <code>data</code>. Equivalent to <code>data.isEmpty()</code>.
      */
     private boolean empty = true;
 
     /**
-     * Whether we have stored in <tt>data</tt> the last RTP packet of the VP8
-     * compressed frame, parts of which are currently stored in <tt>data</tt>.
+     * Whether we have stored in <code>data</code> the last RTP packet of the VP8
+     * compressed frame, parts of which are currently stored in <code>data</code>.
      */
     private boolean haveEnd = false;
 
     /**
-     * Whether we have stored in <tt>data</tt> the first RTP packet of the VP8
-     * compressed frame, parts of which are currently stored in <tt>data</tt>.
+     * Whether we have stored in <code>data</code> the first RTP packet of the VP8
+     * compressed frame, parts of which are currently stored in <code>data</code>.
      */
     private boolean haveStart = false;
 
     /**
-     * Stores the sum of the lengths of the data stored in <tt>data</tt>, that
+     * Stores the sum of the lengths of the data stored in <code>data</code>, that
      * is the total length of the VP8 compressed frame to be constructed.
      */
     private int frameLength = 0;
@@ -93,13 +93,13 @@ public class DePacketizer extends AbstractCodec2
     private int lastSentSeq = -1;
 
     /**
-     * Initializes a new <tt>AbstractCodec2</tt> instance with a specific <tt>PlugIn</tt> name, a
-     * specific <tt>Class</tt> of input and output <tt>Format</tt>s, and a specific list of
-     * <tt>Format</tt>s supported as output.
+     * Initializes a new <code>AbstractCodec2</code> instance with a specific <code>PlugIn</code> name, a
+     * specific <code>Class</code> of input and output <code>Format</code>s, and a specific list of
+     * <code>Format</code>s supported as output.
      *
-     * name: the <tt>PlugIn</tt> name of the new instance
-     * VideoFormat.class: the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * VideoFormat: the list of <tt>Format</tt>s supported by the new instance as output @Super parameters
+     * name: the <code>PlugIn</code> name of the new instance
+     * VideoFormat.class: the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
+     * VideoFormat: the list of <code>Format</code>s supported by the new instance as output @Super parameters
      */
     public DePacketizer()
     {
@@ -127,7 +127,7 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Re-initializes the fields which store information about the currently held data. Empties <tt>data</tt>.
+     * Re-initializes the fields which store information about the currently held data. Empties <code>data</code>.
      */
     private void reinit()
     {
@@ -149,9 +149,9 @@ public class DePacketizer extends AbstractCodec2
 
     /**
      * Checks whether the currently held VP8 compressed frame is complete (e.g all its packets
-     * are stored in <tt>data</tt>).
+     * are stored in <code>data</code>).
      *
-     * @return <tt>true</tt> if the currently help VP8 compressed frame is complete, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the currently help VP8 compressed frame is complete, <code>false</code> otherwise.
      */
     private boolean frameComplete()
     {
@@ -159,11 +159,11 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Checks whether there are packets with sequence numbers between <tt>firstSeq</tt> and
-     * <tt>lastSeq</tt> which are *not* stored in <tt>data</tt>.
+     * Checks whether there are packets with sequence numbers between <code>firstSeq</code> and
+     * <code>lastSeq</code> which are *not* stored in <code>data</code>.
      *
-     * @return <tt>true</tt> if there are packets with sequence numbers between
-     * <tt>firstSeq</tt> and <tt>lastSeq</tt> which are *not* stored in <tt>data</tt>.
+     * @return <code>true</code> if there are packets with sequence numbers between
+     * <code>firstSeq</code> and <code>lastSeq</code> which are *not* stored in <code>data</code>.
      */
     private boolean haveMissing()
     {
@@ -317,12 +317,12 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * Returns true if the buffer contains a VP8 key frame at offset <tt>offset</tt>.
+     * Returns true if the buffer contains a VP8 key frame at offset <code>offset</code>.
      *
      * @param buf the byte buffer to check
      * @param off the offset in the byte buffer where the actual data starts
      * @param len the length of the data in the byte buffer
-     * @return true if the buffer contains a VP8 key frame at offset <tt>offset</tt>.
+     * @return true if the buffer contains a VP8 key frame at offset <code>offset</code>.
      */
     public static boolean isKeyFrame(byte[] buf, int off, int len)
     {
@@ -486,11 +486,11 @@ public class DePacketizer extends AbstractCodec2
 
         /**
          * Returns a simple Payload Descriptor, with PartID = 0, the 'start of partition' bit set
-         * according to <tt>startOfPartition</tt>, and all other bits set to 0.
+         * according to <code>startOfPartition</code>, and all other bits set to 0.
          *
          * @param startOfPartition whether to 'start of partition' bit should be set
          * @return a simple Payload Descriptor, with PartID = 0, the 'start of partition' bit set
-         * according to <tt>startOfPartition</tt>, and all other bits set to 0.
+         * according to <code>startOfPartition</code>, and all other bits set to 0.
          */
         public static byte[] create(boolean startOfPartition)
         {
@@ -501,11 +501,11 @@ public class DePacketizer extends AbstractCodec2
 
         /**
          * The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>. The size is between 1 and 6.
+         * <code>offset</code> in <code>input</code>. The size is between 1 and 6.
          *
-         * @param baf the <tt>ByteArrayBuffer</tt> that holds the VP8 payload descriptor.
+         * @param baf the <code>ByteArrayBuffer</code> that holds the VP8 payload descriptor.
          * @return The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>, or -1 if the input is not a valid
+         * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid
          * VP8 Payload Descriptor. The size is between 1 and 6.
          */
         public static int getSize(ByteArrayBuffer baf)
@@ -518,13 +518,13 @@ public class DePacketizer extends AbstractCodec2
 
         /**
          * The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>. The size is between 1 and 6.
+         * <code>offset</code> in <code>input</code>. The size is between 1 and 6.
          *
          * @param input input
          * @param offset offset
          * @param length length
          * @return The size in bytes of the Payload Descriptor at offset
-         * <tt>offset</tt> in <tt>input</tt>, or -1 if the input is not a valid
+         * <code>offset</code> in <code>input</code>, or -1 if the input is not a valid
          * VP8 Payload Descriptor. The size is between 1 and 6.
          */
         public static int getSize(byte[] input, int offset, int length)
@@ -666,13 +666,13 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Checks whether the '<tt>start of partition</tt>' bit is set in the
-         * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * Checks whether the '<code>start of partition</code>' bit is set in the
+         * VP8 Payload Descriptor at offset <code>offset</code> in <code>input</code>.
          *
          * @param input input
          * @param offset offset
-         * @return <tt>true</tt> if the '<tt>start of partition</tt>' bit is set,
-         * <tt>false</tt> otherwise.
+         * @return <code>true</code> if the '<code>start of partition</code>' bit is set,
+         * <code>false</code> otherwise.
          */
         public static boolean isStartOfPartition(byte[] input, int offset)
         {
@@ -680,15 +680,15 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Returns <tt>true</tt> if both the '<tt>start of partition</tt>' bit
-         * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
-         * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * Returns <code>true</code> if both the '<code>start of partition</code>' bit
+         * is set and the <code>PID</code> fields has value 0 in the VP8 Payload
+         * Descriptor at offset <code>offset</code> in <code>input</code>.
          *
          * @param input input
          * @param offset offset
-         * @return <tt>true</tt> if both the '<tt>start of partition</tt>' bit
-         * is set and the <tt>PID</tt> fields has value 0 in the VP8 Payload
-         * Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * @return <code>true</code> if both the '<code>start of partition</code>' bit
+         * is set and the <code>PID</code> fields has value 0 in the VP8 Payload
+         * Descriptor at offset <code>offset</code> in <code>input</code>.
          */
         public static boolean isStartOfFrame(byte[] input, int offset)
         {
@@ -697,13 +697,13 @@ public class DePacketizer extends AbstractCodec2
         }
 
         /**
-         * Returns the value of the <tt>PID</tt> (partition ID) field of the
-         * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * Returns the value of the <code>PID</code> (partition ID) field of the
+         * VP8 Payload Descriptor at offset <code>offset</code> in <code>input</code>.
          *
          * @param input input
          * @param offset offset
-         * @return the value of the <tt>PID</tt> (partition ID) field of the
-         * VP8 Payload Descriptor at offset <tt>offset</tt> in <tt>input</tt>.
+         * @return the value of the <code>PID</code> (partition ID) field of the
+         * VP8 Payload Descriptor at offset <code>offset</code> in <code>input</code>.
          */
         public static int getPartitionId(byte[] input, int offset)
         {
@@ -775,11 +775,11 @@ public class DePacketizer extends AbstractCodec2
         private static final byte P_BIT = (byte) 0x01;
 
         /**
-         * Returns true if the <tt>P</tt> (inverse key frame flag) field of the
-         * VP8 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0.
+         * Returns true if the <code>P</code> (inverse key frame flag) field of the
+         * VP8 Payload Header at offset <code>offset</code> in <code>input</code> is 0.
          *
-         * @return true if the <tt>P</tt> (inverse key frame flag) field of the
-         * VP8 Payload Header at offset <tt>offset</tt> in <tt>input</tt> is 0, false otherwise.
+         * @return true if the <code>P</code> (inverse key frame flag) field of the
+         * VP8 Payload Header at offset <code>offset</code> in <code>input</code> is 0, false otherwise.
          */
         public static boolean isKeyFrame(byte[] input, int offset)
         {
@@ -818,12 +818,12 @@ public class DePacketizer extends AbstractCodec2
     }
 
     /**
-     * A simple container for a <tt>byte[]</tt> and an integer.
+     * A simple container for a <code>byte[]</code> and an integer.
      */
     private static class Container
     {
         /**
-         * This <tt>Container</tt>'s data.
+         * This <code>Container</code>'s data.
          */
         private byte[] buf;
 

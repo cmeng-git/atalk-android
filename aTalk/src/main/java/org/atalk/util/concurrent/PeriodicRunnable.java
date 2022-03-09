@@ -118,6 +118,12 @@ public abstract class PeriodicRunnable implements RecurringRunnable
     @Override
     public void run()
     {
-        _lastProcessTime = System.currentTimeMillis();
+        if (_lastProcessTime < 0) {
+            _lastProcessTime = System.currentTimeMillis();
+        }
+        else {
+            /* This ensures the schedule doesn't slip if one run is scheduled late. */
+            _lastProcessTime += _period;
+        }
     }
 }

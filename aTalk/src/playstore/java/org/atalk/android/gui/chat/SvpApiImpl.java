@@ -15,7 +15,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment.ChatListAdapter.MessageDisplay;
 import org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The <code>SvpApiImpl</code> working in conjunction with ChatFragment to provide SVP i.e.

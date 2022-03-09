@@ -5,7 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractConferenceMember;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.ConferenceMember;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
@@ -14,23 +20,39 @@ import org.atalk.android.aTalkApp;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.util.MediaType;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.*;
-import org.jivesoftware.smackx.jingle.element.*;
+import org.jivesoftware.smackx.jingle.CoinExtension;
+import org.jivesoftware.smackx.jingle.JingleUtil;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle.SdpSource;
+import org.jivesoftware.smackx.jingle.SdpTransfer;
+import org.jivesoftware.smackx.jingle.SdpTransferred;
+import org.jivesoftware.smackx.jingle.SessionInfo;
+import org.jivesoftware.smackx.jingle.SessionInfoType;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import timber.log.Timber;
 

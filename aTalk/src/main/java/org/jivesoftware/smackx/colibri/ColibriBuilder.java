@@ -6,17 +6,22 @@
 package org.jivesoftware.smackx.colibri;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.util.ApiLib;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.*;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle.PayloadType;
+import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle.RtpHeader;
+import org.jivesoftware.smackx.jingle.SdpSource;
+import org.jivesoftware.smackx.jingle.SdpSourceGroup;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jxmpp.jid.Jid;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -207,7 +212,7 @@ public class ColibriBuilder
      */
     public ColibriBuilder(ColibriConferenceIQ conferenceState)
     {
-        this.conferenceState = ApiLib.requireNonNull(conferenceState, "conferenceState");
+        this.conferenceState = Objects.requireNonNull(conferenceState, "conferenceState");
         reset();
     }
 
@@ -269,7 +274,7 @@ public class ColibriBuilder
             List<JingleContent> contents, Map<String, List<SdpSource>> sourceMap,
             Map<String, List<SdpSourceGroup>> sourceGroupMap, List<String> octoRelayIds)
     {
-        ApiLib.requireNonNull(contents, "contents");
+        Objects.requireNonNull(contents, "contents");
         assertRequestType(RequestType.ALLOCATE_CHANNELS);
         boolean hasAnyChanges = false;
 
@@ -373,7 +378,7 @@ public class ColibriBuilder
     public boolean addBundleTransportUpdateReq(IceUdpTransport transport, String channelBundleId)
             throws IllegalArgumentException
     {
-        ApiLib.requireNonNull(transport, "transport");
+        Objects.requireNonNull(transport, "transport");
         if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet.
 
@@ -409,7 +414,7 @@ public class ColibriBuilder
      */
     public boolean addExpireChannelsReq(ColibriConferenceIQ channelInfo)
     {
-        ApiLib.requireNonNull(channelInfo, "channelInfo");
+        Objects.requireNonNull(channelInfo, "channelInfo");
         // Formulate the ColibriConferenceIQ request which is to be sent.
         if ((conferenceState == null) || StringUtils.isEmpty(conferenceState.getID())) {
             return false;
@@ -523,9 +528,9 @@ public class ColibriBuilder
     public boolean addRtpDescription(RtpDescription description, String contentName,
             ColibriConferenceIQ.Channel channel)
     {
-        ApiLib.requireNonNull(description, "description");
-        ApiLib.requireNonNull(contentName, "contentName");
-        ApiLib.requireNonNull(channel, "channel");
+        Objects.requireNonNull(description, "description");
+        Objects.requireNonNull(contentName, "contentName");
+        Objects.requireNonNull(channel, "channel");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -556,8 +561,8 @@ public class ColibriBuilder
      */
     public boolean addSourceInfo(Map<String, List<SdpSource>> sourceMap, ColibriConferenceIQ localChannelsInfo)
     {
-        ApiLib.requireNonNull(sourceMap, "sourceMap");
-        ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
+        Objects.requireNonNull(sourceMap, "sourceMap");
+        Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -596,8 +601,8 @@ public class ColibriBuilder
      */
     public boolean addOctoRelays(List<String> octoRelays, ColibriConferenceIQ localChannelsInfo)
     {
-        ApiLib.requireNonNull(octoRelays, "octoRelays");
-        ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
+        Objects.requireNonNull(octoRelays, "octoRelays");
+        Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -637,8 +642,8 @@ public class ColibriBuilder
     public boolean addSourceGroupsInfo(Map<String, List<SdpSourceGroup>> sourceGroupMap,
             ColibriConferenceIQ localChannelsInfo)
     {
-        ApiLib.requireNonNull(sourceGroupMap, "sourceGroupMap");
-        ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
+        Objects.requireNonNull(sourceGroupMap, "sourceGroupMap");
+        Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -682,8 +687,8 @@ public class ColibriBuilder
     public boolean addTransportUpdateReq(Map<String, IceUdpTransport> transportMap,
             ColibriConferenceIQ localChannelsInfo)
     {
-        ApiLib.requireNonNull(transportMap, "transportMap");
-        ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
+        Objects.requireNonNull(transportMap, "transportMap");
+        Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -728,8 +733,8 @@ public class ColibriBuilder
     public boolean addDirectionUpdateReq(Map<String, MediaDirection> mediaDirectionMap,
             ColibriConferenceIQ localChannelsInfo)
     {
-        ApiLib.requireNonNull(mediaDirectionMap, "mediaDirectionMap");
-        ApiLib.requireNonNull(localChannelsInfo, "localChannelsInfo");
+        Objects.requireNonNull(mediaDirectionMap, "mediaDirectionMap");
+        Objects.requireNonNull(localChannelsInfo, "localChannelsInfo");
 
         if (conferenceState == null || StringUtils.isEmpty(conferenceState.getID())) {
             // We are not initialized yet
@@ -807,7 +812,7 @@ public class ColibriBuilder
      */
     public ColibriConferenceIQ getRequest(Jid videobridge)
     {
-        ApiLib.requireNonNull(videobridge, "videobridge");
+        Objects.requireNonNull(videobridge, "videobridge");
 
         request.setTo(videobridge);
         if (requestType == RequestType.EXPIRE_CHANNELS) {

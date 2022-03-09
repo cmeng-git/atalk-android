@@ -7,14 +7,18 @@ package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.ProcessorUtility;
 import org.atalk.impl.neomedia.control.AbstractControls;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
-import org.atalk.impl.neomedia.protocol.*;
-import org.atalk.service.neomedia.*;
+import org.atalk.impl.neomedia.protocol.InbandDTMFDataSource;
+import org.atalk.impl.neomedia.protocol.MuteDataSource;
+import org.atalk.impl.neomedia.protocol.RewritablePullBufferDataSource;
+import org.atalk.impl.neomedia.protocol.RewritablePushBufferDataSource;
+import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
+import org.atalk.service.neomedia.DTMFInbandTone;
+import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.AdvancedAttributesAwareCodec;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
@@ -24,22 +28,48 @@ import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
+import java.awt.Dimension;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.locks.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.media.*;
+import javax.media.ConfigureCompleteEvent;
+import javax.media.ControllerClosedEvent;
+import javax.media.ControllerErrorEvent;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.NoProcessorException;
+import javax.media.NotConfiguredError;
+import javax.media.NotRealizedError;
+import javax.media.Player;
+import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
+import javax.media.Renderer;
+import javax.media.UnsupportedPlugInException;
 import javax.media.control.FormatControl;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PushBufferDataSource;
 import javax.media.rtp.ReceiveStream;
 
 import timber.log.Timber;
 
 /**
- * Represents the use of a specific <tt>MediaDevice</tt> by a <tt>MediaStream</tt>.
+ * Represents the use of a specific <code>MediaDevice</code> by a <code>MediaStream</code>.
  *
  * @author Lyubomir Marinov
  * @author Damian Minkov
@@ -50,20 +80,20 @@ import timber.log.Timber;
 public class MediaDeviceSession extends PropertyChangeNotifier
 {
     /**
-     * The name of the <tt>MediaDeviceSession</tt> instance property the value of which represents
-     * the output <tt>DataSource</tt> of the <tt>MediaDeviceSession</tt> instance which provides
-     * the captured (RTP) data to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>.
+     * The name of the <code>MediaDeviceSession</code> instance property the value of which represents
+     * the output <code>DataSource</code> of the <code>MediaDeviceSession</code> instance which provides
+     * the captured (RTP) data to be sent by <code>MediaStream</code> to <code>MediaStreamTarget</code>.
      */
     public static final String OUTPUT_DATA_SOURCE = "OUTPUT_DATA_SOURCE";
 
     /**
      * The name of the property that corresponds to the array of SSRC identifiers that we store in this
-     * <tt>MediaDeviceSession</tt> instance and that we update upon adding and removing <tt>ReceiveStream</tt>
+     * <code>MediaDeviceSession</code> instance and that we update upon adding and removing <code>ReceiveStream</code>
      */
     public static final String SSRC_LIST = "SSRC_LIST";
 
     /**
-     * The JMF <tt>DataSource</tt> of {@link #device} through which this instance accesses the media captured by it.
+     * The JMF <code>DataSource</code> of {@link #device} through which this instance accesses the media captured by it.
      */
     private DataSource captureDevice;
 
@@ -74,51 +104,51 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     private boolean captureDeviceIsConnected;
 
     /**
-     * The <tt>ContentDescriptor</tt> which specifies the content type in which this
-     * <tt>MediaDeviceSession</tt> is to output the media captured by its <tt>MediaDevice</tt>.
+     * The <code>ContentDescriptor</code> which specifies the content type in which this
+     * <code>MediaDeviceSession</code> is to output the media captured by its <code>MediaDevice</code>.
      */
     private ContentDescriptor contentDescriptor;
 
     /**
-     * The <tt>MediaDevice</tt> used by this instance to capture and play back media.
+     * The <code>MediaDevice</code> used by this instance to capture and play back media.
      */
     private final AbstractMediaDevice device;
 
     /**
-     * The last JMF <tt>Format</tt> set to this instance by a call to its
+     * The last JMF <code>Format</code> set to this instance by a call to its
      * {@link #setFormat(MediaFormat)} and to be set as the output format of {@link #processor}.
      */
     private MediaFormatImpl<? extends Format> format;
 
     /**
-     * The indicator which determines whether this <tt>MediaDeviceSession</tt> is set to output
+     * The indicator which determines whether this <code>MediaDeviceSession</code> is set to output
      * "silence" instead of the actual media captured from {@link #captureDevice}.
      */
     private boolean mute = false;
 
     /**
-     * The list of playbacks of <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by
-     * respective <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance. The
+     * The list of playbacks of <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by
+     * respective <code>Player</code>s on the <code>MediaDevice</code> represented by this instance. The
      * (read and write) accesses to the field are to be synchronized using {@link #playbacksLock}.
      */
     private final List<Playback> playbacks = new LinkedList<>();
 
     /**
-     * The <tt>ReadWriteLock</tt> which is used to synchronize the (read and write) accesses to {@link #playbacks}.
+     * The <code>ReadWriteLock</code> which is used to synchronize the (read and write) accesses to {@link #playbacks}.
      */
     private final ReadWriteLock playbacksLock = new ReentrantReadWriteLock();
 
     /**
-     * The <tt>ControllerListener</tt> which listens to the <tt>Player</tt>s of
-     * {@link #playbacks} for <tt>ControllerEvent</tt>s.
+     * The <code>ControllerListener</code> which listens to the <code>Player</code>s of
+     * {@link #playbacks} for <code>ControllerEvent</code>s.
      */
     private final ControllerListener playerControllerListener = new ControllerListener()
     {
         /**
-         * Notifies this <tt>ControllerListener</tt> that the <tt>Controller</tt> which it is
+         * Notifies this <code>ControllerListener</code> that the <code>Controller</code> which it is
          * registered with has generated an event.
          *
-         * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is
+         * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is
          * the source of the event, and the very type of the event.
          * @see ControllerListener#controllerUpdate(ControllerEvent)
          */
@@ -130,28 +160,28 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     };
 
     /**
-     * The JMF <tt>Processor</tt> which transcodes {@link #captureDevice} into the format of this instance.
+     * The JMF <code>Processor</code> which transcodes {@link #captureDevice} into the format of this instance.
      */
     private Processor processor;
 
     /**
-     * The <tt>ControllerListener</tt> which listens to {@link #processor} for <tt>ControllerEvent</tt>s.
+     * The <code>ControllerListener</code> which listens to {@link #processor} for <code>ControllerEvent</code>s.
      */
     private ControllerListener processorControllerListener;
 
     /**
      * The indicator which determines whether {@link #processor} has received a
-     * <tt>ControllerClosedEvent</tt> at an unexpected time in its execution. A value of
-     * <tt>false</tt> does not mean that <tt>processor</tt> exists or that it is not closed, it
-     * just means that if <tt>processor</tt> failed to be initialized or it received a
-     * <tt>ControllerClosedEvent</tt>, it was at an expected time of its execution and that the
-     * fact in question was reflected, for example, by setting <tt>processor</tt> to <tt>null</tt>.
-     * If there is no <tt>processorIsPrematurelyClosed</tt> field and <tt>processor</tt> is set to
-     * <tt>null</tt> or left existing after the receipt of <tt>ControllerClosedEvent</tt>, it will
-     * either lead to not firing a <tt>PropertyChangeEvent</tt> for <tt>OUTPUT_DATA_SOURCE</tt>
-     * when it has actually changed and, consequently, cause the <tt>SendStream</tt>s of
-     * <tt>MediaStreamImpl</tt> to not be recreated or it will be impossible to detect that
-     * <tt>processor</tt> cannot have its format set and will thus be left broken even for
+     * <code>ControllerClosedEvent</code> at an unexpected time in its execution. A value of
+     * <code>false</code> does not mean that <code>processor</code> exists or that it is not closed, it
+     * just means that if <code>processor</code> failed to be initialized or it received a
+     * <code>ControllerClosedEvent</code>, it was at an expected time of its execution and that the
+     * fact in question was reflected, for example, by setting <code>processor</code> to <code>null</code>.
+     * If there is no <code>processorIsPrematurelyClosed</code> field and <code>processor</code> is set to
+     * <code>null</code> or left existing after the receipt of <code>ControllerClosedEvent</code>, it will
+     * either lead to not firing a <code>PropertyChangeEvent</code> for <code>OUTPUT_DATA_SOURCE</code>
+     * when it has actually changed and, consequently, cause the <code>SendStream</code>s of
+     * <code>MediaStreamImpl</code> to not be recreated or it will be impossible to detect that
+     * <code>processor</code> cannot have its format set and will thus be left broken even for
      * subsequent calls to {@link #setFormat(MediaFormat)}.
      */
     private boolean processorIsPrematurelyClosed;
@@ -162,7 +192,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     private long[] ssrcList = null;
 
     /**
-     * The <tt>MediaDirection</tt> in which this <tt>MediaDeviceSession</tt> has been started.
+     * The <code>MediaDirection</code> in which this <code>MediaDeviceSession</code> has been started.
      */
     private MediaDirection startedDirection = MediaDirection.INACTIVE;
 
@@ -182,10 +212,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     public boolean useTranslator = false;
 
     /**
-     * Initializes a new <tt>MediaDeviceSession</tt> instance which is to represent the use of a
-     * specific <tt>MediaDevice</tt> by a <tt>MediaStream</tt>.
+     * Initializes a new <code>MediaDeviceSession</code> instance which is to represent the use of a
+     * specific <code>MediaDevice</code> by a <code>MediaStream</code>.
      *
-     * @param device the <tt>MediaDevice</tt> the use of which by a <tt>MediaStream</tt> is to be
+     * @param device the <code>MediaDevice</code> the use of which by a <code>MediaStream</code> is to be
      * represented by the new instance
      */
     protected MediaDeviceSession(AbstractMediaDevice device)
@@ -198,8 +228,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * Sets the indicator which determines whether this instance is to dispose of its associated
      * player upon closing.
      *
-     * @param disposePlayerOnClose <tt>true</tt> to have this instance dispose of its associated player upon closing;
-     * otherwise, <tt>false</tt>
+     * @param disposePlayerOnClose <code>true</code> to have this instance dispose of its associated player upon closing;
+     * otherwise, <code>false</code>
      */
     public void setDisposePlayerOnClose(boolean disposePlayerOnClose)
     {
@@ -207,13 +237,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Adds <tt>ssrc</tt> to the array of SSRC identifiers representing parties that this
-     * <tt>MediaDeviceSession</tt> is currently receiving streams from. We use this method mostly
+     * Adds <code>ssrc</code> to the array of SSRC identifiers representing parties that this
+     * <code>MediaDeviceSession</code> is currently receiving streams from. We use this method mostly
      * as a way of to caching SSRC identifiers during a conference call so that the streams that
      * are sending CSRC lists could have them ready for use rather than have to construct them for
      * every RTP packet.
      *
-     * @param ssrc the new SSRC identifier that we'd like to add to the array of <tt>ssrc</tt>
+     * @param ssrc the new SSRC identifier that we'd like to add to the array of <code>ssrc</code>
      * identifiers stored by this session.
      */
     protected void addSSRC(long ssrc)
@@ -243,7 +273,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * checking here to make sure they are of the right sizes.
      *
      * @param sourceFormat the original format to check the size of
-     * @return the modified <tt>VideoFormat</tt> set to the size we support
+     * @return the modified <code>VideoFormat</code> set to the size we support
      */
     private static VideoFormat assertSize(VideoFormat sourceFormat)
     {
@@ -272,11 +302,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Asserts that a specific <tt>MediaDevice</tt> is acceptable to be set as the
-     * <tt>MediaDevice</tt> of this instance. Allows extenders to override and customize the check.
+     * Asserts that a specific <code>MediaDevice</code> is acceptable to be set as the
+     * <code>MediaDevice</code> of this instance. Allows extenders to override and customize the check.
      *
-     * @param device the <tt>MediaDevice</tt> to be checked for suitability to become the
-     * <tt>MediaDevice</tt> of this instance
+     * @param device the <code>MediaDevice</code> to be checked for suitability to become the
+     * <code>MediaDevice</code> of this instance
      */
     protected void checkDevice(AbstractMediaDevice device)
     {
@@ -350,9 +380,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Creates the <tt>DataSource</tt> that this instance is to read captured media from.
+     * Creates the <code>DataSource</code> that this instance is to read captured media from.
      *
-     * @return the <tt>DataSource</tt> that this instance is to read captured media from
+     * @return the <code>DataSource</code> that this instance is to read captured media from
      */
     protected DataSource createCaptureDevice()
     {
@@ -376,11 +406,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Creates a new <tt>Player</tt> for a specific <tt>DataSource</tt> so that it is played
-     * back on the <tt>MediaDevice</tt> represented by this instance.
+     * Creates a new <code>Player</code> for a specific <code>DataSource</code> so that it is played
+     * back on the <code>MediaDevice</code> represented by this instance.
      *
-     * @param dataSource the <tt>DataSource</tt> to create a new <tt>Player</tt> for
-     * @return a new <tt>Player</tt> for the specified <tt>dataSource</tt>
+     * @param dataSource the <code>DataSource</code> to create a new <code>Player</code> for
+     * @return a new <code>Player</code> for the specified <code>dataSource</code>
      */
     protected Player createPlayer(DataSource dataSource)
     {
@@ -411,10 +441,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes a new FMJ <tt>Processor</tt> which is to transcode {@link #captureDevice} into
+     * Initializes a new FMJ <code>Processor</code> which is to transcode {@link #captureDevice} into
      * the format of this instance.
      *
-     * @return a new FMJ <tt>Processor</tt> which is to transcode <tt>captureDevice</tt> into the
+     * @return a new FMJ <code>Processor</code> which is to transcode <code>captureDevice</code> into the
      * format of this instance
      */
     protected Processor createProcessor()
@@ -437,11 +467,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                     processorControllerListener = new ControllerListener()
                     {
                         /**
-                         * Notifies this <tt>ControllerListener</tt> that the <tt>Controller</tt>
+                         * Notifies this <code>ControllerListener</code> that the <code>Controller</code>
                          * which it is registered with has generated an event.
                          *
                          * @param event
-                         *        the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt>
+                         *        the <code>ControllerEvent</code> specifying the <code>Controller</code>
                          *        which is the source of the event and the very type of the event
                          * @see ControllerListener#controllerUpdate(ControllerEvent)
                          */
@@ -468,13 +498,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Creates a <tt>ContentDescriptor</tt> to be set on a specific <tt>Processor</tt> of captured
+     * Creates a <code>ContentDescriptor</code> to be set on a specific <code>Processor</code> of captured
      * media to be sent to the remote peer. Allows extenders to override. The default implementation
      * returns {@link ContentDescriptor#RAW_RTP}.
      *
-     * @param processor the <tt>Processor</tt> of captured media to be sent to the remote peer which is to
-     * have its <tt>contentDescriptor</tt> set to the returned <tt>ContentDescriptor</tt>
-     * @return a <tt>ContentDescriptor</tt> to be set on the specified <tt>processor</tt> of
+     * @param processor the <code>Processor</code> of captured media to be sent to the remote peer which is to
+     * have its <code>contentDescriptor</code> set to the returned <code>ContentDescriptor</code>
+     * @return a <code>ContentDescriptor</code> to be set on the specified <code>processor</code> of
      * captured media to be sent to the remote peer
      */
     protected ContentDescriptor createProcessorContentDescriptor(Processor processor)
@@ -484,17 +514,17 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Initializes a <tt>Renderer</tt> instance which is to be utilized by a specific
-     * <tt>Player</tt> in order to play back the media represented by a specific
-     * <tt>TrackControl</tt>. Allows extenders to override and, optionally, perform additional
-     * configuration of the returned <tt>Renderer</tt>.
+     * Initializes a <code>Renderer</code> instance which is to be utilized by a specific
+     * <code>Player</code> in order to play back the media represented by a specific
+     * <code>TrackControl</code>. Allows extenders to override and, optionally, perform additional
+     * configuration of the returned <code>Renderer</code>.
      *
-     * @param player the <tt>Player</tt> which is to utilize the initialized/returned <tt>Renderer</tt>
-     * @param trackControl the <tt>TrackControl</tt> which represents the media to be played back (and,
-     * technically, on which the initialized/returned <tt>Renderer</tt> is to be set)
-     * @return the <tt>Renderer</tt> which is to be set on the specified <tt>trackControl</tt>. If
-     * <tt>null</tt>, {@link TrackControl#setRenderer(Renderer)} is not invoked on the
-     * specified <tt>trackControl</tt>.
+     * @param player the <code>Player</code> which is to utilize the initialized/returned <code>Renderer</code>
+     * @param trackControl the <code>TrackControl</code> which represents the media to be played back (and,
+     * technically, on which the initialized/returned <code>Renderer</code> is to be set)
+     * @return the <code>Renderer</code> which is to be set on the specified <code>trackControl</code>. If
+     * <code>null</code>, {@link TrackControl#setRenderer(Renderer)} is not invoked on the
+     * specified <code>trackControl</code>.
      */
     protected Renderer createRenderer(Player player, TrackControl trackControl)
     {
@@ -525,7 +555,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Releases the resources allocated by the <tt>Player</tt>s of {@link #playbacks} in the course
+     * Releases the resources allocated by the <code>Player</code>s of {@link #playbacks} in the course
      * of their execution and prepares them to be garbage collected.
      */
     private void disposePlayer()
@@ -545,11 +575,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Releases the resources allocated by a specific <tt>Player</tt> in the course of its
+     * Releases the resources allocated by a specific <code>Player</code> in the course of its
      * execution
      * and prepares it to be garbage collected.
      *
-     * @param player the <tt>Player</tt> to dispose of
+     * @param player the <code>Player</code> to dispose of
      */
     protected void disposePlayer(Player player)
     {
@@ -561,13 +591,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Finds the first <tt>Format</tt> instance in a specific list of <tt>Format</tt>s which
-     * matches a specific <tt>Format</tt>. The implementation considers a pair of
-     * <tt>Format</tt>s matching if they have the same encoding.
+     * Finds the first <code>Format</code> instance in a specific list of <code>Format</code>s which
+     * matches a specific <code>Format</code>. The implementation considers a pair of
+     * <code>Format</code>s matching if they have the same encoding.
      *
-     * @param formats the array of <tt>Format</tt>s to be searched for a match to the specified <tt>format</tt>
-     * @param format the <tt>Format</tt> to search for a match in the specified <tt>formats</tt>
-     * @return the first element of <tt>formats</tt> which matches <tt>format</tt> i.e. is of the same encoding
+     * @param formats the array of <code>Format</code>s to be searched for a match to the specified <code>format</code>
+     * @param format the <code>Format</code> to search for a match in the specified <code>formats</code>
+     * @return the first element of <code>formats</code> which matches <code>format</code> i.e. is of the same encoding
      */
     private static Format findFirstMatchingFormat(Format[] formats, Format format)
     {
@@ -606,10 +636,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>DataSource</tt> that this instance uses to read captured media from. If it does
+     * Gets the <code>DataSource</code> that this instance uses to read captured media from. If it does
      * not exist yet, it is created.
      *
-     * @return the <tt>DataSource</tt> that this instance uses to read captured media from
+     * @return the <code>DataSource</code> that this instance uses to read captured media from
      */
     public synchronized DataSource getCaptureDevice()
     {
@@ -620,11 +650,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
 
     /**
      * Gets {@link #captureDevice} in a connected state. If this instance is not connected to
-     * <tt>captureDevice</tt> yet, first tries to connect to it. Returns <tt>null</tt> if this
-     * instance fails to create <tt>captureDevice</tt> or to connect to it.
+     * <code>captureDevice</code> yet, first tries to connect to it. Returns <code>null</code> if this
+     * instance fails to create <code>captureDevice</code> or to connect to it.
      *
-     * @return {@link #captureDevice} in a connected state; <tt>null</tt> if this instance fails to
-     * create <tt>captureDevice</tt> or to connect to it
+     * @return {@link #captureDevice} in a connected state; <code>null</code> if this instance fails to
+     * create <code>captureDevice</code> or to connect to it
      */
     protected DataSource getConnectedCaptureDevice()
     {
@@ -659,11 +689,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>MediaDevice</tt> associated with this instance and the work of a
-     * <tt>MediaStream</tt> with which is represented by it.
+     * Gets the <code>MediaDevice</code> associated with this instance and the work of a
+     * <code>MediaStream</code> with which is represented by it.
      *
-     * @return the <tt>MediaDevice</tt> associated with this instance and the work of a
-     * <tt>MediaStream</tt> with which is represented by it
+     * @return the <code>MediaDevice</code> associated with this instance and the work of a
+     * <code>MediaStream</code> with which is represented by it
      */
     public AbstractMediaDevice getDevice()
     {
@@ -671,9 +701,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the JMF <tt>Format</tt> in which this instance captures media.
+     * Gets the JMF <code>Format</code> in which this instance captures media.
      *
-     * @return the JMF <tt>Format</tt> in which this instance captures media.
+     * @return the JMF <code>Format</code> in which this instance captures media.
      */
     public Format getProcessorFormat()
     {
@@ -696,9 +726,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>MediaFormat</tt> in which this instance captures media from its associated <tt>MediaDevice</tt>.
+     * Gets the <code>MediaFormat</code> in which this instance captures media from its associated <code>MediaDevice</code>.
      *
-     * @return the <tt>MediaFormat</tt> in which this instance captures media from its associated <tt>MediaDevice</tt>
+     * @return the <code>MediaFormat</code> in which this instance captures media from its associated <code>MediaDevice</code>
      */
     public MediaFormatImpl<? extends Format> getFormat()
     {
@@ -721,11 +751,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>MediaType</tt> of the media captured and played back by this instance. It is
-     * the same as the <tt>MediaType</tt> of its associated <tt>MediaDevice</tt>.
+     * Gets the <code>MediaType</code> of the media captured and played back by this instance. It is
+     * the same as the <code>MediaType</code> of its associated <code>MediaDevice</code>.
      *
-     * @return the <tt>MediaType</tt> of the media captured and played back by this instance as
-     * reported by {@link MediaDevice#getMediaType()} of its associated <tt>MediaDevice</tt>
+     * @return the <code>MediaType</code> of the media captured and played back by this instance as
+     * reported by {@link MediaDevice#getMediaType()} of its associated <code>MediaDevice</code>
      */
     private MediaType getMediaType()
     {
@@ -733,11 +763,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the output <tt>DataSource</tt> of this instance which provides the captured (RTP) data
-     * to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>.
+     * Gets the output <code>DataSource</code> of this instance which provides the captured (RTP) data
+     * to be sent by <code>MediaStream</code> to <code>MediaStreamTarget</code>.
      *
-     * @return the output <tt>DataSource</tt> of this instance which provides the captured (RTP)
-     * data to be sent by <tt>MediaStream</tt> to <tt>MediaStreamTarget</tt>
+     * @return the output <code>DataSource</code> of this instance which provides the captured (RTP)
+     * data to be sent by <code>MediaStream</code> to <code>MediaStreamTarget</code>
      */
     public DataSource getOutputDataSource()
     {
@@ -763,12 +793,12 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the information related to the playback of a specific <tt>DataSource</tt> on the
-     * <tt>MediaDevice</tt> represented by this <tt>MediaDeviceSession</tt>.
+     * Gets the information related to the playback of a specific <code>DataSource</code> on the
+     * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>.
      *
-     * @param dataSource the <tt>DataSource</tt> to get the information related to the playback of
-     * @return the information related to the playback of the specified <tt>DataSource</tt> on the
-     * <tt>MediaDevice</tt> represented by this <tt>MediaDeviceSession</tt>
+     * @param dataSource the <code>DataSource</code> to get the information related to the playback of
+     * @return the information related to the playback of the specified <code>DataSource</code> on the
+     * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>
      */
     private Playback getPlayback(DataSource dataSource)
     {
@@ -786,12 +816,12 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the information related to the playback of a specific <tt>ReceiveStream</tt> on the
-     * <tt>MediaDevice</tt> represented by this <tt>MediaDeviceSession</tt>.
+     * Gets the information related to the playback of a specific <code>ReceiveStream</code> on the
+     * <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> to get the information related to the playback of
-     * @return the information related to the playback of the specified <tt>ReceiveStream</tt> on
-     * the <tt>MediaDevice</tt> represented by this <tt>MediaDeviceSession</tt>
+     * @param receiveStream the <code>ReceiveStream</code> to get the information related to the playback of
+     * @return the information related to the playback of the specified <code>ReceiveStream</code> on
+     * the <code>MediaDevice</code> represented by this <code>MediaDeviceSession</code>
      */
     private Playback getPlayback(ReceiveStream receiveStream)
     {
@@ -809,10 +839,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>Player</tt> rendering the <tt>ReceiveStream</tt> with a specific SSRC.
+     * Gets the <code>Player</code> rendering the <code>ReceiveStream</code> with a specific SSRC.
      *
-     * @param ssrc the SSRC of the <tt>ReceiveStream</tt> to get the rendering the <tt>Player</tt> of
-     * @return the <tt>Player</tt> rendering the <tt>ReceiveStream</tt> with the specified <tt>ssrc</tt>
+     * @param ssrc the SSRC of the <code>ReceiveStream</code> to get the rendering the <code>Player</code> of
+     * @return the <code>Player</code> rendering the <code>ReceiveStream</code> with the specified <code>ssrc</code>
      */
     protected Player getPlayer(long ssrc)
     {
@@ -831,11 +861,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>Player</tt>s rendering the <tt>ReceiveStream</tt>s of this instance on its
-     * associated <tt>MediaDevice</tt>.
+     * Gets the <code>Player</code>s rendering the <code>ReceiveStream</code>s of this instance on its
+     * associated <code>MediaDevice</code>.
      *
-     * @return the <tt>Player</tt>s rendering the <tt>ReceiveStream</tt>s of this instance on its
-     * associated <tt>MediaDevice</tt>
+     * @return the <code>Player</code>s rendering the <code>ReceiveStream</code>s of this instance on its
+     * associated <code>MediaDevice</code>
      */
     protected List<Player> getPlayers()
     {
@@ -856,19 +886,19 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the JMF <tt>Processor</tt> which transcodes the <tt>MediaDevice</tt> of this instance
-     * into the format of this instance. If the <tt>Processor</tt> in question does not exist, the
+     * Gets the JMF <code>Processor</code> which transcodes the <code>MediaDevice</code> of this instance
+     * into the format of this instance. If the <code>Processor</code> in question does not exist, the
      * method will create it.
      * <p>
-     * <b>Warning</b>: Because the method will unconditionally create the <tt>Processor</tt> if it
-     * does not exist and because the creation of the <tt>Processor</tt> will connect to the
-     * <tt>CaptureDevice</tt> of this instance, extreme care is to be taken when invoking the
-     * method in order to ensure that the existence of the <tt>Processor</tt> is really in accord
+     * <b>Warning</b>: Because the method will unconditionally create the <code>Processor</code> if it
+     * does not exist and because the creation of the <code>Processor</code> will connect to the
+     * <code>CaptureDevice</code> of this instance, extreme care is to be taken when invoking the
+     * method in order to ensure that the existence of the <code>Processor</code> is really in accord
      * with the rest of the state of this instance. Overall, the method is to be considered
-     * private and is to not be invoked outside the <tt>MediaDeviceSession</tt> class.
+     * private and is to not be invoked outside the <code>MediaDeviceSession</code> class.
      * </p>
      *
-     * @return the JMF <tt>Processor</tt> which transcodes the <tt>MediaDevice</tt> of this
+     * @return the JMF <code>Processor</code> which transcodes the <code>MediaDevice</code> of this
      * instance into the format of this instance
      */
     private Processor getProcessor()
@@ -879,10 +909,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets a list of the <tt>ReceiveStream</tt>s being played back on the <tt>MediaDevice</tt>
+     * Gets a list of the <code>ReceiveStream</code>s being played back on the <code>MediaDevice</code>
      * represented by this instance.
      *
-     * @return a list of <tt>ReceiveStream</tt>s being played back on the <tt>MediaDevice</tt>
+     * @return a list of <code>ReceiveStream</code>s being played back on the <code>MediaDevice</code>
      * represented by this instance
      */
     public List<ReceiveStream> getReceiveStreams()
@@ -910,7 +940,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      * the same method to query a device session operating over a mixer in which case we would have
      * the SSRC IDs of all parties currently contributing to the mixing.
      *
-     * @return a <tt>long[]</tt> array of SSRC identifiers that this device session is handling streams from.
+     * @return a <code>long[]</code> array of SSRC identifiers that this device session is handling streams from.
      */
     public long[] getRemoteSSRCList()
     {
@@ -918,11 +948,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the <tt>MediaDirection</tt> in which this instance has been started. For example, a
-     * <tt>MediaDirection</tt> which returns <tt>true</tt> for <tt>allowsSending()</tt> signals
-     * that this instance is capturing media from its <tt>MediaDevice</tt>.
+     * Gets the <code>MediaDirection</code> in which this instance has been started. For example, a
+     * <code>MediaDirection</code> which returns <code>true</code> for <code>allowsSending()</code> signals
+     * that this instance is capturing media from its <code>MediaDevice</code>.
      *
-     * @return the <tt>MediaDirection</tt> in which this instance has been started
+     * @return the <code>MediaDirection</code> in which this instance has been started
      */
     public MediaDirection getStartedDirection()
     {
@@ -930,11 +960,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets a list of the <tt>MediaFormat</tt>s in which this instance is capable of capturing
-     * media from its associated <tt>MediaDevice</tt>.
+     * Gets a list of the <code>MediaFormat</code>s in which this instance is capable of capturing
+     * media from its associated <code>MediaDevice</code>.
      *
-     * @return a new list of <tt>MediaFormat</tt>s in which this instance is capable of capturing
-     * media from its associated <tt>MediaDevice</tt>
+     * @return a new list of <code>MediaFormat</code>s in which this instance is capable of capturing
+     * media from its associated <code>MediaDevice</code>
      */
     public List<MediaFormat> getSupportedFormats()
     {
@@ -975,11 +1005,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Determines whether this <tt>MediaDeviceSession</tt> is set to output "silence" instead of
-     * the actual media fed from its <tt>CaptureDevice</tt> .
+     * Determines whether this <code>MediaDeviceSession</code> is set to output "silence" instead of
+     * the actual media fed from its <code>CaptureDevice</code> .
      *
-     * @return <tt>true</tt> if this <tt>MediaDeviceSession</tt> is set to output "silence" instead
-     * of the actual media fed from its <tt>CaptureDevice</tt>; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this <code>MediaDeviceSession</code> is set to output "silence" instead
+     * of the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
      */
     public boolean isMute()
     {
@@ -992,44 +1022,44 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been added for
-     * playback on the represented <tt>MediaDevice</tt>.
+     * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been added for
+     * playback on the represented <code>MediaDevice</code>.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which has been added for playback on the represented
-     * <tt>MediaDevice</tt>
+     * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
+     * <code>MediaDevice</code>
      */
     protected void playbackDataSourceAdded(DataSource playbackDataSource)
     {
     }
 
     /**
-     * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been removed from
-     * playback on the represented <tt>MediaDevice</tt>.
+     * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been removed from
+     * playback on the represented <code>MediaDevice</code>.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which has been removed from playback on the represented
-     * <tt>MediaDevice</tt>
+     * @param playbackDataSource the <code>DataSource</code> which has been removed from playback on the represented
+     * <code>MediaDevice</code>
      */
     protected void playbackDataSourceRemoved(DataSource playbackDataSource)
     {
     }
 
     /**
-     * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been changed on the
-     * represented <tt>MediaDevice</tt>.
+     * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been changed on the
+     * represented <code>MediaDevice</code>.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which has been added for playback on the represented
-     * <tt>MediaDevice</tt>
+     * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
+     * <code>MediaDevice</code>
      */
     protected void playbackDataSourceUpdated(DataSource playbackDataSource)
     {
     }
 
     /**
-     * Notifies this <tt>MediaDeviceSession</tt> that a <tt>DataSource</tt> has been changed on the
-     * represented <tt>MediaDevice</tt>.
+     * Notifies this <code>MediaDeviceSession</code> that a <code>DataSource</code> has been changed on the
+     * represented <code>MediaDevice</code>.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which has been added for playback on the represented
-     * <tt>MediaDevice</tt>
+     * @param playbackDataSource the <code>DataSource</code> which has been added for playback on the represented
+     * <code>MediaDevice</code>
      */
     public void playbackDataSourceChanged(DataSource playbackDataSource)
     {
@@ -1037,10 +1067,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this instance that a specific <tt>Player</tt> of remote content has generated a
-     * <tt>ConfigureCompleteEvent</tt>. Allows extenders to carry out additional processing on the <tt>Player</tt>.
+     * Notifies this instance that a specific <code>Player</code> of remote content has generated a
+     * <code>ConfigureCompleteEvent</code>. Allows extenders to carry out additional processing on the <code>Player</code>.
      *
-     * @param player the <tt>Player</tt> which is the source of a <tt>ConfigureCompleteEvent</tt>
+     * @param player the <code>Player</code> which is the source of a <code>ConfigureCompleteEvent</code>
      */
     protected void playerConfigureComplete(Processor player)
     {
@@ -1063,14 +1093,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Gets notified about <tt>ControllerEvent</tt>s generated by a specific <tt>Player</tt> of remote content.
+     * Gets notified about <code>ControllerEvent</code>s generated by a specific <code>Player</code> of remote content.
      * <p>
      * Extenders who choose to override are advised to override more specialized methods such as
      * {@link #playerConfigureComplete(Processor)} and {@link #playerRealizeComplete(Processor)}.
      * In any case, extenders overriding this method should call the super implementation.
      * </p>
      *
-     * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is the source of
+     * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is the source of
      * the event and the very type of the event
      */
     protected void playerControllerUpdate(ControllerEvent ev)
@@ -1103,19 +1133,19 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this instance that a specific <tt>Player</tt> of remote content has generated a
-     * <tt>RealizeCompleteEvent</tt>. Allows extenders to carry out additional processing on the <tt>Player</tt>.
+     * Notifies this instance that a specific <code>Player</code> of remote content has generated a
+     * <code>RealizeCompleteEvent</code>. Allows extenders to carry out additional processing on the <code>Player</code>.
      *
-     * @param player the <tt>Player</tt> which is the source of a <tt>RealizeCompleteEvent</tt>
+     * @param player the <code>Player</code> which is the source of a <code>RealizeCompleteEvent</code>
      */
     protected void playerRealizeComplete(Processor player)
     {
     }
 
     /**
-     * Gets notified about <tt>ControllerEvent</tt>s generated by {@link #processor}.
+     * Gets notified about <code>ControllerEvent</code>s generated by {@link #processor}.
      *
-     * @param ev the <tt>ControllerEvent</tt> specifying the <tt>Controller</tt> which is the source of
+     * @param ev the <code>ControllerEvent</code> specifying the <code>Controller</code> which is the source of
      * the event and the very type of the event
      */
     protected void processorControllerUpdate(ControllerEvent ev)
@@ -1138,7 +1168,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 String errMessage = ((ControllerErrorEvent) ev).getMessage();
                 Timber.w("ControllerErrorEvent: %s", errMessage);
                 aTalkApp.showToastMessage(errMessage);
-            } else {
+            }
+            else {
                 Timber.d("ControllerClosedEvent: %s", ((ControllerClosedEvent) ev).getMessage());
             }
 
@@ -1165,10 +1196,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Removes <tt>ssrc</tt> from the array of SSRC identifiers representing parties that this
-     * <tt>MediaDeviceSession</tt> is currently receiving streams from.
+     * Removes <code>ssrc</code> from the array of SSRC identifiers representing parties that this
+     * <code>MediaDeviceSession</code> is currently receiving streams from.
      *
-     * @param ssrc the SSRC identifier that we'd like to remove from the array of <tt>ssrc</tt>
+     * @param ssrc the SSRC identifier that we'd like to remove from the array of <code>ssrc</code>
      * identifiers stored by this session.
      */
     protected void removeSSRC(long ssrc)
@@ -1208,26 +1239,26 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this instance that a specific <tt>ReceiveStream</tt> has been added to the list of
-     * playbacks of <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance.
+     * Notifies this instance that a specific <code>ReceiveStream</code> has been added to the list of
+     * playbacks of <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> which has been added to the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt> s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param receiveStream the <code>ReceiveStream</code> which has been added to the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code> s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     protected void receiveStreamAdded(ReceiveStream receiveStream)
     {
     }
 
     /**
-     * Notifies this instance that a specific <tt>ReceiveStream</tt> has been removed from the list
-     * of playbacks of <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance.
+     * Notifies this instance that a specific <code>ReceiveStream</code> has been removed from the list
+     * of playbacks of <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> which has been removed from the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param receiveStream the <code>ReceiveStream</code> which has been removed from the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     protected void receiveStreamRemoved(ReceiveStream receiveStream)
     {
@@ -1284,13 +1315,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>ContentDescriptor</tt> which specifies the content type in which this
-     * <tt>MediaDeviceSession</tt> is to output the media captured by its <tt>MediaDevice</tt>. The
-     * default content type in which <tt>MediaDeviceSession</tt> outputs the media captured by its
-     * <tt>MediaDevice</tt> is {@link ContentDescriptor#RAW_RTP}.
+     * Sets the <code>ContentDescriptor</code> which specifies the content type in which this
+     * <code>MediaDeviceSession</code> is to output the media captured by its <code>MediaDevice</code>. The
+     * default content type in which <code>MediaDeviceSession</code> outputs the media captured by its
+     * <code>MediaDevice</code> is {@link ContentDescriptor#RAW_RTP}.
      *
-     * @param contentDescriptor the <tt>ContentDescriptor</tt> which specifies the content type in which this
-     * <tt>MediaDeviceSession</tt> is to output the media captured by its <tt>MediaDevice</tt>
+     * @param contentDescriptor the <code>ContentDescriptor</code> which specifies the content type in which this
+     * <code>MediaDeviceSession</code> is to output the media captured by its <code>MediaDevice</code>
      */
     public void setContentDescriptor(ContentDescriptor contentDescriptor)
     {
@@ -1300,11 +1331,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>MediaFormat</tt> in which this <tt>MediaDeviceSession</tt> outputs the media
-     * captured by its <tt>MediaDevice</tt>.
+     * Sets the <code>MediaFormat</code> in which this <code>MediaDeviceSession</code> outputs the media
+     * captured by its <code>MediaDevice</code>.
      *
-     * @param format the <tt>MediaFormat</tt> in which this <tt>MediaDeviceSession</tt> is to output the
-     * media captured by its <tt>MediaDevice</tt>
+     * @param format the <code>MediaFormat</code> in which this <code>MediaDeviceSession</code> is to output the
+     * media captured by its <code>MediaDevice</code>
      */
     public void setFormat(MediaFormat format)
     {
@@ -1341,11 +1372,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>MediaFormatImpl</tt> in which a specific <tt>Processor</tt> producing media to
+     * Sets the <code>MediaFormatImpl</code> in which a specific <code>Processor</code> producing media to
      * be streamed to the remote peer is to output.
      *
-     * @param processor the <tt>Processor</tt> to set the output <tt>MediaFormatImpl</tt> of
-     * @param mediaFormat the <tt>MediaFormatImpl</tt> to set on <tt>processor</tt>
+     * @param processor the <code>Processor</code> to set the output <code>MediaFormatImpl</code> of
+     * @param mediaFormat the <code>MediaFormatImpl</code> to set on <code>processor</code>
      */
     protected void setProcessorFormat(Processor processor, MediaFormatImpl<? extends Format> mediaFormat)
     {
@@ -1416,24 +1447,24 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the <tt>MediaFormatImpl</tt> of a specific <tt>TrackControl</tt> of the
-     * <tt>Processor</tt> which produces the media to be streamed by this
-     * <tt>MediaDeviceSession</tt> to the remote peer. Allows extenders to override the set procedure
-     * and to detect when the JMF <tt>Format</tt> of the specified <tt>TrackControl</tt> changes.
+     * Sets the <code>MediaFormatImpl</code> of a specific <code>TrackControl</code> of the
+     * <code>Processor</code> which produces the media to be streamed by this
+     * <code>MediaDeviceSession</code> to the remote peer. Allows extenders to override the set procedure
+     * and to detect when the JMF <code>Format</code> of the specified <code>TrackControl</code> changes.
      *
-     * @param trackControl the <tt>TrackControl</tt> to set the JMF <tt>Format</tt> of
-     * @param mediaFormat the <tt>MediaFormatImpl</tt> to be set on the specified <tt>TrackControl</tt>. Though
-     * <tt>mediaFormat</tt> encapsulates a JMF <tt>Format</tt>, <tt>format</tt> is to be set
-     * on the specified <tt>trackControl</tt> because it may be more specific. In any case,
-     * the two JMF <tt>Format</tt>s match. The <tt>MediaFormatImpl</tt> is provided anyway
+     * @param trackControl the <code>TrackControl</code> to set the JMF <code>Format</code> of
+     * @param mediaFormat the <code>MediaFormatImpl</code> to be set on the specified <code>TrackControl</code>. Though
+     * <code>mediaFormat</code> encapsulates a JMF <code>Format</code>, <code>format</code> is to be set
+     * on the specified <code>trackControl</code> because it may be more specific. In any case,
+     * the two JMF <code>Format</code>s match. The <code>MediaFormatImpl</code> is provided anyway
      * because it carries additional information such as format parameters.
-     * @param format the JMF <tt>Format</tt> to be set on the specified <tt>TrackControl</tt>. Though
-     * <tt>mediaFormat</tt> encapsulates a JMF <tt>Format</tt>, the specified <tt>format</tt>
-     * is to be set on the specified <tt>trackControl</tt> because it may be more specific
-     * than the JMF <tt>Format</tt> of the <tt>mediaFormat</tt>
-     * @return the JMF <tt>Format</tt> set on <tt>TrackControl</tt> after the attempt to set the
-     * specified <tt>format</tt> or <tt>null</tt> if the specified <tt>format</tt> was found
-     * to be incompatible with <tt>trackControl</tt>
+     * @param format the JMF <code>Format</code> to be set on the specified <code>TrackControl</code>. Though
+     * <code>mediaFormat</code> encapsulates a JMF <code>Format</code>, the specified <code>format</code>
+     * is to be set on the specified <code>trackControl</code> because it may be more specific
+     * than the JMF <code>Format</code> of the <code>mediaFormat</code>
+     * @return the JMF <code>Format</code> set on <code>TrackControl</code> after the attempt to set the
+     * specified <code>format</code> or <code>null</code> if the specified <code>format</code> was found
+     * to be incompatible with <code>trackControl</code>
      */
     protected Format setProcessorFormat(TrackControl trackControl,
             MediaFormatImpl<? extends Format> mediaFormat, Format format)
@@ -1442,11 +1473,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the indicator which determines whether this <tt>MediaDeviceSession</tt> is set to
-     * output "silence" instead of the actual media fed from its <tt>CaptureDevice</tt>.
+     * Sets the indicator which determines whether this <code>MediaDeviceSession</code> is set to
+     * output "silence" instead of the actual media fed from its <code>CaptureDevice</code>.
      *
-     * @param mute <tt>true</tt> to set this <tt>MediaDeviceSession</tt> to output "silence" instead of
-     * the actual media fed from its <tt>CaptureDevice</tt>; otherwise, <tt>false</tt>
+     * @param mute <code>true</code> to set this <code>MediaDeviceSession</code> to output "silence" instead of
+     * the actual media fed from its <code>CaptureDevice</code>; otherwise, <code>false</code>
      */
     public void setMute(boolean mute)
     {
@@ -1472,13 +1503,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>DataSource</tt> to the list of playbacks of <tt>ReceiveStream</tt>s
-     * and/or <tt>DataSource</tt>s performed by respective <tt>Player</tt>s on the
-     * <tt>MediaDevice</tt> represented by this instance.
+     * Adds a specific <code>DataSource</code> to the list of playbacks of <code>ReceiveStream</code>s
+     * and/or <code>DataSource</code>s performed by respective <code>Player</code>s on the
+     * <code>MediaDevice</code> represented by this instance.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which to be added to the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param playbackDataSource the <code>DataSource</code> which to be added to the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     public void addPlaybackDataSource(DataSource playbackDataSource)
     {
@@ -1520,13 +1551,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>DataSource</tt> from the list of playbacks of <tt>ReceiveStream</tt>s
-     * and/or <tt>DataSource</tt>s performed by respective <tt>Player</tt>s on the
-     * <tt>MediaDevice</tt> represented by this instance.
+     * Removes a specific <code>DataSource</code> from the list of playbacks of <code>ReceiveStream</code>s
+     * and/or <code>DataSource</code>s performed by respective <code>Player</code>s on the
+     * <code>MediaDevice</code> represented by this instance.
      *
-     * @param playbackDataSource the <tt>DataSource</tt> which to be removed from the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param playbackDataSource the <code>DataSource</code> which to be removed from the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     public void removePlaybackDataSource(DataSource playbackDataSource)
     {
@@ -1564,10 +1595,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the JMF <tt>Processor</tt> which is to transcode {@link #captureDevice} into the format
+     * Sets the JMF <code>Processor</code> which is to transcode {@link #captureDevice} into the format
      * of this instance.
      *
-     * @param processor the JMF <tt>Processor</tt> which is to transcode {@link #captureDevice} into the
+     * @param processor the JMF <code>Processor</code> which is to transcode {@link #captureDevice} into the
      * format of this instance
      */
     private void setProcessor(Processor processor)
@@ -1584,13 +1615,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Adds a specific <tt>ReceiveStream</tt> to the list of playbacks of <tt>ReceiveStream</tt>s
-     * and/or <tt>DataSource</tt>s performed by respective <tt>Player</tt>s on the
-     * <tt>MediaDevice</tt> represented by this instance.
+     * Adds a specific <code>ReceiveStream</code> to the list of playbacks of <code>ReceiveStream</code>s
+     * and/or <code>DataSource</code>s performed by respective <code>Player</code>s on the
+     * <code>MediaDevice</code> represented by this instance.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> which to be added to the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param receiveStream the <code>ReceiveStream</code> which to be added to the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     public void addReceiveStream(ReceiveStream receiveStream)
     {
@@ -1635,13 +1666,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Removes a specific <tt>ReceiveStream</tt> from the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective <tt>Player</tt>s
-     * on the <tt>MediaDevice</tt> represented by this instance.
+     * Removes a specific <code>ReceiveStream</code> from the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective <code>Player</code>s
+     * on the <code>MediaDevice</code> represented by this instance.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> which to be removed from the list of playbacks of
-     * <tt>ReceiveStream</tt>s and/or <tt>DataSource</tt>s performed by respective
-     * <tt>Player</tt>s on the <tt>MediaDevice</tt> represented by this instance
+     * @param receiveStream the <code>ReceiveStream</code> which to be removed from the list of playbacks of
+     * <code>ReceiveStream</code>s and/or <code>DataSource</code>s performed by respective
+     * <code>Player</code>s on the <code>MediaDevice</code> represented by this instance
      */
     public void removeReceiveStream(ReceiveStream receiveStream)
     {
@@ -1679,8 +1710,8 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Sets the list of SSRC identifiers that this device stores to <tt>newSsrcList</tt> and
-     * fires a <tt>PropertyChangeEvent</tt> for the <tt>SSRC_LIST</tt> property.
+     * Sets the list of SSRC identifiers that this device stores to <code>newSsrcList</code> and
+     * fires a <code>PropertyChangeEvent</code> for the <code>SSRC_LIST</code> property.
      *
      * @param newSsrcList that SSRC array that we'd like to replace the existing SSRC list with.
      */
@@ -1697,7 +1728,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     /**
      * Starts the processing of media in this instance in a specific direction.
      *
-     * @param direction a <tt>MediaDirection</tt> value which represents the direction of the processing of
+     * @param direction a <code>MediaDirection</code> value which represents the direction of the processing of
      * media to be started. For example, {@link MediaDirection#SENDRECV} to start both
      * capture and playback of media in this instance or {@link MediaDirection#SENDONLY} to
      * only start the capture of media in this instance
@@ -1714,14 +1745,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Notifies this instance that the value of its <tt>startedDirection</tt> property has changed
-     * from a specific <tt>oldValue</tt> to a specific <tt>newValue</tt>. Allows extenders to
+     * Notifies this instance that the value of its <code>startedDirection</code> property has changed
+     * from a specific <code>oldValue</code> to a specific <code>newValue</code>. Allows extenders to
      * override and perform additional processing of the change. Overriding implementations must
-     * call this implementation in order to ensure the proper execution of this <tt>MediaDeviceSession</tt>.
+     * call this implementation in order to ensure the proper execution of this <code>MediaDeviceSession</code>.
      *
-     * @param oldValue the <tt>MediaDirection</tt> which used to be the value of the
-     * <tt>startedDirection</tt> property of this instance
-     * @param newValue the <tt>MediaDirection</tt> which is the value of the <tt>startedDirection</tt>
+     * @param oldValue the <code>MediaDirection</code> which used to be the value of the
+     * <code>startedDirection</code> property of this instance
+     * @param newValue the <code>MediaDirection</code> which is the value of the <code>startedDirection</code>
      * property of this instance
      */
     protected void startedDirectionChanged(MediaDirection oldValue, MediaDirection newValue)
@@ -1738,11 +1769,11 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Starts a specific <tt>Processor</tt> if this <tt>MediaDeviceSession</tt> has been started
+     * Starts a specific <code>Processor</code> if this <code>MediaDeviceSession</code> has been started
      * and
-     * the specified <tt>Processor</tt> is not started.
+     * the specified <code>Processor</code> is not started.
      *
-     * @param processor the <tt>Processor</tt> to start
+     * @param processor the <code>Processor</code> to start
      */
     protected void startProcessorInAccordWithDirection(Processor processor)
     {
@@ -1755,7 +1786,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     /**
      * Stops the processing of media in this instance in a specific direction.
      *
-     * @param direction a <tt>MediaDirection</tt> value which represents the direction of the processing of
+     * @param direction a <code>MediaDirection</code> value which represents the direction of the processing of
      * media to be stopped. For example, {@link MediaDirection#SENDRECV} to stop both capture
      * and playback of media in this instance or {@link MediaDirection#SENDONLY} to only stop
      * the capture of media in this instance
@@ -1796,14 +1827,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Waits for the specified JMF <tt>Processor</tt> to enter the specified <tt>state</tt> and
-     * returns <tt>true</tt> if <tt>processor</tt> has successfully entered <tt>state</tt> or
-     * <tt>false</tt> if <tt>process</tt> has failed to enter <tt>state</tt>.
+     * Waits for the specified JMF <code>Processor</code> to enter the specified <code>state</code> and
+     * returns <code>true</code> if <code>processor</code> has successfully entered <code>state</code> or
+     * <code>false</code> if <code>process</code> has failed to enter <code>state</code>.
      *
-     * @param processor the JMF <tt>Processor</tt> to wait on
-     * @param state the state as defined by the respective <tt>Processor</tt> state constants to wait
-     * <tt>processor</tt> to enter
-     * @return <tt>true</tt> if <tt>processor</tt> has successfully entered <tt>state</tt>; otherwise, <tt>false</tt>
+     * @param processor the JMF <code>Processor</code> to wait on
+     * @param state the state as defined by the respective <code>Processor</code> state constants to wait
+     * <code>processor</code> to enter
+     * @return <code>true</code> if <code>processor</code> has successfully entered <code>state</code>; otherwise, <code>false</code>
      */
     private static boolean waitForState(Processor processor, int state)
     {
@@ -1811,9 +1842,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Copies the playback part of a specific <tt>MediaDeviceSession</tt> into this instance.
+     * Copies the playback part of a specific <code>MediaDeviceSession</code> into this instance.
      *
-     * @param deviceSession the <tt>MediaDeviceSession</tt> to copy the playback part of into this instance
+     * @param deviceSession the <code>MediaDeviceSession</code> to copy the playback part of into this instance
      */
     public void copyPlayback(MediaDeviceSession deviceSession)
     {
@@ -1832,34 +1863,34 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Represents the information related to the playback of a <tt>DataSource</tt> on the
-     * <tt>MediaDevice</tt> represented by a <tt>MediaDeviceSession</tt>. The <tt>DataSource</tt>
-     * may have an associated <tt>ReceiveStream</tt>.
+     * Represents the information related to the playback of a <code>DataSource</code> on the
+     * <code>MediaDevice</code> represented by a <code>MediaDeviceSession</code>. The <code>DataSource</code>
+     * may have an associated <code>ReceiveStream</code>.
      */
     private static class Playback
     {
         /**
-         * The <tt>DataSource</tt> the information related to the playback of which is represented
+         * The <code>DataSource</code> the information related to the playback of which is represented
          * by this instance and which is associated with {@link #receiveStream}.
          */
         public DataSource dataSource;
 
         /**
-         * The <tt>ReceiveStream</tt> the information related to the playback of which is
+         * The <code>ReceiveStream</code> the information related to the playback of which is
          * represented by this instance and which is associated with {@link #dataSource}.
          */
         public ReceiveStream receiveStream;
 
         /**
-         * The <tt>Player</tt> which performs the actual playback.
+         * The <code>Player</code> which performs the actual playback.
          */
         public Player player;
 
         /**
-         * Initializes a new <tt>Playback</tt> instance which is to represent the information
-         * related to the playback of a specific <tt>DataSource</tt>.
+         * Initializes a new <code>Playback</code> instance which is to represent the information
+         * related to the playback of a specific <code>DataSource</code>.
          *
-         * @param dataSource the <tt>DataSource</tt> the information related to the playback of which is to be
+         * @param dataSource the <code>DataSource</code> the information related to the playback of which is to be
          * represented by the new instance
          */
         public Playback(DataSource dataSource)
@@ -1868,10 +1899,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
         }
 
         /**
-         * Initializes a new <tt>Playback</tt> instance which is to represent the information
-         * related to the playback of a specific <tt>ReceiveStream</tt>.
+         * Initializes a new <code>Playback</code> instance which is to represent the information
+         * related to the playback of a specific <code>ReceiveStream</code>.
          *
-         * @param receiveStream the <tt>ReceiveStream</tt> the information related to the playback of which is to
+         * @param receiveStream the <code>ReceiveStream</code> the information related to the playback of which is to
          * be represented by the new instance
          */
         public Playback(ReceiveStream receiveStream)
@@ -1882,10 +1913,10 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Returns the <tt>TranscodingDataSource</tt> associated with <tt>receiveStream</tt>.
+     * Returns the <code>TranscodingDataSource</code> associated with <code>receiveStream</code>.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> to use
-     * @return the <tt>TranscodingDataSource</tt> associated with <tt>receiveStream</tt>.
+     * @param receiveStream the <code>ReceiveStream</code> to use
+     * @return the <code>TranscodingDataSource</code> associated with <code>receiveStream</code>.
      */
     public TranscodingDataSource getTranscodingDataSource(ReceiveStream receiveStream)
     {
@@ -1898,13 +1929,13 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Searches for controls of type <tt>controlType</tt> in the <tt>TrackControl</tt>s of the
-     * <tt>Processor</tt> used to transcode the <tt>MediaDevice</tt> of this instance into the
-     * format of this instance. Returns a <tt>Set</tt> of instances of class <tt>controlType</tt>,
+     * Searches for controls of type <code>controlType</code> in the <code>TrackControl</code>s of the
+     * <code>Processor</code> used to transcode the <code>MediaDevice</code> of this instance into the
+     * format of this instance. Returns a <code>Set</code> of instances of class <code>controlType</code>,
      * always non-null.
      *
      * @param controlType the name of the class to search for.
-     * @return A non-null <tt>Set</tt> of all <tt>controlType</tt>s found.
+     * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
     public <T> Set<T> getEncoderControls(Class<T> controlType)
     {
@@ -1912,14 +1943,14 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Searches for controls of type <tt>controlType</tt> in the <tt>TrackControl</tt>s of the
-     * <tt>Processor</tt> used to decode <tt>receiveStream</tt>. Returns a <tt>Set</tt> of
-     * instances of class <tt>controlType</tt>, always non-null.
+     * Searches for controls of type <code>controlType</code> in the <code>TrackControl</code>s of the
+     * <code>Processor</code> used to decode <code>receiveStream</code>. Returns a <code>Set</code> of
+     * instances of class <code>controlType</code>, always non-null.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> whose <tt>Processor</tt>'s <tt>TrackControl</tt>s are to be
+     * @param receiveStream the <code>ReceiveStream</code> whose <code>Processor</code>'s <code>TrackControl</code>s are to be
      * searched.
      * @param controlType the name of the class to search for.
-     * @return A non-null <tt>Set</tt> of all <tt>controlType</tt>s found.
+     * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
     public <T> Set<T> getDecoderControls(ReceiveStream receiveStream, Class<T> controlType)
     {
@@ -1932,12 +1963,12 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Returns the <tt>Set</tt> of controls of type <tt>controlType</tt>, which are controls for
-     * some of <tt>processor</tt>'s <tt>TrackControl</tt>s.
+     * Returns the <code>Set</code> of controls of type <code>controlType</code>, which are controls for
+     * some of <code>processor</code>'s <code>TrackControl</code>s.
      *
      * @param controlType the name of the class to search for.
-     * @param processor the <tt>Processor</tt> whose <tt>TrackControls</tt>s will be searched.
-     * @return A non-null <tt>Set</tt> of all <tt>controlType</tt>s found.
+     * @param processor the <code>Processor</code> whose <code>TrackControls</code>s will be searched.
+     * @return A non-null <code>Set</code> of all <code>controlType</code>s found.
      */
     private <T> Set<T> getAllTrackControls(Class<T> controlType, Processor processor)
     {
@@ -1967,9 +1998,9 @@ public class MediaDeviceSession extends PropertyChangeNotifier
     }
 
     /**
-     * Updates the value of <tt>useTranslator</tt>.
+     * Updates the value of <code>useTranslator</code>.
      *
-     * @param useTranslator whether this device session is used by a <tt>MediaStream</tt> that is having a translator.
+     * @param useTranslator whether this device session is used by a <code>MediaStream</code> that is having a translator.
      */
     public void setUseTranslator(boolean useTranslator)
     {

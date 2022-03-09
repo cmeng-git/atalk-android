@@ -19,7 +19,6 @@ import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.ice4j.ice.harvest.MappingCandidateHarvesters;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -57,17 +56,24 @@ public class NetaddrActivator implements BundleActivator
     public void start(BundleContext bundleContext)
             throws Exception
     {
-        //in here we load static properties that should be else where
-        //System.setProperty("java.net.preferIPv4Stack", "false");
-        //System.setProperty("java.net.preferIPv6Addresses", "true");
-        //end ugly property set
+        /*
+         * in here we load static properties that should be elsewhere, end ugly property set
+         */
+        // System.setProperty("java.net.preferIPv4Stack", "false");
+        // System.setProperty("java.net.preferIPv6Addresses", "true");
 
-        // The latest ice4j-2.0.0-20190607.184546-36.jar seems not required it anymore
-        // cmeng: ice4j 2.0.0 settings for aTalk - must set this to true otherwise ice4j hangs
+        /*
+         * ? ice4j-2.0.0 works only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
+         * cmeng: The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
+         * so commented out below statement:
+         */
         // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
 
-        // To define the xmp parser for weupnp for android
-        // https://github.com/bitletorg/weupnp/issues/20
+        /*
+         * ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
+         * Need to redefine the xmp parser for weupnp for android; see
+         * https://github.com/bitletorg/weupnp/issues/20
+        */
         System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
 
         //keep a reference to the bundle context for later usage.

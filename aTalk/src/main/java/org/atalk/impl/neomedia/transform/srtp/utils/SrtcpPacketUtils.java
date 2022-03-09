@@ -15,9 +15,9 @@
  */
 package org.atalk.impl.neomedia.transform.srtp.utils;
 
-import org.atalk.util.ByteArrayBuffer;
-
 import static org.atalk.util.ByteArrayUtils.readInt;
+
+import org.atalk.util.ByteArrayBuffer;
 
 /**
  * SrtcpPacket is the low-level utilities to get the data fields needed by SRTCP.

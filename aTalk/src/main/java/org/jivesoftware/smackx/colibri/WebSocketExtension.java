@@ -1,7 +1,6 @@
-/*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+/**
  *
- * Copyright @ 2015 Atlassian Pty Ltd
+ * Copyright 2017-2022 Jive Software
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +16,7 @@
  */
 package org.jivesoftware.smackx.colibri;
 
-import org.jivesoftware.smackx.AbstractExtensionElement;
+import org.jivesoftware.smackx.AbstractXmlElement;
 
 import javax.xml.namespace.QName;
 
@@ -25,45 +24,34 @@ import javax.xml.namespace.QName;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class WebSocketExtension extends AbstractExtensionElement
+public class WebSocketExtension extends AbstractXmlElement
 {
     /**
      * The name of the "web-socket" element.
      */
     public static final String ELEMENT = "web-socket";
 
-    public static final String NAMESPACE = ColibriConferenceIQ.NAMESPACE;
+    public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The name of the "url" attribute.
      */
-    public static final String URL_ATTR_NAME = "url";
+    public static final String ATTR_URL = "url";
 
     /**
-     * Creates a new {@link WebSocketExtension}
+     * Creates a new <code>WebSocketExtension</code>; required by DefaultXmlElementProvider().
+     * @param build Builder instance
      */
-    public WebSocketExtension()
+    public WebSocketExtension(Builder build)
     {
-        super(ELEMENT, NAMESPACE);
+        super(build);
     }
 
-    /**
-     * Creates a new {@link WebSocketExtension}
-     */
-    public WebSocketExtension(String url)
+    public static Builder builder()
     {
-        super(ELEMENT, NAMESPACE);
-        setUrl(url);
-    }
-
-    /**
-     * Sets the URL.
-     */
-    public void setUrl(String url)
-    {
-        super.setAttribute(URL_ATTR_NAME, url);
+        return new Builder(ELEMENT, NAMESPACE);
     }
 
     /**
@@ -71,6 +59,41 @@ public class WebSocketExtension extends AbstractExtensionElement
      */
     public String getUrl()
     {
-        return super.getAttributeAsString(URL_ATTR_NAME);
+        return super.getAttributeValue(ATTR_URL);
+    }
+
+    /**
+     * Builder for WebSocketExtension. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the WebSocketExtension.
+     */
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, WebSocketExtension>
+    {
+        protected Builder(String element, String namespace)
+        {
+            super(element, namespace);
+        }
+
+        /**
+         * Sets the URL.
+         * @param url URL value
+         * @return builder instance
+         */
+        public Builder setUrl(String url)
+        {
+            super.addAttribute(ATTR_URL, url);
+            return this;
+        }
+
+        @Override
+        public WebSocketExtension build()
+        {
+            return new WebSocketExtension(this);
+        }
+
+        @Override
+        protected Builder getThis()
+        {
+            return this;
+        }
     }
 }

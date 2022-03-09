@@ -26,12 +26,12 @@ public class EncodingConfigurationConfigImpl extends EncodingConfigurationImpl
     private final String propPrefix;
 
     /**
-     * The <tt>ConfigurationService</tt> instance that will be used to store properties
+     * The <code>ConfigurationService</code> instance that will be used to store properties
      */
     private final ConfigurationService cfg = LibJitsi.getConfigurationService();
 
     /**
-     * Constructor. Loads the configuration from <tt>prefix</tt>
+     * Constructor. Loads the configuration from <code>prefix</code>
      *
      * @param prefix the prefix to use when loading and storing properties
      */
@@ -42,7 +42,7 @@ public class EncodingConfigurationConfigImpl extends EncodingConfigurationImpl
     }
 
     /**
-     * Loads the properties stored under <tt>this.propPrefix</tt>
+     * Loads the properties stored under <code>this.propPrefix</code>
      */
     private void loadConfig()
     {
@@ -54,11 +54,11 @@ public class EncodingConfigurationConfigImpl extends EncodingConfigurationImpl
     }
 
     /**
-     * Sets the preference associated with <tt>encoding</tt> to <tt>priority</tt>, and stores the
+     * Sets the preference associated with <code>encoding</code> to <code>priority</code>, and stores the
      * appropriate property in the configuration service.
      *
-     * @param encoding the <tt>MediaFormat</tt> specifying the encoding to set the priority of
-     * @param priority a positive <tt>int</tt> indicating the priority of <tt>encoding</tt> to set
+     * @param encoding the <code>MediaFormat</code> specifying the encoding to set the priority of
+     * @param priority a positive <code>int</code> indicating the priority of <code>encoding</code> to set
      * @see EncodingConfigurationImpl#setPriority(MediaFormat, int)
      */
     @Override

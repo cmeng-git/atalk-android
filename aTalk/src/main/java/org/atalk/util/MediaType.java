@@ -56,10 +56,7 @@ public enum MediaType
 
     /**
      * Represents a DATA media type.
-     *
-     * @deprecated In RFC4566. Still defined to avoid parsing errors.
      */
-    @Deprecated
     DATA("data");
 
     /**

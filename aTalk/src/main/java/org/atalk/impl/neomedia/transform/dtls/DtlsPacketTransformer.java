@@ -5,28 +5,60 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.AbstractRTPConnector;
+import org.atalk.impl.neomedia.RTCPPacketPredicate;
+import org.atalk.impl.neomedia.RTPConnectorOutputStream;
+import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
-import org.atalk.impl.neomedia.transform.srtp.*;
+import org.atalk.impl.neomedia.transform.srtp.SRTCPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SRTPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SrtpContextFactory;
+import org.atalk.impl.neomedia.transform.srtp.SrtpPolicy;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.DtlsControl;
+import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.ConfigUtils;
 import org.atalk.util.MediaType;
-import org.bouncycastle.tls.*;
+import org.bouncycastle.tls.AlertDescription;
+import org.bouncycastle.tls.AlertLevel;
+import org.bouncycastle.tls.ContentType;
+import org.bouncycastle.tls.DTLSClientProtocol;
+import org.bouncycastle.tls.DTLSProtocol;
+import org.bouncycastle.tls.DTLSServerProtocol;
+import org.bouncycastle.tls.DTLSTransport;
+import org.bouncycastle.tls.DatagramTransport;
+import org.bouncycastle.tls.ExporterLabel;
+import org.bouncycastle.tls.ProtocolVersion;
+import org.bouncycastle.tls.SRTPProtectionProfile;
+import org.bouncycastle.tls.SecurityParameters;
+import org.bouncycastle.tls.TlsClient;
+import org.bouncycastle.tls.TlsClientContext;
+import org.bouncycastle.tls.TlsContext;
+import org.bouncycastle.tls.TlsFatalAlert;
+import org.bouncycastle.tls.TlsPeer;
+import org.bouncycastle.tls.TlsServer;
+import org.bouncycastle.tls.TlsServerContext;
+import org.bouncycastle.tls.TlsUtils;
 import org.bouncycastle.tls.crypto.TlsSecret;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import timber.log.Timber;
 
 /**
  * Implements {@link PacketTransformer} for DTLS-SRTP. It's capable of working in
- * pure DTLS mode if appropriate flag was set in <tt>DtlsControlImpl</tt>.
+ * pure DTLS mode if appropriate flag was set in <code>DtlsControlImpl</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -53,16 +85,16 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * The indicator which determines whether unencrypted packets sent or received through
-     * <tt>DtlsPacketTransformer</tt> are to be dropped. The default value is <tt>false</tt>.
+     * <code>DtlsPacketTransformer</code> are to be dropped. The default value is <code>false</code>.
      *
      * @see #DROP_UNENCRYPTED_PKTS_PNAME
      */
     private static final boolean DROP_UNENCRYPTED_PKTS;
 
     /**
-     * The name of the <tt>ConfigurationService</tt> and/or <tt>System</tt> property which
+     * The name of the <code>ConfigurationService</code> and/or <code>System</code> property which
      * indicates whether unencrypted packets sent or received through
-     * <tt>DtlsPacketTransformer</tt> are to be dropped. The default value is <tt>false</tt>.
+     * <code>DtlsPacketTransformer</code> are to be dropped. The default value is <code>false</code>.
      */
     private static final String DROP_UNENCRYPTED_PKTS_PNAME
             = DtlsPacketTransformer.class.getName() + ".dropUnencryptedPkts";
@@ -78,7 +110,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     static final int DTLS_RECORD_HEADER_LENGTH = 13;
 
     /**
-     * The number of milliseconds a <tt>DtlsPacketTransform</tt> is to wait on its
+     * The number of milliseconds a <code>DtlsPacketTransform</code> is to wait on its
      * {@link #mDtlsTransport} in order to receive a packet. -1 not allow in tls.DTLSTransport
      */
     private static final int DTLS_TRANSPORT_RECEIVE_WAITMILLIS = 100; // -1
@@ -95,12 +127,12 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Determines whether a specific array of <tt>byte</tt>s appears to contain a DTLS record.
+     * Determines whether a specific array of <code>byte</code>s appears to contain a DTLS record.
      *
-     * @param buf the array of <tt>byte</tt>s to be analyzed
-     * @param off the offset within <tt>buf</tt> at which the analysis is to start
-     * @param len the number of bytes within <tt>buf</tt> starting at <tt>off</tt> to be analyzed
-     * @return <tt>true</tt> if the specified <tt>buf</tt> appears to contain a DTLS record
+     * @param buf the array of <code>byte</code>s to be analyzed
+     * @param off the offset within <code>buf</code> at which the analysis is to start
+     * @param len the number of bytes within <code>buf</code> starting at <code>off</code> to be analyzed
+     * @return <code>true</code> if the specified <code>buf</code> appears to contain a DTLS record
      */
     public static boolean isDtlsRecord(byte[] buf, int off, int len)
     {
@@ -151,28 +183,28 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private final int componentID;
 
     /**
-     * The <tt>RTPConnector</tt> which uses this <tt>PacketTransformer</tt>.
+     * The <code>RTPConnector</code> which uses this <code>PacketTransformer</code>.
      */
     private AbstractRTPConnector connector;
 
     /**
-     * The background <tt>Thread</tt> which initializes {@link #mDtlsTransport}.
+     * The background <code>Thread</code> which initializes {@link #mDtlsTransport}.
      */
     private Thread connectThread;
 
     /**
-     * The <tt>DatagramTransport</tt> implementation which adapts {@link #connector} and this
-     * <tt>PacketTransformer</tt> to the terms of the Bouncy Castle Crypto APIs.
+     * The <code>DatagramTransport</code> implementation which adapts {@link #connector} and this
+     * <code>PacketTransformer</code> to the terms of the Bouncy Castle Crypto APIs.
      */
     private DatagramTransportImpl datagramTransport;
 
     /**
-     * The <tt>DTLSTransport</tt> through which the actual packet transformations are being performed by this instance.
+     * The <code>DTLSTransport</code> through which the actual packet transformations are being performed by this instance.
      */
     private DTLSTransport mDtlsTransport;
 
     /**
-     * The <tt>MediaType</tt> of the stream which this instance works for/is associated with.
+     * The <code>MediaType</code> of the stream which this instance works for/is associated with.
      */
     private MediaType mediaType;
 
@@ -203,8 +235,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private long _srtpTransformerLastChanged = -1;
 
     /**
-     * The indicator which determines whether the <tt>TlsPeer</tt> employed by this <tt>PacketTransformer</tt>
-     * has raised an <tt>AlertDescription.close_notify</tt> <tt>AlertLevel.warning</tt>
+     * The indicator which determines whether the <code>TlsPeer</code> employed by this <code>PacketTransformer</code>
+     * has raised an <code>AlertDescription.close_notify</code> <code>AlertLevel.warning</code>
      * i.e. the remote DTLS peer has closed the write side of the connection.
      */
     private boolean tlsPeerHasRaisedCloseNotifyWarning;
@@ -216,16 +248,16 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private final LinkedList<RawPacket> _transformSrtpQueue = new LinkedList<>();
 
     /**
-     * The <tt>TransformEngine</tt> which has initialized this instance.
+     * The <code>TransformEngine</code> which has initialized this instance.
      */
     private final DtlsTransformEngine transformEngine;
 
     private boolean started = false;
 
     /**
-     * Initializes a new <tt>DtlsPacketTransformer</tt> instance.
+     * Initializes a new <code>DtlsPacketTransformer</code> instance.
      *
-     * @param transformEngine the <tt>TransformEngine</tt> which is initializing the new instance
+     * @param transformEngine the <code>TransformEngine</code> which is initializing the new instance
      * @param componentID the ID of the component for which the new instance is to work
      */
     public DtlsPacketTransformer(DtlsTransformEngine transformEngine, int componentID)
@@ -254,7 +286,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Closes {@link #datagramTransport} if it is non-<tt>null</tt> and logs and swallows any <tt>IOException</tt>.
+     * Closes {@link #datagramTransport} if it is non-<code>null</code> and logs and swallows any <code>IOException</code>.
      */
     private void closeDatagramTransport()
     {
@@ -278,7 +310,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      *
      * @param i the number of tries remaining after the current one
      * @param datagramTransport object sending and receiving DTLS data
-     * @return <tt>true</tt> to try to establish a DTLS connection; otherwise, <tt>false</tt>
+     * @return <code>true</code> to try to establish a DTLS connection; otherwise, <code>false</code>
      */
     private boolean enterRunInConnectThreadLoop(int i, DatagramTransport datagramTransport)
     {
@@ -306,9 +338,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Gets the <tt>DtlsControl</tt> implementation associated with this instance.
+     * Gets the <code>DtlsControl</code> implementation associated with this instance.
      *
-     * @return the <tt>DtlsControl</tt> implementation associated with this instance
+     * @return the <code>DtlsControl</code> implementation associated with this instance
      */
     DtlsControlImpl getDtlsControl()
     {
@@ -374,9 +406,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Gets the <tt>TransformEngine</tt> which has initialized this instance.
+     * Gets the <code>TransformEngine</code> which has initialized this instance.
      *
-     * @return the <tt>TransformEngine</tt> which has initialized this instance
+     * @return the <code>TransformEngine</code> which has initialized this instance
      */
     DtlsTransformEngine getTransformEngine()
     {
@@ -384,13 +416,13 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Handles a specific <tt>IOException</tt> which was thrown during the execution of
+     * Handles a specific <code>IOException</code> which was thrown during the execution of
      * {@link #runInConnectThread(DTLSProtocol, TlsPeer, DatagramTransport)} while trying to establish a DTLS connection
      *
-     * @param ioe the <tt>IOException</tt> to handle
-     * @param msg the human-readable message to log about the specified <tt>ioe</tt>
+     * @param ioe the <code>IOException</code> to handle
+     * @param msg the human-readable message to log about the specified <code>ioe</code>
      * @param i the number of tries remaining after the current one
-     * @return <tt>true</tt> if the specified <tt>ioe</tt> was successfully handled; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified <code>ioe</code> was successfully handled; <code>false</code>, otherwise
      */
     private boolean handleRunInConnectThreadException(IOException ioe, String msg, int i)
     {
@@ -452,14 +484,14 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Initializes a new <tt>SRTPTransformer</tt> instance with a specific (negotiated)
-     * <tt>SRTPProtectionProfile</tt> and the keying material specified by a specific <tt>TlsContext</tt>.
+     * Initializes a new <code>SRTPTransformer</code> instance with a specific (negotiated)
+     * <code>SRTPProtectionProfile</code> and the keying material specified by a specific <code>TlsContext</code>.
      * Note: Only call via notifyHandshakeComplete(), return value is not use
      *
-     * @param srtpProtectionProfile the (negotiated) <tt>SRTPProtectionProfile</tt> to initialize the new instance with
-     * @param tlsContext the <tt>TlsContext</tt> which represents the keying material
-     * @return a new <tt>SRTPTransformer</tt> instance initialized with
-     * <tt>srtpProtectionProfile</tt> and <tt>tlsContext</tt>
+     * @param srtpProtectionProfile the (negotiated) <code>SRTPProtectionProfile</code> to initialize the new instance with
+     * @param tlsContext the <code>TlsContext</code> which represents the keying material
+     * @return a new <code>SRTPTransformer</code> instance initialized with
+     * <code>srtpProtectionProfile</code> and <code>tlsContext</code>
      */
     public SinglePacketTransformer initializeSRTPTransformer(int srtpProtectionProfile, TlsContext tlsContext)
     {
@@ -678,12 +710,12 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Notifies this instance that the DTLS record layer associated with a specific <tt>TlsPeer</tt> has raised an alert.
+     * Notifies this instance that the DTLS record layer associated with a specific <code>TlsPeer</code> has raised an alert.
      *
      * @param alertLevel {@link AlertLevel}
      * @param alertDescription {@link AlertDescription}
-     * @param message a human-readable message explaining what caused the alert. May be <tt>null</tt>.
-     * @param cause the exception that caused the alert to be raised. May be <tt>null</tt>.
+     * @param message a human-readable message explaining what caused the alert. May be <code>null</code>.
+     * @param cause the exception that caused the alert to be raised. May be <code>null</code>.
      */
     protected void notifyAlertRaised(TlsPeer tlsPeer, short alertLevel, short alertDescription,
             String message, Throwable cause)
@@ -891,10 +923,10 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     /**
      * Sends the data contained in a specific byte array as application data through the DTLS
-     * connection of this <tt>DtlsPacketTransformer</tt>.
+     * connection of this <code>DtlsPacketTransformer</code>.
      *
      * @param buf the byte array containing data to send.
-     * @param off the offset in <tt>buf</tt> where the data begins.
+     * @param off the offset in <code>buf</code> where the data begins.
      * @param len the length of data to send.
      */
     public void sendApplicationData(byte[] buf, int off, int len)
@@ -926,9 +958,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Sets the <tt>RTPConnector</tt> which is to use or uses this <tt>PacketTransformer</tt>.
+     * Sets the <code>RTPConnector</code> which is to use or uses this <code>PacketTransformer</code>.
      *
-     * @param connector the <tt>RTPConnector</tt> which is to use or uses this <tt>PacketTransformer</tt>
+     * @param connector the <code>RTPConnector</code> which is to use or uses this <code>PacketTransformer</code>
      */
     private synchronized void setConnector(AbstractRTPConnector connector)
     {
@@ -946,9 +978,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Sets the <tt>MediaType</tt> of the stream which this instance is to work for/be associated with.
+     * Sets the <code>MediaType</code> of the stream which this instance is to work for/be associated with.
      *
-     * @param mediaType the <tt>MediaType</tt> of the stream which this instance is to work for/be associated with
+     * @param mediaType the <code>MediaType</code> of the stream which this instance is to work for/be associated with
      */
     private synchronized void setMediaType(MediaType mediaType)
     {
@@ -990,7 +1022,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Starts this <tt>PacketTransformer</tt>.
+     * Starts this <code>PacketTransformer</code>.
      */
     private synchronized void start()
     {
@@ -1071,7 +1103,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Stops this <tt>PacketTransformer</tt>.
+     * Stops this <code>PacketTransformer</code>.
      */
     private synchronized void stop()
     {

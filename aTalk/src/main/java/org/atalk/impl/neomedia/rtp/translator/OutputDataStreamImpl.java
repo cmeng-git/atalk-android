@@ -17,7 +17,10 @@ import org.atalk.util.ConfigUtils;
 import org.atalk.util.RTPUtils;
 import org.ice4j.util.QueueStatistics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.media.Format;
 import javax.media.rtp.OutputDataStream;
@@ -25,8 +28,8 @@ import javax.media.rtp.OutputDataStream;
 import timber.log.Timber;
 
 /**
- * Implements <tt>OutputDataStream</tt> for an <tt>RTPTranslatorImpl</tt>. The packets written into
- * <tt>OutputDataStreamImpl</tt> are copied into multiple endpoint <tt>OutputDataStream</tt>s.
+ * Implements <code>OutputDataStream</code> for an <code>RTPTranslatorImpl</code>. The packets written into
+ * <code>OutputDataStreamImpl</code> are copied into multiple endpoint <code>OutputDataStream</code>s.
  *
  * @author Lyubomir Marinov
  * @author Maryam Daneshi
@@ -37,9 +40,9 @@ import timber.log.Timber;
 class OutputDataStreamImpl implements OutputDataStream, Runnable
 {
     /**
-     * The name of the <tt>boolean</tt> <tt>ConfigurationService</tt> property which indicates
+     * The name of the <code>boolean</code> <code>ConfigurationService</code> property which indicates
      * whether the RTP header extension(s) are to be removed from received RTP packets prior to
-     * relaying them. The default value is <tt>false</tt>.
+     * relaying them. The default value is <code>false</code>.
      */
     private static final String REMOVE_RTP_HEADER_EXTENSIONS_PNAME
             = RTPTranslatorImpl.class.getName() + ".removeRTPHeaderExtensions";
@@ -58,7 +61,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
 
     /**
      * The indicator which determines whether the RTP header extension(s) are to be removed from
-     * received RTP packets prior to relaying them. The default value is <tt>false</tt>.
+     * received RTP packets prior to relaying them. The default value is <code>false</code>.
      */
     private final boolean _removeRTPHeaderExtensions;
 
@@ -213,10 +216,10 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     /**
      * Removes the RTP header extension(s) from an RTP packet.
      *
-     * @param buf the <tt>byte</tt>s of a datagram packet which may contain an RTP packet
-     * @param off the offset in <tt>buf</tt> at which the actual data in <tt>buf</tt> starts
-     * @param len the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> comprising the actual data
-     * @return the number of <tt>byte</tt>s in <tt>buf</tt> starting at <tt>off</tt> comprising the
+     * @param buf the <code>byte</code>s of a datagram packet which may contain an RTP packet
+     * @param off the offset in <code>buf</code> at which the actual data in <code>buf</code> starts
+     * @param len the number of <code>byte</code>s in <code>buf</code> starting at <code>off</code> comprising the actual data
+     * @return the number of <code>byte</code>s in <code>buf</code> starting at <code>off</code> comprising the
      * actual data after the possible removal of the RTP header extension(s)
      */
     private static int removeRTPHeaderExtensions(byte[] buf, int off, int len)
@@ -241,7 +244,7 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
                         int xEnd = xBegin + xLen;
                         if (xEnd <= end) {
                             // Remove the RTP header extension bytes.
-                            for (int src = xEnd, dst = xBegin; src < end;)
+                            for (int src = xEnd, dst = xBegin; src < end; )
                                 buf[dst++] = buf[src++];
                             len -= xLen;
                             // Switch off the extension bit.
@@ -351,19 +354,19 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     }
 
     /**
-     * Notifies this instance that a specific <tt>byte</tt> buffer will be written into the control
-     * <tt>OutputDataStream</tt> of a specific <tt>StreamRTPManagerDesc</tt>.
+     * Notifies this instance that a specific <code>byte</code> buffer will be written into the control
+     * <code>OutputDataStream</code> of a specific <code>StreamRTPManagerDesc</code>.
      *
-     * @param destination the <tt>StreamRTPManagerDesc</tt> which is the destination of the write
-     * @param buffer the data to be written into <tt>destination</tt>
-     * @param offset the offset in <tt>buffer</tt> at which the data to be written into <tt>destination</tt> starts
-     * @param length the number of <tt>byte</tt>s in <tt>buffer</tt> beginning at <tt>offset</tt> which
-     * constitute the data to the written into <tt>destination</tt>
-     * @param format the FMJ <tt>Format</tt> of the data to be written into <tt>destination</tt>
-     * @param exclusion the <tt>StreamRTPManagerDesc</tt> which is exclude from the write batch, possibly
+     * @param destination the <code>StreamRTPManagerDesc</code> which is the destination of the write
+     * @param buffer the data to be written into <code>destination</code>
+     * @param offset the offset in <code>buffer</code> at which the data to be written into <code>destination</code> starts
+     * @param length the number of <code>byte</code>s in <code>buffer</code> beginning at <code>offset</code> which
+     * constitute the data to the written into <code>destination</code>
+     * @param format the FMJ <code>Format</code> of the data to be written into <code>destination</code>
+     * @param exclusion the <code>StreamRTPManagerDesc</code> which is exclude from the write batch, possibly
      * because it is the cause of the write batch in the first place
-     * @return <tt>true</tt> to write the specified data into the specified <tt>destination</tt> or
-     * <tt>false</tt> to not write the specified data into the specified <tt>destination</tt>
+     * @return <code>true</code> to write the specified data into the specified <code>destination</code> or
+     * <code>false</code> to not write the specified data into the specified <code>destination</code>
      */
     private boolean willWriteControl(StreamRTPManagerDesc destination, byte[] buffer, int offset,
             int length, Format format, StreamRTPManagerDesc exclusion)
@@ -428,19 +431,19 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     }
 
     /**
-     * Notifies this instance that a specific <tt>byte</tt> buffer will be written into the data
-     * <tt>OutputDataStream</tt> of a specific <tt>StreamRTPManagerDesc</tt>.
+     * Notifies this instance that a specific <code>byte</code> buffer will be written into the data
+     * <code>OutputDataStream</code> of a specific <code>StreamRTPManagerDesc</code>.
      *
-     * @param destination the <tt>StreamRTPManagerDesc</tt> which is the destination of the write
-     * @param buf the data to be written into <tt>destination</tt>
-     * @param off the offset in <tt>buf</tt> at which the data to be written into <tt>destination</tt> starts
-     * @param len the number of <tt>byte</tt>s in <tt>buf</tt> beginning at <tt>off</tt> which
-     * constitute the data to the written into <tt>destination</tt>
-     * @param format the FMJ <tt>Format</tt> of the data to be written into <tt>destination</tt>
-     * @param exclusion the <tt>StreamRTPManagerDesc</tt> which is exclude from the write batch, possibly
+     * @param destination the <code>StreamRTPManagerDesc</code> which is the destination of the write
+     * @param buf the data to be written into <code>destination</code>
+     * @param off the offset in <code>buf</code> at which the data to be written into <code>destination</code> starts
+     * @param len the number of <code>byte</code>s in <code>buf</code> beginning at <code>off</code> which
+     * constitute the data to the written into <code>destination</code>
+     * @param format the FMJ <code>Format</code> of the data to be written into <code>destination</code>
+     * @param exclusion the <code>StreamRTPManagerDesc</code> which is exclude from the write batch, possibly
      * because it is the cause of the write batch in the first place
-     * @return <tt>true</tt> to write the specified data into the specified <tt>destination</tt> or
-     * <tt>false</tt> to not write the specified data into the specified <tt>destination</tt>
+     * @return <code>true</code> to write the specified data into the specified <code>destination</code> or
+     * <code>false</code> to not write the specified data into the specified <code>destination</code>
      */
     private boolean willWriteData(StreamRTPManagerDesc destination, byte[] buf, int off, int len,
             Format format, StreamRTPManagerDesc exclusion)
@@ -526,12 +529,12 @@ class OutputDataStreamImpl implements OutputDataStream, Runnable
     }
 
     /**
-     * Writes an <tt>RTCPFeedbackMessage</tt> into a destination identified by specific <tt>MediaStream</tt>.
+     * Writes an <code>RTCPFeedbackMessage</code> into a destination identified by specific <code>MediaStream</code>.
      *
      * @param controlPayload
      * @param destination
-     * @return <tt>true</tt> if the <tt>controlPayload</tt> was written
-     * into the <tt>destination</tt>; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the <code>controlPayload</code> was written
+     * into the <code>destination</code>; otherwise, <code>false</code>
      */
     boolean writeControlPayload(Payload controlPayload, MediaStream destination)
     {

@@ -18,7 +18,8 @@ package org.atalk.impl.neomedia.transform.dtls;
 import org.atalk.service.neomedia.DtlsControl;
 import org.atalk.util.event.PropertyChangeNotifier;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -32,11 +33,11 @@ import java.util.concurrent.ConcurrentHashMap;
 class Properties extends PropertyChangeNotifier
 {
     /**
-     * The <tt>RTPConnector</tt> which uses the <tt>TransformEngine</tt> of this <tt>SrtpControl</tt>.
+     * The <code>RTPConnector</code> which uses the <code>TransformEngine</code> of this <code>SrtpControl</code>.
      */
     public static final String CONNECTOR_PNAME = Properties.class.getName() + ".connector";
 
-    public static final String MEDIA_TYPE_PNAME  = Properties.class.getName() + ".mediaType";
+    public static final String MEDIA_TYPE_PNAME = Properties.class.getName() + ".mediaType";
 
     /**
      * Whether rtcp-mux is in use.
@@ -44,7 +45,7 @@ class Properties extends PropertyChangeNotifier
     public static final String RTCPMUX_PNAME = Properties.class.getName() + ".rtcpmux";
 
     /**
-     * The value of the <tt>setup</tt> SDP attribute defined by RFC 4145
+     * The value of the <code>setup</code> SDP attribute defined by RFC 4145
      * &quot;TCP-Based Media Transport in the Session Description Protocol (SDP)&quot;
      * which determines whether this instance acts as a DTLS client or a DTLS server.
      */
@@ -55,10 +56,10 @@ class Properties extends PropertyChangeNotifier
      * by this instance. Stores only assignable properties i.e. {@code final}s
      * are explicitly defined (e.g. {@link #srtpDisabled}).
      */
-    private final Map<String,Object> properties = new ConcurrentHashMap<>();
+    private final Map<String, Object> properties = new ConcurrentHashMap<>();
 
     /**
-     * Indicates whether this <tt>DtlsControl</tt> will work in DTLS/SRTP or pure DTLS mode.
+     * Indicates whether this <code>DtlsControl</code> will work in DTLS/SRTP or pure DTLS mode.
      */
     private final boolean srtpDisabled;
 
@@ -84,11 +85,11 @@ class Properties extends PropertyChangeNotifier
     }
 
     /**
-     * Gets the value of the <tt>setup</tt> SDP attribute defined by RFC 4145
+     * Gets the value of the <code>setup</code> SDP attribute defined by RFC 4145
      * &quot;TCP-Based Media Transport in the Session Description Protocol (SDP)&quot;
      * which determines whether this instance acts as a DTLS client or a DTLS server.
      *
-     * @return the value of the <tt>setup</tt> SDP attribute defined by RFC 4145
+     * @return the value of the <code>setup</code> SDP attribute defined by RFC 4145
      * &quot;TCP-Based Media Transport in the Session Description Protocol (SDP)&quot;
      * which determines whether this instance acts as a DTLS client or a DTLS server.
      */
@@ -100,7 +101,7 @@ class Properties extends PropertyChangeNotifier
     /**
      * Indicates if SRTP extensions are disabled which means we're working in pure DTLS mode.
      *
-     * @return <tt>true</tt> if SRTP extensions must be disabled.
+     * @return <code>true</code> if SRTP extensions must be disabled.
      */
     public boolean isSrtpDisabled()
     {

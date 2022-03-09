@@ -7,45 +7,85 @@ package org.atalk.impl.neomedia.recording;
 
 import com.sun.media.util.Registry;
 
-import org.atalk.util.MediaType;
-import org.atalk.util.dsi.DominantSpeakerIdentification;
 import org.atalk.impl.neomedia.audiolevel.AudioLevelEffect;
 import org.atalk.impl.neomedia.codec.SilenceEffect;
 import org.atalk.impl.neomedia.device.MediaDeviceImpl;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.impl.neomedia.rtp.translator.RTCPFeedbackMessageSender;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.impl.neomedia.transform.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.REDTransformEngine;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.neomedia.transform.TransformEngineChain;
 import org.atalk.impl.neomedia.transform.fec.FECTransformEngine;
 import org.atalk.impl.neomedia.transform.rtcp.CompoundPacketEngine;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaException;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaService;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FlushableControl;
 import org.atalk.service.neomedia.control.KeyFrameControlAdapter;
+import org.atalk.service.neomedia.recording.Recorder;
+import org.atalk.service.neomedia.recording.RecorderEvent;
+import org.atalk.service.neomedia.recording.RecorderEventHandler;
+import org.atalk.service.neomedia.recording.Synchronizer;
 import org.atalk.util.dsi.ActiveSpeakerChangedListener;
-import org.atalk.service.neomedia.recording.*;
 import org.atalk.util.dsi.ActiveSpeakerDetector;
+import org.atalk.util.dsi.DominantSpeakerIdentification;
+import org.atalk.util.MediaType;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Codec;
+import javax.media.ConfigureCompleteEvent;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.DataSink;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoDataSinkException;
+import javax.media.NoProcessorException;
+import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
+import javax.media.UnsupportedPlugInException;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
-import javax.media.rtp.*;
-import javax.media.rtp.event.*;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.FileTypeDescriptor;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
+import javax.media.protocol.PushSourceStream;
+import javax.media.protocol.SourceTransferHandler;
+import javax.media.rtp.OutputDataStream;
+import javax.media.rtp.RTPConnector;
+import javax.media.rtp.RTPManager;
+import javax.media.rtp.ReceiveStream;
+import javax.media.rtp.ReceiveStreamListener;
+import javax.media.rtp.event.NewReceiveStreamEvent;
+import javax.media.rtp.event.ReceiveStreamEvent;
+import javax.media.rtp.event.TimeoutEvent;
 
 import timber.log.Timber;
 
 /**
- * A <tt>Recorder</tt> implementation which attaches to an <tt>RTPTranslator</tt>.
+ * A <code>Recorder</code> implementation which attaches to an <code>RTPTranslator</code>.
  *
  * @author Vladimir Marinov
  * @author Boris Grozev
@@ -55,7 +95,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         ActiveSpeakerChangedListener, ControllerListener
 {
     /**
-     * The <tt>ConfigurationService</tt> used to load recorder configuration.
+     * The <code>ConfigurationService</code> used to load recorder configuration.
      */
     private static final ConfigurationService cfg = LibJitsi.getConfigurationService();
 
@@ -107,7 +147,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     private static String AUDIO_CODEC_PNAME = "neomedia.recording.AUDIO_CODEC";
 
     /**
-     * The <tt>ContentDescriptor</tt> to use when saving audio.
+     * The <code>ContentDescriptor</code> to use when saving audio.
      */
     private static ContentDescriptor AUDIO_CONTENT_DESCRIPTOR = new ContentDescriptor(FileTypeDescriptor.MPEG_AUDIO);
 
@@ -131,12 +171,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * The <tt>RTPTranslator</tt> that this recorder is/will be attached to.
+     * The <code>RTPTranslator</code> that this recorder is/will be attached to.
      */
     private RTPTranslatorImpl translator;
 
     /**
-     * The custom <tt>RTPConnector</tt> that this instance uses to read from {@link #translator}
+     * The custom <code>RTPConnector</code> that this instance uses to read from {@link #translator}
      * and write to {@link #rtpManager}.
      */
     private RTPConnectorImpl rtpConnector;
@@ -147,12 +187,12 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     private String path;
 
     /**
-     * The <tt>RTCPFeedbackMessageSender</tt> that we use to send RTCP FIR messages.
+     * The <code>RTCPFeedbackMessageSender</code> that we use to send RTCP FIR messages.
      */
     private RTCPFeedbackMessageSender rtcpFeedbackSender;
 
     /**
-     * The {@link RTPManager} instance we use to handle the packets coming from <tt>RTPTranslator</tt>.
+     * The {@link RTPManager} instance we use to handle the packets coming from <code>RTPTranslator</code>.
      */
     private RTPManager rtpManager;
 
@@ -163,23 +203,23 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     private RecorderEventHandlerImpl eventHandler;
 
     /**
-     * Holds the <tt>ReceiveStreams</tt> added to this instance by {@link #rtpManager} and
-     * additional information associated with each one (e.g. the <tt>Processor</tt>, if any, used for it).
+     * Holds the <code>ReceiveStreams</code> added to this instance by {@link #rtpManager} and
+     * additional information associated with each one (e.g. the <code>Processor</code>, if any, used for it).
      */
     private final HashSet<ReceiveStreamDesc> receiveStreams = new HashSet<>();
 
     private final Set<Long> activeVideoSsrcs = new HashSet<Long>();
 
     /**
-     * The <tt>ActiveSpeakerDetector</tt> which will listen to the audio receive streams of this
-     * <tt>RecorderRtpImpl</tt> and notify it about changes to the active speaker via calls to
+     * The <code>ActiveSpeakerDetector</code> which will listen to the audio receive streams of this
+     * <code>RecorderRtpImpl</code> and notify it about changes to the active speaker via calls to
      * {@link #activeSpeakerChanged(long)}
      */
     private ActiveSpeakerDetector activeSpeakerDetector = null;
 
     /**
-     * Controls whether this <tt>RecorderRtpImpl</tt> should perform active speaker detection and
-     * fire <tt>SPEAKER_CHANGED</tt> recorder events.
+     * Controls whether this <code>RecorderRtpImpl</code> should perform active speaker detection and
+     * fire <code>SPEAKER_CHANGED</code> recorder events.
      */
     private final boolean performActiveSpeakerDetection;
 
@@ -192,7 +232,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Constructor.
      *
-     * @param translator the <tt>RTPTranslator</tt> to which this instance will attach in order to record
+     * @param translator the <code>RTPTranslator</code> to which this instance will attach in order to record
      * media.
      */
     public RecorderRtpImpl(RTPTranslator translator)
@@ -278,7 +318,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
      * {@inheritDoc}
      *
      * @param format unused, since this implementation records multiple streams using potentially different formats.
-     * @param dirname the path to the directory into which this <tt>Recorder</tt> will store the recorded media files.
+     * @param dirname the path to the directory into which this <code>Recorder</code> will store the recorded media files.
      */
     @Override
     public void start(String format, String dirname)
@@ -377,7 +417,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     /**
      * Implements {@link ReceiveStreamListener#update(ReceiveStreamEvent)}.
      *
-     * {@link #rtpManager} will use this to notify us of <tt>ReceiveStreamEvent</tt>s.
+     * {@link #rtpManager} will use this to notify us of <code>ReceiveStreamEvent</code>s.
      */
     @Override
     public void update(ReceiveStreamEvent event)
@@ -564,7 +604,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
     /**
      * Implements {@link ControllerListener#controllerUpdate(ControllerEvent)}. Handles events from
-     * the <tt>Processor</tt>s that this instance uses to transcode media.
+     * the <code>Processor</code>s that this instance uses to transcode media.
      *
      * @param ev the event to handle.
      */
@@ -805,11 +845,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Handles a request from a specific <tt>DataSink</tt> to request a keyframe by sending an RTCP
+     * Handles a request from a specific <code>DataSink</code> to request a keyframe by sending an RTCP
      * feedback FIR message to the media source.
      *
-     * @param dataSink the <tt>DataSink</tt> which requests that a keyframe be requested with a FIR message.
-     * @return <tt>true</tt> if a keyframe was successfully requested, <tt>false</tt> otherwise
+     * @param dataSink the <code>DataSink</code> which requests that a keyframe be requested with a FIR message.
+     * @return <code>true</code> if a keyframe was successfully requested, <code>false</code> otherwise
      */
     private boolean requestFIR(WebmDataSink dataSink)
     {
@@ -847,11 +887,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Finds the <tt>ReceiveStreamDesc</tt> with a particular <tt>Processor</tt>
+     * Finds the <code>ReceiveStreamDesc</code> with a particular <code>Processor</code>
      *
-     * @param processor The <tt>Processor</tt> to match.
-     * @return the <tt>ReceiveStreamDesc</tt> with a particular <tt>Processor</tt>, or
-     * <tt>null</tt>
+     * @param processor The <code>Processor</code> to match.
+     * @return the <code>ReceiveStreamDesc</code> with a particular <code>Processor</code>, or
+     * <code>null</code>
      * .
      */
     private ReceiveStreamDesc findReceiveStream(Processor processor)
@@ -868,11 +908,11 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Finds the <tt>ReceiveStreamDesc</tt> with a particular <tt>DataSink</tt>
+     * Finds the <code>ReceiveStreamDesc</code> with a particular <code>DataSink</code>
      *
-     * @param dataSink The <tt>DataSink</tt> to match.
-     * @return the <tt>ReceiveStreamDesc</tt> with a particular <tt>DataSink</tt>, or
-     * <tt>null</tt>.
+     * @param dataSink The <code>DataSink</code> to match.
+     * @return the <code>ReceiveStreamDesc</code> with a particular <code>DataSink</code>, or
+     * <code>null</code>.
      */
     private ReceiveStreamDesc findReceiveStream(DataSink dataSink)
     {
@@ -888,10 +928,10 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Finds the <tt>ReceiveStreamDesc</tt> with a particular SSRC.
+     * Finds the <code>ReceiveStreamDesc</code> with a particular SSRC.
      *
      * @param ssrc The SSRC to match.
-     * @return the <tt>ReceiveStreamDesc</tt> with a particular SSRC, or <tt>null</tt>.
+     * @return the <code>ReceiveStreamDesc</code> with a particular SSRC, or <code>null</code>.
      */
     private ReceiveStreamDesc findReceiveStream(long ssrc)
     {
@@ -905,15 +945,15 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Gets the SSRC of a <tt>ReceiveStream</tt> as a (non-negative) <tt>long</tt>.
+     * Gets the SSRC of a <code>ReceiveStream</code> as a (non-negative) <code>long</code>.
      * <p>
-     * FMJ stores the 32-bit SSRC values in <tt>int</tt>s, and the <tt>ReceiveStream.getSSRC()</tt>
-     * implementation(s) don't take care of converting the negative <tt>int</tt> values sometimes
-     * resulting from reading of a 32-bit field into the correct unsigned <tt>long</tt> value.
+     * FMJ stores the 32-bit SSRC values in <code>int</code>s, and the <code>ReceiveStream.getSSRC()</code>
+     * implementation(s) don't take care of converting the negative <code>int</code> values sometimes
+     * resulting from reading of a 32-bit field into the correct unsigned <code>long</code> value.
      * So do the conversion here.
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> for which to get the SSRC.
-     * @return the SSRC of <tt>receiveStream</tt> an a (non-negative) <tt>long</tt>.
+     * @param receiveStream the <code>ReceiveStream</code> for which to get the SSRC.
+     * @return the SSRC of <code>receiveStream</code> an a (non-negative) <code>long</code>.
      */
     private long getReceiveStreamSSRC(ReceiveStream receiveStream)
     {
@@ -922,8 +962,8 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
 
     /**
      * Implements {@link ActiveSpeakerChangedListener#activeSpeakerChanged(long)}. Notifies this
-     * <tt>RecorderRtpImpl</tt> that the audio <tt>ReceiveStream</tt> considered active has
-     * changed, and that the new active stream has SSRC <tt>ssrc</tt>.
+     * <code>RecorderRtpImpl</code> that the audio <code>ReceiveStream</code> considered active has
+     * changed, and that the new active stream has SSRC <code>ssrc</code>.
      *
      * @param ssrc the SSRC of the new active stream.
      */
@@ -1010,7 +1050,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * The <tt>RTPConnector</tt> implementation used by this <tt>RecorderRtpImpl</tt>.
+     * The <code>RTPConnector</code> implementation used by this <code>RecorderRtpImpl</code>.
      */
     private class RTPConnectorImpl implements RTPConnector
     {
@@ -1340,9 +1380,9 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
             /**
              * {@inheritDoc}
              * <p>
-             * We keep the first non-null <tt>SourceTransferHandler</tt> that was set, because we
-             * don't want it to be overwritten when we initialize a second <tt>RTPManager</tt> with
-             * this <tt>RTPConnector</tt>.
+             * We keep the first non-null <code>SourceTransferHandler</code> that was set, because we
+             * don't want it to be overwritten when we initialize a second <code>RTPManager</code> with
+             * this <code>RTPConnector</code>.
              * <p>
              * See {@link RecorderRtpImpl#start(String, String)}
              */
@@ -1363,7 +1403,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         }
 
         /**
-         * A transform engine implementation which allows <tt>RecorderRtpImpl</tt> to intercept RTP
+         * A transform engine implementation which allows <code>RecorderRtpImpl</code> to intercept RTP
          * and RTCP packets in.
          */
         private class TransformEngineImpl
@@ -1481,13 +1521,13 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
     }
 
     /**
-     * Represents a <tt>ReceiveStream</tt> for the purposes of this <tt>RecorderRtpImpl</tt>.
+     * Represents a <code>ReceiveStream</code> for the purposes of this <code>RecorderRtpImpl</code>.
      */
     private class ReceiveStreamDesc
     {
         /**
-         * The actual <tt>ReceiveStream</tt> which is represented by this
-         * <tt>ReceiveStreamDesc</tt>.
+         * The actual <code>ReceiveStream</code> which is represented by this
+         * <code>ReceiveStreamDesc</code>.
          */
         private ReceiveStream receiveStream;
 
@@ -1497,19 +1537,19 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         long ssrc;
 
         /**
-         * The <tt>Processor</tt> used to transcode this receive stream into a format appropriate
+         * The <code>Processor</code> used to transcode this receive stream into a format appropriate
          * for saving to a file.
          */
         private Processor processor;
 
         /**
-         * The <tt>DataSink</tt> which saves the <tt>this.dataSource</tt> to a file.
+         * The <code>DataSink</code> which saves the <code>this.dataSource</code> to a file.
          */
         private DataSink dataSink;
 
         /**
-         * The <tt>DataSource</tt> for this receive stream which is to be saved using a
-         * <tt>DataSink</tt> (i.e. the <tt>DataSource</tt> "after" all needed transcoding is done).
+         * The <code>DataSource</code> for this receive stream which is to be saved using a
+         * <code>DataSink</code> (i.e. the <code>DataSource</code> "after" all needed transcoding is done).
          */
         private DataSource dataSource;
 
@@ -1524,7 +1564,7 @@ public class RecorderRtpImpl implements Recorder, ReceiveStreamListener,
         private Format format;
 
         /**
-         * The <tt>SilenceEffect</tt> used for this stream (for audio streams only).
+         * The <code>SilenceEffect</code> used for this stream (for audio streams only).
          */
         private SilenceEffect silenceEffect;
 

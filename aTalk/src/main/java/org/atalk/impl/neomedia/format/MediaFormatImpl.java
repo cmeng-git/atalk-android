@@ -6,20 +6,23 @@
 package org.atalk.impl.neomedia.format;
 
 import org.atalk.impl.neomedia.MediaUtils;
+import org.atalk.service.neomedia.format.AudioMediaFormat;
+import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.service.neomedia.format.MediaFormatFactory;
 import org.atalk.util.MediaType;
-import org.atalk.service.neomedia.format.*;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.media.Format;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 
 /**
- * Implements <tt>MediaFormat</tt> for the JMF <tt>Format</tt>.
+ * Implements <code>MediaFormat</code> for the JMF <code>Format</code>.
  *
- * @param <T> the type of the wrapped <tt>Format</tt>
- *
+ * @param <T> the type of the wrapped <code>Format</code>
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
@@ -27,29 +30,29 @@ public abstract class MediaFormatImpl<T extends Format>
         implements MediaFormat
 {
     /**
-     * The name of the <tt>clockRate</tt> property of <tt>MediaFormatImpl</tt>.
+     * The name of the <code>clockRate</code> property of <code>MediaFormatImpl</code>.
      */
     public static final String CLOCK_RATE_PNAME = "clockRate";
 
     /**
-     * The value of the <tt>formatParameters</tt> property of <tt>MediaFormatImpl</tt> when no
+     * The value of the <code>formatParameters</code> property of <code>MediaFormatImpl</code> when no
      * codec-specific parameters have been received via SIP/SDP or XMPP/Jingle. Explicitly defined
      * in order to reduce unnecessary allocations.
      */
     static final Map<String, String> EMPTY_FORMAT_PARAMETERS = Collections.emptyMap();
 
     /**
-     * The name of the <tt>encoding</tt> property of <tt>MediaFormatImpl</tt>.
+     * The name of the <code>encoding</code> property of <code>MediaFormatImpl</code>.
      */
     public static final String ENCODING_PNAME = "encoding";
 
     /**
-     * The name of the <tt>formatParameters</tt> property of <tt>MediaFormatImpl</tt>.
+     * The name of the <code>formatParameters</code> property of <code>MediaFormatImpl</code>.
      */
     public static final String FORMAT_PARAMETERS_PNAME = "fmtps";
 
     /**
-     * The attribute name of the <tt>formatParameter</tt> property of <tt>MediaFormatImpl</tt>.
+     * The attribute name of the <code>formatParameter</code> property of <code>MediaFormatImpl</code>.
      * Negotiation of Generic Image Attributes in the Session Description Protocol (SDP); https://tools.ietf.org/html/rfc6236
      * 3.2.  Considerations
      * 3.2.1.  No imageattr in First Offer
@@ -59,10 +62,10 @@ public abstract class MediaFormatImpl<T extends Format>
     public static final String FORMAT_PARAMETER_ATTR_IMAGEATTR = "imageattr";
 
     /**
-     * Creates a new <tt>MediaFormat</tt> instance for a specific JMF <tt>Format</tt>.
+     * Creates a new <code>MediaFormat</code> instance for a specific JMF <code>Format</code>.
      *
-     * @param format the JMF <tt>Format</tt> the new instance is to provide an implementation of <tt>MediaFormat</tt>
-     * @return a new <tt>MediaFormat</tt> instance for the specified JMF <tt>Format</tt>
+     * @param format the JMF <code>Format</code> the new instance is to provide an implementation of <code>MediaFormat</code>
+     * @return a new <code>MediaFormat</code> instance for the specified JMF <code>Format</code>
      */
     public static MediaFormat createInstance(Format format)
     {
@@ -78,14 +81,14 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Creates a new <tt>MediaFormat</tt> instance for a specific JMF <tt>Format</tt> and
+     * Creates a new <code>MediaFormat</code> instance for a specific JMF <code>Format</code> and
      * assigns its specific clock rate and set of format-specific parameters.
      *
-     * @param format the JMF <tt>Format</tt> the new instance is to provide an implementation of <tt>MediaFormat</tt>
+     * @param format the JMF <code>Format</code> the new instance is to provide an implementation of <code>MediaFormat</code>
      * @param clockRate the clock rate of the new instance
      * @param formatParameters the set of format-specific parameters of the new instance
      * @param advancedAttributess advanced attributes of the new instance
-     * @return a new <tt>MediaFormat</tt> instance for the specified JMF <tt>Format</tt> and with
+     * @return a new <code>MediaFormat</code> instance for the specified JMF <code>Format</code> and with
      * the specified clock rate and set of format-specific parameters
      */
     public static MediaFormatImpl<? extends Format> createInstance(Format format, double clockRate,
@@ -119,20 +122,20 @@ public abstract class MediaFormatImpl<T extends Format>
     /**
      * Determines whether a specific set of format parameters is equal to another set of format
      * parameters in the sense that they define an equal number of parameters and assign them equal
-     * values. Since the values are <tt>String</tt> s, presumes that a value of <tt>null</tt> is
-     * equal to the empty <tt>String</tt>.
+     * values. Since the values are <code>String</code> s, presumes that a value of <code>null</code> is
+     * equal to the empty <code>String</code>.
      * <p>
-     * The two <tt>Map</tt> instances of format parameters to be checked for equality are presumed
-     * to be modifiable in the sense that if the lack of a format parameter in a given <tt>Map</tt>
+     * The two <code>Map</code> instances of format parameters to be checked for equality are presumed
+     * to be modifiable in the sense that if the lack of a format parameter in a given <code>Map</code>
      * is equivalent to it having a specific value, an association of the format parameter to the
-     * value in question may be added to or removed from the respective <tt>Map</tt> instance for
+     * value in question may be added to or removed from the respective <code>Map</code> instance for
      * the purposes of determining equality.
      * </p>
      *
      * @param encoding the encoding (name) related to the two sets of format parameters to be tested for equality
      * @param fmtps1 the first set of format parameters to be tested for equality
      * @param fmtps2 the second set of format parameters to be tested for equality
-     * @return <tt>true</tt> if the specified sets of format parameters are equal; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified sets of format parameters are equal; <code>false</code>, otherwise
      */
     public static boolean formatParametersAreEqual(String encoding, Map<String, String> fmtps1,
             Map<String, String> fmtps2)
@@ -178,7 +181,7 @@ public abstract class MediaFormatImpl<T extends Format>
     private Map<String, String> codecSettings = EMPTY_FORMAT_PARAMETERS;
 
     /**
-     * The JMF <tt>Format</tt> this instance wraps and provides an implementation of <tt>MediaFormat</tt> for.
+     * The JMF <code>Format</code> this instance wraps and provides an implementation of <code>MediaFormat</code> for.
      */
     protected final T format;
 
@@ -188,10 +191,10 @@ public abstract class MediaFormatImpl<T extends Format>
     private final Map<String, String> formatParameters;
 
     /**
-     * Initializes a new <tt>MediaFormatImpl</tt> instance which is to provide an implementation of
-     * <tt>MediaFormat</tt> for a specific <tt>Format</tt>.
+     * Initializes a new <code>MediaFormatImpl</code> instance which is to provide an implementation of
+     * <code>MediaFormat</code> for a specific <code>Format</code>.
      *
-     * @param format the JMF <tt>Format</tt> the new instance is to provide an implementation of <tt>MediaFormat</tt>
+     * @param format the JMF <code>Format</code> the new instance is to provide an implementation of <code>MediaFormat</code>
      */
     protected MediaFormatImpl(T format)
     {
@@ -199,11 +202,11 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Initializes a new <tt>MediaFormatImpl</tt> instance which is to provide an implementation of
-     * <tt>MediaFormat</tt> for a specific <tt>Format</tt> and which is to have a specific set of
+     * Initializes a new <code>MediaFormatImpl</code> instance which is to provide an implementation of
+     * <code>MediaFormat</code> for a specific <code>Format</code> and which is to have a specific set of
      * codec-specific parameters.
      *
-     * @param format the JMF <tt>Format</tt> the new instance is to provide an implementation of <tt>MediaFormat</tt>
+     * @param format the JMF <code>Format</code> the new instance is to provide an implementation of <code>MediaFormat</code>
      * @param formatParameters any codec-specific parameters that have been received via SIP/SDP or XMPP/Jingle
      * @param advancedAttributes any parameters that have been received via SIP/SDP or XMPP/Jingle
      */
@@ -224,13 +227,13 @@ public abstract class MediaFormatImpl<T extends Format>
     /**
      * Determines whether a specific set of advanced attributes is equal to another set of advanced
      * attributes in the sense that they define an equal number of parameters and assign them equal
-     * values. Since the values are <tt>String</tt>s, presumes that a value of <tt>null</tt> is
-     * equal to the empty <tt>String</tt>.
+     * values. Since the values are <code>String</code>s, presumes that a value of <code>null</code> is
+     * equal to the empty <code>String</code>.
      * <p>
      *
      * @param adv the first set of advanced attributes to be tested for equality
      * @param adv2 the second set of advanced attributes to be tested for equality
-     * @return <tt>true</tt> if the specified sets of advanced attributes equal; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified sets of advanced attributes equal; <code>false</code>, otherwise
      */
     public boolean advancedAttributesAreEqual(Map<String, String> adv, Map<String, String> adv2)
     {
@@ -254,11 +257,11 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Implements MediaFormat#equals(Object) and actually compares the encapsulated JMF <tt>Format</tt> instances.
+     * Implements MediaFormat#equals(Object) and actually compares the encapsulated JMF <code>Format</code> instances.
      *
-     * @param mediaFormat the object that we'd like to compare <tt>this</tt> one to. 8*
-     * @return <tt>true</tt> if the JMF <tt>Format</tt> instances encapsulated by this class are
-     * equal and <tt>false</tt> otherwise.
+     * @param mediaFormat the object that we'd like to compare <code>this</code> one to. 8*
+     * @return <code>true</code> if the JMF <code>Format</code> instances encapsulated by this class are
+     * equal and <code>false</code> otherwise.
      */
     @Override
     public boolean equals(Object mediaFormat)
@@ -280,19 +283,19 @@ public abstract class MediaFormatImpl<T extends Format>
     /**
      * Determines whether a specific set of format parameters is equal to another set of format
      * parameters in the sense that they define an equal number of parameters and assign them equal
-     * values. Since the values are <tt>String</tt> s, presumes that a value of <tt>null</tt> is
-     * equal to the empty <tt>String</tt>.
+     * values. Since the values are <code>String</code> s, presumes that a value of <code>null</code> is
+     * equal to the empty <code>String</code>.
      * <p>
-     * The two <tt>Map</tt> instances of format parameters to be checked for equality are presumed
-     * to be modifiable in the sense that if the lack of a format parameter in a given <tt>Map</tt>
+     * The two <code>Map</code> instances of format parameters to be checked for equality are presumed
+     * to be modifiable in the sense that if the lack of a format parameter in a given <code>Map</code>
      * is equivalent to it having a specific value, an association of the format parameter to the
-     * value in question may be added to or removed from the respective <tt>Map</tt> instance for
+     * value in question may be added to or removed from the respective <code>Map</code> instance for
      * the purposes of determining equality.
      * </p>
      *
      * @param fmtps1 the first set of format parameters to be tested for equality
      * @param fmtps2 the second set of format parameters to be tested for equality
-     * @return <tt>true</tt> if the specified sets of format parameters are equal; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the specified sets of format parameters are equal; <code>false</code>, otherwise
      */
     protected boolean formatParametersAreEqual(Map<String, String> fmtps1, Map<String, String> fmtps2)
     {
@@ -302,7 +305,7 @@ public abstract class MediaFormatImpl<T extends Format>
     /**
      * {@inheritDoc}
      * <p>
-     * The default implementation of <tt>MediaFormatImpl</tt> always returns <tt>true</tt> because
+     * The default implementation of <code>MediaFormatImpl</code> always returns <code>true</code> because
      * format parameters in general do not cause the distinction of payload types.
      * </p>
      */
@@ -340,26 +343,28 @@ public abstract class MediaFormatImpl<T extends Format>
      * @param parameterName the key of the <parameter/> name-value pair
      * @return true if the <parameter/> contains the specified key name
      */
-    public boolean hasParameter(String parameterName) {
+    public boolean hasParameter(String parameterName)
+    {
         return advancedAttributes.containsKey(parameterName);
     }
 
     /**
      * Remove the specific parameter name-value pair from advancedAttributes
-     * @see #FORMAT_PARAMETER_ATTR_IMAGEATTR
      *
      * @param parameterName the key of the <parameter/> name-value pair to be removed
+     * @see #FORMAT_PARAMETER_ATTR_IMAGEATTR
      */
-    public void removeParameter(String parameterName) {
+    public void removeParameter(String parameterName)
+    {
         advancedAttributes.remove(parameterName);
     }
 
     /**
-     * Returns a <tt>String</tt> representation of the clock rate associated with this
-     * <tt>MediaFormat</tt> making sure that the value appears as an integer (i.e. its long-casted
+     * Returns a <code>String</code> representation of the clock rate associated with this
+     * <code>MediaFormat</code> making sure that the value appears as an integer (i.e. its long-casted
      * value is equal to its original one) unless it is actually a non integer.
      *
-     * @return a <tt>String</tt> representation of the clock rate associated with this <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of the clock rate associated with this <code>MediaFormat</code>.
      */
     public String getClockRateString()
     {
@@ -373,10 +378,10 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Implements MediaFormat#getEncoding() and returns the encoding of the JMF <tt>Format</tt>
+     * Implements MediaFormat#getEncoding() and returns the encoding of the JMF <code>Format</code>
      * that we are encapsulating here but it is the RFC-known encoding and not the internal JMF encoding.
      *
-     * @return the RFC-known encoding of the JMF <tt>Format</tt> that we are encapsulating
+     * @return the RFC-known encoding of the JMF <code>Format</code> that we are encapsulating
      */
     public String getEncoding()
     {
@@ -398,9 +403,9 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Returns the JMF <tt>Format</tt> instance that we are wrapping here.
+     * Returns the JMF <code>Format</code> instance that we are wrapping here.
      *
-     * @return a reference to that JMF <tt>Format</tt> instance that this class is wrapping.
+     * @return a reference to that JMF <code>Format</code> instance that this class is wrapping.
      */
     public T getFormat()
     {
@@ -422,10 +427,10 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Gets the encoding of the JMF <tt>Format</tt> represented by this instance as it is known to
+     * Gets the encoding of the JMF <code>Format</code> represented by this instance as it is known to
      * JMF (in contrast to its RFC name).
      *
-     * @return the encoding of the JMF <tt>Format</tt> represented by this instance as it is known
+     * @return the encoding of the JMF <code>Format</code> represented by this instance as it is known
      * to JMF (in contrast to its RFC name)
      */
     public String getJMFEncoding()
@@ -434,14 +439,14 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Returns a <tt>String</tt> representation of the real used clock rate associated with this
-     * <tt>MediaFormat</tt> making sure that the value appears as an integer (i.e. contains no
+     * Returns a <code>String</code> representation of the real used clock rate associated with this
+     * <code>MediaFormat</code> making sure that the value appears as an integer (i.e. contains no
      * decimal point) unless it is actually a non integer. This function corrects the problem of
      * the G.722 codec which advertises its clock rate to be 8 kHz while 16 kHz is really used to
      * encode the stream (that's an error noted in the respective RFC and kept for the sake of compatibility.).
      *
-     * @return a <tt>String</tt> representation of the real used clock rate associated with this
-     * <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of the real used clock rate associated with this
+     * <code>MediaFormat</code>.
      */
     public String getRealUsedClockRateString()
     {
@@ -454,10 +459,10 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Gets the RTP payload type (number) of this <tt>MediaFormat</tt> as it is known in RFC 3551
+     * Gets the RTP payload type (number) of this <code>MediaFormat</code> as it is known in RFC 3551
      * "RTP Profile for Audio and Video Conferences with Minimal Control".
      *
-     * @return the RTP payload type of this <tt>MediaFormat</tt> if it is known in RFC 3551 "RTP
+     * @return the RTP payload type of this <code>MediaFormat</code> if it is known in RFC 3551 "RTP
      * Profile for Audio and Video Conferences with Minimal Control"; otherwise, {@link #RTP_PAYLOAD_TYPE_UNKNOWN}
      * @see MediaFormat#getRTPPayloadType()
      */
@@ -469,7 +474,7 @@ public abstract class MediaFormatImpl<T extends Format>
     /**
      * Overrides Object#hashCode() because Object#equals(Object) is overridden.
      *
-     * @return a hash code value for this <tt>MediaFormat</tt>.
+     * @return a hash code value for this <code>MediaFormat</code>.
      */
     @Override
     public int hashCode()
@@ -486,9 +491,9 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Determines whether this <tt>MediaFormat</tt> matches properties of a specific
-     * <tt>MediaFormat</tt>, such as <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and
-     * <tt>channels</tt> for <tt>MediaFormat</tt>s with <tt>mediaType</tt> equal to {@link MediaType#AUDIO}.
+     * Determines whether this <code>MediaFormat</code> matches properties of a specific
+     * <code>MediaFormat</code>, such as <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and
+     * <code>channels</code> for <code>MediaFormat</code>s with <code>mediaType</code> equal to {@link MediaType#AUDIO}.
      *
      * @param format the {@link MediaFormat} whose properties we'd like to examine and compare with ours.
      */
@@ -509,18 +514,18 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Determines whether this <tt>MediaFormat</tt> has specific values for its properties
-     * <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and <tt>channels</tt> for
-     * <tt>MediaFormat</tt>s with <tt>mediaType</tt> equal to {@link MediaType#AUDIO}.
+     * Determines whether this <code>MediaFormat</code> has specific values for its properties
+     * <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and <code>channels</code> for
+     * <code>MediaFormat</code>s with <code>mediaType</code> equal to {@link MediaType#AUDIO}.
      *
      * @param mediaType the type we expect {@link MediaFormat} to have
      * @param encoding the encoding we are looking for.
      * @param clockRate the clock rate that we'd like the format to have.
      * @param channels the number of channels that expect to find in this format
-     * @param fmtps the format parameters expected to match these of the specified <tt>format</tt>
-     * @return <tt>true</tt> if the specified <tt>format</tt> has specific values for its
-     * properties <tt>mediaType</tt>, <tt>encoding</tt>, <tt>clockRate</tt> and <tt>channels</tt>;
-     * otherwise, <tt>false</tt>
+     * @param fmtps the format parameters expected to match these of the specified <code>format</code>
+     * @return <code>true</code> if the specified <code>format</code> has specific values for its
+     * properties <code>mediaType</code>, <code>encoding</code>, <code>clockRate</code> and <code>channels</code>;
+     * otherwise, <code>false</code>
      */
     public boolean matches(MediaType mediaType, String encoding, double clockRate, int channels,
             Map<String, String> fmtps)
@@ -565,10 +570,10 @@ public abstract class MediaFormatImpl<T extends Format>
     }
 
     /**
-     * Returns a <tt>String</tt> representation of this <tt>MediaFormat</tt> containing, among
+     * Returns a <code>String</code> representation of this <code>MediaFormat</code> containing, among
      * other things, its encoding and clockrate values.
      *
-     * @return a <tt>String</tt> representation of this <tt>MediaFormat</tt>.
+     * @return a <code>String</code> representation of this <code>MediaFormat</code>.
      */
     @Override
     public String toString()
