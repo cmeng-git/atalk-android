@@ -68,7 +68,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
     @Override
     public synchronized Collection<LocalCandidate> harvest(Component component)
     {
-        Timber.i("harvest Jingle Nodes");
+        Timber.i("Jingle Nodes harvest start!");
         Collection<LocalCandidate> candidates = new HashSet<>();
         String ip;
         int port = -1;
@@ -136,6 +136,7 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
                 candidates.add(local);
             }
         }
+        Timber.d("Jingle Nodes: %s", candidates);
         return candidates;
     }
 

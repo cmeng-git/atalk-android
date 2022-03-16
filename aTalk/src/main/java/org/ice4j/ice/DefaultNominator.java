@@ -17,28 +17,20 @@
  */
 package org.ice4j.ice;
 
+import org.atalk.util.logging2.Logger;
+
 import java.beans.*;
 import java.util.*;
-
-import org.ice4j.util.*;
 
 /**
  * Implements ice4j internal nomination strategies.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class DefaultNominator
     implements PropertyChangeListener
 {
-    /**
-     * The class logger.
-     * Note that this shouldn't be used directly by instances of
-     * {@link DefaultNominator}, because it doesn't take into account the
-     * per-instance log level. Instances should use {@link #logger} instead.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(DefaultNominator.class.getName());
-
     /**
      * The Agent that created us.
      */
@@ -71,7 +63,7 @@ public class DefaultNominator
     public DefaultNominator(Agent parentAgent)
     {
         this.parentAgent = parentAgent;
-        logger = new Logger(classLogger, parentAgent.getLogger());
+        logger = parentAgent.getLogger().createChildLogger(this.getClass().getName());
         parentAgent.addStateChangeListener(this);
     }
 
@@ -120,8 +112,7 @@ public class DefaultNominator
             // the component
             if (parentStream.validListContainsNomineeForComponent(parentComponent))
             {
-                logger.fine(
-                        "Keep-alive for pair: " + validPair.toShortString());
+                logger.debug(() -> "Keep-alive for pair: " + validPair.toShortString());
                 return;
             }
         }

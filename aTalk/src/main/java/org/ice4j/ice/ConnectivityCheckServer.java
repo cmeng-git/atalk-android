@@ -17,14 +17,12 @@
  */
 package org.ice4j.ice;
 
-import java.util.logging.*;
-
+import org.atalk.util.logging2.Logger;
 import org.ice4j.*;
 import org.ice4j.attribute.*;
 import org.ice4j.message.*;
 import org.ice4j.security.*;
 import org.ice4j.stack.*;
-import org.ice4j.util.Logger; // Disambiguation.
 
 /**
  * The class that would be handling and responding to incoming connectivity
@@ -32,21 +30,12 @@ import org.ice4j.util.Logger; // Disambiguation.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class ConnectivityCheckServer
     implements RequestListener,
                CredentialsAuthority
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ConnectivityCheckServer</tt>
-     * class and its instances for logging output.
-     * Note that this shouldn't be used directly by instances of
-     * {@link ConnectivityCheckServer}, because it doesn't take into account
-     * the per-instance log level. Instances should use {@link #logger} instead.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(ConnectivityCheckServer.class.getName());
-
     /**
      * Compares <tt>a</tt> and <tt>b</tt> as unsigned long values. Serves the
      * same purpose as the <tt>Long.compareUnsigned</tt> method available in Java 1.8.
@@ -99,7 +88,7 @@ class ConnectivityCheckServer
     public ConnectivityCheckServer(Agent parentAgent)
     {
         this.parentAgent = parentAgent;
-        logger = new Logger(classLogger, parentAgent.getLogger());
+        logger = parentAgent.getLogger().createChildLogger(this.getClass().getName());
 
         stunStack = this.parentAgent.getStunStack();
         stunStack.getCredentialsManager().registerAuthority(this);
@@ -139,8 +128,7 @@ class ConnectivityCheckServer
     public void processRequest(StunMessageEvent evt)
         throws IllegalArgumentException
     {
-        if(logger.isLoggable(Level.FINER))
-            logger.finer("Received request " + evt);
+        logger.trace(() -> "Received request " + evt);
 
         alive = true;
 
@@ -210,7 +198,7 @@ class ConnectivityCheckServer
         }
         catch (Exception e)
         {
-            logger.log(Level.INFO, "Failed to send " + response
+            logger.info("Failed to send " + response
                         + " through " + evt.getLocalAddress()  + "\n" + e.getMessage());
             //try to trigger a 500 response although if this one failed,
             //then chances are the 500 will fail too.
@@ -244,11 +232,7 @@ class ConnectivityCheckServer
         //extract priority
         if(priorityAttr == null)
         {
-            if(logger.isLoggable(Level.FINE))
-            {
-                logger.log(Level.FINE, "Received a connectivity check with"
-                            + "no PRIORITY attribute. Discarding.");
-            }
+          logger.debug(() -> "Received a connectivity check with no PRIORITY attribute. Discarding.");
 
             throw new IllegalArgumentException("Missing PRIORITY attribute!");
         }
@@ -337,12 +321,10 @@ class ConnectivityCheckServer
         //ICE control attribute, the agent toggles its ICE control role.
         else
         {
-            final String selfNextControlState
-                = selfIceControlling ? "controlled" : "controlling";
-            logger.finer(
-                "Switching to " + selfNextControlState + " because " +
-                " theirTieBreaker= " + theirTieBreaker + " and " +
-                "selfTieBreaker= " + selfTieBreaker);
+            final String selfNextControlState = selfIceControlling ? "controlled" : "controlling";
+            logger.trace(() -> "Switching to " + selfNextControlState +
+                " because theirTieBreaker= " + theirTieBreaker +
+                " and selfTieBreaker= " + selfTieBreaker);
             parentAgent.setControlling(!selfIceControlling);
             return true;
         }

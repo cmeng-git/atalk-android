@@ -16,7 +16,6 @@
 
 package org.atalk.util.logging;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -96,7 +95,7 @@ public class TimeSeriesLogger
     public void trace(Map<String, Object> point)
     {
         if (point != null && !point.isEmpty()) {
-            Timber.log(TimberLog.FINER, "%s", new JSONObject(point).toString());
+            logger.trace(new JSONObject(point).toString());
         }
     }
 
@@ -108,7 +107,7 @@ public class TimeSeriesLogger
     public void warn(Map<String, Object> point)
     {
         if (point != null && !point.isEmpty()) {
-            Timber.w("%s", new JSONObject(point).toString());
+            logger.warn(new JSONObject(point).toString());
         }
     }
 
@@ -120,7 +119,7 @@ public class TimeSeriesLogger
     public void info(Map<String, Object> point)
     {
         if (point != null && !point.isEmpty()) {
-            Timber.i("Point info: %s", new JSONObject(point).toString());
+            logger.info(new JSONObject(point).toString());
         }
     }
 }

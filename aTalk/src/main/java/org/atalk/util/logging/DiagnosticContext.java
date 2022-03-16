@@ -15,6 +15,11 @@
  */
 package org.atalk.util.logging;
 
+import android.annotation.SuppressLint;
+
+import androidx.core.util.TimeUtils;
+
+import java.io.PrintWriter;
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,10 +39,11 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
     /**
      * {@inheritDoc}
      */
+    @SuppressLint("NewApi") // Required API-26
     public DiagnosticContext()
     {
         super();
-        // this.clock = new SystemClock().withZone(ZoneOffset.UTC); // Clock.systemUTC();
+        this.clock = Clock.systemUTC();
     }
 
     /**
@@ -77,7 +83,6 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
                 .addField("time", tsMs);
     }
 
-    // Required API-26
 //    /**
 //     * Makes a new time series point with an Instant. This is recommended for
 //     * time series where it's important to have the exact timestamp value,
@@ -86,11 +91,13 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
 //     * @param timeSeriesName the name of the time series
 //     * @param ts the timestamp of the time series point
 //     */
+//    @SuppressLint("NewApi") // Required API-26
 //    public TimeSeriesPoint makeTimeSeriesPoint(String timeSeriesName, Instant ts)
 //    {
+//        String time;
 //        return new TimeSeriesPoint(this)
 //            .addField("series", timeSeriesName)
-//            .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
+//            // .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
 //    }
 
     public static class TimeSeriesPoint extends HashMap<String, Object>

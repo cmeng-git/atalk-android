@@ -24,10 +24,11 @@ import java.net.*;
 import java.util.logging.*;
 
 /**
- * Uses the Amazon AWS APIs to retrieve the public and private IPv4 addresses
- * for an EC2 instance.
+ * Uses the Amazon AWS APIs to retrieve the public and private IPv4 addresses for an EC2 instance.
+ * <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html">What is Amazon EC2?</a>
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class AwsCandidateHarvester
     extends MappingCandidateHarvester
@@ -36,8 +37,7 @@ public class AwsCandidateHarvester
      * The <tt>Logger</tt> used by the <tt>AwsCandidateHarvester</tt>
      * class and its instances for logging output.
      */
-    private static final Logger logger
-        = Logger.getLogger(AwsCandidateHarvester.class.getName());
+    private static final Logger logger = Logger.getLogger(AwsCandidateHarvester.class.getName());
 
     /**
      * The URL where one obtains AWS public addresses.
@@ -83,7 +83,7 @@ public class AwsCandidateHarvester
      */
     public AwsCandidateHarvester()
     {
-        super();
+        super("aws");
     }
 
     /**

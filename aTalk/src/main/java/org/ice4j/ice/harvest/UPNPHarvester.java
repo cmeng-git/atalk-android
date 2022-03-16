@@ -19,6 +19,7 @@ package org.ice4j.ice.harvest;
 
 import androidx.annotation.NonNull;
 
+import org.atalk.util.logging.Logger;
 import org.bitlet.weupnp.*;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
@@ -27,7 +28,6 @@ import org.ice4j.socket.*;
 
 import java.net.InetAddress;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Implements a <code>CandidateHarvester</code> which gathers <code>Candidate</code>s
@@ -103,12 +103,12 @@ public class UPNPHarvester extends AbstractCandidateHarvester
                             device = wanIP_PPPThread.getDevice();
                         }
                     } catch (Throwable e) {
-                        logger.warning("UPnP discovery failed: " + e.getMessage());
+                        logger.warn("UPnP discovery failed: " + e.getMessage());
                     }
                 }
 
                 if (device == null) {
-                    logger.warning("UPnP harvesting found zero device");
+                    logger.warn("UPnP harvesting found zero device");
                     return candidates;
                 }
             }

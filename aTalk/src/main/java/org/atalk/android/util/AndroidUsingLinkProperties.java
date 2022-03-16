@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher. Use
- * {@link #setup(Context)} to setup this mechanism.
+ * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher.
+ * Use {@link #setup(Context)} to setup this mechanism.
  * <p>
  * Requires the ACCESS_NETWORK_STATE permission.
  * </p>
@@ -26,8 +26,8 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
     private final ConnectivityManager connectivityManager;
 
     /**
-     * Setup this DNS server lookup mechanism. You need to invoke this method only once, ideally before you do your
-     * first DNS lookup.
+     * Setup this DNS server lookup mechanism. You need to invoke this method only once,
+     * ideally before you do your first DNS lookup.
      *
      * @param context a Context instance.
      * @return the instance of the newly setup mechanism
@@ -52,7 +52,6 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
     }
 
     @Override
-    @TargetApi(21)
     public List<String> getDnsServerAddresses()
     {
         List<String> servers = new ArrayList<>();
@@ -106,7 +105,6 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
         return out;
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static boolean hasDefaultRoute(LinkProperties linkProperties)
     {
         for (RouteInfo route : linkProperties.getRoutes()) {

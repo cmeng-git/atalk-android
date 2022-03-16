@@ -17,28 +17,43 @@
  */
 package org.ice4j.ice.harvest;
 
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.*;
+import org.ice4j.StackProperties;
+import org.ice4j.ice.Component;
 
-import org.ice4j.*;
-import org.ice4j.ice.*;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 /**
  * Implements {@link Set} of <tt>CandidateHarvester</tt>s which runs the
  * gathering of candidate addresses performed by its elements in parallel.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class CandidateHarvesterSet
-    extends AbstractSet<CandidateHarvester>
+        extends AbstractSet<CandidateHarvester>
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>Agent</tt> class and its instances
-     * for logging output.
+     * The <tt>Logger</tt> used by the <tt>Agent</tt> class and its instances for logging output.
      */
-    private static final Logger logger
-        = Logger.getLogger(CandidateHarvesterSet.class.getName());
+    private static final Logger logger = Logger.getLogger(CandidateHarvesterSet.class.getName());
 
     /**
      * The <tt>CandidateHarvester</tt>s which are the elements of this <tt>Set</tt>.
@@ -48,7 +63,7 @@ public class CandidateHarvesterSet
     /**
      * A pool of thread used for gathering process.
      */
-    private static ExecutorService threadPool = Executors.newCachedThreadPool();
+    private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     /**
      * Initializes a new <tt>CandidateHarvesterSet</tt> instance.
@@ -60,21 +75,17 @@ public class CandidateHarvesterSet
     /**
      * Adds a specific <tt>CandidateHarvester</tt> to this
      * <tt>CandidateHarvesterSet</tt> and returns <tt>true</tt> if it is not
-     * already present. Otherwise, leaves this set unchanged and returns
-     * <tt>false</tt>.
+     * already present. Otherwise, leaves this set unchanged and returns <tt>false</tt>.
      *
-     * @param harvester the <tt>CandidateHarvester</tt> to be added to this
-     * <tt>CandidateHarvesterSet</tt>
+     * @param harvester the <tt>CandidateHarvester</tt> to be added to this <tt>CandidateHarvesterSet</tt>
      * @return <tt>true</tt> if this <tt>CandidateHarvesterSet</tt> did not
-     * already contain the specified <tt>harvester</tt>; otherwise,
-     * <tt>false</tt>
+     * already contain the specified <tt>harvester</tt>; otherwise, <tt>false</tt>
      * @see Set#add(Object)
      */
     @Override
     public boolean add(CandidateHarvester harvester)
     {
-        synchronized (elements)
-        {
+        synchronized (elements) {
             for (CandidateHarvesterSetElement element : elements)
                 if (element.harvesterEquals(harvester))
                     return false;
@@ -85,16 +96,15 @@ public class CandidateHarvesterSet
     }
 
     /**
-     * Gathers candidate addresses for a specific <tt>Component</tt>.
-     * <tt>CandidateHarvesterSet</tt> delegates to the
-     * <tt>CandidateHarvester</tt>s which are its <tt>Set</tt> elements.
+     * Gathers candidate addresses for a specific <tt>Component</tt>. <tt>CandidateHarvesterSet</tt>
+     * delegates to the <tt>CandidateHarvester</tt>s which are its <tt>Set</tt> elements.
      *
      * @param component the <tt>Component</tt> to gather candidate addresses for
      * @see CandidateHarvester#harvest(Component)
      */
     public void harvest(Component component)
     {
-        harvest(Arrays.asList(component), null);
+        harvest(Collections.singletonList(component), null);
     }
 
 
@@ -104,58 +114,43 @@ public class CandidateHarvesterSet
      * <tt>CandidateHarvester</tt>s which are its <tt>Set</tt> elements.
      *
      * @param components the <tt>Component</tt> to gather candidate addresses for
+     * @param trickleCallback the {@link TrickleCallback} that we will be feeding candidates to,
+     * or <tt>null</tt> in case the application doesn't want us trickling any candidates
      * @see CandidateHarvester#harvest(Component)
-     * @param trickleCallback the {@link TrickleCallback} that we will be
-     * feeding candidates to, or <tt>null</tt> in case the application doesn't
-     * want us trickling any candidates
      */
-    public void harvest(final List<Component> components,
-                              TrickleCallback trickleCallback)
+    public void harvest(final List<Component> components, TrickleCallback trickleCallback)
     {
-        synchronized (elements)
-        {
-            harvest(
-                elements.iterator(), components, threadPool, trickleCallback);
+        synchronized (elements) {
+            harvest(elements.iterator(), components, threadPool, trickleCallback);
         }
     }
 
     /**
-     * Gathers candidate addresses for a specific <tt>Component</tt> using
-     * specific <tt>CandidateHarvester</tt>s.
+     * Gathers candidate addresses for a specific <tt>Component</tt> using specific <tt>CandidateHarvester</tt>s.
      *
      * @param harvesters the <tt>CandidateHarvester</tt>s to gather candidate
      * addresses for the specified <tt>Component</tt>
-     * @param components the <tt>Component</tt>s to gather candidate addresses
-     * for.
+     * @param components the <tt>Component</tt>s to gather candidate addresses for.
      * @param executorService the <tt>ExecutorService</tt> to schedule the
-     * execution of the gathering of candidate addresses performed by the
-     * specified <tt>harvesters</tt>
-     * @param trickleCallback the {@link TrickleCallback} that we will be
-     * feeding candidates to, or <tt>null</tt> in case the application doesn't
-     * want us trickling any candidates
+     * execution of the gathering of candidate addresses performed by the specified <tt>harvesters</tt>
+     * @param trickleCallback the {@link TrickleCallback} that we will be feeding candidates to,
+     * or <tt>null</tt> in case the application doesn't want us trickling any candidates
      */
-    private void harvest(
-            final Iterator<CandidateHarvesterSetElement> harvesters,
-            final List<Component>                        components,
-                  ExecutorService                        executorService,
-            final TrickleCallback                        trickleCallback)
+    private void harvest(final Iterator<CandidateHarvesterSetElement> harvesters, final List<Component> components,
+            ExecutorService executorService, final TrickleCallback trickleCallback)
     {
         /*
-         * Start asynchronously executing the
-         * CandidateHarvester#harvest(Component) method of the harvesters.
+         * Start asynchronously executing the CandidateHarvester#harvest(Component) method of the harvesters.
          */
         Map<CandidateHarvesterSetTask, Future<?>> tasks = new HashMap<>();
 
-        while (true)
-        {
+        while (true) {
             /*
-             * Find the next CandidateHarvester which is to start gathering
-             * candidates.
+             * Find the next CandidateHarvester which is to start gathering candidates.
              */
             CandidateHarvesterSetElement harvester;
 
-            synchronized (harvesters)
-            {
+            synchronized (harvesters) {
                 if (harvesters.hasNext())
                     harvester = harvesters.next();
                 else
@@ -166,62 +161,42 @@ public class CandidateHarvesterSet
                 continue;
 
             List<Component> componentsCopy;
-
-            synchronized (components)
-            {
+            synchronized (components) {
                 componentsCopy = new ArrayList<>(components);
             }
 
             // Asynchronously start gathering candidates using the harvester.
-            CandidateHarvesterSetTask task = new CandidateHarvesterSetTask(
-                harvester, componentsCopy, trickleCallback);
-
+            CandidateHarvesterSetTask task = new CandidateHarvesterSetTask(harvester, componentsCopy, trickleCallback);
             tasks.put(task, executorService.submit(task));
         }
 
         /*
-         * Wait for all harvesters to be given a chance to execute their
-         * CandidateHarvester#harvest(Component) method.
+         * Wait for all harvesters to be given a chance to execute their CandidateHarvester#harvest(Component) method.
          */
-        Iterator<Map.Entry<CandidateHarvesterSetTask, Future<?>>> taskIter
-            = tasks.entrySet().iterator();
-
-        while (taskIter.hasNext())
-        {
-            Map.Entry<CandidateHarvesterSetTask, Future<?>> task
-                = taskIter.next();
+        Iterator<Map.Entry<CandidateHarvesterSetTask, Future<?>>> taskIter = tasks.entrySet().iterator();
+        while (taskIter.hasNext()) {
+            Map.Entry<CandidateHarvesterSetTask, Future<?>> task = taskIter.next();
             Future<?> future = task.getValue();
 
-            do
-            {
-                try
-                {
+            do {
+                try {
                     future.get(StackProperties.getInt(StackProperties.HARVESTING_TIMEOUT, 15), TimeUnit.SECONDS);
                     break;
-                }
-                catch (TimeoutException te)
-                {
+                } catch (TimeoutException te) {
                     CandidateHarvesterSetElement harvester = task.getKey().getHarvester();
-                    if (harvester != null)
-                    {
+                    if (harvester != null) {
                         harvester.setEnabled(false);
                     }
                     logger.warning("timed out while harvesting from " + harvester);
                     break;
-                }
-                catch (CancellationException ce)
-                {
+                } catch (CancellationException ce) {
                     logger.info("harvester cancelled");
                     /*
-                     * It got cancelled so we cannot say that the fault is with
-                     * its current harvester.
+                     * It got cancelled so we cannot say that the fault is with its current harvester.
                      */
                     break;
-                }
-                catch (ExecutionException ee)
-                {
-                    CandidateHarvesterSetElement harvester
-                        = task.getKey().getHarvester();
+                } catch (ExecutionException ee) {
+                    CandidateHarvesterSetElement harvester = task.getKey().getHarvester();
 
                     /*
                      * A problem appeared during the execution of the task.
@@ -229,17 +204,13 @@ public class CandidateHarvesterSet
                      * for the purpose of determining whether the problem has
                      * appeared while working with a harvester.
                      */
-                    logger.info(
-                        "disabling harvester "+ harvester.getHarvester()
-                            + " due to ExecutionException: " +
-                            ee.getLocalizedMessage());
+                    logger.info("disabling harvester " + harvester.getHarvester()
+                            + " due to ExecutionException: " + ee.getLocalizedMessage());
 
                     if (harvester != null)
                         harvester.setEnabled(false);
                     break;
-                }
-                catch (InterruptedException ie)
-                {
+                } catch (InterruptedException ie) {
                 }
             }
             while (true);
@@ -248,85 +219,74 @@ public class CandidateHarvesterSet
     }
 
     /**
-     * Returns an <tt>Iterator</tt> over the <tt>CandidateHarvester</tt>s which
-     * are elements in this <tt>CandidateHarvesterSet</tt>. The elements are
-     * returned in no particular order.
+     * Returns an <tt>Iterator</tt> over the <tt>CandidateHarvester</tt>s which are elements
+     * in this <tt>CandidateHarvesterSet</tt>. The elements are returned in no particular order.
      *
      * @return an <tt>Iterator</tt> over the <tt>CandidateHarvester</tt>s which
-     * are elements in this <tt>CandidateHarvesterSet</tt>
-     * @see Set#iterator()
+     * are elements in this <tt>CandidateHarvesterSet</tt> @see Set#iterator()
      */
     public Iterator<CandidateHarvester> iterator()
     {
-        final Iterator<CandidateHarvesterSetElement> elementIter
-            = elements.iterator();
+        final Iterator<CandidateHarvesterSetElement> elementIter = elements.iterator();
 
-        return
-            new Iterator<CandidateHarvester>()
+        return new Iterator<CandidateHarvester>()
+        {
+            /**
+             * Determines whether this iteration has more elements.
+             *
+             * @return <tt>true</tt> if this iteration has more elements; otherwise, <tt>false</tt>
+             * @see Iterator#hasNext()
+             */
+            public boolean hasNext()
             {
-                /**
-                 * Determines whether this iteration has more elements.
-                 *
-                 * @return <tt>true</tt> if this iteration has more elements;
-                 * otherwise, <tt>false</tt>
-                 * @see Iterator#hasNext()
-                 */
-                public boolean hasNext()
-                {
-                    return elementIter.hasNext();
-                }
+                return elementIter.hasNext();
+            }
 
-                /**
-                 * Returns the next element in this iteration.
-                 *
-                 * @return the next element in this iteration
-                 * @throws NoSuchElementException if this iteration has no more
-                 * elements
-                 * @see Iterator#next()
-                 */
-                public CandidateHarvester next()
+            /**
+             * Returns the next element in this iteration.
+             *
+             * @return the next element in this iteration
+             * @throws NoSuchElementException if this iteration has no more elements
+             * @see Iterator#next()
+             */
+            public CandidateHarvester next()
                     throws NoSuchElementException
-                {
-                    return elementIter.next().getHarvester();
-                }
+            {
+                return elementIter.next().getHarvester();
+            }
 
-                /**
-                 * Removes from the underlying <tt>CandidateHarvesterSet</tt>
-                 * the last <tt>CandidateHarvester</tt> (element) returned by
-                 * this <tt>Iterator</tt>. <tt>CandidateHarvestSet</tt> does not
-                 * implement the <tt>remove</tt> operation at the time of this
-                 * writing i.e. it always throws
-                 * <tt>UnsupportedOperationException</tt>.
-                 *
-                 * @throws IllegalStateException if the <tt>next</tt> method has
-                 * not yet been called, or the <tt>remove</tt> method has
-                 * already been called after the last call to the <tt>next</tt>
-                 * method
-                 * @throws UnsupportedOperationException if the <tt>remove</tt>
-                 * operation is not supported by this <tt>Iterator</tt>
-                 * @see Iterator#remove()
-                 */
-                public void remove()
+            /**
+             * Removes from the underlying <tt>CandidateHarvesterSet</tt>
+             * the last <tt>CandidateHarvester</tt> (element) returned by
+             * this <tt>Iterator</tt>. <tt>CandidateHarvestSet</tt> does not
+             * implement the <tt>remove</tt> operation at the time of this
+             * writing i.e. it always throws <tt>UnsupportedOperationException</tt>.
+             *
+             * @throws IllegalStateException if the <tt>next</tt> method has
+             * not yet been called, or the <tt>remove</tt> method has
+             * already been called after the last call to the <tt>next</tt> method
+             * @throws UnsupportedOperationException if the <tt>remove</tt>
+             * operation is not supported by this <tt>Iterator</tt>
+             * @see Iterator#remove()
+             */
+            public void remove()
                     throws IllegalStateException,
-                           UnsupportedOperationException
-                {
-                    throw new UnsupportedOperationException("remove");
-                }
-            };
+                    UnsupportedOperationException
+            {
+                throw new UnsupportedOperationException("remove");
+            }
+        };
     }
 
     /**
-     * Returns the number of <tt>CandidateHarvester</tt>s which are elements in
-     * this <tt>CandidateHarvesterSet</tt>.
+     * Returns the number of <tt>CandidateHarvester</tt>s which are elements in this <tt>CandidateHarvesterSet</tt>.
      *
-     * @return the number of <tt>CandidateHarvester</tt>s which are elements in
-     * this <tt>CandidateHarvesterSet</tt>
+     * @return the number of <tt>CandidateHarvester</tt>s which are elements in this <tt>CandidateHarvesterSet</tt>
      * @see Set#size()
      */
     public int size()
     {
-        synchronized (elements)
-        {
+        synchronized (elements) {
             return elements.size();
         }
     }

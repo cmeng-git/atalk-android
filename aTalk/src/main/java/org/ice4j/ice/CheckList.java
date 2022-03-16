@@ -17,10 +17,10 @@
  */
 package org.ice4j.ice;
 
+import org.atalk.util.logging2.Logger;
+
 import java.beans.*;
 import java.util.*;
-
-import org.ice4j.util.Logger;
 
 /**
  * A check list is a list of <tt>CandidatePair</tt>s with a state (i.e. a
@@ -30,20 +30,13 @@ import org.ice4j.util.Logger;
  * <p>
  * Given the asynchronous nature of ice, a check list may be accessed from
  * different locations. This class therefore stores pairs in a <tt>Vector</tt>
+ *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class CheckList
     extends Vector<CandidatePair>
 {
-    /**
-     * The class logger.
-     * Note that this shouldn't be used directly by instances of
-     * {@link CheckList}, because it doesn't take into account the per-instance
-     * log level. Instances should use {@link #logger} instead.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(CheckList.class.getName());
-
     /**
      * A dummy serialization id.
      */
@@ -83,15 +76,13 @@ public class CheckList
      * Contains {@link PropertyChangeListener}s registered with this {@link
      * Agent} and following its changes of state.
      */
-    private final List<PropertyChangeListener> stateListeners
-        = new LinkedList<>();
+    private final List<PropertyChangeListener> stateListeners = new LinkedList<>();
 
     /**
      * Contains {@link PropertyChangeListener}s registered with this {@link
      * Agent} and following its changes of state.
      */
-    private final List<PropertyChangeListener> checkListeners
-        = new LinkedList<>();
+    private final List<PropertyChangeListener> checkListeners = new LinkedList<>();
 
     /**
      * The {@link Logger} used by {@link CheckList} instances.
@@ -107,7 +98,7 @@ public class CheckList
     protected CheckList(IceMediaStream parentStream)
     {
         this.parentStream = parentStream;
-        logger = new Logger(classLogger, parentStream.getParentAgent().getLogger());
+        logger = parentStream.getLogger().createChildLogger(this.getClass().getName());
     }
 
     /**

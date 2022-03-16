@@ -19,12 +19,11 @@ package org.ice4j.ice;
 
 import java.io.*;
 import java.net.*;
-import java.util.logging.*;
 
+import org.atalk.util.logging2.Logger;
 import org.ice4j.*;
 import org.ice4j.socket.*;
 import org.ice4j.stack.*;
-import org.ice4j.util.Logger; // Disambiguation.
 
 /**
  * <tt>LocalCandidate</tt>s are obtained by an agent for every stream component
@@ -32,20 +31,11 @@ import org.ice4j.util.Logger; // Disambiguation.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public abstract class LocalCandidate
     extends Candidate<LocalCandidate>
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>LocalCandidate</tt> class for logging
-     * output.
-     * Note that this shouldn't be used directly by instances of
-     * {@link DefaultNominator}, because it doesn't take into account the
-     * per-instance log level. Instances should use {@link #logger} instead.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(HostCandidate.class.getName());
-
     /**
      * The type of method used to discover this candidate ("host", "upnp", "stun
      * peer reflexive", "stun server reflexive", "turn relayed", "google turn
@@ -93,7 +83,7 @@ public abstract class LocalCandidate
                           LocalCandidate  relatedCandidate)
     {
         super(transportAddress, parentComponent, type, relatedCandidate);
-        logger = new Logger(classLogger, parentComponent. getParentStream().getParentAgent().getLogger());
+        logger = parentComponent.getLogger().createChildLogger(this.getClass().getName());
         this.extendedType = extendedType;
     }
 
@@ -202,9 +192,7 @@ public abstract class LocalCandidate
                 }
                 catch (SocketException sex) //don't u just luv da name? ;)
                 {
-                    logger.log(Level.SEVERE, "Failed to acquire Socket"
-                                   + " specific to STUN communication.",
-                               sex);
+                    logger.error("Failed to acquire Socket specific to STUN communication.", sex);
                     exception = sex;
                 }
                 if (tcpStunSocket == null)
@@ -258,10 +246,7 @@ public abstract class LocalCandidate
                 }
                 catch (SocketException sex) //don't u just luv da name? ;)
                 {
-                    logger.log(Level.SEVERE,
-                               "Failed to acquire DatagramSocket"
-                                   + " specific to STUN communication.",
-                               sex);
+                    logger.error("Failed to acquire DatagramSocket specific to STUN communication.", sex);
                     exception = sex;
                 }
                 if (udpStunSocket == null)

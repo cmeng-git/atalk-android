@@ -739,6 +739,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     try {
                         transportManagerSyncRoot.wait(5000);
                     } catch (InterruptedException e) {
+                        Timber.e("transportManagerSyncRoot Exception: %s", e.getMessage());
                     }
                 }
                 if (transportManager == null) {
@@ -922,7 +923,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             return Collections.emptyList();
 
         /*
-         * Session-initiate will include the transport-info's in contents,
+         * aTalk Session-initiate will include the transport-info's in contents,
          * So it doesn't make sense to send them by transportInfoSender.
          */
         if ((remote == null) && (transportInfoSender != null)) {

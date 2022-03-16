@@ -17,6 +17,7 @@
  */
 package org.ice4j.ice.harvest;
 
+import org.atalk.util.logging.Logger;
 import org.ice4j.*;
 import org.ice4j.attribute.*;
 import org.ice4j.message.*;
@@ -26,8 +27,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.*;
-import java.util.logging.Logger;
 
 /**
  * A class which holds a {@link DatagramSocket} and runs a thread
@@ -40,21 +39,20 @@ import java.util.logging.Logger;
  * from this address.
  *
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public abstract class AbstractUdpListener
 {
     /**
      * The name of the property which controls the size of the receive buffer
-     * which {@link SinglePortUdpHarvester} will request for the sockets that
-     * it creates.
+     * which {@link SinglePortUdpHarvester} will request for the sockets that it creates.
      */
     public static final String SO_RCVBUF_PNAME = AbstractUdpListener.class.getName() + ".SO_RCVBUF";
 
     /**
      * Our class logger.
      */
-    private static final Logger logger
-            = Logger.getLogger(AbstractUdpListener.class.getName());
+    private static final Logger logger = Logger.getLogger(AbstractUdpListener.class.getName());
 
     /**
      * The size for newly allocated <tt>Buffer</tt> instances. This limits the
@@ -121,9 +119,9 @@ public abstract class AbstractUdpListener
             (buf[off + 6] & 0xFF) == 0xA4 &&
             (buf[off + 7] & 0xFF) == 0x42))
         {
-            if (logger.isLoggable(Level.FINE))
+            if (logger.isDebugEnabled())
             {
-                logger.fine("Not a STUN packet, magic cookie not found.");
+                logger.debug("Not a STUN packet, magic cookie not found.");
             }
             return null;
         }
@@ -152,9 +150,9 @@ public abstract class AbstractUdpListener
         {
             // Catch everything. We are going to log, and then drop the packet
             // anyway.
-            if (logger.isLoggable(Level.FINE))
+            if (logger.isDebugEnabled())
             {
-                logger.fine("Failed to extract local ufrag: " + e);
+                logger.debug("Failed to extract local ufrag: " + e);
             }
         }
 
@@ -310,7 +308,7 @@ public abstract class AbstractUdpListener
             {
                 if (!close)
                 {
-                    logger.severe("Failed to receive from socket: " + ioe);
+                    logger.error("Failed to receive from socket: " + ioe.getMessage());
                 }
                 break;
             }
@@ -463,10 +461,9 @@ public abstract class AbstractUdpListener
 
             this.ufrag = ufrag;
             this.remoteAddress = remoteAddress;
-            if (logger.isLoggable(Level.FINEST))
+            if (logger.isDebugEnabled())
             {
-                queueStatistics = new QueueStatistics(
-                    "SinglePort" + remoteAddress.toString().replace('/', '-'));
+                queueStatistics = new QueueStatistics("SinglePort" + remoteAddress.toString().replace('/', '-'));
             }
             else
             {

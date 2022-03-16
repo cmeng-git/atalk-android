@@ -17,29 +17,25 @@
  */
 package org.ice4j.socket;
 
-import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
-import java.nio.channels.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.ServerSocket;
+import java.net.SocketAddress;
+import java.nio.channels.Channel;
+import java.nio.channels.ServerSocketChannel;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * If supported by the runtime, initializes {@link ServerSocketChannel}s which
- * are capable of sharing their listening endpoints with multiple others like
- * them.
+ * are capable of sharing their listening endpoints with multiple others like them.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 public class MuxServerSocketChannelFactory
 {
-    /**
-     * The {@code Logger} used by the {@code MuxServerSocketChannelFactory}
-     * class (and its instances) to print debug information.
-     */
-    private static final Logger logger
-        = Logger.getLogger(MuxServerSocketChannelFactory.class.getName());
-
     /**
      * The reflection of the {@code openAndBind} method of the
      * {@code MuxServerSocketChannel} class.
@@ -57,58 +53,42 @@ public class MuxServerSocketChannelFactory
      * The name of the {@code boolean} property of the {@code socket} property
      * of the {@code ServerSocketChannel} returned by
      * {@link #openAndBindMuxServerSocketChannel(Map, SocketAddress, int,
-     * DatagramPacketFilter)} which specifies the value of the
-     * {@code SO_REUSEADDR} socket option.
+     * DatagramPacketFilter)} which specifies the value of the {@code SO_REUSEADDR} socket option.
      */
     public static final String SOCKET_REUSE_ADDRESS_PROPERTY_NAME = "socket.reuseAddress";
 
-    static
-    {
+    /**
+     * The <tt>Logger</tt> used by the <tt>MuxServerSocketChannelFactory</tt> class for logging output.
+     */
+    private static final Logger logger = Logger.getLogger(MuxServerSocketChannelFactory.class.getName());
+
+    static {
         Class<?> clazz;
 
-        try
-        {
+        try {
             clazz = Class.forName("org.ice4j.socket.jdk8.MuxServerSocketChannel");
-        }
-        catch (ClassNotFoundException cnfex)
-        {
-            // The class cannot be located probably because ICE4J was not built
-            // on JDK 8.
+        } catch (ClassNotFoundException cnfex) {
+            // The class cannot be located probably because ICE4J was not built on JDK 8.
             clazz = null;
-            logger.warning(
-                    "ICE4J does not support sharing of listening endpoints"
-                        + " (probably because it was not built on JDK 8).");
-        }
-        catch (LinkageError lerr)
-        {
-            // The linkage fails probably because ICE4J was built on JDK 8 but
-            // is not run on JDK 8.
+            logger.warning("ICE4J does not support sharing of listening endpoints"
+                    + " (probably because it was not built on JDK 8).");
+        } catch (LinkageError lerr) {
+            // The linkage fails probably because ICE4J was built on JDK 8 but is not run on JDK 8.
             clazz = null;
-            logger.warning(
-                    "ICE4J does not support sharing of listening endpoints"
-                        + " (probably because it is not running on JDK 8).");
+            logger.warning("ICE4J does not support sharing of listening endpoints"
+                    + " (probably because it is not running on JDK 8).");
         }
 
         Method method;
-
-        if (clazz == null)
-        {
+        if (clazz == null) {
             method = null;
         }
-        else
-        {
-            try
-            {
-                method
-                    = clazz.getDeclaredMethod(
-                            "openAndBind",
-                            Map.class,
-                            SocketAddress.class,
-                            int.class,
-                            DatagramPacketFilter.class);
-            }
-            catch (NoSuchMethodException nsmex)
-            {
+        else {
+            try {
+                method = clazz.getDeclaredMethod(
+                        "openAndBind", Map.class, SocketAddress.class,
+                        int.class, DatagramPacketFilter.class);
+            } catch (NoSuchMethodException nsmex) {
                 throw new RuntimeException(nsmex);
             }
         }
@@ -122,12 +102,9 @@ public class MuxServerSocketChannelFactory
      */
     public static void closeNoExceptions(Channel channel)
     {
-        try
-        {
+        try {
             channel.close();
-        }
-        catch (IOException ioe)
-        {
+        } catch (IOException ioe) {
             // The whole idea of the method is to close a specific Channel
             // without caring about any possible IOException.
         }
@@ -157,39 +134,23 @@ public class MuxServerSocketChannelFactory
      * @throws IOException if an I/O error occurs
      */
     public static ServerSocketChannel openAndBindMuxServerSocketChannel(
-            Map<String,Object> properties,
-            SocketAddress endpoint,
-            int backlog,
-            DatagramPacketFilter filter)
-        throws IOException
+            Map<String, Object> properties, SocketAddress endpoint, int backlog, DatagramPacketFilter filter)
+            throws IOException
     {
         Method method = OPEN_AND_BIND_METHOD;
 
-        if (method == null)
-        {
-            return
-                openAndBindServerSocketChannel(properties, endpoint, backlog);
+        if (method == null) {
+            return openAndBindServerSocketChannel(properties, endpoint, backlog);
         }
-        else
-        {
-            try
-            {
-                return
-                    (ServerSocketChannel)
-                        method.invoke(
-                                null,
-                                properties, endpoint, backlog, filter);
-            }
-            catch (IllegalAccessException iaex)
-            {
-                IllegalAccessError iaerr
-                    = new IllegalAccessError(iaex.getMessage());
+        else {
+            try {
+                return (ServerSocketChannel) method.invoke(null, properties, endpoint, backlog, filter);
+            } catch (IllegalAccessException iaex) {
+                IllegalAccessError iaerr  = new IllegalAccessError(iaex.getMessage());
 
                 iaerr.initCause(iaex);
                 throw iaerr;
-            }
-            catch (InvocationTargetException itex)
-            {
+            } catch (InvocationTargetException itex) {
                 Throwable cause = itex.getCause();
 
                 if (cause == null)
@@ -223,24 +184,18 @@ public class MuxServerSocketChannelFactory
      * @throws IOException if an I/O error occurs
      */
     public static ServerSocketChannel openAndBindServerSocketChannel(
-            Map<String, Object> properties,
-            SocketAddress endpoint,
-            int backlog)
-        throws IOException
+            Map<String, Object> properties, SocketAddress endpoint, int backlog)
+            throws IOException
     {
         ServerSocketChannel channel = ServerSocketChannel.open();
         // Apply the specified properties.
         ServerSocket socket = channel.socket();
 
-        if (properties != null && !properties.isEmpty())
-        {
-            for (Map.Entry<String, Object> property
-                    : properties.entrySet())
-            {
+        if (properties != null && !properties.isEmpty()) {
+            for (Map.Entry<String, Object> property : properties.entrySet()) {
                 String name = property.getKey();
 
-                if (SOCKET_REUSE_ADDRESS_PROPERTY_NAME.equals(name))
-                {
+                if (SOCKET_REUSE_ADDRESS_PROPERTY_NAME.equals(name)) {
                     Object value = property.getValue();
                     boolean on;
 
@@ -255,9 +210,7 @@ public class MuxServerSocketChannelFactory
                 }
             }
         }
-
         socket.bind(endpoint, backlog);
-
         return channel;
     }
 }
