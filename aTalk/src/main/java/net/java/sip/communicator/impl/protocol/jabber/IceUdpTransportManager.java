@@ -50,8 +50,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,14 +73,17 @@ import timber.log.Timber;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  * @author MilanKral
+ * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
+ * Enhance TURN with TCP, TLS, DTLS transport
  */
 public class IceUdpTransportManager extends TransportManagerJabberImpl implements PropertyChangeListener
 {
-    // The default STUN servers that will be used in the peer to peer connections if none is specified
-    List<InetSocketAddress> stunServers = Arrays.asList(
-            new InetSocketAddress("stun1.l.google.com", 19302),
-            new InetSocketAddress("stun2.l.google.com", 19302),
-            new InetSocketAddress("stun3.l.google.com", 19302)
+    // The default STUN servers that will be used in the peer to peer connections if none is specified;
+    // pick the first one that is reachable; multiple stun servers only add time in redundant candidates harvest
+    List<String> stunServers = Arrays.asList(
+            "stun1.l.google.com:19302",
+            "stun2.l.google.com:19302",
+            "stun3.l.google.com:19302"
     );
 
     /**
@@ -234,6 +240,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             }
         }
         // now create stun server descriptors for whatever other STUN/TURN servers the user may have set.
+        // cmeng: added to support other protocol (20200428)
+        // see https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
         for (StunServerDescriptor desc : accID.getStunServers()) {
             final String protocol = desc.getProtocol();
             Transport transport;
@@ -255,33 +263,42 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     transport = Transport.UDP;
                     break;
             }
-            TransportAddress addr = new TransportAddress(desc.getAddress(), desc.getPort(), transport);
 
-            // if we get STUN server from automatic discovery, it may just be server name
-            // (i.e. stun.domain.org), and it may be possible that it cannot be resolved
-            if (addr.getAddress() == null) {
-                Timber.i("Unresolved STUN server address for %s", addr);
-                continue;
+            for (TransportAddress addr : getTransportAddress(desc.getAddress(), desc.getPort(), transport)) {
+                // if we get STUN server from automatic discovery, it may just be server name
+                // (i.e. stun.domain.org), and it may be possible that it cannot be resolved
+                if (addr.getAddress() == null) {
+                    Timber.i("Unresolved STUN server address for %s", addr);
+                    continue;
+                }
+
+                StunCandidateHarvester harvester;
+                if (desc.isTurnSupported()) {
+                    // this is a TURN server
+                    harvester = new TurnCandidateHarvester(addr, new LongTermCredential(desc.getUsername(), desc.getPassword()));
+                }
+                else {
+                    // this is a STUN only server
+                    harvester = new StunCandidateHarvester(addr);
+                }
+
+                Timber.i("Adding pre-configured harvester %s", harvester);
+                atLeastOneStunServer = true;
+                agent.addCandidateHarvester(harvester);
             }
-            StunCandidateHarvester harvester;
-            if (desc.isTurnSupported()) {
-                // Yay! a TURN server
-                harvester = new TurnCandidateHarvester(addr, new LongTermCredential(desc.getUsername(), desc.getPassword()));
-            }
-            else {
-                // this is a STUN only server
-                harvester = new StunCandidateHarvester(addr);
-            }
-            Timber.i("Adding pre-configured harvester %s", harvester);
-            atLeastOneStunServer = true;
-            agent.addCandidateHarvester(harvester);
         }
 
         // Found no configured or discovered STUN server; so takes default stunServers provided if user allows it
         if (!atLeastOneStunServer && accID.isUseDefaultStunServer()) {
-            for (InetSocketAddress stunServer : stunServers) {
-                TransportAddress addr = new TransportAddress(stunServer, Transport.UDP);
-                agent.addCandidateHarvester(new StunCandidateHarvester(addr));
+            for (String stunServer : stunServers) {
+                String[] hostPort = stunServer.split(":");
+                for (TransportAddress addr : getTransportAddress(hostPort[0], Integer.parseInt(hostPort[1]), Transport.UDP)) {
+                    agent.addCandidateHarvester(new StunCandidateHarvester(addr));
+                    atLeastOneStunServer = true;
+                }
+
+                // Skip the rest if one has set up successfully
+                if (atLeastOneStunServer) break;
             }
         }
 
@@ -302,8 +319,36 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
-        Timber.i("End gathering harvesters within %d ms; Harvesters size: %s", gatheringHarvesterTime, agent.getHarvesters().size());
+        Timber.i("End gathering harvesters within %d ms; size: %s; Harvesters:\n%s",
+                gatheringHarvesterTime, agent.getHarvesters().size(), agent.getHarvesters());
         return agent;
+    }
+
+    /**
+     * Generate a list of TransportAddress from the given hostname, port and transport.
+     * The given host name is resolved into both IPv4 and IPv6 InetAddresses.
+     *
+     * Note: android InetAddress.getByName(hostname) returns the first IP found, any may be an IPv6 InetAddress;
+     * if mobile network setting for APN=IPV4/IPv6 or APN=IPv6. This causes problem in STUN candidate harvest:
+     * @see https://github.com/jitsi/ice4j/issues/255
+     *
+     * @param hostname the address itself
+     * @param port the port number
+     * @param transport the transport to use with this address.
+     */
+    protected List<TransportAddress> getTransportAddress(String hostname, int port, Transport transport)
+    {
+        List<TransportAddress> transportAddress = new ArrayList<>();
+        try {
+            // return all associated InetAddress in both IPv4 and IPv6 address
+            InetAddress[] inetAddresses = InetAddress.getAllByName(hostname);
+            for (InetAddress inetAddress : inetAddresses) {
+                transportAddress.add(new TransportAddress(inetAddress, port, transport));
+            }
+        } catch (UnknownHostException e) {
+            Timber.e("UnknownHostException: %s", e.getMessage());
+        }
+        return transportAddress;
     }
 
     /**

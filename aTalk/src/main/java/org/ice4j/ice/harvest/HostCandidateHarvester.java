@@ -17,14 +17,37 @@
  */
 package org.ice4j.ice.harvest;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.logging.*;
+import org.atalk.util.logging.Logger;
+import org.ice4j.StackProperties;
+import org.ice4j.Transport;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.ComponentSocket;
+import org.ice4j.ice.HostCandidate;
+import org.ice4j.ice.NetworkUtils;
+import org.ice4j.socket.DelegatingServerSocket;
+import org.ice4j.socket.IceSocketWrapper;
+import org.ice4j.socket.IceTcpServerSocketWrapper;
+import org.ice4j.socket.IceUdpSocketWrapper;
+import org.ice4j.socket.MultiplexingDatagramSocket;
 
-import org.ice4j.*;
-import org.ice4j.ice.*;
-import org.ice4j.socket.*;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.ServerSocket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Level;
 
 /**
  * A <tt>HostCandidateHarvester</tt> gathers host <tt>Candidate</tt>s for a
@@ -36,29 +59,27 @@ import org.ice4j.socket.*;
  * @author Emil Ivov
  * @author George Politis
  * @author Boris Grozev
+ * @author Eng Chong Meng
  */
 public class HostCandidateHarvester
 {
     /**
      * Our class logger.
      */
-    private static final Logger logger
-        = Logger.getLogger(HostCandidateHarvester.class.getName());
+    private static final Logger logger = Logger.getLogger(HostCandidateHarvester.class.getName());
 
     /**
      * Manages statistics about harvesting time.
      */
-    private HarvestStatistics harvestStatistics = new HarvestStatistics();
+    private final HarvestStatistics harvestStatistics = new HarvestStatistics();
 
     /**
-     * Holds the list of allowed interfaces. It's either a non-empty array or
-     * null.
+     * Holds the list of allowed interfaces. It's either a non-empty array or null.
      */
     private static String[] allowedInterfaces;
 
     /**
-     * Holds the list of blocked interfaces. It's either a non-empty array or
-     * null.
+     * Holds the list of blocked interfaces. It's either a non-empty array or null.
      */
     private static String[] blockedInterfaces;
 
@@ -84,22 +105,22 @@ public class HostCandidateHarvester
      */
     private static boolean addressFiltersInitialized = false;
 
+    private static final boolean useIPv6 = !StackProperties.getBoolean(StackProperties.DISABLE_IPv6, false);
+    private static final boolean useLinkLocalAddresses
+            = !StackProperties.getBoolean(StackProperties.DISABLE_LINK_LOCAL_ADDRESSES, false);
+
     /**
      * Gets the array of allowed interfaces.
      *
      * @return the non-empty String array of allowed interfaces or null.
      */
-    public static String[] getAllowedInterfaces(){
-        if (!interfaceFiltersInitialized)
-        {
-            try
-            {
+    public static String[] getAllowedInterfaces()
+    {
+        if (!interfaceFiltersInitialized) {
+            try {
                 initializeInterfaceFilters();
-            }
-            catch (Exception e)
-            {
-                logger.log(Level.WARNING, "There were errors during host " +
-                        "candidate interface filters initialization.", e);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "There were errors during host candidate interface filters initialization.", e);
             }
         }
 
@@ -111,17 +132,13 @@ public class HostCandidateHarvester
      *
      * @return the non-empty String array of blocked interfaces or null.
      */
-    public static String[] getBlockedInterfaces() {
-        if (!interfaceFiltersInitialized)
-        {
-            try
-            {
+    public static String[] getBlockedInterfaces()
+    {
+        if (!interfaceFiltersInitialized) {
+            try {
                 initializeInterfaceFilters();
-            }
-            catch (Exception e)
-            {
-                logger.log(Level.WARNING, "There were errors during host " +
-                        "candidate interface filters initialization.", e);
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "There were errors during host candidate interface filters initialization.", e);
             }
         }
 
@@ -132,12 +149,12 @@ public class HostCandidateHarvester
      * Gets the list of addresses which have been explicitly allowed via
      * configuration properties. To get the list of all allowed addresses,
      * use {@link #getAllAllowedAddresses()}.
+     *
      * @return the list of explicitly allowed addresses.
      */
     public static synchronized List<InetAddress> getAllowedAddresses()
     {
-        if (!addressFiltersInitialized)
-        {
+        if (!addressFiltersInitialized) {
             initializeAddressFilters();
         }
 
@@ -146,12 +163,12 @@ public class HostCandidateHarvester
 
     /**
      * Gets the list of blocked addresses.
+     *
      * @return the list of blocked addresses.
      */
-    public static synchronized  List<InetAddress> getBlockedAddresses()
+    public static synchronized List<InetAddress> getBlockedAddresses()
     {
-        if (!addressFiltersInitialized)
-        {
+        if (!addressFiltersInitialized) {
             initializeAddressFilters();
         }
 
@@ -159,8 +176,7 @@ public class HostCandidateHarvester
     }
 
     /**
-     * Initializes the lists of allowed and blocked addresses according to the
-     * configuration properties.
+     * Initializes the lists of allowed and blocked addresses according to the configuration properties.
      */
     private static synchronized void initializeAddressFilters()
     {
@@ -168,23 +184,15 @@ public class HostCandidateHarvester
             return;
         addressFiltersInitialized = true;
 
-        String[] allowedAddressesStr
-            = StackProperties.getStringArray(
-                    StackProperties.ALLOWED_ADDRESSES, ";");
+        String[] allowedAddressesStr = StackProperties.getStringArray(StackProperties.ALLOWED_ADDRESSES, ";");
 
-        if (allowedAddressesStr != null)
-        {
-            for (String addressStr : allowedAddressesStr)
-            {
+        if (allowedAddressesStr != null) {
+            for (String addressStr : allowedAddressesStr) {
                 InetAddress address;
-                try
-                {
+                try {
                     address = InetAddress.getByName(addressStr);
-                }
-                catch (Exception e)
-                {
-                    logger.warning("Failed to add an allowed address: "
-                        + addressStr);
+                } catch (Exception e) {
+                    logger.warn("Failed to add an allowed address: " + addressStr);
                     continue;
                 }
 
@@ -196,19 +204,13 @@ public class HostCandidateHarvester
         }
 
         String[] blockedAddressesStr = StackProperties.getStringArray(StackProperties.BLOCKED_ADDRESSES, ";");
-        if (blockedAddressesStr != null)
-        {
-            for (String addressStr : blockedAddressesStr)
-            {
+        if (blockedAddressesStr != null) {
+            for (String addressStr : blockedAddressesStr) {
                 InetAddress address;
-                try
-                {
+                try {
                     address = InetAddress.getByName(addressStr);
-                }
-                catch (Exception e)
-                {
-                    logger.warning("Failed to add a blocked address: "
-                                           + addressStr);
+                } catch (Exception e) {
+                    logger.warn("Failed to add a blocked address: " + addressStr);
                     continue;
                 }
 
@@ -227,25 +229,16 @@ public class HostCandidateHarvester
     public static List<InetAddress> getAllAllowedAddresses()
     {
         List<InetAddress> addresses = new LinkedList<>();
-        boolean useIPv6 = !StackProperties.getBoolean(StackProperties.DISABLE_IPv6, false);
-        boolean useLinkLocalAddresses = !StackProperties.getBoolean(StackProperties.DISABLE_LINK_LOCAL_ADDRESSES, false);
-
-        try
-        {
-            for (NetworkInterface iface
-                    : Collections.list(NetworkInterface.getNetworkInterfaces()))
-            {
+        try {
+            for (NetworkInterface iface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
                 if (NetworkUtils.isInterfaceLoopback(iface)
                         || !NetworkUtils.isInterfaceUp(iface)
-                        || !isInterfaceAllowed(iface))
-                {
+                        || !isInterfaceAllowed(iface)) {
                     continue;
                 }
 
-                Enumeration<InetAddress> ifaceAddresses
-                        = iface.getInetAddresses();
-                while (ifaceAddresses.hasMoreElements())
-                {
+                Enumeration<InetAddress> ifaceAddresses = iface.getInetAddresses();
+                while (ifaceAddresses.hasMoreElements()) {
                     InetAddress address = ifaceAddresses.nextElement();
 
                     if (!isAddressAllowed(address))
@@ -259,9 +252,7 @@ public class HostCandidateHarvester
                     addresses.add(address);
                 }
             }
-        }
-        catch (SocketException se)
-        {
+        } catch (SocketException se) {
             logger.info("Failed to get network interfaces: " + se);
         }
 
@@ -277,113 +268,83 @@ public class HostCandidateHarvester
      *
      * If 0, 0, 0 are specified for preferred, min and max port, an ephemeral port will be used instead.
      *
-     * @param component the {@link Component} that we'd like to gather candidate
-     * addresses for.
+     * @param component the {@link Component} that we'd like to gather candidate addresses for.
      * @param preferredPort the port number that should be tried first when
      * binding local <tt>Candidate</tt> sockets for this <tt>Component</tt>.
      * @param minPort the port number where we should first try to bind before
      * moving to the next one (i.e. <tt>minPort + 1</tt>)
-     * @param maxPort the maximum port number where we should try binding
-     * before giving up and throwing an exception.
+     * @param maxPort the maximum port number where we should try binding before giving up and throwing an exception.
      * @param transport transport protocol used
-     *
-     * @throws IllegalArgumentException if either <tt>minPort</tt> or
-     * <tt>maxPort</tt> is not a valid port number, <tt>minPort &gt;
-     * maxPort</tt> or if transport is not supported.
-     * @throws IOException if an error occurs while the underlying resolver lib
-     * is using sockets.
+     * @throws IllegalArgumentException if either <tt>minPort</tt> or <tt>maxPort</tt> is not a valid port number,
+     * <tt>minPort &gt; maxPort</tt> or if transport is not supported.
+     * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      */
     public void harvest(Component component,
-                        int       preferredPort,
-                        int       minPort,
-                        int       maxPort,
-                        Transport transport)
-        throws IllegalArgumentException,
-               IOException
+            int preferredPort,
+            int minPort,
+            int maxPort,
+            Transport transport)
+            throws IllegalArgumentException,
+            IOException
     {
         harvestStatistics.startHarvestTiming();
 
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-
-        if (transport != Transport.UDP && transport != Transport.TCP)
-        {
+        if (transport != Transport.UDP && transport != Transport.TCP) {
             throw new IllegalArgumentException("Transport protocol not supported: " + transport);
         }
 
         boolean boundAtLeastOneSocket = false;
         boolean foundAtLeastOneUsableInterface = false;
         boolean foundAtLeastOneUsableAddress = false;
-        boolean useIPv6 = !StackProperties.getBoolean(StackProperties.DISABLE_IPv6, false);
-        boolean useLinkLocalAddresses = !StackProperties.getBoolean(StackProperties.DISABLE_LINK_LOCAL_ADDRESSES, false);
 
-        while (interfaces.hasMoreElements())
-        {
+        while (interfaces.hasMoreElements()) {
             NetworkInterface iface = interfaces.nextElement();
 
             if (NetworkUtils.isInterfaceLoopback(iface)
-                || !NetworkUtils.isInterfaceUp(iface)
-                || !isInterfaceAllowed(iface))
-            {
-                //this one is obviously not going to do
+                    || !NetworkUtils.isInterfaceUp(iface)
+                    || !isInterfaceAllowed(iface)) {
+                // skip one is obviously not going to do
                 continue;
             }
             foundAtLeastOneUsableInterface = true;
 
             Enumeration<InetAddress> addresses = iface.getInetAddresses();
-
-            while (addresses.hasMoreElements())
-            {
+            while (addresses.hasMoreElements()) {
                 InetAddress addr = addresses.nextElement();
 
-                if (!isAddressAllowed(addr))
-                {
+                if (!isAddressAllowed(addr)) {
                     continue;
                 }
 
-                if (!useLinkLocalAddresses && addr.isLinkLocalAddress())
-                {
+                if (!useLinkLocalAddresses && addr.isLinkLocalAddress()) {
                     continue;
                 }
                 foundAtLeastOneUsableAddress = true;
 
-                if((addr instanceof Inet4Address) || useIPv6)
-                {
-                    IceSocketWrapper sock = null;
-                    try
-                    {
-                        if (transport == Transport.UDP)
-                        {
+                if ((addr instanceof Inet4Address) || useIPv6) {
+                    IceSocketWrapper sock;
+                    try {
+                        if (transport == Transport.UDP) {
                             sock = createDatagramSocket(addr, preferredPort, minPort, maxPort);
-                            boundAtLeastOneSocket = true;
                         }
-                        else if (transport == Transport.TCP)
-                        {
+                        else {
                             if (addr instanceof Inet6Address)
                                 continue;
-                            sock = createServerSocket(
-                                    addr,
-                                    preferredPort,
-                                    minPort,
-                                    maxPort,
-                                    component);
-                            boundAtLeastOneSocket = true;
+                            sock = createServerSocket(addr, preferredPort, minPort, maxPort, component);
                         }
-                    }
-                    catch(IOException exc)
-                    {
+                        boundAtLeastOneSocket = true;
+                    } catch (IOException exc) {
                         // There seems to be a problem with this particular
-                        // address let's just move on for now and hope we will
-                        // find better
-                        if (logger.isLoggable(Level.WARNING))
-                        {
-                            logger.warning(
-                                    "Failed to create a socket for:"
-                                        +"\naddr:" + addr
-                                        +"\npreferredPort:" + preferredPort
-                                        +"\nminPort:" + minPort
-                                        +"\nmaxPort:" + maxPort
-                                        +"\nprotocol:" + transport
-                                        +"\nContinuing with next address");
+                        // address let's just move on for now and hope we will find better
+                        if (logger.isWarnEnabled()) {
+                            logger.warn("Failed to create a socket for:"
+                                    + "\naddr:" + addr
+                                    + "\npreferredPort:" + preferredPort
+                                    + "\nminPort:" + minPort
+                                    + "\nmaxPort:" + maxPort
+                                    + "\nprotocol:" + transport
+                                    + "\nContinuing with next address");
                         }
                         continue;
                     }
@@ -391,11 +352,10 @@ public class HostCandidateHarvester
                     HostCandidate candidate = new HostCandidate(sock, component, transport);
                     candidate.setVirtual(NetworkUtils.isInterfaceVirtual(iface));
                     component.addLocalCandidate(candidate);
+                    logger.info("Host candidate added: " + candidate);
 
-                    if (transport == Transport.TCP)
-                    {
-                        // have to wait a client connection to add a STUN socket
-                        // to the StunStack
+                    if (transport == Transport.TCP) {
+                        // have to wait a client connection to add a STUN socket to the StunStack
                         continue;
                     }
 
@@ -406,26 +366,23 @@ public class HostCandidateHarvester
                     createAndRegisterStunSocket(candidate);
 
                     ComponentSocket componentSocket = component.getComponentSocket();
-                    if (componentSocket != null)
-                    {
+                    if (componentSocket != null) {
                         componentSocket.add(sock);
                     }
                 }
             }
         }
 
-        if (!boundAtLeastOneSocket)
-        {
-            throw new IOException(
-                "Failed to bind even a single host candidate for component:"
-                            + component
-                            + " preferredPort=" + preferredPort
-                            + " minPort=" + minPort
-                            + " maxPort=" + maxPort
-                            + " foundAtLeastOneUsableInterface="
-                            + foundAtLeastOneUsableInterface
-                            + " foundAtLeastOneUsableAddress="
-                            + foundAtLeastOneUsableAddress);
+        if (!boundAtLeastOneSocket) {
+            throw new IOException("Failed to bind even a single host candidate for component:"
+                    + component
+                    + " preferredPort=" + preferredPort
+                    + " minPort=" + minPort
+                    + " maxPort=" + maxPort
+                    + " foundAtLeastOneUsableInterface="
+                    + foundAtLeastOneUsableInterface
+                    + " foundAtLeastOneUsableAddress="
+                    + foundAtLeastOneUsableAddress);
         }
 
         this.harvestStatistics.stopHarvestTiming(component.getLocalCandidateCount());
@@ -436,7 +393,6 @@ public class HostCandidateHarvester
      * candidate for the specified interface.
      *
      * @param iface The {@link NetworkInterface}.
-     *
      * @return <tt>true</tt> if the {@link NetworkInterface} is listed in the
      * <tt>org.ice4j.ice.harvest.ALLOWED_INTERFACES</tt> list. If that list
      * isn't defined, returns <tt>true</tt> if it's not listed in the
@@ -451,29 +407,24 @@ public class HostCandidateHarvester
         // gp: use getDisplayName() on Windows and getName() on Linux. Also
         // see NetworkAddressManagementServiceImpl in Jitsi.
         String ifName = (System.getProperty("os.name") == null
-                || System.getProperty("os.name").startsWith("Windows"))
-                ? iface.getDisplayName()
-                : iface.getName();
+                || Objects.requireNonNull(System.getProperty("os.name")).startsWith("Windows"))
+                ? iface.getDisplayName() : iface.getName();
 
         String[] allowedInterfaces = getAllowedInterfaces();
 
-        // NOTE The blocked interfaces list is taken into account only if the
-        // allowed interfaces list is not defined.
+        // NOTE The blocked interfaces list is taken into account only if the allowed interfaces list is not defined.
 
         // getAllowedInterfaces returns null if the array is empty.
-        if (allowedInterfaces != null)
-        {
+        if (allowedInterfaces != null) {
             // A list of allowed interfaces exists.
             return Arrays.asList(allowedInterfaces).contains(ifName);
         }
-        else
-        {
+        else {
             // A list of allowed interfaces does not exist.
             String[] blockedInterfaces = getBlockedInterfaces();
 
             // getBlockedInterfaces returns null if the array is empty.
-            if (blockedInterfaces != null)
-            {
+            if (blockedInterfaces != null) {
                 // but a list of blocked interfaces exists.
                 return !Arrays.asList(blockedInterfaces).contains(ifName);
             }
@@ -490,19 +441,15 @@ public class HostCandidateHarvester
      * An address is considered allowed, if
      * 1. It is not a loopback address.
      * 2. Either no addresses have explicitly been configured allowed (via the
-     * <tt>StackProperties.ALLOWED_ADDRESSES</tt> property), or <tt>address</tt>
-     * is explicitly configured allowed.
-     * 3. <tt>address</tt> is not explicitly configured blocked (via the
-     * <tt>StackProperties.BLOCKED_ADDRESSES</tt> property).
+     * <tt>StackProperties.ALLOWED_ADDRESSES</tt> property), or <tt>address</tt> is explicitly configured allowed.
+     * 3. <tt>address</tt> is not explicitly configured blocked (via the <tt>StackProperties.BLOCKED_ADDRESSES</tt> property).
      *
      * @param address the address to check
-     * @return <tt>true</tt> if <tt>address</tt> is allowed to be used by this
-     * <tt>HostCandidateHarvester</tt>.
+     * @return <tt>true</tt> if <tt>address</tt> is allowed to be used by this <tt>HostCandidateHarvester</tt>.
      */
     static boolean isAddressAllowed(InetAddress address)
     {
-        if (address.isLoopbackAddress())
-        {
+        if (address.isLoopbackAddress()) {
             return false;
         }
 
@@ -519,9 +466,8 @@ public class HostCandidateHarvester
     }
 
     /**
-     * Creates a <tt>ServerSocket</tt> and binds it to the specified
-     * <tt>localAddress</tt> and a port in the range specified by the
-     * <tt>minPort</tt> and <tt>maxPort</tt> parameters.
+     * Creates a <tt>ServerSocket</tt> and binds it to the specified <tt>localAddress</tt> and
+     * a port in the range specified by the <tt>minPort</tt> and <tt>maxPort</tt> parameters.
      *
      * If 0, 0, 0 are specified for preferred, min and max port, an ephemeral port will be used instead.
      *
@@ -531,77 +477,59 @@ public class HostCandidateHarvester
      * moving to the next one (i.e. <tt>minPort + 1</tt>)
      * @param maxPort the maximum port number where we should try binding
      * before giving up and throwing an exception.
-     *
      * @return the newly created <tt>DatagramSocket</tt>.
-     *
      * @throws IllegalArgumentException if either <tt>minPort</tt> or
-     * <tt>maxPort</tt> is not a valid port number or if <tt>minPort &gt;
-     * maxPort</tt>.
-     * @throws IOException if an error occurs while the underlying resolver lib
-     * is using sockets.
+     * <tt>maxPort</tt> is not a valid port number or if <tt>minPort &gt; maxPort</tt>.
+     * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if we couldn't find a free port between
-     * <tt>minPort</tt> and <tt>maxPort</tt> before reaching the maximum allowed
-     * number of retries.
+     * <tt>minPort</tt> and <tt>maxPort</tt> before reaching the maximum allowed number of retries.
      */
     private IceSocketWrapper createServerSocket(InetAddress laddr,
-        int preferredPort, int minPort, int maxPort,
-        Component component)
-        throws IllegalArgumentException,
-               IOException,
-               BindException
+            int preferredPort, int minPort, int maxPort,
+            Component component)
+            throws IllegalArgumentException,
+            IOException,
+            BindException
     {
         // make sure port numbers are valid
         boolean ephemeral = checkPorts(preferredPort, minPort, maxPort);
-        if (ephemeral)
-        {
+        if (ephemeral) {
             ServerSocket socket = new ServerSocket();
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(laddr, 0));
-            if (logger.isLoggable(Level.FINEST))
-            {
-                logger.finest("Bound using an ephemeral port to " + socket.getLocalSocketAddress());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Bound using an ephemeral port to " + socket.getLocalSocketAddress());
             }
             return new IceTcpServerSocketWrapper(new DelegatingServerSocket(socket), component);
         }
 
         int bindRetries = StackProperties.getInt(
-                        StackProperties.BIND_RETRIES,
-                        StackProperties.BIND_RETRIES_DEFAULT_VALUE);
+                StackProperties.BIND_RETRIES,
+                StackProperties.BIND_RETRIES_DEFAULT_VALUE);
 
         int port = preferredPort;
-        for (int i = 0; i < bindRetries; i++)
-        {
-            try
-            {
+        for (int i = 0; i < bindRetries; i++) {
+            try {
                 ServerSocket sock = new ServerSocket();
                 sock.setReuseAddress(true);
                 sock.bind(new InetSocketAddress(laddr, port));
-                IceSocketWrapper socket
-                    = new IceTcpServerSocketWrapper(
-                            new DelegatingServerSocket(sock),
-                            component);
+                IceSocketWrapper socket = new IceTcpServerSocketWrapper(
+                        new DelegatingServerSocket(sock),
+                        component);
 
-                if (logger.isLoggable(Level.FINEST))
-                {
-                    logger.log(
-                            Level.FINEST,
-                            "just bound to: " + sock.getLocalSocketAddress());
+                if (logger.isTraceEnabled()) {
+                    logger.trace("just bound to: " + sock.getLocalSocketAddress());
                 }
                 return socket;
-            }
-            catch (SocketException se)
-            {
-                logger.log(
-                        Level.INFO,
-                        "Retrying a bind because of a failure to bind to"
-                            + " address " + laddr
-                            + " and port " + port
-                            + " (" + se.getMessage() +")");
-                logger.log(Level.INFO, "", se);
+            } catch (SocketException se) {
+                logger.info("Retrying a bind because of a failure to bind to"
+                        + " address " + laddr
+                        + " and port " + port
+                        + " (" + se.getMessage() + ")");
+                logger.debug("", se);
             }
 
-            port ++;
-
+            port++;
             if (port > maxPort)
                 port = minPort;
         }
@@ -618,8 +546,7 @@ public class HostCandidateHarvester
      * we first try the <tt>minPort</tt>) and then proceed incrementally upwards
      * until we succeed or reach the bind retries limit. If we reach the
      * <tt>maxPort</tt> port number before the bind retries limit, we will then
-     * start over again at <tt>minPort</tt> and keep going until we run out of
-     * retries.
+     * start over again at <tt>minPort</tt> and keep going until we run out of retries.
      *
      * If 0, 0, 0 are specified for preferred, min and max port, an ephemeral port will be used instead.
      *
@@ -629,78 +556,57 @@ public class HostCandidateHarvester
      * moving to the next one (i.e. <tt>minPort + 1</tt>)
      * @param maxPort the maximum port number where we should try binding
      * before giving up and throwing an exception.
-     *
      * @return the newly created <tt>DatagramSocket</tt>.
-     *
      * @throws IllegalArgumentException if either <tt>minPort</tt> or
-     * <tt>maxPort</tt> is not a valid port number or if <tt>minPort &gt;
-     * maxPort</tt>.
-     * @throws IOException if an error occurs while the underlying resolver lib
-     * is using sockets.
+     * <tt>maxPort</tt> is not a valid port number or if <tt>minPort &gt; maxPort</tt>.
+     * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if we couldn't find a free port between
-     * <tt>minPort</tt> and <tt>maxPort</tt> before reaching the maximum allowed
-     * number of retries.
+     * <tt>minPort</tt> and <tt>maxPort</tt> before reaching the maximum allowed number of retries.
      */
     private IceSocketWrapper createDatagramSocket(InetAddress laddr,
-                                                int preferredPort,
-                                                int minPort,
-                                                int maxPort)
-        throws IllegalArgumentException,
-               IOException,
-               BindException
+            int preferredPort,
+            int minPort,
+            int maxPort)
+            throws IllegalArgumentException,
+            IOException,
+            BindException
     {
         // make sure port numbers are valid.
         boolean ephemeral = checkPorts(preferredPort, minPort, maxPort);
-        if (ephemeral)
-        {
+        if (ephemeral) {
             DatagramSocket socket = new MultiplexingDatagramSocket(0, laddr);
-            if (logger.isLoggable(Level.FINEST))
-            {
-                logger.finest("Bound using ephemeral port to " + socket.getLocalSocketAddress());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Bound using ephemeral port to " + socket.getLocalSocketAddress());
             }
             return new IceUdpSocketWrapper(socket);
         }
 
         int bindRetries = StackProperties.getInt(
-                        StackProperties.BIND_RETRIES,
-                        StackProperties.BIND_RETRIES_DEFAULT_VALUE);
+                StackProperties.BIND_RETRIES,
+                StackProperties.BIND_RETRIES_DEFAULT_VALUE);
 
         int port = preferredPort;
-        for (int i = 0; i < bindRetries; i++)
-        {
-            try
-            {
-                IceSocketWrapper sock
-                                = new IceUdpSocketWrapper(new
-                                    MultiplexingDatagramSocket(port, laddr));
+        for (int i = 0; i < bindRetries; i++) {
+            try {
+                IceSocketWrapper sock = new IceUdpSocketWrapper(new MultiplexingDatagramSocket(port, laddr));
 
-                if (logger.isLoggable(Level.FINEST))
-                {
-                    logger.log(
-                            Level.FINEST,
-                            "just bound to: " + sock.getLocalSocketAddress());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("just bound to: " + sock.getLocalSocketAddress());
                 }
                 return sock;
-            }
-            catch (SocketException se)
-            {
-                logger.log(
-                        Level.INFO,
-                        "Retrying a bind because of a failure to bind to"
-                            + " address " + laddr
-                            + " and port " + port
-                            + " (" + se.getMessage() +")");
-                logger.log(Level.FINEST, "", se);
+            } catch (SocketException se) {
+                logger.info("Retrying a bind because of a failure to bind to address " + laddr
+                        + " and port " + port
+                        + " (" + se.getMessage() + ")");
+                logger.debug("", se);
             }
 
-            port ++;
-
+            port++;
             if (port > maxPort)
                 port = minPort;
         }
 
-        throw new BindException("Could not bind to any port between "
-                        + minPort + " and " + (port - 1));
+        throw new BindException("Could not bind to any port between " + minPort + " and " + (port - 1));
     }
 
     /**
@@ -724,60 +630,51 @@ public class HostCandidateHarvester
      * Checks if the different ports are correctly set. If not, throws {@link IllegalArgumentException}. The
      * special values 0, 0, 0 for the parameters are interpreted as "use an ephemeral port".
      *
-     * @return {@code true} if the params specify that an ephemeral port should be used, and {@code false} otherwise.
-     *
      * @param preferredPort the port number that we should try to bind to first.
      * @param minPort the port number where we should first try to bind before
      * moving to the next one (i.e. <tt>minPort + 1</tt>)
      * @param maxPort the maximum port number where we should try binding
      * before giving up and throwing an exception.
-     *
-     * @throws IllegalArgumentException if either <tt>minPort</tt> or
-     * <tt>maxPort</tt> is not a valid port number or if <tt>minPort</tt> is
-     * greater than <tt>maxPort</tt>.
+     * @return {@code true} if the params specify that an ephemeral port should be used, and {@code false} otherwise.
+     * @throws IllegalArgumentException if either <tt>minPort</tt> or <tt>maxPort</tt>
+     * is not a valid port number or if <tt>minPort</tt> is greater than <tt>maxPort</tt>.
      */
     private static boolean checkPorts(int preferredPort, int minPort, int maxPort)
-        throws IllegalArgumentException
+            throws IllegalArgumentException
     {
-        if (preferredPort == 0 && minPort == 0 && maxPort == 0)
-        {
+        if (preferredPort == 0 && minPort == 0 && maxPort == 0) {
             return true;
         }
 
         // make sure port numbers are valid
         if (!NetworkUtils.isValidPortNumber(minPort)
-                        || !NetworkUtils.isValidPortNumber(maxPort))
-        {
+                || !NetworkUtils.isValidPortNumber(maxPort)) {
             throw new IllegalArgumentException("minPort (" + minPort
-                            + ") and maxPort (" + maxPort + ") "
-                            + "should be integers between 1024 and 65535.");
+                    + ") and maxPort (" + maxPort + ") "
+                    + "should be integers between 1024 and 65535.");
         }
 
         // make sure minPort comes before maxPort.
-        if (minPort > maxPort)
-        {
+        if (minPort > maxPort) {
             throw new IllegalArgumentException("minPort (" + minPort
-                            + ") should be less than or "
-                            + "equal to maxPort (" + maxPort + ")");
+                    + ") should be less than or "
+                    + "equal to maxPort (" + maxPort + ")");
         }
 
         // if preferredPort is not  in the allowed range, place it at min.
-        if (minPort > preferredPort || preferredPort > maxPort)
-        {
-            throw new IllegalArgumentException("preferredPort ("+preferredPort
-                            +") must be between minPort (" + minPort
-                            + ") and maxPort (" + maxPort + ")");
+        if (minPort > preferredPort || preferredPort > maxPort) {
+            throw new IllegalArgumentException("preferredPort (" + preferredPort
+                    + ") must be between minPort (" + minPort
+                    + ") and maxPort (" + maxPort + ")");
         }
 
         return false;
     }
 
     /**
-     * Returns the statistics describing how well the various harvests of this
-     * harvester went.
+     * Returns the statistics describing how well the various harvests of this harvester went.
      *
-     * @return The {@link HarvestStatistics} describing this harvester's
-     * harvests.
+     * @return The {@link HarvestStatistics} describing this harvester's harvests.
      */
     public HarvestStatistics getHarvestStatistics()
     {
@@ -789,8 +686,7 @@ public class HostCandidateHarvester
      * <tt>org.ice4j.ice.harvest.ALLOWED_INTERFACES</tt> and
      * <tt>org.ice4j.ice.harvest.BLOCKED_INTERFACES</tt> properties.
      *
-     * @throws java.lang.IllegalStateException if there were errors during host
-     * candidate interface filters initialization.
+     * @throws java.lang.IllegalStateException if there were errors during host candidate interface filters initialization.
      */
     public static synchronized void initializeInterfaceFilters()
     {
@@ -800,82 +696,59 @@ public class HostCandidateHarvester
         interfaceFiltersInitialized = true;
 
         // Initialize the allowed interfaces array.
-        allowedInterfaces = StackProperties.getStringArray(
-                StackProperties.ALLOWED_INTERFACES, ";");
+        allowedInterfaces = StackProperties.getStringArray(StackProperties.ALLOWED_INTERFACES, ";");
 
         // getStringArray returns null if the array is empty.
-        if (allowedInterfaces != null)
-        {
+        if (allowedInterfaces != null) {
             // Validate the allowed interfaces array.
 
-            // 1. Make sure the allowedInterfaces list contains interfaces that
-            // exist on the system.
+            // 1. Make sure the allowedInterfaces list contains interfaces that exist on the system.
             for (String iface : allowedInterfaces)
-                try
-                {
+                try {
                     NetworkInterface.getByName(iface);
-                }
-                catch (SocketException e)
-                {
-                    throw new IllegalStateException("there is no network " +
-                            "interface with the name " + iface, e);
+                } catch (SocketException e) {
+                    throw new IllegalStateException("there is no network interface with the name " + iface, e);
                 }
 
             // the allowedInterfaces array is not empty and its items represent
             // valid interfaces => there's at least one listening interface.
         }
-        else
-        {
+        else {
             // NOTE The blocked interfaces list is taken into account only if
             // the allowed interfaces list is not defined => initialize the
-            // blocked interfaces only if the allowed interfaces list is not
-            // defined.
+            // blocked interfaces only if the allowed interfaces list is not defined.
 
             // Initialize the blocked interfaces array.
-            blockedInterfaces = StackProperties.getStringArray(
-                    StackProperties.BLOCKED_INTERFACES, ";");
+            blockedInterfaces = StackProperties.getStringArray(StackProperties.BLOCKED_INTERFACES, ";");
 
             // getStringArray returns null if the array is empty.
-            if (blockedInterfaces != null)
-            {
+            if (blockedInterfaces != null) {
                 // Validate the blocked interfaces array.
 
-                // 1. Make sure the blockedInterfaces list contains interfaces
-                // that exist on the system.
+                // 1. Make sure the blockedInterfaces list contains interfaces that exist on the system.
                 for (String iface : blockedInterfaces)
-                    try
-                    {
+                    try {
                         NetworkInterface.getByName(iface);
-                    }
-                    catch (SocketException e)
-                    {
-                        throw new IllegalStateException("there is no " +
-                                "network interface with the name " + iface,
-                                e);
+                    } catch (SocketException e) {
+                        throw new IllegalStateException("there is no network interface with the name " + iface, e);
                     }
 
                 // 2. Make sure there's at least one allowed interface.
                 Enumeration<NetworkInterface> allInterfaces;
-                try
-                {
+                try {
                     allInterfaces = NetworkInterface.getNetworkInterfaces();
-                }
-                catch (SocketException e)
-                {
-                    throw new IllegalStateException("could not get the " +
-                            "list of the available network interfaces", e);
+                } catch (SocketException e) {
+                    throw new IllegalStateException("could not get the list of the available network interfaces", e);
                 }
 
                 int count = 0;
-                while (allInterfaces.hasMoreElements())
-                {
+                while (allInterfaces.hasMoreElements()) {
                     allInterfaces.nextElement();
                     count++;
                 }
 
                 if (blockedInterfaces.length >= count)
-                    throw new IllegalStateException("all network " +
-                            "interfaces are blocked");
+                    throw new IllegalStateException("all network interfaces are blocked");
             }
         }
     }

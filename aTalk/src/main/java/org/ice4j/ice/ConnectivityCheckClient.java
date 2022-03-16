@@ -20,15 +20,14 @@ package org.ice4j.ice;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.logging.*;
 
+import org.atalk.util.logging2.Logger;
 import org.ice4j.*;
 import org.ice4j.attribute.*;
 import org.ice4j.message.*;
 import org.ice4j.socket.*;
 import org.ice4j.stack.*;
 import org.ice4j.util.*;
-import org.ice4j.util.Logger; //Disambiguation
 
 import org.threeten.bp.Duration;
 
@@ -38,19 +37,11 @@ import org.threeten.bp.Duration;
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
 class ConnectivityCheckClient
     implements ResponseCollector
 {
-    /**
-     * The <tt>Logger</tt> used by the <tt>ConnectivityCheckClient</tt> class for logging output.
-     * Note that this shouldn't be used directly by instances of
-     * {@link ConnectivityCheckClient}, because it doesn't take into account
-     * the per-instance log level. Instances should use {@link #logger} instead.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(ConnectivityCheckClient.class.getName());
-
     /**
      * The agent that created us.
      */
@@ -119,7 +110,7 @@ class ConnectivityCheckClient
         this.parentAgent = parentAgent;
         this.scheduledExecutorService = scheduledExecutorService;
         this.executorService = executorService;
-        logger = new Logger(classLogger, parentAgent.getLogger());
+        logger = parentAgent.getLogger().createChildLogger(this.getClass().getName());
 
         stunStack = this.parentAgent.getStunStack();
     }
@@ -206,10 +197,8 @@ class ConnectivityCheckClient
                     indication,
                     candidatePair.getRemoteCandidate().getTransportAddress(),
                     localCandidate.getBase().getTransportAddress());
-            if (logger.isLoggable(Level.FINEST))
-            {
-                logger.finest("sending binding indication to pair " + candidatePair);
-            }
+            logger.trace(() ->
+                    "sending binding indication to pair " + candidatePair);
         }
         catch (Exception ex)
         {
@@ -217,10 +206,8 @@ class ConnectivityCheckClient
 
             if (stunSocket != null)
             {
-                logger.log(Level.INFO,
-                        "Failed to send " + indication + " through "
-                            + stunSocket.getLocalSocketAddress() + "\n" +
-                        ex.toString());
+                logger.info("Failed to send " + indication + " through "
+                            + stunSocket.getLocalSocketAddress() + "\n" + ex.getMessage());
             }
         }
     }
@@ -291,9 +278,7 @@ class ConnectivityCheckClient
             //nominated pairs.
             if (candidatePair.isNominated())
             {
-                logger.fine(
-                        "Add USE-CANDIDATE in check for: "
-                            + candidatePair.toShortString());
+                logger.debug(() -> "Add USE-CANDIDATE in check for: " + candidatePair.toShortString());
                 request.putAttribute(
                         AttributeFactory.createUseCandidateAttribute());
             }
@@ -335,9 +320,7 @@ class ConnectivityCheckClient
 
         tran.setApplicationData(candidatePair);
 
-        logger.fine(
-                "start check for " + candidatePair.toShortString() + " tid "
-                    + tran);
+        logger.debug("start check for " + candidatePair.toShortString() + " tid " + tran);
         try
         {
             tran
@@ -351,10 +334,9 @@ class ConnectivityCheckClient
                         originalWaitInterval,
                         maxWaitInterval,
                         maxRetransmissions);
-            if (logger.isLoggable(Level.FINEST))
+            if (logger.isTraceEnabled())
             {
-                logger.finest(
-                        "checking pair " + candidatePair + " tid " + tran);
+                logger.trace("checking pair " + candidatePair + " tid " + tran);
             }
         }
         catch (Exception ex)
@@ -376,7 +358,11 @@ class ConnectivityCheckClient
                     msg += " No route to host.";
                     ex = null;
                 }
-                logger.log(Level.INFO, msg, ex);
+                logger.info(msg + (ex == null ? "" : "\n" + ex.toString()));
+            }
+            else
+            {
+                logger.warn("Failed to send " + request, ex);
             }
         }
 
@@ -416,7 +402,7 @@ class ConnectivityCheckClient
             {
                 if (!response.containsAttribute(Attribute.ERROR_CODE))
                 {
-                    logger.fine("Received a malformed error response.");
+                    logger.debug(() -> "Received a malformed error response.");
                     return; //malformed error response
                 }
 
@@ -531,8 +517,7 @@ class ConnectivityCheckClient
 
         if (!response.containsAttribute(Attribute.XOR_MAPPED_ADDRESS))
         {
-            logger.fine("Received a success response with no "
-                    + "XOR_MAPPED_ADDRESS attribute.");
+            logger.debug(() -> "Received a success response with no XOR_MAPPED_ADDRESS attribute.");
             logger.info("Pair failed (no XOR-MAPPED-ADDRESS): "
                     + checkedPair.toShortString() + ". Local ufrag" + parentAgent.getLocalUfrag());
             checkedPair.setStateFailed();
@@ -738,15 +723,13 @@ class ConnectivityCheckClient
         {
             if (validPair.getParentComponent().getSelectedPair() == null)
             {
-                logger.info("Nomination confirmed for pair: "
-                    + validPair.toShortString()
+                logger.info("Nomination confirmed for pair: " + validPair.toShortString()
                     + ". Loal ufrag " + parentAgent.getLocalUfrag());
                 parentAgent.nominationConfirmed( validPair );
             }
             else
             {
-                logger.fine(
-                        "Keep alive for pair: " + validPair.toShortString());
+                logger.debug(() -> "Keep alive for pair: " + validPair.toShortString());
             }
         }
         //If the agent is the controlled agent, the response may be the result
@@ -767,8 +750,7 @@ class ConnectivityCheckClient
             }
             else
             {
-                logger.fine(
-                        "Keep alive for pair: " + validPair.toShortString());
+                logger.debug(() -> "Keep alive for pair: " + validPair.toShortString());
             }
         }
 
@@ -837,7 +819,7 @@ class ConnectivityCheckClient
         CandidatePair pair
             = (CandidatePair) ev.getTransactionID().getApplicationData();
 
-        logger.finer("Received error code " + ((int) errorCode));
+        logger.trace(() -> "Received error code " + ((int) errorCode));
 
         //RESOLVE ROLE_CONFLICTS
         if (errorCode == ErrorCodeAttribute.ROLE_CONFLICT)
@@ -845,7 +827,7 @@ class ConnectivityCheckClient
             boolean wasControlling
                 = originalRequest.containsAttribute(Attribute.ICE_CONTROLLING);
 
-            logger.finer("Switching to isControlling=" + !wasControlling);
+            logger.trace(() -> "Switching to isControlling=" + !wasControlling);
             parentAgent.setControlling(!wasControlling);
 
             pair.getParentComponent().getParentStream().getCheckList()
@@ -957,7 +939,7 @@ class ConnectivityCheckClient
                  * its final state in either the processResponse(),
                  * processTimeout() or processFailure() method.
                  */
-                logger.finest("will skip a check beat.");
+                logger.trace(() -> "will skip a check beat.");
                 checkList.fireEndOfOrdinaryChecks();
             }
         }

@@ -1,5 +1,20 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.1 (209010)
+Release Date:   03/16/2022
+Author:         cmeng
+- Upgrade ice4j to use org.jitsi:ice4j:3.0-55-g32a8aad with aTalk customization
+- Android with network APN=IPv4/IPv6 or APN=IPv6 returns only IPv6 public address in InetAddress.getByName(host);
+  hence only an IPv6 candidate (without the sfllx candidate) is sent i.e.
+  i.e. IPv6 candidate harvested from ice4j HostCandidateHarvester#harvest(); causing problem in call setup;
+  <candidate port='58979' type='host' ip='2401:7400:4000:2e4a:1:2:93f1:b634' id='e49ea0a0-87e9-46a1-9c2e-1666b6ce8e32'/>
+  missing: <candidate ... ip='119.56.100.180' port='5002' type='srflx' rel-addr='10.143.27.57' rel-port='5002' network='0'/>
+  Problem fixed with IceUdpTransportManager#getTransportAddress(String hostname, int port, Transport transport)
+  see https://github.com/jitsi/ice4j/issues/255 for detail problem and solution.
+  For android network APN setting see: https://sanctum9.wordpress.com/2019/03/15/switch-to-ipv6-on-android/
+- upgrade smack library to use v4.4.5
+
+=========================================================================
 Version:        2.9.0a (209001)
 Release Date:   03/09/2022
 Author:         cmeng

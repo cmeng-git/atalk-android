@@ -20,21 +20,22 @@ package org.ice4j;
 import org.ice4j.ice.*;
 
 import java.util.*;
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The class contains a number of property names and their default values that
  * we use to configure the behavior of the ice4j stack.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
 public class StackProperties
 {
     /**
      * Our class logger.
      */
-    private static final Logger logger
-        = Logger.getLogger(StackProperties.class.getName());
+    private static final Logger logger = Logger.getLogger(StackProperties.class.getName());
 
     /**
      * The name of the property containing the number of binds that we should
@@ -69,8 +70,7 @@ public class StackProperties
     /**
      * The maximum number of retransmissions of a STUN Binding request without
      * a valid STUN Binding response after which consent freshness is to be
-     * considered unconfirmed according to &quot;STUN Usage for Consent
-     * Freshness&quot;.
+     * considered unconfirmed according to &quot;STUN Usage for Consent Freshness&quot;.
      */
     public static final String CONSENT_FRESHNESS_MAX_RETRANSMISSIONS
         = "org.ice4j.ice.CONSENT_FRESHNESS_MAX_RETRANSMISSIONS";
@@ -100,39 +100,33 @@ public class StackProperties
      * The number of milliseconds a client transaction should wait before
      * retransmitting, after it has sent a request for the first time.
      */
-    public static final String FIRST_CTRAN_RETRANS_AFTER
-                                        = "org.ice4j.FIRST_CTRAN_RETRANS_AFTER";
+    public static final String FIRST_CTRAN_RETRANS_AFTER = "org.ice4j.FIRST_CTRAN_RETRANS_AFTER";
 
     /**
      * The maximum number of milliseconds that an exponential client
      * retransmission timer can reach.
      */
-    public static final String MAX_CTRAN_RETRANS_TIMER
-                                    = "org.ice4j.MAX_CTRAN_RETRANS_TIMER";
+    public static final String MAX_CTRAN_RETRANS_TIMER = "org.ice4j.MAX_CTRAN_RETRANS_TIMER";
 
     /**
      * Indicates whether a client transaction should be kept after a response
      * is received rather than destroying it which is the default.
      */
-    public static final String KEEP_CRANS_AFTER_A_RESPONSE
-                                = "org.ice4j.KEEP_CRANS_AFTER_A_RESPONSE";
+    public static final String KEEP_CRANS_AFTER_A_RESPONSE = "org.ice4j.KEEP_CRANS_AFTER_A_RESPONSE";
 
     /**
      * The maximum number of retransmissions a client transaction should send.
      */
-    public static final String MAX_CTRAN_RETRANSMISSIONS
-                                = "org.ice4j.MAX_RETRANSMISSIONS";
+    public static final String MAX_CTRAN_RETRANSMISSIONS = "org.ice4j.MAX_RETRANSMISSIONS";
 
     /**
      * The name of the System property that allows us to set a custom maximum
      * for check list sizes.
      */
-    public static final String MAX_CHECK_LIST_SIZE
-                                        = "org.ice4j.MAX_CHECK_LIST_SIZE";
+    public static final String MAX_CHECK_LIST_SIZE = "org.ice4j.MAX_CHECK_LIST_SIZE";
 
     /**
-     * The value of the SOFTWARE attribute that ice4j should include in all
-     * outgoing messages.
+     * The value of the SOFTWARE attribute that ice4j should include in all outgoing messages.
      */
     public static final String SOFTWARE = "org.ice4j.SOFTWARE";
 
@@ -140,37 +134,32 @@ public class StackProperties
      * The name of the property that tells the stack whether or not it should
      * let the application see retransmissions of incoming requests.
      */
-    public static final String PROPAGATE_RECEIVED_RETRANSMISSIONS
-                        = "org.ice4j.PROPAGATE_RECEIVED_RETRANSMISSIONS";
+    public static final String PROPAGATE_RECEIVED_RETRANSMISSIONS = "org.ice4j.PROPAGATE_RECEIVED_RETRANSMISSIONS";
 
     /**
      * A property that allows us to specify whether we would expect link local
      * IPv6 addresses to be able to reach globally routable ones.
      */
-    public static final String ALLOW_LINK_TO_GLOBAL_REACHABILITY
-                                = "org.ice4j.ALLOW_LINK_TO_GLOBAL_REACHABILITY";
+    public static final String ALLOW_LINK_TO_GLOBAL_REACHABILITY = "org.ice4j.ALLOW_LINK_TO_GLOBAL_REACHABILITY";
 
     /**
      * The name of the property that allows us to tell the stack to always
      * sign STUN messages with a FINGERPRINT attribute.
      */
-    public static final String ALWAYS_SIGN
-                                = "org.ice4j.ALWAYS_SIGN";
+    public static final String ALWAYS_SIGN = "org.ice4j.ALWAYS_SIGN";
 
     /**
      * Tells the stack whether to reject all incoming requests that do not
      * carry a MESSAGE-INTEGRITY header.
      */
-    public static final String REQUIRE_MESSAGE_INTEGRITY
-                                    = "org.ice4j.REQUIRE_MESSAGE_INTEGRITY";
+    public static final String REQUIRE_MESSAGE_INTEGRITY = "org.ice4j.REQUIRE_MESSAGE_INTEGRITY";
 
     /**
      * The name of the property that can be used to specify the number of
      * milliseconds that we must wait after ICE processing enters a COMPLTED
      * state and before we free candidates and move into the TERMINATED state.
      */
-    public static final String TERMINATION_DELAY
-                                    = "org.ice4j.TERMINATION_DELAY";
+    public static final String TERMINATION_DELAY = "org.ice4j.TERMINATION_DELAY";
 
     /**
      * The name of the property that can be used to disable STUN keep alives.
@@ -187,8 +176,7 @@ public class StackProperties
      * list fails). Default value is <tt>-1</tt> which causes the nominator
      * to wait until the check list completes or fails.
      */
-    public static final String NOMINATION_TIMER
-                                    = "org.ice4j.NOMINATION_TIMER";
+    public static final String NOMINATION_TIMER = "org.ice4j.NOMINATION_TIMER";
 
     /**
      * The name of the property used to disabled IPv6 support.
@@ -199,15 +187,13 @@ public class StackProperties
      * The name of the allowed interfaces property which specifies the allowed
      * interfaces for host candidate allocations.
      */
-    public static final String ALLOWED_INTERFACES
-            = "org.ice4j.ice.harvest.ALLOWED_INTERFACES";
+    public static final String ALLOWED_INTERFACES = "org.ice4j.ice.harvest.ALLOWED_INTERFACES";
 
     /**
      * The name of the allowed interfaces property which specifies the blocked
      * interfaces for host candidate allocations.
      */
-    public static final String BLOCKED_INTERFACES
-            = "org.ice4j.ice.harvest.BLOCKED_INTERFACES";
+    public static final String BLOCKED_INTERFACES = "org.ice4j.ice.harvest.BLOCKED_INTERFACES";
 
     /**
      * The name of the property which specifies a ";"-separated list of IP
@@ -216,15 +202,13 @@ public class StackProperties
      * NOTE: this is currently only supported by
      * {@link org.ice4j.ice.harvest.TcpHarvester}.
      */
-    public static final String ALLOWED_ADDRESSES
-            = "org.ice4j.ice.harvest.ALLOWED_ADDRESSES";
+    public static final String ALLOWED_ADDRESSES = "org.ice4j.ice.harvest.ALLOWED_ADDRESSES";
 
     /**
      * The name of the property which, if set to true, specifies that
      * link local addresses should not be used for candidate allocations.
      */
-    public static final String DISABLE_LINK_LOCAL_ADDRESSES
-            = "org.ice4j.ice.harvest.DISABLE_LINK_LOCAL_ADDRESSES";
+    public static final String DISABLE_LINK_LOCAL_ADDRESSES = "org.ice4j.ice.harvest.DISABLE_LINK_LOCAL_ADDRESSES";
 
     /**
      * The name of the property which specifies a ";"-separated list of IP
@@ -233,8 +217,7 @@ public class StackProperties
      * NOTE: this is currently only supported by
      * {@link org.ice4j.ice.harvest.TcpHarvester}.
      */
-    public static final String BLOCKED_ADDRESSES
-            = "org.ice4j.ice.harvest.BLOCKED_ADDRESSES";
+    public static final String BLOCKED_ADDRESSES = "org.ice4j.ice.harvest.BLOCKED_ADDRESSES";
 
     /**
      * The name of the property which specifies whether the dynamic port UDP
@@ -246,8 +229,7 @@ public class StackProperties
     /**
      * Timeout, in seconds, of how long to wait for an individual harvest before timing out
      */
-    public static final String HARVESTING_TIMEOUT
-            = "org.ice4j.ice.harvest.HARVESTING_TIMEOUT";
+    public static final String HARVESTING_TIMEOUT = "org.ice4j.ice.harvest.HARVESTING_TIMEOUT";
 
     /**
      * The name of the property which specifies whether the per-component
@@ -258,8 +240,7 @@ public class StackProperties
      * by {@link Component#getSocket()}. Otherwise, the socket instance from the
      * desired {@link CandidatePair} must be used.
      */
-    public static final String USE_COMPONENT_SOCKET
-        = "org.ice4j.ice.USE_COMPONENT_SOCKET";
+    public static final String USE_COMPONENT_SOCKET = "org.ice4j.ice.USE_COMPONENT_SOCKET";
 
     /**
      * Returns the String value of the specified property (minus all
@@ -354,11 +335,9 @@ public class StackProperties
             }
             catch (NumberFormatException ex)
             {
-                logger.log(
-                        Level.FINE,
+                logger.log(Level.FINE,
                         propertyName + " does not appear to be an integer. "
-                            + "Defaulting to " + defaultValue + ".",
-                        ex);
+                            + "Defaulting to " + defaultValue + ".", ex);
             }
         }
         return intValue;

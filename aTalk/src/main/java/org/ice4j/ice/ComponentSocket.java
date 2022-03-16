@@ -23,23 +23,18 @@ import org.ice4j.socket.*;
 import java.beans.*;
 import java.net.*;
 import java.util.*;
-import org.ice4j.util.*; //Disambiguation
+import org.atalk.util.logging2.Logger;
 
 /**
  * Extends {@link MergingDatagramSocket} with functionality specific to
  * an ICE {@link Component}.
+ *
+ * @author Eng Chong Meng
  */
 public class ComponentSocket
     extends MergingDatagramSocket
     implements PropertyChangeListener
 {
-    /**
-     * The {@link Logger} used by the {@link MergingDatagramSocket} class and
-     * its instances for logging output.
-     */
-    private static final java.util.logging.Logger classLogger
-        = java.util.logging.Logger.getLogger(MergingDatagramSocket.class.getName());
-
     /**
      * Controls access to {@link #authorizedAddresses}.
      */
@@ -68,21 +63,15 @@ public class ComponentSocket
     private final Object initializedActiveSyncRoot = new Object();
 
     /**
-     * The {@link Logger} used by {@link MergingDatagramSocket} instances.
-     */
-    private final Logger logger;
-
-    /**
      * Initializes a new {@link MergingDatagramSocket} instance.
      * @throws SocketException
      */
-    ComponentSocket(Component component, Logger levelDelegate)
+    ComponentSocket(Component component, Logger parentLogger)
         throws SocketException
     {
-        super(levelDelegate);
+        super(parentLogger);
 
         this.component = component;
-        this.logger = new Logger(classLogger, levelDelegate);
         component.getParentStream().addPairChangeListener(this);
     }
 

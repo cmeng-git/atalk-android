@@ -90,8 +90,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 209000
-        versionName "2.9.0"
+        versionCode 209010
+        versionName "2.9.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -304,10 +304,6 @@ dependencies {
     // note: bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59
     implementation 'org.jitsi:zrtp4j-light:4.1.2'
 
-    // for ice4j_3.0 only
-    // implementation 'org.jitsi:jicoco-config:1.1-103-g7b1cd54'
-    // implementation 'org.jitsi:jitsi-metaconfig:1.0-9-g5e1b624'
-
     // Required for provisioning discovery
     implementation 'org.jmdns:jmdns:3.5.7'
     implementation 'org.opentelecoms.sdp:sdp-api:1.0'
@@ -358,28 +354,15 @@ dependencies {
         classDelete 'javax.media.Manager**'
     }
 
-    /*
-    * see NetaddrActivator#start(BundleContext) for the actual settings:
-    * ? ice4j-2.0.0 work only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-    * The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
-    * so remove System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true")
-    *
-    * ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
-    * see https://github.com/bitletorg/weupnp/issues/20
-    * must include System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
-     */
+    // see NetaddrActivator#start(BundleContext) for the actual settings: (use ice4j 3.0-xx)
     implementation jarjar.repackage {
-        // Do not use the latest master-SNAPSHOT => not compatible with aTalk
-        // Use the latest release version: ice4j-2.0.0-20190607.184546-36.jar
-        // == 'ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
-        from('com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac') {
-        // from('org.jitsi:ice4j:3.0-54-g2baae57') {
+        from('org.jitsi:ice4j:3.0-55-g32a8aad') {
             transitive = false
         }
-        // destinationDir new File("${projectDir}/libs")
-        destinationName "ice4j-2.0-SNAPSHOT.jar"
-        // for ice4j_3.0 only
-        // classRename 'org.jitsi.utils.**', 'org.atalk.util.@1'
+        destinationName "ice4j-3.0-SNAPSHOT.jar"
+
+        // Rename to use aTalk namespace to minimize changes
+        classRename 'org.jitsi.utils.**', 'org.atalk.util.@1'
 
         // Consumer was introduced in API-24
         classRename 'java.util.function.Consumer', 'org.atalk.util.function.Consumer'
@@ -390,38 +373,40 @@ dependencies {
         // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
         classDelete 'org.ice4j.ice.harvest.UPNPHarvester**'
 
-        // For testing/debug only
-        classDelete 'org.ice4j.ice.attribute.AttributeDecoder**'
-        classDelete 'org.ice4j.ice.attribute.MessageIntegrityAttributes**'
-
-        classDelete 'org.ice4j.harvest.AbstractTcpListener**'
-        classDelete 'org.ice4j.harvest.AbstractUdpListener**'
-        classDelete 'org.ice4j.harvest.AwsCandidateHarvester**'
-        classDelete 'org.ice4j.harvest.CandidateHarvesterSet**'
-        classDelete 'org.ice4j.harvest.HostCandidateHarvester**'
-        classDelete 'org.ice4j.harvest.MappingCandidateHarvester**'
-        classDelete 'org.ice4j.harvest.MappingCandidateHarvesters**'
-        classDelete 'org.ice4j.harvest.SingleMappingCandidateHarvester**'
-        classDelete 'org.ice4j.harvest.StunMappingCandidateHarvester**'
-
         classDelete 'org.ice4j.ice.Agent**'
-        classDelete 'org.ice4j.ice.CheckList'
+        classDelete 'org.ice4j.ice.CheckList' // can be removed
         classDelete 'org.ice4j.ice.Component**'
-        classDelete 'org.ice4j.ice.ComponentSocket**'
-        classDelete 'org.ice4j.ice.ConnectivityCheckClient**'
+        classDelete 'org.ice4j.ice.ComponentSocket**' // can be removed
+        classDelete 'org.ice4j.ice.ConnectivityCheckClient**' // can be removed
         classDelete 'org.ice4j.ice.ConnectivityCheckServer'
-        classDelete 'org.ice4j.ice.DefaultNominator**'
+        classDelete 'org.ice4j.ice.DefaultNominator**' // can be removed
         classDelete 'org.ice4j.ice.IceMediaStream**'
-        classDelete 'org.ice4j.ice.LocalCandidate**'
-        classDelete 'org.ice4j.ice.NominationStrategy**'
+        classDelete 'org.ice4j.ice.LocalCandidate**' // can be removed
+        // classDelete 'org.ice4j.ice.NominationStrategy**'
 
-        classDelete 'org.ice4j.socket.MergingDatagramSocket**'
-        classDelete 'org.ice4j.socket.MuxServerSocketChannelFactory**'
+        // classDelete 'org.ice4j.ice.attribute.AttributeDecoder**'
+        // classDelete 'org.ice4j.ice.attribute.MessageIntegrityAttributes**'
 
-        classDelete 'org.ice4j.stack.Connector**'
-        classDelete 'org.ice4j.stack.NetAccessManager**'
-        classDelete 'org.ice4j.stack.StunClientTransaction**'
-        classDelete 'org.ice4j.stack.StunStack**'
+        classDelete 'org.ice4j.ice.harvest.AbstractTcpListener**'
+        classDelete 'org.ice4j.ice.harvest.AbstractUdpListener**'
+        classDelete 'org.ice4j.ice.harvest.AwsCandidateHarvester**' // can be removed
+        classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet'
+        classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet$**'
+        classDelete 'org.ice4j.ice.harvest.HostCandidateHarvester**'
+        classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvester**' // can be removed
+        classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvesters**'
+        classDelete 'org.ice4j.ice.harvest.SingleMappingCandidateHarvester**'
+        classDelete 'org.ice4j.ice.harvest.StunMappingCandidateHarvester**' // can be removed
+
+        classDelete 'org.ice4j.message.Message'
+
+        classDelete 'org.ice4j.socket.MergingDatagramSocket**' // can be removed
+        classDelete 'org.ice4j.socket.MuxServerSocketChannelFactory**' // can be removed?
+
+        // classDelete 'org.ice4j.stack.Connector**'
+        // classDelete 'org.ice4j.stack.NetAccessManager**'
+        // classDelete 'org.ice4j.stack.StunClientTransaction**'
+        // classDelete 'org.ice4j.stack.StunStack**'
 
         classDelete 'org.ice4j.StackProperties**'
     }

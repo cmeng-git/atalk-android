@@ -19,8 +19,9 @@ package org.ice4j.ice;
 
 import java.beans.*;
 import java.util.*;
-import java.util.logging.Logger;
 
+import org.atalk.util.collections.JMap;
+import org.atalk.util.logging2.Logger;
 import org.ice4j.*;
 
 /**
@@ -29,18 +30,10 @@ import org.ice4j.*;
  *
  * @author Emil Ivov
  * @author Namal Senarathne
+ * @author Eng Chong Meng
  */
 public class IceMediaStream
 {
-    /**
-     * Our class logger
-     * Note that this shouldn't be used directly by instances of
-     * {@link IceMediaStream}, because it doesn't take into account the
-     * per-instance log level. Instances should use {@link #logger} instead.
-     */
-    private static final Logger classLogger =
-        Logger.getLogger(IceMediaStream.class.getName());
-
     /**
      * The property name that we use when delivering events notifying listeners
      * that the consent freshness of a pair has changed.
@@ -103,7 +96,7 @@ public class IceMediaStream
 
     /**
      * The id that was last assigned to a component. The next id that we give
-     * to a component would be lastComponendID + 1;
+     * to a component would be lastComponentID + 1;
      */
     private int lastComponentID = 0;
 
@@ -150,7 +143,7 @@ public class IceMediaStream
     /**
      * The {@link Logger} used by {@link IceMediaStream} instances.
      */
-    private org.ice4j.util.Logger logger;
+    private Logger logger;
 
     /**
      * Initializes a new <tt>IceMediaStream</tt> object.
@@ -161,7 +154,7 @@ public class IceMediaStream
      */
     protected IceMediaStream(Agent parentAgent, String name)
     {
-        logger = new org.ice4j.util.Logger(classLogger, parentAgent.getLogger());
+        logger = parentAgent.getLogger().createChildLogger(IceMediaStream.class.getName(), JMap.of("name", name));
         this.name = name;
         this.parentAgent = parentAgent;
         checkList = new CheckList(this);
@@ -194,7 +187,8 @@ public class IceMediaStream
                     ++lastComponentID,
                     this,
                     keepAliveStrategy,
-                    useComponentSocket);
+                    useComponentSocket,
+                    logger);
             components.put(component.getComponentID(), component);
         }
 
@@ -367,7 +361,7 @@ public class IceMediaStream
 
             orderCheckList();
             pruneCheckList(checkList);
-            logger.finest("Checklist initialized.");
+            logger.trace(() -> "Checklist initialized.");
         }
     }
 
@@ -925,5 +919,10 @@ public class IceMediaStream
     public String getRemotePassword()
     {
         return remotePassword;
+    }
+
+    public Logger getLogger()
+    {
+        return logger;
     }
 }

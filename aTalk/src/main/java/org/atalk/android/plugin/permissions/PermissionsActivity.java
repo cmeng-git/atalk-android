@@ -259,7 +259,6 @@ public class PermissionsActivity extends OSGiActivity
         startActivity(myAppSettings);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void showPermissionRationale(final PermissionToken token)
     {
         new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)

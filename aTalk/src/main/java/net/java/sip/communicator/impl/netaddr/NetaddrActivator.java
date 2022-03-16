@@ -19,6 +19,7 @@ import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
+import org.ice4j.ice.harvest.MappingCandidateHarvesters;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -49,6 +50,9 @@ public class NetaddrActivator implements BundleActivator
 
     /**
      * Creates a NetworkAddressManager, starts it, and registers it as a NetworkAddressManagerService.
+     * @see MappingCandidateHarvesters#initialize() for static harvesters creation
+     * @see net.java.sip.communicator.util.NetworkUtils
+     * @see net.java.sip.communicator.util.launchutils.LaunchArgHandler#handleIPv4Enforcement()
      *
      * @param bundleContext OSGI bundle context
      * @throws Exception if starting the NetworkAddressManagerFails.
@@ -57,29 +61,28 @@ public class NetaddrActivator implements BundleActivator
             throws Exception
     {
         /*
-         * in here we load static properties that should be elsewhere, end ugly property set
+         * Here we load static properties that should be elsewhere, end ugly property set;
          */
         // System.setProperty("java.net.preferIPv4Stack", "false");
         // System.setProperty("java.net.preferIPv6Addresses", "true");
 
         /*
-         * ? ice4j-2.0.0 works only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
-         * cmeng: The latest ice4j-2.0.0-20190607.184546-36.jar seems OK with DISABLE_AWS_HARVESTER_PNAME => false
-         * so commented out below statement:
+         * cmeng: The latest ice4j-2.0.0-20190607.184546-36.jar and ice4j-3.0 is OK AWS harvester enabled
+         * Earlier ice4j-2.0 works only with AWS disabled - otherwise hang in AWS EC2 conn.getContent()
          */
         // System.setProperty(MappingCandidateHarvesters.DISABLE_AWS_HARVESTER_PNAME, "true");
 
         /*
-         * ice4j dependency lib org.bitlet.weupnp uses in uPnP Harvester not working for android:
-         * Need to redefine the xmp parser for weupnp for android; see
-         * https://github.com/bitletorg/weupnp/issues/20
+         * ice4j dependency lib org.bitlet.weupnp is used in uPnP Harvester; but not working for android:
+         * see https://github.com/bitletorg/weupnp/issues/20'
+         * Must redefine the xmp parser for weupnp for android;
         */
         System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
 
-        //keep a reference to the bundle context for later usage.
+        // keep a reference to the bundle context for later usage.
         NetaddrActivator.bundleContext = bundleContext;
 
-        //Create and start the network address manager.
+        // Create and start the network address manager.
         networkAMS = new NetworkAddressManagerServiceImpl();
 
         // give references to the NetworkAddressManager implementation
@@ -91,8 +94,7 @@ public class NetaddrActivator implements BundleActivator
 
     /**
      * Returns a reference to a ConfigurationService implementation currently
-     * registered in the bundle context or null if no such implementation was
-     * found.
+     * registered in the bundle context or null if no such implementation was found.
      *
      * @return a currently valid implementation of the ConfigurationService.
      */
@@ -121,8 +123,7 @@ public class NetaddrActivator implements BundleActivator
     /**
      * Returns a reference to the bundle context that we were started with.
      *
-     * @return a reference to the BundleContext instance that we were started
-     * with.
+     * @return a reference to the BundleContext instance that we were started with.
      */
     static BundleContext getBundleContext()
     {
