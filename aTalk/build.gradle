@@ -373,42 +373,23 @@ dependencies {
         // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
         classDelete 'org.ice4j.ice.harvest.UPNPHarvester**'
 
-        classDelete 'org.ice4j.ice.Agent**'
-        classDelete 'org.ice4j.ice.CheckList' // can be removed
-        classDelete 'org.ice4j.ice.Component**'
-        classDelete 'org.ice4j.ice.ComponentSocket**' // can be removed
-        classDelete 'org.ice4j.ice.ConnectivityCheckClient**' // can be removed
-        classDelete 'org.ice4j.ice.ConnectivityCheckServer'
-        classDelete 'org.ice4j.ice.DefaultNominator**' // can be removed
-        classDelete 'org.ice4j.ice.IceMediaStream**'
-        classDelete 'org.ice4j.ice.LocalCandidate**' // can be removed
-        // classDelete 'org.ice4j.ice.NominationStrategy**'
+        classDelete 'org.ice4j.StackProperties**'
 
-        // classDelete 'org.ice4j.ice.attribute.AttributeDecoder**'
-        // classDelete 'org.ice4j.ice.attribute.MessageIntegrityAttributes**'
+        classDelete 'org.ice4j.ice.Agent**'
+        classDelete 'org.ice4j.ice.Component'
+        classDelete 'org.ice4j.ice.ConnectivityCheckServer'
+        classDelete 'org.ice4j.ice.IceMediaStream**'
 
         classDelete 'org.ice4j.ice.harvest.AbstractTcpListener**'
         classDelete 'org.ice4j.ice.harvest.AbstractUdpListener**'
-        classDelete 'org.ice4j.ice.harvest.AwsCandidateHarvester**' // can be removed
         classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet'
         classDelete 'org.ice4j.ice.harvest.CandidateHarvesterSet$**'
         classDelete 'org.ice4j.ice.harvest.HostCandidateHarvester**'
-        classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvester**' // can be removed
+        classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvester**' // may be removed (java/kotlin)
         classDelete 'org.ice4j.ice.harvest.MappingCandidateHarvesters**'
         classDelete 'org.ice4j.ice.harvest.SingleMappingCandidateHarvester**'
-        classDelete 'org.ice4j.ice.harvest.StunMappingCandidateHarvester**' // can be removed
 
         classDelete 'org.ice4j.message.Message'
-
-        classDelete 'org.ice4j.socket.MergingDatagramSocket**' // can be removed
-        classDelete 'org.ice4j.socket.MuxServerSocketChannelFactory**' // can be removed?
-
-        // classDelete 'org.ice4j.stack.Connector**'
-        // classDelete 'org.ice4j.stack.NetAccessManager**'
-        // classDelete 'org.ice4j.stack.StunClientTransaction**'
-        // classDelete 'org.ice4j.stack.StunStack**'
-
-        classDelete 'org.ice4j.StackProperties**'
     }
 
     // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
