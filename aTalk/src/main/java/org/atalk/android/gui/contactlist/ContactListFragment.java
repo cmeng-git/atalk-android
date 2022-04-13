@@ -375,13 +375,10 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         menu.findItem(R.id.move_contact).setVisible(userRegistered);
 
         OperationSetExtendedAuthorizations authOpSet = pps.getOperationSet(OperationSetExtendedAuthorizations.class);
-        boolean reRequestVisible = false;
-        if (authOpSet != null
+        boolean reRequestVisible = (authOpSet != null)
                 && authOpSet.getSubscriptionStatus(contact) != null
                 && !authOpSet.getSubscriptionStatus(contact).equals(
-                OperationSetExtendedAuthorizations.SubscriptionStatus.Subscribed)) {
-            reRequestVisible = true;
-        }
+                OperationSetExtendedAuthorizations.SubscriptionStatus.Subscribed);
         menu.findItem(R.id.re_request_auth).setVisible(reRequestVisible);
         popup.show();
     }

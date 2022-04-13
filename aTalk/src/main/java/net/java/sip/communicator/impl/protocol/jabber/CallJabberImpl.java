@@ -20,7 +20,6 @@ import net.java.sip.communicator.service.protocol.media.MediaHandler;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.call.JingleMessageHelper;
 import org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl;
 import org.atalk.service.neomedia.DtlsControl;
 import org.atalk.service.neomedia.MediaDirection;
@@ -35,22 +34,20 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.CoinExtension;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.PayloadType;
-import org.jivesoftware.smackx.jingle.RtpDescription;
-import org.jivesoftware.smackx.jingle.SdpTransfer;
-import org.jivesoftware.smackx.jingle.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jivesoftware.smackx.jingle_rtp.JingleCallSessionImpl;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
@@ -61,7 +58,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import timber.log.Timber;
 
@@ -99,21 +95,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      */
     private Jid mJitsiVideobridge;
 
-    private CallPeerMediaHandlerJabberImpl mMediaHandler;
-
     /**
      * Indicates if the <code>CallPeer</code> will support <code>inputevt</code>
      * extension (i.e. will be able to be remote-controlled).
      */
     private boolean localInputEvtAware = false;
-
-    private final XMPPConnection mConnection;
-
-    /**
-     * A map of the callee FullJid to JingleMessage id, id value is used in session-initiate creation,
-     * if call is originated from JingleMessage propose. The entry should be removed after its use.
-     */
-    private static final Map<Jid, String> mJingleCallIds = new WeakHashMap<>();
 
     /**
      * Initializes a new <code>CallJabberImpl</code> instance.
@@ -122,11 +108,10 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * of which this call has been created.
      * @param sid the Jingle session-initiate id if provided.
      */
-    protected CallJabberImpl(OperationSetBasicTelephonyJabberImpl parentOpSet, String sid)
+    public CallJabberImpl(OperationSetBasicTelephonyJabberImpl parentOpSet, String sid)
     {
         super(parentOpSet, sid);
 
-        mConnection = getProtocolProvider().getConnection();
         int mediaTypeValueCount = MediaType.values().length;
         colibriStreamConnectors = new ArrayList<>(mediaTypeValueCount);
         for (int i = 0; i < mediaTypeValueCount; i++)
@@ -602,13 +587,12 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         if (getCallPeerCount() == 1)
             parentOpSet.fireCallEvent(CallEvent.CALL_INITIATED, this);
 
-        mMediaHandler = callPeer.getMediaHandler();
-
         // set the supported transports before the transport manager is being created
-        mMediaHandler.setSupportedTransports(supportedTransports);
+        CallPeerMediaHandlerJabberImpl mediaHandler = callPeer.getMediaHandler();
+        mediaHandler.setSupportedTransports(supportedTransports);
 
         /* enable video if it is a video call */
-        mMediaHandler.setLocalVideoTransmissionEnabled(localVideoAllowed);
+        mediaHandler.setLocalVideoTransmissionEnabled(localVideoAllowed);
 
         /* enable remote-control if it is a desktop sharing session - cmeng: get and set back???*/
         //  mMediaHandler.setLocalInputEvtAware(mMediaHandler.getLocalInputEvtAware());
@@ -620,23 +604,10 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
          */
         callPeer.setState(CallPeerState.CONNECTING);
 
-        /*
-         * If the call is init from JingleMessage propose, then JingleMessage id must be used in
-         * Jingle session-initiate stanza creation, otherwise the callee will reject the call.
-         */
-        String id = mJingleCallIds.get(calleeJid);
-        if (id == null) {
-            id = Jingle.generateSid();
-        }
-        else {
-            // Remove the value after its use
-            mJingleCallIds.remove(calleeJid);
-        }
-
         // if initializing session fails, set peer to failed by default
         boolean sessionInitiated = false;
         try {
-            callPeer.initiateSession(sessionInitiateExtensions, id);
+            callPeer.initiateSession(sessionInitiateExtensions, getCallId());
             sessionInitiated = true;
         } finally {
             // if initialization throws an exception
@@ -644,19 +615,6 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 callPeer.setState(CallPeerState.FAILED);
         }
         return callPeer;
-    }
-
-    /**
-     * Set sid value in Jingle Message proceed stage, use for next session-initiate stanza sending
-     * must use the same sid, otherwise callee will reject the call setup
-     *
-     * @param jid Callee Full Jid
-     * @param id to be used for next session-initiate sid
-     * @see JingleMessageHelper#onJingleMessageProceed(XMPPConnection, JingleMessage, Message)
-     */
-    public static void setJingleCallId(Jid jid, String id)
-    {
-        mJingleCallIds.put(jid, id);
     }
 
     /**
@@ -755,11 +713,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * Handle addCallPeer() in caller to avoid race condition as here is handled on new thread
      * - with transport-info sent separately
      *
-     * @param jingle the {@link Jingle} that created the session.
      * @param callPeer the {@link CallPeerJabberImpl}: the one that sent the INVITE.
+     * @param jingle the {@link Jingle} that created the session.
      * @see OperationSetBasicTelephonyJabberImpl#processJingleSynchronize(Jingle)
      */
-    public void processSessionInitiate(Jingle jingle, final CallPeerJabberImpl callPeer)
+    public void processSessionInitiate(final CallPeerJabberImpl callPeer, Jingle jingle, JingleCallSessionImpl session)
     {
         /* cmeng (20200528): Must handle addCallPeer() in caller to handle transport-info sent separately */
         // FullJid remoteParty = jingle.getFrom().asFullJidIfPossible();
@@ -819,18 +777,11 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         // if paranoia is set, to accept the call we need to know that the other party has support for media encryption
         if (getProtocolProvider().getAccountID().getAccountPropertyBoolean(ProtocolProviderFactory.MODE_PARANOIA, false)
                 && callPeer.getMediaHandler().getAdvertisedEncryptionMethods().length == 0) {
+
             // send an error response;
             String reasonText = aTalkApp.getResString(R.string.service_gui_security_ENCRYPTION_REQUIRED);
-            JingleUtil jingleUtil = new JingleUtil(mConnection);
-            Jingle errResp = jingleUtil.createSessionTerminate(
-                    jingle.getInitiator(), jingle.getSid(), JingleReason.Reason.security_error, reasonText);
-
             callPeer.setState(CallPeerState.FAILED, reasonText);
-            try {
-                getProtocolProvider().getConnection().sendStanza(errResp);
-            } catch (NotConnectedException | InterruptedException e) {
-                Timber.e(e, "Could not send session terminate");
-            }
+            session.terminateSessionAndUnregister(JingleReason.Reason.security_error, reasonText);
             return;
         }
 
@@ -955,7 +906,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
                         if (localFingerprints.isEmpty()) {
                             for (SrtpFingerprint fingerprint : remoteFingerprints) {
-                                localTransport.addChildElement(SrtpFingerprint.builder()
+                                localTransport.addChildElement(SrtpFingerprint.getBuilder()
                                         .setFingerprint(fingerprint.getFingerprint())
                                         .setHash(fingerprint.getHash())
                                         .setSetup(fingerprint.getSetup())
@@ -1019,7 +970,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         String hash = dtlsControl.getLocalFingerprintHashFunction();
         String setup = ((DtlsControlImpl) dtlsControl).getSetup().toString();
 
-        localTransport.addChildElement(SrtpFingerprint.builder()
+        localTransport.addChildElement(SrtpFingerprint.getBuilder()
                 .setFingerprint(fingerprint)
                 .setHash(hash)
                 .setSetup(setup)
@@ -1153,25 +1104,25 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @param sid the ID of the session whose peer we are looking for.
      * @return <code>true</code> if this call contains a peer with the specified jingle <code>sid</code> and false otherwise.
      */
-    public boolean containsSID(String sid)
+    public boolean containsSid(String sid)
     {
         return (getPeer(sid) != null);
     }
 
     /**
-     * Returns the peer whose corresponding session-initiate ID has the specified <code>id</code>.
+     * Returns the peer associated session-initiate JingleIQ has the specified <code>stanzaId</code>.
      *
-     * @param id the ID of the session-initiate IQ whose peer we are looking for.
-     * @return the {@link CallPeerJabberImpl} with the specified IQ
-     * <code>id</code> and <code>null</code> if no such peer exists in this call.
+     * @param stanzaId the Stanza Id of the session-initiate JingleIQ whose peer we are looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified IQ <code>stanzaId</code>
+     * and <code>null</code> if no such peer exists in this call.
      */
-    public CallPeerJabberImpl getPeerBySessInitPacketID(String id)
+    public CallPeerJabberImpl getPeerByJingleIQStanzaId(String stanzaId)
     {
-        if (id == null)
+        if (stanzaId == null)
             return null;
 
         for (CallPeerJabberImpl peer : getCallPeerList()) {
-            if (id.equals(peer.getSessInitID()))
+            if (stanzaId.equals(peer.getJingleIQStanzaId()))
                 return peer;
         }
         return null;

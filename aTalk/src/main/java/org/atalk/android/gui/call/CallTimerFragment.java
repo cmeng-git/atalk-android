@@ -16,6 +16,8 @@ import org.atalk.service.osgi.OSGiFragment;
 
 import java.util.*;
 
+import timber.log.Timber;
+
 /**
  * Fragment implements the logic responsible for updating call duration timer. It is expected that parent
  * <code>Activity</code> contains <code>TextView</code> with <code>R.id.callTime</code> ID.
@@ -37,7 +39,7 @@ public class CallTimerFragment extends OSGiFragment
     /**
      * A timer to count call duration.
      */
-    private Timer callDurationTimer = new Timer();
+    private final Timer callDurationTimer = new Timer();
 
     /**
      * Must be called in order to initialize and start the timer.
@@ -108,8 +110,12 @@ public class CallTimerFragment extends OSGiFragment
 
         // Do not schedule if it is already started (pidgin sends 4 session-accept's on user accept incoming call)
         if (!isCallTimerStarted) {
-            this.callDurationTimer.schedule(new CallTimerTask(), new Date(System.currentTimeMillis()), 1000);
-            this.isCallTimerStarted = true;
+            try {
+                this.callDurationTimer.schedule(new CallTimerTask(), new Date(System.currentTimeMillis()), 1000);
+                this.isCallTimerStarted = true;
+            } catch (IllegalStateException e) {  // Timer already cancelled.
+                Timber.w("Start call timber error: %s", e.getMessage());
+            }
         }
     }
 

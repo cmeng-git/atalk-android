@@ -6,11 +6,19 @@
  */
 package net.java.sip.communicator.util.call;
 
-import java.beans.*;
+import net.java.sip.communicator.service.gui.call.CallPeerRenderer;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityMessageEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
 
-import net.java.sip.communicator.service.gui.call.*;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 
 /**
@@ -22,7 +30,7 @@ import net.java.sip.communicator.service.protocol.event.*;
  * @author Lyubomir Marinov
  */
 public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.event.CallPeerAdapter
-    implements CallPeerSecurityListener, PropertyChangeListener
+        implements CallPeerSecurityListener, PropertyChangeListener
 {
     /**
      * The <code>CallPeer</code> which is depicted by {@link #renderer}.
@@ -103,31 +111,25 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
 
         String newStateString = sourcePeer.getState().getLocalizedStateString();
 
-        if (newState == CallPeerState.CONNECTED)
-        {
-            if (!CallPeerState.isOnHold(oldState))
-            {
+        if (newState == CallPeerState.CONNECTED) {
+            if (!CallPeerState.isOnHold(oldState)) {
                 if (!renderer.getCallRenderer().isCallTimerStarted())
                     renderer.getCallRenderer().startCallTimer();
             }
-            else
-            {
+            else {
                 renderer.setOnHold(false);
                 renderer.getCallRenderer().updateHoldButtonState();
             }
         }
-        else if (newState == CallPeerState.DISCONNECTED)
-        {
+        else if (newState == CallPeerState.DISCONNECTED) {
             // The call peer should be already removed from the call
             // see CallPeerRemoved
         }
-        else if (newState == CallPeerState.FAILED)
-        {
+        else if (newState == CallPeerState.FAILED) {
             // The call peer should be already removed from the call
             // see CallPeerRemoved
         }
-        else if (CallPeerState.isOnHold(newState))
-        {
+        else if (CallPeerState.isOnHold(newState)) {
             renderer.setOnHold(true);
             renderer.getCallRenderer().updateHoldButtonState();
         }
@@ -146,8 +148,7 @@ public class CallPeerAdapter extends net.java.sip.communicator.service.protocol.
     {
         String propertyName = ev.getPropertyName();
 
-        if (propertyName.equals(CallPeer.MUTE_PROPERTY_NAME))
-        {
+        if (propertyName.equals(CallPeer.MUTE_PROPERTY_NAME)) {
             boolean mute = (Boolean) ev.getNewValue();
 
             renderer.setMute(mute);

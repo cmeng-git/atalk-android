@@ -1,2 +1,8 @@
-include ':aTalk'
-include ':android-youtube-player:core'
+pluginManagement {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+
+    include ':aTalk'
+    include ':android-youtube-player:core'
+}

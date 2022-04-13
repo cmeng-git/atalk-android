@@ -13,12 +13,12 @@ import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle.CandidateType;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle_rtp.CandidateType;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.RawUdpTransport;
-import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import java.net.DatagramSocket;
@@ -80,13 +80,13 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
      */
     private RawUdpTransport createTransport(MediaType mediaType, StreamConnector connector)
     {
-        RawUdpTransport.Builder tpBuilder = RawUdpTransport.builder();
+        RawUdpTransport.Builder tpBuilder = RawUdpTransport.getBuilder();
         int generation = getCurrentGeneration();
 
         // create and add candidates that correspond to the stream connector
         //=== RTP ===/
         DatagramSocket dataSocket = connector.getDataSocket();
-        IceUdpTransportCandidate.Builder tcpBuilder = IceUdpTransportCandidate.builder();
+        IceUdpTransportCandidate.Builder tcpBuilder = IceUdpTransportCandidate.getBuilder();
         tcpBuilder.setComponent(IceUdpTransportCandidate.RTP_COMPONENT_ID)
                 .setGeneration(generation)
                 .setID(getNextID())
@@ -97,7 +97,7 @@ public class RawUdpTransportManager extends TransportManagerJabberImpl
 
         //=== RTCP ===/
         DatagramSocket controlSocket = connector.getControlSocket();
-        IceUdpTransportCandidate.Builder rtcpBuilder = IceUdpTransportCandidate.builder()
+        IceUdpTransportCandidate.Builder rtcpBuilder = IceUdpTransportCandidate.getBuilder()
                 .setComponent(IceUdpTransportCandidate.RTCP_COMPONENT_ID)
                 .setGeneration(generation)
                 .setID(getNextID())

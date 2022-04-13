@@ -12,8 +12,11 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import org.atalk.service.neomedia.MediaDirection;
 import org.jivesoftware.smack.packet.*;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smackx.jingle.*;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceGroup;
 import org.jxmpp.jid.parts.Localpart;
 
 import java.util.*;

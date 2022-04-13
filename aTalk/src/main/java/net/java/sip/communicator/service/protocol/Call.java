@@ -7,14 +7,21 @@ package net.java.sip.communicator.service.protocol;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
+import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 import net.java.sip.communicator.util.DataObject;
 
 import org.jetbrains.annotations.NotNull;
-import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.JingleManager;
 
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -106,9 +113,9 @@ public abstract class Call extends DataObject
     {
         // create the uid
         if (TextUtils.isEmpty(sid)) {
-            // callId = System.currentTimeMillis() + String.valueOf(super.hashCode());
-            callId = Jingle.generateSid();
-        } else {
+            callId = JingleManager.randomId();
+        }
+        else {
             callId = sid;
         }
 

@@ -57,7 +57,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
-            if (call.containsSID(sid))
+            if (call.containsSid(sid))
                 return call;
         }
         return null;
@@ -100,18 +100,18 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
     }
 
     /**
-     * Returns the {@link CallPeerJabberImpl} whose session-initiate's ID has the specified IQ <code>id</code>.
+     * Returns the {@link CallPeerJabberImpl} whose session-initiate's stanzaId has the specified IQ <code>id</code>.
      *
-     * @param id the IQ <code>id</code> we're looking for.
-     * @return the {@link CallPeerJabberImpl} with the specified <code>id</code>
-     * or <code>null</code> if we couldn't find one matching it.
+     * @param stanzaId the IQ <code>id</code> we're looking for.
+     * @return the {@link CallPeerJabberImpl} with the specified
+     * <code>stanzaId</code> or <code>null</code> if we couldn't find one matching it.
      */
-    public CallPeerJabberImpl findCallPeerBySessInitPacketID(String id)
+    public CallPeerJabberImpl findCallPeerByJingleIQStanzaId(String stanzaId)
     {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
-            CallPeerJabberImpl peer = call.getPeerBySessInitPacketID(id);
+            CallPeerJabberImpl peer = call.getPeerByJingleIQStanzaId(stanzaId);
             if (peer != null)
                 return peer;
         }

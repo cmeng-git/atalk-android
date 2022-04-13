@@ -7,6 +7,10 @@ package net.java.sip.communicator.service.protocol;
 
 import net.java.sip.communicator.service.protocol.event.*;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+
 import java.util.*;
 
 import timber.log.Timber;
@@ -121,17 +125,31 @@ public abstract class AbstractFileTransfer implements FileTransfer
     }
 
     /**
-     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> occured.
+     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> has occurred.
      *
-     * @param newStatus the new status
+     * @param reason the jingle terminate reason
      */
-    public void fireStatusChangeEvent(int newStatus)
-    {
-        this.fireStatusChangeEvent(newStatus, null);
+    public void fireStatusChangeEvent(JingleReason reason) {
+        String reasonText = (reason.getText() != null) ? reason.getText() : reason.asEnum().toString();
+        switch(reason.asEnum()) {
+            case decline:
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, reasonText);
+                break;
+            case cancel:
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reasonText);
+                break;
+            case success:
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, reasonText);
+                break;
+            default: {
+                reasonText = aTalkApp.getResString(R.string.service_gui_FILE_SEND_CLIENT_ERROR, reasonText);
+                fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, reasonText);
+            }
+        }
     }
 
     /**
-     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> occurred.
+     * Notifies all status listeners that a new <code>FileTransferStatusChangeEvent</code> has occurred.
      *
      * @param newStatus the new status
      * @param reason the reason of the status change

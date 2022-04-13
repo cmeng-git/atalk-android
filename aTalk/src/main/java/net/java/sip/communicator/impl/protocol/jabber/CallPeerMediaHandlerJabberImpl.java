@@ -43,18 +43,18 @@ import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.InputEvent;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.InputEvent;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.ParameterElement;
-import org.jivesoftware.smackx.jingle.PayloadType;
-import org.jivesoftware.smackx.jingle.RtcpMux;
-import org.jivesoftware.smackx.jingle.RtpDescription;
-import org.jivesoftware.smackx.jingle.SdpCrypto;
-import org.jivesoftware.smackx.jingle.SdpSource;
-import org.jivesoftware.smackx.jingle.SrtpEncryption;
-import org.jivesoftware.smackx.jingle.SrtpFingerprint;
-import org.jivesoftware.smackx.jingle.ZrtpHash;
+import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpCrypto;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpEncryption;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
+import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jxmpp.jid.Jid;
@@ -400,10 +400,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         setZrtpEncryptionOnDescription(mediaType, description, null);
                     }
 
-                    // we request a desktop sharing session so add the inputevt extension in the
-                    // "video" content
+                    // we request a desktop sharing session so add the inputevt extension in the "video" content
                     if (description.getMedia().equals(MediaType.VIDEO.toString()) && getLocalInputEvtAware()) {
-                        content.addChildElement(InputEvent.builder().build());
+                        content.addChildElement(InputEvent.getBuilder().build());
                     }
                     mediaDescs.add(content);
                 }
@@ -579,7 +578,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     private void addSourceExtension(RtpDescription description, long ssrc)
     {
         MediaType type = MediaType.parseString(description.getMedia());
-        SdpSource.Builder srcBuilder = SdpSource.builder()
+        SdpSource.Builder srcBuilder = SdpSource.getBuilder()
                 .setSsrc(ssrc)
                 .addParameter(ParameterElement.builder(SdpSource.NAMESPACE)
                         .setNameValue("cname", LibJitsi.getMediaService().getRtpCname())
@@ -1359,7 +1358,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // Got a content which has InputEvent. It means that the peer requests
             // a desktop sharing session so tell it we support InputEvent.
             if (content.getChildElements(InputEvent.class) != null) {
-                ourContent.addChildElement(InputEvent.builder().build());
+                ourContent.addChildElement(InputEvent.getBuilder().build());
             }
             answer.add(ourContent);
             localContentMap.put(content.getName(), ourContent);
@@ -2006,7 +2005,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
                         if (fingerprintPEs.isEmpty()) {
                             for (SrtpFingerprint localFingerprint : localFingerprints) {
-                                SrtpFingerprint srtpFingerPrint = SrtpFingerprint.builder()
+                                SrtpFingerprint srtpFingerPrint = SrtpFingerprint.getBuilder()
                                         .setFingerprint(localFingerprint.getFingerprint())
                                         .setHash(localFingerprint.getHash())
                                         .setSetup(localFingerprint.getSetup())
@@ -2296,14 +2295,14 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     String[] helloHash = zrtpControl.getHelloHashSep(i);
 
                     if ((helloHash != null) && (helloHash[1].length() > 0)) {
-                        ZrtpHash zrtpHash = ZrtpHash.builder()
+                        ZrtpHash zrtpHash = ZrtpHash.getBuilder()
                                 .setVersion(helloHash[0])
                                 .setHashValue(helloHash[1])
                                 .build();
 
                         SrtpEncryption srtpEncryption = description.getFirstChildElement(SrtpEncryption.class);
                         if (srtpEncryption == null) {
-                            description.addChildElement(SrtpEncryption.builder()
+                            description.addChildElement(SrtpEncryption.getBuilder()
                                     .addChildElement(zrtpHash)
                                     .build());
                         }
@@ -2354,7 +2353,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
             // act as initiator
             if (remoteDescription == null) {
-                SrtpEncryption.Builder srtpBuilder = SrtpEncryption.builder();
+                SrtpEncryption.Builder srtpBuilder = SrtpEncryption.getBuilder();
                 SrtpEncryption localSrtpEncryption = localDescription.getFirstChildElement(SrtpEncryption.class);
                 if (localSrtpEncryption != null) {
                     srtpBuilder.addChildElements(localSrtpEncryption.getCryptoList());
@@ -2362,7 +2361,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 }
 
                 for (SrtpCryptoAttribute ca : sdesControl.getInitiatorCryptoAttributes()) {
-                    SdpCrypto crypto = SdpCrypto.builder()
+                    SdpCrypto crypto = SdpCrypto.getBuilder()
                             .setCrypto(
                                     ca.getTag(), ca.getCryptoSuite().encode(),
                                     ca.getKeyParamsString(), ca.getSessionParamsString())
@@ -2384,13 +2383,13 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                     if (selectedSdes != null) {
                         SrtpEncryption localSrtpEncryption = localDescription.getFirstChildElement(SrtpEncryption.class);
 
-                        SrtpEncryption.Builder srtpBuilder = SrtpEncryption.builder();
+                        SrtpEncryption.Builder srtpBuilder = SrtpEncryption.getBuilder();
                         if (localSrtpEncryption != null) {
                             srtpBuilder.addChildElements(localSrtpEncryption.getCryptoList());
                             localDescription.removeChildElement(localSrtpEncryption);
                         }
 
-                        SdpCrypto crypto = SdpCrypto.builder()
+                        SdpCrypto crypto = SdpCrypto.getBuilder()
                                 .setCrypto(
                                         selectedSdes.getTag(), selectedSdes.getCryptoSuite().encode(),
                                         selectedSdes.getKeyParamsString(), selectedSdes.getSessionParamsString())

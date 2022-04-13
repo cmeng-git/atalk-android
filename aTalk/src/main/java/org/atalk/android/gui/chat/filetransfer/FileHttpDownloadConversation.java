@@ -124,7 +124,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
         int status = getXferStatus();
         if (status == -1) {
             messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
-            messageViewHolder.rejectButton.setVisibility(View.VISIBLE);
+            messageViewHolder.declineButton.setVisibility(View.VISIBLE);
 
             messageViewHolder.acceptButton.setOnClickListener(v -> {
                 // set the download for global display parameter
@@ -134,8 +134,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 
             messageViewHolder.retryButton.setOnClickListener(v -> initHttpFileDownload(false));
 
-            messageViewHolder.rejectButton.setOnClickListener(
-                    v -> updateView(FileTransferStatusChangeEvent.REFUSED, null));
+            messageViewHolder.declineButton.setOnClickListener(
+                    v -> updateView(FileTransferStatusChangeEvent.DECLINED, null));
 
             messageViewHolder.cancelButton.setOnClickListener(
                     v -> updateView(FileTransferStatusChangeEvent.CANCELED, null));
@@ -160,7 +160,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
     /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
      */
-    private void updateView(final int status, final String reason)
+    @Override
+    protected void updateView(final int status, final String reason)
     {
         setXferStatus(status);
         String statusText = null;
@@ -203,11 +204,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 break;
 
             // user reject the incoming http download
-            case FileTransferStatusChangeEvent.REFUSED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
+            case FileTransferStatusChangeEvent.DECLINED:
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
-                updateFTStatus(FileRecord.STATUS_REFUSED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+                updateFTStatus(FileRecord.STATUS_DECLINED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
         }
         updateXferFileViewState(status, statusText);
@@ -264,7 +265,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             if (status == FileTransferStatusChangeEvent.COMPLETED
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.REFUSED) {
+                    || status == FileTransferStatusChangeEvent.DECLINED) {
                 // must do this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(FileHttpDownloadConversation.this);
                 // removeProgressListener();

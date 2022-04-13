@@ -339,11 +339,11 @@
     <string name="xFile_FILE_RECEIVE_FAILED">Se ha producido un error al transferir el archivo desde %1$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">Recibiendo un archivo de %1$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">El fichero se ha enviado correctamente a %1$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s ha rechazado este archivo</string>
+    <string name="xFile_FILE_SEND_DECLINED">%1$s ha rechazado este archivo</string>
 	<string name="xFile_FILE_SENDING_TO">Enviando el archivo a %1$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">Se ha cancelado la transferencia de archivos</string>
 	<string name="xFile_FILE_TRANSFER_PREPARING">Preparando la transferencia de archivos con %1$s. Por favor, espere&#8230;</string>
-	<string name="xFile_FILE_TRANSFER_REFUSED">Se ha rechazado la transferencia de archivos</string>
+	<string name="xFile_FILE_TRANSFER_DECLINED">Se ha rechazado la transferencia de rehusar</string>
 	<string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s comparte un archivo contigo</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">Se ha producido un error al enviar el archivo a %1$s</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">Esperando %1$s para aceptar tu archivo</string>
@@ -357,7 +357,8 @@
 	<string name="service_gui_FILE_OPEN_NO_APPLICATION">No se encontró ninguna aplicación asociada a este tipo de archivo</string>
 	<string name="service_gui_FILE_OPEN_NO_PERMISSION">No tienes suficientes permisos para abrir este archivo. Por favor, compruebe sus permisos de lectura e inténtelo de nuevo</string>
 	<string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Lo sentimos, la operación para abrir el archivo no es compatible con la plataforma actual</string>
-	<string name="service_gui_FILE_SEND_FAILED">No se pudo enviar el archivo: %1$s</string>
+    <string name="service_gui_FILE_SEND_CLIENT_ERROR">Remote client error on file sent: %1$s</string>
+	<string name="service_gui_FILE_SEND_FAILED">Error de cliente remoto en el archivo enviado: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">¡No se puede enviar el archivo durante la llamada de conferencia!</string>
 	<string name="service_gui_FILE_ATTACHMENT">Enviar archivo adjunto</string>
 	<string name="service_gui_FILE_TOO_BIG">El tamaño del archivo excede el máximo permitido para este protocolo: %1$s</string>
@@ -562,7 +563,7 @@
     <string name="service_gui_RESTORING">Restaurando&#8230;</string>
 
     <string name="service_gui_RE_REQUEST_AUTHORIZATION">Solicitar autorización</string>
-    <string name="service_gui_REJECT">Rechazar</string>
+    <string name="service_gui_DECLINE">Rechazar</string>
     <string name="service_gui_REMOVE">Eliminar</string>
     <string name="service_gui_REMOVE_ACCOUNT">Eliminar cuenta</string>
     <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">¿Seguro que se quiere eliminar la cuenta:\n%1$s?</string>
@@ -802,7 +803,7 @@
     <string name="plugin_update_Install_Update">Instalar las actualizaciones</string>
     <string name="plugin_update_Download_failed">¡Error al descargar la nueva actualización!</string>
     <string name="plugin_update_Check_Update">Comprobar actualizaciones</string>
-    <string name="plugin_update_Version_Invalid">El apk descargado no coincide; real: %s (%s)</string>
+    <string name="plugin_update_Version_Invalid">El apk descargado no coincide; real: %1$s (%2$s)</string>
     <string name="plugin_update_New_Version_Available">Una nueva versión de software (%1$s) está disponible.</string>
 
     <!-- account info -->

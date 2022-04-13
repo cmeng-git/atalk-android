@@ -4,13 +4,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-//        maven {
-//            url "https://plugins.gradle.org/m2/"
-//        }
+        maven { url "https://jitpack.io" }
     }
 
     dependencies {
         classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
+        // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
         // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
     }
 }
@@ -91,6 +90,7 @@ jarJarDeps.dependsOn(
 
             // Add support for media file sharing
             classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+            classDelete 'org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager**'
         },
 
         // smack-extensions
@@ -104,14 +104,42 @@ jarJarDeps.dependsOn(
             // Add support for chatStat in conference room
             classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
 
+            classDelete 'org.jivesoftware.smackx.jingle.JingleManager**'
+            classDelete 'org.jivesoftware.smackx.jingle.JingleUtil**'
+
             classDelete 'org.jivesoftware.smackx.jingle.element.Jingle'
             classDelete 'org.jivesoftware.smackx.jingle.element.Jingle$**'
             classDelete 'org.jivesoftware.smackx.jingle.element.JingleAction**'
             classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent'
             classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent$**'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescription'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransport'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate'
+            classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo'
             classDelete 'org.jivesoftware.smackx.jingle.element.JingleReason**'
+
+            classDelete 'org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager**'
             classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider**'
-            classDelete 'org.jivesoftware.smackx.jingle.JingleUtil**'
+
+            classDelete 'org.jivesoftware.smackx.jingle.transports.JingleTransportManager**'
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport**'
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager**'
+
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager**'
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport'
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport$**'
+        },
+
+        // smack-omemo
+        jarjar.repackage {
+            from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
+                transitive = false
+            }
+            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-omemo-jarjar/${smackVersion}")
+            destinationName "smack-omemo-jarjar-${smackVersion}.jar"
+
+            classDelete 'org.jivesoftware.smackx.omemo.OmemoManager**'
         }
 )
 

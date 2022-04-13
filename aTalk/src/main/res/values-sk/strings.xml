@@ -335,11 +335,11 @@
     <string name="xFile_FILE_RECEIVE_FAILED">Pri prenose súboru z %1$s sa vyskytla chyba</string>
     <string name="xFile_FILE_RECEIVING_FROM">Prijíma sa súbor od %1$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">Súbor bol úspešne odoslaný na %1$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s odmietol tento súbor</string>
+    <string name="xFile_FILE_SEND_DECLINED">%1$s odmietol tento súbor</string>
     <string name="xFile_FILE_SENDING_TO">Odosiela sa súbor do %1$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">Prenos súboru bol zrušený</string>
     <string name="xFile_FILE_TRANSFER_PREPARING">Príprava prenosu súboru s %1$s. Prosím čakajte&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">Prenos súboru bol zamietnutý</string>
+    <string name="xFile_FILE_TRANSFER_DECLINED">Prenos súboru bol zavrnil</string>
     <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s s vami zdieľa súbor</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">Pri odosielaní súboru do %1$s sa vyskytla chyba</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">Čaká sa na prijatie súboru %1$s</string>
@@ -353,6 +353,7 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Aplikáciu spojenú s týmto typom súboru sa nepodarilo nájsť</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Nemáte dostatok povolení na otvorenie tohto súboru. Skontrolujte svoje oprávnenia na čítanie a skúste to znova</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operácia otvoreného súboru nie je súčasnou platformou zariadenia podporovaná</string>
+    <string name="service_gui_FILE_SEND_CLIENT_ERROR">Chyba vzdialeného klienta v odoslanom súbore: %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Nepodarilo sa odoslať súbor: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Počas konferenčného hovoru nie je možné odoslať súbor!</string>
     <string name="service_gui_FILE_ATTACHMENT">Odoslať prílohu</string>
@@ -557,7 +558,7 @@
     <string name="service_gui_RESTORING">obnovenie&#8230;</string>
 
     <string name="service_gui_RE_REQUEST_AUTHORIZATION">Vyžiadajte si autorizáciu</string>
-    <string name="service_gui_REJECT">Odmietnuť</string>
+    <string name="service_gui_DECLINE">Zavrnil</string>
     <string name="service_gui_REMOVE">Remove</string>
     <string name="service_gui_REMOVE_ACCOUNT">Odstrániť účet</string>
     <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Naozaj chcete odstrániť účet:\n%1$s?</string>
@@ -792,7 +793,7 @@
     <string name="plugin_update_Install_Update">Nainštalujte aktualizácie</string>
     <string name="plugin_update_Download_failed">Nepodarilo sa stiahnuť novú aktualizáciu!</string>
     <string name="plugin_update_Check_Update">Skontroluj aktualizácie</string>
-    <string name="plugin_update_Version_Invalid">Stiahnutý súbor apk sa nezhoduje; skutočné: %s (%s)</string>
+    <string name="plugin_update_Version_Invalid">Stiahnutý súbor apk sa nezhoduje; skutočné: %1$s (%2$s)</string>
     <string name="plugin_update_New_Version_Available">K dispozícii je nová verzia softvéru (%1$s).</string>
 
     <!-- account info -->

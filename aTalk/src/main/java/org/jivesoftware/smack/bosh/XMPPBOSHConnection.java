@@ -121,7 +121,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      *             (e.g. domain.lt for the user alice@domain.lt)
      */
     public XMPPBOSHConnection(String username, String password, boolean https, String host, int port, String filePath, DomainBareJid xmppServiceDomain) {
-        this(BOSHConfiguration.builder().setUseHttps(https).setHost(host)
+        this(BOSHConfiguration.getBuilder().setUseHttps(https).setHost(host)
                 .setPort(port).setFile(filePath).setXmppDomain(xmppServiceDomain)
                 .setUsernameAndPassword(username, password).build());
     }

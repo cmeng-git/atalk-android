@@ -27,7 +27,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     /**
      * The Jabber incoming file transfer.
      */
-    private IncomingFileTransfer jabberTransfer;
+    private final IncomingFileTransfer jabberTransfer;
 
     /**
      * Creates an <code>IncomingFileTransferJabberImpl</code>.
@@ -51,7 +51,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     @Override
     public void cancel()
     {
-        this.jabberTransfer.cancel();
+        jabberTransfer.cancel();
     }
 
     /**

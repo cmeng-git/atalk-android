@@ -23,27 +23,27 @@ import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.CoinExtension;
 import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.RtpDescription;
-import org.jivesoftware.smackx.jingle.SdpSource;
-import org.jivesoftware.smackx.jingle.SdpTransfer;
-import org.jivesoftware.smackx.jingle.SdpTransferred;
-import org.jivesoftware.smackx.jingle.SessionInfo;
-import org.jivesoftware.smackx.jingle.SessionInfoType;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
+import org.jivesoftware.smackx.jingle_rtp.JingleCallSessionImpl;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransferred;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
@@ -123,6 +123,16 @@ public class CallPeerJabberImpl
      */
     private DiscoverInfo discoverInfo;
 
+    private final OperationSetBasicTelephonyJabberImpl opsTelephony;
+
+    /*
+     * Jingle Call Session get initialized when started a call initiator or
+     * in respond to an incoming call.
+     */
+    private JingleCallSessionImpl mJingleSession;
+
+    private final JingleUtil jutil;
+
     /**
      * The indicator which determines whether this peer has initiated the session.
      */
@@ -138,15 +148,11 @@ public class CallPeerJabberImpl
      */
     private Jingle sessionInitIQ;
 
-    private final XMPPConnection mConnection;
-
-    private final JingleUtil jutil;
-
     // contains a list of mediaType for session-initiate
     private final List<String> contentMedias = new ArrayList<>();
 
     /**
-     * Creates a new call peer with address <code>peerAddress</code>.
+     * Initiate a new call with the given remote <code>peerAddress</code>.
      *
      * @param peerAddress the Jabber address of the new call peer.
      * @param owningCall the call that contains this call peer.
@@ -154,25 +160,26 @@ public class CallPeerJabberImpl
     public CallPeerJabberImpl(FullJid peerAddress, CallJabberImpl owningCall)
     {
         super(owningCall);
-        mPeerJid = peerAddress;
-        setMediaHandler(new CallPeerMediaHandlerJabberImpl(this));
-        mConnection = getProtocolProvider().getConnection();
+        opsTelephony = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
         jutil = new JingleUtil(mConnection);
 
+        mPeerJid = peerAddress;
+        setMediaHandler(new CallPeerMediaHandlerJabberImpl(this));
     }
 
     /**
-     * Creates a new call peer with address <code>peerAddress</code>.
+     * Creates a new call peer with address <code>peerAddress</code>, in response to an incoming call (session-initiate).
      *
-     * @param peerAddress the Jabber address of the new call peer.
      * @param owningCall the call that contains this call peer.
      * @param sessionIQ The session-initiate <code>Jingle</code> which was received from <code>peerAddress</code>
+     * @param session current active jingle call session.
      * and caused the creation of this <code>CallPeerJabberImpl</code>
      */
-    public CallPeerJabberImpl(FullJid peerAddress, CallJabberImpl owningCall, Jingle sessionIQ)
+    public CallPeerJabberImpl(CallJabberImpl owningCall, Jingle sessionIQ, JingleCallSessionImpl session)
     {
-        this(peerAddress, owningCall);
-        this.sessionInitIQ = sessionIQ;
+        this(session.getRemote(), owningCall);
+        sessionInitIQ = sessionIQ;
+        mJingleSession = session;
     }
 
     /**
@@ -181,15 +188,15 @@ public class CallPeerJabberImpl
     public synchronized void answer()
             throws OperationFailedException
     {
-        Iterable<JingleContent> answer;
+        Iterable<JingleContent> jingleContents;
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
         // cmeng: added to end ring tone when call from Conversations
         setState(CallPeerState.CONNECTING_INCOMING_CALL);
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
-            answer = mediaHandler.generateSessionAccept();
-            for (JingleContent c : answer) {
+            jingleContents = mediaHandler.generateSessionAccept();
+            for (JingleContent c : jingleContents) {
                 setSenders(getMediaType(c), c.getSenders());
             }
         } catch (Exception exc) {
@@ -197,23 +204,24 @@ public class CallPeerJabberImpl
 
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
-                    Reason.failed_application, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            try {
-                mConnection.sendStanza(errResp);
-            } catch (NotConnectedException | InterruptedException e) {
-                throw new OperationFailedException("Could not send session terminate after failing to answer a call",
-                        OperationFailedException.REGISTRATION_REQUIRED, e);
-            }
+            mJingleSession.terminateSessionAndUnregister(Reason.failed_application, reasonText);
+
+//            try {
+//                Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
+//                      Reason.failed_application, reasonText);
+//                mConnection.sendStanza(errResp);
+//            } catch (NotConnectedException | InterruptedException e) {
+//                throw new OperationFailedException("Could not send session terminate after failing to answer a call",
+//                        OperationFailedException.REGISTRATION_REQUIRED, e);
+//            }
             return;
         }
 
         // Send the session-accept first and start the stream later in case the
         // media relay needs to see it before letting hole punching techniques through.
         // Timber.w(new Exception("Create session accept"));
-        Jingle response = jutil.createSessionAccept(sessionInitIQ, answer);
+        Jingle response = jutil.createSessionAccept(sessionInitIQ, jingleContents);
         try {
             mConnection.sendStanza(response);
         } catch (NotConnectedException | InterruptedException e1) {
@@ -229,16 +237,17 @@ public class CallPeerJabberImpl
 
             // send an error response
             String reasonText = "Error: " + exc.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
-                    Reason.general_error, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            try {
-                mConnection.sendStanza(errResp);
-            } catch (NotConnectedException | InterruptedException e1) {
-                throw new OperationFailedException("Could not send session terminate after failing to start media handler",
-                        OperationFailedException.REGISTRATION_REQUIRED, e);
-            }
+            mJingleSession.terminateSessionAndUnregister(Reason.general_error, reasonText);
+
+//            try {
+//                Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
+//                        Reason.general_error, reasonText);
+//                mConnection.sendStanza(errResp);
+//            } catch (NotConnectedException | InterruptedException e1) {
+//                throw new OperationFailedException("Could not send session terminate after failing to start media handler",
+//                        OperationFailedException.REGISTRATION_REQUIRED, e);
+//            }
             return;
         }
         // tell everyone we are connected so that the audio notifications would stop
@@ -306,7 +315,6 @@ public class CallPeerJabberImpl
                 || CallPeerState.isOnHold(prevPeerState)) {
             reason = Reason.success;
             reasonText = "Nice talking to you!";
-            // responseIQ = jutil.createSessionTerminate(mPeerJid, getSid(), Reason.success, "Nice talking to you!");
         }
         else if (CallPeerState.CONNECTING.equals(prevPeerState)
                 || CallPeerState.CONNECTING_WITH_EARLY_MEDIA.equals(prevPeerState)
@@ -323,11 +331,9 @@ public class CallPeerJabberImpl
             }
             reason = Reason.cancel;
             reasonText = "Oops!";
-            // responseIQ = jutil.createSessionTerminateCancel(mPeerJid, getSid());
         }
         else if (prevPeerState.equals(CallPeerState.INCOMING_CALL)) {
             reason = Reason.busy;
-            // responseIQ = jutil.createSessionTerminateBusy(mPeerJid, getSid());
         }
         else if (prevPeerState.equals(CallPeerState.BUSY)
                 || prevPeerState.equals(CallPeerState.FAILED)) {
@@ -347,6 +353,7 @@ public class CallPeerJabberImpl
                 responseIQ = jutil.createSessionTerminate(mPeerJid, getSid(), jingleReason);
             }
             mConnection.sendStanza(responseIQ);
+            mJingleSession.unregisterJingleSessionHandler();
         }
     }
 
@@ -388,6 +395,10 @@ public class CallPeerJabberImpl
         }
 
         try {
+            // null if the call is not via JingleMessage protocol,
+            if (mJingleSession == null) {
+                mJingleSession = new JingleCallSessionImpl(mConnection, mPeerJid, sid, opsTelephony);
+            }
             mConnection.sendStanza(sessionInitIQ);
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException(aTalkApp.getResString(R.string.service_gui_CREATE_CALL_FAILED),
@@ -433,11 +444,12 @@ public class CallPeerJabberImpl
 
             // Send an error response.
             String reasonText = "Error: " + e.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(mPeerJid, sessionInitIQ.getSid(),
-                    Reason.incompatible_parameters, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            mConnection.sendStanza(errResp);
+            mJingleSession.terminateSessionAndUnregister(Reason.incompatible_parameters, reasonText);
+
+//            Jingle errResp = jutil.createSessionTerminate(mPeerJid, sessionInitIQ.getSid(),
+//                    Reason.incompatible_parameters, reasonText);
+//            mConnection.sendStanza(errResp);
             return;
         }
         mediaHandler.start();
@@ -554,11 +566,12 @@ public class CallPeerJabberImpl
 
             // Send an error response.
             String reasonText = "Error: " + e.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(
-                    mPeerJid, sessionInitIQ.getSid(), Reason.incompatible_parameters, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            mConnection.sendStanza(errResp);
+            mJingleSession.terminateSessionAndUnregister(Reason.incompatible_parameters, reasonText);
+
+//            Jingle errResp = jutil.createSessionTerminate(
+//                    mPeerJid, sessionInitIQ.getSid(), Reason.incompatible_parameters, reasonText);
+//            mConnection.sendStanza(errResp);
         }
     }
 
@@ -572,11 +585,13 @@ public class CallPeerJabberImpl
     {
         if (content.getContents().isEmpty()) {
             // send an error response;
-            Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
-                    Reason.incompatible_parameters, "Error: content rejected");
+            String reasonText = "Error: content rejected";
+            setState(CallPeerState.FAILED, reasonText);
+            mJingleSession.terminateSessionAndUnregister(Reason.incompatible_parameters, reasonText);
 
-            setState(CallPeerState.FAILED, "Error: content rejected");
-            mConnection.sendStanza(errResp);
+//            Jingle errResp = jutil.createSessionTerminate(sessionInitIQ.getInitiator(), sessionInitIQ.getSid(),
+//                    Reason.incompatible_parameters, "Error: content rejected");
+//            mConnection.sendStanza(errResp);
         }
     }
 
@@ -656,11 +671,13 @@ public class CallPeerJabberImpl
             Timber.w(exc, "Failed to process a session-accept");
 
             // send an error response;
-            Jingle errResp = jutil.createSessionTerminate(jingleSA.getInitiator(), jingleSA.getSid(),
-                    Reason.incompatible_parameters, exc.getClass().getName() + ": " + exc.getMessage());
+            String reasonText = "Error: " + exc.getMessage();
+            setState(CallPeerState.FAILED, reasonText);
+            mJingleSession.terminateSessionAndUnregister(Reason.incompatible_parameters, reasonText);
 
-            setState(CallPeerState.FAILED, "Error: " + exc.getMessage());
-            mConnection.sendStanza(errResp);
+//            Jingle errResp = jutil.createSessionTerminate(jingleSA.getInitiator(), jingleSA.getSid(),
+//                    Reason.incompatible_parameters, exc.getClass().getName() + ": " + exc.getMessage());
+//            mConnection.sendStanza(errResp);
             return;
         }
 
@@ -742,11 +759,12 @@ public class CallPeerJabberImpl
 
             // send an error response;
             String reasonText = "Error: " + ex.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(recipient, sessionId,
-                    Reason.incompatible_parameters, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            mConnection.sendStanza(errResp);
+            mJingleSession.terminateSessionAndUnregister(Reason.incompatible_parameters, reasonText);
+
+//            Jingle errResp = jutil.createSessionTerminate(recipient, sessionId,
+//                    Reason.incompatible_parameters, reasonText);
+//            mConnection.sendStanza(errResp);
             return;
         }
 
@@ -799,6 +817,7 @@ public class CallPeerJabberImpl
                 reasonStr += "\n" + text;
         }
         setState(CallPeerState.DISCONNECTED, reasonStr);
+        mJingleSession.unregisterJingleSessionHandler();
     }
 
     /**
@@ -834,13 +853,15 @@ public class CallPeerJabberImpl
 
         OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
                 mPPS.getOperationSet(OperationSetBasicTelephony.class);
-        CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony, transfer.getSid());
-        String sid = transfer.getSid();
 
-        SdpTransfer.Builder calleeTransferBuilder = SdpTransfer.builder()
+        String transferSid = transfer.getSid();
+        // cmeng: Need more work on call transfer
+        mJingleSession = new JingleCallSessionImpl(mConnection, calleeAddress.asEntityFullJidIfPossible(), transferSid, basicTelephony);
+        CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony, transferSid);
+        SdpTransfer.Builder calleeTransferBuilder = SdpTransfer.getBuilder()
                 .setFrom(attendantAddress);
-        if (sid != null) {
-            calleeTransferBuilder.setSid(sid)
+        if (transferSid != null) {
+            calleeTransferBuilder.setSid(transferSid)
                     .setTo(calleeAddress);
         }
         basicTelephony.createOutgoingCall(calleeCall, calleeAddress.toString(),
@@ -882,10 +903,11 @@ public class CallPeerJabberImpl
 
             // send an error response
             String reasonText = "Error: " + ofe.getMessage();
-            Jingle errResp = jutil.createSessionTerminate(mPeerJid, sessionInitIQ.getSid(), Reason.failed_transport, reasonText);
-
             setState(CallPeerState.FAILED, reasonText);
-            mConnection.sendStanza(errResp);
+            mJingleSession.terminateSessionAndUnregister(Reason.failed_transport, reasonText);
+
+//            Jingle errResp = jutil.createSessionTerminate(mPeerJid, sessionInitIQ.getSid(), Reason.failed_transport, reasonText);
+//            mConnection.sendStanza(errResp);
             return;
         }
 
@@ -952,7 +974,7 @@ public class CallPeerJabberImpl
             throws NotConnectedException, InterruptedException
     {
         Jingle sessionInfo = jutil.createSessionInfo(mPeerJid, getSid());
-        CoinExtension coinExt = CoinExtension.builder()
+        CoinExtension coinExt = CoinExtension.getBuilder()
                 .setFocus(getCall().isConferenceFocus())
                 .build();
 
@@ -1071,7 +1093,7 @@ public class CallPeerJabberImpl
          * Send Content-Modify
          */
         String remoteContentName = remoteContent.getName();
-        JingleContent content = JingleContent.builder()
+        JingleContent content = JingleContent.getBuilder()
                 .setCreator(remoteContent.getCreator())
                 .setName(remoteContentName)
                 .setSenders(newSenders)
@@ -1146,7 +1168,7 @@ public class CallPeerJabberImpl
             return;
 
         String remoteContentName = remoteContent.getName();
-        JingleContent content = JingleContent.builder()
+        JingleContent content = JingleContent.getBuilder()
                 .setCreator(remoteContent.getCreator())
                 .setName(remoteContentName)
                 .setSenders(remoteContent.getSenders())
@@ -1226,7 +1248,7 @@ public class CallPeerJabberImpl
             throws OperationFailedException
     {
         Jingle transferSessionInfo = jutil.createSessionInfo(mPeerJid, getSid());
-        SdpTransfer.Builder transferBuilder = SdpTransfer.builder()
+        SdpTransfer.Builder transferBuilder = SdpTransfer.getBuilder()
                 .setTo(to);
 
         // Attended transfer.
@@ -1278,7 +1300,7 @@ public class CallPeerJabberImpl
         String message = ((sid == null) ? "Unattended" : "Attended") + " transfer to: " + to;
         // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
         try {
-            hangup(false, message, new JingleReason(Reason.success, message, SdpTransferred.builder().build()));
+            hangup(false, message, new JingleReason(Reason.success, message, SdpTransferred.getBuilder().build()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);
         }
@@ -1599,11 +1621,11 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Returns the IQ ID of the Jingle session-initiate packet associated with this call.
+     * Returns the IQ StanzaId of the Jingle session-initiate associated with this call.
      *
-     * @return the IQ ID of the Jingle session-initiate packet associated with this call.
+     * @return the IQ StanzaId of the Jingle session-initiate associated with this call.
      */
-    public String getSessInitID()
+    public String getJingleIQStanzaId()
     {
         return sessionInitIQ != null ? sessionInitIQ.getStanzaId() : null;
     }

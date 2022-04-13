@@ -305,7 +305,7 @@ public class AdHocConferenceChatTransport implements ChatTransport
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, adHocChatRoom, encType);
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, adHocChatRoom, encType, null);
                 return url;
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());

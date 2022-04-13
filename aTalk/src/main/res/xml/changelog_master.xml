@@ -6,8 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.1 (03/16/2022)" versioncode="209010">
+    <release version="2.9.2 (04/14/2022)" versioncode="209020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add support for XEP-0234: Jingle File Transfer (In-Band and SOCK5 Bytestreams)</change>
+        <change>Add support for XEP-0391: Jingle Encrypted Transports; supporting OMEMO encryption in Jingle File Transfer</change>
+        <change>aTalk file transfer handling priority: (online) jingle file transfer with JET => (online) legacy file transfer => (offline and fallback) HttpFileUpload</change>
+        <change>Display detailed reason text for file transfer failure status to user, rename Refused to Declined in UI</change>
+        <change>Migrate aTalk telephony jingle stanza handling to use smack JingleManager implementation structure</change>
+        <change>Use JingleMessage to make earlier registerJingleSessionHandler with JingleManager as to avoid problem with incoming call from conversations</change>
+        <change>Allow accept and display the location map based on geo location message from other android devices</change>
+        <change>Add XMPP version information to all reference in About UI</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.9.1 (03/16/2022)" versioncode="209010">
         <change>Upgrade ice4j to use ice4j:3.0-55-g32a8aad with aTalk customization</change>
         <change>Fixed unreachable STUN server when android mobile network APN=IPv4/IPv6 or APN=IPv6; No interoperability between IPv6 and IPv4</change>
         <change>Use GoogleMap latest Renderer enforcing by google in June 2022</change>

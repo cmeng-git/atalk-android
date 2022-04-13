@@ -5,18 +5,27 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractContact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.roster.RosterEntry;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
@@ -289,8 +298,8 @@ public class ContactJabberImpl extends AbstractContact
     @Override
     public String toString()
     {
-        StringBuilder buff = new StringBuilder("JabberContact[ id=");
-        buff.append(getAddress())
+        StringBuilder buff = new StringBuilder()
+                .append("JabberContact[id=").append(getAddress())
                 .append(", isPersistent=").append(isPersistent)
                 .append(", isResolved=").append(isResolved).append("]");
         return buff.toString();

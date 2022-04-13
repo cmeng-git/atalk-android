@@ -72,9 +72,9 @@ public interface IncomingFileTransferRequest
     FileTransfer acceptFile(File file);
 
     /**
-     * Function called to refuse the file.
+     * Function called to decline the file offer.
      */
-    void rejectFile()
+    void declineFile()
         throws OperationFailedException;
 
     /**

@@ -116,8 +116,8 @@ public class FileHistoryConversation extends FileTransferConversation
                 case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, entityJid);
                     break;
-                case FileRecord.STATUS_REFUSED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
+                case FileRecord.STATUS_DECLINED:
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
                     break;
                 case FileRecord.STATUS_ACTIVE:
                 case FileRecord.STATUS_PREPARING:
@@ -142,8 +142,8 @@ public class FileHistoryConversation extends FileTransferConversation
                 case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, entityJid);
                     break;
-                case FileRecord.STATUS_REFUSED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_REFUSED, entityJid);
+                case FileRecord.STATUS_DECLINED:
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, entityJid);
                     break;
                 case FileRecord.STATUS_ACTIVE:
                 case FileRecord.STATUS_PREPARING:

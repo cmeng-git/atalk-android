@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2022 Jive Software
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import java.util.Map;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public enum JingleAction {
+public enum JingleAction
+{
 
     /**
      * The <code>content-accept</code> action is used to accept a <code>content-add</code> action received
@@ -70,7 +71,7 @@ public enum JingleAction {
      * definition(s). Upon receiving a content-remove from the other party, the recipient MUST NOT
      * send a <code>content-accept</code> and MUST NOT continue to negotiate the transport method or
      * send application data related to that content definition.
-     * <p>
+     *
      * If the <code>content-remove</code> results in zero content definitions for the session, the
      * entity that receives the <code>content-remove</code> SHOULD send a <code>session-terminate</code>
      * action to the other party (since a session with no content definitions is void).
@@ -163,6 +164,7 @@ public enum JingleAction {
     ;
 
     private static final Map<String, JingleAction> map = new HashMap<>(JingleAction.values().length);
+
     static {
         for (JingleAction jingleAction : JingleAction.values()) {
             map.put(jingleAction.toString(), jingleAction);
@@ -171,7 +173,8 @@ public enum JingleAction {
 
     private final String asString;
 
-    JingleAction() {
+    JingleAction()
+    {
         asString = this.name().replace('_', '-');
     }
 
@@ -183,11 +186,13 @@ public enum JingleAction {
      */
     @NonNull
     @Override
-    public String toString() {
+    public String toString()
+    {
         return asString;
     }
 
-    public static JingleAction fromString(String string) {
+    public static JingleAction fromString(String string)
+    {
         JingleAction jingleAction = map.get(string);
         if (jingleAction == null) {
             throw new IllegalArgumentException("Unknown jingle action: " + string);

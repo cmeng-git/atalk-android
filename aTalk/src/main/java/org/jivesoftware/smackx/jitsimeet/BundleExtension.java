@@ -15,7 +15,7 @@
  */
 package org.jivesoftware.smackx.jitsimeet;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 import javax.xml.namespace.QName;
 
@@ -40,24 +40,24 @@ public class BundleExtension extends AbstractXmlElement
 
     public BundleExtension()
     {
-        super(builder());
+        super(getBuilder());
     }
 
     /**
      * Creates a new <code>BundleExtension</code>; required by DefaultXmlElementProvider()
      */
-    public BundleExtension(Builder build)
+    public BundleExtension(Builder builder)
     {
-        super(build);
+        super(builder);
     }
 
-    public static Builder builder()
+    public static Builder getBuilder()
     {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
     /**
-     * Builder for BundleExtension. Use {@link AbstractXmlElement#builder()} to
+     * Builder for BundleExtension. Use {@link AbstractXmlElement.Builder#Builder(String, String)} to
      * obtain a new instance and {@link #build} to build the BundleExtension.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, BundleExtension>

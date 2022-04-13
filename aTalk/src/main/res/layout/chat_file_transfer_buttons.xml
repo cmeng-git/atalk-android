@@ -16,7 +16,7 @@
             style="@style/ButtonTop"
             android:layout_marginStart="2dp"
             android:drawableStart="@drawable/ic_cancel"
-            android:text="@string/service_gui_REJECT" />
+            android:text="@string/service_gui_DECLINE" />
 
         <Button
             android:id="@+id/button_retry"

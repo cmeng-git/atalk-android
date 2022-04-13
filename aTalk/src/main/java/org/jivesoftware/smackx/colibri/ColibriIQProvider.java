@@ -13,8 +13,16 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-import org.jivesoftware.smackx.DefaultXmlElementProvider;
-import org.jivesoftware.smackx.jingle.*;
+import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpFb;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceGroup;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceRidGroup;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
 import org.jxmpp.jid.parts.Localpart;
 

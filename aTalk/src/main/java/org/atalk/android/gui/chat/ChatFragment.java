@@ -17,22 +17,47 @@
 package org.atalk.android.gui.chat;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.*;
-import android.text.*;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.SparseBooleanArray;
-import android.view.*;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -40,22 +65,45 @@ import androidx.fragment.app.FragmentManager;
 
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.util.ByteFormat;
+import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.StatusUtil;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
-import org.atalk.android.gui.chat.filetransfer.*;
+import org.atalk.android.gui.chat.filetransfer.FileHistoryConversation;
+import org.atalk.android.gui.chat.filetransfer.FileHttpDownloadConversation;
+import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
+import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.share.ShareUtil;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.HtmlImageGetter;
+import org.atalk.android.gui.util.XhtmlImageParser;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
@@ -72,7 +120,12 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
@@ -535,7 +588,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         // check to ensure chatListAdapter has not been destroyed before proceed (NPE from field)
         if (chatListAdapter != null) {
-                chatListAdapter.clearMessage(deletedUUIDs);
+            chatListAdapter.clearMessage(deletedUUIDs);
         }
 
         // scroll to the top of last deleted message group; post delayed 300ms after android auto onScroll()
@@ -1815,10 +1868,19 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         || (msgTye == ChatMessage.MESSAGE_OUT)
                         || (msgTye == ChatMessage.MESSAGE_MUC_IN)
                         || (msgTye == ChatMessage.MESSAGE_MUC_OUT))) {
+                    String mLoc = null;
                     int startIndex = str.indexOf("LatLng:");
                     if (startIndex != -1) {
+                        mLoc = str.substring(startIndex + 7);
+                    } else {
+                        startIndex = str.indexOf("geo:");
+                        if (startIndex != -1) {
+                            mLoc = str.split(";")[0].substring(startIndex + 4);
+                        }
+                    }
+
+                    if (mLoc != null) {
                         try {
-                            String mLoc = str.substring(startIndex + 7);
                             String[] location = mLoc.split(",");
 
                             String sLat = location[0].toLowerCase(Locale.US);
@@ -1837,7 +1899,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             latitude = Double.parseDouble(sLat);
                             longitude = Double.parseDouble(sLng);
                         } catch (NumberFormatException ex) {
-                            ex.printStackTrace();
+                            Timber.w("GeoLocation Number Format Exception %s: ", ex.getMessage());
                         }
                     }
                 }
@@ -2080,7 +2142,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public Button cancelButton = null;
         public Button retryButton = null;
         public Button acceptButton = null;
-        public Button rejectButton = null;
+        public Button declineButton = null;
 
         public TextView fileLabel = null;
         public TextView fileStatus = null;
@@ -2357,7 +2419,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 Object descriptor = activeFileTransfers.get(key);
 
                 if (descriptor instanceof IncomingFileTransferRequest) {
-                    ((IncomingFileTransferRequest) descriptor).rejectFile();
+                    ((IncomingFileTransferRequest) descriptor).declineFile();
                 }
                 else if (descriptor instanceof FileTransfer) {
                     ((FileTransfer) descriptor).cancel();
@@ -2448,7 +2510,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if (newStatus == FileTransferStatusChangeEvent.COMPLETED
                     || newStatus == FileTransferStatusChangeEvent.CANCELED
                     || newStatus == FileTransferStatusChangeEvent.FAILED
-                    || newStatus == FileTransferStatusChangeEvent.REFUSED) {
+                    || newStatus == FileTransferStatusChangeEvent.DECLINED) {
                 removeActiveFileTransfer(fileTransfer);
             }
         }
@@ -2456,7 +2518,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
     /**
      * Sends the given file through the currently selected chat transport by using the given
-     * fileComponent to visualize the transfer process n the chatFragment view.
+     * fileComponent to visualize the transfer process in the chatFragment view.
      *
      * // @param mFile the file to send
      * // @param FileSendConversation send file component to use for file transfer & visualization
@@ -2487,14 +2549,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         {
             long maxFileLength = currentChatTransport.getMaximumFileLength();
             if (mFile.length() > maxFileLength) {
+                String reason = aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, ByteFormat.format(maxFileLength));
                 chatPanel.addMessage(currentChatTransport.getName(), new Date(), ChatMessage.MESSAGE_ERROR,
-                        IMessage.ENCODE_PLAIN, aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG,
-                                ByteFormat.format(maxFileLength)));
+                        IMessage.ENCODE_PLAIN, reason);
 
                 // stop background task to proceed and update status
                 chkMaxSize = false;
                 chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.CANCELED);
-                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
+                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption, reason);
             }
             else {
                 // must reset status here as background task cannot catch up with Android redraw
@@ -2521,6 +2583,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 else
                     fileXfer = currentChatTransport.sendFile(mFile, mChatType, sendFTConversion);
 
+                // For both Jingle/Legacy file transfer i.e. OutgoingFileOfferJingleImpl / FileTransfer
                 if (fileXfer instanceof FileTransfer) {
                     FileTransfer fileTransfer = (FileTransfer) fileXfer;
 
@@ -2541,16 +2604,17 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     }
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
                     if (TextUtils.isEmpty(urlLink)) {
-                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
+                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption,
+                        aTalkApp.getResString(R.string.service_gui_FILE_SEND_FAILED,"HttpFileUpload"));
                     }
                     else {
-                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption);
+                        sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption, "");
                         mChatController.sendMessage(urlLink, IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
                     }
                 }
             } catch (Exception e) {
                 result = e;
-                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption);
+                sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption, e.getMessage());
             }
             return result;
         }

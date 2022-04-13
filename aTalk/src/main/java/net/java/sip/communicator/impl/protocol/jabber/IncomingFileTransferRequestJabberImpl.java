@@ -5,15 +5,22 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
 import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.bob.BoBManager;
+import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.filetransfer.FileTransferRequest;
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 import org.jxmpp.jid.Jid;
@@ -39,9 +46,9 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     /**
      * Thread to fetch thumbnails in the background, one at a time
      */
-    private static ExecutorService thumbnailCollector = Executors.newSingleThreadExecutor();
+    private static final ExecutorService thumbnailCollector = Executors.newSingleThreadExecutor();
 
-    private String id;
+    private final String id;
 
     /**
      * The Jabber file transfer request.
@@ -49,7 +56,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private final FileTransferRequest fileTransferRequest;
     private final OperationSetFileTransferJabberImpl fileTransferOpSet;
     private final ProtocolProviderServiceJabberImpl jabberProvider;
-    private Jid fromJid;
+    private final Jid remoteJid;
     private Contact sender;
     private byte[] thumbnail;
 
@@ -68,26 +75,26 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         this.fileTransferOpSet = fileTransferOpSet;
         this.fileTransferRequest = fileTransferRequest;
 
-        fromJid = fileTransferRequest.getRequestor();
+        remoteJid = fileTransferRequest.getRequestor();
         OperationSetPersistentPresenceJabberImpl opSetPersPresence
                 = (OperationSetPersistentPresenceJabberImpl) pps.getOperationSet(OperationSetPersistentPresence.class);
 
-        sender = opSetPersPresence.findContactByJid(fromJid);
+        sender = opSetPersPresence.findContactByJid(remoteJid);
         if (sender == null) {
             ChatRoom privateContactRoom = null;
             OperationSetMultiUserChatJabberImpl mucOpSet
                     = (OperationSetMultiUserChatJabberImpl) pps.getOperationSet(OperationSetMultiUserChat.class);
 
             if (mucOpSet != null)
-                privateContactRoom = mucOpSet.getChatRoom(fromJid.asBareJid());
+                privateContactRoom = mucOpSet.getChatRoom(remoteJid.asBareJid());
 
             if (privateContactRoom != null) {
-                sender = opSetPersPresence.createVolatileContact(fromJid, true);
+                sender = opSetPersPresence.createVolatileContact(remoteJid, true);
                 privateContactRoom.updatePrivateContactPresenceStatus(sender);
             }
             // just create a volatile contact for new sender
             else {
-                sender = opSetPersPresence.createVolatileContact(fromJid);
+                sender = opSetPersPresence.createVolatileContact(remoteJid);
             }
         }
         this.id = String.valueOf(System.currentTimeMillis()) + hashCode();
@@ -143,6 +150,28 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     }
 
     /**
+     * The unique id.
+     *
+     * @return the id.
+     */
+    @Override
+    public String getID()
+    {
+        return id;
+    }
+
+    /**
+     * Returns the thumbnail contained in this request.
+     *
+     * @return the thumbnail contained in this request
+     */
+    @Override
+    public byte[] getThumbnail()
+    {
+        return thumbnail;
+    }
+
+    /**
      * Accepts the file and starts the transfer.
      *
      * @return a boolean : <code>false</code> if the transfer fails, <code>true</code> otherwise
@@ -171,7 +200,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
      * Refuses the file transfer request.
      */
     @Override
-    public void rejectFile()
+    public void declineFile()
             throws OperationFailedException
     {
         try {
@@ -185,28 +214,6 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     }
 
     /**
-     * The unique id.
-     *
-     * @return the id.
-     */
-    @Override
-    public String getID()
-    {
-        return id;
-    }
-
-    /**
-     * Returns the thumbnail contained in this request.
-     *
-     * @return the thumbnail contained in this request
-     */
-    @Override
-    public byte[] getThumbnail()
-    {
-        return thumbnail;
-    }
-
-    /**
      * Requests the thumbnail from the peer and fire the incoming transfer request event.
      *
      * @param cid the thumbnail content-ID
@@ -214,24 +221,19 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     public void fetchThumbnailAndNotify(final ContentId cid)
     {
         final BoBManager bobManager = BoBManager.getInstanceFor(jabberProvider.getConnection());
-        thumbnailCollector.submit(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                Timber.d("Sending thumbnail request");
-                try {
-                    thumbnail = bobManager.requestBoB(fromJid, cid).getContent();
-                } catch (SmackException.NotLoggedInException
-                        | SmackException.NoResponseException
-                        | XMPPException.XMPPErrorException
-                        | NotConnectedException
-                        | InterruptedException e) {
-                    Timber.e(e, "Could not get thumbnail");
-                } finally {
-                    // Notify the global listener that a request has arrived.
-                    fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);
-                }
+        thumbnailCollector.submit(() -> {
+            Timber.d("Sending thumbnail request");
+            try {
+                thumbnail = bobManager.requestBoB(remoteJid, cid).getContent();
+            } catch (SmackException.NotLoggedInException
+                    | SmackException.NoResponseException
+                    | XMPPException.XMPPErrorException
+                    | NotConnectedException
+                    | InterruptedException e) {
+                Timber.e(e, "Could not get thumbnail");
+            } finally {
+                // Notify the global listener that a request has arrived.
+                fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);
             }
         });
     }

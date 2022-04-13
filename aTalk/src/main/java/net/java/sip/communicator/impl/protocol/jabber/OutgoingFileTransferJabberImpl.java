@@ -39,7 +39,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     private static final int maxAge = 86400;
 
     private final String id;
-    private final Contact receiver;
+    private final Contact recipient;
     private final File file;
     private Thumbnail thumbnail;
 
@@ -55,16 +55,16 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * contact, the <code>file</code> , the <code>jabberTransfer</code>, that would be used to send the file
      * through Jabber and the <code>protocolProvider</code>.
      *
-     * @param receiver the destination contact
+     * @param recipient the destination contact
      * @param file the file to send
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
      * @param protocolProvider the parent protocol provider
      * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
      */
-    public OutgoingFileTransferJabberImpl(Contact receiver, File file, OutgoingFileTransfer jabberTransfer,
+    public OutgoingFileTransferJabberImpl(Contact recipient, File file, OutgoingFileTransfer jabberTransfer,
             ProtocolProviderServiceJabberImpl protocolProvider, String msgUuid)
     {
-        this.receiver = receiver;
+        this.recipient = recipient;
         this.file = file;
         this.jabberTransfer = jabberTransfer;
         this.protocolProvider = protocolProvider;
@@ -81,7 +81,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         if (file instanceof ThumbnailedFile
                 && (((ThumbnailedFile) file).getThumbnailData() != null)
                 && ((ThumbnailedFile) file).getThumbnailData().length > 0) {
-            if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(receiver),
+            if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(recipient),
                     Thumbnail.NAMESPACE, BoBIQ.NAMESPACE)) {
                 protocolProvider.getConnection().addStanzaInterceptor(this,
                         new AndFilter(IQTypeFilter.SET, new StanzaTypeFilter(StreamInitiation.class)));
@@ -136,7 +136,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      */
     public Contact getContact()
     {
-        return receiver;
+        return recipient;
     }
 
     /**

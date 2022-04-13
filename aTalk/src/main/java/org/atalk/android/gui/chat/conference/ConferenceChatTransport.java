@@ -338,7 +338,7 @@ public class ConferenceChatTransport implements ChatTransport
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encType);
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encType, null);
                 return url;
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());

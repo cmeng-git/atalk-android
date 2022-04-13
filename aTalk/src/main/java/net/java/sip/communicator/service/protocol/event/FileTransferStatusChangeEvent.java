@@ -38,9 +38,9 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int FAILED = 2;
 
     /**
-     * Indicates that the file transfer has been refused.
+     * Indicates that the file transfer has been declined.
      */
-    public static final int REFUSED = 3;
+    public static final int DECLINED = 3;
 
     /**
      * Indicates that the file transfer is in progress.
@@ -56,6 +56,11 @@ public class FileTransferStatusChangeEvent extends EventObject
      * Indicates that the file transfer is in negotiation.
      */
     public static final int PREPARING = 6;
+
+    /**
+     * Indicates that the file transfer has been sent to stream.
+     */
+    public static final int FINISHED = 7;
 
     /**
      * The state of the file transfer before this event occurred.
