@@ -59,7 +59,7 @@
             android:id="@+id/button_Reject"
             style="@style/ButtonTop"
             android:enabled="true"
-            android:text="@string/service_gui_REJECT"
+            android:text="@string/service_gui_DECLINE"
             android:layout_marginStart="2dp"
             android:layout_marginEnd="2dp"/>
 

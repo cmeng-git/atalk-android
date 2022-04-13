@@ -18,9 +18,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jxmpp.jid.Jid;
 
@@ -44,7 +44,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
 {
     /**
      * The ID that we will be assigning to our next candidate. We use <code>int</code>s for
-     * inter-operability reasons (Emil: I believe that GTalk uses <code>int</code>s. If that turns out
+     * interoperability reasons (Emil: I believe that GTalk uses <code>int</code>s. If that turns out
      * not to be the case we can stop using <code>int</code>s here if that's an issue).
      */
     private static int nextID = 1;

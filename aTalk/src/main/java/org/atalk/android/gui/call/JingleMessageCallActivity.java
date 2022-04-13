@@ -28,6 +28,8 @@ import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.jinglemessage.JingleMessageType;
+import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -35,7 +37,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Eng Chong Meng
  */
-public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageHelper.CallEndListener
+public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageHelper.JmStateListener
 {
     private ImageView peerAvatar;
 
@@ -62,6 +64,8 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
+
+        JingleMessageHelper.addJmStateListener(this);
 
         // Implementation not supported currently
         findViewById(R.id.videoCallButton).setVisibility(View.GONE);
@@ -107,7 +111,6 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
                 callButton.setVisibility(View.GONE);
             }
         }
-        JingleMessageHelper.addFinishListener(this);
     }
 
     @Override
@@ -135,9 +138,23 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
         return super.onKeyUp(keyCode, event);
     }
 
-    public void onRejectCallback()
+    @Override
+    public void onJmStateChange(JingleMessageType type, FullJid remote, String sid)
     {
-        finish();
+        switch(type) {
+            case accept:
+                JingleMessageHelper.removeJmStateListener(this);
+                finish();
+                break;
+
+            case retract:
+            case reject:
+                JingleMessageHelper.removeJmStateListener(this);
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
     /**

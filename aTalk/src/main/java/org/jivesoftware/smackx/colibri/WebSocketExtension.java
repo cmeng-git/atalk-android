@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.colibri;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 import javax.xml.namespace.QName;
 
@@ -42,14 +42,14 @@ public class WebSocketExtension extends AbstractXmlElement
 
     /**
      * Creates a new <code>WebSocketExtension</code>; required by DefaultXmlElementProvider().
-     * @param build Builder instance
+     * @param builder Builder instance
      */
-    public WebSocketExtension(Builder build)
+    public WebSocketExtension(Builder builder)
     {
-        super(build);
+        super(builder);
     }
 
-    public static Builder builder()
+    public static Builder getBuilder()
     {
         return new Builder(ELEMENT, NAMESPACE);
     }

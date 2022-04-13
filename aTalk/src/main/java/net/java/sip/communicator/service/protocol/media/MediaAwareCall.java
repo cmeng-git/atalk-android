@@ -104,13 +104,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
      * The listener that would actually subscribe for level events from the media handler if there's
      * at least one listener in <code>localUserAudioLevelListeners</code>.
      */
-    private final SimpleAudioLevelListener localAudioLevelDelegator = new SimpleAudioLevelListener()
-    {
-        public void audioLevelChanged(int level)
-        {
-            fireLocalUserAudioLevelChangeEvent(level);
-        }
-    };
+    private final SimpleAudioLevelListener localAudioLevelDelegator = this::fireLocalUserAudioLevelChangeEvent;
 
     /**
      * Crates a <code>Call</code> instance belonging to <code>parentOpSet</code>.
@@ -347,7 +341,7 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
              * over it can iterate without ConcurrentModificationExceptions.
              */
             localUserAudioLevelListeners = (localUserAudioLevelListeners == null)
-                    ? new ArrayList<SoundLevelListener>() : new ArrayList<>(localUserAudioLevelListeners);
+                    ? new ArrayList<>() : new ArrayList<>(localUserAudioLevelListeners);
             localUserAudioLevelListeners.add(l);
         }
     }
@@ -568,13 +562,9 @@ public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U ex
 
         if (recorder != null) {
             // listens for mute event to update recorder
-            final PropertyChangeListener muteListener = new PropertyChangeListener()
-            {
-                public void propertyChange(PropertyChangeEvent evt)
-                {
-                    if (evt.getPropertyName().equals(CallPeer.MUTE_PROPERTY_NAME)) {
-                        updateRecorderMuteState(recorder);
-                    }
+            final PropertyChangeListener muteListener = evt -> {
+                if (evt.getPropertyName().equals(CallPeer.MUTE_PROPERTY_NAME)) {
+                    updateRecorderMuteState(recorder);
                 }
             };
 

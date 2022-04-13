@@ -1,12 +1,12 @@
-/*
- * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+/**
+ *
+ * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,8 +22,8 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
-import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 
 import java.io.IOException;
 

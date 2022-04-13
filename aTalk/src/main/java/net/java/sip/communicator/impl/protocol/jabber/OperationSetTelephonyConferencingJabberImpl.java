@@ -6,7 +6,8 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.jivesoftware.smackx.coin.CoinIQ;
-import org.jivesoftware.smackx.jingle.CoinExtension;
+import org.jivesoftware.smackx.coin.CoinExtension;
+import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import net.java.sip.communicator.service.protocol.*;
@@ -270,7 +271,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     protected CallJabberImpl createOutgoingCall()
             throws OperationFailedException
     {
-        return new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
+        return new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
     }
 
     /**
@@ -286,7 +287,7 @@ public class OperationSetTelephonyConferencingJabberImpl
     {
         return getBasicTelephony().createOutgoingCall(call, calleeAddress,
                 Arrays.asList(new ExtensionElement[]{
-                        CoinExtension.builder()
+                        CoinExtension.getBuilder()
                         .setFocus(true)
                         .build()
                 }));
@@ -491,7 +492,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         OperationSetVideoBridge videoBridge = parentProvider.getOperationSet(OperationSetVideoBridge.class);
         boolean isVideobridge = (videoBridge != null) && videoBridge.isActive();
 
-        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), Jingle.generateSid());
+        CallJabberImpl call = new CallJabberImpl(getBasicTelephony(), JingleManager.randomId());
         call.setAutoAnswer(true);
 
         String uri = "xmpp:" + chatRoom.getIdentifier() + "/" + chatRoom.getUserNickname();

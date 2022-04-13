@@ -20,7 +20,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jxmpp.jid.Jid;
 
 import timber.log.Timber;

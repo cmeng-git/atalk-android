@@ -111,13 +111,13 @@ public class FileReceiveConversation extends FileTransferConversation
                 new acceptFile(mXferFile).execute();
             });
 
-            messageViewHolder.rejectButton.setOnClickListener(v -> {
-                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
-                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED));
+            messageViewHolder.declineButton.setOnClickListener(v -> {
+                updateXferFileViewState(FileTransferStatusChangeEvent.DECLINED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED));
                 hideProgressRelatedComponents();
 
                 try {
-                    fileTransferRequest.rejectFile();
+                    fileTransferRequest.declineFile();
                 } catch (OperationFailedException e) {
                     Timber.e("Reject file exception: %s", e.getMessage());
                 }
@@ -145,7 +145,8 @@ public class FileReceiveConversation extends FileTransferConversation
      * Presently the file receive statusChanged event is only trigger by non-encrypted file transfer protocol
      * i.e. mEncryption = IMessage.ENCRYPTION_NONE
      */
-    private void updateView(final int status, final String reason)
+    @Override
+    protected void updateView(final int status, final String reason)
     {
         setEncState(mEncryption);
         String statusText = null;
@@ -185,9 +186,9 @@ public class FileReceiveConversation extends FileTransferConversation
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 break;
 
-            case FileTransferStatusChangeEvent.REFUSED:
+            case FileTransferStatusChangeEvent.DECLINED:
                 // hideProgressRelatedComponents();
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED);
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
                 break;
         }
         updateXferFileViewState(status, statusText);
@@ -292,7 +293,7 @@ public class FileReceiveConversation extends FileTransferConversation
             if (status == FileTransferStatusChangeEvent.COMPLETED
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.REFUSED) {
+                    || status == FileTransferStatusChangeEvent.DECLINED) {
                 // must do this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(FileReceiveConversation.this);
             }
@@ -334,13 +335,13 @@ public class FileReceiveConversation extends FileTransferConversation
     public void fileTransferRequestRejected(FileTransferRequestEvent event)
     {
         final IncomingFileTransferRequest request = event.getRequest();
-        updateFTStatus(request.getID(), FileRecord.STATUS_REFUSED);
+        updateFTStatus(request.getID(), FileRecord.STATUS_DECLINED);
 
         // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             if (request.equals(fileTransferRequest)) {
-                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
-                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REFUSED));
+                updateXferFileViewState(FileTransferStatusChangeEvent.DECLINED,
+                        aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED));
                 fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
                 hideProgressRelatedComponents();
             }
@@ -361,7 +362,7 @@ public class FileReceiveConversation extends FileTransferConversation
         // Event triggered - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             if (request.equals(fileTransferRequest)) {
-                updateXferFileViewState(FileTransferStatusChangeEvent.REFUSED,
+                updateXferFileViewState(FileTransferStatusChangeEvent.DECLINED,
                         aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED));
                 fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
             }

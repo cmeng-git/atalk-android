@@ -87,12 +87,7 @@ public final class HttpFileUploadManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(HttpFileUploadManager.class.getName());
 
     static {
-        XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
-            @Override
-            public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection);
-            }
-        });
+        XMPPConnectionRegistry.addConnectionCreationListener(connection -> getInstanceFor(connection));
     }
 
     private static final Map<XMPPConnection, HttpFileUploadManager> INSTANCES = new WeakHashMap<>();

@@ -29,7 +29,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
 * Send and receive files for all document types and images with thumbnail preview and gif animation
 * Auto accept file transfer with max file size option
-* Implement fault-tolerance file transfer to ease and enhance file sharing reliability
+* Implement fault-tolerance file transfer algorithm, via Jingle File Transfer, Legacy In-Band/SOCK5 Bytestreams and HttpFileUpload protocols to ease and enhance file sharing reliability
 * Enhance and harmonize UI for file sharing in chat and chatRoom
 * Support share, quote and forward of messages and media with previews prior to sending
 * Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
@@ -45,11 +45,11 @@ aTalk is an xmpp client designed for android and supports the following features
 * XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
 * XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
 * XEP-0184: Message Delivery Receipts with user enable/disable option
+* XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
 * Join or create room with full room configuration support for owner
 * Integrated captcha protected room user interface with retry on failure
-* Support both vo to algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
-* SDES encice and video call with ZRTP, SDES and DTLS SRTP (DTLSv12) encryption modes
+* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
 * ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
 * SDES encryption with AES256 and AES192, acceleration using OpenSSL
 * Support simultaneous media call and message chat sessions
@@ -62,72 +62,77 @@ aTalk is an xmpp client designed for android and supports the following features
 * In-Band Registration with captcha option support
 * Multiple accounts creation
 * User selectable Themes support
-* Multi-language UI support (Bahasa Indonesia, English, German, Russian, Slovak and Spanish)
+* Multi-language UI support (Bahasa Indonesia, English, German, Portuguese, Russian, Slovak and Spanish)
 
 ## XMPP Standards Implemented
 
 aTalk works seamlessly with almost every XMPP servers available on network, limited only by servers features supported.<br/>
 It supports the following XEP's, standards for XMPP clients.
 
-* [XEP-0012: Last Activity](https://xmpp.org/extensions/xep-0012.html)
-* [XEP-0030: Service Discovery](https://xmpp.org/extensions/xep-0030.html)
-* [XEP-0045: Multi-User Chat](https://xmpp.org/extensions/xep-0045.html)
-* [XEP-0047: In-Band Bytestreams](https://xmpp.org/extensions/xep-00047.html)
-* [XEP-0048: Bookmarks](https://xmpp.org/extensions/xep-0048.html)
-* [XEP-0054: vcard-temp](https://xmpp.org/extensions/xep-0054.html)
-* [XEP-0060: Publish-Subscribe](https://xmpp.org/extensions/xep-0060.html)
-* [XEP-0065: SOCKS5 Bytestreams](https://xmpp.org/extensions/xep-0065.html)
-* [XEP-0070: Verifying HTTP Requests via XMPP](https://xmpp.org/extensions/xep-0070.html)
-* [XEP-0071: XHTML-IM](https://xmpp.org/extensions/xep-0071.html)
-* [XEP-0077: In-Band Registration](https://xmpp.org/extensions/xep-0077.html)
-* [XEP-0084: User Avatar](https://xmpp.org/extensions/xep-0084.html)
-* [XEP-0085: Chat State Notifications](https://xmpp.org/extensions/xep-0085.html)
-* [XEP-0092: Software Version](https://xmpp.org/extensions/xep-0092.html)
-* [XEP-0095: Stream Initiation](https://xmpp.org/extensions/xep-0095.html)
-* [XEP-0096: SI File Transfer](https://xmpp.org/extensions/xep-0096.html)
-* [XEP-0100: Gateway Interaction](https://xmpp.org/extensions/xep-0100.html)
-* [XEP-0115: Entity Capabilities](https://xmpp.org/extensions/xep-0115.html)
-* [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH)](https://xmpp.org/extensions/xep-0124.html),
-* [XEP-0138: Stream Compression](https://xmpp.org/extensions/xep-0138.html)
-* [XEP-0153: vCard-Based Avatar](https://xmpp.org/extensions/xep-0153.html)
-* [XEP-0158: CAPTCHA Forms](https://xmpp.org/extensions/xep-0158.html)
-* [XEP-0163: Personal Eventing Protocol (avatars and nicks)](https://xmpp.org/extensions/xep-0163.html)
-* [XEP-0166: Jingle](https://xmpp.org/extensions/xep-0166.html)
-* [XEP-0167: Jingle RTP Sessions](https://xmpp.org/extensions/xep-0167.html)
-* [XEP-0172: User Nickname](https://xmpp.org/extensions/xep-0172.html)
-* [XEP-0176: Jingle ICE-UDP Transport Method](https://xmpp.org/extensions/xep-0176.html)
-* [XEP-0177: Jingle Raw UDP Transport Method](https://xmpp.org/extensions/xep-0177.html)
-* [XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates](https://xmpp.org/extensions/xep-0178.html)
-* [XEP-0184: Message Delivery Receipts](https://xmpp.org/extensions/xep-0184.html)
-* [XEP-0191: Blocking command (NI)](https://xmpp.org/extensions/xep-0191.html)
-* [XEP-0198: Stream Management](https://xmpp.org/extensions/xep-0198.html)
-* [XEP-0199: XMPP Ping](https://xmpp.org/extensions/xep-0199.html)
-* [XEP-0203: Delayed Delivery](https://xmpp.org/extensions/xep-0203.html)
-* [XEP-0206: XMPP Over BOSH](https://xmpp.org/extensions/xep-0206.html)
-* [XEP-0231: Bits of Binary](https://xmpp.org/extensions/xep-0231.html)
-* [XEP-0234: Jingle File Transfer](https://xmpp.org/extensions/xep-0234.html)
-* [XEP-0237: Roster Versioning](https://xmpp.org/extensions/xep-0237.html)
-* [XEP-0249: Direct MUC Invitations](https://xmpp.org/extensions/xep-0249.html)
-* [XEP-0251: Jingle Session Transfer](https://xmpp.org/extensions/xep-0251.html)
-* [XEP-0260: Jingle SOCKS5 Bytestreams Transport Method](https://xmpp.org/extensions/xep-0260.html)
-* [XEP-0261: Jingle In-Band Bytestreams Transport Method](https://xmpp.org/extensions/xep-0261.html)
-* [XEP-0262: Use of ZRTP in Jingle RTP Sessions](https://xmpp.org/extensions/xep-0262.html)
-* [XEP-0264: File Transfer Thumbnails](https://xmpp.org/extensions/xep-0264.html)
-* [XEP-0278: Jingle Relay Nodes](https://xmpp.org/extensions/xep-0278.html)
-* [XEP-0280: Message Carbons](https://xmpp.org/extensions/xep-0280.html)
-* [XEP-0294: Jingle RTP Header Extensions Negotiation](https://xmpp.org/extensions/xep-0294.html)
-* [XEP-0298: Delivering Conference Information to Jingle Participants (Coin)](https://xmpp.org/extensions/xep-0298.html)
-* [XEP-0308: Last Message Correction](https://xmpp.org/extensions/xep-0308.html)
-* [XEP-0319: Last User Interaction in Presence](https://xmpp.org/extensions/xep-0319.html)
-* [XEP-0320: Use of DTLS-SRTP in Jingle Sessions](https://xmpp.org/extensions/xep-0320.html)
-* [XEP-0352: Client State Indication](https://xmpp.org/extensions/xep-0352.html)
-* [XEP-0353: Jingle Message Initiation](https://xmpp.org/extensions/xep-0353.html)
-* [XEP-0363: HTTP File Upload](https://xmpp.org/extensions/xep-0363.html)
-* [XEP-0364: Off-the-Record Messaging (V2/3)](https://xmpp.org/extensions/xep-0364.html)
-* [XEP-0384: OMEMO Encryption](https://xmpp.org/extensions/xep-0384.html)
-* [XEP-xxxx: OMEMO Media sharing](https://xmpp.org/extensions/inbox/omemo-media-sharing.html)
+* [XEP-0012: Last Activity 2.0]([https://xmpp.org/extensions/xep-0012.html)
+* [XEP-0030: Service Discovery 2.5rc3]([https://xmpp.org/extensions/xep-0030.html)
+* [XEP-0045: Multi-User Chat 1.34.3]([https://xmpp.org/extensions/xep-0045.html)
+* [XEP-0047: In-Band Bytestreams 2.0.1]([https://xmpp.org/extensions/xep-0047.html)
+* [XEP-0048: Bookmarks 1.2]([https://xmpp.org/extensions/xep-0048.html)
+* [XEP-0054: vcard-temp 1.2]([https://xmpp.org/extensions/xep-0054.html)
+* [XEP-0060: Publish-Subscribe 1.24.1]([https://xmpp.org/extensions/xep-0060.html)
+* [XEP-0065: SOCKS5 Bytestreams 1.8.2]([https://xmpp.org/extensions/xep-0065.html)
+* [XEP-0070: Verifying HTTP Requests via XMPP 1.0.1]([https://xmpp.org/extensions/xep-0070.html)
+* [XEP-0071: XHTML-IM 1.5.4]([https://xmpp.org/extensions/xep-0071.html)
+* [XEP-0077: In-Band Registration 2.4]([https://xmpp.org/extensions/xep-0077.html)
+* [XEP-0084: User Avatar 1.1.4]([https://xmpp.org/extensions/xep-0084.html)
+* [XEP-0085: Chat State Notifications 2.1]([https://xmpp.org/extensions/xep-0085.html)
+* [XEP-0092: Software Version 1.1]([https://xmpp.org/extensions/xep-0092.html)
+* [XEP-0095: Stream Initiation 1.2]([https://xmpp.org/extensions/xep-0095.html)
+* [XEP-0096: SI File Transfer 1.3.1]([https://xmpp.org/extensions/xep-0096.html)
+* [XEP-0100: Gateway Interaction 1.0](https://xmpp.org/extensions/xep-0100.html)
+* [XEP-0115: Entity Capabilities 1.6.0]([https://xmpp.org/extensions/xep-0115.html)
+* [XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) 1.11.2]([https://xmpp.org/extensions/xep-0124.html)
+* [XEP-0138: Stream Compression 2.1]([https://xmpp.org/extensions/xep-0138.html)
+* [XEP-0153: vCard-Based Avatar 1.1]([https://xmpp.org/extensions/xep-0153.html)
+* [XEP-0158: CAPTCHA Forms 1.5.8]([https://xmpp.org/extensions/xep-0158.html)
+* [XEP-0163: Personal Eventing Protocol 1.2.2]([https://xmpp.org/extensions/xep-0163.html)
+* [XEP-0166: Jingle 1.1.2]([https://xmpp.org/extensions/xep-0166.html)
+* [XEP-0167: Jingle RTP Sessions 1.2.1]([https://xmpp.org/extensions/xep-0167.html)
+* [XEP-0172: User Nickname 1.1]([https://xmpp.org/extensions/xep-0172.html)
+* [XEP-0176: Jingle ICE-UDP Transport Method 1.1.1]([https://xmpp.org/extensions/xep-0176.html)
+* [XEP-0177: Jingle Raw UDP Transport Method 1.1.1]([https://xmpp.org/extensions/xep-0177.html)
+* [XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates 1.2]([https://xmpp.org/extensions/xep-0178.html)
+* [XEP-0184: Message Delivery Receipts 1.4.0]([https://xmpp.org/extensions/xep-0184.html)
+* [XEP-0198: Stream Management 1.6]([https://xmpp.org/extensions/xep-0198.html)
+* [XEP-0199: XMPP Ping 2.0.1]([https://xmpp.org/extensions/xep-0199.html)
+* [XEP-0203: Delayed Delivery 2.0]([https://xmpp.org/extensions/xep-0203.html)
+* [XEP-0206: XMPP Over BOSH 1.4]([https://xmpp.org/extensions/xep-0206.html)
+* [XEP-0231: Bits of Binary 1.0]([https://xmpp.org/extensions/xep-0231.html)
+* [XEP-0234: Jingle File Transfer 0.19.1]([https://xmpp.org/extensions/xep-0234.html)
+* [XEP-0237: Roster Versioning 1.3]([https://xmpp.org/extensions/xep-0237.html)
+* [XEP-0249: Direct MUC Invitations 1.2]([https://xmpp.org/extensions/xep-0249.html)
+* [XEP-0251: Jingle Session Transfer 0.2]([https://xmpp.org/extensions/xep-0251.html)
+* [XEP-0260: Jingle SOCKS5 Bytestreams Transport Method 1.0.3]([https://xmpp.org/extensions/xep-0260.html)
+* [XEP-0261: Jingle In-Band Bytestreams Transport Method 1.0]([https://xmpp.org/extensions/xep-0261.html)
+* [XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0]([https://xmpp.org/extensions/xep-0262.html)
+* [XEP-0264: File Transfer Thumbnails 0.4]([https://xmpp.org/extensions/xep-0264.html)
+* [XEP-0278: Jingle Relay Nodes 0.4.1]([https://xmpp.org/extensions/xep-0278.html)
+* [XEP-0280: Message Carbons 1.0.1]([https://xmpp.org/extensions/xep-0280.html)
+* [XEP-0293: Jingle RTP Feedback Negotiation 1.0.1]([https://xmpp.org/extensions/xep-0293.html)
+* [XEP-0294: Jingle RTP Header Extensions Negotiation 1.1.1]([https://xmpp.org/extensions/xep-0294.html)
+* [XEP-0298: Delivering Conference Information to Jingle Participants (Coin) 0.2]([https://xmpp.org/extensions/xep-0298.html)
+* [XEP-0308: Last Message Correction 1.2.0]([https://xmpp.org/extensions/xep-0308.html)
+* [XEP-0319: Last User Interaction in Presence 1.0.2]([https://xmpp.org/extensions/xep-0319.html)
+* [XEP-0320: Use of DTLS-SRTP in Jingle Sessions 1.0.0]([https://xmpp.org/extensions/xep-0320.html)
+* [XEP-0338: Jingle Grouping Framework 1.0.0]([https://xmpp.org/extensions/xep-0338.html)
+* [XEP-0339: Source-Specific Media Attributes in Jingle 1.0.1]([https://xmpp.org/extensions/xep-0339.html)
+* [XEP-0343: Signaling WebRTC datachannels in Jingle 0.3.1]([https://xmpp.org/extensions/xep-0343.html)
+* [XEP-0352: Client State Indication 1.0.0]([https://xmpp.org/extensions/xep-0352.html)
+* [XEP-0353: Jingle Message Initiation 0.4.0]([https://xmpp.org/extensions/xep-0353.html)
+* [XEP-0363: HTTP File Upload 1.1.0](https://xmpp.org/extensions/xep-0363.html)
+* [XEP-0364: Off-the-Record Messaging (V2/3) 0.3.2]([https://xmpp.org/extensions/xep-0364.html)
+* [XEP-0371: Jingle ICE Transport Method 0.3.1]([https://xmpp.org/extensions/xep-0371.html)
+* [XEP-0384: OMEMO Encryption 0.8.3]([https://xmpp.org/extensions/xep-0384.html)
+* [XEP-0391: Jingle Encrypted Transports 0.1.2]([https://xmpp.org/extensions/xep-0391.html)
+* [XEP-xxxx: OMEMO Media sharing 0.0.2]([https://xmpp.org/extensions/inbox/omemo-media-sharing.html)
 
-## Acknowledgments
+## Acknowledgements
 
 Libraries used in this project:
 
@@ -183,9 +188,9 @@ Other contributors:
 
 ## aTalk apk build for android
 * Following development environment setups are used to build aTalk.apk<br/>
-  a. Android Studio 4.2.2<br/>
+  a. Android Studio Bumblebee 2021.1.1<br/>
   b. Gradle version as specified in ./gradle/gradle-wrapper.properties<br/>
-  c. Ubuntu 20.04 with proper environment setup for development<br>
+  c. Ubuntu 22.04 with proper environment setup for development<br>
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu
 * aTalk uses native jni libraries, required to be built manually or downloaded prior to android NDK build.<br/>
   The static jni libraries must be built prior to android studio apk build process.
@@ -196,7 +201,7 @@ Other contributors:
   These libraries sources include: opus, speex and ogg
 
 ## Feedback and Contributions
-Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml). Create a pull request or forward the file to the developer.
+Cannot found an UI language and would like to help; translate the content in [strings.xml](https://github.com/cmeng-git/atalk-android/blob/master/art/values-xlate/strings.xml).<br/>Create a pull request or forward the file to the developer.
 
 If you have found bug, wish for new feature, or have other questions, [file an issue](https://github.com/cmeng-git/atalk-android/issues).
 
@@ -205,7 +210,7 @@ License
 
     aTalk, android VoIP and Instant Messaging client
     
-    Copyright 2014 Eng Chong Meng
+    Copyright 2014-2022 Eng Chong Meng
         
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

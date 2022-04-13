@@ -336,11 +336,11 @@
     <string name="xFile_FILE_RECEIVE_FAILED">Ocorreu um erro durante a transferência do arquivo de %1$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">Recebendo arquivo de %1$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">O arquivo foi enviado com sucesso para %1$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s recusou este arquivo</string>
+    <string name="xFile_FILE_SEND_DECLINED">%1$s recusou este arquivo</string>
     <string name="xFile_FILE_SENDING_TO">Enviando arquivo para %1$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">A transferência de arquivos foi cancelada</string>
     <string name="xFile_FILE_TRANSFER_PREPARING">Preparando a transferência de arquivos com %1$s. Aguarde&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">A transferência de arquivos foi recusada</string>
+    <string name="xFile_FILE_TRANSFER_DECLINED">A transferência de arquivos foi declínio</string>
     <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s esta compartilhando o arquivo com você</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">Ocorreu um erro ao enviar o arquivo para %1$s</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">Aguardando %1$s para aceitar seu arquivo</string>
@@ -354,6 +354,7 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Não foi encontrado um app adequado para este tipo de arquivo</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Você não tem permissão para abrir este arquivo. Por favor, verifique suas permissões de leitura e tente novamente</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Não é possível arbir o arquivo, ação não é suportada pela plataforma do aparelho</string>
+    <string name="service_gui_FILE_SEND_CLIENT_ERROR">Erro de cliente remoto no arquivo enviado: %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Falha ao enviar arquivo: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Não é possível enviar arquivo durante a ligação de conferência!</string>
     <string name="service_gui_FILE_ATTACHMENT">Enviar anexo</string>
@@ -558,7 +559,7 @@
     <string name="service_gui_RESTORING">Restaurando&#8230;</string>
 
     <string name="service_gui_RE_REQUEST_AUTHORIZATION">Solicitar autorização</string>
-    <string name="service_gui_REJECT">Recusar</string>
+    <string name="service_gui_DECLINE">Declínio</string>
     <string name="service_gui_REMOVE">Excluir</string>
     <string name="service_gui_REMOVE_ACCOUNT">Excluir conta</string>
     <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Tem certeza de que quer excluir a conta:\n%1$s?</string>
@@ -793,7 +794,7 @@
     <string name="plugin_update_Install_Update">Instalar atualização</string>
     <string name="plugin_update_Download_failed">Falha ao baixar a nova atualização!</string>
     <string name="plugin_update_Check_Update">Verificar por atualizações</string>
-    <string name="plugin_update_Version_Invalid">O apk baixado não corresponde; real: %s (%s)</string>
+    <string name="plugin_update_Version_Invalid">O apk baixado não corresponde; real: %1$s (%2$s)</string>
     <string name="plugin_update_New_Version_Available">Uma nova versão (%1$s) de software está disponível.</string>
 
     <!-- account info -->

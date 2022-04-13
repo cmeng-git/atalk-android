@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -34,10 +36,6 @@ public class JingleReason implements FullyQualifiedElement
 
     public static final String ELEMENT = "reason";
     public static final String NAMESPACE = Jingle.NAMESPACE;
-
-    /**
-     * The name of the text element.
-     */
     public static final String TEXT_ELEMENT = "text";
 
     public static AlternativeSession AlternativeSession(String sessionId)
@@ -139,7 +137,7 @@ public class JingleReason implements FullyQualifiedElement
      * may not be one of the static strings defined here.
      * @param text an element providing human-readable information about the reason for the action or
      * <code>null</code> if no such information is currently available.
-     * @param stanzaExtension any other element that MAY be providing further information or <code>null</code> if no
+     * @param element any other element that MAY be providing further information or <code>null</code> if no
      * such element has been specified.
      */
     public JingleReason(Reason reason, String text, ExtensionElement element)
@@ -162,11 +160,10 @@ public class JingleReason implements FullyQualifiedElement
     }
 
     /**
-     * Returns human-readable information about the reason for the action or <code>null</code> if no
-     * such information is currently available.
+     * An optional text that provides human-readable information about the reason for the action.
      *
-     * @return human-readable information about the reason for the action or <code>null</code> if no
-     * such information is currently available.
+     * @return a human-readable text with information regarding this reason or <code>null</code>.
+     * @since 4.4.5
      */
     public String getText()
     {
@@ -179,7 +176,8 @@ public class JingleReason implements FullyQualifiedElement
      * @return an element with machine-readable information about this reason or <code>null</code>.
      * @since 4.4.5
      */
-    public ExtensionElement getElement() {
+    public ExtensionElement getElement()
+    {
         return element;
     }
 
@@ -190,11 +188,7 @@ public class JingleReason implements FullyQualifiedElement
         xml.rightAngleBracket();
 
         xml.emptyElement(reason);
-
-        // add reason "text" if we have it
         xml.optElement(TEXT_ELEMENT, text);
-
-        // add the extra element if it has been specified.
         xml.optAppend(element);
 
         xml.closeElement(this);
@@ -211,7 +205,8 @@ public class JingleReason implements FullyQualifiedElement
         public static final String SID = "sid";
         private final String sessionId;
 
-        public AlternativeSession(String sessionId) {
+        public AlternativeSession(String sessionId)
+        {
             this(sessionId, null, null);
         }
 

@@ -91,11 +91,17 @@ import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
-import org.jivesoftware.smackx.jingle.*;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.RawUdpTransport;
+import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
+import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jivesoftware.smackx.jitsimeet.*;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
@@ -783,7 +789,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         ConnectionConfiguration.Builder<?, ?> ccBuilder;
         if (mAccountID.isBOSHEnable()) {
-            ccBuilder = BOSHConfiguration.builder();
+            ccBuilder = BOSHConfiguration.getBuilder();
         }
         else {
             ccBuilder = XMPPTCPConnectionConfiguration.builder();
@@ -1377,9 +1383,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * java.lang.IllegalArgumentException:
              * at org.jivesoftware.smack.util.Objects.requireNonNull (Objects.java:42)
              *  at org.jivesoftware.smack.Manager.<init> (Manager.java:33)
-             * at org.jivesoftware.smackx.iqversion.VersionManager.<init> (VersionManager.java:84)
-             * at org.jivesoftware.smackx.iqversion.VersionManager.getInstanceFor (VersionManager.java:106)
-             * at net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.initServicesAndFeatures (ProtocolProviderServiceJabberImpl.java:1734)
+             *  at org.jivesoftware.smackx.iqversion.VersionManager.<init> (VersionManager.java:84)
+             *  at org.jivesoftware.smackx.iqversion.VersionManager.getInstanceFor (VersionManager.java:106)
+             *  at net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl.initServicesAndFeatures (ProtocolProviderServiceJabberImpl.java:1734)
              */
             mConnection = (AbstractXMPPConnection) connection;
 
@@ -1464,6 +1470,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              */
             resetSmackTimer = false;
             androidOmemoService.initOmemoDevice();
+
+            /*  Start up Jingle File Transfer */
+            JingleFileTransferManager.getInstanceFor(mConnection);
 
             // Fire registration state has changed
             if (resumed) {
@@ -1877,8 +1886,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // TODO: add the feature if any, corresponding to persistent presence, if someone knows
         // supportedFeatures.add(_PRESENCE_);
 
-        // XEP-0065: SOCKS5 Bytestreams
+        // XEP-0065: SOCKS5 Bytestream
         supportedFeatures.add(Bytestream.NAMESPACE);
+        supportedFeatures.add(JingleFileTransferImpl.NAMESPACE);
 
         // Do not advertise if user disable message delivery receipts option
         if (ConfigurationUtils.isSendMessageDeliveryReceipt()) {

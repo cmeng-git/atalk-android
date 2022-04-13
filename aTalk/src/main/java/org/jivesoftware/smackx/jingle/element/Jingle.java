@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2022 Jive Software
+ * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,18 @@
 package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.jingle.SessionInfo;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jxmpp.jid.FullJid;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The Jingle element.
@@ -214,16 +216,6 @@ public final class Jingle extends IQ
         xml.append(contents);
 
         return xml;
-    }
-
-    /**
-     * Generates a random <code>String</code> usable as a jingle session ID.
-     *
-     * @return a newly generated random sid <code>String</code>
-     */
-    public static String generateSid()
-    {
-        return new BigInteger(64, new SecureRandom()).toString(32);
     }
 
     /**

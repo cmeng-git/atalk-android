@@ -568,7 +568,7 @@ public class ChatPanel implements Chat, MessageListener
         int cacheIdx = msgCache.size() - 1;
         while (cacheIdx >= 0) {
             ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
-            if (cacheMsg.getMessageUID().equals(msgUuid)) {
+            if (msgUuid.equals(cacheMsg.getMessageUID())) {
                 if (receiptStatus == null)
                     msgCache.remove(cacheIdx);
                 else

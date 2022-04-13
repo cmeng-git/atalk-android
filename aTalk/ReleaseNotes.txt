@@ -1,5 +1,35 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.2 (209020)
+Release Date:   04/14/2022
+Author:         cmeng
+- Add support for XEP-0234: Jingle File Transfer (In-Band and SOCK5 Bytestreams), with new packages or classes added:
+  jingle_filetransfer, IncomingFileOfferJingleImpl, InformingFileTransferJingleImpl, OutgoingFileOfferJingleImpl
+  and jingle package add adapter, callbacks, components, exception, and update transport etc
+  https://github.com/vanitasvitae/Smack/tree/jingle3/smack-experimental/src/main/java/org/jivesoftware/smackx/jingle_filetransfer
+- Add support for XEP-0391: Jingle Encrypted Transports; supporting OMEMO encryption in Jingle File Transfer.
+  new packages/classes: ciphers, jet, update omemo with jet support; see https://blog.jabberhead.tk/summer-of-code-2017/
+  Note: conversation advertised JET but not following xmpp process flow; fallback to use HttpFileUpload for next 10 files transfer
+- Fallback to HttpFileUpload if JetSecurity is not fully supported by client e.g. conversations.
+- aTalk file transfer handling priority (see MetaContactChatTransport): (online) jingle file transfer with JET
+  => (online) legacy file transfer => (offline and fallback) HttpFileUpload
+- Display detailed reason text for file transfer failure status to user.
+- Rename file transfer 'refused' to 'declined', same as in Jingle File Transfer implementation.
+- Migrate aTalk telephony jingle stanza handling to use smack JingleManager implementation structure: include BasicTelephony interface
+  and add JingleCallManager, JingleCallSessionImpl classes to register with JingleManager for jingle session callbacks.
+- Add JmStateListener interface (JingleMessageType) to JingleMessageHelper; allowing OperationSetBasicTelephonyJabberImpl
+  to make earlier registerJingleSessionHandler() with JingleManager as to avoid problem with incoming call from conversations.
+  see https://discourse.igniterealtime.org/t/smack-4-4-5-jingle-manager-implementation-has-problem-to-handle-conversations-incoming-call/91573
+- Allow accept and display the location map based on geo location message from other android devices e.g. conversations.
+- Cleanup jarjar.repackage for ice4j:3.0-55-g32a8aad.
+- Remove dependencies.gradle in android-youtube-player plug in; only use in one gradle.build.
+- Add XMPP version information to all reference in About UI.
+- ToDo:
+  * Need more work on CallPeerJabberImpl#processTransfer() to handle dual multiple call sessions i.e. call transfer.
+  * MediaAwareCall#getConference() may return null if call terminated before setup completed
+  * CallPeerMediaHandlerJabberImpl.getTransportManager() => The initiator is expected to specify the transport in their offer when remote terminate call before setup
+
+=========================================================================
 Version:        2.9.1 (209010)
 Release Date:   03/16/2022
 Author:         cmeng

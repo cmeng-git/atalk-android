@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,6 +30,9 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleError;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
+import org.jivesoftware.smackx.jingle_rtp.element.Grouping;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
 import org.jxmpp.jid.FullJid;
 
 import java.util.List;
@@ -81,12 +85,12 @@ public class JingleUtil
                 .setSessionId(sessionId)
                 .setInitiator(mConnection.getUser());
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
                 .setSenders(contentSenders)
-                .addChildElement(description)
-                .addChildElement(transport);
+                .setDescription(description)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setFrom(mConnection.getUser());
@@ -171,12 +175,12 @@ public class JingleUtil
                 .setAction(JingleAction.session_accept)
                 .setSessionId(sessionId);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
                 .setSenders(contentSenders)
-                .addChildElement(description)
-                .addChildElement(transport);
+                .setDescription(description)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -234,30 +238,13 @@ public class JingleUtil
     }
 
     /**
-     * Creates a {@link Jingle} <code>session-terminate</code> packet with the specified src, dst, sessionId, and reason.
+     * Creates a {@link Jingle} <code>session-terminate</code> packet with the specified recipient, sessionId, and reason.
      *
-     * @param recipient the destination Jid
+     * @param recipient the remote Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param reason the reason for the termination
-     * @param reasonText a human readable reason for the termination or <code>null</code> for none.
      * @return the newly constructed {@link Jingle} <code>session-terminate</code> packet. .
      */
-    public Jingle createSessionTerminate(FullJid recipient, String sessionId, Reason reason, String reasonText)
-    {
-        Jingle.Builder jb = Jingle.builder(mConnection);
-        jb.setAction(JingleAction.session_terminate)
-                .setSessionId(sessionId)
-                .setReason(reason);
-
-        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
-        jb.setReason(jingleReason);
-
-        Jingle terminate = jb.build();
-        terminate.setFrom(mConnection.getUser());
-        terminate.setTo(recipient);
-        return terminate;
-    }
-
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason)
     {
         Jingle.Builder jb = Jingle.builder(mConnection);
@@ -353,7 +340,7 @@ public class JingleUtil
         jb.setAction(JingleAction.session_terminate)
                 .setSessionId(sessionId);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName);
 
@@ -668,10 +655,10 @@ public class JingleUtil
                 .setSessionId(sessionId)
                 .setAction(JingleAction.transport_replace);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setName(contentName)
                 .setCreator(contentCreator)
-                .addChildElement(transport);
+                .setTransport(transport);
         Jingle jingle = jb.addJingleContent(cb.build()).build();
 
         jingle.setTo(recipient);
@@ -699,10 +686,10 @@ public class JingleUtil
                 .setInitiator(initiator)
                 .setSessionId(sessionId);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
-                .addChildElement(transport);
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -730,10 +717,10 @@ public class JingleUtil
                 .setInitiator(initiator)
                 .setSessionId(sessionId);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
-                .addChildElement(transport);
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);

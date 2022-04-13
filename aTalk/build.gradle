@@ -4,16 +4,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-//        maven {
-//            url "https://plugins.gradle.org/m2/"
-//        }
+        maven { url "https://jitpack.io" }
     }
 
     dependencies {
-        // https://github.com/hannesa2/jarjar/releases/tag/1.0.3
-        // classpath "com.github.hannesa2.jarjar.gradle:jajar-gradle:1.0.3"
         classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
-
+        // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
         // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
     }
 }
@@ -60,8 +56,9 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             // multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
                 //changing the name reference to smack libraries to its individual jar
+                // details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
                 details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
             }
         }
@@ -90,8 +87,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 209010
-        versionName "2.9.1"
+        versionCode 209020
+        versionName "2.9.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk

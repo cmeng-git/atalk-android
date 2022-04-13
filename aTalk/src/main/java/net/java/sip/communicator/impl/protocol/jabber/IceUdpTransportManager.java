@@ -38,11 +38,11 @@ import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.jingle.CandidateType;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.IceUdpTransportCandidate;
-import org.jivesoftware.smackx.jingle.RtcpMux;
-import org.jivesoftware.smackx.jingle.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.CandidateType;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.xmpp.jnodes.smack.SmackServiceNode;
 
@@ -560,7 +560,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     protected ExtensionElement createTransportPacketExtension()
     {
-        IceUdpTransport.Builder tpBuilder = IceUdpTransport.builder()
+        IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
                 .setPassword(iceAgent.getLocalPassword());
 
@@ -592,7 +592,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
              * extension to be sent in transport-info so the content has the same attributes as in
              * our answer and none of its non-transport extensions.
              */
-            JingleContent.Builder content = JingleContent.builder();
+            JingleContent.Builder content = JingleContent.getBuilder();
             for (String name : ourContent.getAttributes().keySet()) {
                 String value = ourContent.getAttributeValue(name);
                 if (value != null)
@@ -656,7 +656,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
     protected ExtensionElement createTransport(IceMediaStream stream)
     {
         Agent iceAgent = stream.getParentAgent();
-        IceUdpTransport.Builder tpBuilder = IceUdpTransport.builder()
+        IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
                 .setUfrag(iceAgent.getLocalUfrag())
                 .setPassword(iceAgent.getLocalPassword());
 
@@ -699,7 +699,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      */
     private IceUdpTransportCandidate createCandidate(Candidate<?> candidate)
     {
-        IceUdpTransportCandidate.Builder cBuilder = IceUdpTransportCandidate.builder();
+        IceUdpTransportCandidate.Builder cBuilder = IceUdpTransportCandidate.getBuilder();
         cBuilder.setFoundation(candidate.getFoundation());
 
         Component component = candidate.getParentComponent();

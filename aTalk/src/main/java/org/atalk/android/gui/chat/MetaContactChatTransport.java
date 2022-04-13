@@ -8,27 +8,65 @@ package org.atalk.android.gui.chat;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.persistance.FileBackend;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
+import org.jivesoftware.smackx.jet.JetManager;
+import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
+import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
+import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.FullJid;
+import org.jxmpp.jid.Jid;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.SSLHandshakeException;
@@ -49,7 +87,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     private final MetaContactChatSession parentChatSession;
 
-    private OperationSetFileTransferJabberImpl ftOpSet;
+    private final OperationSetFileTransferJabberImpl ftOpSet;
 
     /**
      * The associated protocol <code>Contact</code>.
@@ -62,11 +100,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private final ProtocolProviderService mPPS;
 
     private HttpFileUploadManager httpFileUploadManager;
+    private JingleFileTransferManager jingleFTManager;
+    private JetManager jetManager;
 
     /**
      * The resource associated with this contact.
      */
-    private ContactResource contactResource;
+    private final ContactResource contactResource;
 
     /**
      * <code>true</code> when a contact sends a message with XEP-0164 message delivery receipt;
@@ -98,7 +138,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Indicates if only the resource name should be displayed.
      */
-    private boolean isDisplayResourceOnly;
+    private final boolean isDisplayResourceOnly;
 
     /**
      * Creates an instance of <code>MetaContactChatTransport</code> by specifying the parent
@@ -146,6 +186,15 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             {
                 XMPPConnection connection = mPPS.getConnection();
                 if ((connection != null)) {
+                    // For unencrypted file transfer
+                    jingleFTManager = JingleFileTransferManager.getInstanceFor(connection);
+
+                    // For encrypted file transfer using Jet and OMEMO encryption
+                    JetManager.registerEnvelopeProvider(OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL, new OmemoVAxolotlProvider());
+                    jetManager = JetManager.getInstanceFor(connection);
+                    jetManager.registerEnvelopeManager(OmemoManager.getInstanceFor(connection));
+
+                    // For HttpFileUpload service
                     httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
                     isDeliveryReceiptSupported = checkDeliveryReceiptSupport(connection);
                 }
@@ -548,27 +597,37 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             return null;
 
         if (getStatus().isOnline()) {
-            // Use http file upload for OMEMO media file sharing
-            // Retry with http file upload if legacy file transfer protocols is not supported by buddy
             try {
+                // Try jingle file protocol as first try if supported by buddy
+                return jingleFileSend(file, chatType, xferCon);
+            } catch (OperationNotSupportedException ex) {
+                // Retry with legacy if jingle file transfer protocols is not supported by buddy;
+                // but use http file upload for OMEMO media file sharing
                 if (ChatFragment.MSGTYPE_OMEMO == chatType)
                     return httpFileUpload(file, chatType, xferCon);
-                else
-                    return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
-            } catch (OperationNotSupportedException ex) {
-                return httpFileUpload(file, chatType, xferCon);
+                else {
+                    try {
+                        return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
+                    } catch (OperationNotSupportedException ex2) {
+                        // Fallback to use Http file upload if contact is offline, or contact
+                        // does not support legacy FileTransfer in SOCKS5 and IBS
+                        return httpFileUpload(file, chatType, xferCon);
+                    }
+                }
             }
         }
-        else
+        else {
+            // Use http file upload for all media file sharing for offline user
             return httpFileUpload(file, chatType, xferCon);
+        }
     }
 
     /**
-     * Sends the given SMS multimedia message trough this chat transport, leaving the
+     * Sends the given SMS multimedia message via this chat transport, leaving the
      * transport to choose the destination.
      *
      * @param file the file to send
-     * @throws Exception if the send doesn't succeed
+     * @throws Exception if the send file is unsuccessful
      */
     public Object sendMultimediaFile(File file)
             throws Exception
@@ -603,7 +662,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileSendConversation xferCon)
             throws Exception
     {
-        // If this chat transport does not support file transfer we do nothing and just return. HttpFileUpload?
+        // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
@@ -627,22 +686,104 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         }
         else {
             if (getStatus().isOnline()) {
-                // Use http file upload for OMEMO media file sharing
-                // Retry with http file upload if legacy file transfer protocols is not supported by buddy
                 try {
+                    // Try jingle file transfer protocol as first attempt if supported by buddy
+                    return jingleFileSend(file, chatType, xferCon);
+                } catch (OperationNotSupportedException ex) {
+                    // Use http file upload for OMEMO media file sharing;
+                    // else use legacy if jingle file transfer protocols is not supported by buddy;
                     if (ChatFragment.MSGTYPE_OMEMO == chatType)
                         return httpFileUpload(file, chatType, xferCon);
-                    else
-                        return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
-                } catch (OperationNotSupportedException ex) {
-                    // Fallback to use Http file upload if client does not support legacy SOCKS5 and IBS
-                    // or contact is offline
-                    return httpFileUpload(file, chatType, xferCon);
+                    else {
+                        try {
+                            return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
+                        } catch (OperationNotSupportedException ex2) {
+                            // Fallback to use Http file upload if contact is offline, or contact
+                            // does not support legacy FileTransfer in SOCKS5 and IBS
+                            return httpFileUpload(file, chatType, xferCon);
+                        }
+                    }
                 }
             }
-            else
+            else {
+                // Use http file upload for all media file sharing for offline user
                 return httpFileUpload(file, chatType, xferCon);
+            }
         }
+    }
+
+    /**
+     * Use Jingle File Transfer or Http file upload that is supported by the transport
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     * @return <code>OutgoingFileOfferController</code> or HTTPFileUpload object to transfer the given <code>file</code>.
+     * @throws Exception if anything goes wrong
+     */
+    private OutgoingFileOfferJingleImpl jingleFileSend(File file, int chatType, FileSendConversation xferCon)
+            throws Exception
+    {
+        // toJid is not null if contact is online and supports the jet/jingle file transfer
+        FullJid recipient;
+        if (ChatFragment.MSGTYPE_OMEMO == chatType) {
+            recipient = ftOpSet.getFullJid(contact, JetSecurityImpl.NAMESPACE, JingleFileTransferImpl.NAMESPACE);
+        } else  {
+            recipient = ftOpSet.getFullJid(contact, JingleFileTransferImpl.NAMESPACE);
+        }
+
+        // Conversations allows Jet FileSent but failed with session-terminate and reason = connectivity-error
+        // So retry with HttpFileUpload if previously hasSecurityError
+        if ((recipient != null)
+                && (!OutgoingFileOfferJingleImpl.hasSecurityError() || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
+            OutgoingFileOfferController ofoController;
+            int encType = IMessage.ENCRYPTION_NONE;
+            String msgUuid = xferCon.getMessageUuid();
+            JingleFile jingleFile = createJingleFile(file);
+
+            try {
+                if (ChatFragment.MSGTYPE_OMEMO == chatType) {
+                    encType = IMessage.ENCRYPTION_OMEMO;
+                    OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
+                    ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
+                }
+                else {
+                    ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
+                }
+
+                OutgoingFileOfferJingleImpl outgoingTransfer
+                        = new OutgoingFileOfferJingleImpl(contact, file, msgUuid, ofoController, mPPS.getConnection());
+
+                // Notify all interested listeners that a file transfer has been created.
+                FileTransferCreatedEvent event = new FileTransferCreatedEvent(outgoingTransfer, new Date());
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "Jingle File Transfer");
+                return outgoingTransfer;
+            } catch (SSLHandshakeException ex) {
+                throw new OperationNotSupportedException(ex.getCause().getMessage());
+            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+                throw new OperationNotSupportedException(e.getMessage());
+            }
+        }
+        else {
+            throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
+        }
+    }
+
+    /**
+     * Create JingleFile from the given file
+     *
+     * @param file sending file
+     * @return JingleFile metaData
+     */
+    private JingleFile createJingleFile(File file) {
+        JingleFile jingleFile = null;
+        String mimeType = FileBackend.getMimeType(aTalkApp.getGlobalContext(), Uri.fromFile(file));
+        try {
+            jingleFile = JingleFile.fromFile(file, null, mimeType,  HashManager.ALGORITHM.SHA3_256);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            Timber.e("JingleFile creation error: %s", e.getMessage());
+        }
+        return jingleFile;
     }
 
     /**
@@ -669,7 +810,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType);
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "HTTP File Upload");
                 return url;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause().getMessage());

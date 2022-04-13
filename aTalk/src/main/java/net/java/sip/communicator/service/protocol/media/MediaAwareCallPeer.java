@@ -167,7 +167,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
         mConnection = mPPS.getConnection();
 
         // create the uid
-        this.peerID = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
+        this.peerID = String.valueOf(System.currentTimeMillis()) + hashCode();
 
         // we listen for events when the call will become focus or not
         // of a conference so we will add or remove our sound level listeners

@@ -26,6 +26,14 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Creator;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportRemoteCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -410,7 +418,7 @@ public class JingleUtils
             List<MediaFormat> formats, List<RTPExtension> rtpExtensions, DynamicPayloadTypeRegistry dynamicPayloadTypes,
             DynamicRTPExtensionsRegistry rtpExtensionsRegistry, boolean rtcpmux, boolean imgattr)
     {
-        JingleContent.Builder cBuilder = JingleContent.builder()
+        JingleContent.Builder cBuilder = JingleContent.getBuilder()
                 .setCreator(creator)
                 .setName(contentName);
 
@@ -420,7 +428,7 @@ public class JingleUtils
         }
 
         // RTP description
-        RtpDescription.Builder rtpBuilder = RtpDescription.builder()
+        RtpDescription.Builder rtpBuilder = RtpDescription.getBuilder()
                 .setMedia(formats.get(0).getMediaType().toString());
 
         // now fill in the RTP description
@@ -441,7 +449,7 @@ public class JingleUtils
                 String attributes = extension.getExtensionAttributes();
                 Senders sendersEnum = getSenders(extDirection, false);
 
-                RtpHeader.Builder builder = RtpHeader.builder()
+                RtpHeader.Builder builder = RtpHeader.getBuilder()
                         .setURI(uri)
                         .setSenders(sendersEnum)
                         .setID(Byte.toString(extID))

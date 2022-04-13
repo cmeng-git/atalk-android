@@ -336,11 +336,11 @@
     <string name="xFile_FILE_RECEIVE_FAILED">Terjadi kesalahan saat mentransfer fail dari %1$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">Menerima fail dari %1$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">Fail telah berhasil dikirim ke %1$s</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s telah menolak fail ini</string>
+    <string name="xFile_FILE_SEND_DECLINED">%1$s telah menampik fail ini</string>
     <string name="xFile_FILE_SENDING_TO">Mengirim fail ke %1$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">Fail transfer telah dibatalkan</string>
     <string name="xFile_FILE_TRANSFER_PREPARING">Mempersiapkan transfer fail dengan %1$s. Harap tunggu&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">Fail transfer telah ditolak</string>
+    <string name="xFile_FILE_TRANSFER_DECLINED">Fail transfer telah ditampik</string>
     <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s berbagi fail dengan Anda</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">Terjadi kesalahan saat mengirim fail ke %1$s</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">Menunggu untuk %1$s untuk menerima fail Anda</string>
@@ -354,6 +354,7 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kami tidak dapat menemukan aplikasi yang terkait dengan jenis fail ini</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Anda tidak memiliki izin yang cukup untuk membuka fail ini. Silakan periksa izin baca Anda dan coba lagi</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Operasi fail terbuka tidak didukung oleh platform perangkat Anda saat ini</string>
+    <string name="service_gui_FILE_SEND_CLIENT_ERROR">Kesalahan klien jarak jauh pada file yang dikirim: %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Gagal mengirim file: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Tidak dapat mengirim file selama panggilan konferensi!</string>
     <string name="service_gui_FILE_ATTACHMENT">Kirim Lampiran</string>
@@ -545,7 +546,7 @@
     <string name="service_gui_RESTORING">Memulihkan&#8230;</string>
 
     <string name="service_gui_RE_REQUEST_AUTHORIZATION">Minta otorisasi</string>
-    <string name="service_gui_REJECT">Tolak</string>
+    <string name="service_gui_DECLINE">Tampik</string>
     <string name="service_gui_REMOVE">Hapus</string>
     <string name="service_gui_REMOVE_ACCOUNT">Hapus akun</string>
     <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Anda yakin ingin menghapus akun:\n%1$s?</string>
@@ -784,7 +785,7 @@
     <string name="plugin_update_Install_Update">Instal Pembaruan</string>
     <string name="plugin_update_Download_failed">Gagal mengunduh pembaruan baru!</string>
     <string name="plugin_update_Check_Update">Periksa pembaruan</string>
-    <string name="plugin_update_Version_Invalid">apk yang diunduh tidak cocok; sebenarnya: %s (%s)</string>
+    <string name="plugin_update_Version_Invalid">apk yang diunduh tidak cocok; sebenarnya: %1$s (%2$s)</string>
     <string name="plugin_update_New_Version_Available">Versi perangkat lunak baru ( %1$s) tersedia.</string>
 
     <!-- account info -->

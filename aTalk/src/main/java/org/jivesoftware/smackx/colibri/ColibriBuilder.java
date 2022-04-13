@@ -9,13 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle.PayloadType;
-import org.jivesoftware.smackx.jingle.RtpDescription;
-import org.jivesoftware.smackx.jingle.RtpHeader;
-import org.jivesoftware.smackx.jingle.SdpSource;
-import org.jivesoftware.smackx.jingle.SdpSourceGroup;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSourceGroup;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jxmpp.jid.Jid;
 
@@ -122,7 +122,7 @@ public class ColibriBuilder
         }
         if ((channel.getSources() == null) || channel.getSources().isEmpty()) {
             // Put an empty source to remove all sources
-            channel.addSource(SdpSource.builder()
+            channel.addSource(SdpSource.getBuilder()
                     .setSsrc(-1L)
                     .build()
             );
@@ -145,7 +145,7 @@ public class ColibriBuilder
             hasAnyChanges = true;
 
             // Put an empty source group to turn off simulcast layers
-            channel.addSourceGroup(SdpSourceGroup.builder()
+            channel.addSourceGroup(SdpSourceGroup.getBuilder()
                     .setSemantics(SdpSourceGroup.SEMANTICS_SIMULCAST)
                     .build()
             );

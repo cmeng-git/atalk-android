@@ -16,6 +16,7 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
+import android.text.TextUtils;
 import android.view.*;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
@@ -34,6 +35,8 @@ import org.atalk.android.gui.chat.ChatMessage;
 
 import java.io.File;
 import java.util.Date;
+
+import timber.log.Timber;
 
 /**
  * The <code>SendFileConversationComponent</code> is the component added in the chat conversation
@@ -96,7 +99,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
         }
         else {
-            updateView(status);
+            updateView(status, null);
         }
         return convertView;
     }
@@ -104,7 +107,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
      */
-    protected void updateView(final int status)
+    protected void updateView(final int status, final String reason)
     {
         setXferStatus(status);
         setEncState(mEncryption);
@@ -133,6 +136,9 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             // not offer to retry - smack replied as failed when recipient rejects on some devices
             case FileTransferStatusChangeEvent.FAILED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, mSendTo);
+                if (!TextUtils.isEmpty(reason)) {
+                    statusText += "\n" + reason;
+                }
                 if (mUpdateDB)
                     updateFTStatus(msgUuid, FileRecord.STATUS_FAILED, mXferFile.toString());
                 break;
@@ -147,8 +153,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                         IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
                 break;
 
-            case FileTransferStatusChangeEvent.REFUSED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_REFUSED, mSendTo);
+            case FileTransferStatusChangeEvent.DECLINED:
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, mSendTo);
                 break;
         }
         updateXferFileViewState(status, statusText);
@@ -182,7 +188,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             return;
 
         int fStatus = getStatus(fileTransfer.getStatus());
-        // Presently statusChanged event is only trigger by non-encrypted file transfer protocol
+        // Presently statusChanged event is only trigger by non-encrypted file transfer protocol; except jet
         mEncryption = IMessage.ENCRYPTION_NONE;
 
         // ignore events if status is unknown
@@ -190,16 +196,18 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             updateFTStatus(fileTransfer.getID(), fStatus, mXferFile.toString());
 
         final int status = event.getNewStatus();
+        final String reason = event.getReason();
 
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            updateView(status);
+            Timber.d("File send status change: %s", status);
+            updateView(status, reason);
             if (status == FileTransferStatusChangeEvent.COMPLETED
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
-                    || status == FileTransferStatusChangeEvent.REFUSED) {
-                // removeProgressListener();
+                    || status == FileTransferStatusChangeEvent.DECLINED) {
                 // must do this in UI, otherwise the status is not being updated to FileRecord
+                // removeProgressListener();
                 fileTransfer.removeStatusListener(FileSendConversation.this);
             }
         });

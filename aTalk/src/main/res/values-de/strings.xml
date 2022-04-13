@@ -334,11 +334,11 @@
     <string name="xFile_FILE_RECEIVE_FAILED">Fehler beim Transfer einer Datei von %1$s</string>
     <string name="xFile_FILE_RECEIVING_FROM">Empfange Datei von %1$s</string>
     <string name="xFile_FILE_SEND_COMPLETED">Datei wurde erfolgreich an %1$s übertragen</string>
-    <string name="xFile_FILE_SEND_REFUSED">%1$s hat die Datei abgelehnt.</string>
+    <string name="xFile_FILE_SEND_DECLINED">%1$s hat diese Datei abgelehnt.</string>
     <string name="xFile_FILE_SENDING_TO">Sende Datei an %1$s</string>
     <string name="xFile_FILE_TRANSFER_CANCELED">Dateitransfer wurde abgebrochen</string>
     <string name="xFile_FILE_TRANSFER_PREPARING">Bereite Dateitransfer mit %1$s vor. Bitte warten&#8230;</string>
-    <string name="xFile_FILE_TRANSFER_REFUSED">Dateitransfer wurde abgelehnt.</string>
+    <string name="xFile_FILE_TRANSFER_DECLINED">Dateitransfer wurde zurückgegangen.</string>
     <string name="xFile_FILE_TRANSFER_REQUEST_RECEIVED">%1$s möchte Dir eine Datei senden</string>
     <string name="xFile_FILE_UNABLE_TO_SEND">Es gab ein Problem beim Sender einer Datei an %1$s</string>
     <string name="xFile_FILE_WAITING_TO_ACCEPT">Warte auf %1$s zur Bestätigung des Transfers.</string>
@@ -352,6 +352,7 @@
     <string name="service_gui_FILE_OPEN_NO_APPLICATION">Kann kein Programm finden welches diesem Dateityp zugehörig ist.</string>
     <string name="service_gui_FILE_OPEN_NO_PERMISSION">Du hast keine Berechtigung zum Öffnen dieser Datei. Bitte überprüfe die Zugriffsrechte.</string>
     <string name="service_gui_FILE_OPEN_NOT_SUPPORTED">Dein Mobiltelefon unterstützt das Öffnen von Dateien nicht.</string>
+    <string name="service_gui_FILE_SEND_CLIENT_ERROR">Remote-Client-Fehler bei gesendeter Datei: %1$s</string>
     <string name="service_gui_FILE_SEND_FAILED">Konnte Datei nicht senden: %1$s</string>
     <string name="service_gui_FILE_SEND_NOT_ALLOW">Datei kann während einer Telefonkonferenz nicht gesendet werden!</string>
     <string name="service_gui_FILE_ATTACHMENT">Anlagen senden</string>
@@ -542,7 +543,7 @@
     <string name="service_gui_RESTORING">Wiederherstellen&#8230;</string>
 
     <string name="service_gui_RE_REQUEST_AUTHORIZATION">Autorisierung anfordern</string>
-    <string name="service_gui_REJECT">Ablehnen</string>
+    <string name="service_gui_DECLINE">Ablehnen</string>
     <string name="service_gui_REMOVE">Entfernen</string>
     <string name="service_gui_REMOVE_ACCOUNT">Konto entfernen</string>
     <string name="service_gui_REMOVE_ACCOUNT_MESSAGE">Möchtest du das Konto wirklich entfernen:\n%1$s?</string>
@@ -774,7 +775,7 @@
     <string name="plugin_update_Install_Update">Updates installieren</string>
     <string name="plugin_update_Download_failed">Fehler beim Herunterladen des neuen Updates!</string>
     <string name="plugin_update_Check_Update">Nach Updates suchen</string>
-    <string name="plugin_update_Version_Invalid">Heruntergeladene apk stimmt nicht überein; tatsächlich: %s (%s)</string>
+    <string name="plugin_update_Version_Invalid">Heruntergeladene apk stimmt nicht überein; tatsächlich: %1$s (%2$s)</string>
     <string name="plugin_update_New_Version_Available">Eine neue Softwareversion (%1$s) ist verfügbar.</string>
 
     <!-- account info -->

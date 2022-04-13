@@ -1,12 +1,12 @@
-/*
- * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+/**
+ *
+ * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,27 +16,37 @@
  */
 package org.jivesoftware.smackx.jinglemessage;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.AsyncButOrdered;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromTypeFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
-import org.jxmpp.jid.*;
+import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * A chat manager for 1:1 XMPP instant messaging chats.
- * <p>
- * This manager and the according {@link Chat} API implement "Resource Locking" (XEP-0296). Support for Carbon Copies
- * (XEP-0280) will be added once the XEP has progressed from experimental.
- * </p>
+ * A JingleMessage manager for media call setup.
  *
- * @see <a href="https://xmpp.org/extensions/xep-0296.html">XEP-0296: Best Practices for Resource Locking</a>
+ * @author Eng Chong Meng
  */
 public final class JingleMessageManager extends Manager
 {
@@ -54,7 +64,7 @@ public final class JingleMessageManager extends Manager
 
     /**
      * Message filter to listen for message sent from DomainJid i.e. server with normal or
-     * has extensionElement i.e. XEP-0071: XHTML-IM
+     * has extensionElement <code>JingleMessage</code>
      */
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT, new StanzaExtensionFilter(JingleMessage.NAMESPACE));
@@ -125,7 +135,7 @@ public final class JingleMessageManager extends Manager
     }
 
     /**
-     * Add a new listener for incoming chat messages.
+     * Add a new listener for incoming jingle messages.
      *
      * @param listener the listener to add.
      * @return <code>true</code> if the listener was not already added.
@@ -136,7 +146,7 @@ public final class JingleMessageManager extends Manager
     }
 
     /**
-     * Remove an incoming chat message listener.
+     * Remove an incoming jingle message listener.
      *
      * @param listener the listener to remove.
      * @return <code>true</code> if the listener was active and got removed.
@@ -149,6 +159,7 @@ public final class JingleMessageManager extends Manager
     /**
      * Start a new or retrieve the existing chat with <code>jid</code>.
      *
+     * @param connection xmppConnection
      * @param jid the XMPP address of the other entity to chat with.
      * @return the Chat API for the given XMPP address.
      */

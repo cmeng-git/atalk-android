@@ -8,8 +8,6 @@ package net.java.sip.communicator.service.filehistory;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 
-import org.atalk.android.gui.chat.ChatMessage;
-
 import java.io.File;
 import java.util.*;
 
@@ -48,7 +46,7 @@ public class FileRecord extends EventObject
     /**
      * Status indicating that the file transfer has been refused.
      */
-    public static final int STATUS_REFUSED = 13;
+    public static final int STATUS_DECLINED = 13;
     /**
      * Status indicating that the file transfer was in active state.
      */
@@ -85,7 +83,7 @@ public class FileRecord extends EventObject
         put(STATUS_COMPLETED, "completed");
         put(STATUS_FAILED, "failed");
         put(STATUS_CANCELED, "canceled");
-        put(STATUS_REFUSED, "refused");
+        put(STATUS_DECLINED, "declined");
         put(STATUS_ACTIVE, "active");
         put(STATUS_PREPARING, "preparing");
         put(STATUS_IN_PROGRESS, "in_progress");

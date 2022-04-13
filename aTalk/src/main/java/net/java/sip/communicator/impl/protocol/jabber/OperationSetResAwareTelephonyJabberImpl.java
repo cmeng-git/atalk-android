@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.*;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -97,7 +98,7 @@ public class OperationSetResAwareTelephonyJabberImpl implements OperationSetReso
     public Call createCall(String uri, String calleeResource, CallConference conference)
             throws OperationFailedException
     {
-        CallJabberImpl call = new CallJabberImpl(jabberTelephony, Jingle.generateSid());
+        CallJabberImpl call = new CallJabberImpl(jabberTelephony, JingleManager.randomId());
         if (conference != null)
             call.setConference(conference);
 

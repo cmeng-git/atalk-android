@@ -219,7 +219,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.cancelButton = convertView.findViewById(R.id.buttonCancel);
             messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
             messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
-            messageViewHolder.rejectButton = convertView.findViewById(R.id.button_reject);
+            messageViewHolder.declineButton = convertView.findViewById(R.id.button_reject);
         }
 
         // Assume history file transfer and completed with all button hidden
@@ -265,7 +265,7 @@ public abstract class FileTransferConversation extends OSGiFragment
         // Timber.w(new Exception(), "Update file transfer button state: %s => %s", status, statusText);
 
         messageViewHolder.acceptButton.setVisibility(View.GONE);
-        messageViewHolder.rejectButton.setVisibility(View.GONE);
+        messageViewHolder.declineButton.setVisibility(View.GONE);
         messageViewHolder.cancelButton.setVisibility(View.GONE);
         messageViewHolder.retryButton.setVisibility(View.GONE);
 
@@ -274,7 +274,7 @@ public abstract class FileTransferConversation extends OSGiFragment
         switch (status) {
             case FileTransferStatusChangeEvent.WAITING:
                 messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
-                messageViewHolder.rejectButton.setVisibility(View.VISIBLE);
+                messageViewHolder.declineButton.setVisibility(View.VISIBLE);
                 break;
 
             case FileTransferStatusChangeEvent.PREPARING:
@@ -298,7 +298,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             case FileTransferStatusChangeEvent.FAILED:
             case FileTransferStatusChangeEvent.CANCELED: // local cancel the file download process
                 messageViewHolder.retryButton.setVisibility(View.VISIBLE);
-            case FileTransferStatusChangeEvent.REFUSED: // user reject the incoming http download
+            case FileTransferStatusChangeEvent.DECLINED: // user reject the incoming http download
                 messageViewHolder.fileStatus.setTextColor(Color.RED);
                 break;
         }
@@ -553,7 +553,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     protected abstract String getProgressLabel(long bytesString);
 
     // dummy updateView for implementation
-    protected void updateView(final int status)
+    protected void updateView(final int status, final String reason)
     {
     }
 
@@ -561,7 +561,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param status File transfer send status
      * @param jid Contact or ChatRoom for Http file upload service
      */
-    public void setStatus(final int status, Object jid, int encType)
+    public void setStatus(final int status, Object jid, int encType, String reason)
     {
         mEntityJid = jid;
         mEncryption = encType;
@@ -569,7 +569,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         setXferStatus(status);
         // Must execute in UiThread to Update UI information
-        runOnUiThread(() -> updateView(status));
+        runOnUiThread(() -> updateView(status, reason));
     }
 
     /**
@@ -1025,8 +1025,8 @@ public abstract class FileTransferConversation extends OSGiFragment
         switch (status) {
             case FileTransferStatusChangeEvent.COMPLETED:
                 return FileRecord.STATUS_COMPLETED;
-            case FileTransferStatusChangeEvent.REFUSED:
-                return FileRecord.STATUS_REFUSED;
+            case FileTransferStatusChangeEvent.DECLINED:
+                return FileRecord.STATUS_DECLINED;
             case FileTransferStatusChangeEvent.CANCELED:
                 return FileRecord.STATUS_CANCELED;
             case FileTransferStatusChangeEvent.FAILED:
