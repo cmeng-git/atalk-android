@@ -17,11 +17,11 @@
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileRequestController;
-import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
+import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 
 /**
  * Class implementation for incoming JingleFileTransferRequest.

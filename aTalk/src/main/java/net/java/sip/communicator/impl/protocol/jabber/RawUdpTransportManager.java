@@ -16,7 +16,7 @@ import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
-import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;

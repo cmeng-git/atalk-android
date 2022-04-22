@@ -18,10 +18,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.JingleUtils;
-import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jxmpp.jid.Jid;
 
 import java.net.InetAddress;
@@ -257,16 +257,14 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
             TransportInfoSender transportInfoSender)
             throws OperationFailedException
     {
-        CallPeerJabberImpl peer = getCallPeer();
-        CallJabberImpl call = peer.getCall();
-        boolean isJitsiVideobridge = call.getConference().isJitsiVideobridge();
         List<JingleContent> cpes = (theirOffer == null) ? ourAnswer : theirOffer;
 
         /*
          * If Jitsi Videobridge is to be used, determine which channels are to be allocated and
          * attempt to allocate them now.
          */
-        if (isJitsiVideobridge) {
+        CallPeerJabberImpl peer = getCallPeer();
+        if (peer.isJitsiVideobridge()) {
             Map<JingleContent, JingleContent> contentMap = new LinkedHashMap<>();
             for (JingleContent cpe : cpes) {
                 MediaType mediaType = JingleUtils.getMediaType(cpe);
@@ -289,6 +287,7 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                     contentMap.put(local, remote);
                 }
             }
+
             if (!contentMap.isEmpty()) {
                 /*
                  * We are about to request the channel allocations for the media types found in
@@ -302,6 +301,8 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
                         cpe = e.getKey();
                     colibri.getOrCreateContent(JingleUtils.getMediaType(cpe).toString());
                 }
+
+                CallJabberImpl call = peer.getCall();
                 ColibriConferenceIQ conferenceResult = call.createColibriChannels(peer, contentMap);
                 if (conferenceResult != null) {
                     String videobridgeID = colibri.getID();
@@ -661,25 +662,22 @@ public abstract class TransportManagerJabberImpl extends TransportManager<CallPe
      */
     TransportManagerJabberImpl findTransportManagerEstablishingConnectivityWithJitsiVideobridge()
     {
-        Call call = getCallPeer().getCall();
         TransportManagerJabberImpl transportManager = null;
 
-        if (call != null) {
-            CallConference conference = call.getConference();
-            if ((conference != null) && conference.isJitsiVideobridge()) {
-                for (Call aCall : conference.getCalls()) {
-                    Iterator<? extends CallPeer> callPeerIter = aCall.getCallPeers();
+        if (getCallPeer().isJitsiVideobridge()) {
+            CallConference conference = getCallPeer().getCall().getConference();
+            for (Call aCall : conference.getCalls()) {
+                Iterator<? extends CallPeer> callPeerIter = aCall.getCallPeers();
 
-                    while (callPeerIter.hasNext()) {
-                        CallPeer aCallPeer = callPeerIter.next();
-                        if (aCallPeer instanceof CallPeerJabberImpl) {
-                            TransportManagerJabberImpl aTransportManager
-                                    = ((CallPeerJabberImpl) aCallPeer).getMediaHandler().getTransportManager();
+                while (callPeerIter.hasNext()) {
+                    CallPeer aCallPeer = callPeerIter.next();
+                    if (aCallPeer instanceof CallPeerJabberImpl) {
+                        TransportManagerJabberImpl aTransportManager
+                                = ((CallPeerJabberImpl) aCallPeer).getMediaHandler().getTransportManager();
 
-                            if (aTransportManager.isEstablishingConnectivityWithJitsiVideobridge) {
-                                transportManager = aTransportManager;
-                                break;
-                            }
+                        if (aTransportManager.isEstablishingConnectivityWithJitsiVideobridge) {
+                            transportManager = aTransportManager;
+                            break;
                         }
                     }
                 }

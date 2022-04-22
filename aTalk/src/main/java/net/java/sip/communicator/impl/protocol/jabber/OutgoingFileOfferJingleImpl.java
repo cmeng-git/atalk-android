@@ -23,6 +23,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
@@ -37,7 +38,8 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 
-public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer implements ProgressListener
+public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
+        implements JingleSessionImpl.JingleSessionListener, ProgressListener
 {
 
     /**
@@ -81,6 +83,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer implements
         this.mOfoJingle = offer;
         this.mConnection = connection;
         offer.addProgressListener(this);
+        JingleSessionImpl.addJingleSessionListener(this);
     }
 
     /**
@@ -92,6 +95,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer implements
         try {
             mOfoJingle.cancel(mConnection);
             mOfoJingle.removeProgressListener(this);
+            JingleSessionImpl.removeJingleSessionListener(this);
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());
@@ -170,17 +174,18 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer implements
     }
 
     @Override
-    public void onSessionTerminate(JingleReason reason)
+    public void onError(JingleReason reason)
     {
-        fireStatusChangeEvent(reason);
+        onSessionTerminated(reason);
     }
 
     @Override
-    public void onError(JingleReason reason, String errMessage)
+    public void onSessionTerminated(JingleReason reason)
     {
-        if (JingleReason.SecurityError.equals(reason))
+        if (JingleReason.Reason.security_error.equals(reason.asEnum())) {
             securityErrorTimber = defaultErrorTimer;
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, errMessage);
+        }
+        fireStatusChangeEvent(reason);
     }
 
     /**

@@ -82,7 +82,7 @@ public class JingleIBBTransportImpl extends JingleTransport<JingleIBBTransport> 
     @Override
     public void handleSessionAccept(JingleContentTransport transportElement, XMPPConnection connection) {
         JingleIBBTransport element = (JingleIBBTransport) transportElement;
-        blockSize = (blockSize < element.getBlockSize() ? blockSize : element.getBlockSize());
+        blockSize = blockSize < element.getBlockSize() ? blockSize : element.getBlockSize();
     }
 
     @Override

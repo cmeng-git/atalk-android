@@ -38,16 +38,16 @@ import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleHandler;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleTransportMethodManager;
-import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
+import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 import org.jivesoftware.smackx.jingle_filetransfer.adapter.JingleFileTransferAdapter;
-import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleIncomingFileOffer;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleIncomingFileRequest;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleOutgoingFileOffer;
@@ -86,10 +86,10 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
 
         JingleContentProviderManager.addJingleContentDescriptionProvider(getNamespace(), new JingleFileTransferProvider());
         JingleContentProviderManager.addJingleDescriptionAdapter(new JingleFileTransferAdapter());
+        JingleContentProviderManager.addJingleDescriptionManager(this);
 
         JingleManager jingleManager = JingleManager.getInstanceFor(connection);
         jingleManager.registerDescriptionHandler(getNamespace(), this);
-        JingleContentProviderManager.addJingleDescriptionManager(this);
     }
 
     public static synchronized JingleFileTransferManager getInstanceFor(XMPPConnection connection) {

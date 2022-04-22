@@ -102,7 +102,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.INFO, "Reading/Writing finished.");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
-            notifyProgressListenersOnError(JingleReason.ConnectivityError, e.getMessage());
+            notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
             state = State.ended;
             if (inputStream != null) {

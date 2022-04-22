@@ -123,7 +123,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     if (SystrayService.JINGLE_MESSAGE_PROPOSE == popupMessage.getMessageType()) {
                         fullScreenIntent = new Intent(mContext, JingleMessageCallActivity.class)
                                 .putExtra(CallManager.CALL_SID, (String) tag)
-                                .putExtra(CallManager.CALL_EVENT, popupMessage.getEventType());
+                                .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
                     }
                     else {
                         fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
@@ -438,7 +438,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                 callNotificationMap.remove(sid);
 
                 if (jinglePropose) {
-                    JingleMessageHelper.sendJingleMessageReject(sid);
+                    JingleMessageSessionImpl.sendJingleMessageReject(sid);
                 }
                 else {
                     Call call = CallManager.getActiveCall(sid);
@@ -453,7 +453,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                 callNotificationMap.remove(sid);
 
                 if (jinglePropose) {
-                    JingleMessageHelper.sendJingleAccept(sid);
+                    JingleMessageSessionImpl.sendJingleAccept(sid);
                 }
                 else {
                     Call call = CallManager.getActiveCall(sid);
@@ -501,7 +501,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      * The callNotificationMap entry for the callId must be cleared, so the Ring tone will stop
      *
      * @param callId call Id / Jingle Sid
-     * @see JingleMessageHelper#onCallProposed(Jid, String)
+     * @see JingleMessageSessionImpl#onCallProposed(Jid, String)
      * @see #getCallNotificationId(String)
      */
     public static void removeCallNotification(String callId)

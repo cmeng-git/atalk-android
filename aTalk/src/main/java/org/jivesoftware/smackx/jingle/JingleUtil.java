@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -341,8 +342,7 @@ public class JingleUtil
                 .setSessionId(sessionId);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
-        cb.setCreator(contentCreator)
-                .setName(contentName);
+        cb.setCreator(contentCreator).setName(contentName);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setFrom(mConnection.getUser());

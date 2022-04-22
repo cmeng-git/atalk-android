@@ -24,7 +24,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.HashMap;
 import java.util.WeakHashMap;
-import java.util.logging.Logger;
 
 import javax.crypto.NoSuchPaddingException;
 
@@ -42,13 +41,13 @@ import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleHandler;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleTransportMethodManager;
-import org.jivesoftware.smackx.jingle.component.JingleTransport;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
-import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
+import org.jivesoftware.smackx.jingle.component.JingleTransport;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
+import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleOutgoingFileOffer;
@@ -57,16 +56,13 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferC
 import org.jxmpp.jid.FullJid;
 
 /**
- * Manager for Jingle Encrypted Transfers (>XEP-0391).
+ * Manager for Jingle Encrypted Transfers (XEP-0391).
  * @see <a href="https://xmpp.org/extensions/xep-0391.html">XEP-0391: Jingle Encrypted Transports 0.1.2 (2018-07-31))</a>
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public final class JetManager extends Manager implements JingleDescriptionManager, JingleHandler
-{
-    private static final Logger LOGGER = Logger.getLogger(JetManager.class.getName());
-
+public final class JetManager extends Manager implements JingleDescriptionManager, JingleHandler {
     private static final WeakHashMap<XMPPConnection, JetManager> INSTANCES = new WeakHashMap<>();
 
     private static final HashMap<String, JingleEnvelopeManager> envelopeManagers = new HashMap<>();
@@ -105,8 +101,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
      * @return IQ.Result
      */
     @Override
-    public IQ handleJingleRequest(Jingle jingle)
-    {
+    public IQ handleJingleRequest(Jingle jingle) {
         JingleSessionImpl session = new JingleSessionImpl(mConnection, jingle);
         return session.handleJingleSessionRequest(jingle);
     }

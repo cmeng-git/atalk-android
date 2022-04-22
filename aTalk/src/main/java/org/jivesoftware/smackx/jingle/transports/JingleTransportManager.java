@@ -67,8 +67,7 @@ public abstract class JingleTransportManager<D extends JingleContentTransport> i
      */
     public abstract int getPriority();
 
-    public int compareTo(JingleTransportManager<?> other)
-    {
+    public int compareTo(JingleTransportManager<?> other) {
         return getPriority() > other.getPriority() ? 1 : -1;
     }
 

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.listener;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 
 /**
- * User interface for jingle file transfer progress status
+ * User interface for jingle file transfer progress status.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
@@ -27,11 +27,12 @@ import org.jivesoftware.smackx.jingle.element.JingleReason;
 public interface ProgressListener {
 
     /**
-     * Notify file transfer has started the byte-stream sending/receiving
+     * Notify file transfer has started the byte-stream sending/receiving.
      */
     void onStarted();
 
     /**
+     * Number of bytes sent or received.
      *
      * @param rwBytes progressive byte count for byte-stream sent/received
      */
@@ -46,13 +47,6 @@ public interface ProgressListener {
     /**
      * Notify user of an error occurred while doing file transfer.
      * @param reason JingleReason error
-     * @param msg cause of error
      */
-    void onError(JingleReason reason, String msg);
-
-    /**
-     * Feedback to client on session-terminate with the given Jingle Reason for action.
-     * @param reason Jingle reason
-     */
-    void onSessionTerminate(JingleReason reason);
+    void onError(JingleReason reason);
 }

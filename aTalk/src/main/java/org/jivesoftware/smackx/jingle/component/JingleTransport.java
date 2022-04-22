@@ -24,9 +24,9 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
+import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
-import org.jivesoftware.smackx.jingle.element.Jingle;
 
 /**
  * Class that represents a contents transport component.

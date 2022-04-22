@@ -121,7 +121,7 @@ configure() {
   fi
 
   # cmeng: must ensure AS JNI uses the same STL library or "system"
-  [[ -d ${TOOLCHAIN_PREFIX} ]] || python ${NDK}/build/tools/make_standalone_toolchain.py \
+  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
      --arch ${NDK_ARCH} \
      --api ${ANDROID_API} \
      --stl libc++ \

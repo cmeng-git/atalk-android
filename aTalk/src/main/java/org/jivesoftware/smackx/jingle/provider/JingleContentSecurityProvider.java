@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
-
-import java.io.IOException;
 
 /**
  * Jingle Content Provider for Jingle Content Security component.

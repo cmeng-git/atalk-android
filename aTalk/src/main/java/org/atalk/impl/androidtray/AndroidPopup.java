@@ -67,19 +67,19 @@ public class AndroidPopup
     /**
      * Optional chatTransport descriptor if supplied by <code>PopupMessage</code>.
      */
-    private Object mDescriptor;
+    private final Object mDescriptor;
 
     /*
      * Notification channel group
      */
-    private String group;
+    private final String group;
 
     /**
      * Small icon used for this notification.
      */
-    private int mSmallIcon;
+    private final int mSmallIcon;
 
-    private Context mContext;
+    private final Context mContext;
 
     /**
      * Stores all the endMuteTime for each notification Id.

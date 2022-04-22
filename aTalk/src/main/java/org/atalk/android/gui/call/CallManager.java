@@ -8,8 +8,29 @@ package org.atalk.android.gui.call;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.media.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.CallState;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetDesktopStreaming;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
+import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.media.MediaAwareCall;
+import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
+import net.java.sip.communicator.service.protocol.media.ProtocolMediaActivator;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.NetworkUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -32,7 +53,17 @@ import org.jxmpp.jid.BareJid;
 
 import java.awt.Component;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.swing.JComponent;
 
@@ -534,28 +565,25 @@ public class CallManager
      *
      * @return a list of all currently active calls
      */
-    // private static List<Call> getActiveCalls()
-    // {
-    // CallConference[] conferences;
-    //
-    // synchronized (callPanels)
-    // {
-    // Set<CallConference> keySet = callPanels.keySet();
-    // conferences = keySet.toArray(new CallConference[keySet.size()]);
-    // }
-    //
-    // List<Call> calls = new ArrayList<>();
-    //
-    // for (CallConference conference : conferences)
-    // {
-    // for (Call call : conference.getCalls())
-    // {
-    // if (call.getCallState() == CallState.CALL_IN_PROGRESS)
-    // calls.add(call);
-    // }
-    // }
-    // return calls;
-    // }
+//    private static List<Call> getActiveCalls()
+//    {
+//        CallConference[] conferences;
+//
+//        synchronized (callPanels) {
+//            Set<CallConference> keySet = callPanels.keySet();
+//            conferences = keySet.toArray(new CallConference[keySet.size()]);
+//        }
+//
+//        List<Call> calls = new ArrayList<>();
+//
+//        for (CallConference conference : conferences) {
+//            for (Call call : conference.getCalls()) {
+//                if (call.getCallState() == CallState.CALL_IN_PROGRESS)
+//                    calls.add(call);
+//            }
+//        }
+//        return calls;
+//    }
 
     /**
      * Returns a collection of all currently in progress calls. A call is active if it is in
@@ -1315,7 +1343,7 @@ public class CallManager
                         }
                     }
                 } catch (Exception e) {
-                    Timber.e(e, "Failed to invite callees: %s", Arrays.toString(contactArray));
+                    Timber.e(e, "Failed to invite callee: %s", Arrays.toString(contactArray));
                     DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                             aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
@@ -1362,7 +1390,7 @@ public class CallManager
                         opSetVideoBridge.inviteCalleeToCall(contact, call);
                 }
             } catch (Exception e) {
-                Timber.e(e, "Failed to invite callees: %s", Arrays.toString(callees));
+                Timber.e(e, "Failed to invite callee: %s", Arrays.toString(callees));
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
             }
@@ -1441,24 +1469,28 @@ public class CallManager
 
             if (call != null) {
                 Iterator<? extends CallPeer> peerIter = call.getCallPeers();
-
-                // CallPeer peer = peerIter.next();
                 while (peerIter.hasNext()) {
                     peers.add(peerIter.next());
                 }
             }
 
-            if (conference != null)
+            if (conference != null) {
                 peers.addAll(conference.getCallPeers());
+            }
 
-            if (peer != null)
+            if (peer != null) {
                 peers.add(peer);
+            }
 
             for (CallPeer peer : peers) {
                 OperationSetBasicTelephony<?> basicTelephony
                         = peer.getProtocolProvider().getOperationSet(OperationSetBasicTelephony.class);
 
                 try {
+                    // Must send JingleMessage retract to close the loop if Jingle RTP has yet to start
+                    if (CallState.CALL_INITIALIZATION.equals(peer.getCall().getCallState())) {
+                        JingleMessageSessionImpl.sendJingleMessageRetract(peer);
+                    }
                     basicTelephony.hangupCallPeer(peer);
                 } catch (OperationFailedException ofe) {
                     Timber.e(ofe, "Could not hang up: %s", peer);

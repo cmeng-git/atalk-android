@@ -87,8 +87,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 209020
-        versionName "2.9.2"
+        versionCode 209030
+        versionName "2.9.3"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -335,6 +335,7 @@ dependencies {
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
 
     /*
+     * https://www.javatips.net/api/jarjar-master/jarjar-gradle/src/main/java/org/anarres/gradle/plugin/jarjar/JarjarController.java
      * jarjar.repackage with generated dir/filename specified - default in build/jarjar/jarjar-xxx.jar
      * filename must not contains a colon i.e. ":" colon, treated as URL and will failed missing classes
      * destinationName may use relative i.e. "../../libs/fileName.jar to $buildDir/jarjar
@@ -350,6 +351,14 @@ dependencies {
         classDelete 'javax.media.format.VideoFormat'
         classDelete 'javax.media.Manager**'
     }
+
+//    implementation(files(JarjarController(project).repackage("fmj-1.0.1-jitsi.jar", closureOf<JarjarTask> {
+//        from('org.jitsi:fmj:1.0.1-jitsi')
+//
+//        classDelete 'net.sf.fmj.media.RegistryDefaults'
+//        classDelete 'javax.media.format.VideoFormat'
+//        classDelete 'javax.media.Manager**'
+//    })))
 
     // see NetaddrActivator#start(BundleContext) for the actual settings: (use ice4j 3.0-xx)
     implementation jarjar.repackage {

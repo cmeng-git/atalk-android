@@ -960,7 +960,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     }
 
     /**
-     * Clean up omemo local database, and omemo bundle and devicelist on the server for the specified accountId when:
+     * Clean up omemo local database, and omemo bundle and devicelist on the server for the specified accountId:
      * 1. When a user account is deleted.
      * 2. During Regenerate OMEMO identities
      *
@@ -970,7 +970,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     {
         // Retain a copy of the old device to purge data on server
         BareJid userJid = accountId.getBareJid();
-        Integer deviceId = localDeviceIdsOf(userJid).first();
+        SortedSet<Integer> deviceIds = localDeviceIdsOf(userJid);
+        if (deviceIds.size() == 0)
+            return;
+
+        Integer deviceId = deviceIds.first();
         OmemoDevice omemoDevice = new OmemoDevice(userJid, deviceId);
 
         // Must first remove the omemoDevice and associated data from local database
