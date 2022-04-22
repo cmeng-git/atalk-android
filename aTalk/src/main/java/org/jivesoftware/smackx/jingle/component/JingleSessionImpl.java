@@ -16,6 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.component;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -33,14 +41,8 @@ import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
-import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
-import org.jxmpp.jid.FullJid;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Class that represents a Jingle session.
@@ -54,6 +56,8 @@ public class JingleSessionImpl extends JingleSession
 
     private final ConcurrentHashMap<String, JingleContentImpl> contentImpls = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, JingleContentImpl> proposedContentImpls = new ConcurrentHashMap<>();
+
+    private static final List<JingleSessionListener> jingleSessionListeners = Collections.synchronizedList(new ArrayList<>());
 
     private final JingleManager mManager;
     private final XMPPConnection mConnection;
@@ -197,7 +201,7 @@ public class JingleSessionImpl extends JingleSession
 
         if (contentImpls.size() == 1) {
             // Only content has finished. End session.
-            terminateSession(JingleReason.Success);
+            terminateSession(JingleReason.Reason.success, "success");
         }
 
         // Session has still active contents left.
@@ -233,16 +237,19 @@ public class JingleSessionImpl extends JingleSession
         contentImpls.remove(jingleContent.getName());
     }
 
-    public void terminateSession(JingleReason reason)
+    public void terminateSession(JingleReason.Reason reason, String reasonText)
     {
+        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
+        notifySessionTerminated(jingleReason);
         try {
-            mConnection.createStanzaCollectorAndSend(jutil.createSessionTerminate(remote, sid, reason));
+            mConnection.createStanzaCollectorAndSend(jutil.createSessionTerminate(remote, sid, jingleReason));
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
         mManager.unregisterJingleSessionHandler(remote, sid, this);
     }
 
+    @Override
     public IQ handleJingleSessionRequest(Jingle request)
     {
         switch (request.getAction()) {
@@ -293,9 +300,7 @@ public class JingleSessionImpl extends JingleSession
         for (final JingleContentImpl content : contentImpls.values()) {
             JingleSecurity<?> security = content.getSecurity();
             if (security != null && sessionAccept.getSoleContentOrThrow().getSecurity() == null) {
-                JingleFileTransferImpl jfTransfer = ((JingleFileTransferImpl) content.getDescription());
-                jfTransfer.notifyProgressListenersOnError(JingleReason.SecurityError, "JetSecurity protocol not supported by client");
-                terminateSession(JingleReason.SecurityError);
+                terminateSession(JingleReason.Reason.security_error, "JetSecurity protocol not supported by client");
                 contentImpls.remove(content.getName());
                 continue;
             }
@@ -338,10 +343,8 @@ public class JingleSessionImpl extends JingleSession
         if (reason == null) {
             throw new AssertionError("Reason MUST not be null! (I guess)...");
         }
-
         // Inform the client on session terminated.
-        JingleFileTransferImpl jfTransfer = ((JingleFileTransferImpl) getSoleContentOrThrow().getDescription());
-        jfTransfer.notifyProgressListenersOnSessionTerminate(reason);
+        notifySessionTerminated(reason);
 
         mManager.unregisterJingleSessionHandler(remote, sid, this);
         return IQ.createResultIQ(sessionTerminate);
@@ -508,5 +511,45 @@ public class JingleSessionImpl extends JingleSession
     @Override
     public void onTransportMethodFailed(String namespace)
     {
+    }
+
+    /**
+     * Add JingleSessionListener.
+     *
+     * @param sl JingleSessionListener
+     */
+    public static void addJingleSessionListener(JingleSessionListener sl)
+    {
+        jingleSessionListeners.add(sl);
+    }
+
+    /**
+     * Remove JingleSessionListener.
+     *
+     * @param sl JingleSessionListener
+     */
+    public static void removeJingleSessionListener(JingleSessionListener sl)
+    {
+        jingleSessionListeners.remove(sl);
+    }
+
+    /**
+     * Notify all the registered JingleSessionListener when the Jingle Session is terminated.
+     * Use a copy of the jingleSessionListeners to avoid ConcurrentModificationException
+     * when listeners execute removeJingleSessionListener() onSessionTerminated()
+     *
+     * @param reason JingleReason for the session termination
+     */
+    public void notifySessionTerminated(JingleReason reason)
+    {
+        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+        for (JingleSessionListener sl : copySl) {
+            sl.onSessionTerminated(reason);
+        }
+    }
+
+    public interface JingleSessionListener
+    {
+        void onSessionTerminated(JingleReason reason);
     }
 }

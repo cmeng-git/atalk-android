@@ -38,7 +38,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
@@ -182,7 +182,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             Map<JingleContent, JingleContent> contentMap)
             throws OperationFailedException
     {
-        if (!getConference().isJitsiVideobridge())
+        if (!peer.isJitsiVideobridge())
             return null;
 
         /*
@@ -1031,7 +1031,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      */
     public Jid getJitsiVideobridge()
     {
-        if ((mJitsiVideobridge == null) && getConference().isJitsiVideobridge()) {
+        if ((mJitsiVideobridge == null) &&
+                (getConference() != null) && getConference().isJitsiVideobridge()) {
             Jid jvb = getProtocolProvider().getJitsiVideobridge();
 
             if (jvb != null)

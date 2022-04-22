@@ -332,7 +332,7 @@ public abstract class AbstractCallPeer<T extends Call, U extends ProtocolProvide
                         listener.peerImageChanged(evt);
                         break;
                     case CallPeerChangeEvent.CALL_PEER_STATE_CHANGE:
-                        Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
+                        // Timber.d("Dispatching CallPeerChangeEvent CALL_PEER_STATE_CHANGE to: %s", listener);
                         listener.peerStateChanged(evt);
                         break;
                 }

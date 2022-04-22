@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicAutoA
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Call;
 
-import org.atalk.android.gui.call.JingleMessageHelper;
+import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smackx.jingle.element.Jingle;
@@ -81,9 +81,9 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
      */
     public boolean autoAnswer(Call call, Map<MediaType, MediaDirection> directions, Jingle jingleSessionInit)
     {
-        // Accept the call if it is already accepted in JingleMessageHelper
+        // Accept the call if it is already accepted in JingleMessageSessionImpl
         if (jingleSessionInit != null) {
-            answerOnJingleMessageAccept = JingleMessageHelper.isJingleMessageAccept(jingleSessionInit);
+            answerOnJingleMessageAccept = JingleMessageSessionImpl.isJingleMessageAccept(jingleSessionInit);
             Timber.d("OnJingleMessageAccept (auto answer): %s", answerOnJingleMessageAccept);
         }
 

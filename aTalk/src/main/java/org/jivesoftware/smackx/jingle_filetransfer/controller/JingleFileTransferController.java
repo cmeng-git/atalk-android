@@ -23,7 +23,6 @@ import org.jivesoftware.smackx.jingle.JingleDescriptionController;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
-import org.jxmpp.jid.Jid;
 
 /**
  * User interface for Jingle file transfers.

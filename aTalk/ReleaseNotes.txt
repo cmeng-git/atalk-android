@@ -1,5 +1,39 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.3 (209030)
+Release Date:   04/23/2022
+Author:         cmeng
+- Redesign JingleMessageSession class to ensure all incoming/outgoing call are handled properly via JingleManager listeners callback
+  Rename JingleMessageHelper => JingleMessageSessionImpl and its implementation for JingleCall incoming/outgoing call handling
+- Must send JingleMessage retract to close the loop, when user ends the call prior to jingle session-initiate being send
+- Avoid sending trailing Jingle stanza once JingleSession Handler has unregistered with JingleManager
+- Register JingleSession Handler callback with JingleManager only on sending Jingle session-initiate, to ensure proper cleanup when call end.
+  Must let CallPeerJabberImpl#initiateSession() perform JingleCallSessionImpl() as an session initiator (outgoing call);
+  else JingleManager#unregisterJingleSessionHandler() is not performed when user end call before session-initiate
+- Resolve cross dependency between smack-extensions and smack-experimental (for pull request)
+- Fix CallJabberImpl.getConference() on a null object reference
+- Drop android API support to API-31; API-32 contains no source for development debug.
+
+- ======= JNI libraries update =======
+- Use python3 for all scripts in Jni libraries build
+- Update libvpx version to 1.11.0 (not stable, so stays at 1.10.0)
+
+- ======= Fix FFR for <= 2.9.1 (20220422) =======
+- Fix NoSuchElementException: May happen when user omemo DB is yet to be setup.
+    at java.util.TreeSet.first (TreeSet.java:394)
+    at org.atalk.crypto.omemo.SQLiteOmemoStore.purgeUserOmemoData (SQLiteOmemoStore.java:973)
+- Fix IndexOutOfBoundsException: if child contact may have been removed
+    at java.util.ArrayList.get (ArrayList.java:437)
+    at org.atalk.android.gui.contactlist.model.QueryContactListAdapter.getChild (QueryContactListAdapter.java:157)
+- Fix NulPointerException: NPE??? just move into try/catch loop
+    at org.atalk.crypto.omemo.OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:118)
+
+- ToDo:
+  * Need more work on CallPeerJabberImpl#processTransfer() to handle dual multiple call sessions i.e. call transfer.
+  * MediaAwareCall#getConference() may return null if call terminated before setup completed
+  * CallPeerMediaHandlerJabberImpl.getTransportManager() => The initiator is expected to specify the transport in their offer when remote terminate call before setup
+
+=========================================================================
 Version:        2.9.2 (209020)
 Release Date:   04/14/2022
 Author:         cmeng
@@ -24,10 +58,6 @@ Author:         cmeng
 - Cleanup jarjar.repackage for ice4j:3.0-55-g32a8aad.
 - Remove dependencies.gradle in android-youtube-player plug in; only use in one gradle.build.
 - Add XMPP version information to all reference in About UI.
-- ToDo:
-  * Need more work on CallPeerJabberImpl#processTransfer() to handle dual multiple call sessions i.e. call transfer.
-  * MediaAwareCall#getConference() may return null if call terminated before setup completed
-  * CallPeerMediaHandlerJabberImpl.getTransportManager() => The initiator is expected to specify the transport in their offer when remote terminate call before setup
 
 =========================================================================
 Version:        2.9.1 (209010)

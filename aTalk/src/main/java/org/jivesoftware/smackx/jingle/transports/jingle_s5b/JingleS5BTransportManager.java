@@ -16,6 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -43,14 +51,6 @@ import org.jivesoftware.smackx.jingle.transports.jingle_s5b.provider.JingleS5BTr
 
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Manager for Jingle SOCKS5 Bytestream transports (XEP-0260).
@@ -125,7 +125,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     {
         List<JingleTransportCandidate<?>> candidates = new ArrayList<>();
 
-        //Local host
+        // Local host
         if (JingleS5BTransportManager.isUseLocalCandidates()) {
             for (Bytestream.StreamHost host : getLocalStreamHosts()) {
                 candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, 100, JingleS5BTransportCandidate.Type.proxy));
@@ -153,7 +153,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         JingleContentImpl content = transport.getParent();
         JingleSessionImpl session = content.getParent();
 
-        Jingle.Builder jb = Jingle.getBuilder()
+        Jingle.Builder jb = Jingle.builder(session.getConnection())
                 .setSessionId(session.getSessionId())
                 .setAction(JingleAction.transport_info);
 

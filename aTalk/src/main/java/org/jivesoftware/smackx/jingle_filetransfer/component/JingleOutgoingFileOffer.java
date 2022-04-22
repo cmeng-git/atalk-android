@@ -26,8 +26,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 
@@ -85,7 +85,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
-            notifyProgressListenersOnError(JingleReason.ConnectivityError, e.getMessage());
+            notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
             try {
                 source.close();

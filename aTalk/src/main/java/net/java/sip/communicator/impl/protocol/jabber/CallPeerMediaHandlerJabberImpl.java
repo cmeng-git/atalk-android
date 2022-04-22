@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.media.CallPeerMediaHandler;
-import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference;
 import net.java.sip.communicator.service.protocol.media.SrtpControls;
 
 import org.atalk.android.R;
@@ -43,9 +42,11 @@ import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.InputEvent;
-import org.jivesoftware.smackx.jingle.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
 import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
 import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
@@ -55,8 +56,6 @@ import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpEncryption;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jxmpp.jid.Jid;
 
 import java.awt.Component;
@@ -276,6 +275,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             // the one we want to receive is the one the remote can send
             receiveQualityPreset = qualityControls.getRemoteSendMaxPreset();
         }
+
         if (direction != MediaDirection.INACTIVE) {
             JingleContent content = createContentForOffer(getLocallySupportedFormats(dev, sendQualityPreset,
                     receiveQualityPreset), direction, dev.getSupportedExtensions());
@@ -287,7 +287,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
              * Neither SDES nor ZRTP is supported in telephony conferences utilizing the
              * server-side technology Jitsi Videobridge yet.
              */
-            if (!call.getConference().isJitsiVideobridge()) {
+            if (!mPeer.isJitsiVideobridge()) {
                 // SDES - It is important to set SDES before ZRTP in order to make GTALK
                 // application able to work with SDES.
                 setSdesEncryptionOnDescription(mediaType, description, null);
@@ -304,8 +304,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      *
      * @param mediaType <code>MediaType</code> of the content
      * @return a {@link JingleContent}
-     * @throws OperationFailedException if we fail to create the descriptions for reasons like - problems with device
-     * interaction, allocating ports, etc.
+     * @throws OperationFailedException if we fail to create the descriptions for reasons like
+     * - problems with device interaction, allocating ports, etc.
      */
     public JingleContent createContentForMedia(MediaType mediaType)
             throws OperationFailedException
@@ -356,8 +356,6 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         // Describe the media.
         List<JingleContent> mediaDescs = new ArrayList<>();
-        boolean isJvb = mPeer.getCall().getConference().isJitsiVideobridge();
-
         for (MediaType mediaType : MediaType.values()) {
             MediaDevice dev = getDefaultDevice(mediaType);
 
@@ -392,7 +390,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                      * Neither SDES nor ZRTP is supported in telephony conferences utilizing the
                      * server-side technology Jitsi Videobridge yet.
                      */
-                    if (!isJvb) {
+                    if (!mPeer.isJitsiVideobridge()) {
                         // SDES: It is important to set SDES before ZRTP in order to make GTALK
                         // application able to work with
                         setSdesEncryptionOnDescription(mediaType, description, null);
@@ -862,12 +860,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          * have to explicitly check for Jitsi Videobridge instead of just relying on the
          * implementation of the getRemoteSSRCs(MediaType) method to abstract away that detail.
          */
-        CallJabberImpl call;
-        MediaAwareCallConference conference;
-
-        if (((call = mPeer.getCall()) != null)
-                && ((conference = call.getConference()) != null)
-                && conference.isJitsiVideobridge()) {
+        if (mPeer.isJitsiVideobridge()) {
             MediaStream stream = getStream(MediaType.VIDEO);
 
             if (stream == null)
@@ -1011,6 +1004,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         if ((AUDIO_REMOTE_SSRC.equals(propertyName) || VIDEO_REMOTE_SSRC.equals(propertyName))
                 && mPeer.isJitsiVideobridge())
             return;
+
         super.mediaHandlerPropertyChange(ev);
     }
 
@@ -1196,6 +1190,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
          */
         CallJabberImpl call = mPeer.getCall();
         CallConference conference = (call == null) ? null : call.getConference();
+
         if ((conference == null) || !conference.isJitsiVideobridge()) {
             addZrtpAdvertisedEncryption(true, description, mediaType);
             addSDesAdvertisedEncryption(true, description, mediaType);
@@ -1771,7 +1766,6 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             JingleContent content, MediaType mediaType, boolean rtcpmux)
     {
         if (mPeer.isJitsiVideobridge()) {
-            // TODO Auto-generated method stub
             return false;
         }
         else {
@@ -2125,8 +2119,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         // ZRTP is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
-        Call call = mPeer.getCall();
-        if (call.getConference().isJitsiVideobridge())
+        if (mPeer.isJitsiVideobridge())
             return;
 
         // Conforming to XEP-0167 schema there is 0 or 1 <encryption/> element for a given <description/>>.
@@ -2134,6 +2127,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         if (srtpEncryption != null) {
             AccountID accountID = mPeer.getProtocolProvider().getAccountID();
+            Call call = mPeer.getCall();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP) && call.isSipZrtpAttribute()) {
@@ -2165,7 +2159,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
     {
         // SDES is not supported in telephony conferences utilizing the
         // server-side technology Jitsi Videobridge yet.
-        if (mPeer.getCall().getConference().isJitsiVideobridge())
+        if (mPeer.isJitsiVideobridge())
             return;
 
         // Conforming to XEP-0167 schema there is 0 or 1 ENCRYPTION element for a given DESCRIPTION.
@@ -2252,8 +2246,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             RtpDescription remoteDescription)
     {
         // ZRTP is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
-        Call call = mPeer.getCall();
-        if (call.getConference().isJitsiVideobridge())
+        if (mPeer.isJitsiVideobridge())
             return false;
 
         boolean isRemoteZrtpCapable;
@@ -2268,6 +2261,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         boolean zrtpHashSet = false; // Will become true if at least one is set.
         if (isRemoteZrtpCapable) {
             AccountID accountID = mPeer.getProtocolProvider().getAccountID();
+            Call call = mPeer.getCall();
 
             if (accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true)
                     && accountID.isEncryptionProtocolEnabled(SrtpControlType.ZRTP)
@@ -2332,7 +2326,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         /*
          * SDES is not supported in telephony conferences utilizing the server-side technology Jitsi Videobridge yet.
          */
-        if (mPeer.getCall().getConference().isJitsiVideobridge())
+        if (mPeer.isJitsiVideobridge())
             return false;
 
         AccountID accountID = mPeer.getProtocolProvider().getAccountID();

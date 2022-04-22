@@ -10,7 +10,7 @@ import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.JingleUtils;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;

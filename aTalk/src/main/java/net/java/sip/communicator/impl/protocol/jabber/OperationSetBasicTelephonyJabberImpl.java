@@ -34,7 +34,7 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.call.JingleMessageHelper;
+import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -89,7 +89,7 @@ import timber.log.Timber;
 public class OperationSetBasicTelephonyJabberImpl
         extends AbstractOperationSetBasicTelephony<ProtocolProviderServiceJabberImpl>
         implements RegistrationStateChangeListener, OperationSetSecureSDesTelephony,
-        BasicTelephony, JingleMessageHelper.JmStateListener,
+        BasicTelephony, JingleMessageSessionImpl.JmStateListener,
         OperationSetSecureZrtpTelephony, OperationSetAdvancedTelephony<ProtocolProviderServiceJabberImpl>
 {
     /**
@@ -98,6 +98,8 @@ public class OperationSetBasicTelephonyJabberImpl
     private final ProtocolProviderServiceJabberImpl mPPS;
 
     private JingleCallSessionImpl mJingleSession;
+
+    private String mSid;
 
     private XMPPConnection mConnection = null;
 
@@ -133,11 +135,11 @@ public class OperationSetBasicTelephonyJabberImpl
         RegistrationState registrationState = evt.getNewState();
         if (registrationState == RegistrationState.REGISTERING) {
             mConnection = mPPS.getConnection();
-            JingleCallManager jingleCallManager = JingleCallManager.getInstanceFor(mConnection, this);
-            JingleMessageHelper.addJmStateListener(this);
+            JingleCallManager.getInstanceFor(mConnection, this);
+            JingleMessageSessionImpl.addJmStateListener(this);
         }
         else if (registrationState == RegistrationState.UNREGISTERED) {
-            JingleMessageHelper.removeJmStateListener(this);
+            JingleMessageSessionImpl.removeJmStateListener(this);
         }
     }
 
@@ -242,7 +244,7 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     public String getSid()
     {
-        return mJingleSession != null ? mJingleSession.getSessionId() : JingleManager.randomId();
+        return (mSid != null) ? mSid : JingleManager.randomId();
     }
 
     /**
@@ -684,8 +686,8 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Register JingleSession Handler immediately upon accepting the call; to avoid race condition
-     * when receiving call from conversations where transport is sent individually after session-initiate.
+     * Register JingleSession Handler immediately upon accepting the call via JingleMessage; to avoid race condition
+     * when receiving call from conversations where transport is sent individually after session-initiate at fast pace.
      * https://discourse.igniterealtime.org/t/smack-4-4-5-jingle-manager-implementation-has-problem-to-handle-conversations-incoming-call/91573
      *
      * @param type JingleMessage type
@@ -697,19 +699,29 @@ public class OperationSetBasicTelephonyJabberImpl
     {
         switch (type) {
             case accept:
-                // as a session responder
+                mSid = sid;
+                // as a session responder (incoming call)
                 mJingleSession = new JingleCallSessionImpl(mConnection, remote, sid, null, this);
                 break;
 
             case proceed:
-                // as an session initiator
-                mJingleSession = new JingleCallSessionImpl(mConnection, remote, sid, this);
+                mSid = sid;
+                /*
+                 * Let CallPeerJabberImpl#initiateSession() perform JingleCallSessionImpl() as an session initiator (outgoing call);
+                 * else JingleManager#unregisterJingleSessionHandler() is not performed when user end call before session-initiate;
+                 */
+                // mJingleSession = new JingleCallSessionImpl(mConnection, remote, sid, this);
                 break;
 
-            case retract:
+            case retract: // incoming call
                 Timber.w("Call retract by remote: (%s) %s", sid, remote);
-                break;
+                if (mJingleSession != null) {
+                    mJingleSession.unregisterJingleSessionHandler();
+                }
+                // fall through
+
             default:
+                mSid = null;
                 break;
         }
     }
@@ -725,7 +737,11 @@ public class OperationSetBasicTelephonyJabberImpl
     public void handleJingleSession(Jingle jingle)
     {
         try {
-            // let's first see whether we have a peer that's concerned by this IQ
+            /*
+             * let's first see whether we have a peer that's concerned by this IQ.
+             * callPeer is null until session-initiate is received when as a responder.
+             * Otherwise non-null when it acts as an initiator
+             */
             CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
             if (callPeer == null) {
                 processJingleSynchronize(jingle);
@@ -747,6 +763,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
     /**
      * Analyzes the <code>jingle</code>'s action and passes it to the corresponding handler.
+     * Mainly for as a responder until session-initiate is received => processJingle()
      *
      * @param jingle the {@link Jingle} packet we need to be analyzing.
      */
@@ -845,7 +862,8 @@ public class OperationSetBasicTelephonyJabberImpl
                 break;
 
             case session_terminate:
-                // From remote: session is own terminated
+                // handle moved => processJingle#session_terminate; not handle here
+                Timber.w("Received session_terminate IQ: %s. JingleSession: %s", jingle.getStanzaId(), mJingleSession);
                 mJingleSession.terminateSessionAndUnregister(Reason.success, null);
                 contentMedias = null;
                 break;
@@ -859,7 +877,8 @@ public class OperationSetBasicTelephonyJabberImpl
 
     /**
      * Analyzes the <code>jingle</code>'s action and passes it to the corresponding handler.
-     * the rest of these cases deal with exiting peers
+     * the rest of these cases deal with exiting peers (mainly for as an initiator)
+     * Or drop this handler when as a responder, after received the session-initiate
      *
      * @param jingle the {@link Jingle} packet we need to be analyzing.
      */
@@ -869,13 +888,11 @@ public class OperationSetBasicTelephonyJabberImpl
         JingleAction action = jingle.getAction();
         Timber.d("### Processing Jingle IQ (%s); callPeer: %s", action, callPeer.getAddress());
         switch (action) {
-            case session_terminate:
-                callPeer.processSessionTerminate(jingle);
-                break;
             case session_accept:
                 jingleSI = null;
                 processSessionAccept(callPeer, jingle);
                 break;
+
             case security_info:
                 SessionInfo info = jingle.getSessionInfo();
                 // change status.
@@ -902,6 +919,10 @@ public class OperationSetBasicTelephonyJabberImpl
                         callPeer.setConferenceFocus(coinExt.isFocus());
                     }
                 }
+                break;
+
+            case session_terminate:
+                callPeer.processSessionTerminate(jingle);
                 break;
 
             case content_accept:

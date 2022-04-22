@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.*;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
-import org.atalk.android.gui.call.JingleMessageHelper;
+import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.android.plugin.timberlog.TimberLog;
@@ -1399,8 +1399,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
 
+            // Start up both instances for incoming JingleMessage events handlers
             JingleMessageManager.getInstanceFor(connection);
-            JingleMessageHelper.getInstanceFor(ProtocolProviderServiceJabberImpl.this);
+            JingleMessageSessionImpl.getInstanceFor(connection);
 
             /*
              * Broadcast to all others after connection is connected but before actual account registration start.

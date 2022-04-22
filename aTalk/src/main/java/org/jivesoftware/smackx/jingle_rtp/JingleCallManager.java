@@ -93,11 +93,11 @@ public final class JingleCallManager extends Manager implements JingleHandler
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(getNamespace());
 
-        JingleManager jingleManager = JingleManager.getInstanceFor(connection);
-        jingleManager.registerDescriptionHandler(getNamespace(), this);
-
         JingleContentProviderManager.addJingleContentDescriptionProvider(RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
         JingleContentProviderManager.addJingleContentTransportProvider(IceUdpTransport.NAMESPACE, new JingleRTPTransportProvider());
+
+        JingleManager jingleManager = JingleManager.getInstanceFor(connection);
+        jingleManager.registerDescriptionHandler(getNamespace(), this);
 
         /*
          * Register all jingle related extension providers for the RTP media call support.

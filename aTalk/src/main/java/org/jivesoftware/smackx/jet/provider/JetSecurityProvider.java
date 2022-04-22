@@ -25,13 +25,12 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jet.JetManager;
 import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
 import org.jivesoftware.smackx.jet.element.JetSecurity;
 import org.jivesoftware.smackx.jingle.provider.JingleContentSecurityProvider;
-
-import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
  * Provider for the Jingle security element for XEP-0391.
@@ -45,8 +44,7 @@ public class JetSecurityProvider extends JingleContentSecurityProvider<JetSecuri
 
     @Override
     public JetSecurity parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         String name = parser.getAttributeValue("", JetSecurity.ATTR_NAME);
         String cipher = parser.getAttributeValue("", JetSecurity.ATTR_CIPHER);
         String type = parser.getAttributeValue("", JetSecurity.ATTR_TYPE);

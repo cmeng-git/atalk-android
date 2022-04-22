@@ -76,7 +76,7 @@ public class CaptchaDialog extends Dialog
 
     private static XMPPConnection mConnection;
     private static Message mMessage;
-    private Context mContext;
+    private final Context mContext;
     private final CaptchaDialogListener callBack;
 
     public interface CaptchaDialogListener

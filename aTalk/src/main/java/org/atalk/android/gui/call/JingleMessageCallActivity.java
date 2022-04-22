@@ -17,8 +17,12 @@
 package org.atalk.android.gui.call;
 
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 
@@ -28,23 +32,16 @@ import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jivesoftware.smackx.jinglemessage.JingleMessageType;
-import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 /**
- * The <code>Jingle Message</code> UI allowing caller to retract the call
+ * The process to handle the incoming and outgoing call for <code>Jingle Message</code> states changes.
  *
  * @author Eng Chong Meng
  */
-public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageHelper.JmStateListener
+public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageSessionImpl.JmEndListener
 {
     private ImageView peerAvatar;
-
-    /**
-     * Jingle Message id
-     */
-    private String id;
 
     /**
      * Create the UI with call hang up button to retract call.
@@ -65,11 +62,8 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
 
-        JingleMessageHelper.addJmStateListener(this);
-
         // Implementation not supported currently
         findViewById(R.id.videoCallButton).setVisibility(View.GONE);
-
         ImageButton callButton = findViewById(R.id.callButton);
         ImageButton hangUpButton = findViewById(R.id.hangupButton);
 
@@ -77,40 +71,42 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            id = extras.getString(CallManager.CALL_SID);
-            Jid callee = JingleMessageHelper.getCallee(id);
+            // Jingle Message / Session sid
+            String sid = extras.getString(CallManager.CALL_SID);
+            Jid remote = JingleMessageSessionImpl.getRemote();
 
-            ((TextView) findViewById(R.id.calleeAddress)).setText(callee);
-            setPeerImage(callee);
+            ((TextView) findViewById(R.id.calleeAddress)).setText(remote);
+            setPeerImage(remote);
 
             String eventType = extras.getString(CallManager.CALL_EVENT);
             if (NotificationManager.INCOMING_CALL.equals(eventType)) {
                 // Call accepted, send Jingle Message <accept/> to inform caller.
                 callButton.setOnClickListener(v -> {
-                            NotificationPopupHandler.removeCallNotification(id);
-                            JingleMessageHelper.sendJingleAccept(id);
+                            NotificationPopupHandler.removeCallNotification(sid);
+                            JingleMessageSessionImpl.sendJingleAccept(sid);
                             finish();
                         }
                 );
 
                 // Call rejected, send Jingle Message <reject/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                            NotificationPopupHandler.removeCallNotification(id);
-                            JingleMessageHelper.sendJingleMessageReject(id);
+                            NotificationPopupHandler.removeCallNotification(sid);
+                            JingleMessageSessionImpl.sendJingleMessageReject(sid);
                             finish();
                         }
                 );
             }
-            else {
+            else { // NotificationManager.OUTGOING_CALL
                 // Call retract, send Jingle Message <retract/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                            JingleMessageHelper.sendJingleMessageRetract(id);
+                            JingleMessageSessionImpl.sendJingleMessageRetract(remote, sid);
                             finish();
                         }
                 );
                 callButton.setVisibility(View.GONE);
             }
         }
+        JingleMessageSessionImpl.setJmEndListener(this);
     }
 
     @Override
@@ -139,22 +135,9 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     }
 
     @Override
-    public void onJmStateChange(JingleMessageType type, FullJid remote, String sid)
+    public void onRejectCallback()
     {
-        switch(type) {
-            case accept:
-                JingleMessageHelper.removeJmStateListener(this);
-                finish();
-                break;
-
-            case retract:
-            case reject:
-                JingleMessageHelper.removeJmStateListener(this);
-                finish();
-                break;
-            default:
-                break;
-        }
+        finish();
     }
 
     /**

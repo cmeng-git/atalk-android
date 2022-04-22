@@ -116,7 +116,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     clearVideoCallState();
 
                     // If incoming call accepted via Jingle Message Initiation, then just start the VideoCallActivity UI;
-                    if (JingleMessageHelper.getCallee(call.getCallId()) != null) {
+                    if (JingleMessageSessionImpl.getRemote() != null) {
                         startVideoCallActivity(call);
                     }
                     // else launch a heads-up UI for user to accept the call

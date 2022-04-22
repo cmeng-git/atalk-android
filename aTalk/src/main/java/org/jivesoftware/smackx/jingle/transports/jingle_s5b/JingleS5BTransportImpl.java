@@ -37,13 +37,13 @@ import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.component.JingleTransportCandidate;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 import org.jivesoftware.smackx.jingle.exception.FailedTransportException;
-import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
+import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo;
 
 import org.jxmpp.jid.FullJid;
@@ -78,6 +78,9 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
     private JingleS5BTransportCandidateImpl theirSelectedCandidate;
 
     private JingleTransportCallback callback;
+
+    // Just for handling Unused Variable warning
+    JingleS5BTransportInfo mInfo;
 
     /**
      * Create transport as initiator.
@@ -137,13 +140,13 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
         Socks5Proxy.getSocks5Proxy().addTransfer(ourDstAddr);
         this.theirDstAddr = theirDstAddr;
 
-        for (JingleTransportCandidate<?> c : (ourCandidates != null ? ourCandidates :
-                Collections.<JingleS5BTransportCandidateImpl>emptySet())) {
+        for (JingleTransportCandidate<?> c : ourCandidates != null ? ourCandidates :
+                Collections.<JingleS5BTransportCandidateImpl>emptySet()) {
             addOurCandidate(c);
         }
 
-        for (JingleTransportCandidate<?> c : (theirCandidates != null ? theirCandidates :
-                Collections.<JingleS5BTransportCandidateImpl>emptySet())) {
+        for (JingleTransportCandidate<?> c : theirCandidates != null ? theirCandidates :
+                Collections.<JingleS5BTransportCandidateImpl>emptySet()) {
             addTheirCandidate(c);
         }
     }
@@ -300,7 +303,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
         LOGGER.log(Level.INFO, (session.isInitiator() ? "Initiator" : "Responder") + " is ready.");
 
-        //Determine nominated candidate.
+        // Determine nominated candidate.
         JingleS5BTransportCandidateImpl nominated;
         if (ourSelectedCandidate != CANDIDATE_FAILURE && theirSelectedCandidate != CANDIDATE_FAILURE) {
 
@@ -359,7 +362,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             callback.onTransportReady(this.bytestreamSession);
 
         }
-        //Our choice
+        // Our choice
         else {
             LOGGER.log(Level.INFO, "Our choice, so their candidate was used.");
             if (!isProxy) {
@@ -430,7 +433,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
         }
 
         if (theirSelectedCandidate == null) {
-            LOGGER.log(Level.SEVERE, "ILLEGAL CANDIDATE ID!!!");
+            LOGGER.severe("ILLEGAL CANDIDATE ID!!!");
             // TODO: Alert! Illegal candidateId!
         }
 
@@ -438,17 +441,20 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
     }
 
     private void handleCandidateActivate(JingleS5BTransportInfo info) {
+        mInfo = info;
         this.bytestreamSession = new Socks5BytestreamSession(ourSelectedCandidate.getSocket(),
                 ourSelectedCandidate.getStreamHost().getJID().asBareJid().equals(getParent().getParent().getRemote().asBareJid()));
         callback.onTransportReady(this.bytestreamSession);
     }
 
     private void handleCandidateError(JingleS5BTransportInfo info) {
+        mInfo = info;
         theirSelectedCandidate = CANDIDATE_FAILURE;
         connectIfReady();
     }
 
     private void handleProxyError(JingleS5BTransportInfo info) {
+        mInfo = info;
         callback.onTransportFailed(new S5BTransportException.ProxyError(null));
     }
 
@@ -456,5 +462,5 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
      * Internal dummy candidate used to represent failure.
      * Kinda depressing, isn't it?
      */
-    private final static JingleS5BTransportCandidateImpl CANDIDATE_FAILURE = new JingleS5BTransportCandidateImpl(null, null, -1, null);
+    private static final JingleS5BTransportCandidateImpl CANDIDATE_FAILURE = new JingleS5BTransportCandidateImpl(null, null, -1, null);
 }

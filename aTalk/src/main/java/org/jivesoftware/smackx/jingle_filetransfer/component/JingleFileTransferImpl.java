@@ -55,6 +55,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     public abstract boolean isRequest();
 
+    @Override
     public JingleSessionImpl getJingleSession() {
         return getParent().getParent();
     }
@@ -111,15 +112,11 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
         }
     }
 
-    public void notifyProgressListenersOnError(JingleReason reason, String error) {
-        for (ProgressListener p : progressListeners) {
-            p.onError(reason, error);
-        }
-    }
+    public void notifyProgressListenersOnError(JingleReason.Reason reason, String error) {
+        JingleReason jingleReason = new JingleReason(reason, error, null);
 
-    public void notifyProgressListenersOnSessionTerminate(JingleReason reason) {
         for (ProgressListener p : progressListeners) {
-            p.onSessionTerminate(reason);
+            p.onError(jingleReason);
         }
     }
 

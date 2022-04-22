@@ -145,7 +145,7 @@ if [[ ${STANDALONE_TOOLCHAINS} == 1 ]]; then
   # However for ndk--r19b => Instead use:
   #    $ ${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++ src.cpp
   # cmeng: must ensure AS JNI uses the same STL library or "system" if specified
-    [[ -d ${TOOLCHAIN_PREFIX} ]] || python ${NDK}/build/tools/make_standalone_toolchain.py \
+    [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
       --arch ${NDK_ARCH} \
       --api ${ANDROID_API} \
       --stl libc++ \

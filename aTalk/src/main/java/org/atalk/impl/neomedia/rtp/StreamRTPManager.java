@@ -20,7 +20,7 @@ import javax.media.rtp.*;
 import timber.log.Timber;
 
 /**
- * Implements the <tt>RTPManager</tt> interface as used by a <tt>MediaStream</tt>.
+ * Implements the <code>RTPManager</code> interface as used by a <code>MediaStream</code>.
  * The media steam is either handled via rtpManager or rtpTranslator (encrypted); cannot have both null
  *
  * @author Lyubomir Marinov
@@ -29,29 +29,29 @@ import timber.log.Timber;
 public class StreamRTPManager
 {
     /**
-     * The <tt>MediaStream</tt> that uses this <tt>StreamRTPManager</tt>
+     * The <code>MediaStream</code> that uses this <code>StreamRTPManager</code>
      */
     private final MediaStream stream;
 
     /**
-     * The <tt>RTPManager</tt> this instance is to delegate to when it is not attached to an <tt>RTPTranslator</tt>.
+     * The <code>RTPManager</code> this instance is to delegate to when it is not attached to an <code>RTPTranslator</code>.
      */
     private final RTPManager rtpManager;
 
     /**
-     * The <tt>RTPTranslator</tt> which this instance is attached to and which forwards the RTP and
-     * RTCP flows of the <tt>MediaStream</tt> associated with this instance to other <tt>MediaStream</tt>s.
+     * The <code>RTPTranslator</code> which this instance is attached to and which forwards the RTP and
+     * RTCP flows of the <code>MediaStream</code> associated with this instance to other <code>MediaStream</code>s.
      */
     private final RTPTranslatorImpl rtpTranslator;
 
     /**
-     * Initializes a new <tt>StreamRTPManager</tt> instance which is, optionally,
-     * attached to a specific <tt>RTPTranslator</tt> which is to forward the RTP and
-     * RTCP flows of the associated <tt>MediaStream</tt> to other <tt>MediaStream</tt>s.
+     * Initializes a new <code>StreamRTPManager</code> instance which is, optionally,
+     * attached to a specific <code>RTPTranslator</code> which is to forward the RTP and
+     * RTCP flows of the associated <code>MediaStream</code> to other <code>MediaStream</code>s.
      *
-     * @param stream the <tt>MediaStream</tt> that created this <tt>StreamRTPManager</tt>.
-     * @param translator the <tt>RTPTranslator</tt> to attach the new instance to or <tt>null</tt>
-     * if the new instance is to not be attached to any <tt>RTPTranslator</tt>
+     * @param stream the <code>MediaStream</code> that created this <code>StreamRTPManager</code>.
+     * @param translator the <code>RTPTranslator</code> to attach the new instance to or <code>null</code>
+     * if the new instance is to not be attached to any <code>RTPTranslator</code>
      */
     public StreamRTPManager(MediaStream stream, RTPTranslator translator)
     {
@@ -101,9 +101,10 @@ public class StreamRTPManager
     }
 
     public SendStream createSendStream(DataSource dataSource, int streamIndex)
-            throws IOException, UnsupportedFormatException
+            throws IOException, UnsupportedFormatException, NullPointerException
     {
-        // Received content-reject while processing content-add. createSendStream throws exception;
+        // NullPointerException: Attempt to invoke virtual method 'SessionAddress.getDataPort()' on a null object reference.
+        // Happen when call is terminated in middle of setting up.
         if (rtpTranslator == null)
             return rtpManager.createSendStream(dataSource, streamIndex);
         else
@@ -123,9 +124,9 @@ public class StreamRTPManager
     /**
      * Gets a control of a specific type over this instance. Invokes {@link #getControl(String)}.
      *
-     * @param controlType a <tt>Class</tt> which specifies the type of the control over this instance to get
-     * @return a control of the specified <tt>controlType</tt> over this instance
-     * if this instance supports such a control; otherwise, <tt>null</tt>
+     * @param controlType a <code>Class</code> which specifies the type of the control over this instance to get
+     * @return a control of the specified <code>controlType</code> over this instance
+     * if this instance supports such a control; otherwise, <code>null</code>
      */
     @SuppressWarnings("unchecked")
     public <T> T getControl(Class<T> controlType)
@@ -136,10 +137,10 @@ public class StreamRTPManager
     /**
      * Gets a control of a specific type over this instance.
      *
-     * @param controlType a <tt>String</tt> which specifies the type (i.e. the name of the class)
+     * @param controlType a <code>String</code> which specifies the type (i.e. the name of the class)
      * of the control over this instance to get
-     * @return a control of the specified <tt>controlType</tt> over this instance if this instance
-     * supports such a control; otherwise, <tt>null</tt>
+     * @return a control of the specified <code>controlType</code> over this instance if this instance
+     * supports such a control; otherwise, <code>null</code>
      */
     public Object getControl(String controlType)
     {
@@ -175,9 +176,9 @@ public class StreamRTPManager
     }
 
     /**
-     * Returns the <tt>MediaStream</tt> that uses this <tt>StreamRTPManager</tt>
+     * Returns the <code>MediaStream</code> that uses this <code>StreamRTPManager</code>
      *
-     * @return the <tt>MediaStream</tt> that uses this <tt>StreamRTPManager</tt>
+     * @return the <code>MediaStream</code> that uses this <code>StreamRTPManager</code>
      */
     public MediaStream getMediaStream()
     {
@@ -243,11 +244,11 @@ public class StreamRTPManager
     }
 
     /**
-     * Sets the <tt>SSRCFactory</tt> to be utilized by this instance to generate new synchronization
+     * Sets the <code>SSRCFactory</code> to be utilized by this instance to generate new synchronization
      * source (SSRC) identifiers.
      *
-     * @param ssrcFactory the <tt>SSRCFactory</tt> to be utilized by this instance to generate new
-     * synchronization source (SSRC) identifiers or <tt>null</tt> if this instance is to
+     * @param ssrcFactory the <code>SSRCFactory</code> to be utilized by this instance to generate new
+     * synchronization source (SSRC) identifiers or <code>null</code> if this instance is to
      * employ internal logic to generate new synchronization source (SSRC) identifiers
      */
     public void setSSRCFactory(SSRCFactory ssrcFactory)

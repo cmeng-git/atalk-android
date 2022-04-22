@@ -7,11 +7,15 @@ package org.atalk.android.gui.call;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.*;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -100,12 +104,13 @@ public class AndroidCallUtil
      */
     public static void createCall(Context context, MetaContact metaContact, boolean isVideoCall, View callButtonView)
     {
-        Jid callee = metaContact.getDefaultContact().getJid();
-        ProtocolProviderService pps = metaContact.getDefaultContact().getProtocolProvider();
+        Contact contact = metaContact.getDefaultContact();
+        Jid callee = contact.getJid();
+        ProtocolProviderService pps = contact.getProtocolProvider();
 
         boolean isJmSupported = metaContact.isFeatureSupported(JingleMessage.NAMESPACE);
         if (isJmSupported) {
-            JingleMessageHelper.createAndSendJingleMessagePropose(pps, callee, isVideoCall);
+            JingleMessageSessionImpl.sendJingleMessagePropose(pps.getConnection(), callee, isVideoCall);
         }
         else if (callButtonView != null) {
             showCallViaMenu(context, callee, callButtonView, isVideoCall);

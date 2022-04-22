@@ -16,16 +16,16 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleSecurityManager;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
 import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
-
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class JingleContentProviderManager
 {
@@ -40,7 +40,7 @@ public class JingleContentProviderManager
     private static final Map<String, JingleSecurityAdapter<?>> securityAdapters = new WeakHashMap<>();
 
     private static final Map<String, JingleDescriptionManager> descriptionManagers = new WeakHashMap<>();
-    private static final Map<String, JingleTransportManager> transportManagers = new WeakHashMap<>();
+    private static final Map<String, JingleTransportManager<?>> transportManagers = new WeakHashMap<>();
     private static final Map<String, JingleSecurityManager> securityManagers = new WeakHashMap<>();
 
     public static JingleContentDescriptionProvider<?> addJingleContentDescriptionProvider(String namespace,
@@ -116,12 +116,12 @@ public class JingleContentProviderManager
         return descriptionManagers.get(namespace);
     }
 
-    public static void addJingleTransportManager(JingleTransportManager manager)
+    public static void addJingleTransportManager(JingleTransportManager<?> manager)
     {
         transportManagers.put(manager.getNamespace(), manager);
     }
 
-    public static JingleTransportManager getTransportManager(String namespace)
+    public static JingleTransportManager<?> getTransportManager(String namespace)
     {
         return transportManagers.get(namespace);
     }

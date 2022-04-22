@@ -154,7 +154,13 @@ public class QueryContactListAdapter extends BaseContactListAdapter
             return metaContactList.getChild(groupPosition, childPosition);
         }
         else {
-            return results.get(0).contacts.get(childPosition);
+            List<SourceContact> contacts = results.get(0).contacts;
+            if (childPosition >= 0 && childPosition < contacts.size()) {
+                return contacts.get(childPosition);
+            }
+            else {
+                return null;
+            }
         }
     }
 

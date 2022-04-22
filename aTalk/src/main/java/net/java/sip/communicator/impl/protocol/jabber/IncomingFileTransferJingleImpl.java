@@ -21,6 +21,7 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
@@ -33,7 +34,8 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class IncomingFileTransferJingleImpl extends AbstractFileTransfer implements ProgressListener
+public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
+        implements JingleSessionImpl.JingleSessionListener, ProgressListener
 {
     private final String id;
     private final Contact sender;
@@ -59,6 +61,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer impleme
         this.mIfoJingle = inFileOffer;
         this.byteRead = 0;
         inFileOffer.mOffer.addProgressListener(this);
+        JingleSessionImpl.addJingleSessionListener(this);
     }
 
     /**
@@ -70,6 +73,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer impleme
         try {
             mIfoJingle.declineFile();
             mIfoJingle.mOffer.removeProgressListener(this);
+            JingleSessionImpl.removeJingleSessionListener(this);
         } catch (OperationFailedException e) {
             Timber.e("Exception: %s", e.getMessage());
         }
@@ -146,14 +150,14 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer impleme
     }
 
     @Override
-    public void onSessionTerminate(JingleReason reason)
+    public void onError(JingleReason reason)
     {
         fireStatusChangeEvent(reason);
     }
 
     @Override
-    public void onError(JingleReason reason, String errMessage)
+    public void onSessionTerminated(JingleReason reason)
     {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.FAILED, errMessage);
+        fireStatusChangeEvent(reason);
     }
 }
