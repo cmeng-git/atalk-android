@@ -6,13 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.3 (04/23/2022)" versioncode="209030">
+    <release version="2.9.3 (04/23/2022)" versioncode="209031">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Redesign JingleMessageSession class to ensure all incoming/outgoing call are handled properly via JingleManager listeners callback</change>
         <change>Must send JingleMessage retract to close the loop, when user ends the call prior to jingle session-initiate being send</change>
         <change>Avoid sending trailing Jingle stanza once JingleSession Handler has unregistered with JingleManager</change>
         <change>Register JingleSession Handler callback with JingleManager only on sending Jingle session-initiate, to ensure proper cleanup when call end</change>
         <change>Resolve cross dependency between smack-extensions and smack-experimental (for pull request)</change>
+        <change>Fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices</change>
         <change>Fix CallJabberImpl.getConference() on a null object reference</change>
         <change>Use python3 for all scripts in Jni libraries build</change>
         <change>Fix FFR for aTalk &lt;= v2.9.1 (20220422)</change>

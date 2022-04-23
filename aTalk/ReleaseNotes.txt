@@ -1,6 +1,6 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:        2.9.3 (209030)
+Version:        2.9.3 (209031)
 Release Date:   04/23/2022
 Author:         cmeng
 - Redesign JingleMessageSession class to ensure all incoming/outgoing call are handled properly via JingleManager listeners callback
@@ -12,6 +12,9 @@ Author:         cmeng
   else JingleManager#unregisterJingleSessionHandler() is not performed when user end call before session-initiate
 - Resolve cross dependency between smack-extensions and smack-experimental (for pull request)
 - Fix CallJabberImpl.getConference() on a null object reference
+- Fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices.
+  Set ImageReader.newInstance maxImage = 3 and use acquireLatestImage().
+  BufferQueueProducer: [ImageReader-1280x720](id:2c3200000026,api:4,p:733,c:11314) waitForFreeSlotThenRelock: timeout [mDequeueTimeout=1000ms
 - Drop android API support to API-31; API-32 contains no source for development debug.
 
 - ======= JNI libraries update =======
