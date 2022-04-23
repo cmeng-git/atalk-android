@@ -17,11 +17,14 @@
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
 import android.graphics.ImageFormat;
-import android.hardware.camera2.*;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CaptureRequest;
 import android.media.Image;
 import android.media.ImageReader;
-import android.view.*;
-import android.widget.RelativeLayout;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 
 import androidx.annotation.NonNull;
 
@@ -29,7 +32,6 @@ import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.call.VideoHandlerFragment;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.device.util.AutoFitSurfaceView;
 import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
 
 import java.io.IOException;
@@ -59,9 +61,9 @@ public class PreviewStream extends CameraStreamBase
     private PreviewSurfaceProvider mSurfaceProvider;
 
     /**
-     * Creates a new instance of <tt>PreviewStream</tt>.
+     * Creates a new instance of <code>PreviewStream</code>.
      *
-     * @param dataSource parent <tt>DataSource</tt>.
+     * @param dataSource parent <code>DataSource</code>.
      * @param formatControl format control used by this instance.
      */
     public PreviewStream(DataSource dataSource, FormatControl formatControl)
@@ -116,8 +118,9 @@ public class PreviewStream extends CameraStreamBase
             videoFragment.initLocalPreviewContainer(mSurfaceProvider);
             Surface previewSurface = surfaceHolder.getSurface();
 
-            // Setup ImageReader to retrieve image data for remote video streaming
-            mImageReader = ImageReader.newInstance(optimizedSize.width, optimizedSize.height, ImageFormat.YUV_420_888, 2);
+            // Setup ImageReader to retrieve image data for remote video streaming; maxImages = 3 and acquireLatestImage();
+            // to fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices.
+            mImageReader = ImageReader.newInstance(optimizedSize.width, optimizedSize.height, ImageFormat.YUV_420_888, 3);
             mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, mBackgroundHandler);
 
             // Need to add both the surface and the ImageReader surface as targets to the preview capture request:
@@ -172,10 +175,10 @@ public class PreviewStream extends CameraStreamBase
     }
 
     /**
-     * Must use try wth resource in reader.acquireNextImage() for IllegalStateException; else
-     * ImageReader_JNI: Unable to acquire a buffer item, very likely client tried to acquire more than maxImages buffers
-     * maxImages (2) has already been acquired, call #close before acquiring more.
-     * Also reader.acquireLatestImage() may return null image; need to use acquireNextImage() in aTalk implementation;
+     * To fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices;
+     * Setup ImageReader to retrieve image data for remote video streaming; maxImages = 3 and acquireLatestImage();
+     * Use try wth resource in reader.acquireLatestImage() for any IllegalStateException;
+     * Call #close to release buffer before camera can acquiring more.
      *
      * Note: The acquired image is always in landscape mode e.g. 1280x720.
      */
@@ -183,9 +186,9 @@ public class PreviewStream extends CameraStreamBase
         if (inTransition)
             return;
 
-        try (Image image = reader.acquireNextImage()) {
+        try (Image image = reader.acquireLatestImage()) {
             if ((image != null) && ImageFormat.YUV_420_888 == image.getFormat()) {
-                // Seem to be cleaner without reading the image data
+                // Seem to be cleaner without reading the image data; so skip below code
                 // if (inTransition) {
                 //     Timber.w("Discarded acquired image in transition @ ImageReader!");
                 //     image.close();

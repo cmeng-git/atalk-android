@@ -65,8 +65,10 @@
 -keepclasseswithmembers class * extends org.jivesoftware.smack.sasl.SASLMechanism {
 	public <init>(org.jivesoftware.smack.SASLAuthentication);
 }
+
 -keep class android.support.v4.app.** { *; }
 -keep interface android.support.v4.app.** { *; }
+# -keep public class * extends androidx.preference.PreferenceFragmentCompat
 
 -keepattributes *Annotation*
 
