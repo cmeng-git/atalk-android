@@ -1222,7 +1222,7 @@
     <string name="service_gui_JBR_ICE_GENERAL">General</string>
     <string name="service_gui_JBR_ICE_SUMMARY">Configurar las opciones ICE&#8230;</string>
     <string name="service_gui_JBR_JINGLE_AUTO">Descubrir automáticamente los relés de los nodos de Jingle</string>
-    <string name="service_gui_JBR_JINGLE_LIST">Nodos Jingle Adicionales#8230;</string>
+    <string name="service_gui_JBR_JINGLE_LIST">Nodos Jingle Adicionales&#8230;</string>
     <string name="service_gui_JBR_JINGLE_LIST_SUMMARY">Nodos Jingle adicionales definidos por el usuario para su uso</string>
     <string name="service_gui_JBR_JINGLE_NODES">Nodos Jingle</string>
     <string name="service_gui_JBR_JINGLE_SUMMARY">Usar nodos Jingle</string>
