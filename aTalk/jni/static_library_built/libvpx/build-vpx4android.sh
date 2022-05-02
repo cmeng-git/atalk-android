@@ -42,7 +42,7 @@ configure_make() {
   case ${ABI} in
 	armeabi-v7a)
       # TARGET="armv7-android-gcc --enable-neon --disable-neon-asm"
-      TARGET="armv7-android-gcc --disable-neon-asm"
+      TARGET="armv7-android-gcc"
     ;;
     arm64-v8a)
       TARGET="arm64-android-gcc"

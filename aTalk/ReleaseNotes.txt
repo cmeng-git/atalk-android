@@ -13,6 +13,7 @@ Author:         cmeng
  c. ffmpeg-4.4 to ffmpeg-4.4.2
  d  x264-161.3049 to libx264-163.3060
  e. Rename ffmpeg-x264#ini_update_libs.sh to init_libs_ffmpeg_x264.sh and corrected script errors for x264 library download
+ f. Fix libvpx compilation clang70 error when armv7a without the --disable-neon-asm i.e. ASFLAGS="-c"
 
 =========================================================================
 Version:        2.9.3 (209031)
