@@ -6,8 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.3 (04/23/2022)" versioncode="209031">
+    <release version="2.9.4 (05/12/2022)" versioncode="209040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Change Network Security Configuration to disallow the use of user-specified certificates</change>
+        <change>Minimize ANR on ChatPanel due to synchronized(cacheLock) deadlock</change>
+        <change>Upgrade aTalk JNI libraries for:</change>
+        <change>a. openssl-1.1.1k => openssl-1.1.1n</change>
+        <change>b. libvpx from 1.10.0 to 1.11.0 (main)</change>
+        <change>c. ffmpeg-4.4 to ffmpeg-4.4.2</change>
+        <change>d. x264-161.3049 to libx264-163.3060</change>
+        <change></change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.9.3 (04/23/2022)" versioncode="209031">
         <change>Redesign JingleMessageSession class to ensure all incoming/outgoing call are handled properly via JingleManager listeners callback</change>
         <change>Must send JingleMessage retract to close the loop, when user ends the call prior to jingle session-initiate being send</change>
         <change>Avoid sending trailing Jingle stanza once JingleSession Handler has unregistered with JingleManager</change>

@@ -1,5 +1,20 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.4 (209040)
+Release Date:   05/23/2022
+Author:         cmeng
+
+- Change Network Security Configuration to disallow the use of user-specified certificates. This could allow eavesdroppers to intercept data sent by aTalk, or to modify data in transit.
+- ANR on ChatPanel#messageDelivered() & #addMessage() due to synchronized(cacheLock); modify source to minimize deadlock (hold time)
+
+- Upgrade aTalk JNI libraries for:
+ a. openssl-1.1.1k => openssl-1.1.1n
+ b. libvpx from 1.10.0 to 1.11.0 (main)
+ c. ffmpeg-4.4 to ffmpeg-4.4.2
+ d  x264-161.3049 to libx264-163.3060
+ e. Rename ffmpeg-x264#ini_update_libs.sh to init_libs_ffmpeg_x264.sh and corrected script errors for x264 library download
+
+=========================================================================
 Version:        2.9.3 (209031)
 Release Date:   04/23/2022
 Author:         cmeng
@@ -490,9 +505,10 @@ Release Date:	12/18/2020
 Author:         cmeng
 - Fix UPnP for android-8.0(O) API-26 and above: Cleartext HTTP traffic not permitted in UPnP gateway.getDescription()
   * update network_security_configuration i.e. <base-config cleartextTrafficPermitted="true">
+  * without clearText: org.ice4j.ice.harvest.UPNPHarvester.log() UPnP harvesting found zero device
 - Clean up and optimize ice4j#UPNPHarvester.java call to weupnp library
 
-- FileBacken#getMimeType() URI Unicode support; need to revert "%3A|"%2F|+" to ":|/|"%20" after URLEncoder.encode
+- FileBackend#getMimeType() URI Unicode support; need to revert "%3A|"%2F|+" to ":|/|"%20" after URLEncoder.encode
 
 - Upgrade smack library to v4.4.0
   * smack-extensions#BoBHash changes to ContentId
@@ -831,7 +847,7 @@ Author:         cmeng
      eu.siacs.conversations W/System.err: java.lang.IllegalArgumentException: h264 is not a constant in org.webrtc.VideoCodecType
      When remove H264 from codec offer, aTalk is then able to send/received VP8 video without problem;
      However conversations still has problem decode and display VP8 video.
-     Reason: aTalk hardware codedc supported packetization-mode does not really match Conversations (no common codec): need more investigation
+     Reason: aTalk hardware codec supported packetization-mode does not really match Conversations (no common codec): need more investigation
      a. send from aalk:
         <payload-type id='105' name='h264' clockrate='90000'>
           <parameter name='profile-level-id' value='42E01f'/>

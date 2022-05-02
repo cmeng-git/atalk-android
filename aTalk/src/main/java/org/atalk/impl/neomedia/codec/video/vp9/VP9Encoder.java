@@ -16,12 +16,13 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp9;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.video.VPX;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.codec.Constants;
+
+import java.awt.Dimension;
 
 import javax.media.Buffer;
 import javax.media.Format;
@@ -99,7 +100,7 @@ public class VP9Encoder extends AbstractCodec2
     private int mHeight = DeviceConfiguration.DEFAULT_VIDEO_WIDTH;
 
     /**
-     * Initializes a new <tt>VP9Encoder</tt> instance.
+     * Initializes a new <code>VP9Encoder</code> instance.
      */
     public VP9Encoder()
     {
@@ -126,6 +127,7 @@ public class VP9Encoder extends AbstractCodec2
     {
         Timber.d("Closing encoder");
         if (vpctx != 0) {
+            // /data/app/org.atalk.android-GeVNob40TxcTyYuV2rXATA==/lib/arm/libjnvpx.so (vp9_remove_compressor+224)
             VPX.codec_destroy(vpctx);
             VPX.free(vpctx);
             vpctx = 0;
@@ -139,6 +141,8 @@ public class VP9Encoder extends AbstractCodec2
             cfg = 0;
         }
     }
+
+    // private FileOutputStream fos;
 
     /**
      * {@inheritDoc}
@@ -209,6 +213,8 @@ public class VP9Encoder extends AbstractCodec2
 
         // Must be defined together with g_threads for realtime encode
         VPX.codec_control(vpctx, VPX.VP8E_SET_CPUUSED, 7);
+        VPX.codec_control(vpctx, VPX.VP9E_SET_POSTENCODE_DROP, 0);
+        // VPX.codec_control(vpctx, VpCx.VpCid.VP9E_SET_POSTENCODE_DROP.ordinal(), 0);
 
         // ji… via monorail: For realtime video application you should not use a lossless mode.
         // VPX.codec_control(context, VPX.VP9E_SET_LOSSLESS, 1);
@@ -219,15 +225,26 @@ public class VP9Encoder extends AbstractCodec2
             throw new ResourceUnavailableException("No output format selected");
 
         Timber.d("VP9 encoder opened successfully");
+
+        // Create an output file for saving video stream
+//        String fileName = "yuv420_480x720.jpg";
+//        String downloadPath = FileBackend.TMP + File.separator;
+//        File downloadDir = FileBackend.getaTalkStore(downloadPath, true);
+//        File outFile = new File(downloadDir, fileName);
+//        try {
+//            fos = new FileOutputStream(outFile);
+//        } catch (FileNotFoundException e) {
+//            Timber.e("Output stream file creation exception: %s", e.getMessage());
+//        }
     }
 
     /**
      * {@inheritDoc}
-     * Encode the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP9 frame (in <tt>outputBuffer</tt>)
+     * Encode the frame in <code>inputBuffer</code> (in <code>YUVFormat</code>) into a VP9 frame (in <code>outputBuffer</code>)
      *
-     * @param inputBuffer  input <tt>Buffer</tt>
-     * @param outputBuffer output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
+     * @param inputBuffer input <code>Buffer</code>
+     * @param outputBuffer output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuffer</code> has been successfully processed
      */
     @Override
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
@@ -260,6 +277,23 @@ public class VP9Encoder extends AbstractCodec2
 
             // if (frameCount < 5)
             // Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
+
+            // routine to save raw input data into a file.
+//             if (frameCount < 40) {
+//                 if (fos != null) {
+//                     try {
+//                         fos.write((byte[]) inputBuffer.getData());
+//                         // Timber.e("File fos write frame #: %s:", frameCount);
+//                         // Timber.d("VP9: Encoding a frame #%s: %s %s", frameCount, bytesToHex((byte[]) inputBuffer.getData(), 32), inputBuffer.getLength());
+//                         if (frameCount == 39) {
+//                             fos.close();
+//                             Timber.d("File fos write completed:");
+//                         }
+//                     } catch (IOException e) {
+//                         Timber.e("fos write exception: %s", e.getMessage());
+//                     }
+//                 }
+//             }
 
             int result = VPX.codec_encode(vpctx, img, (byte[]) inputBuffer.getData(),
                     offsetY, offsetU, offsetV,
@@ -380,11 +414,11 @@ public class VP9Encoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+     * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)

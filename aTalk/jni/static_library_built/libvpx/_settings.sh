@@ -70,7 +70,8 @@ configure() {
       NDK_ABIARCH="arm-linux-androideabi"
     # clang70: warning: -Wl,--fix-cortex-a8: 'linker' input unused [-Wunused-command-line-argument]
     # CFLAGS="${CFLAGS_} -Wl,--fix-cortex-a8 -march=${CPU} -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
-      CFLAGS="${CFLAGS_} -Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
+      # CFLAGS="${CFLAGS_} -Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
+      CFLAGS="${CFLAGS_} -Os -march=armv7-a"
       LDFLAGS="${LDFLAGS_} -march=armv7-a" # -Wl,--fix-cortex-a8" not valid option
       ASFLAGS=""
 

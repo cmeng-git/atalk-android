@@ -6,7 +6,7 @@ enginesdir=${libdir}/engines-1.1
 
 Name: OpenSSL-libcrypto
 Description: OpenSSL cryptography library
-Version: 1.1.1k
+Version: 1.1.1n
 Libs: -L${libdir} -lcrypto
 Libs.private: -ldl -pthread 
 Cflags: -I${includedir}
