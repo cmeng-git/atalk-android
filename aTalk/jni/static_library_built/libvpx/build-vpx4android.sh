@@ -20,7 +20,7 @@ set -u
 . _settings.sh
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.10.0
+LIB_GIT=v1.11.0
 
 # Auto fetch and unarchive libvpx from online repository
 ./init_libvpx.sh ${LIB_GIT}
@@ -41,7 +41,8 @@ configure_make() {
   configure "$@"
   case ${ABI} in
 	armeabi-v7a)
-      TARGET="armv7-android-gcc --enable-neon --disable-neon-asm"
+      # TARGET="armv7-android-gcc --enable-neon --disable-neon-asm"
+      TARGET="armv7-android-gcc --disable-neon-asm"
     ;;
     arm64-v8a)
       TARGET="arm64-android-gcc"
@@ -77,12 +78,13 @@ configure_make() {
     --enable-libyuv \
     --disable-examples \
     --disable-tools \
-    --disable-debug \
+    --enable-debug \
     --disable-unit-tests \
     --enable-realtime-only \
     --enable-vp8 --enable-vp9 \
     --enable-vp9-postproc \
     --enable-vp9-highbitdepth \
+    --enable-better-hw-compatibility \
     --disable-webm-io || exit 1
 
   make -j${HOST_NUM_CORES} install

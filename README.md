@@ -166,6 +166,8 @@ Libraries used in this project:
 * [Noembed](https://noembed.com/)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
+* [openSSL](https://www.openssl.org/source/)
+* [Opus](https://opus-codec.org/)
 * [osgi.core](http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0)
 * [sdes4j](https://github.com/ibauersachs/sdes4j)
 * [sdp-api](https://mvnrepository.com/artifact/org.opentelecoms.sdp/sdp-api)

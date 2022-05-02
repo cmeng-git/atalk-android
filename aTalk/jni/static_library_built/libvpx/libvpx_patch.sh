@@ -11,10 +11,9 @@ fi
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   version=`"${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}"`
 else
-  version='v1.10.0'
+  version='v1.11.0'
 fi
 
-echo -e "\n*** Applying patches for: ${LIB_VPX} (${version}) ***"
 
 # ===============================
 # Patches for libvpx version 1.10.0
@@ -22,6 +21,8 @@ echo -e "\n*** Applying patches for: ${LIB_VPX} (${version}) ***"
 # ===============================
 
 if [[ "${version}" == v1.10.0 ]]; then
+  echo -e "\n*** Applying patches for: ${LIB_VPX} (${version}) ***"
+
   patch  -p0 -N --dry-run --silent -f ./${LIB_VPX}/vpx/vpx_encoder.h < ./patches/10.vpx_encoder_h.patch 1>/dev/null
   if [[ $? -eq 0 ]]; then
     patch -p0 -f ./${LIB_VPX}/vpx/vpx_encoder.h < ./patches/10.vpx_encoder_h.patch

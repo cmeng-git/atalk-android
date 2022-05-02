@@ -17,7 +17,7 @@
 if [[ $# -eq 1 ]]; then
   LIB_GIT=$1
 else
-  LIB_GIT=v1.10.0
+  LIB_GIT=v1.11.0
 fi
 
 LIB_VPX="libvpx"
@@ -30,10 +30,13 @@ if [[ -d ${LIB_VPX} ]] && [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
   fi
 fi
 
-# uncomment to Force to load master commit version
-# LIB_GIT=v1.10.0-94-g350b0b47f
+# Delete LIB_VPX and uncomment below to use master main repository with the same LIB_GIT version
+# LIB_GIT=f6de5b5
+LIB_GIT=main
 
 rm -rf ${LIB_VPX}
 echo -e "\n========== Fetching library source for: ${LIB_VPX} (${LIB_GIT}) =========="
-wget -O- https://github.com/webmproject/libvpx/archive/refs/tags/${LIB_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_VPX}
+## wget -O- https://github.com/webmproject/libvpx/archive/refs/tags/${LIB_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_VPX}
+wget -O- https://github.com/webmproject/libvpx/archive/${LIB_GIT}.tar.gz | tar xz --strip-components=1 --one-top-level=${LIB_VPX}
+
 echo -e "========== Completed libvpx library source update =========="

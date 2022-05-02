@@ -36,7 +36,6 @@ import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StanzaBuilder;
@@ -180,12 +179,11 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         // notify all listeners in preparation for Jingle RTP session-accept; sid - must use the same;
         // and to make earlier registerJingleSessionHandler() with JingleManager
         notifyOnStateChange(connection, JingleMessageType.proceed, mRemote, sid);
+        endJmCallProcess(R.string.service_gui_CALL_ANSWER, mRemote);
 
         OperationSetBasicTelephonyJabberImpl telephonyJabber = jmStateListeners.get(connection);
         if (telephonyJabber != null)
-            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), telephonyJabber.getProtocolProvider(), JingleMessageSessionImpl.mRemote, isVideoCall);
-
-        endJmCallProcess(R.string.service_gui_CALL_ANSWER, mRemote);
+            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), telephonyJabber.getProtocolProvider(), mRemote, isVideoCall);
     }
 
     /**
@@ -469,7 +467,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         new VibrateHandlerImpl().cancel();
 
         if (jmEndListener != null) {
-            jmEndListener.onRejectCallback();
+            jmEndListener.onJmEndCallback();
             jmEndListener = null;
         }
     }
@@ -528,6 +526,6 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
 
     public interface JmEndListener
     {
-        void onRejectCallback();
+        void onJmEndCallback();
     }
 }

@@ -10,6 +10,8 @@
 
 # Preserve the line number information for debugging stack traces.
 -keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*
+-renamesourcefileattribute SourceFile
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -18,7 +20,6 @@
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
--keep public class * extends com.android.vending.licensing.ILicensingService
 
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -69,8 +70,6 @@
 -keep class android.support.v4.app.** { *; }
 -keep interface android.support.v4.app.** { *; }
 # -keep public class * extends androidx.preference.PreferenceFragmentCompat
-
--keepattributes *Annotation*
 
 # Library specific rules
 -dontnote android.net.http.*

@@ -771,8 +771,8 @@
     <string name="service_gui_security_CONFIRM">Confirmar</string>
     <string name="service_gui_security_ENCRYPTION_REQUIRED">Criptografia exigida!</string>
     <string name="service_gui_security_NO_VIDEO">Sem vídeo</string>
-    <string name="service_gui_security_SECURE_AUDIO">Proteger áudio</string>
-    <string name="service_gui_security_SECURE_VIDEO">Proteger vídeo</string>
+    <string name="service_gui_security_SECURE_AUDIO">Áudio seguro</string>
+    <string name="service_gui_security_SECURE_VIDEO">Vídeo seguro</string>
     <string name="service_gui_security_SECURITY_ALERT">Tentando proteger a ligação. Irá desconectar em</string>
     <string name="service_gui_security_STRING_COMPARED">Sequencia comparada:</string>
     <string name="service_gui_security_VERIFY_TOAST">Ativada proteção da ligação! Toque para comparar a sequencia da segurança agora ou use o menu mais tarde.</string>

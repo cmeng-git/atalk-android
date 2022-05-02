@@ -18,8 +18,26 @@ import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationsListener;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,14 +45,21 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
-import org.atalk.android.gui.chat.conference.*;
+import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
+import org.atalk.android.gui.chat.conference.ConferenceChatManager;
+import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferActivator;
 import org.atalk.android.plugin.textspeech.TTSService;
 import org.atalk.persistance.FileBackend;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
@@ -112,8 +137,8 @@ public class ChatPanel implements Chat, MessageListener
     private boolean historyLoaded = false;
 
     /**
-     * Blocked caching of the next new message if it is sent via sendMessage().
-     * Else there will have duplicated display messages
+     * Blocked caching of the next new message is sent via sendMessage().
+     * Otherwise there will have duplicated display messages
      */
     private boolean cacheBlocked = false;
 
@@ -480,8 +505,8 @@ public class ChatPanel implements Chat, MessageListener
 
             // The final message records are always in msgHistory
             msgCache.addAll(msgHistory);
-            return msgCache;
         }
+        return msgCache;
     }
 
     /**
@@ -688,15 +713,13 @@ public class ChatPanel implements Chat, MessageListener
      */
     public void addMessage(ChatMessageImpl chatMessage)
     {
-        synchronized (cacheLock) {
-            // Must always cache the chatMsg as chatFragment has not registered to handle incoming
-            // message on first onAttach or when it is not in focus.
-            cacheNextMsg(chatMessage);
-            messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
+        // Must always cache the chatMsg as chatFragment has not registered to handle incoming
+        // message on first onAttach or when it is not in focus.
+        cacheNextMsg(chatMessage);
+        messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
 
-            for (ChatSessionListener l : msgListeners) {
-                l.messageAdded(chatMessage);
-            }
+        for (ChatSessionListener l : msgListeners) {
+            l.messageAdded(chatMessage);
         }
     }
 
@@ -710,7 +733,9 @@ public class ChatPanel implements Chat, MessageListener
     {
         // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
         if (!cacheBlocked) {
-            msgCache.add(newMsg);
+            synchronized (cacheLock) {
+                msgCache.add(newMsg);
+            }
         }
         cacheBlocked = false;
     }
@@ -800,11 +825,11 @@ public class ChatPanel implements Chat, MessageListener
      *
      * Adds the given <code>IncomingFileTransferRequest</code> to the conversation panel in order to
      * notify the user of an incoming file transfer request.
-     * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      *
      * @param opSet the file transfer operation set
      * @param request the request to display in the conversation panel
      * @param date the date on which the request has been received
+     * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      */
     public void addFTReceiveRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date)
     {
@@ -818,12 +843,9 @@ public class ChatPanel implements Chat, MessageListener
                 msgContent, request.getID(), ChatMessage.DIR_IN, opSet, request, null);
 
         // Do not use addMessage to avoid TTS activation for incoming file message
-        synchronized (cacheLock) {
-            cacheNextMsg(chatMsg);
-
-            for (ChatSessionListener l : msgListeners) {
-                l.messageAdded(chatMsg);
-            }
+        cacheNextMsg(chatMsg);
+        for (ChatSessionListener l : msgListeners) {
+            l.messageAdded(chatMsg);
         }
     }
 
@@ -849,18 +871,16 @@ public class ChatPanel implements Chat, MessageListener
     {
         // cmeng: only handle messageReceivedEvent belongs to this.metaContact
         if ((mMetaContact != null) && mMetaContact.containsContact(messageReceivedEvent.getSourceContact())) {
-            synchronized (cacheLock) {
-                // Must cache chatMsg as chatFragment has not registered to handle incoming
-                // message on first onAttach or not in focus
+            // Must cache chatMsg as chatFragment has not registered to handle incoming
+            // message on first onAttach or not in focus
 
-                ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
-                cacheNextMsg(chatMessage);
-                messageSpeak(chatMessage, ttsDelay);
-
-                for (MessageListener l : msgListeners) {
-                    l.messageReceived(messageReceivedEvent);
-                }
+            ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
+            cacheNextMsg(chatMessage);
+            for (MessageListener l : msgListeners) {
+                l.messageReceived(messageReceivedEvent);
             }
+
+            messageSpeak(chatMessage, ttsDelay);
         }
     }
 
@@ -877,11 +897,9 @@ public class ChatPanel implements Chat, MessageListener
             if (messageDeliveredEvent.getSourceMessage().isRemoteOnly())
                 return;
 
-            synchronized (cacheLock) {
-                for (MessageListener l : msgListeners) {
-                    l.messageDelivered(messageDeliveredEvent);
-                }
-                cacheNextMsg(ChatMessageImpl.getMsgForEvent(messageDeliveredEvent));
+            cacheNextMsg(ChatMessageImpl.getMsgForEvent(messageDeliveredEvent));
+            for (MessageListener l : msgListeners) {
+                l.messageDelivered(messageDeliveredEvent);
             }
         }
     }

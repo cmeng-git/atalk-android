@@ -16,12 +16,12 @@
   see <https://bugs.chromium.org/p/webm/issues/detail?id=1623#c1><br/>
   i.e.: The compiled libjnvpx.so for aTalk has a problem when exec on x86_64 android platform (libvpx asm source errors):<br/>
   org.atalk.android A/libc: Fatal signal 31 (SIGSYS), code 1 in tid 5833 (Loop thread: ne), pid 4781 (g.atalk.android)
-- For armeabi-v7a build, need to add --disable-neon-asm for libvpx v1.8.2, otherwise:<br/>
+- For armeabi-v7a build, need to add --disable-neon-asm for >= libvpx v1.8.2, otherwise:<br/>
   --clang70: error: linker command failed with exit code 1 (use -v to see invocation)<br/>
   --./lib/crtbegin_dynamic.o: crtbegin.c:function _start_main: error: undefined reference to 'main'<br/>
   --make\[1]: *** \[vpx_dsp/arm/intrapred_neon_asm.asm.S.o] Error 1<br/>
   --make\[1]: *** \[vpx_dsp/arm/vpx_convolve_copy_neon_asm.asm.S.o] Error 1<br/>
-- When you first exec build-libvpx4android.sh, it applies the required patches to libvpx<br/>
+- When you first exec build-libvpx4android.sh, it applies the required patches to libvpx if applicable<br/>
   Note: the patches defined in libvpx_patch.sh is for libvpx-1.8.0+, libvpx-1.7.0 and libvpx-1.6.1+<br/>
   
 The ./build-libvpx4android.sh script builds the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>

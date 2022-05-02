@@ -99,7 +99,10 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
             else { // NotificationManager.OUTGOING_CALL
                 // Call retract, send Jingle Message <retract/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                            JingleMessageSessionImpl.sendJingleMessageRetract(remote, sid);
+                    // NPE: Get triggered with remote == null at time???
+                            if (remote != null) {
+                                JingleMessageSessionImpl.sendJingleMessageRetract(remote, sid);
+                            }
                             finish();
                         }
                 );
@@ -135,7 +138,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     }
 
     @Override
-    public void onRejectCallback()
+    public void onJmEndCallback()
     {
         finish();
     }

@@ -84,19 +84,16 @@ include ./speex/Android.mk
 # include $(PREBUILT_SHARED_LIBRARY)
 
 # ================================= OpenSSL ===========================================
-### OpenSSL shared library build (source in jni/openssl)
-# Contains both static libraries-1.0.2r pre-built on Ubuntu 20.04 and
-# Reference only: sources-1.0.1j from site (Android_src.mk - build has error using AS ndk on Windows 7)
-
+### OpenSSL shared library build (version 1.1.1n)
 LOCAL_PATH  := $(ROOT)
 include $(CLEAR_VARS)
 
 # https://github.com/aosp-mirror/platform_external_openssl/tree/android-5.1.1_r38
-# Local AS NDK built from source (OPENSSL_VERSION=1.0.1j) - problem but build ok on Ubuntu Android Studio
+# Local AS NDK built from source - problem but build ok on Ubuntu Android Studio
 # include openssl/Android.mk
 
-## Built static library from source (version 1.0.2u) on ubuntu 20.04
-# Built from static library (unable to build from source in jni - #TODO)
+## Built from static library from source on ubuntu 22.04
+# (unable to build from source in jni - #TODO)
 include ./openssl/Android_a.mk
 
 

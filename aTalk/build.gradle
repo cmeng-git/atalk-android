@@ -1,4 +1,6 @@
 // import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+// import org.anarres.gradle.plugin.jarjar.JarjarTask
+// import org.anarres.gradle.plugin.jarjar.JarjarController
 
 buildscript {
     repositories {
@@ -352,6 +354,21 @@ dependencies {
         classDelete 'javax.media.Manager**'
     }
 
+//    implementation jarjar.repackage ("fmj-1.0.1-jitsi.jar", {
+//        from('org.jitsi:fmj:1.0.1-jitsi')
+//
+//        // remove extracted modules for changes
+//        classDelete 'net.sf.fmj.media.RegistryDefaults'
+//        classDelete 'javax.media.format.VideoFormat'
+//        classDelete 'javax.media.Manager**'
+//    })
+
+//    task customFatJar(type: Jar) {
+//        baseName = 'all-in-one-jar'
+//        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//        with jar
+//    }
+
 //    implementation(files(JarjarController(project).repackage("fmj-1.0.1-jitsi.jar", closureOf<JarjarTask> {
 //        from('org.jitsi:fmj:1.0.1-jitsi')
 //
@@ -455,8 +472,9 @@ dependencies {
 //}
 
 /*
- * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this task needs to be
- * executed at least once to generate all the static libraries prior to aTalk apk build process.
+ * The task downloads both libOpus and libSpeex source per the specified version in the scripts.
+ * Build of the dynamic libraries *.so for openssl, vpx, ffmpeg and the two libs etc are perform by android NDKBuild.
+ * This task must be executed at least once prior to aTalk apk build process.
  */
 task getJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/"
@@ -464,8 +482,10 @@ task getJniLibs(type: Exec) {
 }
 
 /*
- * The task builds all the 3 static libraries i.e. vpx, openssl and ffmpeg; this need to be
- * executed at least once to generate all the static libraries before the aTalk apk build process.
+ * The task fetches the sources if not found, and builds for all the 3 static libraries i.e. openssl, vpx and ffmpeg
+ * per the specified versions in the scripts. The task also performs the getJinLibs()
+ * This task needs to be executed at least once before the actual aTalk apk build process.
+ * Refer to all README files in .jni/static_library_built for more detail.
  */
 task initJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/static_library_built"
