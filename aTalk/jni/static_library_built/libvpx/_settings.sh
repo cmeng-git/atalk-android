@@ -73,7 +73,7 @@ configure() {
       # CFLAGS="${CFLAGS_} -Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
       CFLAGS="${CFLAGS_} -Os -march=armv7-a"
       LDFLAGS="${LDFLAGS_} -march=armv7-a" # -Wl,--fix-cortex-a8" not valid option
-      ASFLAGS=""
+      ASFLAGS="-c"
 
     # 1. -march=${CPU} flag targets the armv7 architecture.
     # 2. -mfloat-abi=softfp enables hardware-FPU instructions while ensuring that the system passes
