@@ -5,19 +5,32 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import static net.java.sip.communicator.service.protocol.OperationSetBasicTelephony.HANGUP_REASON_BUSY_HERE;
+
 import net.java.sip.communicator.service.calendar.CalendarService;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallEvent;
+import net.java.sip.communicator.service.protocol.event.CallListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.service.protocol.OperationSetBasicTelephony.HANGUP_REASON_BUSY_HERE;
 
 /**
  * Imposes the policy to have one call in progress i.e. to put existing calls on hold when a new
@@ -55,9 +68,8 @@ public class SingleCallInProgressPolicy
     private static final String PNAME_REJECT_IN_CALL_ON_DND = "protocol." + ACCOUNT_PROPERTY_REJECT_IN_CALL_ON_DND;
 
     /**
-     * The name of the configuration property which specifies whether
-     * <code>SingleCallInProgressPolicy</code> is enabled i.e. whether it should put existing calls on
-     * hold when a new call enters in progress.
+     * The name of the configuration property which specifies whether <code>SingleCallInProgressPolicy</code>
+     * is enabled i.e. whether it should put existing calls on hold when a new call enters in progress.
      */
     private static final String PNAME_SINGLE_CALL_IN_PROGRESS_POLICY_ENABLED
             = "protocol.SingleCallInProgressPolicy.enabled";
@@ -146,9 +158,7 @@ public class SingleCallInProgressPolicy
         Timber.log(TimberLog.FINER, "Call state changed.");
 
         if (CallState.CALL_INITIALIZATION.equals(ev.getOldValue())
-                && CallState.CALL_IN_PROGRESS.equals(call.getCallState())
-                && ProtocolProviderActivator.getConfigurationService().getBoolean(
-                PNAME_SINGLE_CALL_IN_PROGRESS_POLICY_ENABLED, true)) {
+                && CallState.CALL_IN_PROGRESS.equals(call.getCallState())) {
             CallConference conference = call.getConference();
 
             synchronized (calls) {

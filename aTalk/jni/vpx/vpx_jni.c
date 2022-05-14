@@ -305,7 +305,7 @@ VPX_FUNC(jlong, img_1malloc)
 VPX_FUNC(jlong, img_1alloc, jlong img, jint img_fmt, jint frame_width, jint frame_height, jint align)
 {
     // Uncomment this for native library stderr message dump to logcat
-    start_logger(TAG);
+    // start_logger(TAG);
 
     vpx_image_t *raw = (vpx_image_t *) (intptr_t) img;
     return (jlong) (intptr_t) vpx_img_alloc(raw, (int) img_fmt, (int) frame_width, (int) frame_height, (int) align);

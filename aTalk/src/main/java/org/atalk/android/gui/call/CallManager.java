@@ -7,6 +7,8 @@ package org.atalk.android.gui.call;
 
 import android.text.TextUtils;
 
+import androidx.appcompat.app.AlertDialog;
+
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
@@ -79,8 +81,9 @@ public class CallManager
     public static final String CALL_SID = "call_sid";
     public static final String CALL_EVENT = "call_event";
 
-    // android call parameter
+    // android call parameters
     public static final String CALL_IDENTIFIER = "CallIdentifier";
+    public static final String CALL_TRANSFER = "CallTransfer";
 
     /**
      * A table mapping protocol <code>Call</code> objects to the GUI dialogs that are currently used to display them.
@@ -515,7 +518,11 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                Timber.e(ex, "Failed to transfer %s to %s", peer.getAddress(), target);
+                String error = aTalkApp.getResString(R.string.gui_call_transfer_failed,
+                        peer.getAddress(), target.getAddress(), ex.getMessage());
+                Timber.w("%s", error);
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.gui_call_transfer_call), error);
             }
         }
     }
@@ -535,7 +542,11 @@ public class CallManager
             try {
                 telephony.transfer(peer, target);
             } catch (OperationFailedException ex) {
-                Timber.e(ex, "Failed to transfer %s to %s", peer.getAddress(), target);
+                String error = aTalkApp.getResString(R.string.gui_call_transfer_failed,
+                        peer.getAddress(), target, ex.getMessage());
+                Timber.w("%s", error);
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.gui_call_transfer_call), error);
             }
         }
     }
@@ -559,31 +570,6 @@ public class CallManager
     {
         return AccountUtils.getRegisteredProviders(OperationSetTelephonyConferencing.class);
     }
-
-    /**
-     * Returns a list of all currently active calls.
-     *
-     * @return a list of all currently active calls
-     */
-//    private static List<Call> getActiveCalls()
-//    {
-//        CallConference[] conferences;
-//
-//        synchronized (callPanels) {
-//            Set<CallConference> keySet = callPanels.keySet();
-//            conferences = keySet.toArray(new CallConference[keySet.size()]);
-//        }
-//
-//        List<Call> calls = new ArrayList<>();
-//
-//        for (CallConference conference : conferences) {
-//            for (Call call : conference.getCalls()) {
-//                if (call.getCallState() == CallState.CALL_IN_PROGRESS)
-//                    calls.add(call);
-//            }
-//        }
-//        return calls;
-//    }
 
     /**
      * Returns a collection of all currently in progress calls. A call is active if it is in
@@ -840,8 +826,8 @@ public class CallManager
          * Initializes a new <code>CreateCallThread</code> instance which is to create a new
          * <code>Call</code> to a conference specified via a <code>ConferenceDescription</code>.
          *
-         * @param protocolProvider the <code>ProtocolProviderService</code> which is to perform the establishment of the
-         * new <code>Call</code>.
+         * @param protocolProvider the <code>ProtocolProviderService</code> which is to perform
+         * the establishment of the new <code>Call</code>.
          * @param conferenceDescription the description of the conference to call.
          * @param chatRoom the chat room associated with the call.
          */

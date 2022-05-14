@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,21 +34,16 @@ import javax.xml.namespace.QName;
 public class SdpTransferred extends AbstractXmlElement
 {
     /**
-     * The name of the "transfer" element.
+     * The name of the "transferred" element.
      */
     public static final String ELEMENT = "transferred";
 
     /**
-     * The namespace of the "transfer" element.
+     * The namespace of the "transferred" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transfer:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
-
-    /**
-     * The name of the "to" attribute of the "transfer" element.
-     */
-    public static final String ATTR_TO = "to";
 
     public SdpTransferred()
     {

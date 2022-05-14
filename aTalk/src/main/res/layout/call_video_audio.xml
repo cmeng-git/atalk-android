@@ -58,17 +58,6 @@
                 android:gravity="center_vertical"
                 android:padding="10dp">
 
-                <TextView
-                    android:id="@+id/callStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/security_group"
-                    android:gravity="center_vertical"
-                    android:text="{call status}"
-                    android:textColor="@color/textColorWhite"
-                    android:textSize="@dimen/label_text_size" />
-
                 <RelativeLayout
                     android:id="@+id/security_group"
                     android:layout_width="wrap_content"
@@ -91,6 +80,17 @@
                         android:layout_toEndOf="@+id/security_protocol"
                         android:src="@drawable/secure_off_dark" />
                 </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/callStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/security_group"
+                    android:gravity="center_vertical"
+                    android:text="{call status}"
+                    android:textColor="@color/textColorWhite"
+                    android:textSize="@dimen/label_text_size" />
 
                 <TextView
                     android:id="@+id/callTime"
@@ -130,7 +130,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hold"
+            android:contentDescription="@string/gui_call_hold"
             android:focusable="true"
             android:src="@drawable/call_back_to_chat_dark" />
 
@@ -178,9 +178,21 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hold"
+            android:contentDescription="@string/gui_call_hold"
             android:focusable="true"
-            android:src="@drawable/call_hold_off_dark" />
+            android:src="@drawable/call_hold_on_dark" />
+
+        <ImageButton
+            android:id="@+id/button_call_transfer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/gui_call_transfer_call"
+            android:focusable="true"
+            android:src="@drawable/call_transfer_dark" />
 
         <ImageButton
             android:id="@+id/button_call_hangup"
@@ -190,7 +202,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hang_up"
+            android:contentDescription="@string/gui_call_hang_up"
             android:focusable="true"
             android:src="@drawable/call_hangup" />
     </LinearLayout>

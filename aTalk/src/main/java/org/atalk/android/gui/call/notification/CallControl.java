@@ -5,7 +5,9 @@
  */
 package org.atalk.android.gui.call.notification;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 
 import net.java.sip.communicator.service.protocol.Call;
@@ -17,8 +19,8 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import timber.log.Timber;
 
 /**
- * <code>BroadcastReceiver</code> that listens for {@link #CALL_CTRL_ACTION} action and performs
- * few basic operations(mute, hangup...) on the call.<br/>
+ * <code>BroadcastReceiver</code> that listens for {@link #CALL_CTRL_ACTION} action
+ * and performs few basic operations(mute, hangup...) on the call.<br/>
  * Target call must be specified by ID passed as extra argument under {@link #EXTRA_CALL_ID} key.
  * The IDs are managed by {@link CallManager}.<br/>
  * Specific operation must be passed under {@link #EXTRA_ACTION} key. Currently supported operations:<br/>
@@ -26,6 +28,7 @@ import timber.log.Timber;
  * {@link #ACTION_TOGGLE_MUTE} - toggles between muted and not muted call state. <br/>
  * {@link #ACTION_TOGGLE_ON_HOLD} - toggles the on hold call state.
  * {@link #ACTION_HANGUP} - ends the call. <br/>
+ * {@link #ACTION_TRANSFER_CALL} - start call transfer dialog. <br/>
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -38,7 +41,7 @@ public class CallControl extends BroadcastReceiver
     public static final String CALL_CTRL_ACTION = "org.atalk.call.control";
 
     /**
-     * Extra key for call id managed by {@link CallManager}.
+     * Extra key for callId managed by {@link CallManager}.
      */
     public static final String EXTRA_CALL_ID = "call_id";
 
@@ -65,7 +68,7 @@ public class CallControl extends BroadcastReceiver
     /**
      * The hangup action value. Ends the call.
      */
-    public static final int ACTION_HANGUP = 4;
+    public static final int ACTION_HANGUP = 5;
 
     /**
      * {@inheritDoc}
@@ -73,15 +76,15 @@ public class CallControl extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        String callID = intent.getStringExtra(EXTRA_CALL_ID);
-        if (callID == null) {
+        String callId = intent.getStringExtra(EXTRA_CALL_ID);
+        if (callId == null) {
             Timber.e("Extra call ID is null");
             return;
         }
 
-        Call call = CallManager.getActiveCall(callID);
+        Call call = CallManager.getActiveCall(callId);
         if (call == null) {
-            Timber.e("Call with id: %s does not exists", callID );
+            Timber.e("Call with id: %s does not exists", callId);
             return;
         }
 
@@ -91,6 +94,7 @@ public class CallControl extends BroadcastReceiver
             return;
         }
 
+        Timber.d("CallNotification received action: %s (%s): %s", action, callId, call.getCallPeers().next().getAddress());
         switch (action) {
             case ACTION_TOGGLE_SPEAKER:
                 Timber.log(TimberLog.FINER, "Action TOGGLE SPEAKER");
@@ -123,61 +127,61 @@ public class CallControl extends BroadcastReceiver
     /**
      * Creates the <code>Intent</code> for {@link #ACTION_HANGUP}.
      *
-     * @param callID the ID of target call.
+     * @param callId the ID of target call.
      * @return the <code>Intent</code> for {@link #ACTION_HANGUP}.
      */
-    public static Intent getHangupIntent(String callID)
+    public static Intent getHangupIntent(String callId)
     {
-        return createIntent(callID, ACTION_HANGUP);
+        return createIntent(callId, ACTION_HANGUP);
     }
 
     /**
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      *
-     * @param callID the ID of target call.
+     * @param callId the ID of target call.
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_MUTE}.
      */
-    public static Intent getToggleMuteIntent(String callID)
+    public static Intent getToggleMuteIntent(String callId)
     {
-        return createIntent(callID, ACTION_TOGGLE_MUTE);
+        return createIntent(callId, ACTION_TOGGLE_MUTE);
     }
 
     /**
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
-     * @param callID the ID of target call.
+     * @param callId the ID of target call.
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
-    public static Intent getToggleOnHoldIntent(String callID)
+    public static Intent getToggleOnHoldIntent(String callId)
     {
-        return createIntent(callID, ACTION_TOGGLE_ON_HOLD);
+        return createIntent(callId, ACTION_TOGGLE_ON_HOLD);
     }
 
     /**
      * Creates the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      *
-     * @param callID the ID of target call.
+     * @param callId the ID of target call.
      * @return the <code>Intent</code> for {@link #ACTION_TOGGLE_ON_HOLD}.
      */
-    public static Intent getToggleSpeakerIntent(String callID)
+    public static Intent getToggleSpeakerIntent(String callId)
     {
-        return createIntent(callID, ACTION_TOGGLE_SPEAKER);
+        return createIntent(callId, ACTION_TOGGLE_SPEAKER);
     }
 
     /**
      * Creates new <code>Intent</code> for given call <code>action</code> value that will be performed on the
-     * call identified by <code>callID</code>.
+     * call identified by <code>callId</code>.
      *
-     * @param callID target call ID managed by {@link CallManager}.
+     * @param callId target call ID managed by {@link CallManager}.
      * @param action the action value that will be used.
      * @return new <code>Intent</code> for given call <code>action</code> value that will be performed on the
-     * call identified by <code>callID</code>.
+     * call identified by <code>callId</code>.
      */
-    private static Intent createIntent(String callID, int action)
+    private static Intent createIntent(String callId, int action)
     {
         Intent intent = new Intent();
         intent.setAction(CallControl.CALL_CTRL_ACTION);
-        intent.putExtra(CallControl.EXTRA_CALL_ID, callID);
+        intent.putExtra(CallControl.EXTRA_CALL_ID, callId);
         intent.putExtra(CallControl.EXTRA_ACTION, action);
         return intent;
     }

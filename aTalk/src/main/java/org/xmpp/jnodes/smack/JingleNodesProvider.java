@@ -41,9 +41,9 @@ public class JingleNodesProvider extends IQProvider<JingleChannelIQ>
                         if (host != null)
                             iq.setHost(host);
                         if (porta != null)
-                            iq.setLocalport(Integer.valueOf(porta));
+                            iq.setLocalport(Integer.parseInt(porta));
                         if (portb != null)
-                            iq.setRemoteport(Integer.valueOf(portb));
+                            iq.setRemoteport(Integer.parseInt(portb));
                     } catch (final IllegalFormatException | NumberFormatException e) {
                         e.printStackTrace();
                     }

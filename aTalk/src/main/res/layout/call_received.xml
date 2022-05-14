@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hang_up"
+            android:contentDescription="@string/gui_call_hang_up"
             android:focusable="true"
             android:src="@drawable/call_hangup" />
     </LinearLayout>

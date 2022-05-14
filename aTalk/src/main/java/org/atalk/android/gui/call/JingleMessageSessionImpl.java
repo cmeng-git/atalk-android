@@ -231,7 +231,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     public static void sendJingleMessageRetract(CallPeer peer)
     {
         Jid jid = peer.getPeerJid();
-        if (mRemote.isParentOf(jid) && allowSendRetract) {
+        if ((mRemote != null) && mRemote.isParentOf(jid) && allowSendRetract) {
             sendJingleMessageRetract(mRemote, peer.getCall().getCallId());
         }
     }

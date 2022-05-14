@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.jivesoftware.smack.*;
-import org.jxmpp.jid.*;
 import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
 
@@ -15,9 +13,17 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.EntityCapsManager.NodeVerHash;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
@@ -27,10 +33,15 @@ import org.jivesoftware.smackx.disco.NodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -79,7 +90,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * The runnable responsible for retrieving discover info.
      */
-    private DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
+    private final DiscoveryInfoRetriever retriever = new DiscoveryInfoRetriever();
 
     /**
      * The {@link XMPPConnection} that this manager is responsible for.
@@ -354,7 +365,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      *
      * @param entityJid the address of the XMPP entity; must be FullJid unless it is for services
      * @param timeout variable timeout to wait: default 10S for blocking and 30S for non-blocking access
-     *
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
@@ -439,8 +449,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      */
     public void stop()
     {
-        if (retriever != null)
-            retriever.stop();
+        retriever.stop();
     }
 
     /**
@@ -705,7 +714,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
                     }
                 }
             } catch (Throwable t) {
-                Timber.e(t, "Error requesting discovery info, thread ended unexpectedly");
+                // May happen on aTalk shutDown, where entities array outOfBound
+                Timber.w("Error requesting discovery info, thread ended: %s", t.getMessage());
             }
         }
 

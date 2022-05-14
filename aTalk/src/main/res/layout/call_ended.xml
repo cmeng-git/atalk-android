@@ -93,7 +93,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hold"
+            android:contentDescription="@string/gui_call_hold"
             android:focusable="true"
             android:src="@drawable/call_back_to_chat_dark" />
 
@@ -138,7 +138,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hold"
+            android:contentDescription="@string/gui_call_hold"
             android:src="@drawable/call_hold_on_dark" />
 
         <ImageButton
@@ -149,7 +149,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@drawable/image_button_background"
-            android:contentDescription="@string/hang_up"
+            android:contentDescription="@string/gui_call_hang_up"
             android:src="@drawable/call_hangup" />
     </LinearLayout>
 </RelativeLayout>

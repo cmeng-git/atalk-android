@@ -8,20 +8,42 @@ package org.atalk.android.gui.chat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.speech.*;
-import android.text.*;
-import android.view.*;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.text.Editable;
+import android.text.Html;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.view.inputmethod.InputContentInfoCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import net.java.sip.communicator.impl.protocol.jabber.CallJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.CallPeerJabberImpl;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
@@ -33,18 +55,18 @@ import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.share.Attachment;
 import org.atalk.android.gui.share.MediaPreviewAdapter;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.ContentEditText;
+import org.atalk.android.gui.util.HtmlImageGetter;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-import androidx.core.content.ContextCompat;
-import androidx.core.view.inputmethod.InputContentInfoCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 /**
@@ -63,7 +85,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     private final ChatFragment chatFragment;
     /**
-     * Parent activity.
+     * Parent activity: ChatActivity pass in from ChatFragment.
      */
     private final Activity parent;
     /**
@@ -90,13 +112,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      * Message <code>EditText</code>.
      */
     private ContentEditText msgEdit;
+
     /**
      * Message editing area background.
      */
     private View msgEditBg;
-    /**
-     * Chat chatPanel used by this controller and its parent chat fragment.
-     */
 
     private RecyclerView mediaPreview;
     private ImageView imagePreview;
@@ -105,6 +125,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     private TextView chatMessageReply;
     private String quotedMessage;
 
+    /**
+     * Chat chatPanel used by this controller and its parent chat fragment.
+     */
     private ChatPanel chatPanel;
     /**
      * Current Chat Transport associates with this Chat Controller.
@@ -489,6 +512,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 if (quotedMessage == null)
                     break;
                 // else continue to cleanup quotedMessage after sending
+
             case R.id.chatReplyCancel:
                 quotedMessage = null;
                 chatMessageReply.setVisibility(View.GONE);
@@ -503,7 +527,17 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
             case R.id.chatBackToCallButton:
                 if (CallManager.getActiveCallsCount() > 0) {
-                    CallNotificationManager.get().backToCall();
+                    String callId = null;
+                    for (Call call : CallManager.getActiveCalls()) {
+                        callId = call.getCallId();
+                        CallPeerJabberImpl callPeer = ((CallJabberImpl) call).getPeerBySid(callId);
+                        MetaContact metaContact = chatPanel.getMetaContact();
+                        if ((metaContact != null) && metaContact.getDefaultContact().equals(callPeer.getContact())) {
+                            break;
+                        }
+                    }
+                    if (callId != null)
+                        CallNotificationManager.getInstanceFor(callId).backToCall();
                 }
                 else
                     updateSendModeState();
@@ -866,6 +900,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         }
         else {
             sendBtn.setVisibility(View.INVISIBLE);
+
             if (CallManager.getActiveCallsCount() > 0) {
                 callBtn.setVisibility(View.VISIBLE);
             }

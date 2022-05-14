@@ -22,7 +22,7 @@
   --./lib/crtbegin_dynamic.o: crtbegin.c:function _start_main: error: undefined reference to 'main'<br/>
   --make\[1]: *** \[vpx_dsp/arm/intrapred_neon_asm.asm.S.o] Error 1<br/>
   --make\[1]: *** \[vpx_dsp/arm/vpx_convolve_copy_neon_asm.asm.S.o] Error 1<br/>
-- When you first exec build-libvpx4android.sh, it applies the required patches to libvpx if applicable<br/>
+- When you first exec build-libvpx4android.sh, it applies the required patches to libvpx if the specific version<br/>
   Note: the patches defined in libvpx_patch.sh is for libvpx-1.8.0+, libvpx-1.7.0 and libvpx-1.6.1+<br/>
   
 The ./build-libvpx4android.sh script builds the static libvpx.a for the various architectures as defined in ./_settings.sh<br/>

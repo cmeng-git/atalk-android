@@ -239,7 +239,7 @@ public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U ex
              * it can iterate without ConcurrentModificationExceptions.
              */
             streamSoundLevelListeners = (streamSoundLevelListeners == null)
-                    ? new ArrayList<SoundLevelListener>() : new ArrayList<>(streamSoundLevelListeners);
+                    ? new ArrayList<>() : new ArrayList<>(streamSoundLevelListeners);
             streamSoundLevelListeners.add(listener);
         }
     }

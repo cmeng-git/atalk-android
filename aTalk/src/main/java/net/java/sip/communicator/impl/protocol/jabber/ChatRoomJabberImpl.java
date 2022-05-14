@@ -379,7 +379,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
     /**
      * Adds the given <code>listener</code> to the list of listeners registered to receive events upon
-     * modification of chat room member properties such as its mNickname being changed for example.
+     * modification of chat room member properties such as its Nickname being changed for example.
      *
      * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> that is to be registered for
      * <code>ChatRoomMemberPropertyChangeEvent</code>s.
@@ -897,7 +897,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
             String callId = publishedConference.getCallId();
             if (callId != null) {
-                CallJabberImpl call = activeRepository.findCallId(callId);
+                CallJabberImpl call = activeRepository.findByCallId(callId);
                 for (CallPeerJabberImpl peer : call.getCallPeerList()) {
                     try {
                         peer.hangup(false, null, null);

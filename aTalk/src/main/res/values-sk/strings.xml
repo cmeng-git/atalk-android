@@ -44,9 +44,6 @@
     <string name="encryption_choices">Možnosti šifrovania</string>
     <string name="encryption_choice_unencrypted">nešifrované</string>
     <string name="enter_name_or_number">Zadajte meno alebo číslo</string>
-    <string name="hang_up">Zaveste hovor</string>
-    <string name="hold">Podržte hovor</string>
-    <string name="in_call_with">V rozhovore s používateľom</string>
     <string name="network">sieť</string>
     <string name="notification_setting">Nastavenia upozornení&#8230;</string>
     <string name="no_application_found_to_open_file">Nenašli sa žiadne aplikácie na otvorenie súboru</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Nastavenie&#8230;</string>
     <string name="username_hint">pouzivatel@napriklad.sk</string>
     <string name="service_gui_USERNAME">Používateľské meno:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Zaveste hovor</string>
+    <string name="gui_call_hold">Podržte hovor</string>
+    <string name="gui_call_max_transfer">Pre presmerovanie hovoru s obsluhou sú povolené maximálne 2 hovory!</string>
+    <string name="gui_call_transfer_call">Preniesť hovor</string>
+    <string name="gui_call_transfer">Prenos</string>
+    <string name="gui_call_transfer_failed">Prepojenie hovoru zlyhalo: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Vyberte názov kontaktu, ktorý si želáte preniesť a kliknite na "Preniesť"</string>
+    <string name="gui_call_transfer_msg">%1$s presmerovanie hovoru na&#8230; %2$s</string>
+    <string name="gui_call_with">V rozhovore s používateľom</string>
 
     <string name="attachOptionDialog_picture">Obrázky</string>
     <string name="attachOptionDialog_camera">Vyfotiť obrázok</string>
@@ -125,6 +133,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s Používateľ prijal hovor.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk sa nepodarilo inicializovať %1$s\n Všetky mediálne hovory/služby budú vypnuté.\n %2$s</string>
     <string name="service_gui_CALL_END">Diaľkový volajúci hovor ukončil: %1$s</string>
+    <string name="service_gui_CALL_ERROR">Vzdialená strana vracia chybu: %1$s</string>
     <string name="service_gui_CALL_FAILED">Hovor zlyhal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">História hovorov</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Potvrďte a \'Vybrať všetky\' položky a potom prejdite na \'Odstrániť\'</string>

@@ -48,7 +48,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@+id/avatarView"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="6">
 
         <ImageButton
             android:id="@+id/button_back_to_call"
@@ -88,7 +88,17 @@
             android:background="@color/status_bar_button"
             android:padding="2dp"
             android:scaleType="centerInside"
-            android:src="@drawable/call_hold_off_dark" />
+            android:src="@drawable/call_hold_on_dark" />
+
+        <ImageButton
+            android:id="@+id/button_transfer"
+            style="@style/NotificationCtrlButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@color/status_bar_button"
+            android:padding="2dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/call_transfer_dark" />
 
         <ImageButton
             android:id="@+id/button_hangup"

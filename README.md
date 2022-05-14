@@ -6,6 +6,10 @@
         <img src="./art/atalk.png" alt="aTalk">
     </a>
     &nbsp;
+    <a href="https://cmeng-git.github.io/atalk/faq.html">
+        <img src="./art/help.png" alt="FAQ">
+    </a>
+    &nbsp;
     <a href="https://play.google.com/store/apps/details?id=org.atalk.android&hl=en">
         <img src="./art/google_play.png" alt="Google PlayStore">
     </a>
@@ -18,6 +22,7 @@
         <img src="./art/youtube.png" alt="YouTube">
     </a>
 </p>
+
 
 ## Features
 aTalk is an xmpp client designed for android and supports the following features:
@@ -45,6 +50,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
 * XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
 * XEP-0184: Message Delivery Receipts with user enable/disable option
+* XEP-0251: Jingle Session Transfer: Support both Unattended and Attended call transfer
 * XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
 * Join or create room with full room configuration support for owner

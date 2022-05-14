@@ -47,9 +47,6 @@
     <string name="encryption_choices">Opciones de cifrado</string>
     <string name="encryption_choice_unencrypted">No cifrado</string>
     <string name="enter_name_or_number">Introducir nombre o número</string>
-    <string name="hang_up">Llamada colgada</string>
-    <string name="hold">Poner llamada en espera</string>
-    <string name="in_call_with">En llamada con </string>
     <string name="network">Red</string>
     <string name="notification_setting">Configuración de notificaciones&#8230;</string>
     <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
@@ -63,6 +60,17 @@
     <string name="system_settings">Ajustes&#8230;</string>
     <string name="username_hint">usuario@ejemplo.com</string>
     <string name="service_gui_USERNAME">Usuario:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Llamada colgada</string>
+    <string name="gui_call_hold">Poner llamada en espera</string>
+    <string name="gui_call_max_transfer">¡Se permite un máximo de 2 llamadas para la transferencia de llamadas atendidas!</string>
+    <string name="gui_call_transfer_call">Transferir llamada</string>
+    <string name="gui_call_transfer">Transferir</string>
+    <string name="gui_call_transfer_failed">Error al continuar con la transferencia de llamadas: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Seleccione el nombre del contacto al que desea transferir y presione Transferir.</string>
+    <string name="gui_call_transfer_msg">%1$s transferencia de llamadas a&#8230; %2$s</string>
+    <string name="gui_call_with">En llamada con</string>
 
     <string name="attachOptionDialog_picture">Fotos</string>
     <string name="attachOptionDialog_camera">Hacer Foto</string>
@@ -129,6 +137,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s ha contestado la llamada.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk no ha podido inicializar %1$s\nTodas las llamadas/servicios de medios estarán deshabilitados.\n%2$s</string>
     <string name="service_gui_CALL_END">La persona que llama ha finalizado la llamada.: %1$s</string>
+    <string name="service_gui_CALL_ERROR">La parte remota devuelve un error: %1$s</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme y \'Seleccione todos\' los elementos, antes de continuar con \'Eliminar\'</string>

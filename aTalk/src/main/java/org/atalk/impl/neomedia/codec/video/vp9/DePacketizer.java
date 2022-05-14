@@ -226,7 +226,9 @@ public class DePacketizer extends AbstractCodec2
 
         if (empty && lastSentSeq != -1
                 && RTPUtils.sequenceNumberComparator.compare(inSeq, lastSentSeq) <= 0) {
-            Timber.d("Discarding old packet (while empty) %s", inSeq);
+            Timber.d("Discarding old packet (while empty) %s <= %s", inSeq, lastSentSeq);
+            // resync lastSentSeq = current inSeq
+            lastSentSeq = inSeq;
             outBuffer.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
