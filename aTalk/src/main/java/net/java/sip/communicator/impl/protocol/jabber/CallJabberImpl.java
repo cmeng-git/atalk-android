@@ -38,11 +38,11 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_rtp.JingleCallSessionImpl;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
@@ -710,12 +710,12 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
     /**
      * Creates a new call peer upon receiving session-initiate, and sends a RINGING response if required.
      *
-     * Handle addCallPeer() in caller to avoid race condition as here is handled on new thread
-     * - with transport-info sent separately
+     * Handle addCallPeer() in caller to avoid race condition as code here is handled on a new thread;
+     * required when transport-info is sent separately
+     * @see OperationSetBasicTelephonyJabberImpl#processJingleSynchronize(Jingle) in session-initiate
      *
      * @param callPeer the {@link CallPeerJabberImpl}: the one that sent the INVITE.
      * @param jingle the {@link Jingle} that created the session.
-     * @see OperationSetBasicTelephonyJabberImpl#processJingleSynchronize(Jingle)
      */
     public void processSessionInitiate(final CallPeerJabberImpl callPeer, Jingle jingle, JingleCallSessionImpl session)
     {
@@ -732,33 +732,25 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
          * We've already sent the ack to the specified session-initiate so if it has been
          * sent as part of an attended transfer, we have to hang up on the attendant.
          */
-        try {
-            SdpTransfer transfer = jingle.getExtension(SdpTransfer.class);
-            if (transfer != null) {
-                String sid = transfer.getSid();
+        SdpTransfer transfer = jingle.getExtension(SdpTransfer.class);
+        if (transfer != null) {
+            String sid = transfer.getSid();
 
-                if (sid != null) {
-                    ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
-                    basicTelephony = (OperationSetBasicTelephonyJabberImpl)
-                            protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
-                    CallJabberImpl attendantCall = basicTelephony.getActiveCallsRepository().findSID(sid);
+            if (sid != null) {
+                ProtocolProviderServiceJabberImpl protocolProvider = getProtocolProvider();
+                basicTelephony = (OperationSetBasicTelephonyJabberImpl)
+                        protocolProvider.getOperationSet(OperationSetBasicTelephony.class);
+                CallJabberImpl attendantCall = basicTelephony.getActiveCallsRepository().findBySid(sid);
 
-                    if (attendantCall != null) {
-                        attendant = attendantCall.getPeer(sid);
-                        if ((attendant != null)
-                                && basicTelephony.getFullCalleeURI(attendant.getPeerJid()).equals(transfer.getFrom())
-                                && protocolProvider.getOurJID().equals(transfer.getTo())) {
-                            // basicTelephony.hangupCallPeer(attendant);
-                            autoAnswer = true;
-                        }
+                if (attendantCall != null) {
+                    attendant = attendantCall.getPeerBySid(sid);
+                    if ((attendant != null)
+                            && basicTelephony.getFullCalleeURI(attendant.getPeerJid()).equals(transfer.getFrom())
+                            && protocolProvider.getOurJID().equals(transfer.getTo())) {
+                        autoAnswer = true;
                     }
                 }
             }
-        } catch (Throwable t) {
-            Timber.e(t, "Failed to hang up on attendant as part of session transfer");
-
-            if (t instanceof ThreadDeath)
-                throw (ThreadDeath) t;
         }
 
         CoinExtension coin = jingle.getExtension(CoinExtension.class);
@@ -791,18 +783,18 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
 
         // in case of attended transfer, auto answer the call
         if (autoAnswer) {
+            // hang up the call before answer, else may terminate as busy
+            try {
+                basicTelephony.hangupCallPeer(attendant);
+            } catch (OperationFailedException e) {
+                Timber.w("Failed to hang up on attendant as part of session transfer");
+            }
+
             /* answer directly */
             try {
                 callPeer.answer();
             } catch (Exception e) {
-                Timber.i(e, "Exception occurred while answer transferred call");
-            }
-
-            // hang up now
-            try {
-                basicTelephony.hangupCallPeer(attendant);
-            } catch (OperationFailedException e) {
-                Timber.e(e, "Failed to hang up on attendant as part of session transfer");
+                Timber.w("Exception occurred while answer transferred call");
             }
             return;
         }
@@ -1087,7 +1079,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      * @return the {@link CallPeerJabberImpl} with the specified jingle
      * <code>sid</code> and <code>null</code> if no such peer exists in this call.
      */
-    public CallPeerJabberImpl getPeer(String sid)
+    public CallPeerJabberImpl getPeerBySid(String sid)
     {
         if (sid == null)
             return null;
@@ -1107,7 +1099,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
      */
     public boolean containsSid(String sid)
     {
-        return (getPeer(sid) != null);
+        return (getPeerBySid(sid) != null);
     }
 
     /**

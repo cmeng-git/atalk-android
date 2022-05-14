@@ -44,9 +44,6 @@
     <string name="encryption_choices">EncryptChoices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
     <string name="enter_name_or_number">Введите имя или номер</string>
-    <string name="hang_up">Повесьте вызов</string>
-    <string name="hold">Удерживать вызов</string>
-    <string name="in_call_with">При вызове</string>
     <string name="network">Сеть</string>
     <string name="notification_setting">Настройки уведомлений&#8230;</string>
     <string name="no_application_found_to_open_file">Не найдено приложения для открытия файла</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Настройки&#8230;</string>
     <string name="username_hint">username@example.com</string>
     <string name="service_gui_USERNAME">Имя пользователя:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Повесьте вызов</string>
+    <string name="gui_call_hold">Удерживать вызов</string>
+    <string name="gui_call_max_transfer">Максимум 2 вызова разрешены для сопровождаемой передачи вызова!</string>
+    <string name="gui_call_transfer_call">Переадресовать вызов</string>
+    <string name="gui_call_transfer">Передача</string>
+    <string name="gui_call_transfer_failed">Не удалось продолжить перевод вызова: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Выберите контакт, который хотите передать, и нажмите Передача.</string>
+    <string name="gui_call_transfer_msg">%1$s перевод вызова на&#8230; %2$s</string>
+    <string name="gui_call_with">При вызове</string>
 
     <string name="attachOptionDialog_picture">Картинки</string>
     <string name="attachOptionDialog_camera">Сделать изображение</string>
@@ -126,6 +134,7 @@
     <string name="service_gui_CALL_ANSWER">%1$sответил на звонок.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk не удалось инициализировать %1$s\nВозвраты/службы мультимедиа будут отключены.\n%2$s</string>
     <string name="service_gui_CALL_END">Удаленный абонент завершил звонок: %1$s</string>
+    <string name="service_gui_CALL_ERROR">Удаленная сторона возвращает ошибку: %1$s</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Подтвердите и выберите пункты «Выбрать все», прежде чем переходить к пункту «Удалить».</string>

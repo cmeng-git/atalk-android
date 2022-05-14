@@ -11,6 +11,7 @@ import net.java.sip.communicator.service.protocol.AbstractCallPeer;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
 import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.CallState;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ConferenceDescription;
@@ -36,12 +37,20 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.IQTypeFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.confdesc.CallIdExtension;
@@ -76,8 +85,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 /**
- * Implements all call management logic and exports basic telephony support by implementing
- * <code>OperationSetBasicTelephony</code>.
+ * Implements all call management logic including call transfer, and exports basic telephony support
+ * by implementing <code>OperationSetBasicTelephony</code>.
  *
  * @author Emil Ivov
  * @author Symphorien Wanko
@@ -89,8 +98,8 @@ import timber.log.Timber;
 public class OperationSetBasicTelephonyJabberImpl
         extends AbstractOperationSetBasicTelephony<ProtocolProviderServiceJabberImpl>
         implements RegistrationStateChangeListener, OperationSetSecureSDesTelephony,
-        BasicTelephony, JingleMessageSessionImpl.JmStateListener,
-        OperationSetSecureZrtpTelephony, OperationSetAdvancedTelephony<ProtocolProviderServiceJabberImpl>
+        OperationSetSecureZrtpTelephony, JingleMessageSessionImpl.JmStateListener, StanzaListener,
+        BasicTelephony, OperationSetAdvancedTelephony<ProtocolProviderServiceJabberImpl>
 {
     /**
      * A reference to the <code>ProtocolProviderServiceJabberImpl</code> instance that created us.
@@ -99,6 +108,10 @@ public class OperationSetBasicTelephonyJabberImpl
 
     private JingleCallSessionImpl mJingleSession;
 
+    /**
+     * Jingle session-initiate sid; set either via JingleMessage or initSid via legacy call without JingleMessage support.
+     * The JingleMessage Sid must be used for Jingle session-initiate sid, else call is rejected by conversations.
+     */
     private String mSid;
 
     private XMPPConnection mConnection = null;
@@ -133,12 +146,21 @@ public class OperationSetBasicTelephonyJabberImpl
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
     {
         RegistrationState registrationState = evt.getNewState();
-        if (registrationState == RegistrationState.REGISTERING) {
+        if (registrationState == RegistrationState.REGISTERED) {
             mConnection = mPPS.getConnection();
+
             JingleCallManager.getInstanceFor(mConnection, this);
             JingleMessageSessionImpl.addJmStateListener(this);
+
+            StanzaFilter RESPONDER_ERROR_FILTER
+                    = new AndFilter(IQTypeFilter.ERROR, ToMatchesFilter.createFull(mConnection.getUser()));
+            mConnection.removeAsyncStanzaListener(this);
+            mConnection.addAsyncStanzaListener(this, RESPONDER_ERROR_FILTER);
         }
         else if (registrationState == RegistrationState.UNREGISTERED) {
+            if (mConnection != null) {
+                mConnection.removeAsyncStanzaListener(this);
+            }
             JingleMessageSessionImpl.removeJmStateListener(this);
         }
     }
@@ -161,7 +183,7 @@ public class OperationSetBasicTelephonyJabberImpl
         if (conference != null)
             call.setConference(conference);
 
-        CallPeer callPeer = createOutgoingCall(call, callee);
+        CallPeer callPeer = createOutgoingCall(call, callee, null);
         if (callPeer == null) {
             throw new OperationFailedException("Failed to create outgoing call because no peer was created",
                     OperationFailedException.INTERNAL_ERROR);
@@ -248,20 +270,11 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Init and establish the specified call.
-     *
-     * @param call the <code>CallJabberImpl</code> that will be used to initiate the call
-     * @param calleeAddress the address of the callee that we'd like to connect with.
-     * @return the <code>CallPeer</code> that represented by the specified uri. All following state
-     * change events will be delivered through that call peer. The <code>Call</code> that this
-     * peer is a member of could be retrieved from the <code>CallPeer</code> instance with the
-     * use of the corresponding method.
-     * @throws OperationFailedException with the corresponding code if we fail to create the call.
+     * init mSid with a randomId if callee does not support JingleMessage protocol
      */
-    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress)
-            throws OperationFailedException
+    public void initSid()
     {
-        return createOutgoingCall(call, calleeAddress, null);
+        mSid = JingleManager.randomId();
     }
 
     /**
@@ -269,7 +282,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param call the <code>CallJabberImpl</code> that will be used to initiate the call
      * @param calleeAddress the address of the callee that we'd like to connect with.
-     * @param sessionInitiateExtensions a collection of additional and optional <code>ExtensionElement</code>s to be
+     * @param siChildElement a collection of additional and optional <code>ExtensionElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init the specified <code>call</code>
      * @return the <code>CallPeer</code> that represented by the specified uri. All following state
      * change events will be delivered through that call peer. The <code>Call</code> that this
@@ -278,7 +291,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @throws OperationFailedException with the corresponding code if we fail to create the call.
      */
     AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress,
-            Iterable<ExtensionElement> sessionInitiateExtensions)
+            Iterable<ExtensionElement> siChildElement)
             throws OperationFailedException
     {
         FullJid calleeJid = null;
@@ -289,7 +302,14 @@ public class OperationSetBasicTelephonyJabberImpl
                 e.printStackTrace();
             }
         }
-        return createOutgoingCall(call, calleeAddress, calleeJid, sessionInitiateExtensions);
+        return createOutgoingCall(call, calleeAddress, calleeJid, siChildElement);
+    }
+
+    AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, FullJid calleeJid,
+            Iterable<ExtensionElement> siChildElement)
+            throws OperationFailedException
+    {
+        return createOutgoingCall(call, calleeJid.toString(), calleeJid, siChildElement);
     }
 
     /**
@@ -505,13 +525,29 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Gets the full callee URI for a specific callee address.
      *
-     * @param calleeAddress the callee address to get the full callee URI for
+     * @param calleeJid the callee address to get the full callee URI for
      * @return the full callee URI for the specified <code>calleeAddress</code>
      */
-    EntityFullJid getFullCalleeURI(Jid calleeAddress)
+    EntityFullJid getFullCalleeURI(Jid calleeJid)
     {
-        return (calleeAddress.isEntityFullJid()) ? calleeAddress.asEntityFullJidOrThrow()
-                : Roster.getInstanceFor(mConnection).getPresence(calleeAddress.asBareJid()).getFrom().asEntityFullJidOrThrow();
+        return (calleeJid.isEntityFullJid()) ? calleeJid.asEntityFullJidIfPossible()
+                : Roster.getInstanceFor(mConnection).getPresence(calleeJid.asBareJid()).getFrom().asEntityFullJidIfPossible();
+    }
+
+    /**
+     * Gets the full callee URI for a specific callee address.
+     *
+     * @param calleeAddress the callee address to get the full callee URI for
+     * @return the full callee URI for the specified <tt>calleeAddress</tt>
+     */
+    EntityFullJid getFullCalleeURI(String calleeAddress)
+    {
+        try {
+            Jid calleeJid = JidCreate.from(calleeAddress);
+            return getFullCalleeURI(calleeJid);
+        } catch (XmppStringprepException e) {
+            throw new IllegalArgumentException("calleeAddress is not a valid Jid", e);
+        }
     }
 
     /**
@@ -533,7 +569,7 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     public CallPeerJabberImpl getActiveCallPeer(String sid)
     {
-        return activeCallsRepository.findCallPeer(sid);
+        return activeCallsRepository.findCallPeerBySid(sid);
     }
 
     /**
@@ -726,6 +762,26 @@ public class OperationSetBasicTelephonyJabberImpl
         }
     }
 
+    /**
+     * Handle error for the intended user returns by Jingle responder
+     *
+     * @see <a href="https://xmpp.org/extensions/xep-0166.html#protocol-response">6.3 Responder Response</a>
+     */
+    @Override
+    public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException
+    {
+        StanzaError err = stanza.getError();
+        String message = aTalkApp.getResString(R.string.service_gui_CALL_ERROR, (err != null) ? err.getCondition() : "Unknown");
+        Timber.e(message);
+
+        if (getActiveCalls().hasNext()) {
+            CallPeerJabberImpl callPeer = getActiveCalls().next().getCallPeers().next();
+            if ((callPeer != null) && callPeer.getPeerJid().isParentOf(stanza.getFrom())) {
+                callPeer.setState(CallPeerState.FAILED, message);
+            }
+        }
+    }
+
     @Override
     public void handleJingleSession(Jingle jingle, JingleCallSessionImpl session)
     {
@@ -742,7 +798,7 @@ public class OperationSetBasicTelephonyJabberImpl
              * callPeer is null until session-initiate is received when as a responder.
              * Otherwise non-null when it acts as an initiator
              */
-            CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
+            CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeerBySid(jingle.getSid());
             if (callPeer == null) {
                 processJingleSynchronize(jingle);
             }
@@ -765,18 +821,20 @@ public class OperationSetBasicTelephonyJabberImpl
      * Analyzes the <code>jingle</code>'s action and passes it to the corresponding handler.
      * Mainly for as a responder until session-initiate is received => processJingle()
      *
-     * @param jingle the {@link Jingle} packet we need to be analyzing.
+     * @param jingleIQ the {@link Jingle} packet we need to be analyzing.
      */
-    private synchronized void processJingleSynchronize(final Jingle jingle)
+    private synchronized void processJingleSynchronize(final Jingle jingleIQ)
     {
-        JingleAction action = jingle.getAction();
-        Timber.d("### Processing Jingle IQ  %s: (%s) synchronized", jingle.getStanzaId(), jingle.getAction());
+        CallPeerJabberImpl callPeer;
+
+        JingleAction action = jingleIQ.getAction();
+        Timber.d("### Processing Jingle IQ  %s: (%s) synchronized", jingleIQ.getStanzaId(), jingleIQ.getAction());
         switch (action) {
             case session_initiate:
                 // Initiator attribute is RECOMMENDED but not REQUIRED attribute for Jingle "session-initiate".
                 // When Initiator attribute is not present copy the value from IQ "from" attribute. Allow per XEP-0166
-                if (jingle.getInitiator() == null) {
-                    jingle.setInitiator(jingle.getFrom().asEntityFullJidIfPossible());
+                if (jingleIQ.getInitiator() == null) {
+                    jingleIQ.setInitiator(jingleIQ.getFrom().asEntityFullJidIfPossible());
                 }
 
 //                StartMutedExtension startMutedExt = jingle.getExtension(StartMutedExtension.class);
@@ -800,13 +858,14 @@ public class OperationSetBasicTelephonyJabberImpl
 //                }
 
                 CallJabberImpl call = null;
-                SdpTransfer transfer = jingle.getExtension(SdpTransfer.class);
+                // check to see if this session-initiate is for call <transfer/>
+                SdpTransfer transfer = jingleIQ.getExtension(SdpTransfer.class);
                 if (transfer != null) {
                     String sid = transfer.getSid();
                     if (sid != null) {
-                        CallJabberImpl attendantCall = activeCallsRepository.findSID(sid);
+                        CallJabberImpl attendantCall = activeCallsRepository.findBySid(sid);
                         if (attendantCall != null) {
-                            CallPeerJabberImpl attendant = attendantCall.getPeer(sid);
+                            CallPeerJabberImpl attendant = attendantCall.getPeerBySid(sid);
                             // Check and proceed if we are legally involved in the session.
                             if ((attendant != null)
                                     && transfer.getFrom().isParentOf(attendant.getPeerJid())
@@ -817,61 +876,68 @@ public class OperationSetBasicTelephonyJabberImpl
                     }
                 }
 
-                CallIdExtension callidExt = jingle.getExtension(CallIdExtension.class);
+                CallIdExtension callidExt = jingleIQ.getExtension(CallIdExtension.class);
                 if (callidExt != null) {
                     String callid = callidExt.getText();
                     if (callid != null)
-                        call = activeCallsRepository.findCallId(callid);
+                        call = activeCallsRepository.findByCallId(callid);
                 }
+
                 if ((transfer != null) && (callidExt != null))
-                    Timber.w("Received a session-initiate with both 'transfer' and 'callid' extensions. Ignored 'transfer' and used 'callid'.");
+                    Timber.w("Receive session-initiate with both 'transfer' and 'callid' extensions. Ignore 'transfer' and use 'callid'.");
 
-                // start init new call if not already in call conference
+                // start init new call if not already in call conference, must use sid from jingleIQ
                 if (call == null) {
-                    call = new CallJabberImpl(this, getSid());
-                    /*
-                     * cmeng: 20200622
-                     * Must deployed method synchronized and update the new callPeer to activeCallsRepository asap;
-                     * Otherwise peer sending trailing standalone transport-info (not part of session-initiate)
-                     * (e.g. conversations ~ 60ms) will be in race-condition; the transport-info is received before
-                     * the callPeer has been initialized and hence not being processed at all.
-                     */
-                    final CallPeerJabberImpl callPeer = new CallPeerJabberImpl(call, jingle, mJingleSession);
-                    call.addCallPeer(callPeer);
-
-                    /*
-                     * cmeng (20200611): change to merged trailing transport-info's with the session-initiate
-                     * before processing i.e. not using the next synchronous method call.
-                     */
-                    this.processSessionInitiate(call, callPeer, jingle);
-
-                    /*
-                     * cmeng (20200602) - must process to completion if transport-info is send separately,
-                     * otherwise IceUdpTransportManager#startConnectivityEstablishment will fail
-                     * (cpeList is empty) and Ice Agent for the media is not initialized properly
-                     */
-                    // call.processSessionInitiate(jingle, callPeer);
+                    call = new CallJabberImpl(this, jingleIQ.getSid());
                 }
+
+                /*
+                 * cmeng: 20220504;
+                 * Below problem is resolved via jingleMessage support in normal call; what about call transfer???
+                 *
+                 * cmeng: 20200622;
+                 * Must deployed method synchronized and update the new callPeer to activeCallsRepository asap;
+                 * Otherwise peer sending trailing standalone transport-info (not part of session-initiate)
+                 * (e.g. conversations ~ 60ms) will be in race-condition; the transport-info is received before
+                 * the callPeer has been initialized and hence not being processed at all.
+                 */
+                callPeer = new CallPeerJabberImpl(call, jingleIQ, mJingleSession);
+                call.addCallPeer(callPeer);
+
+                /*
+                 * cmeng (20200611): change to new merged trailing transport-info's with the session-initiate
+                 * before processing i.e. not using the next synchronous method call to avoid ANR.
+                 */
+                this.processSessionInitiate(call, callPeer, jingleIQ);
+
+                /*
+                 * cmeng: 20220504: replace with the above new method as preference.
+                 * cmeng (20200602) - must process to completion if transport-info is send separately,
+                 * otherwise IceUdpTransportManager#startConnectivityEstablishment will fail
+                 * (cpeList is empty) and Ice Agent for the media is not initialized properly
+                 */
+                // call.processSessionInitiate(jingle, callPeer);
                 break;
 
             case transport_info:
                 // Assume callPeer has been setup in synchronise session-initiate; However callPeer may be null if
                 // the caller prematurely terminate the call or caller sends transport-info before session-initiate.
-                CallPeerJabberImpl callPeer = activeCallsRepository.findCallPeer(jingle.getSid());
-                processTransportInfo(callPeer, jingle);
+                callPeer = activeCallsRepository.findCallPeerBySid(jingleIQ.getSid());
+                processTransportInfo(callPeer, jingleIQ);
                 break;
 
             case session_terminate:
                 // handle moved => processJingle#session_terminate; not handle here
-                Timber.w("Received session_terminate IQ: %s. JingleSession: %s", jingle.getStanzaId(), mJingleSession);
-                mJingleSession.terminateSessionAndUnregister(Reason.success, null);
+                Timber.w("Received session_terminate IQ: %s. JingleSession: %s", jingleIQ.getStanzaId(), mJingleSession);
+                if (mJingleSession != null)
+                    mJingleSession.terminateSessionAndUnregister(Reason.success, null);
                 contentMedias = null;
                 break;
 
             // Currently not handle session_info e.g. ringing; when the call is terminated
             case session_info:
             default:
-                Timber.w("Received unhandled Jingle IQ: %s. Action: %s", jingle.getStanzaId(), action);
+                Timber.w("Received unhandled Jingle IQ: %s. Action: %s", jingleIQ.getStanzaId(), action);
         }
     }
 
@@ -893,27 +959,25 @@ public class OperationSetBasicTelephonyJabberImpl
                 processSessionAccept(callPeer, jingle);
                 break;
 
-            case security_info:
+            case session_info:
+                // Check for jingle rtp session-info as first priority
                 SessionInfo info = jingle.getSessionInfo();
-                // change status.
                 if (info != null) {
                     callPeer.processSessionInfo(info);
                 }
+
+                // else process call transfer if any
                 else {
                     SdpTransfer transfer = jingle.getExtension(SdpTransfer.class);
                     if (transfer != null) {
-                        if (transfer.getFrom() == null) {
-                            transfer = SdpTransfer.getBuilder()
-                                    .addAttributes(transfer.getAttributes())
-                                    .setFrom(jingle.getFrom())
-                                    .build();
-                        }
                         try {
-                            callPeer.processTransfer(transfer);
+                            callPeer.processTransfer(transfer, jingle);
                         } catch (OperationFailedException ofe) {
                             Timber.e(ofe, "Failed to transfer to %s", transfer.getTo());
                         }
                     }
+
+                    // process the coin stanza if any
                     CoinExtension coinExt = jingle.getExtension(CoinExtension.class);
                     if (coinExt != null) {
                         callPeer.setConferenceFocus(coinExt.isFocus());
@@ -956,10 +1020,6 @@ public class OperationSetBasicTelephonyJabberImpl
 
             case source_remove:
                 callPeer.processSourceRemove(jingle);
-                break;
-
-            case session_info:
-                // Currently not handle e.g. ringing
                 break;
 
             default:
@@ -1181,11 +1241,11 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Transfers (in the sense of call transfer) a specific <code>CallPeer</code> to a specific callee
+     * Attended transfer (in the sense of call transfer) a specific <code>CallPeer</code> to a specific callee
      * address which already participates in an active <code>Call</code>.
      *
-     * The method is suitable for providing the implementation of attended call transfer (though no
-     * such requirement is imposed).
+     * The method is suitable for providing the implementation of 'attended' call transfer
+     * (though no such requirement is imposed).
      *
      * @param peer the <code>CallPeer</code> to be transferred to the specified callee address
      * @param target the address in the form of <code>CallPeer</code> of the callee to transfer <code>peer</code> to
@@ -1208,21 +1268,18 @@ public class OperationSetBasicTelephonyJabberImpl
                 throw new OperationFailedException("Callee " + to + " does not support"
                         + " XEP-0251: Jingle Session Transfer", OperationFailedException.INTERNAL_ERROR);
             }
-        } catch (XMPPException
-                | InterruptedException
-                | NoResponseException
-                | NotConnectedException xmppe) {
+        } catch (XMPPException | InterruptedException | NoResponseException | NotConnectedException xmppe) {
             Timber.w(xmppe, "Failed to retrieve DiscoverInfo for %s", to);
         }
         transfer(peer, to, jabberTarget.getSid());
     }
 
     /**
-     * Transfers (in the sense of call transfer) a specific <code>CallPeer</code> to a specific callee
+     * Unattended transfer (in the sense of call transfer) a specific <code>CallPeer</code> to a specific callee
      * address which may or may not already be participating in an active <code>Call</code>.
      *
-     * The method is suitable for providing the implementation of unattended call transfer (though
-     * no such requirement is imposed).
+     * The method is suitable for providing the implementation of 'unattended' call transfer
+     * (though no such requirement is imposed).
      *
      * @param peer the <code>CallPeer</code> to be transferred to the specified callee address
      * @param target the address of the callee to transfer <code>peer</code> to
@@ -1232,7 +1289,7 @@ public class OperationSetBasicTelephonyJabberImpl
     public void transfer(CallPeer peer, String target)
             throws OperationFailedException
     {
-        EntityFullJid targetJid = getFullCalleeURI(peer.getPeerJid());
+        EntityFullJid targetJid = getFullCalleeURI(target);
         transfer(peer, targetJid, null);
     }
 
@@ -1240,7 +1297,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * Transfer (in the sense of call transfer) a specific <code>CallPeer</code> to a specific callee
      * address which may optionally be participating in an active <code>Call</code>.
      *
-     * @param peer the <code>CallPeer</code> to be transferred to the specified callee address
+     * @param peer the <code>CallPeer</code> to perform the transferring, to the specified callee address
      * @param to the address of the callee to transfer <code>peer</code> to
      * @param sid the Jingle session ID of the active <code>Call</code> between the local peer and the
      * callee in the case of attended transfer; <code>null</code> in the case of unattended transfer
@@ -1257,10 +1314,7 @@ public class OperationSetBasicTelephonyJabberImpl
                 throw new OperationFailedException("Caller " + caller + " does not support"
                         + " XEP-0251: Jingle Session Transfer", OperationFailedException.INTERNAL_ERROR);
             }
-        } catch (XMPPException
-                | InterruptedException
-                | NoResponseException
-                | NotConnectedException xmppe) {
+        } catch (XMPPException | InterruptedException | NoResponseException | NotConnectedException xmppe) {
             Timber.w(xmppe, "Failed to retrieve DiscoverInfo for %s", to);
         }
         ((CallPeerJabberImpl) peer).transfer(to, sid);

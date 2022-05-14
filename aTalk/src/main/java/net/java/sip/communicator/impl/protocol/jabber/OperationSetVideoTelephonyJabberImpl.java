@@ -102,7 +102,7 @@ public class OperationSetVideoTelephonyJabberImpl
         /* enable video */
         CallJabberImpl call = new CallJabberImpl(basicTelephony, basicTelephony.getSid());
         call.setLocalVideoAllowed(true, getMediaUseCase());
-        CallPeer callPeer = basicTelephony.createOutgoingCall(call, calleeAddress);
+        CallPeer callPeer = basicTelephony.createOutgoingCall(call, calleeAddress, null);
 
         /*
          * XXX OperationSetBasicTelephonyJabberImpl#createOutgoingCall( CallJabberImpl, String) may

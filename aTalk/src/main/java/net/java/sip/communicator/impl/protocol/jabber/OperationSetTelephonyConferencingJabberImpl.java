@@ -393,7 +393,7 @@ public class OperationSetTelephonyConferencingJabberImpl
 
             String sid = coinIQ.getSid();
             if (sid != null) {
-                CallPeerJabberImpl callPeer = getBasicTelephony().getActiveCallsRepository().findCallPeer(sid);
+                CallPeerJabberImpl callPeer = getBasicTelephony().getActiveCallsRepository().findCallPeerBySid(sid);
                 if (callPeer != null) {
                     if (type == IQ.Type.error) {
                         callPeer.fireConferenceMemberErrorEvent(errorMessage);

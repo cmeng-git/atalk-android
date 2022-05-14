@@ -1,17 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may
- * obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for
- * the specific language governing permissions
- * and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.android.gui.chat.conference;
 
@@ -43,7 +44,6 @@ import java.util.*;
 
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.
- * this
  *
  * @author Eng Chong Meng
  */
@@ -53,7 +53,7 @@ public class ChatInviteDialog extends Dialog
     /**
      * Allow offline contact selection for invitation
      */
-    private static boolean MUC_OFFLINE_ALLOW = true;
+    private static final boolean MUC_OFFLINE_ALLOW = true;
 
     private final ChatPanel chatPanel;
     private final ChatTransport inviteChatTransport;
@@ -226,9 +226,8 @@ public class ChatInviteDialog extends Dialog
             contactListView.collapseGroup(groupPosition);
         else {
             contactListView.expandGroup(groupPosition, true);
-            new Handler().postDelayed(() -> {
-                refreshContactSelected(groupPosition);
-            }, 500);
+            new Handler().postDelayed(()
+                    -> refreshContactSelected(groupPosition), 500);
         }
         return true;
     }
@@ -328,7 +327,6 @@ public class ChatInviteDialog extends Dialog
     @Override
     public void onShow(DialogInterface arg0)
     {
-        int indexes = contactListAdapter.getGroupCount();
         refreshContactSelected(-1);
         updateInviteState();
     }

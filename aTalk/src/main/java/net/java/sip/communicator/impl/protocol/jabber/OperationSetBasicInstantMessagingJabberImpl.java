@@ -5,12 +5,27 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+
 import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,12 +35,28 @@ import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.chat2.*;
-import org.jivesoftware.smack.filter.*;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.ChatManager;
+import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromTypeFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
+import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
+import org.jivesoftware.smack.filter.OrFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -41,21 +72,32 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.*;
+import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
-
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
 /**
  * A straightforward implementation of the basic instant messaging operation set.
@@ -69,8 +111,8 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
  */
 
 public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperationSetBasicInstantMessaging
-        implements OperationSetMessageCorrection, IncomingChatMessageListener, CarbonCopyReceivedListener,
-        OmemoMessageListener
+        implements RegistrationStateChangeListener, OperationSetMessageCorrection, IncomingChatMessageListener,
+        StanzaListener, CarbonCopyReceivedListener, OmemoMessageListener
 {
     /**
      * A table mapping contact addresses to message threads that can be used to target a specific
@@ -81,20 +123,13 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * The most recent FullJid used for the contact address.
      */
-    private Map<BareJid, Jid> recentJidForContact = new Hashtable<>();
+    private final Map<BareJid, Jid> recentJidForContact = new Hashtable<>();
 
     /**
      * CarbonManager and ChatManager instances used by OperationSetBasicInstantMessagingJabberImpl
      */
     private CarbonManager mCarbonManager = null;
     private ChatManager mChatManager = null;
-
-    /**
-     * The smackSvrMessageListener instance listens for incoming messages.
-     * Keep a reference of it so if anything goes wrong we don't add
-     * two different instances.
-     */
-    private SmackSvrMessageListener smackSvrMessageListener = null;
 
     /**
      * Current active chat
@@ -121,7 +156,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * A prefix helps to make sure that thread ID's are unique across multiple instances.
      */
-    private static String prefix = RandomStringUtils.random(5);
+    private static final String prefix = RandomStringUtils.random(5);
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to forum a unique thread ID.
@@ -148,8 +183,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private OperationSetPersistentPresenceJabberImpl opSetPersPresence = null;
 
-
-    private OperationSetBasicInstantMessagingJabberImpl opSetBIMessaging;
     /**
      * Whether carbon is enabled or not.
      */
@@ -164,8 +197,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             new StanzaExtensionFilter(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE))
     );
     private static final StanzaFilter INCOMING_SVR_MESSAGE_FILTER
-            = new AndFilter(MESSAGE_FILTER, FromTypeFilter.DOMAIN_BARE_JID
-    );
+            = new AndFilter(MESSAGE_FILTER, FromTypeFilter.DOMAIN_BARE_JID);
 
     /**
      * Creates an instance of this operation set.
@@ -175,9 +207,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     OperationSetBasicInstantMessagingJabberImpl(ProtocolProviderServiceJabberImpl provider)
     {
-        this.mPPS = provider;
-        opSetBIMessaging = this;
-        provider.addRegistrationStateChangeListener(new RegistrationStateListener());
+        mPPS = provider;
+        mPPS.addRegistrationStateChangeListener(this);
     }
 
     /**
@@ -440,7 +471,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             // msg.addExtension(new Version());
             // Disable carbon for OTR message
             if (event.isMessageEncrypted() && isCarbonEnabled) {
-                CarbonExtension.Private.addTo(messageBuilder.build());
+                CarbonExtension.Private.addTo(messageBuilder);
             }
 
             // Add ChatState.active extension to message send if option is enabled
@@ -630,70 +661,56 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     /**
-     * Our listener that will tell us when we're registered to
+     * The method is called by a ProtocolProvider implementation whenever a change in the
+     * registration state of the corresponding provider had occurred.
+     *
+     * @param evt ProviderStatusChangeEvent the event describing the status change.
      */
-    private class RegistrationStateListener implements RegistrationStateChangeListener
+    public void registrationStateChanged(RegistrationStateChangeEvent evt)
     {
-        /**
-         * The method is called by a ProtocolProvider implementation whenever a change in the
-         * registration state of the corresponding provider had occurred.
-         *
-         * @param evt ProviderStatusChangeEvent the event describing the status change.
-         */
-        public void registrationStateChanged(RegistrationStateChangeEvent evt)
-        {
-            XMPPConnection connection = mPPS.getConnection();
+        XMPPConnection connection = mPPS.getConnection();
 
-            if (evt.getNewState() == RegistrationState.REGISTERING) {
-                opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
-                        mPPS.getOperationSet(OperationSetPersistentPresence.class);
-                /*
-                 * HashSet<OmemoMessageListener> omemoMessageListeners;
-                 * Cannot just add here, has a problem as jid is not known to omemoManager yet
-                 * See AndroidOmemoService implementation for fix
-                 */
-                // OmemoManager omemoManager = OmemoManager.getInstanceFor(xmppConnection);
-                // registerOmemoMucListener(omemoManager);
+        if (evt.getNewState() == RegistrationState.REGISTERING) {
+            opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
+                    mPPS.getOperationSet(OperationSetPersistentPresence.class);
+            /*
+             * HashSet<OmemoMessageListener> omemoMessageListeners;
+             * Cannot just add here, has a problem as jid is not known to omemoManager yet
+             * See AndroidOmemoService implementation for fix
+             */
+            // OmemoManager omemoManager = OmemoManager.getInstanceFor(xmppConnection);
+            // registerOmemoMucListener(omemoManager);
 
-                mChatManager = ChatManager.getInstanceFor(connection);
+            // make sure this listener is not already installed in this connection - ChatManager has taken care <set>
+            mChatManager = ChatManager.getInstanceFor(connection);
+            mChatManager.addIncomingListener(this);
 
-                // make sure this listener is not already installed in this connection - ChatManager has taken care <set>
-                mChatManager.addIncomingListener(opSetBIMessaging);
-
-                if (smackSvrMessageListener == null) {
-                    smackSvrMessageListener = new SmackSvrMessageListener();
+        }
+        else if (evt.getNewState() == RegistrationState.REGISTERED) {
+            // make sure this listener is not already registered in this connection
+            connection.removeAsyncStanzaListener(OperationSetBasicInstantMessagingJabberImpl.this);
+            connection.addAsyncStanzaListener(this, INCOMING_SVR_MESSAGE_FILTER);
+            enableDisableCarbon();
+        }
+        else if (evt.getNewState() == RegistrationState.UNREGISTERED
+                || evt.getNewState() == RegistrationState.CONNECTION_FAILED
+                || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED) {
+            if (connection != null) {  // must not assume - may call after log off
+                connection.removeAsyncStanzaListener(this);
+                if (connection.isAuthenticated()) {
+                    unRegisterOmemoListener(mOmemoManager);
                 }
-                else {
-                    // make sure this listener is not already registered in this connection
-                    connection.removeAsyncStanzaListener(smackSvrMessageListener);
-                }
-                connection.addAsyncStanzaListener(smackSvrMessageListener, INCOMING_SVR_MESSAGE_FILTER);
             }
-            else if (evt.getNewState() == RegistrationState.REGISTERED) {
-                enableDisableCarbon();
+
+            if (mChatManager != null) {
+                mChatManager.removeIncomingListener(this);
+                mChatManager = null;
             }
-            else if (evt.getNewState() == RegistrationState.UNREGISTERED
-                    || evt.getNewState() == RegistrationState.CONNECTION_FAILED
-                    || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED) {
-                if (connection != null) {  // must not assume - may call after log off
-                    if (connection.isAuthenticated()) {
-                        unRegisterOmemoListener(mOmemoManager);
-                    }
-                    if (smackSvrMessageListener != null)
-                        connection.removeAsyncStanzaListener(smackSvrMessageListener);
-                }
-                smackSvrMessageListener = null;
 
-                if (mChatManager != null) {
-                    mChatManager.removeIncomingListener(opSetBIMessaging);
-                    mChatManager = null;
-                }
-
-                if (mCarbonManager != null) {
-                    isCarbonEnabled = false;
-                    mCarbonManager.removeCarbonCopyReceivedListener(opSetBIMessaging);
-                    mCarbonManager = null;
-                }
+            if (mCarbonManager != null) {
+                isCarbonEnabled = false;
+                mCarbonManager.removeCarbonCopyReceivedListener(this);
+                mCarbonManager = null;
             }
         }
     }
@@ -701,38 +718,33 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * The listener that we use in order to handle incoming server messages currently not supported by smack
      *
+     * @param stanza the packet that we need to handle (if it is a message).
      * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
+     *
+     * Handles incoming messages and dispatches whatever events that are necessary.
      */
-    private class SmackSvrMessageListener implements StanzaListener
+    @Override
+    public void processStanza(Stanza stanza)
+            throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException
     {
-        /**
-         * Handles incoming messages and dispatches whatever events are necessary.
-         *
-         * @param stanza the packet that we need to handle (if it is a message).
-         */
-        @Override
-        public void processStanza(Stanza stanza)
-        {
-            final Message message = (Message) stanza;
+        final Message message = (Message) stanza;
+        if (message.getBodies().isEmpty())
+            return;
 
-            if (message.getBodies().isEmpty())
-                return;
-
-            int encType = IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN;
-            String content = message.getBody();
-            String subject = message.getSubject();
-            if (!TextUtils.isEmpty(subject)) {
-                content = subject + ": " + content;
-            }
-
-            IMessage newMessage = createMessageWithUID(content, encType, message.getStanzaId());
-            newMessage.setRemoteMsgId(message.getStanzaId());
-
-            // createVolatileContact will check before create
-            Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
-            MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, getTimeStamp(message));
-            fireMessageEvent(msgEvt);
+        int encType = IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN;
+        String content = message.getBody();
+        String subject = message.getSubject();
+        if (!TextUtils.isEmpty(subject)) {
+            content = subject + ": " + content;
         }
+
+        IMessage newMessage = createMessageWithUID(content, encType, message.getStanzaId());
+        newMessage.setRemoteMsgId(message.getStanzaId());
+
+        // createVolatileContact will check before create
+        Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
+        MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, getTimeStamp(message));
+        fireMessageEvent(msgEvt);
     }
 
     /**
@@ -750,7 +762,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
             if (enableCarbon) {
                 mCarbonManager.setCarbonsEnabled(true);
-                mCarbonManager.addCarbonCopyReceivedListener(opSetBIMessaging);
+                mCarbonManager.addCarbonCopyReceivedListener(this);
                 isCarbonEnabled = true;
             }
             else {
@@ -1031,6 +1043,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         String correctedMsgID = getCorrectionMessageId(message);
         int encType = IMessage.ENCRYPTION_OMEMO;
         String msgBody = decryptedMessage.getBody();
+
+        // Send by remote when doing Jet-OMEMO jingle file transfer
+        // org.jivesoftware.smackx.jingle_filetransfer.component.JingleOutgoingFileOffer@ecd901a
+        // if (msgBody != null && msgBody.contains("JingleOutgoingFileOffer"))
+        //    return;
 
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {

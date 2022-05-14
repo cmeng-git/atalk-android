@@ -22,6 +22,7 @@ import android.text.*;
 import android.view.*;
 import android.widget.*;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -242,6 +243,11 @@ public class TelephonyFragment extends OSGiFragment
             aTalkApp.showToastMessage(R.string.unknown_recipient);
             return;
         }
+
+        // Must init the Sid if call not via JingleMessage
+        OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
+                mPPS.getOperationSet(OperationSetBasicTelephony.class);
+        basicTelephony.initSid();
 
         AndroidCallUtil.createCall(mContext, mPPS, phoneJid, videoCall);
         closeFragment();

@@ -6,16 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.4 (05/12/2022)" versioncode="209040">
+    <release version="2.9.4 (05/14/2022)" versioncode="209040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add support for &lt;a href='https://cmeng-git.github.io/atalk/faq.html#media_07'&gt;XEP-0251: Jingle Session Transfer&lt;/a&gt; in Unattended and Attended call transfer</change>
+        <change>Ensure DTLS security state is properly updated when returning to video call UI</change>
+        <change>Report caller for any Jingle Responder error returns by remote party</change>
         <change>Change Network Security Configuration to disallow the use of user-specified certificates</change>
-        <change>Minimize ANR on ChatPanel due to synchronized(cacheLock) deadlock</change>
-        <change>Upgrade aTalk JNI libraries for:</change>
+        <change>Minimize ANR on chat UI due to synchronized(cacheLock) deadlock</change>
+        <change>Upgrade aTalk jni libraries for:</change>
         <change>a. openssl-1.1.1k => openssl-1.1.1n</change>
-        <change>b. libvpx from 1.10.0 to 1.11.0 (main)</change>
-        <change>c. ffmpeg-4.4 to ffmpeg-4.4.2</change>
-        <change>d. x264-161.3049 to libx264-163.3060</change>
-        <change></change>
+        <change>b. ffmpeg-4.4 to ffmpeg-4.4.2</change>
+        <change>c. x264-161.3049 to libx264-163.3060</change>
+        <change>d. libvpx from 1.10.0 to 1.11.0 (main)</change>
+        <change>Fix clang70 error when compile libvpx for armv7a without the --disable-neon-asm</change>
+        <change>Fix jni scripts errors for ffmpeg and libvpx</change>
         <change>Bug fixes and enhancements</change>
     </release>
 

@@ -1,19 +1,34 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Version:        2.9.4 (209040)
-Release Date:   05/23/2022
+Release Date:   05/14/2022
 Author:         cmeng
-
+- Add support for XEP-0251: Jingle Session Transfer in Unattended and Attended call transfer:
+  https://xmpp.org/extensions/xep-0251.html#unattended XEP-0251 § 2. Unattended Transfer
+  https://xmpp.org/extensions/xep-0251.html#attended XEP-0251 § 3. Attended Transfer
+  Clean up SdpTransfer and SdpTransferred implementation, and included support in JingleCallSessionImpl,
+- CallNotificationManager must handle multiple instances for call transfer; using requestBase for alternate Notification
+- Correct typo error in processJingle() case i.e. security_info => session_info during migration
+- Add handler in OperationSetBasicTelephonyJabberImpl to report any Jingle Responder error return by remote
+  https://xmpp.org/extensions/xep-0166.html#protocol-response
 - Change Network Security Configuration to disallow the use of user-specified certificates. This could allow eavesdroppers to intercept data sent by aTalk, or to modify data in transit.
 - ANR on ChatPanel#messageDelivered() & #addMessage() due to synchronized(cacheLock); modify source to minimize deadlock (hold time)
+- Change DialogActivity#alert_dialog layout, background color and with border
+- Ensure DTLS security state is properly updated when returning to video call UI;
+  DtlsControlImpl#getSecureCommunicationStatus() must return with a proper securityState as set by secureOnOff().
 
-- Upgrade aTalk JNI libraries for:
+- Upgrade aTalk jni libraries for:
  a. openssl-1.1.1k => openssl-1.1.1n
- b. libvpx from 1.10.0 to 1.11.0 (main)
- c. ffmpeg-4.4 to ffmpeg-4.4.2
- d  x264-161.3049 to libx264-163.3060
- e. Rename ffmpeg-x264#ini_update_libs.sh to init_libs_ffmpeg_x264.sh and corrected script errors for x264 library download
- f. Fix libvpx compilation clang70 error when armv7a without the --disable-neon-asm i.e. ASFLAGS="-c"
+ b. ffmpeg-4.4 to ffmpeg-4.4.2
+ c  x264-161.3049 to libx264-163.3060
+ d. libvpx from 1.10.0 to 1.11.0 (main)
+- Fix clang70 error when compile libvpx for armv7a without the --disable-neon-asm i.e. ASFLAGS='-c'
+- fix libvpx scripts errors for libvpx
+- Rename ffmpeg-x264#ini_update_libs.sh to init_libs_ffmpeg_x264.sh, and corrected script errors for x264 library download
+- Remove requests for permission.GET_ACCOUNTS and permission.MANAGE_ACCOUNTS in aTalk
+
+- ToDo: difficult to reproduce
+  * CallPeerMediaHandlerJabberImpl.getTransportManager() => The initiator is expected to specify the transport in their offer when remote terminate call before setup
 
 =========================================================================
 Version:        2.9.3 (209031)
@@ -28,6 +43,7 @@ Author:         cmeng
   else JingleManager#unregisterJingleSessionHandler() is not performed when user end call before session-initiate
 - Resolve cross dependency between smack-extensions and smack-experimental (for pull request)
 - Fix CallJabberImpl.getConference() on a null object reference
+  => MediaAwareCall#getConference() may return null if call terminated before setup completed
 - Fix problem with android camera2 API implementation in throwing waitForFreeSlotThenRelock on fast android devices.
   Set ImageReader.newInstance maxImage = 3 and use acquireLatestImage().
   BufferQueueProducer: [ImageReader-1280x720](id:2c3200000026,api:4,p:733,c:11314) waitForFreeSlotThenRelock: timeout [mDequeueTimeout=1000ms
@@ -46,11 +62,6 @@ Author:         cmeng
     at org.atalk.android.gui.contactlist.model.QueryContactListAdapter.getChild (QueryContactListAdapter.java:157)
 - Fix NulPointerException: NPE??? just move into try/catch loop
     at org.atalk.crypto.omemo.OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:118)
-
-- ToDo:
-  * Need more work on CallPeerJabberImpl#processTransfer() to handle dual multiple call sessions i.e. call transfer.
-  * MediaAwareCall#getConference() may return null if call terminated before setup completed
-  * CallPeerMediaHandlerJabberImpl.getTransportManager() => The initiator is expected to specify the transport in their offer when remote terminate call before setup
 
 =========================================================================
 Version:        2.9.2 (209020)
@@ -2202,8 +2213,9 @@ Author:         cmeng
 util.AvatarCacheUtils.cacheAvatar().340 Failed to store avatar. java.io.IOException: Failed to create file
 /data/data/org.atalk.android/files/avatarcache/Jabber&_coxyz123@atalk.org/hawk@atalk.org
 at net.java.sip.communicator.util.AvatarCacheUtils.cacheAvatar(AvatarCacheUtils.java:319)
-TODO: actually cacheAvatar() is not necessary as it is already handled and stored by AvatarManager???
-Update 2020031: Removed AvatarCacheUtils and fall back to use AvatarManager
+
+Actually cacheAvatar() is not necessary as it is already handled and stored by AvatarManager
+Implemented 2020031: Removed AvatarCacheUtils and fall back to use AvatarManager
 
 =========================================================================
 Version:        1.0.1 (1001)

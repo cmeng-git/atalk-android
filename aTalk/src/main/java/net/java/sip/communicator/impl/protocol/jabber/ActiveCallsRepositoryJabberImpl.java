@@ -52,7 +52,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * @return the {@link CallJabberImpl} containing the peer with the
      * specified <code>sid</code> or <code>null</code> if we couldn't find one matching it.
      */
-    public CallJabberImpl findSID(String sid)
+    public CallJabberImpl findBySid(String sid)
     {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
@@ -69,7 +69,7 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * @param callid the ID to search for
      * @return the <code>Call</code> with ID equal to <code>callid</code>.
      */
-    public CallJabberImpl findCallId(String callid)
+    public CallJabberImpl findByCallId(String callid)
     {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
@@ -87,12 +87,12 @@ public class ActiveCallsRepositoryJabberImpl extends ActiveCallsRepository<CallJ
      * @return the {@link CallPeerJabberImpl} with the specified <code>sid</code>
      * or <code>null</code> if we couldn't find one matching it.
      */
-    public CallPeerJabberImpl findCallPeer(String sid)
+    public CallPeerJabberImpl findCallPeerBySid(String sid)
     {
         Iterator<CallJabberImpl> calls = getActiveCalls();
         while (calls.hasNext()) {
             CallJabberImpl call = calls.next();
-            CallPeerJabberImpl peer = call.getPeer(sid);
+            CallPeerJabberImpl peer = call.getPeerBySid(sid);
             if (peer != null)
                 return peer;
         }

@@ -44,9 +44,6 @@
     <string name="encryption_choices">Verschlüsselungsmethoden</string>
     <string name="encryption_choice_unencrypted">Unverschlüsselt</string>
     <string name="enter_name_or_number">Name oder Nummer eingeben</string>
-    <string name="hang_up">Auflegen</string>
-    <string name="hold">In Warteschleife setzen</string>
-    <string name="in_call_with">Anruf mit</string>
     <string name="network">Netzwerk</string>
     <string name="notification_setting">Benachrichtigungseinstellungen&#8230;</string>
     <string name="no_application_found_to_open_file">Keine Anwendung zum Öffnen der Datei gefunden</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Einstellungen&#8230;</string>
     <string name="username_hint">benutzername@servername.de</string>
     <string name="service_gui_USERNAME">Benutzername:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Auflegen</string>
+    <string name="gui_call_hold">In Warteschleife setzen</string>
+    <string name="gui_call_max_transfer">Es sind maximal 2 Anrufe für die überwachte Gesprächsübergabe erlaubt!</string>
+    <string name="gui_call_transfer_call">Anruf weiterleiten</string>
+    <string name="gui_call_transfer">Übertragung</string>
+    <string name="gui_call_transfer_failed">Weiterleitung des Anrufs fehlgeschlagen: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Wählen Sie den Kontakt aus, an den Sie das Gespräch weiterleiten möchten.</string>
+    <string name="gui_call_transfer_msg">%1$s Anruf weiterleiten an&#8230; %2$s</string>
+    <string name="gui_call_with">Anruf mit</string>
 
     <string name="attachOptionDialog_picture">Bilder</string>
     <string name="attachOptionDialog_camera">Bild aufnehmen</string>
@@ -126,6 +134,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s hat den Anruf beantwortet.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk konnte %1$s nicht initialisieren\nAlle Medienanrufe/-dienste werden deaktiviert.\n%2$s</string>
     <string name="service_gui_CALL_END">Der entfernte Anrufer hat den Anruf beendet: %1$s</string>
+    <string name="service_gui_CALL_ERROR">Der entfernte Teilnehmer gibt einen Fehler zurück: %1$s</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Bestätigen und \'Alle auswählen\' Elemente, bevor Sie mit \'Löschen\' fortfahren</string>

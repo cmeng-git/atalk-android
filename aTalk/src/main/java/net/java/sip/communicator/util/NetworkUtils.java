@@ -61,8 +61,7 @@ public class NetworkUtils
     private final static int IN6_ADDR_SIZE = 16;
 
     /**
-     * The size of the tokens in a <code>String</code> representation of IPv6
-     * addresses.
+     * The size of the tokens in a <code>String</code> representation of IPv6 addresses.
      */
     private final static int IN6_ADDR_TOKEN_SIZE = 2;
 
@@ -77,13 +76,12 @@ public class NetworkUtils
     public static final int MAX_PORT_NUMBER = 65535;
 
     /**
-     * The minimum int value that could correspond to a port number bindable
-     * by the SIP Communicator.
+     * The minimum int value that could correspond to a port number bindable by the SIP Communicator.
      */
     public static final int MIN_PORT_NUMBER = 1024;
 
     /**
-     * The random port number generator that we use in getRandomPortNumer()
+     * The random port number generator that we use in getRandomPortNumber()
      */
     private static Random portNumberGenerator = new Random();
 
@@ -542,7 +540,7 @@ public class NetworkUtils
                     inetAddress = InetAddressUtil.ipv4From(address);
                     return (inetAddress != null);
                 } catch (IllegalArgumentException e4) {
-                    Timber.w("The given IP address is an unkownHost: %s", address);
+                    Timber.w("The given IP address is an unknownHost: %s", address);
                     return false;
                 }
             }

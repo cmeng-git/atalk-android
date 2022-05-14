@@ -444,8 +444,7 @@ public class JNIEncoder extends AbstractCodec2
     public void setExpectedPacketLoss(int percentage)
     {
         if (opened) {
-            Opus.encoder_set_packet_loss_perc(encoder, (percentage > minPacketLoss)
-                    ? percentage : minPacketLoss);
+            Opus.encoder_set_packet_loss_perc(encoder, Math.max(percentage, minPacketLoss));
             Timber.log(TimberLog.FINER, "Updating expected packet loss: %s (minimum %s)", percentage, minPacketLoss);
         }
     }
@@ -474,7 +473,7 @@ public class JNIEncoder extends AbstractCodec2
             // Ignore and fall back to the default value.
         }
         if (maxaveragebitrate > 0) {
-            Opus.encoder_set_bitrate(encoder, (maxaveragebitrate < bitrate) ? maxaveragebitrate : bitrate);
+            Opus.encoder_set_bitrate(encoder, Math.min(maxaveragebitrate, bitrate));
         }
         // DTX is off unless specified.
         boolean useDtx = this.useDtx && "1".equals(fmtps.get("usedtx"));

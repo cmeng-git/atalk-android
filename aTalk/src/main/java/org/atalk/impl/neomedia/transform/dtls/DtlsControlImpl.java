@@ -28,13 +28,20 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
+import org.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.bc.BcDefaultDigestProvider;
+import org.bouncycastle.operator.bc.BcECContentSignerBuilder;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 import org.bouncycastle.tls.AlertDescription;
 import org.bouncycastle.tls.AlertLevel;
@@ -49,6 +56,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -206,6 +214,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         // HASH_FUNCTION_UPGRADES
         HASH_FUNCTION_UPGRADES.put("sha-1", new String[]{"sha-224", "sha-256", "sha-384", "sha-512"});
     }
+
+    private boolean mSecurityState = false;
 
     /**
      * Chooses the first from a list of <code>SRTPProtectionProfile</code>s that is supported by <code>DtlsControlImpl</code>.
@@ -368,14 +378,28 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     private static AsymmetricCipherKeyPair generateKeyPair()
     {
-        RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
+        // The signature algorithm of the generated certificate defaults to SHA256.
+        // However, allow the overriding of the default via the ConfigurationService.
+        String signatureAlgorithm = ConfigUtils.getString(
+                LibJitsi.getConfigurationService(), PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
 
-        generator.init(new RSAKeyGenerationParameters(
-                RSA_KEY_PUBLIC_EXPONENT,
-                new SecureRandom(),
-                RSA_KEY_SIZE,
-                RSA_KEY_SIZE_CERTAINTY));
-        return generator.generateKeyPair();
+        if (signatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("RSA")) {
+            RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
+
+            generator.init(new RSAKeyGenerationParameters(
+                    RSA_KEY_PUBLIC_EXPONENT, new SecureRandom(), RSA_KEY_SIZE, RSA_KEY_SIZE_CERTAINTY));
+            return generator.generateKeyPair();
+        }
+        else if (signatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("ECDSA")) {
+            ECKeyPairGenerator generator = new ECKeyPairGenerator();
+            ECNamedCurveParameterSpec curve = ECNamedCurveTable.getParameterSpec("secp256r1");
+            ECDomainParameters domainParams =
+                    new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH(), curve.getSeed());
+            generator.init(new ECKeyGenerationParameters(domainParams, new SecureRandom()));
+            return generator.generateKeyPair();
+        }
+
+        throw new IllegalArgumentException("Unknown signature algorithm: " + signatureAlgorithm);
     }
 
     /**
@@ -399,15 +423,19 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
             Date notBefore = new Date(now - ONE_DAY);
             Date notAfter = new Date(now + ONE_DAY * 6 + CERT_CACHE_EXPIRE_TIME);
             X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
-                    /* issuer */subject,
-                    /* serial */BigInteger.valueOf(now), notBefore, notAfter, subject,
-                    /* publicKeyInfo */
-                    SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
+                    /* issuer */ subject,
+                    /* serial */ BigInteger.valueOf(now), notBefore, notAfter, subject,
+                    /* publicKeyInfo */ SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
 
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA256withRSA");
+            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(signatureAlgorithm);
             AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-            ContentSigner signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
-
+            ContentSigner signer;
+            if (keyPair.getPrivate() instanceof RSAKeyParameters) {
+                signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
+            }
+            else {
+                signer = new BcECContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
+            }
             return builder.build(signer).toASN1Structure();
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
@@ -583,8 +611,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public boolean getSecureCommunicationStatus()
     {
-        // Will always return false as this is called even before the handshake has started
-        return false;
+        return mSecurityState;
     }
 
     /**
@@ -629,6 +656,12 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     {
         if (remoteFingerprints == null)
             throw new NullPointerException("remoteFingerprints");
+
+        // Don't pass an empty list to the stack in order to avoid wiping
+        // certificates that were contained in a previous request.
+        if (remoteFingerprints.isEmpty()) {
+            return;
+        }
 
         // Make sure that the hash functions (which are keys of the field
         // remoteFingerprints) are written in lower case.
@@ -685,6 +718,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     {
         SrtpListener srtpListener = getSrtpListener();
         MediaType mediaType = (MediaType) properties.get(Properties.MEDIA_TYPE_PNAME);
+        mSecurityState = securityState;
 
         if (securityState)
             srtpListener.securityTurnedOn(mediaType, getSrtpControlType().toString(), this);

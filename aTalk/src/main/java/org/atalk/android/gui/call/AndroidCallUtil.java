@@ -7,15 +7,16 @@ package org.atalk.android.gui.call;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -107,16 +108,21 @@ public class AndroidCallUtil
         Contact contact = metaContact.getDefaultContact();
         Jid callee = contact.getJid();
         ProtocolProviderService pps = contact.getProtocolProvider();
-
         boolean isJmSupported = metaContact.isFeatureSupported(JingleMessage.NAMESPACE);
         if (isJmSupported) {
             JingleMessageSessionImpl.sendJingleMessagePropose(pps.getConnection(), callee, isVideoCall);
         }
-        else if (callButtonView != null) {
-            showCallViaMenu(context, callee, callButtonView, isVideoCall);
-        }
         else {
-            createCall(context, pps, callee, isVideoCall);
+            // Must init the Sid if call not via JingleMessage
+            OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
+                    pps.getOperationSet(OperationSetBasicTelephony.class);
+            basicTelephony.initSid();
+            if (callButtonView != null) {
+                showCallViaMenu(context, callee, callButtonView, isVideoCall);
+            }
+            else {
+                createCall(context, pps, callee, isVideoCall);
+            }
         }
     }
 
@@ -133,11 +139,12 @@ public class AndroidCallUtil
     {
         // Force to null assuming user is making a call seeing no call in progress, otherwise cannot make call at all
         if (createCallThread != null) {
+            Timber.w("Another call is being created; restarting call thread!");
             createCallThread = null;
-            aTalkApp.showToastMessage("Another call is already being created. restarting call thread!");
         }
-        else if (CallManager.getActiveCallsCount() > 0) {
-            aTalkApp.showToastMessage("Another call is already in progress!");
+        // Allow max of 2 outgoing calls for attended call transfer support
+        else if (CallManager.getActiveCallsCount() > 1) {
+            aTalkApp.showToastMessage(R.string.gui_call_max_transfer);
             return;
         }
 
@@ -156,12 +163,6 @@ public class AndroidCallUtil
                     Timber.e(t, "Error creating the call: %s", t.getMessage());
                     DialogActivity.showDialog(context, context.getString(R.string.service_gui_ERROR), t.getMessage());
                 } finally {
-//                    if (DialogActivity.waitForDialogOpened(dialogId)) {
-//                        DialogActivity.closeDialog(dialogId);
-//                    }
-//                    else {
-//                        Timber.e("Failed to wait for the dialog: %s", dialogId);
-//                    }
                     createCallThread = null;
                 }
             }

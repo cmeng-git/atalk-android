@@ -44,9 +44,6 @@
     <string name="encryption_choices">Enkripsikan Pilihan</string>
     <string name="encryption_choice_unencrypted">Tidak terenkripsi</string>
     <string name="enter_name_or_number">Masukkan nama atau nomor</string>
-    <string name="hang_up">Menutup panggilan</string>
-    <string name="hold">Tunda panggilan</string>
-    <string name="in_call_with">Panggilan dengan</string>
     <string name="network">Jaringan</string>
     <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
     <string name="no_application_found_to_open_file">Tidak ada yang menambahkan aplikasi untuk perangkat lunak untuk arsip</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Pengaturan&#8230;</string>
     <string name="username_hint">namapengguna@contoh.com</string>
     <string name="service_gui_USERNAME">Nama pengguna:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Menutup panggilan</string>
+    <string name="gui_call_hold">Tunda panggilan</string>
+    <string name="gui_call_max_transfer">Maksimal 2 panggilan diperbolehkan untuk transfer panggilan yang dihadiri!</string>
+    <string name="gui_call_transfer_call">Transfer panggilan</string>
+    <string name="gui_call_transfer">Transfer</string>
+    <string name="gui_call_transfer_failed">Gagal melanjutkan transfer panggilan: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Pilih nama kontak yang ingin Anda transfer, lalu klik Transfer.</string>
+    <string name="gui_call_transfer_msg">%1$s panggilan ditransfer ke&#8230; %2$s</string>
+    <string name="gui_call_with">Panggilan dengan</string>
 
     <string name="attachOptionDialog_picture">Gambar</string>
     <string name="attachOptionDialog_camera">Ambil gambar</string>
@@ -126,6 +134,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s telah menjawab panggilan.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk gagal menginisialisasi %1$s\nSemua panggilan/layanan media akan dinonaktifkan.\n%2$s</string>
     <string name="service_gui_CALL_END">Penelepon jarak jauh telah mengakhiri panggilan: %1$s</string>
+    <string name="service_gui_CALL_ERROR">Pesta jarak jauh mengembalikan kesalahan: %1$s</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Konfirmasi dan \'Pilih Semua\' item, sebelum melanjutkan ke \'Hapus\'</string>

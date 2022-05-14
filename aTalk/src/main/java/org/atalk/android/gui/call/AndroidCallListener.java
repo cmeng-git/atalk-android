@@ -101,20 +101,17 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                 break;
 
             case CallEvent.CALL_RECEIVED:
+                // Reject if there is an active calls
                 if (CallManager.getActiveCallsCount() > 0) {
-                    // Reject if there are active calls
                     CallManager.hangupCall(call);
-
-                    // cmeng - answer call and on hold current - mic not working
-                    // startReceivedCallActivity(evt);
-
-                    // merge call - exception
-                    // CallManager.answerCallInFirstExistingCall(evt.getSourceCall());
                 }
                 else {
-                    storeSpeakerPhoneStatus();
-                    clearVideoCallState();
+                    if (CallManager.getActiveCallsCount() == 0) {
+                        storeSpeakerPhoneStatus();
+                        clearVideoCallState();
+                    }
 
+                    // cmeng - answer call and on hold current - mic not working
                     // If incoming call accepted via Jingle Message Initiation, then just start the VideoCallActivity UI;
                     if (JingleMessageSessionImpl.getRemote() != null) {
                         startVideoCallActivity(call);
@@ -123,6 +120,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     else {
                         startReceivedCallActivity(evt);
                     }
+
+                    // merge call - exception; It will end up with a conference call.
+                    // CallManager.answerCallInFirstExistingCall(evt.getSourceCall());
                 }
                 break;
 
@@ -259,7 +259,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      */
     private void endCall(Call call)
     {
-        // Clears the in call notification
+        // Clears all inCall notification
         AndroidUtils.clearGeneralNotification(appContext);
         // NotificationPopupHandler.removeCallNotification(call.getCallId()); // Called by Jingle call only
 

@@ -52,13 +52,13 @@ class CtrlNotificationThread
      */
     private final Context ctx;
     /**
-     * The notification ID.
-     */
-    final int id;
-    /**
      * The call that is controlled by notification.
      */
     private final Call call;
+    /**
+     * The notification ID.
+     */
+    private final int id;
 
     /**
      * Creates new instance of {@link CtrlNotificationThread}.
@@ -134,6 +134,10 @@ class CtrlNotificationThread
                 }
             }
         }
+    }
+
+    public int getCtrlId() {
+        return id;
     }
 
     /**

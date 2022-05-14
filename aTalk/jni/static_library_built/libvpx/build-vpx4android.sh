@@ -78,7 +78,7 @@ configure_make() {
     --enable-libyuv \
     --disable-examples \
     --disable-tools \
-    --enable-debug \
+    --disable-debug \
     --disable-unit-tests \
     --enable-realtime-only \
     --enable-vp8 --enable-vp9 \

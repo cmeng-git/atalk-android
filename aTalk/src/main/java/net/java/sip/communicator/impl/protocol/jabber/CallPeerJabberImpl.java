@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.AbstractConferenceMember;
+import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.ConferenceMember;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -31,14 +32,15 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleUtil;
-import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 import org.jivesoftware.smackx.jingle_rtp.JingleCallSessionImpl;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
@@ -124,7 +126,7 @@ public class CallPeerJabberImpl
      */
     private DiscoverInfo discoverInfo;
 
-    private final OperationSetBasicTelephonyJabberImpl opsTelephony;
+    private final OperationSetBasicTelephonyJabberImpl mBasicTelephony;
 
     /*
      * Jingle Call Session get initialized when started a call initiator or
@@ -161,7 +163,7 @@ public class CallPeerJabberImpl
     public CallPeerJabberImpl(FullJid peerAddress, CallJabberImpl owningCall)
     {
         super(owningCall);
-        opsTelephony = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
+        mBasicTelephony = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
         jutil = new JingleUtil(mConnection);
 
         mPeerJid = peerAddress;
@@ -379,7 +381,7 @@ public class CallPeerJabberImpl
 
         try {
             // Only do it here, so it will get unregistered when caller cancel the call
-            mJingleSession = new JingleCallSessionImpl(mConnection, mPeerJid, sid, opsTelephony);
+            mJingleSession = new JingleCallSessionImpl(mConnection, mPeerJid, sid, mBasicTelephony);
             mConnection.sendStanza(sessionInitIQ);
 
             // Sending of JingleMessage retract not further required once session-initiate has started.
@@ -786,51 +788,54 @@ public class CallPeerJabberImpl
     }
 
     /**
-     * Processes a specific "XEP-0251: Jingle Session Transfer" <code>transfer</code> packet (extension).
+     * Processes a specific "XEP-0251: Jingle Session Transfer" <code>transfer</code> stanza (extension).
      *
-     * @param transfer the "XEP-0251: Jingle Session Transfer" transfer packet (extension) to process
+     * @param transfer the "XEP-0251: Jingle Session Transfer" transfer stanza (extension) to process
      * @throws OperationFailedException if anything goes wrong while processing the specified
-     * <code>transfer</code> packet (extension)
+     * <code>transfer</code> stanza (extension)
      */
-    public void processTransfer(SdpTransfer transfer)
+    public void processTransfer(SdpTransfer transfer, Jingle jingleIQ)
             throws OperationFailedException
     {
-        Jid attendantAddress = transfer.getFrom();
-        if (attendantAddress == null) {
-            throw new OperationFailedException("Session transfer must contain a 'from' attribute value.",
+        FullJid calleeJid = transfer.getTo().asFullJidIfPossible();
+        if (calleeJid == null) {
+            throw new OperationFailedException("Session unattended transfer must contain a 'to' attribute value.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         }
 
-        Jid calleeAddress = transfer.getTo();
-        if (calleeAddress == null) {
-            throw new OperationFailedException("Session transfer must contain a 'to' attribute value.",
+        Jid attendantJid = jingleIQ.getFrom();
+        if (attendantJid == null) {
+            throw new OperationFailedException("Session transfer source is unknown.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         }
 
         // Checks if the transfer remote peer is contained by the roster of this account.
         Roster roster = Roster.getInstanceFor(mConnection);
-        if (!roster.contains(calleeAddress.asBareJid())) {
-            String failedMessage = "Transfer impossible:\nAccount roster does not contain transfer peer: "
-                    + calleeAddress.asBareJid();
+        if (!roster.contains(calleeJid.asBareJid())) {
+            String failedMessage = "Transfer not possible:\nAccount roster does not contain transfer peer: " + calleeJid;
+            Timber.w(failedMessage);
             setState(CallPeerState.FAILED, failedMessage);
-            Timber.i(failedMessage);
+            return;
         }
 
-        OperationSetBasicTelephonyJabberImpl basicTelephony = (OperationSetBasicTelephonyJabberImpl)
-                mPPS.getOperationSet(OperationSetBasicTelephony.class);
-
-        String transferSid = transfer.getSid();
-        // cmeng: Need more work on call transfer
-        mJingleSession = new JingleCallSessionImpl(mConnection, calleeAddress.asEntityFullJidIfPossible(), transferSid, basicTelephony);
-        CallJabberImpl calleeCall = new CallJabberImpl(basicTelephony, transferSid);
-        SdpTransfer.Builder calleeTransferBuilder = SdpTransfer.getBuilder()
-                .setFrom(attendantAddress);
-        if (transferSid != null) {
-            calleeTransferBuilder.setSid(transferSid)
-                    .setTo(calleeAddress);
+        /*
+         * calleeTransfer content depends on unattended or attended transfer request
+         * <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
+         * <a href="https://xmpp.org/extensions/xep-0251.html#attended ">XEP-0251 § 3. Attended Transfer</a>
+         * Attended call transfer sid must not be null
+        */
+        SdpTransfer calleeTransfer;
+        if (transfer.getSid() != null) {
+            // Attended transfer; just forward the received transfer
+            calleeTransfer = transfer;
+        } else {
+            // Unattended transfer, must init the from attribute to attendant Jid
+            calleeTransfer = SdpTransfer.getBuilder().setFrom(attendantJid).build();
         }
-        basicTelephony.createOutgoingCall(calleeCall, calleeAddress.toString(),
-                Arrays.asList(new ExtensionElement[]{calleeTransferBuilder.build()}));
+
+        // Transfer jingle session-initiate must use new Sid; perform init JingleCallSessionImpl() in initiateSession
+        CallJabberImpl calleeCall = new CallJabberImpl(mBasicTelephony, JingleManager.randomId());
+        mBasicTelephony.createOutgoingCall(calleeCall, calleeJid, Arrays.asList(new ExtensionElement[]{calleeTransfer}));
     }
 
     /**
@@ -1209,36 +1214,27 @@ public class CallPeerJabberImpl
     protected void transfer(Jid to, String sid)
             throws OperationFailedException
     {
-        Jingle transferSessionInfo = jutil.createSessionInfo(mPeerJid, getSid());
-        SdpTransfer.Builder transferBuilder = SdpTransfer.getBuilder()
-                .setTo(to);
-
-        // Attended transfer.
+        // Attended transfer needs all the attrs to have values.
+        SdpTransfer.Builder transferBuilder = SdpTransfer.getBuilder().setTo(to);
         if (sid != null) {
-            /*
-             * Not really sure what the value of the "from" attribute of the "transfer" element
-             * should be but the examples in "XEP-0251: Jingle Session Transfer" has it in the case
-             * of attended transfer.
-             */
-            transferBuilder.setFrom(mPPS.getOurJID())
+            transferBuilder
+                    .setFrom(mPPS.getOurJID())
                     .setSid(sid);
 
             // Puts on hold the 2 calls before making the attended transfer.
-            OperationSetBasicTelephonyJabberImpl basicTelephony
-                    = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
-            CallPeerJabberImpl callPeer = basicTelephony.getActiveCallPeer(sid);
+            CallPeerJabberImpl callPeer = mBasicTelephony.getActiveCallPeer(sid);
             if (callPeer != null) {
                 if (!CallPeerState.isOnHold(callPeer.getState())) {
                     callPeer.putOnHold(true);
                 }
             }
-
             if (!CallPeerState.isOnHold(this.getState())) {
                 this.putOnHold(true);
             }
         }
-        transferSessionInfo.addExtension(transferBuilder.build());
 
+        Jingle transferSessionInfo = jutil.createSessionInfo(mPeerJid, getSid());
+        transferSessionInfo.addExtension(transferBuilder.build());
         try {
             StanzaCollector collector = mConnection.createStanzaCollectorAndSend(transferSessionInfo);
             try {
@@ -1251,17 +1247,18 @@ public class CallPeerJabberImpl
                     OperationFailedException.REGISTRATION_REQUIRED, e);
         } catch (XMPPException.XMPPErrorException e1) {
             // Log the failed transfer call and notify the user.
-            throw new OperationFailedException("Remote peer does not manage call 'transfer'. "
+            throw new OperationFailedException ("Remote peer does not support call 'transfer'. "
                     + e1.getStanzaError(), OperationFailedException.ILLEGAL_ARGUMENT);
         } catch (SmackException.NoResponseException e1) {
             // Log the failed transfer call and notify the user.
-            throw new OperationFailedException("No response to the 'transfer' request.",
+            throw new OperationFailedException("No response to 'transfer' request.",
                     OperationFailedException.ILLEGAL_ARGUMENT);
         }
 
-        String message = ((sid == null) ? "Unattended" : "Attended") + " transfer to: " + to;
-        // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
+        String message = aTalkApp.getResString(R.string.gui_call_transfer_msg,
+                (sid == null) ? "Unattended" : "Attended", to);
         try {
+            // Implements the SIP behavior: once the transfer is accepted, the current call is closed.
             hangup(false, message, new JingleReason(Reason.success, message, SdpTransferred.getBuilder().build()));
         } catch (NotConnectedException | InterruptedException e) {
             throw new OperationFailedException("Could not send transfer", 0, e);

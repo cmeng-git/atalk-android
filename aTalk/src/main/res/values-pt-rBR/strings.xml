@@ -44,9 +44,6 @@
     <string name="encryption_choices">Escolha criptografia</string>
     <string name="encryption_choice_unencrypted">Não criptografado</string>
     <string name="enter_name_or_number">Digite um nome ou número</string>
-    <string name="hang_up">Terminar a ligação</string>
-    <string name="hold">Colocar em espera</string>
-    <string name="in_call_with">Ligação com</string>
     <string name="network">Rede</string>
     <string name="notification_setting">Configurações de notificação&#8230;</string>
     <string name="no_application_found_to_open_file">Nenhum app encontrado para abrir o arquivo</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Configurações&#8230;</string>
     <string name="username_hint">usuário@exemplo.com</string>
     <string name="service_gui_USERNAME">Usuário:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Terminar a ligação</string>
+    <string name="gui_call_hold">Colocar em espera</string>
+    <string name="gui_call_max_transfer">Máximo de 2 chamadas são permitidas para transferência de chamada assistida!</string>
+    <string name="gui_call_transfer_call">Transferir chamada</string>
+    <string name="gui_call_transfer">Transferência</string>
+    <string name="gui_call_transfer_failed">Falha ao prosseguir com a transferência de chamada: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Selecione o nome do contato que você deseja transferir e depois clique em Transferir.</string>
+    <string name="gui_call_transfer_msg">%1$s transferência de chamada para&#8230; %2$s</string>
+    <string name="gui_call_with">Ligação com</string>
 
     <string name="attachOptionDialog_picture">Fotos</string>
     <string name="attachOptionDialog_camera">Fazer uma foto</string>
@@ -126,6 +134,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s respondeu à ligação.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk falhou ao iniciar %1$s\nTodas as ligações da mídia e os serviços serão desativados.\n%2$s</string>
     <string name="service_gui_CALL_END">O interlocutor remoto terminou a ligação: %1$s</string>
+    <string name="service_gui_CALL_ERROR">A parte remota retorna um erro: %1$s</string>
     <string name="service_gui_CALL_FAILED">Ligação falhou</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de ligações</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme e \'Selecione todos\' itens, antes de avançar para \'Excluir\'</string>
@@ -139,7 +148,7 @@
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Não foi possível encontrar nenhum serviço de áudio/vídeo ativo, por causa disso não foi possível efetuar uma ligação.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nenhum serviço de áudio configurado.</string>
     <string name="service_gui_CALL_NO_AUDIO_CODEC">Nenhum codec de áudio ativado.</string>
-    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">O dispositivo ou codec não está configurado corretamente em \'Configurações…\': %1$s</string>
+    <string name="service_gui_CALL_NO_DEVICE_CODEC_H">Pode ser o aparelho ou codec que não está configurado corretamente em \'Configurações…\': %1$s</string>
     <string name="service_gui_CALL_NO_DEVICE_CODEC_Q">Gostaria de continuar com a ligação?</string>
     <string name="service_gui_CALL_NO_MATCHING_FORMAT_H">Não foram encontrados formatos de mídia compatíveis com a %1$s para receber ligações. Por favor, verifique a configuração do aparelho e do codec em \'Configurações…\'.</string>
     <string name="service_gui_CALL_OUTGOING">Ligação de saída</string>
@@ -274,7 +283,7 @@
     <string name="service_gui_GEO_LONGITUDE">Longitude:</string>
     <string name="service_gui_GEO_SEND">Enviar localização do GPS</string>
     <string name="service_gui_GEO_SHOW">Vistas da rua &amp; Mapa</string>
-    <string name="service_gui_GPS_TRACK">Vistas de rua contínuas &amp; Atualização da mapa</string>
+    <string name="service_gui_GPS_TRACK">Vista de rua contínua &amp; Atualização do mapa</string>
     <string name="apply_new_interval_setting">Clique no \"Enviar atualizações continuas de localização\" para aplicar a nova configuração de intervalo</string>
     <string name="send_cont_location_updates">Atualizações contínuas de localização (%1$dm) @%2$dsec</string>
     <string name="send_single_location_fix">Atualização única de correção de localização</string>
@@ -317,7 +326,7 @@
     <string name="service_gui_DISCONNECTING_ACCOUNT">Desconectando %1$s</string>
     <string name="service_gui_DENY">Recusar</string>
     <string name="service_gui_DISPLAY_NAME">Nome exibido</string>
-    <string name="service_gui_CONTACT_DISPLAY_NAME">Nome de contato exibido</string>
+    <string name="service_gui_CONTACT_DISPLAY_NAME">Nome de contato mostrado</string>
     <string name="service_gui_DND_STATUS">Não perturbar</string>
     <string name="service_gui_DURATION">duração</string>
 
@@ -909,8 +918,8 @@
     <string name="impl_media_security_DATA_SEND_FAILED">&lt;html>Falha no envio de dados criptografados. A conexão da internet ou o Peer não está disponível.&lt;br/>&lt;b>Sua ligação não é segura&lt;/b>&lt;br/>Código de erro: %1$s&lt;/html></string>
     <string name="impl_media_security_RETRY_RATE_EXCEEDED">&lt;html>Muitas tentativas durante as negociações de segurança. Isto pode significar que a outra parte tem problemas com a internet.&lt;br/>&lt;b>Sua ligação não é segura&lt;/b>&lt;br/>Código de erro: %1$s&lt;/html></string>
     <string name="impl_media_security_INTERNAL_PROTOCOL_ERROR">&lt;html>Ocorreu erro de protocolo interno.&lt;br/>&lt;b>Sua ligação não é segura&lt;/b>&lt;br/>Código de erro: %1$s&lt;/html></string>
-    <string name="impl_media_security_SECURITY_OFF">Desativada o suporte de criptografia em ligações</string>
-    <string name="impl_media_security_SECURITY_ON">Ativada o suporte de criptografia em ligações</string>
+    <string name="impl_media_security_SECURITY_OFF">Desativado o suporte para criptografia em ligações</string>
+    <string name="impl_media_security_SECURITY_ON">Ativado o suporte para criptografia em ligações</string>
     <string name="impl_media_security_SEVERE_GENERIC_MSG">&lt;html>Foi detectado um grave problema da segurança.&lt;br/>&lt;b>Sua ligação não é segura&lt;/b>&lt;br/>Código de erro: %1$s&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Nenhum segredo compartilhado preservado disponível.&lt;br/>&lt;b>Recomenda-se a verificação SAS&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Falta um segredo compartilhado retido previsto.&lt;br/>&lt;b>Requerida verificação SAS&lt;/b>&lt;br/>Se os códigos SAS não corresponderem, desligue e tente novamente&lt;/html></string>
@@ -1040,8 +1049,8 @@
     <!-- DNS config -->
     <string name="service_gui_settings_DNSSEC_DANE">Segurança de SSL/DNSSEC/DANE</string>
     <string name="service_gui_settings_DNS">DNS</string>
-    <string name="service_gui_settings_DNS_SUMMARY">Definir as configurações de DNS</string>
-    <string name="plugin_dnsconfig_DNSSEC">Segurança de DNS (DNSSEC)</string>
+    <string name="service_gui_settings_DNS_SUMMARY">Definir as configurações do DNS</string>
+    <string name="plugin_dnsconfig_DNSSEC">Segurança do DNS (DNSSEC)</string>
     <string name="plugin_dnsconfig_dnssec_DOMAIN_NAME">Domínio</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED">A alteração de status falhou</string>
     <string name="plugin_dnsconfig_dnssec_ENABLE_FAILED_MSG">A alteração do status de ativação do DNSSEC falhou.</string>
@@ -1177,7 +1186,7 @@
     <string name="service_gui_SIP_SUBSCRIPTION_DUR">Duração padrão da assinatura(em s.)</string>
     <string name="service_gui_SIP_USER">ID de CRYPTO</string>
     <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
-    <string name="service_gui_SIP_VMAIL_URI">URI de assinatura do voicemail</string>
+    <string name="service_gui_SIP_VMAIL_URI">URI de assinatura da caixa postal</string>
     <string name="service_gui_SIP_VMAIL_CHECK_URI">URI de verificação da caixa postal</string>
     <string name="service_gui_SIP_WMI">Mensagem em espera (MWI)</string>
 
@@ -1221,7 +1230,7 @@
     <string name="service_gui_JBR_PING_INTERVAL">Intervalo de ping (1~3600 segundos)</string>
     <string name="service_gui_JBR_PING_INTERVAL_TUNE_ENABLE">Ativar a otimização de intervalo do ping</string>
     <string name="service_gui_JBR_PING_INTERVAL_TUNE_OFF_SUMMARY">Não realizar a otimização de intervalo do ping para conexão de rede móvel</string>
-    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Realizar a otimização de intervalo do Ping para conexão de rede móvel</string>
+    <string name="service_gui_JBR_PING_INTERVAL_TUNE_ON_SUMMARY">Realizar a otimização de intervalo do ping para conexão de rede móvel</string>
     <string name="service_gui_JBR_PORT">Porta do servidor</string>
     <string name="service_gui_JBR_PRIORITY">Prioridade (faixa:-128~127)</string>
     <string name="service_gui_JBR_RES_AUTO_GEN">Geração automática de recursos</string>
@@ -1570,16 +1579,16 @@
     <string name="permission_unknown_feedback">DESCONOCIDO</string>
 
     <string name="audio_permission_denied_dialog_title">Pedido de permissão de áudio</string>
-    <string name="audio_permission_denied_feedback">Ligação de áudio não será disponível até que você conceda a permissão requerida</string>
+    <string name="audio_permission_denied_feedback">Ligação de áudio não será disponível até que você conceda a permissão necessária</string>
 
     <string name="camera_permission_denied_dialog_title">Pedido de permissão da câmara</string>
-    <string name="camera_permission_denied_feedback">Permissão da câmara: todas as atividades associadas à câmera não serão disponíveis até que você conceda a permissão requerida</string>
+    <string name="camera_permission_denied_feedback">Permissão da câmara: todas as atividades associadas à câmera não serão disponíveis até que você conceda a permissão necessária</string>
 
     <string name="contacts_permission_denied_dialog_title">Pedido de permissão de contatos</string>
     <string name="contacts_permission_denied_feedback">É necessária permissão de contatos para acesso ao estado de telefone e configuração de ligações</string>
 
     <string name="location_permission_denied_dialog_title">Pedido de permissão de localização</string>
-    <string name="location_permission_denied_feedback">Os recursos da localização de GPS não serão disponíveis até que você conceda a permissão requerida</string>
+    <string name="location_permission_denied_feedback">Os recursos da localização do GPS não serão disponíveis até que você conceda a permissão necessária</string>
 
     <string name="phone_permission_denied_dialog_title">Pedido de permissão de acesso ao estado de telefone</string>
     <string name="phone_permission_denied_feedback">Os recursos de telefone não serão disponíveis até que você conceda a permissão requerida</string>

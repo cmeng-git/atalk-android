@@ -28,11 +28,11 @@ public class SmackServiceNode implements ConnectionListener
     private final AbstractXMPPConnection connection;
     private final ConcurrentHashMap<String, RelayChannel> channels = new ConcurrentHashMap<>();
     private final Map<Jid, TrackerEntry> trackerEntries = Collections.synchronizedMap(new LinkedHashMap<>());
-    private long timeout = 60000;
-    private final static ExecutorService executorService = Executors.newCachedThreadPool();
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
     private final AtomicInteger ids = new AtomicInteger(0);
+    private final long timeout;
 
+    private final static ExecutorService executorService = Executors.newCachedThreadPool();
     static {
         ProviderManager.addIQProvider(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, new JingleNodesProvider());
         ProviderManager.addIQProvider(JingleTrackerIQ.ELEMENT, JingleTrackerIQ.NAMESPACE, new JingleTrackerProvider());

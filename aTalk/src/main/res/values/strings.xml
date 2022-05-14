@@ -44,9 +44,6 @@
     <string name="encryption_choices">Encrypt Choices</string>
     <string name="encryption_choice_unencrypted">Unencrypted</string>
     <string name="enter_name_or_number">Enter name or number</string>
-    <string name="hang_up">Hang up call</string>
-    <string name="hold">Put call on hold</string>
-    <string name="in_call_with">In call with </string>
     <string name="network">Network</string>
     <string name="notification_setting">Notification Settings&#8230;</string>
     <string name="no_application_found_to_open_file">No application found to open file</string>
@@ -60,6 +57,17 @@
     <string name="system_settings">Settings&#8230;</string>
     <string name="username_hint">username@example.com</string>
     <string name="service_gui_USERNAME">Username:</string>
+
+    <!-- Call Transfer -->
+    <string name="gui_call_hang_up">Hang up call</string>
+    <string name="gui_call_hold">Put call on hold</string>
+    <string name="gui_call_max_transfer">Maximum of 2 calls are allowed for attended call transfer!</string>
+    <string name="gui_call_transfer_call">Transfer call</string>
+    <string name="gui_call_transfer">Transfer</string>
+    <string name="gui_call_transfer_failed">Failed to proceed with call transfer: %1$s &#8674; %2$s\n%3$s</string>
+    <string name="gui_call_transfer_hint">Select the name of the contact you would like to transfer to and then click Transfer.</string>
+    <string name="gui_call_transfer_msg">%1$s call transferring to&#8230; %2$s</string>
+    <string name="gui_call_with">In call with</string>
 
     <string name="attachOptionDialog_picture">Pictures</string>
     <string name="attachOptionDialog_camera">Take picture</string>
@@ -126,6 +134,7 @@
     <string name="service_gui_CALL_ANSWER">%1$s has answered the call.</string>
     <string name="service_gui_CALL_DISABLE_ON_FAULT">aTalk has failed to initialize %1$s\nAll media calls/services will be disabled.\n%2$s</string>
     <string name="service_gui_CALL_END">The remote caller has ended the call: %1$s</string>
+    <string name="service_gui_CALL_ERROR">Remote party returns an error: %1$s</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirm and \'Select All\' items, before proceed to \'Delete\'</string>
