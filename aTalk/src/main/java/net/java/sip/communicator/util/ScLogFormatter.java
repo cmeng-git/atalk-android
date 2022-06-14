@@ -160,7 +160,7 @@ public class ScLogFormatter extends java.util.logging.Formatter
     private int inferCaller(LogRecord record)
     {
         // Get the stack trace.
-        StackTraceElement stack[] = (new Throwable()).getStackTrace();
+        StackTraceElement[] stack = (new Throwable()).getStackTrace();
 
         //the line number that the caller made the call from
         int lineNumber = -1;

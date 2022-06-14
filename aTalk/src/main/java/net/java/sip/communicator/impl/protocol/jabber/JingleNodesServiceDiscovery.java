@@ -12,10 +12,12 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
+import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmpp.jnodes.smack.*;
 
 import java.util.List;
 import java.util.Map;

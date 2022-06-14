@@ -29,17 +29,13 @@ import java.util.concurrent.locks.Lock;
 
 public class LoginSynchronizationPoint<E extends Exception>
 {
-
-    private final ProtocolProviderServiceJabberImpl mPPS;
-
     private final XMPPConnection mConnect;
     private final Lock loginInitLock;
     private final Condition condition;
     private final String waitFor;
 
     // Note that there is no need to make 'state' and 'failureException' volatile. Since 'lock'
-    // and 'unlock' have the same memory synchronization effects as synchronization block enter
-    // and leave.
+    // and 'unlock' have the same memory synchronization effects as synchronization block enter and leave.
     private State state;
     private E failureException;
 
@@ -51,7 +47,6 @@ public class LoginSynchronizationPoint<E extends Exception>
      */
     public LoginSynchronizationPoint(ProtocolProviderServiceJabberImpl pps, String waitFor)
     {
-        mPPS = pps;
         mConnect = pps.getConnection();
         this.loginInitLock = pps.getLoginInitLock();
         this.condition = pps.getLoginInitLock().newCondition();
@@ -79,8 +74,7 @@ public class LoginSynchronizationPoint<E extends Exception>
      * @throws NotConnectedException if the connection is not connected.
      */
     public E sendAndWaitForResponse(TopLevelStreamElement request)
-            throws NoResponseException,
-            NotConnectedException, InterruptedException
+            throws NoResponseException, NotConnectedException, InterruptedException
     {
         assert (state == State.Initial);
         loginInitLock.lock();
@@ -113,28 +107,23 @@ public class LoginSynchronizationPoint<E extends Exception>
      * @throws NotConnectedException if the connection is not connected.
      */
     public void sendAndWaitForResponseOrThrow(Nonza request)
-            throws E, NoResponseException,
-            NotConnectedException, InterruptedException
+            throws E, NoResponseException, NotConnectedException, InterruptedException
     {
         sendAndWaitForResponse(request);
-        switch (state) {
-            case Failure:
-                if (failureException != null) {
-                    throw failureException;
-                }
-                break;
-            default:
-                // Success, do nothing
+        // For State.Success, do nothing
+        if (state == State.Failure) {
+            if (failureException != null) {
+                throw failureException;
+            }
         }
     }
 
     /**
      * Check if this synchronization point is successful or wait the connections reply timeout.
      *
-     * @throws NoResponseException if there was no response marking the synchronization point as
-     * success or failed.
+     * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
      * @throws E if there was a failure
-     * @throws InterruptedException
+     * @throws InterruptedException Interrupted Exception
      */
     public void checkIfSuccessOrWaitOrThrow()
             throws NoResponseException, E, InterruptedException
@@ -149,9 +138,8 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Check if this synchronization point is successful or wait the connections reply timeout.
      *
      * @return {@code null} if synchronization point was successful, or the failure Exception.
-     * @throws NoResponseException if there was no response marking the synchronization point as
-     * success or failed.
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
+     * @throws InterruptedException Interrupted Exception
      */
     public E checkIfSuccessOrWait()
             throws NoResponseException, InterruptedException
@@ -190,8 +178,8 @@ public class LoginSynchronizationPoint<E extends Exception>
     }
 
     /**
-     * Report this synchronization point as failed because of the given exception. The {@code
-     * failureException} must be set.
+     * Report this synchronization point as failed because of the given exception.
+     * The {@code failureException} must be set.
      *
      * @param failureException the exception causing this synchronization point to fail.
      */
@@ -242,10 +230,10 @@ public class LoginSynchronizationPoint<E extends Exception>
      * Wait for the condition to become something else as {@link State#RequestSent} or
      * {@link State#Initial}. {@link #reportSuccess()} and {@link #reportFailure(Exception)}
      * will either set this synchronization point to {@link State#Success} or
-     * {@link State#Failure}. If none of them is set after the connections reply timeout, this
-     * method will set the state of {@link State#NoResponse}.
+     * {@link State#Failure}. If none of them is set after the connections reply timeout,
+     * this method will set the state of {@link State#NoResponse}.
      *
-     * @throws InterruptedException
+     * @throws InterruptedException Interrupted Exception
      */
     private void waitForConditionOrTimeout()
             throws InterruptedException
@@ -263,13 +251,10 @@ public class LoginSynchronizationPoint<E extends Exception>
 
     /**
      * Check for a response and throw a {@link NoResponseException} if there was none.
-     * <p>
      * The exception is thrown, if state is one of 'Initial', 'NoResponse' or 'RequestSent'
-     * </p>
      *
-     * @return {@code true</code> if synchronization point was successful, <code>false} on
-     * failure.
-     * @throws NoResponseException
+     * @return {@code true</code> if synchronization point was successful, <code>false} on failure.
+     * @throws NoResponseException No Response Exception
      */
     private E checkForResponse()
             throws NoResponseException

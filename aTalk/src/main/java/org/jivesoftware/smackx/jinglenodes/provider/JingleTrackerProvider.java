@@ -1,10 +1,12 @@
-package org.xmpp.jnodes.smack;
+package org.jivesoftware.smackx.jinglenodes.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 
 import java.io.IOException;
 

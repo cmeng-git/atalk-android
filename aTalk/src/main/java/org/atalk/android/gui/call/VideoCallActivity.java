@@ -308,7 +308,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     {
         Intent videoCallIntent = new Intent(parent, VideoCallActivity.class);
         videoCallIntent.putExtra(CallManager.CALL_IDENTIFIER, callIdentifier);
-        VideoHandlerFragment.wasVideoEnabled = false;
         return videoCallIntent;
     }
 

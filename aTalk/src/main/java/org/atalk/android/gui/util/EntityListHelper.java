@@ -64,7 +64,7 @@ public class EntityListHelper
     /**
      * Removes given <code>metaContact</code> from the contact list. Asks the user for confirmation before proceed.
      * a. Remove all the chat messages and chatSession records from the database.
-     * b. Remove metaContact from the roster in DB.
+     * b. Remove metaContact from the roster etc in DB via MclStorageManager#fireMetaContactEvent.
      *
      * Note: DomainJid will not be removed.
      *
@@ -79,8 +79,8 @@ public class EntityListHelper
         Contact contact = metaContact.getDefaultContact();
         Jid contactJid = contact.getJid();
         if (!(contactJid instanceof DomainBareJid)) {
-            message = context.getString(R.string.service_gui_REMOVE_CONTACT_TEXT,
-                    contact.getProtocolProvider().getAccountID().getUserID(), contactJid);
+            Jid userJid = contact.getProtocolProvider().getAccountID().getBareJid();
+            message = context.getString(R.string.service_gui_REMOVE_CONTACT_TEXT, userJid, contactJid);
         }
         else {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
@@ -108,17 +108,18 @@ public class EntityListHelper
     }
 
     /**
-     * Routine to remove metaContact
+     * Routine to remove the specified metaContact
      *
-     * @param contact contact to be removed
+     * @param metaContact the metaContact to be removed
      */
-    private static void doRemoveContact(final Context ctx, final MetaContact contact)
+    private static void doRemoveContact(final Context ctx, final MetaContact metaContact)
     {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
             MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
             try {
-                metaContactListService.removeMetaContact(contact);
+                metaContactListService.removeMetaContact(metaContact);
+
             } catch (Exception ex) {
                 DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
             }

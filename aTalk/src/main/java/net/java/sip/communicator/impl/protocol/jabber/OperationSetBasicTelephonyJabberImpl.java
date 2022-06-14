@@ -952,7 +952,7 @@ public class OperationSetBasicTelephonyJabberImpl
             throws NotConnectedException, InterruptedException
     {
         JingleAction action = jingle.getAction();
-        Timber.d("### Processing Jingle IQ (%s); callPeer: %s", action, callPeer.getAddress());
+        Timber.d("### Processing Jingle IQ (%s: %s); callPeer: %s", action, jingle.getStanzaId(), callPeer.getAddress());
         switch (action) {
             case session_accept:
                 jingleSI = null;

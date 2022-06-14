@@ -1,7 +1,7 @@
-package org.xmpp.jnodes;
+package org.jivesoftware.smackx.jinglenodes.relay;
 
-import org.xmpp.jnodes.nio.DatagramListener;
-import org.xmpp.jnodes.nio.SelDatagramChannel;
+import org.jivesoftware.smackx.jinglenodes.nio.DatagramListener;
+import org.jivesoftware.smackx.jinglenodes.nio.SelDatagramChannel;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

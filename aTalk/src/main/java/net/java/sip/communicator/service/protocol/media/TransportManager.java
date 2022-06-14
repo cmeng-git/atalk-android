@@ -439,6 +439,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                     // data/RTP
                     if ((socket = connector.getDataSocket()) != null) {
                         InetSocketAddress dataAddress = target.getDataAddress();
+                        // Timber.e(new Exception(), "Send Hole Punch Packet for media: %s; %s", type.name(), target);
                         socket.send(new DatagramPacket(buf, buf.length, dataAddress.getAddress(), dataAddress.getPort()));
                     }
 
@@ -450,7 +451,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
                 }
             }
         } catch (Exception e) {
-            Timber.e(e, "Error cannot send to remote peer for media: %s; %s", type.name(), target);
+            Timber.e(e, "Error in sending remote peer for media: %s; %s", type.name(), target);
         }
     }
 
@@ -646,8 +647,7 @@ public abstract class TransportManager<U extends MediaAwareCallPeer<?, ?, ?>>
     /**
      * Returns the ICE candidate extended type selected by the given agent.
      *
-     * @param iceAgent The ICE agent managing the ICE offer/answer exchange, collecting and selecting the
-     * candidate.
+     * @param iceAgent The ICE agent managing the ICE offer/answer exchange, collecting and selecting the candidate.
      * @param streamName The stream name (AUDIO, VIDEO);
      * @return The ICE candidate extended type selected by the given agent. null if the iceAgent is
      * null or if there is no candidate selected or available.

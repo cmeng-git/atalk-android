@@ -19,7 +19,6 @@ package org.ice4j.ice;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.util.collections.JMap;
 import org.atalk.util.logging2.Logger;
 import org.ice4j.StackProperties;
 import org.ice4j.Transport;
@@ -188,7 +187,8 @@ public class Component implements PropertyChangeListener
 
         this.logger = parentLogger.createChildLogger(
                 this.getClass().getName(),
-                JMap.of("componentId", Integer.toString(componentID)));
+                Collections.singletonMap("componentId", Integer.toString(componentID))
+        );
 
         if (useComponentSocket) {
             try {

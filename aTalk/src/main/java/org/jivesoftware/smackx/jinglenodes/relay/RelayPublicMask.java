@@ -1,6 +1,6 @@
-package org.xmpp.jnodes;
+package org.jivesoftware.smackx.jinglenodes.relay;
 
-import org.xmpp.jnodes.nio.PublicIPResolver;
+import org.jivesoftware.smackx.jinglenodes.nio.PublicIPResolver;
 
 import java.net.InetSocketAddress;
 

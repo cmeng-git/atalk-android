@@ -52,6 +52,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * XEP-0184: Message Delivery Receipts with user enable/disable option
 * XEP-0251: Jingle Session Transfer: Support both Unattended and Attended call transfer
 * XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
+* Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls
 * Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
 * Join or create room with full room configuration support for owner
 * Integrated captcha protected room user interface with retry on failure

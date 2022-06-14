@@ -1,4 +1,5 @@
 package org.atalk.android.plugin.timberlog;
+import androidx.annotation.NonNull;
 
 import timber.log.Timber;
 
@@ -9,7 +10,7 @@ public class TimberLogImpl
         Timber.plant(new DebugTreeExt()
         {
             @Override
-            protected String createStackElementTag(StackTraceElement element)
+            protected String createStackElementTag(@NonNull StackTraceElement element)
             {
                 return String.format("(%s:%s)#%s",
                         element.getFileName(),

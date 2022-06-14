@@ -44,7 +44,7 @@ import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.xmpp.jnodes.smack.SmackServiceNode;
+import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

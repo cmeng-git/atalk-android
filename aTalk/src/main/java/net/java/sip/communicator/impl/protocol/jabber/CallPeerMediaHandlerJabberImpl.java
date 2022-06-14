@@ -1142,7 +1142,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         MediaStreamTarget target = transportManager.getStreamTarget(mediaType);
 
         /*
-         * If transport and session-accept are received one after the other, then must wait for transport
+         * If transport and session-accept/content-accept are received one after the other, then must wait for transport
          * processing to be completed before attempt again. Otherwise, getStream(MediaType) will always return nul
          */
         if (target == null) {
@@ -1155,7 +1155,6 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
         // be null if candidates are sent separately. No reliable, fixed with above
         // if (target == null)
         //    target = JingleUtils.extractDefaultTarget(content);
-
         Timber.d("### Process media content for: sender = %s: %s => %s", sender, mediaType, target);
 
         // aborted if associated target address is not available: Process transport-info completed
@@ -1231,10 +1230,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             MediaStream stream = getStream(MediaType.VIDEO);
 
             if (stream != null && dev != null) {
-                if (!supportedFormats.isEmpty()) {
-                    MediaFormat fmt = supportedFormats.get(0);
-                    ((VideoMediaStream) stream).updateQualityControl(fmt.getAdvancedAttributes());
-                }
+                MediaFormat fmt = supportedFormats.get(0);
+                ((VideoMediaStream) stream).updateQualityControl(fmt.getAdvancedAttributes());
             }
 
             if (qualityControls != null) {
@@ -1245,10 +1242,17 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             }
         }
 
-        // create the corresponding stream... with the first preferred format.
-        StreamConnector connector = transportManager.getStreamConnector(mediaType);
-        initStream(content.getName(), connector, dev, supportedFormats.get(0), target, direction,
-                rtpExtensions, masterStream);
+        // create the corresponding stream... with the first preferred format matching our capabilities.
+        if (supportedFormats != null && !supportedFormats.isEmpty()) {
+            StreamConnector connector = transportManager.getStreamConnector(mediaType);
+            initStream(content.getName(), connector, dev, supportedFormats.get(0), target, direction,
+                    rtpExtensions, masterStream);
+        }
+        else {
+            // remote party must have messed up our Jingle description. throw an exception.
+            ProtocolProviderServiceJabberImpl.throwOperationFailedException(
+                    "No matching media format supported.", OperationFailedException.ILLEGAL_ARGUMENT, null);
+        }
     }
 
     /**
