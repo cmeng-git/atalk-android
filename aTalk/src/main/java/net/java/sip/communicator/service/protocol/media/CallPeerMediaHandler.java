@@ -1608,7 +1608,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         MediaStream stream;
         stream = getStream(MediaType.AUDIO);
         if ((stream != null) && !stream.isStarted() && isLocalAudioTransmissionEnabled()) {
-            Timber.i("Starting callPeer media handler for: %s", stream.getName());
+            Timber.i("Starting callPeer media handler for: %s, %s", stream.getName(), stream.isStarted());
             getTransportManager().setTrafficClass(stream.getTarget(), MediaType.AUDIO);
             stream.start();
             sendHolePunchPacket(stream, MediaType.AUDIO);
@@ -1618,10 +1618,10 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         if (stream != null) {
             Timber.i("Starting callPeer media handler for: %s (%s) %s",
                     stream.getName(), stream.getFormat(), stream.isStarted());
+
             /*
-             * Inform the listener of LOCAL_VIDEO_STREAMING only once the video starts so that
-             * VideoMediaDeviceSession has correct MediaDevice set (switch from desktop
-             * streaming to webcam video or vice-versa issue)
+             * Inform the listener of LOCAL_VIDEO_STREAMING only once the video stream is available so that VideoMediaDeviceSession
+             * has correct MediaDevice set (switch from desktop streaming to webcam video or vice-versa issue)
              */
             firePropertyChange(OperationSetVideoTelephony.LOCAL_VIDEO_STREAMING, null, videoDirectionUserPreference);
 

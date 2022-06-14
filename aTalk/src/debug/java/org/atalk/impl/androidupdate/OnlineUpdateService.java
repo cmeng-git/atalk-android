@@ -102,7 +102,6 @@ public class OnlineUpdateService extends IntentService
 
                 Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
                 intent.setAction(ACTION_UPDATE_AVAILABLE);
-                @SuppressLint("UnspecifiedImmutableFlag")
                 PendingIntent pending = PendingIntent.getService(this, 0, intent,
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
                                 : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
@@ -120,7 +119,6 @@ public class OnlineUpdateService extends IntentService
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
-        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
                         : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
@@ -136,9 +134,8 @@ public class OnlineUpdateService extends IntentService
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this.getApplicationContext(), OnlineUpdateService.class);
         intent.setAction(ACTION_AUTO_UPDATE_APP);
-        @SuppressLint("UnspecifiedImmutableFlag")
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent,
-				Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
                         : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
     }

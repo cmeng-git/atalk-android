@@ -1,10 +1,16 @@
-package org.xmpp.jnodes.smack;
+package org.jivesoftware.smackx.jinglenodes.provider;
+
+import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_HOST;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_LOCALPORT;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_PROTOCOL;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ.ATTR_REMOTEPORT;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
 
 import java.io.IOException;
 import java.util.IllegalFormatException;
@@ -30,10 +36,10 @@ public class JingleNodesProvider extends IQProvider<JingleChannelIQ>
                 if (elementName.equals(JingleChannelIQ.ELEMENT)
                         && namespace.equals(JingleChannelIQ.NAMESPACE)) {
 
-                    final String protocol = parser.getAttributeValue(null, "protocol");
-                    final String porta = parser.getAttributeValue(null, "localport");
-                    final String portb = parser.getAttributeValue(null, "remoteport");
-                    final String host = parser.getAttributeValue(null, "host");
+                    final String host = parser.getAttributeValue(null, ATTR_HOST);
+                    final String porta = parser.getAttributeValue(null, ATTR_LOCALPORT);
+                    final String portb = parser.getAttributeValue(null, ATTR_REMOTEPORT);
+                    final String protocol = parser.getAttributeValue(null, ATTR_PROTOCOL);
 
                     try {
                         iq = new JingleChannelIQ();

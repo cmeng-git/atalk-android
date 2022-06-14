@@ -13,7 +13,9 @@ import org.ice4j.ice.harvest.AbstractCandidateHarvester;
 import org.ice4j.socket.IceSocketWrapper;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.xmpp.jnodes.smack.*;
+import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
+import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
 
 import java.util.Collection;
 import java.util.HashSet;

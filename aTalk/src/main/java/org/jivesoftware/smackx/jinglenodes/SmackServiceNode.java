@@ -1,4 +1,4 @@
-package org.xmpp.jnodes.smack;
+package org.jivesoftware.smackx.jinglenodes;
 
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -12,11 +12,15 @@ import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.iqregister.AccountManager;
+import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
+import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
+import org.jivesoftware.smackx.jinglenodes.provider.JingleNodesProvider;
+import org.jivesoftware.smackx.jinglenodes.provider.JingleTrackerProvider;
+import org.jivesoftware.smackx.jinglenodes.relay.RelayChannel;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmpp.jnodes.RelayChannel;
 
 import java.io.IOException;
 import java.util.*;

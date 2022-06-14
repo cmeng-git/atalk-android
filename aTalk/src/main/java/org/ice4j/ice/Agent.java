@@ -44,6 +44,7 @@ import java.math.BigInteger;
 import java.net.BindException;
 import java.security.SecureRandom;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -356,7 +357,7 @@ public class Agent
         this.ufrag = ufrag;
 
         if (parentLogger != null) {
-            logger = parentLogger.createChildLogger(this.getClass().getName(), JMap.of("ufrag", this.ufrag));
+            logger = parentLogger.createChildLogger(this.getClass().getName(), Collections.singletonMap("ufrag", this.ufrag));
         }
         else {
             logger = new LoggerImpl(Agent.class.getName(), new LogContext(JMap.of("ufrag", this.ufrag)));

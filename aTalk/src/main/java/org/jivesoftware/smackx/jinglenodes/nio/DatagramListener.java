@@ -1,4 +1,4 @@
-package org.xmpp.jnodes.nio;
+package org.jivesoftware.smackx.jinglenodes.nio;
 
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;

@@ -77,6 +77,9 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     private static XMPPConnection mConnection;
     private static Jid mRemote;  // BareJid or FullJid pending on state change update
 
+    // JingleMessageSession call sid.
+    private static String mSid = null;
+
     private static boolean isVideoCall = false;
 
     // Should send retract to close the loop, when user ends the call and jingle session-initiate has not started
@@ -294,6 +297,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     public static void sendJingleAccept(String id)
     {
         Jid local = mConnection.getUser();
+        mSid = id;
 
         JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, id);
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
@@ -450,6 +454,14 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     public static Jid getRemote()
     {
         return mRemote;
+    }
+
+    /**
+     *  legacy call must check for correct sid before assumes JingleMessage session call
+     */
+    public static String getSid()
+    {
+        return mSid;
     }
 
     /**

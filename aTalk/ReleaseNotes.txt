@@ -1,5 +1,34 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.5 (209050)
+Release Date:   06/14/2022
+Author:         cmeng
+- Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls.
+- Fix Jingle File Transfer failure due to NPE exception: JingleContentImpl.setParent(JingleContentImpl) where parent may be null causing NullPointerException.
+- Launch OMEMO device verification dialog for any Undecided Omemo Identity during Jingle File Transfer/JET session
+- Fix previous local video state is not properly restored on return from chat. Need to start content-modify onResume
+  Error get introduced in v2.8.0 when migrating to camera2 implementation
+- Change CallPeerJabberImpl#sendModifyVideoContent() to only perform below if there is an actual video content changes
+  mediaHandler.reinitContent(remoteContentName, content, false);
+  mediaHandler.start(); else this get executed twice in #processSessionAccept()
+- Fix content-add video to existing audio call in progress not working.
+  Agent#scheduleTermination() when audio call has completed setup;
+  IceUdpTransportManager#startConnectivityEstablishment() not proceed: ice4j ConnectivityCheckClient#startChecks must init stopped = false;
+- VideoHandlerFragment.doAlignRemoteVideo(VideoHandlerFragment.java:736);
+  remoteVideoView must be an orphan before assigned to another ViewGroup parent; else exception i.e.
+  The specified child already has a parent. You must call removeView() on the child's parent first.
+- Fix legacy incoming call being treated as JingleMessageSession call and display incorrect UI to user.
+  This happen when there was a JingleMessageSession call previously.
+  Change AndroidCallListener#onCallEvent() to check for jingle sid instead of mRemote (not clear)
+- Fix long pause during login process and call setup at time, caused by dnsQuery using inactive network.
+  Modify AndroidUsingLinkProperties#getDnsServerAddresses(0 to ensure only activeNetwork is returned to caller.
+- Unable to override Duration in PeriodicRunnable#Duration getDelayUntilNextRun()
+  so revert: update ice4j from org.jitsi:ice4j:3.0-55-g32a8aad to org.jitsi:ice4j:3.0-60-g28a23e1
+- Fix QuerryContactListAdapter#getChildrenCount() and #getChild() ArrayOutOfBound exception
+- Update libvpx to latest github source 013ec57 (20220614)
+- Move jinglenodes classes into smack directory structure
+
+=========================================================================
 Version:        2.9.4 (209040)
 Release Date:   05/14/2022
 Author:         cmeng

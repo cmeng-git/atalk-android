@@ -6,8 +6,19 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.4 (05/14/2022)" versioncode="209040">
+    <release version="2.9.5 (06/14/2022)" versioncode="209050">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls</change>
+        <change>Launch OMEMO device verification dialog for any Undecided Omemo Identity during Jingle File Transfer/JET session</change>
+        <change>Fix Jingle File Transfer failure due to NPE exception</change>
+        <change>Properly restore previous local video call state on returning from chat</change>
+        <change>Allow adding of a video content during an audio only call session</change>
+        <change>Fix legacy incoming call being treated as JingleMessageSession call and display incorrect UI to user</change>
+        <change>Fix long pause during login process and call setup at time, caused by dnsQuery using inactive network</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.9.4 (05/14/2022)" versioncode="209040">
         <change>Add support for &lt;a href='https://cmeng-git.github.io/atalk/faq.html#media_07'&gt;XEP-0251: Jingle Session Transfer&lt;/a&gt; in Unattended and Attended call transfer</change>
         <change>Ensure DTLS security state is properly updated when returning to video call UI</change>
         <change>Report caller for any Jingle Responder error returns by remote party</change>

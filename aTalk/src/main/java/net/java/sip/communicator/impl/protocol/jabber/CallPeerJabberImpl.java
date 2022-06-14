@@ -6,7 +6,6 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.AbstractConferenceMember;
-import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.ConferenceMember;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -412,18 +411,20 @@ public class CallPeerJabberImpl
     /**
      * Processes the content-accept {@link Jingle}.
      *
-     * @param content The {@link Jingle} that contains content that remote peer has accepted
+     * @param jingleCA The {@link Jingle} that contains content that remote peer has accepted
      */
-    public void processContentAccept(Jingle content)
+    public void processContentAccept(Jingle jingleCA)
             throws NotConnectedException, InterruptedException
     {
-        List<JingleContent> contents = content.getContents();
+
+
+        List<JingleContent> contentList = jingleCA.getContents();
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
 
         try {
             mediaHandler.getTransportManager().wrapupConnectivityEstablishment();
-            mediaHandler.processSessionAcceptContent(contents);
-            for (JingleContent c : contents)
+            mediaHandler.processSessionAcceptContent(contentList);
+            for (JingleContent c : contentList)
                 setSenders(getMediaType(c), c.getSenders());
         } catch (Exception e) {
             Timber.w(e, "Failed to process a content-accept");
@@ -823,12 +824,13 @@ public class CallPeerJabberImpl
          * <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
          * <a href="https://xmpp.org/extensions/xep-0251.html#attended ">XEP-0251 § 3. Attended Transfer</a>
          * Attended call transfer sid must not be null
-        */
+         */
         SdpTransfer calleeTransfer;
         if (transfer.getSid() != null) {
             // Attended transfer; just forward the received transfer
             calleeTransfer = transfer;
-        } else {
+        }
+        else {
             // Unattended transfer, must init the from attribute to attendant Jid
             calleeTransfer = SdpTransfer.getBuilder().setFrom(attendantJid).build();
         }
@@ -841,7 +843,8 @@ public class CallPeerJabberImpl
     /**
      * Processes the offered remote <code>transport-info</code> {@link Jingle}.
      * The transport-info is used to exchange transport candidates for mediaHandler.
-     * cmeng: The wait control is now at OperationSetBasicTelephonyJabberImpl#processTransportInfo(CallPeerJabberImpl, Jingle)
+     * cmeng: The wait control for session-accept is now at:
+     * OperationSetBasicTelephonyJabberImpl#processTransportInfo(CallPeerJabberImpl, Jingle)
      *
      * @param jingle containing the <code>transport-info</code> {@link Jingle} to be processed.
      */
@@ -850,6 +853,7 @@ public class CallPeerJabberImpl
     {
         try {
             // Wait (1000ms max) for session-accept to arrive before start processing any transport-info.
+            // content-accept is received 9 seconds after transport-info; so this method does not work
             if (isInitiator()) {
                 synchronized (sessionInitiateSyncRoot) {
                     if (!sessionInitiateProcessed) {
@@ -913,24 +917,6 @@ public class CallPeerJabberImpl
             throw new OperationFailedException("Could not send session info",
                     OperationFailedException.REGISTRATION_REQUIRED, e);
         }
-    }
-
-    /**
-     * Send a <code>content-add</code> to add video setup.
-     */
-    private void sendAddVideoContent()
-            throws NotConnectedException, InterruptedException
-    {
-        List<JingleContent> contents;
-        try {
-            contents = getMediaHandler().createContentList(MediaType.VIDEO);
-        } catch (Exception exc) {
-            Timber.w(exc, "Failed to gather content for video type");
-            return;
-        }
-
-        Jingle contentIQ = jutil.createContentAdd(mPeerJid, getSid(), contents);
-        mConnection.sendStanza(contentIQ);
     }
 
     /**
@@ -1058,30 +1044,30 @@ public class CallPeerJabberImpl
 
         /*
          * Send Content-Modify
+         * cmeng (2016/9/14) only send content-modify if there is a change in own video streaming state
          */
-        String remoteContentName = remoteContent.getName();
-        JingleContent content = JingleContent.getBuilder()
-                .setCreator(remoteContent.getCreator())
-                .setName(remoteContentName)
-                .setSenders(newSenders)
-                .build();
-
-        // cmeng (2016/9/14) only send content-modify if there is a change in own video streaming state
         if (newSenders != senders) {
             Timber.i("Sending content modify, senders: %s -> %s", senders, newSenders);
+
+            String remoteContentName = remoteContent.getName();
+            JingleContent content = JingleContent.getBuilder()
+                    .setCreator(remoteContent.getCreator())
+                    .setName(remoteContentName)
+                    .setSenders(newSenders)
+                    .build();
 
             // cmeng: must update local videoSenders for content-modify
             setSenders(MediaType.VIDEO, newSenders);
 
             Jingle contentIQ = jutil.createContentModify(mPeerJid, getSid(), content);
             mConnection.sendStanza(contentIQ);
-        }
 
-        try {
-            mediaHandler.reinitContent(remoteContentName, content, false);
-            mediaHandler.start();
-        } catch (Exception e) {
-            Timber.w(e, "Exception occurred during media reinitialization");
+            try {
+                mediaHandler.reinitContent(remoteContentName, content, false);
+                mediaHandler.start();
+            } catch (Exception e) {
+                Timber.w(e, "Exception occurred during media reinitialization");
+            }
         }
         return (newSenders != senders);
     }
@@ -1123,13 +1109,32 @@ public class CallPeerJabberImpl
     }
 
     /**
+     * Send a <code>content-add</code> to add video setup.
+     */
+    private void sendAddVideoContent()
+            throws NotConnectedException, InterruptedException
+    {
+        List<JingleContent> contents;
+        try {
+            contents = getMediaHandler().createContentList(MediaType.VIDEO);
+            // cmeng (20220613): must update local videoSenders for content-add
+            setSenders(MediaType.VIDEO, Senders.initiator);
+        } catch (Exception exc) {
+            Timber.w(exc, "Failed to gather content for video type");
+            return;
+        }
+
+        Jingle contentIQ = jutil.createContentAdd(mPeerJid, getSid(), contents);
+        mConnection.sendStanza(contentIQ);
+    }
+
+    /**
      * Send a <code>content-remove</code> to remove video setup.
      */
     private void sendRemoveVideoContent()
             throws NotConnectedException, InterruptedException
     {
         CallPeerMediaHandlerJabberImpl mediaHandler = getMediaHandler();
-
         JingleContent remoteContent = mediaHandler.getRemoteContent(MediaType.VIDEO.toString());
         if (remoteContent == null)
             return;
@@ -1221,7 +1226,7 @@ public class CallPeerJabberImpl
                     .setFrom(mPPS.getOurJID())
                     .setSid(sid);
 
-            // Puts on hold the 2 calls before making the attended transfer.
+            // Puts on hold the callPeer before making the attended transfer.
             CallPeerJabberImpl callPeer = mBasicTelephony.getActiveCallPeer(sid);
             if (callPeer != null) {
                 if (!CallPeerState.isOnHold(callPeer.getState())) {
@@ -1247,7 +1252,7 @@ public class CallPeerJabberImpl
                     OperationFailedException.REGISTRATION_REQUIRED, e);
         } catch (XMPPException.XMPPErrorException e1) {
             // Log the failed transfer call and notify the user.
-            throw new OperationFailedException ("Remote peer does not support call 'transfer'. "
+            throw new OperationFailedException("Remote peer does not support call 'transfer'. "
                     + e1.getStanzaError(), OperationFailedException.ILLEGAL_ARGUMENT);
         } catch (SmackException.NoResponseException e1) {
             // Log the failed transfer call and notify the user.

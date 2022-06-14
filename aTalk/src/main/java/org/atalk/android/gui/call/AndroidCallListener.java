@@ -13,8 +13,15 @@ import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationWiringActivator;
 import net.java.sip.communicator.service.notification.NotificationData;
 import net.java.sip.communicator.service.notification.NotificationService;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallState;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallEvent;
+import net.java.sip.communicator.service.protocol.event.CallListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.GuiUtils;
 
@@ -26,7 +33,9 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -101,8 +110,8 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                 break;
 
             case CallEvent.CALL_RECEIVED:
-                // Reject if there is an active calls
-                if (CallManager.getActiveCallsCount() > 0) {
+                // cmeng 20220529: Allow two active calls to support call in waiting
+                if (CallManager.getActiveCallsCount() > 1) {
                     CallManager.hangupCall(call);
                 }
                 else {
@@ -112,9 +121,13 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     }
 
                     // cmeng - answer call and on hold current - mic not working
-                    // If incoming call accepted via Jingle Message Initiation, then just start the VideoCallActivity UI;
-                    if (JingleMessageSessionImpl.getRemote() != null) {
+                    // If incoming call accepted via Jingle Message session, then start the VideoCallActivity UI;
+                    if (call.getCallId().equals(JingleMessageSessionImpl.getSid())) {
                         startVideoCallActivity(call);
+                    }
+                    // Launch UI for user selection of audio or video call
+                    else if (aTalkApp.isForeground) {
+                        startCallActivity(call);
                     }
                     // else launch a heads-up UI for user to accept the call
                     else {
@@ -198,9 +211,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      * a. an incoming call is accepted via Jingle Message Initiation or
      * b. an outgoing call has been initiated.
      *
-     * @param evt the <code>CallEvent</code> that notified us
+     * @param call the <code>Call</code> to be handled
      */
-    private static void startVideoCallActivity(Call call)
+    private void startVideoCallActivity(Call call)
     {
         String callIdentifier = CallManager.addActiveCall(call);
         Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, callIdentifier);
@@ -209,7 +222,21 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     /**
-     * Start the heads-up notifications for incoming (received) call via legacy Jingle.
+     * Starts the receive call UI when in legacy jingle call
+     *
+     * @param call the <code>Call</code> to be handled
+     */
+    private void startCallActivity(Call call)
+    {
+        String callIdentifier = CallManager.addActiveCall(call);
+        Intent intent = new Intent(appContext, ReceivedCallActivity.class)
+                .putExtra(CallManager.CALL_IDENTIFIER, callIdentifier)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        appContext.startActivity(intent);
+    }
+
+    /**
+     * Start the heads-up notifications for incoming (received) call when aTalk is not in focus
      *
      * @param evt the <code>CallEvent</code>
      */

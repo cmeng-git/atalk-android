@@ -1,4 +1,4 @@
-package org.xmpp.jnodes.smack;
+package org.jivesoftware.smackx.jinglenodes;
 
 import org.jxmpp.jid.Jid;
 

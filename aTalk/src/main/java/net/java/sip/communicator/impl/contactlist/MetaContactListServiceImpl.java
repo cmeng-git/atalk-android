@@ -20,16 +20,56 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.contactlist.event.*;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.contactlist.MetaContactListException;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
+import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactGroupEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactListListener;
+import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactMovedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactPropertyChangeEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
+import net.java.sip.communicator.service.contactlist.event.ProtoContactEvent;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesEvent;
+import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesListener;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
+import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.json.JSONObject;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import timber.log.Timber;
 

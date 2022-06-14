@@ -5,11 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.media.AbstractOperationSetVideoTelephony;
 
 import org.atalk.service.neomedia.QualityControl;
-import org.jivesoftware.smackx.jingle.element.Jingle;
 
 import timber.log.Timber;
 

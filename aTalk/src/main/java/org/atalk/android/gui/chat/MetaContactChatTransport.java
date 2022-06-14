@@ -5,6 +5,7 @@
  */
 package org.atalk.android.gui.chat;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
@@ -28,7 +29,6 @@ import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
-import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -36,6 +36,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
+import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.atalk.persistance.FileBackend;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -52,6 +53,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
+import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
@@ -66,8 +69,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -728,7 +731,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         FullJid recipient;
         if (ChatFragment.MSGTYPE_OMEMO == chatType) {
             recipient = ftOpSet.getFullJid(contact, JetSecurityImpl.NAMESPACE, JingleFileTransferImpl.NAMESPACE);
-        } else  {
+        }
+        else {
             recipient = ftOpSet.getFullJid(contact, JingleFileTransferImpl.NAMESPACE);
         }
 
@@ -739,27 +743,31 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OutgoingFileOfferController ofoController;
             int encType = IMessage.ENCRYPTION_NONE;
             String msgUuid = xferCon.getMessageUuid();
-            JingleFile jingleFile = createJingleFile(file);
+            Context ctx = aTalkApp.getGlobalContext();
+            JingleFile jingleFile = createJingleFile(ctx, file);
+            OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
 
             try {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
                     encType = IMessage.ENCRYPTION_OMEMO;
-                    OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
                     ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
                 }
                 else {
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
-
                 OutgoingFileOfferJingleImpl outgoingTransfer
                         = new OutgoingFileOfferJingleImpl(contact, file, msgUuid, ofoController, mPPS.getConnection());
 
                 // Notify all interested listeners that a file transfer has been created.
-                FileTransferCreatedEvent event = new FileTransferCreatedEvent(outgoingTransfer, new Date());
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "Jingle File Transfer");
                 return outgoingTransfer;
             } catch (SSLHandshakeException ex) {
-                throw new OperationNotSupportedException(ex.getCause().getMessage());
+                throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
+            } catch (UndecidedOmemoIdentityException e) {
+                // Display dialog for use to verify omemoDevice; throw OperationNotSupportedException to use other methods for this file transfer.
+                OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(recipient, omemoManager);
+                ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
+                throw new OperationNotSupportedException(e.getMessage());
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
@@ -775,15 +783,40 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file sending file
      * @return JingleFile metaData
      */
-    private JingleFile createJingleFile(File file) {
+    private JingleFile createJingleFile(Context ctx, File file)
+    {
         JingleFile jingleFile = null;
-        String mimeType = FileBackend.getMimeType(aTalkApp.getGlobalContext(), Uri.fromFile(file));
+        String mimeType = FileBackend.getMimeType(ctx, Uri.fromFile(file));
         try {
-            jingleFile = JingleFile.fromFile(file, null, mimeType,  HashManager.ALGORITHM.SHA3_256);
+            jingleFile = JingleFile.fromFile(file, null, mimeType, HashManager.ALGORITHM.SHA3_256);
         } catch (NoSuchAlgorithmException | IOException e) {
             Timber.e("JingleFile creation error: %s", e.getMessage());
         }
         return jingleFile;
+    }
+
+    /**
+     * Omemo listener callback on user authentication for undecided omemoDevices
+     */
+    private static class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
+    {
+        FullJid recipient;
+        OmemoManager omemoManager;
+
+        OmemoAuthenticateListener(FullJid recipient, OmemoManager omemoManager)
+        {
+            this.recipient = recipient;
+            this.omemoManager = omemoManager;
+        }
+
+        @Override
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
+        {
+            if (!allTrusted) {
+                aTalkApp.showToastMessage(R.string.omemo_send_error,
+                        "Undecided Omemo Identity: " + omemoDevices.toString());
+            }
+        }
     }
 
     /**
@@ -813,7 +846,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "HTTP File Upload");
                 return url;
             } catch (SSLHandshakeException ex) {
-                throw new OperationNotSupportedException(ex.getCause().getMessage());
+                throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }

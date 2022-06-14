@@ -1,4 +1,4 @@
-package org.xmpp.jnodes.smack;
+package org.jivesoftware.smackx.jinglenodes.element;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
@@ -7,6 +7,11 @@ public class JingleChannelIQ extends IQ
 {
     public static final String ELEMENT = "channel";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes#channel";
+
+    public static final String ATTR_HOST = "host";
+    public static final String ATTR_LOCALPORT = "localport";
+    public static final String ATTR_PROTOCOL = "protocol";
+    public static final String ATTR_REMOTEPORT = "remoteport";
 
     public static final String UDP = "udp";
     public static final String TCP = "tcp";
@@ -22,7 +27,6 @@ public class JingleChannelIQ extends IQ
         super(ELEMENT, NAMESPACE);
         setType(Type.get);
     }
-
 
     public boolean isRequest()
     {
@@ -107,11 +111,11 @@ public class JingleChannelIQ extends IQ
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
     {
-        xml.attribute("protocol", protocol);
+        xml.attribute(ATTR_PROTOCOL, protocol);
         if ((localport > 0) && (remoteport > 0) && (host != null)) {
-            xml.attribute("host", host);
-            xml.attribute("localport", localport);
-            xml.attribute("remoteport", remoteport);
+            xml.attribute(ATTR_HOST, host);
+            xml.attribute(ATTR_LOCALPORT, localport);
+            xml.attribute(ATTR_REMOTEPORT, remoteport);
         }
         xml.append('>');
         return xml;

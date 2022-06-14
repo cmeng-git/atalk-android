@@ -102,6 +102,9 @@ import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
+import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
+import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
 import org.jivesoftware.smackx.jitsimeet.*;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
@@ -143,7 +146,6 @@ import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
 import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
 import org.jivesoftware.smackx.thumbnail.Thumbnail;
 import org.jivesoftware.smackx.thumbnail.ThumbnailStreamInitiationProvider;
-import org.xmpp.jnodes.smack.*;
 
 import java.io.File;
 import java.io.IOException;
