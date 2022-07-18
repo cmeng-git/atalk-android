@@ -1,5 +1,33 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.6 (209060)
+Release Date:   07/18/2022
+Author:         cmeng
+- Allow recipient to cancel incoming file offer in progress after user has accepted the offer (esp large file).
+- Fix aTalk crashes when sender cancels outgoing file offer:
+  Must update mState in JingleFileTransferImpl#mState JingleOutgoingFileOffer, similar to JingleIncomingFileOffer;
+  else mState is null when sender cancel() the outgoing file offer transfer.
+- Sender cancels outgoing file offer is not handled at recipient side for JFT protocol.
+  Must init IncomingFileTransferJingleImpl() immediately on new IncomingFileOfferJingleImpl(); and not on user accept (too late).
+  i.e. perform JingleSessionImpl.addJingleSessionListener(this), to receive the cancel event sent by remote sender.
+- Solution: Add FileTransfer#onPrepare() method to setup to receive remote incoming file transfer event before
+  user accept file; and modify the acceptFile() declaration/definition.
+- Must fire cancel event when sender cancels the jingle file transfer prior to sending to update send UI properly; OutgoingFileOfferJingleImpl#onCanceled()
+- FileSendConversation: Send sender canceled file transfer message to remote, only for legacy FT mode. Jingle FT has its own protocol control.
+- FileTransferConversation: Allow send file retry option for sender only.
+- FileTransferConversation#updateFileViewInfo(): Do not attempt MyGlideApp.loadImage() if an existed file has length 0.
+- Ensure JingleSessionImpl.removeJingleSessionListener(this) for IncomingFileTransferJingleImpl#onError() and onSessionTerminated()
+- Add cases state for ended handling in JingleFileTransferImpl#cancel();
+  when user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
+- ChatStateManager#INCOMING_CHAT_STATE_FILTER must include FromTypeFilter.ENTITY_FULL_JID to filter messages/chatState send from server
+- Roll back FileTransferStatusChangeEvent#FINISHED to use #COMPLETED instead for easy handling
+- MetaContactChatTransport#getStatus() return higher threshold of the two i.e. contactResource or contact when checking isOnline()
+- ChatPanel#updateCacheFTRecord(): cacheMsg.getMessageUID() can be null; interchange compare order
+- ChatFragment#chat_message_del case: isSafeDel <= Not safe to delete the tmp file, it may be used for multiple send instances
+- Add support to cancel showToastMessage for fast update mode.
+- upgrade smack library to use v4.4.6
+
+=========================================================================
 Version:        2.9.5 (209050)
 Release Date:   06/14/2022
 Author:         cmeng

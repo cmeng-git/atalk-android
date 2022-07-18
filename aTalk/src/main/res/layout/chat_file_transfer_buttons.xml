@@ -12,7 +12,7 @@
             android:text="@string/service_gui_ACCEPT" />
 
         <Button
-            android:id="@+id/button_reject"
+            android:id="@+id/button_decline"
             style="@style/ButtonTop"
             android:layout_marginStart="2dp"
             android:drawableStart="@drawable/ic_cancel"

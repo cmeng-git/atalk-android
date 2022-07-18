@@ -65,7 +65,6 @@ import androidx.fragment.app.FragmentManager;
 
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -831,8 +830,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                             */
                                             if (chatMsg.getFileRecord() != null) {
                                                 file = chatMsg.getFileRecord().getFile();
-                                                isSafeDel = (file.getPath().contains("/tmp/")
-                                                        || FileRecord.IN.equals(chatMsg.getFileRecord().getDirection()));
+                                                isSafeDel = FileRecord.IN.equals(chatMsg.getFileRecord().getDirection());
+                                                // Not safe, the tmp file may be used for multiple send instances
+                                                // (file.getPath().contains("/tmp/"):
                                             }
                                             // OR in chatMsg if yet to be received
                                             else if ((file = chatListAdapter.getFileName(cPos)) == null) {
@@ -1872,7 +1872,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     int startIndex = str.indexOf("LatLng:");
                     if (startIndex != -1) {
                         mLoc = str.substring(startIndex + 7);
-                    } else {
+                    }
+                    else {
                         startIndex = str.indexOf("geo:");
                         if (startIndex != -1) {
                             mLoc = str.split(";")[0].substring(startIndex + 4);
@@ -2605,7 +2606,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Timber.w("HTTP link: %s: %s", mFile.getName(), urlLink);
                     if (TextUtils.isEmpty(urlLink)) {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption,
-                        aTalkApp.getResString(R.string.service_gui_FILE_SEND_FAILED,"HttpFileUpload"));
+                                aTalkApp.getResString(R.string.service_gui_FILE_SEND_FAILED, "HttpFileUpload"));
                     }
                     else {
                         sendFTConversion.setStatus(FileTransferStatusChangeEvent.COMPLETED, entityJid, mEncryption, "");
@@ -2633,7 +2634,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         protected void onCancelled()
         {
         }
-
     }
 
     @Override

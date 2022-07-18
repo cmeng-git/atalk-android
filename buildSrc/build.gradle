@@ -34,7 +34,7 @@ repositories {
 //    internalize
 //}
 
-def smackVersion = '4.4.5'
+def smackVersion = '4.4.6'
 
 /* a task to create the relocated libs, must be defined before used below in dependencies */
 //task internalizeJar(type: ShadowJar) {

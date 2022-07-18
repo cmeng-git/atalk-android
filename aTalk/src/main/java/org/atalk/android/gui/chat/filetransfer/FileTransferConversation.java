@@ -86,7 +86,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * The file transfer.
      */
-    protected FileTransfer fileTransfer = null;
+    protected FileTransfer mFileTransfer = null;
 
     /**
      * The size of the file to be transferred.
@@ -219,7 +219,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.cancelButton = convertView.findViewById(R.id.buttonCancel);
             messageViewHolder.retryButton = convertView.findViewById(R.id.button_retry);
             messageViewHolder.acceptButton = convertView.findViewById(R.id.button_accept);
-            messageViewHolder.declineButton = convertView.findViewById(R.id.button_reject);
+            messageViewHolder.declineButton = convertView.findViewById(R.id.button_decline);
         }
 
         // Assume history file transfer and completed with all button hidden
@@ -268,7 +268,6 @@ public abstract class FileTransferConversation extends OSGiFragment
         messageViewHolder.declineButton.setVisibility(View.GONE);
         messageViewHolder.cancelButton.setVisibility(View.GONE);
         messageViewHolder.retryButton.setVisibility(View.GONE);
-
         messageViewHolder.fileStatus.setTextColor(Color.BLACK);
 
         switch (status) {
@@ -296,9 +295,13 @@ public abstract class FileTransferConversation extends OSGiFragment
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
-            case FileTransferStatusChangeEvent.CANCELED: // local cancel the file download process
-                messageViewHolder.retryButton.setVisibility(View.VISIBLE);
-            case FileTransferStatusChangeEvent.DECLINED: // user reject the incoming http download
+            case FileTransferStatusChangeEvent.CANCELED:
+                // Allow user retries only if sender cancels the file transfer
+                if (FileRecord.OUT.equals(mDir)) {
+                    messageViewHolder.retryButton.setVisibility(View.VISIBLE);
+                } // fall through
+
+            case FileTransferStatusChangeEvent.DECLINED: // user reject the incoming file xfer
                 messageViewHolder.fileStatus.setTextColor(Color.RED);
                 break;
         }
@@ -366,7 +369,8 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected void updateFileViewInfo(File file, boolean isHistory)
     {
-        if ((file == null) || !file.exists())
+        // File length = 0 will cause Glade to throw errors
+        if ((file == null) || !file.exists() || file.length() == 0)
             return;
 
         mXferFile = file;
@@ -406,8 +410,8 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected void setFileTransfer(FileTransfer fileTransfer, long transferFileSize)
     {
-        this.fileTransfer = fileTransfer;
-        this.mTransferFileSize = transferFileSize;
+        mFileTransfer = fileTransfer;
+        mTransferFileSize = transferFileSize;
         fileTransfer.addProgressListener(this);
     }
 
@@ -426,7 +430,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected void removeProgressListener()
     {
-        fileTransfer.removeProgressListener(this);
+        mFileTransfer.removeProgressListener(this);
     }
 
     /**
@@ -633,8 +637,8 @@ public abstract class FileTransferConversation extends OSGiFragment
                 messageViewHolder.retryButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 setXferStatus(FileTransferStatusChangeEvent.CANCELED);
-                if (fileTransfer != null)
-                    fileTransfer.cancel();
+                if (mFileTransfer != null)
+                    mFileTransfer.cancel();
                 break;
         }
     }

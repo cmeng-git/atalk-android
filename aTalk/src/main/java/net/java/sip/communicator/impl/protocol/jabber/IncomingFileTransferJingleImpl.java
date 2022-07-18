@@ -21,6 +21,8 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
@@ -39,7 +41,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
 {
     private final String id;
     private final Contact sender;
-    private final File file;
+    private final File mFile;
     private int byteRead;
 
     /**
@@ -57,7 +59,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
     {
         this.id = inFileOffer.getID();
         this.sender = inFileOffer.getSender();
-        this.file = file;
+        this.mFile = file;
         this.mIfoJingle = inFileOffer;
         this.byteRead = 0;
         inFileOffer.mOffer.addProgressListener(this);
@@ -65,18 +67,25 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
     }
 
     /**
-     * Cancels the file transfer.
+     * User declines or cancels an incoming file transfer request during initial or during the active state.
      */
     @Override
     public void cancel()
     {
         try {
+            onCanceled();
             mIfoJingle.declineFile();
             mIfoJingle.mOffer.removeProgressListener(this);
             JingleSessionImpl.removeJingleSessionListener(this);
         } catch (OperationFailedException e) {
             Timber.e("Exception: %s", e.getMessage());
         }
+    }
+
+    public void onCanceled()
+    {
+        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
     }
 
     /**
@@ -128,7 +137,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      */
     public File getLocalFile()
     {
-        return file;
+        return mFile;
     }
 
     @Override
@@ -152,12 +161,14 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
     @Override
     public void onError(JingleReason reason)
     {
+        JingleSessionImpl.removeJingleSessionListener(this);
         fireStatusChangeEvent(reason);
     }
 
     @Override
     public void onSessionTerminated(JingleReason reason)
     {
+        JingleSessionImpl.removeJingleSessionListener(this);
         fireStatusChangeEvent(reason);
     }
 }

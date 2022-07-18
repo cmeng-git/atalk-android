@@ -77,14 +77,15 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     }
 
     public URI getURI() throws URISyntaxException {
-        return new URI((https ? "https://" : "http://") + this.host + ":" + this.port + file);
+        String uri = (https ? "https://" : "http://") + getHostString() + ":" + this.port + file;
+        return new URI(uri);
     }
 
     public Map<String, String> getHttpHeaders() {
         return httpHeaders;
     }
 
-    public static Builder getBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 

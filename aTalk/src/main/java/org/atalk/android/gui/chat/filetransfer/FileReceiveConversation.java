@@ -18,12 +18,21 @@ package org.atalk.android.gui.chat.filetransfer;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
+import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.GuiUtils;
 
@@ -89,8 +98,12 @@ public class FileReceiveConversation extends FileTransferConversation
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
         messageViewHolder.stickerView.setImageDrawable(null);
 
+        mXferFile = createOutFile(fileTransferRequest);
+        mFileTransfer = fileTransferRequest.onPrepare(mXferFile);
+        mFileTransfer.addStatusListener(FileReceiveConversation.this);
+
         long downloadFileSize = fileTransferRequest.getFileSize();
-        String fileLabel = getFileLabel(fileTransferRequest.getFileName(), downloadFileSize);
+        String fileLabel = getFileLabel(mXferFile.getName(), downloadFileSize);
         messageViewHolder.fileLabel.setText(fileLabel);
 
 		/* Must keep track of file transfer status as Android always request view redraw on
@@ -108,7 +121,7 @@ public class FileReceiveConversation extends FileTransferConversation
 
                 // set the download for global display parameter
                 mChatFragment.getChatListAdapter().setFileName(msgViewId, mXferFile);
-                new acceptFile(mXferFile).execute();
+                new AcceptFile().execute();
             });
 
             messageViewHolder.declineButton.setOnClickListener(v -> {
@@ -126,7 +139,6 @@ public class FileReceiveConversation extends FileTransferConversation
                 setXferStatus(FileTransferStatusChangeEvent.CANCELED);
             });
 
-            mXferFile = createOutFile(fileTransferRequest);
             updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
                     aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, mSendTo));
 
@@ -217,45 +229,38 @@ public class FileReceiveConversation extends FileTransferConversation
     /**
      * Accepts the file in a new thread.
      */
-    private class acceptFile extends AsyncTask<Void, Void, String>
+    private class AcceptFile extends AsyncTask<Void, Void, Boolean>
     {
-        private final File dFile;
-        private FileTransfer fileTransfer;
-
-        private acceptFile(File mFile)
-        {
-            this.dFile = mFile;
-        }
-
         @Override
         public void onPreExecute()
         {
         }
 
         @Override
-        protected String doInBackground(Void... params)
+        protected Boolean doInBackground(Void... params)
         {
-            fileTransfer = fileTransferRequest.acceptFile(dFile);
-            mChatFragment.addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgViewId);
-
+            fileTransferRequest.acceptFile();
             // Remove previously added listener (no further required), that notify for request cancellations if any.
             fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
-            fileTransfer.addStatusListener(FileReceiveConversation.this);
-            return "";
+            if (mFileTransfer != null) {
+                mChatFragment.addActiveFileTransfer(mFileTransfer.getID(), mFileTransfer, msgViewId);
+            }
+            return true;
         }
 
         @Override
-        protected void onPostExecute(String result)
+        protected void onPostExecute(Boolean result)
         {
-            if (fileTransfer != null) {
-                setFileTransfer(fileTransfer, fileTransferRequest.getFileSize());
+            if (mFileTransfer != null) {
+                setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
             }
         }
     }
 
     /**
-     * Update the file transfer status into the DB, and also the msgCache to ensure the file send request will not
+     * Update the file transfer status into the DB, also the msgCache to ensure the file send request will not
      * get trigger again. The msgCache record will be used for view display on chat session resume.
+     * Delete file with zero length; not to cluster directory with invalid files
      *
      * @param msgUuid The message UUID
      * @param status File transfer status
@@ -263,6 +268,11 @@ public class FileReceiveConversation extends FileTransferConversation
     private void updateFTStatus(String msgUuid, int status)
     {
         String fileName = (mXferFile == null) ? "" : mXferFile.toString();
+        if (status == FileRecord.STATUS_CANCELED || status == FileRecord.STATUS_DECLINED) {
+            if (mXferFile != null && mXferFile.exists() && mXferFile.length() == 0) {
+                mXferFile.delete();
+            }
+        }
         mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
         mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
@@ -294,13 +304,14 @@ public class FileReceiveConversation extends FileTransferConversation
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.DECLINED) {
-                // must do this in UI, otherwise the status is not being updated to FileRecord
+                // must update this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(FileReceiveConversation.this);
             }
         });
     }
 
     /* ========== ScFileTransferListener class method implementation ========== */
+
     /**
      * Called when a new <code>IncomingFileTransferRequest</code> has been received. Too late to handle here.
      *
@@ -349,8 +360,8 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Called when an <code>IncomingFileTransferRequest</code> has been canceled from the contact who send it.
-     * Note: This is not a standard XMPP FileTransfer protocol - aTalk yet to implemented this
+     * Called when an <code>IncomingFileTransferRequest</code> has been canceled from the remote sender.
+     * Note: This is not a standard XMPP Legacy FileTransfer protocol - aTalk yet to implement this
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */

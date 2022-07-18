@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 209050
-        versionName "2.9.5"
+        versionCode 209060
+        versionName "2.9.6"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -218,7 +218,7 @@ android {
 ext {
     // for official maven release
     // smackVersion = '4.5.0-alpha1'
-    smackVersion = '4.4.5'
+    smackVersion = '4.4.6'
 
     // May need manual cleanup for new SNAPSHOT update if same name with date change only:
     // ~\.gradle\caches\modules-2\files-2.1\org.igniterealtime.smack
@@ -258,13 +258,13 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.7'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.0'
     implementation 'com.google.android.material:material:1.6.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
 

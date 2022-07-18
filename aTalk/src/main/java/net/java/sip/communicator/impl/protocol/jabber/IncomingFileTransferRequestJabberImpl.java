@@ -5,7 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
@@ -57,6 +56,10 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private final OperationSetFileTransferJabberImpl fileTransferOpSet;
     private final ProtocolProviderServiceJabberImpl jabberProvider;
     private final Jid remoteJid;
+
+    private IncomingFileTransfer mIncomingFileTransfer;
+    private IncomingFileTransferJabberImpl mFileTransfer;
+    private File mFile;
     private Contact sender;
     private byte[] thumbnail;
 
@@ -98,6 +101,15 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             }
         }
         this.id = String.valueOf(System.currentTimeMillis()) + hashCode();
+    }
+
+    @Override
+    public FileTransfer onPrepare(File file)
+    {
+        mFile = file;
+        mIncomingFileTransfer = fileTransferRequest.accept();
+        mFileTransfer = new IncomingFileTransferJabberImpl(id, sender, file, mIncomingFileTransfer);
+        return mFileTransfer;
     }
 
     /**
@@ -173,31 +185,24 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
 
     /**
      * Accepts the file and starts the transfer.
-     *
-     * @return a boolean : <code>false</code> if the transfer fails, <code>true</code> otherwise
      */
     @Override
-    public FileTransfer acceptFile(File file)
+    public void acceptFile()
     {
-        AbstractFileTransfer incomingTransfer = null;
-
-        IncomingFileTransfer jabberTransfer = fileTransferRequest.accept();
         try {
-            incomingTransfer = new IncomingFileTransferJabberImpl(id, sender, file, jabberTransfer);
-            FileTransferCreatedEvent event = new FileTransferCreatedEvent(incomingTransfer, new Date());
+            FileTransferCreatedEvent event = new FileTransferCreatedEvent(mFileTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
 
-            jabberTransfer.receiveFile(file);
-            new OperationSetFileTransferJabberImpl.FileTransferProgressThread(jabberTransfer,
-                    incomingTransfer, getFileSize()).start();
+            mIncomingFileTransfer.receiveFile(mFile);
+            new OperationSetFileTransferJabberImpl.FileTransferProgressThread(mIncomingFileTransfer,
+                    mFileTransfer, getFileSize()).start();
         } catch (IOException | SmackException e) {
             Timber.e(e, "Receiving file failed.");
         }
-        return incomingTransfer;
     }
 
     /**
-     * Refuses the file transfer request.
+     * Declines the incoming file transfer request.
      */
     @Override
     public void declineFile()

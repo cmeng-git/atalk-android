@@ -46,29 +46,39 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements IncomingFileOfferController {
+public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements IncomingFileOfferController
+{
 
     private static final Logger LOGGER = Logger.getLogger(JingleIncomingFileOffer.class.getName());
     private OutputStream target;
 
-    public JingleIncomingFileOffer(JingleFileTransferChild offer) {
+    public JingleIncomingFileOffer(JingleFileTransferChild offer)
+    {
         super(new JingleFile(offer));
-        this.state = State.pending;
+        mState = State.pending;
     }
 
     @Override
-    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info) {
+    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info)
+    {
         return null;
     }
 
     @Override
-    public void onBytestreamReady(BytestreamSession bytestreamSession) {
+    public void onBytestreamReady(BytestreamSession bytestreamSession)
+    {
         if (target == null) {
             throw new IllegalStateException("Target OutputStream is null");
         }
 
+        // User cancels incoming file transfer in protocol negotiation phase.
+        if (mState == State.cancelled) {
+            LOGGER.log(Level.INFO, "User canceled file offer (in protocol negotiation).");
+            return;
+        }
+
         notifyProgressListenersStarted();
-        state = State.active;
+        mState = State.active;
 
         HashElement hashElement = metadata.getHashElement();
         MessageDigest digest = null;
@@ -91,6 +101,12 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             long fileSize = metadata.getSize();
             byte[] bufbuf = new byte[4096];
             while ((length = inputStream.read(bufbuf)) >= 0) {
+                // User cancels incoming file transfer in active progress.
+                if (mState == State.cancelled) {
+                    LOGGER.log(Level.INFO, "User canceled file offer (in active transfer).");
+                    break;
+                }
+
                 target.write(bufbuf, 0, length);
                 readByte += length;
                 // LOGGER.log(Level.INFO, "Read " + readByte + " (" + length + ") of " + fileSize + " bytes.");
@@ -104,7 +120,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
             notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
-            state = State.ended;
+            mState = State.ended;
             if (inputStream != null) {
                 try {
                     inputStream.close();
@@ -128,7 +144,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             byte[] mDigest = ((DigestInputStream) inputStream).getMessageDigest().digest();
             if (!Arrays.equals(hashElement.getHash(), mDigest)) {
                 LOGGER.log(Level.WARNING, "CHECKSUM MISMATCH!");
-            } else {
+            }
+            else {
                 LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
             }
         }
@@ -137,20 +154,23 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     }
 
     @Override
-    public boolean isOffer() {
+    public boolean isOffer()
+    {
         return true;
     }
 
     @Override
-    public boolean isRequest() {
+    public boolean isRequest()
+    {
         return false;
     }
 
     @Override
     public void accept(XMPPConnection connection, File target)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException, IOException {
-        state = State.negotiating;
+            SmackException.NoResponseException, IOException
+    {
+        mState = State.negotiating;
 
         if (!target.exists()) {
             target.createNewFile();
@@ -167,9 +187,9 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     @Override
     public void accept(XMPPConnection connection, OutputStream stream)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException {
-        state  = State.negotiating;
-
+            SmackException.NoResponseException
+    {
+        mState = State.negotiating;
         target = stream;
 
         JingleSessionImpl session = getParent().getParent();

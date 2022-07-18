@@ -362,10 +362,15 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @param message the string message to display.
      */
+    private static Toast toast = null;
     public static void showToastMessage(final String message)
     {
-        new Handler(Looper.getMainLooper()).post(()
-                -> Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG).show());
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (toast != null)
+                toast.cancel();
+            toast = Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG);
+            toast.show();
+        });
     }
 
     public static void showToastMessage(int id)

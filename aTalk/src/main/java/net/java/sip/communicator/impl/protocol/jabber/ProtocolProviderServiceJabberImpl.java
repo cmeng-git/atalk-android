@@ -791,7 +791,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     {
         ConnectionConfiguration.Builder<?, ?> ccBuilder;
         if (mAccountID.isBOSHEnable()) {
-            ccBuilder = BOSHConfiguration.getBuilder();
+            ccBuilder = BOSHConfiguration.builder();
         }
         else {
             ccBuilder = XMPPTCPConnectionConfiguration.builder();
