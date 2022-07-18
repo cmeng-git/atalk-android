@@ -21,6 +21,7 @@ import android.view.*;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileUploadJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -48,6 +49,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 {
     private String mSendTo;
     private boolean mStickerMode;
+    private boolean legacyFileXfer = true;
     private FileHistoryServiceImpl mFHS;
 
     private FileSendConversation(ChatFragment cPanel, String dir)
@@ -107,6 +109,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     /**
      * Handles file transfer status changes. Updates the interface to reflect the changes.
      */
+    @Override
     protected void updateView(final int status, final String reason)
     {
         setXferStatus(status);
@@ -144,13 +147,15 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 break;
 
             case FileTransferStatusChangeEvent.CANCELED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 if (mUpdateDB)
                     updateFTStatus(msgUuid, FileRecord.STATUS_CANCELED, mXferFile.toString());
 
-                // Inform remote user; sender cancel not in standard file xfer protocol
-                mChatFragment.getChatPanel().sendMessage(statusText,
-                        IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
+                // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+                if (legacyFileXfer) {
+                    mChatFragment.getChatPanel().sendMessage(statusText,
+                            IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
+                }
                 break;
 
             case FileTransferStatusChangeEvent.DECLINED:
@@ -201,13 +206,13 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
             Timber.d("File send status change: %s", status);
+            legacyFileXfer = !(fileTransfer instanceof OutgoingFileOfferJingleImpl);
             updateView(status, reason);
             if (status == FileTransferStatusChangeEvent.COMPLETED
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.DECLINED) {
-                // must do this in UI, otherwise the status is not being updated to FileRecord
-                // removeProgressListener();
+                // must update this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(FileSendConversation.this);
             }
         });
@@ -224,7 +229,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         // activate File History service to keep track of the progress - need more work if want to keep sending history.
         // fileTransfer.addStatusListener(new FileHistoryServiceImpl());
 
-        this.fileTransfer = fileTransfer;
+        this.mFileTransfer = fileTransfer;
         fileTransfer.addStatusListener(this);
         this.setFileTransfer(fileTransfer, mXferFile.length());
     }
@@ -249,7 +254,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Check to see if the file transfe is sending sticker
+     * Check to see if the file transfer is sending sticker
      *
      * @return true if sending sticker
      */

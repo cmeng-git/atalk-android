@@ -18,6 +18,15 @@ import java.io.File;
 public interface IncomingFileTransferRequest
 {
     /**
+     * Recipient has prepared and ready to receive the incoming file offer;
+     * listen in for any event for action e.g. remote cancel the file transfer before start
+     *
+     * @param file the file to accept
+     * @return the <code>FileTransfer</code> object managing the transfer
+     */
+    FileTransfer onPrepare(File file);
+
+    /**
      * Unique ID that is identifying the request and then the FileTransfer if the request has been accepted.
      *
      * @return the id.
@@ -69,7 +78,7 @@ public interface IncomingFileTransferRequest
      * @param file the file to accept
      * @return the <code>FileTransfer</code> object managing the transfer
      */
-    FileTransfer acceptFile(File file);
+    void acceptFile();
 
     /**
      * Function called to decline the file offer.

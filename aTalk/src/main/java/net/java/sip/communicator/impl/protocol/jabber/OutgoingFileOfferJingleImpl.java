@@ -20,6 +20,8 @@ import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -93,6 +95,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     public void cancel()
     {
         try {
+            onCanceled();
             mOfoJingle.cancel(mConnection);
             mOfoJingle.removeProgressListener(this);
             JingleSessionImpl.removeJingleSessionListener(this);
@@ -110,7 +113,6 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     @Override
     public long getTransferredBytes()
     {
-        // Timber.d("get TransferredBytes send: %s", byteWrite);
         return byteWrite;
     }
 
@@ -154,6 +156,11 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
         return id;
     }
 
+    public void onCanceled()
+    {
+        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
+    }
 
     @Override
     public void onStarted()
@@ -165,12 +172,13 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     public void progress(int rwBytes)
     {
         byteWrite = rwBytes;
+        // Timber.d("get TransferredBytes send: %s", byteWrite);
     }
 
     @Override
     public void onFinished()
     {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.FINISHED, "Byte sent completed");
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "Byte sent completed");
     }
 
     @Override

@@ -23,7 +23,7 @@ public class FileTransferStatusChangeEvent extends EventObject
     private static final long serialVersionUID = 0L;
 
     /**
-     * Indicates that the file transfer has been completed.
+     * Indicates that the file transfer has been completed, or has finishing sending to stream.
      */
     public static final int COMPLETED = 0;
 
@@ -58,11 +58,6 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int PREPARING = 6;
 
     /**
-     * Indicates that the file transfer has been sent to stream.
-     */
-    public static final int FINISHED = 7;
-
-    /**
      * The state of the file transfer before this event occurred.
      */
     private final int oldStatus;
@@ -75,7 +70,7 @@ public class FileTransferStatusChangeEvent extends EventObject
     /**
      * The reason of this status change.
      */
-    private String reason;
+    private final String reason;
 
     /**
      * Creates a <code>FileTransferStatusChangeEvent</code> by specifying the source

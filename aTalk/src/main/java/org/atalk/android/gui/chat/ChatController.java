@@ -91,7 +91,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * Indicates that this controller is attached to the views.
      */
-    private boolean isAttached;
+    private boolean isAttached = false;
     /**
      * Correction indicator / cancel button.
      */

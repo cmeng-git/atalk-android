@@ -6,8 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.5 (06/14/2022)" versioncode="209050">
+    <release version="2.9.6 (07/18/2022)" versioncode="209060">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Enhance the user UI when file transfer is via Jingle File Transfer protocol...</change>
+        <change>Allow recipient to cancel the incoming file offer in progress even after user has accepted the offer</change>
+        <change>Fix aTalk crashes when sender cancels an outgoing file offer in waiting state</change>
+        <change>Ensure file transfer UI are properly updated for both sender and recipient, when sender cancels an outgoing file offer</change>
+        <change>Do not purge media content for file sending; the same content may be used for multiple send instances</change>
+        <change>upgrade smack library to use v4.4.6</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.9.5 (06/14/2022)" versioncode="209050">
         <change>Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls</change>
         <change>Launch OMEMO device verification dialog for any Undecided Omemo Identity during Jingle File Transfer/JET session</change>
         <change>Fix Jingle File Transfer failure due to NPE exception</change>

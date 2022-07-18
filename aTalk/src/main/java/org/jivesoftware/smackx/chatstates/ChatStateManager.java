@@ -34,12 +34,12 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -78,8 +78,10 @@ public final class ChatStateManager extends Manager {
 
     private static final Map<XMPPConnection, ChatStateManager> INSTANCES = new WeakHashMap<>();
 
+    private static final StanzaFilter INCOMING_MESSAGE_FILTER =
+            new AndFilter(new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT), FromTypeFilter.ENTITY_FULL_JID);
     private static final StanzaFilter INCOMING_CHAT_STATE_FILTER =
-            new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(NAMESPACE));
+            new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE));
 
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             new OrFilter(MessageTypeFilter.NORMAL_OR_CHAT, MessageTypeFilter.GROUPCHAT),

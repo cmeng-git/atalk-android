@@ -67,13 +67,13 @@ public class FileRecord extends EventObject
     // Special case where downloaded file cannot be found
     public static final int FILE_NOT_FOUND = -1;
 
-    private String direction = null;
-    private Date date;
-    private File file = null;
-    private int mXferStatus;  // File transfer status
-    private Object mEntityJid;  // Contact or ChatRoom
-    private String id = null;
-    private int mEncType;
+    private final Object mEntityJid;  // Contact or ChatRoom
+    private final int mXferStatus;  // File transfer status
+    private final File file;
+    private final Date date;
+    private final String direction;
+    private final String id;
+    private final int mEncType;
 
     /**
      * A map between File transfer status to status descriptive text

@@ -312,16 +312,21 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Returns the presence status of this transport.
+     * Returns the presence status of this transport;
+     * with the higher threshold of the two when (contactResource != null)
      *
      * @return the presence status of this transport.
      */
     public PresenceStatus getStatus()
     {
-        if (contactResource != null)
-            return contactResource.getPresenceStatus();
-        else
-            return contact.getPresenceStatus();
+        PresenceStatus contactStatus = contact.getPresenceStatus();
+        if (contactResource != null) {
+            PresenceStatus resourceStatus = contactResource.getPresenceStatus();
+            return (resourceStatus.compareTo(contactStatus) < 0) ? contactStatus : resourceStatus;
+        }
+        else {
+            return contactStatus;
+        }
     }
 
     /**
@@ -753,6 +758,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
                 }
                 else {
+                    // For testing only: forced to use legacy file transfer for unencrypted content
+                    // throw new OperationNotSupportedException("Use legacy File Transfer"));
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
                 OutgoingFileOfferJingleImpl outgoingTransfer

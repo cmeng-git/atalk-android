@@ -53,6 +53,9 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
 
     public final IncomingFileOfferController mOffer;
     private final JingleFile mJingleFile;
+    private IncomingFileTransferJingleImpl mFileTransfer = null;
+    private File mFile;
+
     private final XMPPConnection mConnection;
 
     private Contact sender;
@@ -99,6 +102,17 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
                 sender = opSetPersPresence.createVolatileContact(remoteJid);
             }
         }
+    }
+
+    /**
+     * JingleSessionImpl.addJingleSessionListener(this);
+     */
+    @Override
+    public FileTransfer onPrepare(File file)
+    {
+        mFile = file;
+        mFileTransfer = new IncomingFileTransferJingleImpl(this, file);
+        return mFileTransfer;
     }
 
     public IncomingFileOfferController getController()
@@ -180,26 +194,25 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
     /**
      * Accepts the file and starts the transfer.
      *
+     * Note: If user cancels while in protocol negotiation; the accept() will return an error:
+     * XMPPError: item-not-found - cancel
+     *
      * @return a boolean : <code>false</code> if the transfer fails, <code>true</code> otherwise
      */
     @Override
-    public FileTransfer acceptFile(File file)
+    public void acceptFile()
     {
-        FileTransfer fileTransfer = null;
         try {
-            mOffer.accept(mConnection, file);
-
-            fileTransfer = new IncomingFileTransferJingleImpl(this, file);
-            FileTransferCreatedEvent event = new FileTransferCreatedEvent(fileTransfer, new Date());
+            mOffer.accept(mConnection, mFile);
+            FileTransferCreatedEvent event = new FileTransferCreatedEvent(mFileTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
         } catch (IOException | SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
-            Timber.e(e, "Receiving file failed.");
+            Timber.e("Receiving file failed; %s", e.getMessage());
         }
-        return fileTransfer;
     }
 
     /**
-     * Refuses the incoming file offer.
+     * Declines the incoming file offer.
      */
     @Override
     public void declineFile()

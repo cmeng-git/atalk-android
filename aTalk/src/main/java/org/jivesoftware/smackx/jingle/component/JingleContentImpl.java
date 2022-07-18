@@ -51,7 +51,8 @@ import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class JingleContentImpl implements JingleTransportCallback, JingleSecurityCallback {
+public class JingleContentImpl implements JingleTransportCallback, JingleSecurityCallback
+{
 
     private static final Logger LOGGER = Logger.getLogger(JingleContentImpl.class.getName());
 
@@ -72,11 +73,13 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     // Just for handling Unused Variable warning
     private XMPPConnection mConnection;
 
-    public JingleContentImpl(XMPPConnection connection, JingleContent.Creator creator, JingleContent.Senders senders) {
+    public JingleContentImpl(XMPPConnection connection, JingleContent.Creator creator, JingleContent.Senders senders)
+    {
         this(connection, null, null, null, randomName(), null, creator, senders);
     }
 
-    public JingleContentImpl(XMPPConnection connection, JingleDescription<?> description, JingleTransport<?> transport, JingleSecurity<?> security, String name, String disposition, JingleContent.Creator creator, JingleContent.Senders senders) {
+    public JingleContentImpl(XMPPConnection connection, JingleDescription<?> description, JingleTransport<?> transport, JingleSecurity<?> security, String name, String disposition, JingleContent.Creator creator, JingleContent.Senders senders)
+    {
         setDescription(description);
         setTransport(transport);
         setSecurity(security);
@@ -88,7 +91,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         this.senders = senders;
     }
 
-    public static JingleContentImpl fromElement(XMPPConnection connection, JingleContent content) {
+    public static JingleContentImpl fromElement(XMPPConnection connection, JingleContent content)
+    {
         JingleDescription<?> description = null;
         JingleTransport<?> transport = null;
         JingleSecurity<?> security = null;
@@ -99,7 +103,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleDescriptionAdapter(contentDescription.getNamespace());
             if (descriptionAdapter != null) {
                 description = descriptionAdapter.descriptionFromElement(content.getCreator(), content.getSenders(), content.getName(), content.getDisposition(), contentDescription);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Description: " + contentDescription.getNamespace());
             }
         }
@@ -110,7 +115,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleTransportAdapter(contentTransport.getNamespace());
             if (transportAdapter != null) {
                 transport = transportAdapter.transportFromElement(contentTransport);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Transport: " + contentTransport.getNamespace());
             }
         }
@@ -121,7 +127,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleSecurityAdapter(content.getSecurity().getNamespace());
             if (securityAdapter != null) {
                 security = securityAdapter.securityFromElement(securityElement);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Security: " + securityElement.getNamespace());
             }
         }
@@ -129,12 +136,14 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         return new JingleContentImpl(connection, description, transport, security, content.getName(), content.getDisposition(), content.getCreator(), content.getSenders());
     }
 
-    public void setSenders(JingleContent.Senders senders) {
+    public void setSenders(JingleContent.Senders senders)
+    {
         this.senders = senders;
     }
 
     /* HANDLE_XYZ */
-    public IQ handleJingleRequest(Jingle request, XMPPConnection connection) {
+    public IQ handleJingleRequest(Jingle request, XMPPConnection connection)
+    {
         switch (request.getAction()) {
             case content_modify:
                 return handleContentModify(request, connection);
@@ -157,11 +166,13 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         }
     }
 
-    void handleContentAccept(Jingle request, XMPPConnection connection) {
+    void handleContentAccept(Jingle request, XMPPConnection connection)
+    {
         start(connection);
     }
 
-    IQ handleSessionAccept(Jingle request, XMPPConnection connection) {
+    IQ handleSessionAccept(Jingle request, XMPPConnection connection)
+    {
         LOGGER.info("RECEIVED SESSION ACCEPT!");
         JingleContent contentElement = null;
         for (JingleContent c : request.getContents()) {
@@ -181,32 +192,37 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         return IQ.createResultIQ(request);
     }
 
-    private IQ handleContentModify(Jingle request, XMPPConnection connection) {
+    private IQ handleContentModify(Jingle request, XMPPConnection connection)
+    {
         mConnection = connection;
         return IQ.createErrorResponse(request, StanzaError.Condition.feature_not_implemented);
     }
 
-    private IQ handleDescriptionInfo(Jingle request, XMPPConnection connection) {
+    private IQ handleDescriptionInfo(Jingle request, XMPPConnection connection)
+    {
         mConnection = connection;
         return IQ.createErrorResponse(request, StanzaError.Condition.feature_not_implemented);
     }
 
-    public void handleContentRemove(JingleSessionImpl session, XMPPConnection connection) {
+    public void handleContentRemove(JingleSessionImpl session, XMPPConnection connection)
+    {
         mConnection = connection;
     }
 
-    private IQ handleSecurityInfo(Jingle request, XMPPConnection connection) {
+    private IQ handleSecurityInfo(Jingle request, XMPPConnection connection)
+    {
         mConnection = connection;
         return IQ.createErrorResponse(request, StanzaError.Condition.feature_not_implemented);
     }
 
-    private IQ handleSessionInfo(Jingle request, XMPPConnection connection) {
+    private IQ handleSessionInfo(Jingle request, XMPPConnection connection)
+    {
         mConnection = connection;
         return IQ.createResultIQ(request);
     }
 
-    private IQ handleTransportAccept(Jingle request, XMPPConnection connection) {
-
+    private IQ handleTransportAccept(Jingle request, XMPPConnection connection)
+    {
         if (pendingReplacingTransport == null) {
             LOGGER.warning("Received transport-accept, but apparently we did not try to replace the transport.");
             return jutil.createErrorOutOfOrder(request);
@@ -220,7 +236,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         return IQ.createResultIQ(request);
     }
 
-    private IQ handleTransportInfo(Jingle request, XMPPConnection connection) {
+    private IQ handleTransportInfo(Jingle request, XMPPConnection connection)
+    {
         assert request.getContents().size() == 1;
         JingleContent content = request.getContents().get(0);
 
@@ -228,36 +245,32 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         return transport.handleTransportInfo(content.getTransport().getInfo(), request);
     }
 
-    private IQ handleTransportReject(Jingle request, final XMPPConnection connection) {
+    private IQ handleTransportReject(Jingle request, final XMPPConnection connection)
+    {
         if (pendingReplacingTransport == null) {
             throw new AssertionError("We didn't try to replace the transport.");
         }
-        Async.go(new Runnable() {
-            @Override
-            public void run() {
-                transportBlacklist.add(pendingReplacingTransport.getNamespace());
-                pendingReplacingTransport = null;
-                try {
-                    replaceTransport(transportBlacklist, connection);
-                } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
-                }
+        Async.go(() -> {
+            transportBlacklist.add(pendingReplacingTransport.getNamespace());
+            pendingReplacingTransport = null;
+            try {
+                replaceTransport(transportBlacklist, connection);
+            } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
             }
         });
         return IQ.createResultIQ(request);
     }
 
-    private IQ handleTransportReplace(final Jingle request, final XMPPConnection connection) {
+    private IQ handleTransportReplace(final Jingle request, final XMPPConnection connection)
+    {
         // Tie Break?
         if (pendingReplacingTransport != null) {
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        jutil.sendErrorTieBreak(request);
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send tie-break: " + e, e);
-                    }
+            Async.go(() -> {
+                try {
+                    jutil.sendErrorTieBreak(request);
+                } catch (SmackException.NotConnectedException | InterruptedException e) {
+                    LOGGER.log(Level.SEVERE, "Could not send tie-break: " + e, e);
                 }
             });
             return IQ.createResultIQ(request);
@@ -292,7 +305,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 }
             });
 
-        } else {
+        }
+        else {
             // Blacklist current transport
             this.getTransportBlacklist().add(this.transport.getNamespace());
 
@@ -313,7 +327,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
 
     /* MISCELLANEOUS */
 
-    public JingleContent getElement() {
+    public JingleContent getElement()
+    {
         JingleContent.Builder builder = JingleContent.getBuilder()
                 .setName(name)
                 .setCreator(creator)
@@ -335,78 +350,93 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         return builder.build();
     }
 
-    public Set<String> getTransportBlacklist() {
+    public Set<String> getTransportBlacklist()
+    {
         return transportBlacklist;
     }
 
-    public JingleContent.Creator getCreator() {
+    public JingleContent.Creator getCreator()
+    {
         return creator;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public JingleContent.Senders getSenders() {
+    public JingleContent.Senders getSenders()
+    {
         return senders;
     }
 
-    public void setParent(JingleSessionImpl session) {
+    public void setParent(JingleSessionImpl session)
+    {
         if (!session.equals(parent)) {
             this.parent = session;
         }
     }
 
-    public JingleSessionImpl getParent() {
+    public JingleSessionImpl getParent()
+    {
         return parent;
     }
 
-    public JingleDescription<?> getDescription() {
+    public JingleDescription<?> getDescription()
+    {
         return description;
     }
 
-    public void setDescription(JingleDescription<?> description) {
+    public void setDescription(JingleDescription<?> description)
+    {
         if (description != null && this.description != description) {
             this.description = description;
             description.setParent(this);
         }
     }
 
-    public JingleTransport<?> getTransport() {
+    public JingleTransport<?> getTransport()
+    {
         return transport;
     }
 
-    public void setTransport(JingleTransport<?> transport) {
+    public void setTransport(JingleTransport<?> transport)
+    {
         if (transport != null && this.transport != transport) {
             this.transport = transport;
             transport.setParent(this);
         }
     }
 
-    public JingleSecurity<?> getSecurity() {
+    public JingleSecurity<?> getSecurity()
+    {
         return security;
     }
 
-    public void setSecurity(JingleSecurity<?> security) {
+    public void setSecurity(JingleSecurity<?> security)
+    {
         if (security != null && this.security != security) {
             this.security = security;
             security.setParent(this);
         }
     }
 
-    public boolean isSending() {
+    public boolean isSending()
+    {
         return (getSenders() == JingleContent.Senders.initiator && getParent().isInitiator()) ||
                 (getSenders() == JingleContent.Senders.responder && getParent().isResponder()) ||
                 getSenders() == JingleContent.Senders.both;
     }
 
-    public boolean isReceiving() {
+    public boolean isReceiving()
+    {
         return (getSenders() == JingleContent.Senders.initiator && getParent().isResponder()) ||
                 (getSenders() == JingleContent.Senders.responder && getParent().isInitiator()) ||
                 getSenders() == JingleContent.Senders.both;
     }
 
-    public void start(final XMPPConnection connection) {
+    public void start(final XMPPConnection connection)
+    {
         transport.prepare(connection);
 
         if (security != null) {
@@ -419,10 +449,12 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 if (isReceiving()) {
                     LOGGER.info("Establish incoming bytestream.");
                     getTransport().establishIncomingBytestreamSession(connection, JingleContentImpl.this, getParent());
-                } else if (isSending()) {
+                }
+                else if (isSending()) {
                     LOGGER.info("Establish outgoing bytestream.");
                     getTransport().establishOutgoingBytestreamSession(connection, JingleContentImpl.this, getParent());
-                } else {
+                }
+                else {
                     LOGGER.info("Neither receiving, nor sending. Assume receiving.");
                     getTransport().establishIncomingBytestreamSession(connection, JingleContentImpl.this, getParent());
                 }
@@ -433,27 +465,38 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     @Override
-    public void onTransportReady(BytestreamSession bytestreamSession) {
+    public void onTransportReady(BytestreamSession bytestreamSession)
+    {
         LOGGER.info("TransportReady: " + (isReceiving() ? "Receive" : "Send"));
         if (bytestreamSession == null) {
             throw new AssertionError("bytestreamSession MUST NOT be null at this point.");
         }
 
-        if (security != null) {
-            if (isReceiving()) {
-                LOGGER.info("Decrypt incoming Bytestream.");
-                getSecurity().decryptIncomingBytestream(bytestreamSession, this);
-            } else if (isSending()) {
-                LOGGER.info("Encrypt outgoing Bytestream.");
-                getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
+        /*
+         * Must execute byteStream sending in Async; large file sending may take > 5 seconds,
+         * and sending IQ.createResultIQ() will be timeout: SmackException$NoResponseException
+         * JingleS5BTransportImpl.connectIfReady() Could not send candidate-activated
+         */
+        Async.go(() -> {
+            if (security != null) {
+                if (isReceiving()) {
+                    LOGGER.info("Decrypt incoming Bytestream.");
+                    getSecurity().decryptIncomingBytestream(bytestreamSession, this);
+                }
+                else if (isSending()) {
+                    LOGGER.info("Encrypt outgoing Bytestream.");
+                    getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
+                }
             }
-        } else {
-            description.onBytestreamReady(bytestreamSession);
-        }
+            else {
+                description.onBytestreamReady(bytestreamSession);
+            }
+        });
     }
 
     @Override
-    public void onTransportFailed(Exception e) {
+    public void onTransportFailed(Exception e)
+    {
         // Add current transport to blacklist.
         getTransportBlacklist().add(transport.getNamespace());
 
@@ -468,32 +511,37 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     @Override
-    public void onSecurityReady(BytestreamSession bytestreamSession) {
+    public void onSecurityReady(BytestreamSession bytestreamSession)
+    {
         description.onBytestreamReady(bytestreamSession);
     }
 
     @Override
-    public void onSecurityFailed(Exception e) {
+    public void onSecurityFailed(Exception e)
+    {
         LOGGER.log(Level.SEVERE, "Security failed: " + e, e);
     }
 
-    public void onContentFinished() {
+    public void onContentFinished()
+    {
         JingleSessionImpl session = getParent();
         session.onContentFinished(this);
     }
 
-    public void onContentFailed(Exception e) {
-
+    public void onContentFailed(Exception e)
+    {
     }
 
-    public void onContentCancel() {
+    public void onContentCancel()
+    {
         JingleSessionImpl session = getParent();
         session.onContentCancel(this);
     }
 
     private void replaceTransport(Set<String> blacklist, XMPPConnection connection)
             throws SmackException.NotConnectedException, InterruptedException,
-            XMPPException.XMPPErrorException, SmackException.NoResponseException {
+            XMPPException.XMPPErrorException, SmackException.NoResponseException
+    {
         if (pendingReplacingTransport != null) {
             throw new AssertionError("Transport replace already pending.");
         }
@@ -512,7 +560,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 session.getSessionId(), getCreator(), getName(), pendingReplacingTransport.getElement());
     }
 
-    private static String randomName() {
+    private static String randomName()
+    {
         return "cont-" + StringUtils.randomString(16);
     }
 }

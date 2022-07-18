@@ -358,8 +358,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
             Timber.d("Received jingle incoming file offer.");
 
             // Create a global incoming file transfer request.
-            IncomingFileOfferJingleImpl ifoJingle = new IncomingFileOfferJingleImpl(
-                    mPPS, OperationSetFileTransferJabberImpl.this, offer);
+            IncomingFileOfferJingleImpl ifoJingle
+                    = new IncomingFileOfferJingleImpl(mPPS, OperationSetFileTransferJabberImpl.this, offer);
             fireFileTransferRequest(ifoJingle);
         }
     }
@@ -440,7 +440,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Delivers the specified event to all registered file transfer listeners.
+     * When the user declines an incoming file offer;
+     * delivers the specified event to all registered file transfer listeners.
      *
      * @param event the <code>EventObject</code> that we'd like delivered to all registered file transfer listeners.
      */
@@ -458,8 +459,9 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     }
 
     /**
-     * Delivers the specified event to all registered file transfer listeners.
-     * Note: this is not standard XMPP FileTransfer protocol
+     * When the remote user cancels the file transfer/offer;
+     * delivers the specified event to all registered file transfer listeners.
+     * Note: Legacy XMPP IBB/SOCK5 protocol does reverts this info to sender.
      *
      * @param event the <code>EventObject</code> that we'd like delivered to all
      * registered file transfer listeners.
@@ -480,8 +482,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
     /**
      * Delivers the file transfer to all registered listeners.
      *
-     * @param event the <code>FileTransferEvent</code> that we'd like delivered to all registered file
-     * transfer listeners.
+     * @param event the <code>FileTransferEvent</code> that we'd like delivered to all registered file transfer listeners.
      */
     public void fireFileTransferCreated(FileTransferCreatedEvent event)
     {

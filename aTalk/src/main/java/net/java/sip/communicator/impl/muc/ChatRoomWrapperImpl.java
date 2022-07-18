@@ -120,7 +120,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     /**
      * The property change listener for the message service.
      */
-    private PropertyChangeListener propertyListener = new PropertyChangeListener()
+    private final PropertyChangeListener propertyListener = new PropertyChangeListener()
     {
         @Override
         public void propertyChange(PropertyChangeEvent e)
@@ -428,7 +428,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     {
         if (autoJoin == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME);
-            autoJoin = StringUtils.isEmpty(val) ? false : Boolean.valueOf(val);
+            autoJoin = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
         }
         return autoJoin;
     }
@@ -469,7 +469,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     {
         if (bookmark == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME);
-            bookmark = StringUtils.isEmpty(val) ? false : Boolean.valueOf(val);
+            bookmark = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
         }
         return bookmark;
     }

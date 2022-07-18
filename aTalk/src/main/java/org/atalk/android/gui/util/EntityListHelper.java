@@ -299,9 +299,9 @@ public class EntityListHelper
     /**
      * Erase all the local stored chat history for all the entities i.e. MetaContacts or ChatRoomWrappers.
      *
-     * @param caller the callback.
+     * @param callback the callback.
      */
-    public static void eraseAllEntityHistory(final Context caller)
+    public static void eraseAllEntityHistory(final Context callback)
     {
         Context ctx = aTalkApp.getGlobalContext();
         String title = ctx.getString(R.string.service_gui_HISTORY);
@@ -317,7 +317,7 @@ public class EntityListHelper
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
                         // EntityListHelper mErase = new EntityListHelper();
-                        new doEraseAllEntityHistory(caller, mediaDelete).execute();
+                        new doEraseAllEntityHistory(callback, mediaDelete).execute();
                         return true;
                     }
 

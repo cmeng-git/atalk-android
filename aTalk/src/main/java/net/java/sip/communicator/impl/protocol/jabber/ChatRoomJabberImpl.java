@@ -14,8 +14,39 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.gui.Chat;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractChatRoom;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublishedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomLocalUserRoleListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPropertyChangeListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberRoleChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMemberRoleListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeFailedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomPropertyChangeListener;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
@@ -31,23 +62,57 @@ import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.SmackException.*;
+import org.jivesoftware.smack.PresenceListener;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.confdesc.TransportExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.jitsimeet.*;
-import org.jivesoftware.smackx.muc.*;
+import org.jivesoftware.smackx.jitsimeet.AvatarUrl;
+import org.jivesoftware.smackx.jitsimeet.Email;
+import org.jivesoftware.smackx.jitsimeet.JsonMessageExtension;
+import org.jivesoftware.smackx.jitsimeet.StatsId;
+import org.jivesoftware.smackx.muc.Affiliate;
+import org.jivesoftware.smackx.muc.InvitationRejectionListener;
+import org.jivesoftware.smackx.muc.MUCAffiliation;
+import org.jivesoftware.smackx.muc.MUCRole;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatException;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.Occupant;
+import org.jivesoftware.smackx.muc.ParticipantStatusListener;
+import org.jivesoftware.smackx.muc.RoomInfo;
+import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
+import org.jivesoftware.smackx.muc.UserStatusListener;
 import org.jivesoftware.smackx.muc.filter.MUCUserStatusCodeFilter;
 import org.jivesoftware.smackx.muc.packet.Destroy;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
-import org.jivesoftware.smackx.omemo.exceptions.*;
+import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
+import org.jivesoftware.smackx.omemo.exceptions.NoOmemoSupportException;
+import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -58,17 +123,26 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.EntityJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
-import org.jivesoftware.smackx.confdesc.TransportExtension;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -82,13 +156,12 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-
 public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialog.CaptchaDialogListener
 {
     /**
      * The multi user chat smack object that we encapsulate in this room.
      */
-    private MultiUserChat mMultiUserChat;
+    private final MultiUserChat mMultiUserChat;
 
     /**
      * Listeners that will be notified of changes in member status in the room such as member
@@ -167,6 +240,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private ChatRoomMemberRole mUserRole = null;
 
     /**
+     * Intercepts presences to set custom extensions.
+     */
+    private final Consumer<PresenceBuilder> presenceInterceptor = this::presenceIntercept;
+
+    /**
      * The conference which we have announced in the room in our last sent <code>Presence</code> update.
      */
     private ConferenceDescription publishedConference = null;
@@ -178,9 +256,18 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     private ConferenceDescriptionExtension publishedConferenceExt = null;
 
     /**
+     * List of packet extensions we need to add to every outgoing presence we send.
+     * Currently used from external components reusing the protocol provider
+     * to permanently add extension to the outgoing stanzas.
+     */
+    private final List<ExtensionElement> presencePacketExtensions = new ArrayList<>();
+
+    /**
      * The last <code>Presence</code> packet we sent to the MUC.
      */
     private Presence lastPresenceSent = null;
+
+    private final List<CallJabberImpl> chatRoomConferenceCalls = new ArrayList<>();
 
     /**
      * All <presence/>'s reason will default to REASON_USER_LIST until user own <code>Presence</code> has been received.
@@ -189,27 +276,20 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private boolean mucOwnPresenceReceived = false;
 
-    private final List<CallJabberImpl> chatRoomConferenceCalls = new ArrayList<>();
-
     /**
      * Packet listener waits for rejection of invitations to join room.
      */
-    private InvitationRejectionListeners invitationRejectionListeners;
-
-    /**
-     * Presence stanza interceptor listener.
-     */
-    private PresenceInterceptor presenceInterceptor;
+    private final InvitationRejectionListeners invitationRejectionListeners;
 
     /**
      * Local status change listener
      */
-    private LocalUserStatusListener userStatusListener;
+    private final LocalUserStatusListener userStatusListener;
 
     /**
      * Presence listener for joining participants.
      */
-    private ParticipantListener participantListener;
+    private final ParticipantListener participantListener;
 
     private int mCaptchaState = CaptchaDialog.unknown;
     private final MucMessageListener messageListener;
@@ -239,8 +319,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
 
         userStatusListener = new LocalUserStatusListener();
         multiUserChat.addUserStatusListener(userStatusListener);
-
-        presenceInterceptor = new PresenceInterceptor();
         multiUserChat.addPresenceInterceptor(presenceInterceptor);
 
         participantListener = new ParticipantListener();
@@ -506,9 +584,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * Returns a <code>List</code> of <code>Member</code>s corresponding to all members currently participating in this room.
+     * Returns a List of <code>Member</code>s corresponding to all members currently participating in this room.
      *
-     * @return a <code>List</code> of <code>Member</code> corresponding to all room members.
+     * @return a List of <code>Member</code> corresponding to all room members.
      */
     public List<ChatRoomMember> getMembers()
     {
@@ -950,14 +1028,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * connection can be null if we are leaving due to connection failed
          */
         if ((connection != null) && (mMultiUserChat != null)) {
-            if (presenceInterceptor != null) {
-                mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
-                presenceInterceptor = null;
-            }
 
+            mMultiUserChat.removeInvitationRejectionListener(invitationRejectionListeners);
+            mMultiUserChat.removePresenceInterceptor(presenceInterceptor);
             mMultiUserChat.removeUserStatusListener(userStatusListener);
             mMultiUserChat.removeParticipantListener(participantListener);
-            mMultiUserChat.removeInvitationRejectionListener(invitationRejectionListeners);
         }
 
         opSetMuc.fireLocalUserPresenceEvent(this, LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT,
@@ -1532,6 +1607,31 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
+     * Adds a packet extension which will be added to every presence we sent.
+     *
+     * @param ext the extension we want to add.
+     */
+    public void addPresencePacketExtensions(ExtensionElement ext)
+    {
+        synchronized (presencePacketExtensions) {
+            if (!presencePacketExtensions.contains(ext))
+                presencePacketExtensions.add(ext);
+        }
+    }
+
+    /**
+     * Removes a packet extension from the list of extensions we add to every presence we send.
+     *
+     * @param ext the extension we want to remove.
+     */
+    public void removePresencePacketExtensions(ExtensionElement ext)
+    {
+        synchronized (presencePacketExtensions) {
+            presencePacketExtensions.remove(ext);
+        }
+    }
+
+    /**
      * Adds a listener that will be notified of changes of a member mRole in the room such as being granted operator.
      *
      * @param listener a member mRole listener.
@@ -1799,14 +1899,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             cd.setDisplayName(displayName);
         }
 
-        ConferenceDescriptionExtension ext
-                = new ConferenceDescriptionExtension(cd.getUri(), cd.getUri(), cd.getPassword());
+        ConferenceDescriptionExtension ext = new ConferenceDescriptionExtension(cd.getUri(), cd.getUri(), cd.getPassword());
         if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtension.NAMESPACE);
-            try {
-                mPPS.getConnection().sendStanza(lastPresenceSent);
-            } catch (NotConnectedException | InterruptedException e) {
-                Timber.w(e, "Could not publish conference");
+            if (setPacketExtension(lastPresenceSent, ext, ConferenceDescriptionExtension.NAMESPACE)) {
+                try {
+                    sendLastPresence();
+                } catch (NotConnectedException | InterruptedException e) {
+                    Timber.w(e, "Could not publish conference");
+                }
+            }
+            else {
+                return null;
             }
         }
         else {
@@ -1835,11 +1938,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param namespace the namespace of <code>ExtensionElement</code>.
      * @param matchElementName if {@code true} only extensions matching both the element name and namespace will be matched
      * and removed. Otherwise, only the namespace will be matched.
+     * @return whether packet was modified.
      */
-    private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName)
+    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName)
     {
+        boolean modified = false;
         if (StringUtils.isEmpty(namespace)) {
-            return;
+            return modified;
         }
 
         // clear previous announcements
@@ -1847,19 +1952,24 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         if (matchElementName && extension != null) {
             String element = extension.getElementName();
             while (null != (pe = packet.getExtensionElement(element, namespace))) {
-                packet.removeExtension(pe);
+                if (packet.removeExtension(pe) != null) {
+                    modified = true;
+                }
             }
         }
         else {
             while (null != (pe = packet.getExtension(namespace))) {
-                packet.removeExtension(pe);
+                if (packet.removeExtension(pe) != null) {
+                    modified = true;
+                }
             }
         }
         if (extension != null) {
             packet.addExtension(extension);
+            modified = true;
         }
+        return modified;
     }
-
 
     /**
      * Sets <code>ext</code> as the only <code>ExtensionElement</code> that belongs to given <code>namespace</code>
@@ -1869,9 +1979,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
      * @param namespace the namespace of <code>ExtensionElement</code>.
      */
-    private static void setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
+    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
     {
-        setPacketExtension(packet, extension, namespace, false);
+        return setPacketExtension(packet, extension, namespace, false);
     }
 
     /**
@@ -1884,7 +1994,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         if (lastPresenceSent != null) {
             lastPresenceSent.setStatus(newStatus);
             try {
-                mPPS.getConnection().sendStanza(lastPresenceSent);
+                sendLastPresence();
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not publish presence");
             }
@@ -1898,10 +2008,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void sendPresenceExtension(ExtensionElement extension)
     {
-        if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, extension, extension.getNamespace(), true);
+        if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, extension, extension.getNamespace(), true)) {
             try {
-                mPPS.getConnection().sendStanza(lastPresenceSent);
+                sendLastPresence();
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send presence");
             }
@@ -1915,10 +2024,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     public void removePresenceExtension(ExtensionElement extension)
     {
-        if (lastPresenceSent != null) {
-            setPacketExtension(lastPresenceSent, null, extension.getNamespace());
+        if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, null, extension.getNamespace())) {
             try {
-                mPPS.getConnection().sendStanza(lastPresenceSent);
+                sendLastPresence();
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not remove presence");
             }
@@ -1965,6 +2073,27 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 | InterruptedException e) {
             Timber.e(e, "Cannot modify members list");
         }
+    }
+
+    /**
+     * Prepares and sends the last seen presence.
+     * Removes the initial <x> extension and sets new id.
+     *
+     * @throws NotConnectedException
+     * @throws InterruptedException
+     */
+    private void sendLastPresence() throws NotConnectedException, InterruptedException
+    {
+        // The initial presence sent by smack contains an empty "x" extension.
+        // If this extension is included in a subsequent stanza, it indicates that the client lost its
+        // synchronization and causes the MUC service to re-send the presence of each occupant in the room.
+        lastPresenceSent.removeExtension(MUCInitialPresence.ELEMENT, MUCInitialPresence.NAMESPACE);
+
+        lastPresenceSent = lastPresenceSent
+                .asBuilder(StandardStanzaIdSource.DEFAULT.getNewStanzaId())
+                .build();
+
+        mPPS.getConnection().sendStanza(lastPresenceSent);
     }
 
     /**
@@ -2691,28 +2820,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     }
 
     /**
-     * The <code>StanzaInterceptor</code> we use to make sure that our outgoing <code>Presence</code>
-     * packets contain the correct <code>ConferenceAnnouncementPacketExtension</code>.
-     */
-    private class PresenceInterceptor implements PresenceListener
-    {
-        /**
-         * {@inheritDoc}
-         *
-         * Adds <code>this.publishedConferenceExt</code> as the only
-         * <code>ConferenceAnnouncementPacketExtension</code> of <code>packet</code>.
-         */
-        @Override
-        public void processPresence(Presence presence)
-        {
-            if (presence != null) {
-                setPacketExtension(presence, publishedConferenceExt, ConferenceDescriptionExtension.NAMESPACE);
-                lastPresenceSent = presence;
-            }
-        }
-    }
-
-    /**
      * Class implementing MultiUserChat#PresenceListener
      */
     private class ParticipantListener implements PresenceListener
@@ -2740,6 +2847,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         {
             MUCUser mucUser = presence.getExtension(MUCUser.class);
             if (mucUser != null) {
+                // lastPresenceSent = presence;
                 MUCAffiliation affiliation = mucUser.getItem().getAffiliation();
                 MUCRole role = mucUser.getItem().getRole();
 
@@ -2919,7 +3027,39 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 fireMessageEvent(msgReceivedEvt);
             }
         }
+    }
 
+    /**
+     * We use this to make sure that our outgoing <tt>Presence</tt> packets contain the correct
+     * <tt>ConferenceAnnouncementPacketExtension</tt> and custom extensions.
+     */
+    private void presenceIntercept(PresenceBuilder presenceBuilder)
+    {
+        if (publishedConferenceExt != null) {
+            presenceBuilder.overrideExtension(publishedConferenceExt);
+        }
+        else {
+            presenceBuilder.removeExtension(ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE);
+        }
+
+        for (ExtensionElement ext : presencePacketExtensions) {
+            presenceBuilder.overrideExtension(ext);
+        }
+
+        lastPresenceSent = presenceBuilder.build();
+    }
+
+    /**
+     * Stores the last sent presence.
+     */
+    private class LastPresenceListener implements StanzaListener
+    {
+        @Override
+        public void processStanza(Stanza packet)
+                throws NotConnectedException, InterruptedException, NotLoggedInException
+        {
+            lastPresenceSent = (Presence) packet;
+        }
     }
 
     /**
