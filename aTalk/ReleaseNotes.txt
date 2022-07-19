@@ -1,5 +1,12 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        2.9.7 (209070)
+Release Date:   08/18/2022
+Author:         cmeng
+- File transfer with thumbnail supported feature missing
+  ProtocolProviderServiceJabberImpl: Add supportedFeatures.add(BoBIQ.NAMESPACE); // XEP-0231: Bits of Binary
+
+=========================================================================
 Version:        2.9.6 (209060)
 Release Date:   07/18/2022
 Author:         cmeng
