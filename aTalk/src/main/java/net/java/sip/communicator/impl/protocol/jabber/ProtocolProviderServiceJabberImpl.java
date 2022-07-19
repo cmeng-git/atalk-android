@@ -65,6 +65,7 @@ import org.jivesoftware.smackx.avatar.useravatar.provider.AvatarMetadataProvider
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.avatar.vcardavatar.provider.VCardTempXUpdateProvider;
+import org.jivesoftware.smackx.bob.element.BoBIQ;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamManager;
@@ -1940,6 +1941,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // XEP-0096: SI File Transfer
         supportedFeatures.add(FileTransferNegotiator.SI_PROFILE_FILE_TRANSFER_NAMESPACE);
+
+        // XEP-0231: Bits of Binary
+        supportedFeatures.add(BoBIQ.NAMESPACE);
 
         // XEP-0264: File Transfer Thumbnails
         supportedFeatures.add(Thumbnail.NAMESPACE);
