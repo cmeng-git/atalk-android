@@ -1,14 +1,7 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:        2.9.7 (209070)
-Release Date:   08/18/2022
-Author:         cmeng
-- File transfer with thumbnail supported feature missing
-  ProtocolProviderServiceJabberImpl: Add supportedFeatures.add(BoBIQ.NAMESPACE); // XEP-0231: Bits of Binary
-
-=========================================================================
-Version:        2.9.6 (209060)
-Release Date:   07/18/2022
+Version:        2.9.6 (209061)
+Release Date:   07/19/2022
 Author:         cmeng
 - Allow recipient to cancel incoming file offer in progress after user has accepted the offer (esp large file).
 - Fix aTalk crashes when sender cancels outgoing file offer:
@@ -26,6 +19,8 @@ Author:         cmeng
 - Ensure JingleSessionImpl.removeJingleSessionListener(this) for IncomingFileTransferJingleImpl#onError() and onSessionTerminated()
 - Add cases state for ended handling in JingleFileTransferImpl#cancel();
   when user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
+- File transfer with thumbnail supported feature missing
+  ProtocolProviderServiceJabberImpl: Add supportedFeatures.add(BoBIQ.NAMESPACE); // XEP-0231: Bits of Binary
 - ChatStateManager#INCOMING_CHAT_STATE_FILTER must include FromTypeFilter.ENTITY_FULL_JID to filter messages/chatState send from server
 - Roll back FileTransferStatusChangeEvent#FINISHED to use #COMPLETED instead for easy handling
 - MetaContactChatTransport#getStatus() return higher threshold of the two i.e. contactResource or contact when checking isOnline()
