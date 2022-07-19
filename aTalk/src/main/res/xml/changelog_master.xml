@@ -6,13 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.6 (07/18/2022)" versioncode="209060">
+    <release version="2.9.6 (07/19/2022)" versioncode="209061">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Enhance the user UI when file transfer is via Jingle File Transfer protocol...</change>
         <change>Allow recipient to cancel the incoming file offer in progress even after user has accepted the offer</change>
         <change>Fix aTalk crashes when sender cancels an outgoing file offer in waiting state</change>
         <change>Ensure file transfer UI are properly updated for both sender and recipient, when sender cancels an outgoing file offer</change>
         <change>Do not purge media content for file sending; the same content may be used for multiple send instances</change>
+        <change>Fix file transfer with thumbnail supported feature missing</change>
         <change>upgrade smack library to use v4.4.6</change>
         <change>Bug fixes and enhancements</change>
     </release>
