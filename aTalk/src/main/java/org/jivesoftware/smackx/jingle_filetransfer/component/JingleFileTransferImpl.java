@@ -33,13 +33,17 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.JingleFileTransfer
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
+import timber.log.Timber;
+
 /**
  * An abstract class implementation for JingleFileTransfer.
+ * JingleSessionListener listen for remote user cancel while in active file streaming.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleFileTransferImpl extends JingleDescription<JingleFileTransfer> implements JingleFileTransferController {
+public abstract class JingleFileTransferImpl extends JingleDescription<JingleFileTransfer>
+        implements JingleFileTransferController, JingleSessionImpl.JingleSessionListener {
 
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
     public static final String NAMESPACE = NAMESPACE_V5;
@@ -53,6 +57,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     JingleFileTransferImpl(JingleFile metadata) {
         this.metadata = metadata;
+        JingleSessionImpl.addJingleSessionListener(this);
     }
 
     public abstract boolean isOffer();
@@ -80,7 +85,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     {
         JingleSessionImpl session = getParent().getParent();
         JingleUtil jutil = new JingleUtil(connection);
-        LOGGER.log(Level.INFO, "Cancel file transfer session @ state: " + mState);
+        LOGGER.log(Level.INFO, "Local user cancels file transfer session @ state: " + mState);
         switch (mState) {
             case pending:
                 if (session.isResponder()) {
@@ -90,16 +95,26 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 }
                 break;
 
-            // negotiating: remote will send => XMPPError: item-not-found - cancel; due to async negotiation process
-            case negotiating:
+            /*
+             * Remote will send => XMPPError: item-not-found - cancel; due to async negotiation process
+             * App should block user cancel while in protocol negotiation phase; both legacy si and JFT
+             * cannot support transfer cancel during protocol negotiation. Only allow cancel in active mode.
+             */
+            // case negotiating:
             case active:
-                mState = State.cancelled;
-                jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
+                // Always allow sender to stop stream sending before recipient take action
+                if (this instanceof JingleIncomingFileOffer) {
+                    jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
+                    mState = State.cancelled; // set flag to inform local only after remote has been notified.
+                } else {
+                    mState = State.cancelled; // set flag to inform local before the remote is notified.
+                    jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
+                }
                 break;
 
             case ended:
                 // user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
-                getParent().onContentFinished();
+                // getParent().onContentFinished(); // cmeng 20220720: just ignore and do nothing
                 return;
 
             default: break;
@@ -114,6 +129,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     }
 
     public void notifyProgressListenersFinished() {
+        JingleSessionImpl.removeJingleSessionListener(this);
         for (ProgressListener p : progressListeners) {
             p.onFinished();
         }
@@ -151,5 +167,31 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     @Override
     public JingleFile getMetadata() {
         return metadata;
+    }
+
+    @Override
+    public void onSessionTerminated(JingleReason reason)
+    {
+        switch (reason.asEnum()) {
+            case cancel:
+                mState = State.cancelled;
+                break;
+
+            case success:
+                mState = State.ended;
+                break;
+
+            default:
+                break;
+        }
+
+        Timber.d("mState set to: %s ,= %s", mState, reason);
+        JingleSessionImpl.removeJingleSessionListener(this);
+    }
+
+    @Override
+    public void onSessionAccepted()
+    {
+        // nothing to do here.
     }
 }

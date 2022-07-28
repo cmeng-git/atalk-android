@@ -13,17 +13,17 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**
- * Implements an audio <tt>Codec</tt> using the FFmpeg library.
+ * Implements an audio <code>Codec</code> using the FFmpeg library.
  *
  * @author Lyubomir Marinov
  */
 public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
 {
     /**
-     * Returns a <tt>String</tt> representation of a specific <tt>AVCodecID</tt>.
+     * Returns a <code>String</code> representation of a specific <code>AVCodecID</code>.
      *
-     * @param codecID the <tt>AVCodecID</tt> to represent as a <tt>String</tt>
-     * @return a <tt>String</tt> representation of the specified <tt>codecID</tt>
+     * @param codecID the <code>AVCodecID</code> to represent as a <code>String</code>
+     * @return a <code>String</code> representation of the specified <code>codecID</code>
      */
     public static String codecIDToString(int codecID)
     {
@@ -36,30 +36,30 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
     }
 
     /**
-     * The <tt>AVCodecContext</tt> which performs the actual encoding/decoding and which is the
-     * native counterpart of this open <tt>AbstractFFmpegAudioCodec</tt>.
+     * The <code>AVCodecContext</code> which performs the actual encoding/decoding and which is the
+     * native counterpart of this open <code>AbstractFFmpegAudioCodec</code>.
      */
     protected long avctx;
 
     /**
-     * The <tt>AVCodecID</tt> of {@link #avctx}.
+     * The <code>AVCodecID</code> of {@link #avctx}.
      */
     protected final int codecID;
 
     /**
      * The number of bytes of audio data to be encoded with a single call to
      * {@link FFmpeg#avcodec_encode_audio(long, byte[], int, int, byte[], int)} based on the
-     * <tt>frame_size</tt> of {@link #avctx}.
+     * <code>frame_size</code> of {@link #avctx}.
      */
     protected int frameSizeInBytes;
 
     /**
-     * Initializes a new <tt>AbstractFFmpegAudioCodec</tt> instance with a specific <tt>PlugIn</tt>
-     * name, a specific <tt>AVCodecID</tt>, and a specific list of <tt>Format</tt>s supported as output.
+     * Initializes a new <code>AbstractFFmpegAudioCodec</code> instance with a specific <code>PlugIn</code>
+     * name, a specific <code>AVCodecID</code>, and a specific list of <code>Format</code>s supported as output.
      *
-     * @param name the <tt>PlugIn</tt> name of the new instance
-     * @param codecID the <tt>AVCodecID</tt> of the FFmpeg codec to be represented by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
+     * @param name the <code>PlugIn</code> name of the new instance
+     * @param codecID the <code>AVCodecID</code> of the FFmpeg codec to be represented by the new instance
+     * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output
      */
     protected AbstractFFmpegAudioCodec(String name, int codecID, Format[] supportedOutputFormats)
     {
@@ -68,12 +68,12 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
     }
 
     /**
-     * Configures the <tt>AVCodecContext</tt> initialized in {@link #doOpen()} prior to invoking one
-     * of the FFmpeg functions in the <tt>avcodec_open</tt> family. Allows extenders to override and
+     * Configures the <code>AVCodecContext</code> initialized in {@link #doOpen()} prior to invoking one
+     * of the FFmpeg functions in the <code>avcodec_open</code> family. Allows extenders to override and
      * provide additional, optional configuration.
      *
-     * @param avctx the <tt>AVCodecContext</tt> to configure
-     * @param format the <tt>AudioFormat</tt> with which <tt>avctx</tt> is being configured
+     * @param avctx the <code>AVCodecContext</code> to configure
+     * @param format the <code>AudioFormat</code> with which <code>avctx</code> is being configured
      */
     protected void configureAVCodecContext(long avctx, AudioFormat format)
     {
@@ -120,15 +120,17 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
 
             if (channels == Format.NOT_SPECIFIED)
                 channels = 1;
-            FFmpeg.avcodeccontext_set_channels(avctx, channels);
+
             if (channels == 1) {
-                //mono
-                FFmpeg.avcodeccontext_set_channel_layout(avctx, FFmpeg.AV_CH_LAYOUT_MONO);
+                // mono
+                FFmpeg.avcodeccontext_set_ch_layout(avctx, FFmpeg.AV_CH_LAYOUT_MONO);
             }
             else if (channels == 2) {
-                //stereo
-                FFmpeg.avcodeccontext_set_channel_layout(avctx, FFmpeg.AV_CH_LAYOUT_STEREO);
+                // stereo
+                FFmpeg.avcodeccontext_set_ch_layout(avctx, FFmpeg.AV_CH_LAYOUT_STEREO);
             }
+            // For ffmpeg 5.1, the following is not required to set with avcodeccontext_set_ch_layout()
+            // FFmpeg.avcodeccontext_set_channels(avctx, channels);
 
             if (sampleRate != Format.NOT_SPECIFIED)
                 FFmpeg.avcodeccontext_set_sample_rate(avctx, sampleRate);
@@ -156,20 +158,20 @@ public abstract class AbstractFFmpegAudioCodec extends AbstractCodec2
     }
 
     /**
-     * Finds an <tt>AVCodec</tt> with a specific <tt>AVCodecID</tt>. The method is invoked by
-     * {@link #doOpen()} in order to (eventually) open a new <tt>AVCodecContext</tt>.
+     * Finds an <code>AVCodec</code> with a specific <code>AVCodecID</code>. The method is invoked by
+     * {@link #doOpen()} in order to (eventually) open a new <code>AVCodecContext</code>.
      *
-     * @param codecID the <tt>AVCodecID</tt> of the <tt>AVCodec</tt> to find
-     * @return an <tt>AVCodec</tt> with the specified <tt>codecID</tt> or <tt>0</tt>
+     * @param codecID the <code>AVCodecID</code> of the <code>AVCodec</code> to find
+     * @return an <code>AVCodec</code> with the specified <code>codecID</code> or <code>0</code>
      */
     protected abstract long findAVCodec(int codecID);
 
     /**
-     * Gets the <tt>AudioFormat</tt> with which {@link #avctx} is to be configured and opened by
+     * Gets the <code>AudioFormat</code> with which {@link #avctx} is to be configured and opened by
      * {@link #doOpen()}.
      *
-     * @return the <tt>AudioFormat</tt> with which <tt>avctx</tt> is to be configured and opened by
-     * <tt>doOpen()</tt>
+     * @return the <code>AudioFormat</code> with which <code>avctx</code> is to be configured and opened by
+     * <code>doOpen()</code>
      */
     protected abstract AudioFormat getAVCodecContextFormat();
 }

@@ -19,7 +19,7 @@ set -x
 if [[ $# -eq 1 ]]; then
   LIB_OPENSSL_GIT=$1
 else
-  LIB_OPENSSL_GIT="openssl-1.1.1n"
+  LIB_OPENSSL_GIT="openssl-1.1.1q"
 fi
 
 LIB_OPENSSL="openssl"

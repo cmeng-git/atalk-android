@@ -203,9 +203,10 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
     public void acceptFile()
     {
         try {
-            mOffer.accept(mConnection, mFile);
             FileTransferCreatedEvent event = new FileTransferCreatedEvent(mFileTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
+
+            mOffer.accept(mConnection, mFile);
         } catch (IOException | SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
             Timber.e("Receiving file failed; %s", e.getMessage());
         }
@@ -220,9 +221,11 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
     {
         try {
             mOffer.cancel(mConnection);
+            mFileTransfer.removeIfoListener();
         } catch (NotConnectedException | InterruptedException | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
             throw new OperationFailedException("Could not decline the file offer", OperationFailedException.GENERAL_ERROR, e);
         }
+
         fileTransferOpSet.fireFileTransferRequestRejected(
                 new FileTransferRequestEvent(fileTransferOpSet, this, new Date()));
     }

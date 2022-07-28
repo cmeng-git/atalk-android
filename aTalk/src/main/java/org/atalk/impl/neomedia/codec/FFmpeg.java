@@ -260,19 +260,19 @@ public class FFmpeg
     public static native long av_malloc(int size);
 
     /**
-     * Allocates a new <tt>AVCodecContext</tt>.
+     * Allocates a new <code>AVCodecContext</code>.
      *
      * @param codec
-     * @return native pointer to the new <tt>AVCodecContext</tt>
+     * @return native pointer to the new <code>AVCodecContext</code>
      */
     public static native long avcodec_alloc_context3(long codec);
 
     /**
-     * Allocates an <tt>AVFrame</tt> instance and sets its fields to default values. The result must
+     * Allocates an <code>AVFrame</code> instance and sets its fields to default values. The result must
      * be freed using {@link #avcodec_free_frame(long)}.
      *
-     * @return an <tt>AVFrame *</tt> value which points to an <tt>AVFrame</tt> instance filled with
-     * default values or <tt>0</tt> on failure
+     * @return an <code>AVFrame *</code> value which points to an <code>AVFrame</code> instance filled with
+     * default values or <code>0</code> on failure
      */
     public static native long avcodec_alloc_frame();
 
@@ -313,16 +313,16 @@ public class FFmpeg
     public static native int avcodec_decode_video(long ctx, long avframe, long src, int src_length);
 
     /**
-     * Encodes an audio frame from <tt>samples</tt> into <tt>buf</tt>.
+     * Encodes an audio frame from <code>samples</code> into <code>buf</code>.
      *
      * @param ctx the codec context
      * @param buf the output buffer
      * @param buf_offset the output buffer offset
      * @param buf_size the output buffer size
      * @param samples the input buffer containing the samples. The number of samples read from this buffer
-     * is <tt>frame_size</tt>*<tt>channels</tt>, both of which are defined in <tt>ctx</tt>.
-     * For PCM audio the number of samples read from samples is equal to <tt>buf_size</tt>*
-     * <tt>input_sample_size</tt>/<tt>output_sample_size</tt>.
+     * is <code>frame_size</code>*<code>channels</code>, both of which are defined in <code>ctx</code>.
+     * For PCM audio the number of samples read from samples is equal to <code>buf_size</code>*
+     * <code>input_sample_size</code>/<code>output_sample_size</code>.
      * @param samples_offset the offset in the input buffer containing the samples
      * @return on error a negative value is returned, on success zero or the number of bytes used to
      * encode the data read from the input buffer
@@ -344,28 +344,28 @@ public class FFmpeg
     /**
      * Find a registered decoder with a matching ID.
      *
-     * @param id <tt>CodecID</tt> of the requested encoder
-     * @return an <tt>AVCodec</tt> encoder if one was found; <tt>0</tt>, otherwise
+     * @param id <code>CodecID</code> of the requested encoder
+     * @return an <code>AVCodec</code> encoder if one was found; <code>0</code>, otherwise
      */
     public static native long avcodec_find_decoder(int id);
 
     /**
      * Finds a registered encoder with a matching codec ID.
      *
-     * @param id <tt>CodecID</tt> of the requested encoder
-     * @return an <tt>AVCodec</tt> encoder if one was found; <tt>0</tt>, otherwise
+     * @param id <code>CodecID</code> of the requested encoder
+     * @return an <code>AVCodec</code> encoder if one was found; <code>0</code>, otherwise
      */
     public static native long avcodec_find_encoder(int id);
 
     /**
-     * Frees an <tt>AVFrame</tt> instance specified as an <tt>AVFrame *</tt> value and any
-     * dynamically allocated objects in it (e.g. <tt>extended_data</tt>).
+     * Frees an <code>AVFrame</code> instance specified as an <code>AVFrame *</code> value and any
+     * dynamically allocated objects in it (e.g. <code>extended_data</code>).
      * <p>
      * <b>Warning</b>: The method/function does NOT free the data buffers themselves because it does
-     * not know how since they might have been allocated with a custom <tt>get_buffer()</tt>.
+     * not know how since they might have been allocated with a custom <code>get_buffer()</code>.
      * </p>
      *
-     * @param frame an <tt>AVFrame *</tt> value which points to the <tt>AVFrame</tt> instance to be freed
+     * @param frame an <code>AVFrame *</code> value which points to the <code>AVFrame</code> instance to be freed
      */
     public static void avcodec_free_frame(long frame)
     {
@@ -376,10 +376,10 @@ public class FFmpeg
     public static native void avcodec_free_packet(long pkt);
 
     /**
-     * Initializes the specified <tt>AVCodecContext</tt> to use the specified <tt>AVCodec</tt>.
+     * Initializes the specified <code>AVCodecContext</code> to use the specified <code>AVCodec</code>.
      *
-     * @param ctx the <tt>AVCodecContext</tt> which will be set up to use the specified <tt>AVCodec</tt>
-     * @param codec the <tt>AVCodec</tt> to use within the <tt>AVCodecContext</tt>
+     * @param ctx the <code>AVCodecContext</code> which will be set up to use the specified <code>AVCodec</code>
+     * @param codec the <code>AVCodec</code> to use within the <code>AVCodecContext</code>
      * @param options
      * @return zero on success, a negative value on error
      */
@@ -402,11 +402,11 @@ public class FFmpeg
     public static native void avcodeccontext_add_flags2(long ctx, int flags2);
 
     /**
-     * Gets the samples per packet of the specified <tt>AVCodecContext</tt>. The property is set by
+     * Gets the samples per packet of the specified <code>AVCodecContext</code>. The property is set by
      * libavcodec upon {@link #avcodec_open(long, long)}.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to get the samples per packet of
-     * @return the samples per packet of the specified <tt>AVCodecContext</tt>
+     * @param ctx the <code>AVCodecContext</code> to get the samples per packet of
+     * @return the samples per packet of the specified <code>AVCodecContext</code>
      */
     public static native int avcodeccontext_get_frame_size(long ctx);
 
@@ -440,47 +440,56 @@ public class FFmpeg
      * @param ctx AVCodecContext pointer
      * @param b_frame_strategy strategy
      */
-    public static native void avcodeccontext_set_b_frame_strategy(long ctx,
-            int b_frame_strategy);
+    public static native void avcodeccontext_set_b_frame_strategy(long ctx,  int b_frame_strategy);
 
     /**
-     * Sets the average bit rate of the specified <tt>AVCodecContext</tt>. The property is to be set
+     * Sets the average bit rate of the specified <code>AVCodecContext</code>. The property is to be set
      * by the user when encoding and is unused for the constant quantizer encoding. It is set by
-     * the libavcodec when decoding and its value is <tt>0</tt> or some bitrate if this info is
+     * the libavcodec when decoding and its value is <code>0</code> or some bitrate if this info is
      * available in the stream.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the average bit rate of
-     * @param bit_rate the average bit rate to be set to the specified <tt>AVCodecContext</tt>
+     * @param ctx the <code>AVCodecContext</code> to set the average bit rate of
+     * @param bit_rate the average bit rate to be set to the specified <code>AVCodecContext</code>
      */
     public static native void avcodeccontext_set_bit_rate(long ctx, int bit_rate);
 
     /**
      * Set the bit rate tolerance
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the bit rate of
+     * @param ctx the <code>AVCodecContext</code> to set the bit rate of
      * @param bit_rate_tolerance bit rate tolerance
      */
     public static native void avcodeccontext_set_bit_rate_tolerance(long ctx, int bit_rate_tolerance);
 
-    /**
-     * Sets the number of channels of the specified <tt>AVCodecContext</tt>. The property is audio
-     * only.
-     *
-     * @param ctx the <tt>AVCodecContext</tt> to set the number of channels of
-     * @param channels the number of channels to set to the specified <tt>AVCodecContext</tt>
-     */
-    public static native void avcodeccontext_set_channels(long ctx, int channels);
+//    /**
+//     * Sets the number of channels of the specified <code>AVCodecContext</code>.
+//     * The property is audio only. Deprecated in ffmpeg v5.1.
+//     *
+//     * @param ctx the <code>AVCodecContext</code> to set the number of channels of
+//     * @param channels the number of channels to set to the specified <code>AVCodecContext</code>
+//     */
+//    public static native void avcodeccontext_set_channels(long ctx, int channels);
+//    public static native void avcodeccontext_set_channel_layout(long ctx, int channelLayout);
 
-    public static native void avcodeccontext_set_channel_layout(long ctx, int channelLayout);
+    /**
+     * Set the AVChannelLayout (ch_layout) of the specified <code>AVCodecContext</code> for ffmpeg 5.1.
+     * The property is audio only: The number of channels is already defined in ch_layout.
+     * Hence avcodeccontext_set_nb_channels in (ch_layout.nb_channels is not required.
+     *
+     * @param ctx the <code>AVCodecContext</code> to set the number of channels of
+     * @param ch_Layout the AVChannelLayout
+     */
+    public static native void avcodeccontext_set_ch_layout(long ctx, int ch_Layout);
+    public static native void avcodeccontext_set_nb_channels(long ctx, int nb_channels);
+
     public static native void avcodeccontext_set_chromaoffset(long ctx, int chromaoffset);
 
     /**
      * Sets the maximum number of pictures in a group of pictures i.e. the maximum interval between
      * keyframes.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the <tt>gop_size</tt> of
-     * @param gop_size the maximum number of pictures in a group of pictures i.e. the maximum interval
-     * between keyframes
+     * @param ctx the <code>AVCodecContext</code> to set the <code>gop_size</code> of
+     * @param gop_size the maximum number of pictures in a group of pictures i.e. the maximum interval between keyframes
      */
     public static native void avcodeccontext_set_gop_size(long ctx, int gop_size);
 
@@ -489,15 +498,15 @@ public class FFmpeg
     /**
      * Sets the minimum GOP size.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the minimum GOP size of
-     * @param keyint_min the minimum GOP size to set on <tt>ctx</tt>
+     * @param ctx the <code>AVCodecContext</code> to set the minimum GOP size of
+     * @param keyint_min the minimum GOP size to set on <code>ctx</code>
      */
     public static native void avcodeccontext_set_keyint_min(long ctx, int keyint_min);
 
     /**
      * Set the maximum B frames.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the maximum B frames of
+     * @param ctx the <code>AVCodecContext</code> to set the maximum B frames of
      * @param max_b_frames maximum B frames
      */
     public static native void avcodeccontext_set_max_b_frames(long ctx, int max_b_frames);
@@ -516,7 +525,7 @@ public class FFmpeg
     /**
      * Set the pixel format.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the pixel format of
+     * @param ctx the <code>AVCodecContext</code> to set the pixel format of
      * @param pix_fmt pixel format
      */
     public static native void avcodeccontext_set_pix_fmt(long ctx, int pix_fmt);
@@ -539,7 +548,7 @@ public class FFmpeg
     /**
      * Set the RTP payload size.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the RTP payload size of
+     * @param ctx the <code>AVCodecContext</code> to set the RTP payload size of
      * @param rtp_payload_size RTP payload size
      */
     public static native void avcodeccontext_set_rtp_payload_size(long ctx, int rtp_payload_size);
@@ -550,11 +559,11 @@ public class FFmpeg
     public static native void avcodeccontext_set_sample_fmt(long ctx, int sample_fmt);
 
     /**
-     * Sets the samples per second of the specified <tt>AVCodecContext</tt>. The property is audio
+     * Sets the samples per second of the specified <code>AVCodecContext</code>. The property is audio
      * only.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the samples per second of
-     * @param sample_rate the samples per second to set to the specified <tt>AVCodecContext</tt>
+     * @param ctx the <code>AVCodecContext</code> to set the samples per second of
+     * @param sample_rate the samples per second to set to the specified <code>AVCodecContext</code>
      */
     public static native void avcodeccontext_set_sample_rate(long ctx, int sample_rate);
 
@@ -578,7 +587,7 @@ public class FFmpeg
     /**
      * Set the number of thread.
      *
-     * @param ctx the <tt>AVCodecContext</tt> to set the number of thread of
+     * @param ctx the <code>AVCodecContext</code> to set the number of thread of
      * @param thread_count number of thread to set
      */
     public static native void avcodeccontext_set_thread_count(long ctx, int thread_count);
@@ -592,57 +601,57 @@ public class FFmpeg
     public static native void avcodeccontext_set_workaround_bugs(long ctx, int workaround_bugs);
 
     /**
-     * Allocates a new <tt>AVFilterGraph</tt> instance.
+     * Allocates a new <code>AVFilterGraph</code> instance.
      *
-     * @return a pointer to the newly-allocated <tt>AVFilterGraph</tt> instance
+     * @return a pointer to the newly-allocated <code>AVFilterGraph</code> instance
      */
     public static native long avfilter_graph_alloc();
 
     /**
      * Checks the validity and configures all the links and formats in a specific
-     * <tt>AVFilterGraph</tt> instance.
+     * <code>AVFilterGraph</code> instance.
      *
-     * @param graph a pointer to the <tt>AVFilterGraph</tt> instance to check the validity of and
+     * @param graph a pointer to the <code>AVFilterGraph</code> instance to check the validity of and
      * configure
-     * @param log_ctx the <tt>AVClass</tt> context to be used for logging
-     * @return <tt>0</tt> on success; a negative <tt>AVERROR</tt> on error
+     * @param log_ctx the <code>AVClass</code> context to be used for logging
+     * @return <code>0</code> on success; a negative <code>AVERROR</code> on error
      */
     public static native int avfilter_graph_config(long graph, long log_ctx);
 
     /**
-     * Frees a specific <tt>AVFilterGraph</tt> instance and destroys its links.
+     * Frees a specific <code>AVFilterGraph</code> instance and destroys its links.
      *
-     * @param graph a pointer to the <tt>AVFilterGraph</tt> instance to free
+     * @param graph a pointer to the <code>AVFilterGraph</code> instance to free
      */
     public static native void avfilter_graph_free(long graph);
 
     /**
-     * Gets a pointer to an <tt>AVFilterContext</tt> instance with a specific name in a specific
-     * <tt>AVFilterGraph</tt> instance.
+     * Gets a pointer to an <code>AVFilterContext</code> instance with a specific name in a specific
+     * <code>AVFilterGraph</code> instance.
      *
-     * @param graph a pointer to the <tt>AVFilterGraph</tt> instance where the <tt>AVFilterContext</tt>
+     * @param graph a pointer to the <code>AVFilterGraph</code> instance where the <code>AVFilterContext</code>
      * instance with the specified name is to be found
-     * @param name the name of the <tt>AVFilterContext</tt> instance which is to be found in the
-     * specified <tt>graph</tt>
+     * @param name the name of the <code>AVFilterContext</code> instance which is to be found in the
+     * specified <code>graph</code>
      * @return the filter graph pointer
      */
     public static native long avfilter_graph_get_filter(long graph, String name);
 
     /**
-     * Adds a filter graph described by a <tt>String</tt> to a specific <tt>AVFilterGraph</tt> instance.
+     * Adds a filter graph described by a <code>String</code> to a specific <code>AVFilterGraph</code> instance.
      *
-     * @param graph a pointer to the <tt>AVFilterGraph</tt> instance where to link the parsed graph context
-     * @param filters the <tt>String</tt> to be parsed
-     * @param inputs a pointer to a linked list to the inputs of the graph if any; otherwise, <tt>0</tt>
-     * @param outputs a pointer to a linked list to the outputs of the graph if any; otherwise, <tt>0</tt>
-     * @param log_ctx the <tt>AVClass</tt> context to be used for logging
-     * @return <tt>0</tt> on success; a negative <tt>AVERROR</tt> on error
+     * @param graph a pointer to the <code>AVFilterGraph</code> instance where to link the parsed graph context
+     * @param filters the <code>String</code> to be parsed
+     * @param inputs a pointer to a linked list to the inputs of the graph if any; otherwise, <code>0</code>
+     * @param outputs a pointer to a linked list to the outputs of the graph if any; otherwise, <code>0</code>
+     * @param log_ctx the <code>AVClass</code> context to be used for logging
+     * @return <code>0</code> on success; a negative <code>AVERROR</code> on error
      */
     public static native int avfilter_graph_parse(long graph, String filters, long inputs,
             long outputs, long log_ctx);
 
     /**
-     * Initializes the <tt>libavfilter</tt> system and registers all built-in filters.
+     * Initializes the <code>libavfilter</code> system and registers all built-in filters.
      */
     public static native long avframe_get_data0(long frame);
 

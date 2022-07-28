@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 209061
-        versionName "2.9.6"
+        versionCode 300000
+        versionName "3.0.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -258,7 +258,7 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.7'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     implementation 'com.google.android.material:material:1.6.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
@@ -333,7 +333,7 @@ dependencies {
     implementation 'org.osgi:osgi.core:7.0.0'
 
     playstoreImplementation "com.google.android.gms:play-services-location:20.0.0"
-    playstoreImplementation "com.google.android.gms:play-services-maps:18.0.2"
+    playstoreImplementation "com.google.android.gms:play-services-maps:18.1.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
 
     /*

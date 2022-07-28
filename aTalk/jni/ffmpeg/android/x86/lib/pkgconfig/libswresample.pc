@@ -5,10 +5,10 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: libswresample
 Description: FFmpeg audio resampling library
-Version: 3.9.100
-Requires: libavutil >= 56.70.100
+Version: 4.7.100
+Requires: libavutil >= 57.28.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lswresample -lm
+Libs: -L${libdir}  -lswresample -lm -latomic
 Libs.private: 
 Cflags: -I${includedir}

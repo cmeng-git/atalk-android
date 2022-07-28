@@ -5,10 +5,10 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: libavfilter
 Description: FFmpeg audio/video filtering library
-Version: 7.110.100
-Requires: libswscale >= 5.9.100, libavutil >= 56.70.100
+Version: 8.44.100
+Requires: libswscale >= 6.7.100, libavutil >= 57.28.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavfilter -pthread -lm
+Libs: -L${libdir}  -lavfilter -pthread -lm -latomic
 Libs.private: 
 Cflags: -I${includedir}

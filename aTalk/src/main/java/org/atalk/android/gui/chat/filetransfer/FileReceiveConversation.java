@@ -169,13 +169,9 @@ public class FileReceiveConversation extends FileTransferConversation
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo);
                 break;
 
+            // Briefly visible for legacy Si file transfer; as transfer takes ~200ms to send 1.1 MB.
+            // JFT encrypted takes ~7s to send/receive 1.1 MB.
             case FileTransferStatusChangeEvent.IN_PROGRESS:
-                // cmeng: seems to only visible after the file transfer is completed.
-//                if (!messageViewHolder.mProgressBar.isShown()) {
-//                    messageViewHolder.mProgressBar.setVisibility(View.VISIBLE);
-//                    messageViewHolder.mProgressBar.setMax((int) fileTransferRequest.getFileSize());
-//                    // setFileTransfer(fileTransfer, fileTransferRequest.getFileSize());
-//                }
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSendTo);
                 break;
 
@@ -295,7 +291,7 @@ public class FileReceiveConversation extends FileTransferConversation
         int fStatus = getStatus(status);
         if (fStatus != FileRecord.STATUS_UNKNOWN)
             updateFTStatus(fileTransfer.getID(), fStatus);
-        Timber.d("Status Changed: %s: %s", fStatus, mXferFile);
+        Timber.d("File receive status change: %s: %s", status, mXferFile);
 
         // Event thread - Must execute in UiThread to Update UI information
         runOnUiThread(() -> {

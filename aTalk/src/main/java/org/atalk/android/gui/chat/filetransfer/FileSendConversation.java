@@ -92,11 +92,10 @@ public class FileSendConversation extends FileTransferConversation implements Fi
             mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
         });
 
-		/* Must track file transfer status as Android will request view redraw on listView
-		scrolling, new message send or received */
+		/* Must track file transfer status as Android will redraw on listView scrolling, new message send or received */
         int status = getXferStatus();
         if (status == -1) {
-            updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
+            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
                     aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mSendTo));
             mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
         }
@@ -202,10 +201,10 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
         final int status = event.getNewStatus();
         final String reason = event.getReason();
+        Timber.d("File send status change: %s", status);
 
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            Timber.d("File send status change: %s", status);
             legacyFileXfer = !(fileTransfer instanceof OutgoingFileOfferJingleImpl);
             updateView(status, reason);
             if (status == FileTransferStatusChangeEvent.COMPLETED

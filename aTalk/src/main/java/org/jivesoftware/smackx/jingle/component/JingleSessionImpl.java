@@ -67,8 +67,9 @@ public class JingleSessionImpl extends JingleSession
     {
         fresh,      // pre-session-initiate
         pending,    // pre-session-accept
-        active,     // pre-session-terminate
-        ended       // post-session-terminate
+        active,     // post-session-accept
+        canceled,   // cancel after accept
+        ended       // post-session-terminate with JingleReason.Success
     }
 
     /**
@@ -198,8 +199,8 @@ public class JingleSessionImpl extends JingleSession
             return;
         }
 
-        if (contentImpls.size() == 1) {
-            // Only content has finished. End session.
+        // Only content has finished i.e. SessionState.ended; skip if the remote cancel the file transfer.
+        if (mSessionState == SessionState.ended && contentImpls.size() == 1) {
             terminateSession(JingleReason.Reason.success, "success");
         }
 
@@ -337,12 +338,25 @@ public class JingleSessionImpl extends JingleSession
     @Override
     protected IQ handleSessionTerminate(Jingle sessionTerminate)
     {
-        mSessionState = SessionState.ended;
         JingleReason reason = sessionTerminate.getReason();
-
         if (reason == null) {
             throw new AssertionError("Reason MUST not be null! (I guess)...");
         }
+
+        // the resultant state is currently not used by JingleSessionImpl
+        switch (reason.asEnum()) {
+            case cancel:
+                mSessionState = SessionState.canceled;
+                break;
+
+            case success:
+                mSessionState = SessionState.ended;
+                break;
+
+            default:
+                break;
+        }
+
         // Inform the client on session terminated.
         notifySessionTerminated(reason);
 
@@ -548,8 +562,18 @@ public class JingleSessionImpl extends JingleSession
         }
     }
 
+    public void notifySessionAccepted()
+    {
+        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+        for (JingleSessionListener sl : copySl) {
+            sl.onSessionAccepted();
+        }
+    }
+
     public interface JingleSessionListener
     {
         void onSessionTerminated(JingleReason reason);
+
+        void onSessionAccepted();
     }
 }

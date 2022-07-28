@@ -5,10 +5,10 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: libavformat
 Description: FFmpeg container format library
-Version: 58.76.100
-Requires: libavcodec >= 58.134.100, libavutil >= 56.70.100
+Version: 59.27.100
+Requires: libavcodec >= 59.37.100, libavutil >= 57.28.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavformat -lm -lz
+Libs: -L${libdir}  -lavformat -lm -lz -latomic
 Libs.private: 
 Cflags: -I${includedir}

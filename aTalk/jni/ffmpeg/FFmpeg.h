@@ -216,22 +216,39 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_
 JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1bit_1rate_1tolerance
   (JNIEnv *, jclass, jlong, jint);
 
-/*
- * Class:     org_atalk_impl_neomedia_codec_FFmpeg
- * Method:    avcodeccontext_set_channels
- * Signature: (JI)V
- */
-JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1channels
-  (JNIEnv *, jclass, jlong, jint);
+///*
+// * Class:     org_atalk_impl_neomedia_codec_FFmpeg
+// * Method:    avcodeccontext_set_channel_layout
+// * Signature: (JI)V
+// */
+//JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1channel_1layout
+//  (JNIEnv *, jclass, jlong, jint);
+
+///*
+// * Class:     org_atalk_impl_neomedia_codec_FFmpeg
+// * Method:    avcodeccontext_set_channels
+// * Signature: (JI)V
+// */
+//JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1channels
+//  (JNIEnv *, jclass, jlong, jint);
 
 /*
+ * ffmpeg v5.1
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
- * Method:    avcodeccontext_set_channel_layout
+ * Method:    avcodeccontext_set_ch_layout
  * Signature: (JI)V
  */
-JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1channel_1layout
-  (JNIEnv *, jclass, jlong, jint);
+JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1ch_1layout
+        (JNIEnv *, jclass, jlong, jint);
 
+/*
+ * ffmpeg v5.1
+ * Class:     org_atalk_impl_neomedia_codec_FFmpeg
+ * Method:    avcodeccontext_set_nb_channels
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1nb_1channels
+        (JNIEnv *env, jclass clazz, jlong avctx, jint nb_channels);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg

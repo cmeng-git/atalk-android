@@ -64,6 +64,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
         this.byteRead = 0;
         inFileOffer.mOffer.addProgressListener(this);
         JingleSessionImpl.addJingleSessionListener(this);
+        // Timber.d("Add Ifo Listener");
     }
 
     /**
@@ -75,17 +76,27 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
         try {
             onCanceled();
             mIfoJingle.declineFile();
-            mIfoJingle.mOffer.removeProgressListener(this);
-            JingleSessionImpl.removeJingleSessionListener(this);
         } catch (OperationFailedException e) {
             Timber.e("Exception: %s", e.getMessage());
         }
     }
 
-    public void onCanceled()
+    private void onCanceled()
     {
         String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
         fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
+    }
+
+    /**
+     * Remove IFO Listener:
+     * a. Own IncomingFileOfferJingleImpl#declineFile(); nothing returns from remote
+     * b. onSessionTerminated() received from remote; user cancels prior to accept or while in active transfer
+     */
+    public void removeIfoListener()
+    {
+        // Timber.d("Remove Ifo Listener");
+        mIfoJingle.mOffer.removeProgressListener(this);
+        JingleSessionImpl.removeJingleSessionListener(this);
     }
 
     /**
@@ -161,14 +172,19 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
     @Override
     public void onError(JingleReason reason)
     {
-        JingleSessionImpl.removeJingleSessionListener(this);
-        fireStatusChangeEvent(reason);
+        onSessionTerminated(reason);
     }
 
     @Override
     public void onSessionTerminated(JingleReason reason)
     {
-        JingleSessionImpl.removeJingleSessionListener(this);
         fireStatusChangeEvent(reason);
+        removeIfoListener();
+    }
+
+    @Override
+    public void onSessionAccepted()
+    {
+        // Nothing to do here: both accept and decline actions are handled in IncomingFileOfferJingleImpl
     }
 }
