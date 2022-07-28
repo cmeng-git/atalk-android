@@ -1,5 +1,19 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.0 (300000)
+Release Date:   07/28/2022
+Author:         cmeng
+- Only allow user to cancel while in active data stream transferring; both legacy si and JFT cannot support
+  transfer cancel during protocol negotiation. case FileTransferStatusChangeEvent.PREPARING:
+- Ensure all listeners are properly cleanup in jingle file transfer
+- JFT: notifyProgressListenersFinished() on cancel.
+- Upgrade library openssl to 1.1.1q [5 Jul 2022]
+  Upgrade libraries for ffmpeg to v5.1 and x264 to v164
+- Upgrade library libvpx from v1.11.0 to v1.12.0
+- Upgrade exoplayer to 2.18.1
+- Review and action for PlayConsole for Crashes and ANRs prior to 20220723
+
+=========================================================================
 Version:        2.9.6 (209061)
 Release Date:   07/19/2022
 Author:         cmeng

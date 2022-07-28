@@ -86,6 +86,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
         this.mConnection = connection;
         offer.addProgressListener(this);
         JingleSessionImpl.addJingleSessionListener(this);
+        // Timber.d("Add Ofo Listener");
     }
 
     /**
@@ -97,12 +98,28 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
         try {
             onCanceled();
             mOfoJingle.cancel(mConnection);
-            mOfoJingle.removeProgressListener(this);
-            JingleSessionImpl.removeJingleSessionListener(this);
+            removeOfoListener();
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());
         }
+    }
+
+    private void onCanceled()
+    {
+        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
+    }
+
+    /**
+     * Remove OFO Listener:
+     * a. When sender cancel file transfer (FileTransferConversation); nothing returns from remote.
+     * b. onSessionTerminated() received from remote (uer declines or cancels during active transfer)
+     */
+    private void removeOfoListener() {
+        // Timber.d("Remove Ofo Listener");
+        mOfoJingle.removeProgressListener(this);
+        JingleSessionImpl.removeJingleSessionListener(this);
     }
 
     /**
@@ -156,12 +173,6 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
         return id;
     }
 
-    public void onCanceled()
-    {
-        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
-    }
-
     @Override
     public void onStarted()
     {
@@ -194,6 +205,13 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
             securityErrorTimber = defaultErrorTimer;
         }
         fireStatusChangeEvent(reason);
+        removeOfoListener();
+    }
+
+    @Override
+    public void onSessionAccepted()
+    {
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.PREPARING, "negotiating");
     }
 
     /**

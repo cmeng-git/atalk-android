@@ -6,8 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="2.9.6 (07/19/2022)" versioncode="209061">
+    <release version="3.0.0 (07/28/2022)" versioncode="300000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Hide user 'Cancel' option during file transfer protocol negotiate phase for both legacy SI and JFT (not supported)</change>
+        <change>Upgrade library openssl to 1.1.1q [5 Jul 2022]</change>
+        <change>Upgrade libraries for ffmpeg to v5.1 and x264 to v164</change>
+        <change>Upgrade library libvpx to v1.12.0</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="2.9.6 (07/19/2022)" versioncode="209061">
         <change>Enhance the user UI when file transfer is via Jingle File Transfer protocol...</change>
         <change>Allow recipient to cancel the incoming file offer in progress even after user has accepted the offer</change>
         <change>Fix aTalk crashes when sender cancels an outgoing file offer in waiting state</change>

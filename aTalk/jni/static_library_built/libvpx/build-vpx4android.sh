@@ -20,7 +20,7 @@ set -u
 . _settings.sh
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.11.0
+LIB_GIT=v1.12.0
 
 # Auto fetch and unarchive libvpx from online repository
 ./init_libvpx.sh ${LIB_GIT}

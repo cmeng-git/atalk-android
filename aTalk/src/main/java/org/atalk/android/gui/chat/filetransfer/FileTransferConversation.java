@@ -16,27 +16,47 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
-import android.content.*;
+import static org.atalk.persistance.FileBackend.getMimeType;
+
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
-import android.widget.*;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.protocol.event.FileTransferProgressEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferProgressListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.util.ByteFormat;
+import net.java.sip.communicator.util.GuiUtils;
+import net.java.sip.communicator.util.UtilActivator;
 
-import org.atalk.android.*;
+import org.atalk.android.MyGlideApp;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.plugin.audioservice.AudioBgService;
@@ -46,12 +66,15 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import timber.log.Timber;
-
-import static org.atalk.persistance.FileBackend.getMimeType;
 
 /**
  * The <code>FileTransferConversationComponent</code> is the parent of all file conversation
@@ -255,7 +278,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * A common routine to update the file transfer view compoenent states
+     * A common routine to update the file transfer view component states
      *
      * @param status FileTransferStatusChangeEvent status
      * @param statusText the status text for update
@@ -272,11 +295,21 @@ public abstract class FileTransferConversation extends OSGiFragment
 
         switch (status) {
             case FileTransferStatusChangeEvent.WAITING:
-                messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
-                messageViewHolder.declineButton.setVisibility(View.VISIBLE);
+                if (this instanceof FileSendConversation) {
+                    messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
+                }
+                else {
+                    messageViewHolder.acceptButton.setVisibility(View.VISIBLE);
+                    messageViewHolder.declineButton.setVisibility(View.VISIBLE);
+                }
                 break;
 
+            // Only allow user to cancel while in active data stream transferring; both legacy si and JFT cannot
+            // support transfer cancel during protocol negotiation.
             case FileTransferStatusChangeEvent.PREPARING:
+                messageViewHolder.cancelButton.setVisibility(View.GONE);
+                break;
+
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
                 break;

@@ -12,6 +12,7 @@
 
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
 #include <libavcodec/avcodec.h>
@@ -284,10 +285,16 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodec_1encode_1audio
 
     frame->nb_samples = avctx->frame_size;
     frame->format = avctx->sample_fmt;
-    frame->channel_layout = avctx->channel_layout;
 
-    ret = avcodec_fill_audio_frame(frame, avctx->channels, avctx->sample_fmt,
-        (uint8_t*) (samples_ + samples_offset), samples_size - samples_offset, 0);
+    // frame->channel_layout = avctx->channel_layout;
+    // ret = avcodec_fill_audio_frame(frame, avctx->channels, avctx->sample_fmt,
+    //     (uint8_t*) (samples_ + samples_offset), samples_size - samples_offset, 0);
+
+    // For ffmpeg v5.1
+    frame->ch_layout = avctx->ch_layout;
+    ret = avcodec_fill_audio_frame(frame, avctx->ch_layout.nb_channels, avctx->sample_fmt,
+       (uint8_t*) (samples_ + samples_offset), samples_size - samples_offset, 0);
+
     if (ret < 0) {
         goto end;
     }
@@ -554,15 +561,44 @@ Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1b_1frame_1strateg
  */
 DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(bit_1rate, bit_rate)
 DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(bit_1rate_1tolerance, bit_rate_tolerance)
-DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(channels, channels)
-DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(channel_1layout, channel_layout)
+//DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(channels, channels)
+//DEFINE_AVCODECCONTEXT_I_PROPERTY_SETTER(channel_1layout, channel_layout)
 
+/*
+ * Class:     org_atalk_impl_neomedia_codec_FFmpeg
+ * Method:    avcodeccontext_set_chlayout
+ * Signature: (JI)V
+ */
 JNIEXPORT void JNICALL
+Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1ch_1layout
+                (JNIEnv *env, jclass clazz, jlong avctx, jint ch_layout)
+{
+    AVCodecContext *avctx_ = (AVCodecContext *) (intptr_t) avctx;
+    AVChannelLayout *layout_ = (AV_CH_LAYOUT_STEREO == ch_layout) ?
+            &(AVChannelLayout)AV_CHANNEL_LAYOUT_STEREO : &(AVChannelLayout)AV_CHANNEL_LAYOUT_MONO;
+
+    av_opt_set_chlayout(&avctx_, "ch_layout", layout_, AV_OPT_SEARCH_CHILDREN);
+}
+
+/*
+ * Class:     org_atalk_impl_neomedia_codec_FFmpeg
+ * Method:    avcodeccontext_set_chlayout
+ * Signature: (JI)V
+ */
+JNIEXPORT void JNICALL
+Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1nb_1channels
+        (JNIEnv *env, jclass clazz, jlong avctx, jint nb_channels)
+{
+    AVCodecContext *avctx_ = (AVCodecContext *) (intptr_t) avctx;
+    av_opt_set_int(&avctx_->ch_layout, "nb_channels", (int) nb_channels, AV_OPT_SEARCH_CHILDREN);
+}
+
 /*
  * Class:     org_atalk_impl_neomedia_codec_FFmpeg
  * Method:    avcodeccontext_set_chromaoffset
  * Signature: (JI)V
  */
+JNIEXPORT void JNICALL
 Java_org_atalk_impl_neomedia_codec_FFmpeg_avcodeccontext_1set_1chromaoffset
     (JNIEnv *env, jclass clazz, jlong avctx, jint chromaoffset)
 {

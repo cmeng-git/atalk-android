@@ -5,10 +5,10 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: libavutil
 Description: FFmpeg utility library
-Version: 56.70.100
+Version: 57.28.100
 Requires: 
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavutil -pthread -lm
+Libs: -L${libdir}  -lavutil -pthread -lm -latomic
 Libs.private: 
 Cflags: -I${includedir}

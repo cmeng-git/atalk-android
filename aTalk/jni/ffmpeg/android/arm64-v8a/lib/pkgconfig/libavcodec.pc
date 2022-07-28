@@ -5,10 +5,10 @@ includedir=/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_
 
 Name: libavcodec
 Description: FFmpeg codec library
-Version: 58.134.100
-Requires: libavutil >= 56.70.100
+Version: 59.37.100
+Requires: libavutil >= 57.28.100
 Requires.private: 
 Conflicts:
-Libs: -L${libdir}  -lavcodec -pthread -lm -L/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/arm64-v8a/lib -lx264 -lm
+Libs: -L${libdir}  -lavcodec -pthread -lm -latomic -L/home/cmeng/workspace/android/atalk-android/aTalk/jni/static_library_built/ffmpeg-x264/../../ffmpeg/android/arm64-v8a/lib -lx264 -lm
 Libs.private: 
 Cflags: -I${includedir}

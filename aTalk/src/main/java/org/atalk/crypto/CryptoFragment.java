@@ -1131,8 +1131,9 @@ public class CryptoFragment extends OSGiFragment
                     break;
                 case MSGTYPE_OMEMO:
                     // Do not emulate Omemo button press if mOmemoManager is null
-                    if (mOmemoManager != null)
+                    if (mOmemoManager != null) {
                         onOptionsItemSelected(mOmemo);
+                    }
                     break;
                 case MSGTYPE_OTR:
                     onOptionsItemSelected(mOtr);

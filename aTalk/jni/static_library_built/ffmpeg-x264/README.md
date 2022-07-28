@@ -1,12 +1,13 @@
 ## Build scripts for ffmpeg-x264 with android-ndk for aTalk
 The scripts are used to build ffmpeg-x264 for aTalk >= v2.6.1 i.e. libjnffmpeg.so<br/>
-aTalk v2.9.4 and above are compatible with ffmpeg-v4.4.2 and libx264-163.3060
+aTalk v2.9.4 and above are compatible with ffmpeg-v4.4.2 and libx264-163.3060<br/>
+aTalk v3.0.0 and above are compatible with ffmpeg-v5.1 and libx264-164.3095
 
 ### Source files:
-The ffmpeg-v4.4.2 and libx264-v163 source are downloaded using the init_libs_ffmpeg_x264.sh scripts:<br/>
-  a. wget https://www.ffmpeg.org/releases/ffmpeg-4.4.2.tar.bz2<br/>
+The ffmpeg-v5.1 and libx264-v164 source are downloaded using the init_libs_ffmpeg_x264.sh scripts:<br/>
+  a. wget https://www.ffmpeg.org/releases/ffmpeg-5.1.tar.bz2<br/>
   b. git clone https://code.videolan.org/videolan/x264.git --branch stable<br/>
-     contains source for the x264-163.3060 library build at the time of writing;
+     contains source for the x264-164.3095 library build at the time of writing;
 
 ### ffmpeg build instructions:
 * Run build-ffmpeg4android.sh to build all ABIS architectures as defined in _settings.sh &lt;ABIS> OR<br/>
@@ -17,8 +18,8 @@ The ffmpeg-v4.4.2 and libx264-v163 source are downloaded using the init_libs_ffm
 * Note:<br/>
  a. Before building, build-ffmpeg4android.sh fetches the source if none is found or with an incorrect version.<br/>
     The versions are defined in the file i.e.:<br/>
-    VERSION_FFMPEG=4.4.2<br/>
-    VERSION_X264=163<br/>
+    VERSION_FFMPEG=5.1<br/>
+    VERSION_X264=164<br/>
   b. Applies the required patches if any to the libraries sources if any.<br/>
   b. Current aTalk android_a.mk script for ffmpeg-x264 support uses only static *.a libraries<br/>
   c. You may edit _settings.sh ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64") that you wish to omit OR<br/>
@@ -39,7 +40,7 @@ The ffmpeg-v4.4.2 and libx264-v163 source are downloaded using the init_libs_ffm
 ## Note:
 * The scripts in this folder are not compatible with Unified Headers:
 * See https://android.googlesource.com/platform/ndk/+/master/docs/UnifiedHeaders.md#supporting-unified-headers-in-your-build-system
-* Current aTalk >=v2.6.1 ffmpeg support have updated all deprecated functions when using ffmpeg version >= 4.4.2
+* Current aTalk >=v3.0.0 ffmpeg support have updated all deprecated functions when using ffmpeg version >= 5.1
 * If a higher ffmpeg version is required, you may need to update both the following two files:
   - .jni\ffmpeg\FFmpeg.c and
   - atalk-android\aTalk\src\main\java\org\atalk\impl\neomedia\codec\FFmpeg.java
@@ -47,6 +48,7 @@ The ffmpeg-v4.4.2 and libx264-v163 source are downloaded using the init_libs_ffm
 i.e. APP_PLATFORM := android-21
 
 ===============================================================
+
 ## Other information:
 
 * The scripts have been modified and enhanced using info from site:

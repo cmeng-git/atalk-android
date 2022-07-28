@@ -11,9 +11,9 @@ if [[ $# -eq 2 ]]; then
   MODULES=("$2")
 fi
 
-# Auto fetch and unarchive both ffmpeg and x264 from online repository
-VERSION_FFMPEG=4.4.2
-VERSION_X264=163
+# Auto fetch and unarchive both ffmpeg and x264 from online repository per specified versions below
+VERSION_FFMPEG=5.1
+VERSION_X264=164
 
 ./init_libs_ffmpeg_x264.sh $VERSION_FFMPEG $VERSION_X264
 
