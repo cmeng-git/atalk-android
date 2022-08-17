@@ -93,11 +93,11 @@ public final class JingleCallManager extends Manager implements JingleHandler
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(getNamespace());
 
-        JingleContentProviderManager.addJingleContentDescriptionProvider(RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
-        JingleContentProviderManager.addJingleContentTransportProvider(IceUdpTransport.NAMESPACE, new JingleRTPTransportProvider());
-
         JingleManager jingleManager = JingleManager.getInstanceFor(connection);
         jingleManager.registerDescriptionHandler(getNamespace(), this);
+
+        JingleContentProviderManager.addJingleContentDescriptionProvider(RtpDescription.NAMESPACE, new JingleRTPDescriptionProvider());
+        JingleContentProviderManager.addJingleContentTransportProvider(IceUdpTransport.NAMESPACE, new JingleRTPTransportProvider());
 
         /*
          * Register all jingle related extension providers for the RTP media call support.
@@ -243,7 +243,8 @@ public final class JingleCallManager extends Manager implements JingleHandler
 
     /**
      * Register a new JingleSessionHandler with JingleManager when a new session-initiate is received.
-     * Note: this will not get call if the media call setup is via JingleMessage protocol
+     * Note: this will not get call if the media call setup is via JingleMessage protocol;
+     * Media call <transfer/> is handled via this callback
      *
      * @param jingle Jingle session-initiate
      * @return IQ.Result for ack

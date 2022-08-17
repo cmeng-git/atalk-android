@@ -3,13 +3,22 @@ package org.jivesoftware.smackx.jinglenodes.element;
 import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
 
+/**
+ * Implementation of the XEP-0278: Jingle Relay Nodes #JIngle Channel
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0278.html">XEP-0278: Jingle Relay Nodes</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0278.html#def">XEP-0278: Jingle Relay Nodes# 6. Formal Definition</a>
+ */
 public class JingleChannelIQ extends IQ
 {
     public static final String ELEMENT = "channel";
     public static final String NAMESPACE = "http://jabber.org/protocol/jinglenodes#channel";
 
+    public static final String ATTR_EXPIRE = "expire";
     public static final String ATTR_HOST = "host";
+    public static final String ATTR_ID = "id";
     public static final String ATTR_LOCALPORT = "localport";
+    public static final String ATTR_MAXKBPS = "maxkbps";
     public static final String ATTR_PROTOCOL = "protocol";
     public static final String ATTR_REMOTEPORT = "remoteport";
 
@@ -20,7 +29,9 @@ public class JingleChannelIQ extends IQ
     private String host;
     private int localport = -1;
     private int remoteport = -1;
-    private String id;
+    private int maxkbps = -1;
+    private int expire = -1;
+    private String mChannelId;
 
     public JingleChannelIQ()
     {
@@ -73,14 +84,34 @@ public class JingleChannelIQ extends IQ
         this.localport = localport;
     }
 
-    public String getId()
+    public String getChannelId()
     {
-        return id;
+        return mChannelId;
     }
 
-    public void setId(String id)
+    public void setChannelId(String channelId)
     {
-        this.id = id;
+        this.mChannelId = channelId;
+    }
+
+    public int getMaxKbps()
+    {
+        return maxkbps;
+    }
+
+    public void setMaxKbps(int kbps)
+    {
+        maxkbps = kbps;
+    }
+
+    public int getExpire()
+    {
+        return expire;
+    }
+
+    public void setExpire(int value)
+    {
+        expire = value;
     }
 
     public static IQ createEmptyResult(IQ iq)

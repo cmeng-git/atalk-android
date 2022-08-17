@@ -307,7 +307,9 @@ public abstract class FileTransferConversation extends OSGiFragment
             // Only allow user to cancel while in active data stream transferring; both legacy si and JFT cannot
             // support transfer cancel during protocol negotiation.
             case FileTransferStatusChangeEvent.PREPARING:
-                messageViewHolder.cancelButton.setVisibility(View.GONE);
+                // Reserve the button height to avoid Cancel button being partially hidden by android when it is enabled
+                // messageViewHolder.dummyButton.setVisibility(View.INVISIBLE);
+                messageViewHolder.cancelButton.setVisibility(View.INVISIBLE);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:

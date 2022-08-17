@@ -1,5 +1,20 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.1 (300010)
+Release Date:   08/17/2022
+Author:         cmeng
+- Implement Jingle Event IQ and Provider (not a standard - but send from server jnsapi_erlang impl?); not found in XEP-0278: Jingle Relay Nodes
+- Clean up JingleChannel IQ/Provider to add in missing attributes per XEP-0278: Jingle Relay Nodes.
+- Wait for session-terminate response from remote before unregisterJingleSessionHandler() locally; else <item-not-found/>.
+  <item-not-found/> may still happen at remote if remote user cancels before the received session-terminate is processed ~250mS.
+- Cleanup jingle_rtp; do not send session-terminate stanza after the call has disconnected.
+- Improve AndroidUsingLinkProperties implementation: Smack Reconnection Manager received empty dns, change to null instead.
+- Default to enable 'Auto generate resource' option, avoiding resource conflict in multiple devices login.
+- During file transfer process, reserve the button height to avoid Cancel button being partially hidden by android when it is enabled
+- Ignore AEADBadTagException throws by javax.crypto.CipherInputStream#close() when cryptoStream is prematurely closed in JingleIncomingFileOffer#onBytestreamReady().
+- Upgrade to support android API-33
+
+=========================================================================
 Version:        3.0.0 (300000)
 Release Date:   07/28/2022
 Author:         cmeng

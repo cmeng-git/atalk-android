@@ -1,11 +1,21 @@
 package org.jivesoftware.smackx.jinglenodes;
 
-import org.jivesoftware.smack.*;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ.KILLED;
+
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -13,8 +23,10 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
+import org.jivesoftware.smackx.jinglenodes.element.JingleEventIQ;
 import org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ;
-import org.jivesoftware.smackx.jinglenodes.provider.JingleNodesProvider;
+import org.jivesoftware.smackx.jinglenodes.provider.JingleEventProvider;
+import org.jivesoftware.smackx.jinglenodes.provider.JingleChannelProvider;
 import org.jivesoftware.smackx.jinglenodes.provider.JingleTrackerProvider;
 import org.jivesoftware.smackx.jinglenodes.relay.RelayChannel;
 import org.jxmpp.jid.Jid;
@@ -23,23 +35,34 @@ import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SmackServiceNode implements ConnectionListener
 {
     private final AbstractXMPPConnection connection;
+
+    // String is usually a channelId
     private final ConcurrentHashMap<String, RelayChannel> channels = new ConcurrentHashMap<>();
+
     private final Map<Jid, TrackerEntry> trackerEntries = Collections.synchronizedMap(new LinkedHashMap<>());
     private final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
     private final AtomicInteger ids = new AtomicInteger(0);
     private final long timeout;
 
     private final static ExecutorService executorService = Executors.newCachedThreadPool();
+
     static {
-        ProviderManager.addIQProvider(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, new JingleNodesProvider());
         ProviderManager.addIQProvider(JingleTrackerIQ.ELEMENT, JingleTrackerIQ.NAMESPACE, new JingleTrackerProvider());
+        ProviderManager.addIQProvider(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, new JingleChannelProvider());
+        ProviderManager.addIQProvider(JingleEventIQ.ELEMENT, JingleEventIQ.NAMESPACE, new JingleEventProvider());
     }
 
     public SmackServiceNode(final AbstractXMPPConnection connection, final long timeout)
@@ -89,23 +112,9 @@ public class SmackServiceNode implements ConnectionListener
         }, timeout, timeout, TimeUnit.MILLISECONDS);
 
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(JingleChannelIQ.NAMESPACE);
-        connection.registerIQRequestHandler(new JingleChannelIqRequestHandler());
         connection.registerIQRequestHandler(new JingleTrackerIqRequestHandler());
-    }
-
-
-    private class JingleChannelIqRequestHandler extends AbstractIqRequestHandler
-    {
-        protected JingleChannelIqRequestHandler()
-        {
-            super(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, IQ.Type.get, Mode.sync);
-        }
-
-        @Override
-        public IQ handleIQRequest(IQ iqRequest)
-        {
-            return createUdpChannel((JingleChannelIQ) iqRequest);
-        }
+        connection.registerIQRequestHandler(new JingleChannelIqRequestHandler());
+        connection.registerIQRequestHandler(new JingleEventIqRequestHandler());
     }
 
     private class JingleTrackerIqRequestHandler extends AbstractIqRequestHandler
@@ -126,6 +135,48 @@ public class SmackServiceNode implements ConnectionListener
         }
     }
 
+    private class JingleChannelIqRequestHandler extends AbstractIqRequestHandler
+    {
+        protected JingleChannelIqRequestHandler()
+        {
+            super(JingleChannelIQ.ELEMENT, JingleChannelIQ.NAMESPACE, IQ.Type.get, Mode.sync);
+        }
+
+        @Override
+        public IQ handleIQRequest(IQ iqRequest)
+        {
+            return createUdpChannel((JingleChannelIQ) iqRequest);
+        }
+    }
+
+    private class JingleEventIqRequestHandler extends AbstractIqRequestHandler
+    {
+        protected JingleEventIqRequestHandler()
+        {
+            super(JingleEventIQ.ELEMENT, JingleEventIQ.NAMESPACE, IQ.Type.set, Mode.sync);
+        }
+
+        /**
+         * Note: The discovered relay channel by aTalk from server is no stored in <code>channels</code>.
+         * Currently the killed event is sent from server (jn_erlang).
+         *
+         * @param iqRequest JingleEventIQ
+         * @return iq.result
+         */
+        @Override
+        public IQ handleIQRequest(IQ iqRequest)
+        {
+            JingleEventIQ eventIQ = (JingleEventIQ) iqRequest;
+            if (KILLED.equals(eventIQ.getEvent())) {
+                RelayChannel c = getChannels().get(eventIQ.getChannelId());
+                if (c != null) {
+                    removeChannel(c);
+                }
+            }
+            return IQ.createResultIQ(iqRequest);
+        }
+    }
+
     @Override
     public void connectionClosed()
     {
@@ -142,7 +193,7 @@ public class SmackServiceNode implements ConnectionListener
 
     private void removeChannel(final RelayChannel c)
     {
-        channels.remove(c.getAttachment());
+        channels.remove(c.getChannelId());
         c.close();
     }
 
@@ -158,7 +209,7 @@ public class SmackServiceNode implements ConnectionListener
             final RelayChannel rc = RelayChannel.createLocalRelayChannel("0.0.0.0", 10000, 40000);
             final int id = ids.incrementAndGet();
             final String sId = String.valueOf(id);
-            rc.setAttachment(sId);
+            rc.setChannelId(sId);
             channels.put(sId, rc);
 
             final JingleChannelIQ result = new JingleChannelIQ();
@@ -169,7 +220,7 @@ public class SmackServiceNode implements ConnectionListener
             result.setHost(rc.getIp());
             result.setLocalport(rc.getPortA());
             result.setRemoteport(rc.getPortB());
-            result.setId(sId);
+            result.setChannelId(sId);
             return result;
 
         } catch (IOException e) {
@@ -361,7 +412,6 @@ public class SmackServiceNode implements ConnectionListener
 
     public JingleTrackerIQ createKnownNodes()
     {
-
         final JingleTrackerIQ iq = new JingleTrackerIQ();
         iq.setType(IQ.Type.result);
 
@@ -370,7 +420,6 @@ public class SmackServiceNode implements ConnectionListener
                 iq.addEntry(entry);
             }
         }
-
         return iq;
     }
 

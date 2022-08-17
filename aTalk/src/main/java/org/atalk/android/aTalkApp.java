@@ -357,12 +357,12 @@ public class aTalkApp extends Application implements LifecycleEventObserver
         return (resId != 0) ? mInstance.getString(resId) : "";
     }
 
+    private static Toast toast = null;
     /**
      * Toast show message in UI thread
      *
      * @param message the string message to display.
      */
-    private static Toast toast = null;
     public static void showToastMessage(final String message)
     {
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -371,11 +371,6 @@ public class aTalkApp extends Application implements LifecycleEventObserver
             toast = Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG);
             toast.show();
         });
-    }
-
-    public static void showToastMessage(int id)
-    {
-        showToastMessage(getResString(id));
     }
 
     public static void showToastMessage(int id, Object... arg)

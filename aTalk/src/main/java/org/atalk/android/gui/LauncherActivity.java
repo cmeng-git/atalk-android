@@ -14,6 +14,7 @@ import android.widget.*;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;
@@ -63,6 +64,9 @@ public class LauncherActivity extends OSGiActivity
             switchActivity(ShutdownActivity.class);
             return;
         }
+
+        // Must initialize Notification channels before any notification is being issued.
+        new NotificationHelper(this);
 
         // Get restore Intent and display "Restoring..." label
         Intent intent = getIntent();

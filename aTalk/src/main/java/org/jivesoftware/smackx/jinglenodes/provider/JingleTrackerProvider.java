@@ -1,5 +1,10 @@
 package org.jivesoftware.smackx.jinglenodes.provider;
 
+import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_ADDRESS;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_POLICY;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_PROTOCOL;
+import static org.jivesoftware.smackx.jinglenodes.element.JingleTrackerIQ.ATTR_VERIFIED;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -39,11 +44,11 @@ public class JingleTrackerProvider extends IQProvider<JingleTrackerIQ>
                     continue;
                 }
 
-                final String protocol = parser.getAttributeValue(null, "protocol");
+                final String protocol = parser.getAttributeValue(null, ATTR_PROTOCOL);
                 final TrackerEntry.Policy policy = TrackerEntry.Policy.valueOf("_"
-                        + parser.getAttributeValue(null, "policy"));
-                final String address = parser.getAttributeValue(null, "address");
-                final String verified = parser.getAttributeValue(null, "verified");
+                        + parser.getAttributeValue(null, ATTR_POLICY));
+                final String address = parser.getAttributeValue(null,  ATTR_ADDRESS);
+                final String verified = parser.getAttributeValue(null, ATTR_VERIFIED);
 
                 if (address != null && address.length() > 0) {
                     final TrackerEntry entry = new TrackerEntry(type, policy, JidCreate.from(address), protocol);

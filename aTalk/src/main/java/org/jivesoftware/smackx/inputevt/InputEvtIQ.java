@@ -48,14 +48,14 @@ public class InputEvtIQ extends IQ
     public static final String ACTION_ATTR_NAME = "action";
 
     /**
-     * Action of this <tt>InputIQ</tt>.
+     * Action of this <code>InputIQ</code>.
      */
     private InputEvtAction action = null;
 
     /**
      * List of remote-control elements.
      */
-    private List<RemoteControlExtension> remoteControls = new ArrayList<>();
+    private final List<RemoteControlExtension> remoteControls = new ArrayList<>();
 
     /**
      * Constructor.
@@ -88,12 +88,12 @@ public class InputEvtIQ extends IQ
     }
 
     /**
-     * Sets the value of this element's <tt>action</tt> attribute. The value of the 'action'
+     * Sets the value of this element's <code>action</code> attribute. The value of the 'action'
      * attribute MUST be one of the values enumerated here. If an entity receives a value not
-     * defined here, it MUST ignore the attribute and MUST return a <tt>bad-request</tt> error to
+     * defined here, it MUST ignore the attribute and MUST return a <code>bad-request</code> error to
      * the sender. There is no default value for the 'action' attribute.
      *
-     * @param action the value of the <tt>action</tt> attribute.
+     * @param action the value of the <code>action</code> attribute.
      */
     public void setAction(InputEvtAction action)
     {
@@ -101,12 +101,12 @@ public class InputEvtIQ extends IQ
     }
 
     /**
-     * Returns the value of this element's <tt>action</tt> attribute. The value of the 'action'
+     * Returns the value of this element's <code>action</code> attribute. The value of the 'action'
      * attribute MUST be one of the values enumerated here. If an entity receives a value not
-     * defined here, it MUST ignore the attribute and MUST return a <tt>bad-request</tt> error to
+     * defined here, it MUST ignore the attribute and MUST return a <code>bad-request</code> error to
      * the sender. There is no default value for the 'action' attribute.
      *
-     * @return the value of the <tt>action</tt> attribute.
+     * @return the value of the <code>action</code> attribute.
      */
     public InputEvtAction getAction()
     {
@@ -134,9 +134,9 @@ public class InputEvtIQ extends IQ
     }
 
     /**
-     * Get the <tt>RemoteControlExtension</tt> list of this IQ.
+     * Get the <code>RemoteControlExtension</code> list of this IQ.
      *
-     * @return list of <tt>RemoteControlExtension</tt>
+     * @return list of <code>RemoteControlExtension</code>
      */
     public List<RemoteControlExtension> getRemoteControls()
     {

@@ -80,7 +80,6 @@ public class JingleUtil
             JingleContent.Creator contentCreator, String contentName, JingleContent.Senders contentSenders,
             JingleContentDescription description, JingleContentTransport transport)
     {
-
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setAction(JingleAction.session_initiate)
                 .setSessionId(sessionId)
@@ -117,7 +116,6 @@ public class JingleUtil
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException
     {
-
         Jingle jingle = createSessionInitiateFileOffer(recipient, sessionId, contentCreator, contentName, description, transport);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -127,7 +125,6 @@ public class JingleUtil
             JingleContentDescription description, JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException
     {
-
         Jingle jingle = createSessionInitiate(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
@@ -170,7 +167,6 @@ public class JingleUtil
             JingleContent.Creator contentCreator, String contentName, JingleContent.Senders contentSenders,
             JingleContentDescription description, JingleContentTransport transport)
     {
-
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setResponder(mConnection.getUser())
                 .setAction(JingleAction.session_accept)
@@ -195,7 +191,6 @@ public class JingleUtil
             JingleContentDescription description, JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException
     {
-
         Jingle jingle = createSessionAccept(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
@@ -274,7 +269,6 @@ public class JingleUtil
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException
     {
-
         Jingle jingle = createSessionTerminateDecline(recipient, sessionId);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -301,7 +295,6 @@ public class JingleUtil
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException
     {
-
         Jingle jingle = createSessionTerminateBusy(recipient, sessionId);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -315,7 +308,6 @@ public class JingleUtil
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException
     {
-
         Jingle jingle = createSessionTerminateAlternativeSession(recipient, sessionId, altSessionId);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -329,9 +321,8 @@ public class JingleUtil
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException
     {
-
         Jingle jingle = createSessionTerminateCancel(recipient, sessionId);
-        return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return mConnection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateContentCancel(FullJid recipient, String sessionId,
