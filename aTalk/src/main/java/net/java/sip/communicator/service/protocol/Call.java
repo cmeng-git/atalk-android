@@ -52,7 +52,7 @@ public abstract class Call extends DataObject
     public static final String CONFERENCE_FOCUS = "conferenceFocus";
 
     /**
-     * An identifier uniquely representing the call.
+     * An identifier uniquely representing the call; set to same as Jingle Sid if available.
      */
     private final String callId;
 
@@ -228,9 +228,7 @@ public abstract class Call extends DataObject
     protected void fireCallPeerEvent(CallPeer sourceCallPeer, int eventID, boolean delayed)
     {
         CallPeerEvent event = new CallPeerEvent(sourceCallPeer, this, eventID, delayed);
-
-        Timber.d("Dispatching CallPeer event to %s listeners. The event is: %s",
-                callListeners.size(), event);
+        // Timber.d("Dispatching CallPeer event to %s listeners. The event is: %s", callListeners.size(), event);
 
         Iterator<CallChangeListener> listeners;
         synchronized (callListeners) {

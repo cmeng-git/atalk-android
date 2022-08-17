@@ -1023,13 +1023,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         private final Html.ImageGetter imageGetter = new HtmlImageGetter();
 
         /**
+         * Note: addMessageImpl method must only be processed on UI thread.
          * Pass the message to the <code>ChatListAdapter</code> for processing; appends it at the
          * end or merge it with the last consecutive message.
          *
-         * addMessageImpl method must only be processed on UI thread.
-         *
          * It creates a new message view holder if this is first message or if this is a new
-         * message received i.e. non-consecutive. NotifyDataChanged for update if <code>true</code>
+         * message sent/received i.e. non-consecutive.
          */
         private void addMessageImpl(ChatMessage newMessage)
         {
@@ -1045,38 +1044,35 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     mCryptoFragment.setChatType(ChatFragment.MSGTYPE_OMEMO);
                 }
 
-                int msgIdx;
                 int lastMsgIdx = getLastMessageIdx(newMessage);
                 ChatMessage lastMsg = (lastMsgIdx != -1) ? chatListAdapter.getMessage(lastMsgIdx) : null;
 
                 // Create a new message view holder only if message is non-consecutive i.e non-merged message
                 if ((lastMsg == null) || (!lastMsg.isConsecutiveMessage(newMessage))) {
                     messages.add(new MessageDisplay(newMessage));
-                    msgIdx = messages.size() - 1;
+                    lastMsgIdx++;
 
                     // Start service for Split Street View Panorama and Map support.
                     if (mSVP_Started) {
-                        mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(msgIdx));
+                        mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(lastMsgIdx));
                     }
-
-                    /* List must be scrolled manually, when android:transcriptMode="normal" is set*
-                     * notifyDataSetChanged causing display contents to be invalidated.
-                     */
-                    chatListAdapter.notifyDataSetChanged();
-                    chatListView.setSelection(msgIdx + chatListView.getHeaderViewsCount());
                 }
                 else {
                     // Consecutive message (including corrected message); proceed to update the viewHolder only
                     MessageDisplay msgDisplay = messages.get(lastMsgIdx);
                     msgDisplay.update(lastMsg.mergeMessage(newMessage));
-                    msgIdx = lastMsgIdx;
 
-                    MessageViewHolder viewHolder = viewHolders.get(msgIdx);
+                    MessageViewHolder viewHolder = viewHolders.get(lastMsgIdx);
                     if (viewHolder != null) {
-                        // Just update the corrected message body without refreshing the whole view
                         msgDisplay.getBody(viewHolder.messageView);
                     }
                 }
+                /*
+                 * List must be scrolled manually, when android:transcriptMode="normal" is set
+                 * Must notifyDataSetChanged to invalidate/refresh display contents; else new content may partial be hidden.
+                 */
+                chatListAdapter.notifyDataSetChanged();
+                chatListView.setSelection(lastMsgIdx + chatListView.getHeaderViewsCount());
             });
         }
 
@@ -1445,13 +1441,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         sendFrom = chatMessage.getSender();
                         date = chatMessage.getDate();
 
-                        FileReceiveConversation filexferR = (FileReceiveConversation) getFileXfer(position);
-                        if (filexferR == null) {
-                            filexferR = FileReceiveConversation.newInstance(currentChatFragment, sendFrom,
+                        FileReceiveConversation fileXferR = (FileReceiveConversation) getFileXfer(position);
+                        if (fileXferR == null) {
+                            fileXferR = FileReceiveConversation.newInstance(currentChatFragment, sendFrom,
                                     opSet, request, date);
-                            setFileXfer(position, filexferR);
+                            setFileXfer(position, fileXferR);
                         }
-                        viewTemp = filexferR.ReceiveFileConversionForm(inflater, messageViewHolder, parent, position, init);
+                        viewTemp = fileXferR.ReceiveFileConversionForm(inflater, messageViewHolder, parent, position, init);
                         break;
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_SEND:
@@ -1459,20 +1455,20 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         fileName = chatMessage.getMessage();
                         sendTo = chatMessage.getSender();
 
-                        FileSendConversation filexferS = (FileSendConversation) getFileXfer(position);
-                        if (filexferS == null) {
-                            filexferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
+                        FileSendConversation fileXferS = (FileSendConversation) getFileXfer(position);
+                        if (fileXferS == null) {
+                            fileXferS = FileSendConversation.newInstance(currentChatFragment, msgUuid, sendTo, fileName,
                                     (msgType == ChatMessage.MESSAGE_STICKER_SEND));
-                            setFileXfer(position, filexferS);
+                            setFileXfer(position, fileXferS);
                         }
-                        viewTemp = filexferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
+                        viewTemp = fileXferS.SendFileConversationForm(inflater, messageViewHolder, parent, position, init);
                         break;
 
                     case ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY:
                         fileRecord = msgDisplay.getFileRecord();
-                        FileHistoryConversation filexferH = FileHistoryConversation.newInstance(currentChatFragment,
+                        FileHistoryConversation fileXferH = FileHistoryConversation.newInstance(currentChatFragment,
                                 fileRecord, chatMessage);
-                        viewTemp = filexferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
+                        viewTemp = fileXferH.FileHistoryConversationForm(inflater, messageViewHolder, parent, init);
                         break;
 
                     case ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD:

@@ -1,12 +1,10 @@
 package org.jivesoftware.smackx.jinglenodes.relay;
 
-import org.jivesoftware.smackx.jinglenodes.nio.DatagramListener;
 import org.jivesoftware.smackx.jinglenodes.nio.SelDatagramChannel;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.ByteBuffer;
 
 public class RelayChannel
 {
@@ -25,7 +23,7 @@ public class RelayChannel
     private final int portA;
     private final int portB;
     private final String ip;
-    private Object attachment;
+    private String channelId;
 
     public static RelayChannel createLocalRelayChannel(final String host, final int minPort, final int maxPort)
             throws IOException
@@ -48,7 +46,6 @@ public class RelayChannel
     public RelayChannel(final String host, final int portA)
             throws IOException
     {
-
         final int portB = portA + 2;
 
         addressA = new InetSocketAddress(host, portA);
@@ -57,41 +54,29 @@ public class RelayChannel
         channelA = SelDatagramChannel.open(null, addressA);
         channelB = SelDatagramChannel.open(null, addressB);
 
-        channelA.setDatagramListener(new DatagramListener()
-        {
-            @Override
-            public void datagramReceived(final SelDatagramChannel channel, final ByteBuffer buffer,
-                    final SocketAddress address)
-            {
-                lastReceivedA = address;
-                lastReceivedTimeA = System.currentTimeMillis();
+        channelA.setDatagramListener((channel, buffer, address) -> {
+            lastReceivedA = address;
+            lastReceivedTimeA = System.currentTimeMillis();
 
-                if (lastReceivedB != null) {
-                    try {
-                        buffer.flip();
-                        channelB.send(buffer, lastReceivedB);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if (lastReceivedB != null) {
+                try {
+                    buffer.flip();
+                    channelB.send(buffer, lastReceivedB);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        channelB.setDatagramListener(new DatagramListener()
-        {
-            @Override
-            public void datagramReceived(final SelDatagramChannel channel, final ByteBuffer buffer,
-                    final SocketAddress address)
-            {
-                lastReceivedB = address;
-                lastReceivedTimeB = System.currentTimeMillis();
-                if (lastReceivedA != null) {
-                    try {
-                        buffer.flip();
-                        channelA.send(buffer, lastReceivedA);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        channelB.setDatagramListener((channel, buffer, address) -> {
+            lastReceivedB = address;
+            lastReceivedTimeB = System.currentTimeMillis();
+            if (lastReceivedA != null) {
+                try {
+                    buffer.flip();
+                    channelA.send(buffer, lastReceivedA);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -106,53 +91,41 @@ public class RelayChannel
         channelA_ = SelDatagramChannel.open(null, addressA_);
         channelB_ = SelDatagramChannel.open(null, addressB_);
 
-        channelA_.setDatagramListener(new DatagramListener()
-        {
-            @Override
-            public void datagramReceived(final SelDatagramChannel channel, final ByteBuffer buffer,
-                    final SocketAddress address)
-            {
-                lastReceivedA_ = address;
+        channelA_.setDatagramListener((channel, buffer, address) -> {
+            lastReceivedA_ = address;
 
-                if (lastReceivedB_ != null) {
-                    try {
-                        buffer.flip();
-                        channelB_.send(buffer, lastReceivedB_);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if (lastReceivedB_ != null) {
+                try {
+                    buffer.flip();
+                    channelB_.send(buffer, lastReceivedB_);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        channelB_.setDatagramListener(new DatagramListener()
-        {
-            @Override
-            public void datagramReceived(final SelDatagramChannel channel, final ByteBuffer buffer,
-                    final SocketAddress address)
-            {
-                lastReceivedB_ = address;
-                if (lastReceivedA_ != null) {
-                    try {
-                        buffer.flip();
-                        channelA_.send(buffer, lastReceivedA_);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        channelB_.setDatagramListener((channel, buffer, address) -> {
+            lastReceivedB_ = address;
+            if (lastReceivedA_ != null) {
+                try {
+                    buffer.flip();
+                    channelA_.send(buffer, lastReceivedA_);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
         this.ip = host;
     }
 
-    public SocketAddress getAddressB()
-    {
-        return addressB;
-    }
-
     public SocketAddress getAddressA()
     {
         return addressA;
+    }
+
+    public SocketAddress getAddressB()
+    {
+        return addressB;
     }
 
     public int getPortA()
@@ -180,14 +153,14 @@ public class RelayChannel
         return lastReceivedTimeB;
     }
 
-    public Object getAttachment()
+    public String getChannelId()
     {
-        return attachment;
+        return channelId;
     }
 
-    public void setAttachment(Object attachment)
+    public void setChannelId(String cId)
     {
-        this.attachment = attachment;
+        this.channelId = cId;
     }
 
     public void close()

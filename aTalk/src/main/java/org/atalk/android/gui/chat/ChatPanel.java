@@ -137,7 +137,7 @@ public class ChatPanel implements Chat, MessageListener
     private boolean historyLoaded = false;
 
     /**
-     * Blocked caching of the next new message is sent via sendMessage().
+     * Blocked caching of the next new message if sent via normal sendMessage().
      * Otherwise there will have duplicated display messages
      */
     private boolean cacheBlocked = false;
@@ -818,7 +818,13 @@ public class ChatPanel implements Chat, MessageListener
         else {
             sendTo = ((ChatRoom) sender).getName();
         }
-        addMessage(new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT));
+
+        // Do not use addMessage to avoid TTS activation for outgoing file message
+        ChatMessageImpl chatMsg = new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT);
+        cacheNextMsg(chatMsg);
+        for (ChatSessionListener l : msgListeners) {
+            l.messageAdded(chatMsg);
+        }
     }
 
     /**
@@ -880,7 +886,6 @@ public class ChatPanel implements Chat, MessageListener
             for (MessageListener l : msgListeners) {
                 l.messageReceived(messageReceivedEvent);
             }
-
             messageSpeak(chatMessage, ttsDelay);
         }
     }

@@ -106,11 +106,10 @@ public class JingleNodesHarvester extends AbstractCandidateHarvester
         if (ciq != null) {
             ip = ciq.getHost();
             port = ciq.getRemoteport();
-
             Timber.i("JN relay: %s remote port: %s local port: %s", ip, port, ciq.getLocalport());
 
             if (ip == null || ciq.getRemoteport() == 0) {
-                Timber.w("JN relay ignored because ip was null or port 0");
+                Timber.w("JN relay ignored because ip was null or port == 0");
                 return candidates;
             }
 

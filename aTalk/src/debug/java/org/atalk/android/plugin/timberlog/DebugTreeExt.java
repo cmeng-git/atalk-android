@@ -2,7 +2,8 @@ package org.atalk.android.plugin.timberlog;
 
 import android.util.Log;
 
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import timber.log.Timber;
 
@@ -20,7 +21,7 @@ public class DebugTreeExt extends Timber.DebugTree
 
         // For testing release version logcat messages in debug mode
         // return (priority == Log.WARN || priority == Log.ERROR || priority == Log.ASSERT
-        //        || (priority == Log.INFO && TimberLog.isInfoEnabled()));
+        //        || (priority == Log.INFO && TimberLog.isInfoEnable));
     }
 
     /**
@@ -28,7 +29,7 @@ public class DebugTreeExt extends Timber.DebugTree
      * Log.println(priority, tag, message) would not print priority == TimberLog.FINE
      */
     @Override
-    protected void log(int priority, String tag, String message, Throwable t)
+    protected void log(int priority, String tag, @NonNull String message, Throwable t)
     {
         if ((priority == TimberLog.FINER) || (priority == TimberLog.FINEST)) {
             println_native(0, priority, tag, message);

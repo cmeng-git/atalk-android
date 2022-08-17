@@ -30,7 +30,7 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 21
-    compileSdk = 32
+    compileSdk = 33
     buildTools = '32.0.0'
 }
 

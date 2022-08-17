@@ -436,10 +436,10 @@ public class OperationSetBasicTelephonyJabberImpl
 
         /*
          * in case we figure that calling people without a resource id is impossible, we'll have to
-         * uncomment the following lines. keep in mind that this would mean - no calls to pstn
+         * uncomment the following lines. keep in mind that this would mean - no calls to PSTN
          * though if (fullCalleeURI.indexOf('/') < 0) { throw new OperationFailedException(
-         * "Failed to create OutgoingJingleSession.\n" + "User " + calleeAddress +
-         * " is unknown to us." , OperationFailedException.INTERNAL_ERROR); }
+         * "Failed to create OutgoingJingleSession.\nUser calleeAddress is unknown to us.",
+         * OperationFailedException.INTERNAL_ERROR); }
          */
 
         // initiate call
@@ -763,7 +763,7 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     /**
-     * Handle error for the intended user returns by Jingle responder
+     * Handle error for the intended user returns by Jingle responder; Todo: should not be required
      *
      * @see <a href="https://xmpp.org/extensions/xep-0166.html#protocol-response">6.3 Responder Response</a>
      */
@@ -927,10 +927,13 @@ public class OperationSetBasicTelephonyJabberImpl
                 break;
 
             case session_terminate:
-                // handle moved => processJingle#session_terminate; not handle here
-                Timber.w("Received session_terminate IQ: %s. JingleSession: %s", jingleIQ.getStanzaId(), mJingleSession);
-                if (mJingleSession != null)
-                    mJingleSession.terminateSessionAndUnregister(Reason.success, null);
+                // Actual handler has moved to => processJingle#session_terminate;
+                Timber.w("Received session-terminate after call has disconnected: %s. JingleSession: %s", jingleIQ.getStanzaId(), mJingleSession);
+                // Received session_terminate from remote after the call has ended; due to async operations between local and remote.
+                // unregisterJingleSessionHandler just in case, but without sending session-terminate else => item-not-found
+                if (mJingleSession != null) {
+                    mJingleSession.unregisterJingleSessionHandler();
+                }
                 contentMedias = null;
                 break;
 

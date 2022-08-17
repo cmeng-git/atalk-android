@@ -89,6 +89,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         updateFileViewInfo(mXferFile, false);
         messageViewHolder.retryButton.setOnClickListener(v -> {
             messageViewHolder.retryButton.setVisibility(View.GONE);
+            messageViewHolder.cancelButton.setVisibility(View.INVISIBLE);
             mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
         });
 

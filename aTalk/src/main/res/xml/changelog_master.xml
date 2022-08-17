@@ -6,8 +6,19 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.0.0 (07/28/2022)" versioncode="300000">
+    <release version="3.0.1 (08/17/2022)" versioncode="300010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Implement Jingle Event IQ and Provider to handle event-killed sent from server</change>
+        <change>Wait for session-terminate response from remote before unregister JingleSession Handler locally, else 'item-not-found'</change>
+        <change>Cleanup jingle_rtp, do not send session-terminate stanza after the call has disconnected</change>
+        <change>Improve AndroidUsingLinkProperties implementation and error handling</change>
+        <change>Default to enable 'Auto generate resource' option, avoiding resource conflict in multiple devices login</change>
+        <change>Ensure all user option buttons are not partially obscured during file transfer process</change>
+        <change>Upgrade to support android API-33</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.0.0 (07/28/2022)" versioncode="300000">
         <change>Hide user 'Cancel' option during file transfer protocol negotiate phase for both legacy SI and JFT (not supported)</change>
         <change>Upgrade library openssl to 1.1.1q [5 Jul 2022]</change>
         <change>Upgrade libraries for ffmpeg to v5.1 and x264 to v164</change>

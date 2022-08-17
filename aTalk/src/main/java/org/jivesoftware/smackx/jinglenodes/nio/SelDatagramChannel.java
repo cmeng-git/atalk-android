@@ -3,7 +3,9 @@ package org.jivesoftware.smackx.jinglenodes.nio;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -38,10 +40,10 @@ public class SelDatagramChannel
                             Thread.yield();
                             continue;
                         }
-                        final Set keys = selector.selectedKeys();
+                        final Set<SelectionKey> keys = selector.selectedKeys();
 
                         // Iterate through the Set of keys.
-                        for (Iterator i = keys.iterator(); i.hasNext(); ) {
+                        for (Iterator<SelectionKey> i = keys.iterator(); i.hasNext(); ) {
                             // Get a key from the set, and remove it from the set
                             final SelectionKey key = (SelectionKey) i.next();
                             i.remove();
@@ -73,7 +75,6 @@ public class SelDatagramChannel
 
                             }
                         }
-
                     } catch (Throwable t) {
                         t.printStackTrace();
                     }
