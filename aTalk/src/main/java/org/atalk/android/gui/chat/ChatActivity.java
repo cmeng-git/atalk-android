@@ -57,7 +57,7 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
-import org.atalk.android.plugin.geolocation.GeoLocation;
+import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment;
 import org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment;
 import org.atalk.crypto.CryptoFragment;
@@ -88,7 +88,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ChatActivity extends OSGiActivity
-        implements OnPageChangeListener, TaskCompleted, GeoLocation.LocationListener,
+        implements OnPageChangeListener, TaskCompleted, GeoLocationActivity.LocationListener,
         ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener
 {
     private static final int REQUEST_CODE_OPEN_FILE = 105;
@@ -191,7 +191,7 @@ public class ChatActivity extends OSGiActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_main);
 
-        // If chat notification has been clicked and OSGi service has been killed in the meantime
+        // If chat notification has been clicked and OSGi service has been killed in the meantime,
         // then we have to start it and restore this activity
         if (postRestoreIntent()) {
             return;
@@ -225,7 +225,7 @@ public class ChatActivity extends OSGiActivity
         mTakeVideo = takeVideo();
 
         // Registered location listener - only use by playStore version
-        GeoLocation.registeredLocationListener(this);
+        GeoLocationActivity.registeredLocationListener(this);
         handleIntent(getIntent(), savedInstanceState);
     }
 
@@ -266,7 +266,7 @@ public class ChatActivity extends OSGiActivity
         // Synchronize ChatActivity & ChatPager
         // setCurrentChatId(chatPanel.getChatSession().getChatId());
         setCurrentChatId(chatId);
-        chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(currentChatId));
+        chatPager.setCurrentItem(chatPagerAdapter.getChatIdx(chatId));
 
         if (intent.getClipData() != null) {
             if (intent.getCategories() != null)
@@ -434,7 +434,7 @@ public class ChatActivity extends OSGiActivity
         mCallAudioContact = mMenu.findItem(R.id.call_contact_audio);
         mCallVideoContact = mMenu.findItem(R.id.call_contact_video);
         mSendFile = mMenu.findItem(R.id.send_file);
-        mSendLocation = mMenu.findItem(R.id.send_location);
+        mSendLocation = mMenu.findItem(R.id.share_location);
         mTtsEnable = mMenu.findItem(R.id.chat_tts_enable);
         mStatusEnable = mMenu.findItem(R.id.room_status_enable);
         mHistoryErase = mMenu.findItem(R.id.erase_chat_history);
@@ -446,10 +446,6 @@ public class ChatActivity extends OSGiActivity
         mChatRoomConfig = mMenu.findItem(R.id.chatroom_config);
         mChatRoomNickSubject = mMenu.findItem(R.id.chatroom_info_change);
         mOtr_Session = menu.findItem(R.id.otr_session);
-
-        if (BuildConfig.FLAVOR.equals("fdroid") && (mSendLocation != null)) {
-            menu.removeItem(R.id.send_location);
-        }
         setOptionItem();
         return true;
     }
@@ -595,9 +591,9 @@ public class ChatActivity extends OSGiActivity
                 EntityListHelper.eraseEntityChatHistory(this, descriptor, null, null);
                 return true;
 
-            case R.id.send_location:
-                Intent intent = new Intent(this, GeoLocation.class);
-                intent.putExtra(GeoLocation.SEND_LOCATION, true);
+            case R.id.share_location:
+                Intent intent = new Intent(this, GeoLocationActivity.class);
+                intent.putExtra(GeoLocationActivity.SHARE_ALLOW, true);
                 startActivity(intent);
                 return true;
         }
@@ -771,8 +767,7 @@ public class ChatActivity extends OSGiActivity
      */
     private void updateSelectedChatInfo(int newIdx)
     {
-        // Updates only when newIdx value changes, as there are too many notifications fired when
-        // the page is scrolled
+        // Updates only when newIdx value changes, as there are too many notifications fired when the page is scrolled
         if (lastSelectedIdx != newIdx) {
             lastSelectedIdx = newIdx;
             setCurrentChatId(chatPagerAdapter.getChatId(newIdx));
@@ -1044,7 +1039,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     /**
-     * callBack for GeoLocation onResult received
+     * callBack for GeoLocationActivity onResult received
      *
      * @param location Geo Location information
      * @param locAddress Geo Location Address
@@ -1052,10 +1047,8 @@ public class ChatActivity extends OSGiActivity
     @Override
     public void onResult(Location location, String locAddress)
     {
-        String mLatitude = String.valueOf(location.getLatitude());
-        String mLongitude = String.valueOf(location.getLongitude());
-        String msg = locAddress + " \nLatLng: " + mLatitude + "," + mLongitude;
-
+        String msg = String.format(Locale.US, "%s\ngeo: %s,%s,%.03fm", locAddress,
+                location.getLatitude(), location.getLongitude(), location.getAltitude());
         selectedChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
     }
 

@@ -4,8 +4,6 @@
     package="org.atalk.android"
     android:installLocation="internalOnly">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application >
 
     <!--
@@ -29,10 +27,6 @@
         <activity
             android:name="org.atalk.android.plugin.geolocation.SplitStreetViewPanoramaAndMapActivity"
             android:label="@string/split_street_view_panorama_and_map_label" />
-
-        <service
-            android:name="com.akhgupta.easylocation.LocationBgService"
-            android:exported="false"/>
 
     </application>
 

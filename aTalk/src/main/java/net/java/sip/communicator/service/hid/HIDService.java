@@ -22,7 +22,7 @@ public interface HIDService
      * @see java.awt.event.KeyEvent
      * @see java.awt.Robot#keyRelease(int keycode)
      */
-    public void keyPress(int keycode);
+    void keyPress(int keycode);
 
     /**
      * Release a specific key using its keycode.
@@ -32,21 +32,21 @@ public interface HIDService
      * @see java.awt.event.KeyEvent
      * @see java.awt.Robot#keyRelease(int keycode)
      */
-    public void keyRelease(int keycode);
+    void keyRelease(int keycode);
 
     /**
      * Press a specific key using its char representation.
      *
      * @param key char representation of the key
      */
-    public void keyPress(char key);
+    void keyPress(char key);
 
     /**
      * Release a specific key using its char representation.
      *
      * @param key char representation of the key
      */
-    public void keyRelease(char key);
+    void keyRelease(char key);
 
     /**
      * Press a mouse button(s).
@@ -54,7 +54,7 @@ public interface HIDService
      * @param btns button masks
      * @see java.awt.Robot#mousePress(int btns)
      */
-    public void mousePress(int btns);
+    void mousePress(int btns);
 
     /**
      * Release a mouse button(s).
@@ -62,7 +62,7 @@ public interface HIDService
      * @param btns button masks
      * @see java.awt.Robot#mouseRelease(int btns)
      */
-    public void mouseRelease(int btns);
+    void mouseRelease(int btns);
 
     /**
      * Move the mouse on the screen.
@@ -71,14 +71,13 @@ public interface HIDService
      * @param y y position on the screen
      * @see java.awt.Robot#mouseMove(int x, int y)
      */
-    public void mouseMove(int x, int y);
+    void mouseMove(int x, int y);
 
     /**
      * Release a mouse button(s).
      *
-     * @param rotation wheel rotation (could be negative or positive depending
-     * on the direction).
+     * @param rotation wheel rotation (could be negative or positive depending on the direction).
      * @see java.awt.Robot#mouseWheel(int wheelAmt)
      */
-    public void mouseWheel(int rotation);
+    void mouseWheel(int rotation);
 }

@@ -122,11 +122,11 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Message history service that has created us.
      */
-    private MessageHistoryServiceImpl messageHistoryService;
+    private final MessageHistoryServiceImpl messageHistoryService;
 
     // SQLite database variables
-    private SQLiteDatabase mDB;
-    private ContentValues contentValues = new ContentValues();
+    private final SQLiteDatabase mDB;
+    private final ContentValues contentValues = new ContentValues();
 
     /**
      * Constructs MessageSourceService.
@@ -509,7 +509,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         int excess = cursor.getCount() - NUMBER_OF_MSGS_IN_HISTORY;
         if (excess > 0) {
             cursor.move(excess + 12);
-            String[] args = {cursor.getString(cursor.getColumnIndex(TIME_STAMP))};
+            String[] args = {cursor.getString(cursor.getColumnIndexOrThrow(TIME_STAMP))};
             int count = mDB.delete(MessageSourceService.TABLE_NAME, TIME_STAMP + "<?", args);
             Timber.d("No of recent old messages deleted : %s", count);
         }

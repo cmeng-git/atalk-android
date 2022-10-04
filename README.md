@@ -171,6 +171,7 @@ Libraries used in this project:
 * [libvpx](https://github.com/webmproject/libvpx)
 * [miniDNS](https://github.com/MiniDNS/minidns)
 * [Noembed](https://noembed.com/)
+* [osmdroid](https://github.com/osmdroid/osmdroid)
 * [otr4j](https://github.com/jitsi/otr4j)
 * [opensles](https://github.com/openssl/openssl )
 * [openSSL](https://www.openssl.org/source/)
@@ -197,7 +198,7 @@ Other contributors:
 
 ## aTalk apk build for android
 * Following development environment setups are used to build aTalk.apk<br/>
-  a. Android Studio Bumblebee 2021.1.1<br/>
+  a. Android Studio Chipmunk | 2021.2.1<br/>
   b. Gradle version as specified in ./gradle/gradle-wrapper.properties<br/>
   c. Ubuntu 22.04 with proper environment setup for development<br>
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu

@@ -66,19 +66,19 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
     public static FingerprintStatus fromCursor(Cursor cursor) {
         final FingerprintStatus status = new FingerprintStatus();
         try {
-            BareJid bareJid = JidCreate.bareFrom(cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.BARE_JID)));
-            int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
+            BareJid bareJid = JidCreate.bareFrom(cursor.getString(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.BARE_JID)));
+            int deviceId = cursor.getInt(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.DEVICE_ID));
             status.mDevice = new OmemoDevice(bareJid, deviceId);
         }
         catch (XmppStringprepException e) {
             e.printStackTrace();
         }
-        status.mFingerPrint = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.FINGERPRINT));
+        status.mFingerPrint = cursor.getString(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.FINGERPRINT));
         if (StringUtils.isEmpty(status.mFingerPrint ))
             return null;
 
         try {
-            String trust = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.TRUST));
+            String trust = cursor.getString(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.TRUST));
             if (StringUtils.isEmpty(trust))
                 status.trust = Trust.UNDECIDED;
             else
@@ -87,8 +87,8 @@ public class FingerprintStatus implements Comparable<FingerprintStatus>
             status.trust = Trust.UNTRUSTED;
         }
 
-        status.active = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.ACTIVE)) > 0;
-        status.lastActivation = cursor.getLong(cursor.getColumnIndex(SQLiteOmemoStore.LAST_ACTIVATION));
+        status.active = cursor.getInt(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.ACTIVE)) > 0;
+        status.lastActivation = cursor.getLong(cursor.getColumnIndexOrThrow(SQLiteOmemoStore.LAST_ACTIVATION));
         return status;
     }
 

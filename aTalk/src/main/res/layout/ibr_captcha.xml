@@ -134,10 +134,7 @@
             <TextView
                 android:id="@+id/reason_field"
                 style="@style/MsgTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/between_padding"
-                android:padding="8dp" />
+                android:layout_marginBottom="@dimen/between_padding" />
 
             <LinearLayout
                 android:id="@+id/captcha_container"
@@ -155,10 +152,7 @@
                 <TextView
                     android:id="@+id/url_link"
                     style="@style/MsgTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/between_padding"
-                    android:padding="8dp" />
+                    android:layout_marginBottom="@dimen/between_padding" />
 
                 <ImageView
                     android:id="@+id/captcha"

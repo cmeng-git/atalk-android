@@ -518,8 +518,8 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Indicates if the given <code>nextMsg</code> should be considered as consecutive message;
-     * checking it against the previous message type and the next message.
+     * Indicate if this.message should be considered as consecutive message;
+     * Must check against the current message and the next message i.e isNonMerge(nextMsg).
      *
      * @param nextMsg the next message to check
      * @return <code>true</code> if the given message is a consecutive message, <code>false</code> - otherwise
@@ -544,8 +544,8 @@ public class ChatMessageImpl implements ChatMessage
 
         boolean isMarkUpText = isNonEmpty && message.matches(ChatMessage.HTML_MARKUP);
 
-        // New LatLng message always treated as non-consecutiveMessage
-        boolean isLatLng = isNonEmpty && message.contains("LatLng:");
+        // New GeoLocation message always treated as non-consecutiveMessage
+        boolean isLatLng = isNonEmpty && (message.contains("geo:") || message.contains("LatLng:"));
 
         // system message always treated as non-consecutiveMessage
         boolean isSystemMsg = (messageType == MESSAGE_SYSTEM) || (messageType == MESSAGE_ERROR);
@@ -567,15 +567,15 @@ public class ChatMessageImpl implements ChatMessage
     }
 
     /**
-     * Check the given ChatMessage to ascertain if it should always be treated as non-consecutiveMessage
+     * Check the next ChatMessage to ascertain if this.message should be treated as non-consecutiveMessage
      *
-     * @param chatMessage ChatMessage to check
+     * @param nextMessage ChatMessage to check
      * @return true if non-consecutiveMessage
      */
-    private boolean isNonMerge(ChatMessage chatMessage)
+    private boolean isNonMerge(ChatMessage nextMessage)
     {
-        int msgType = chatMessage.getMessageType();
-        String bodyText = chatMessage.getMessage();
+        int msgType = nextMessage.getMessageType();
+        String bodyText = nextMessage.getMessage();
         boolean isNonEmpty = !TextUtils.isEmpty(bodyText);
 
         // FTRequest and FTHistory messages are always treated as non-consecutiveMessage
@@ -589,8 +589,8 @@ public class ChatMessageImpl implements ChatMessage
         // XHTML markup message always treated as non-consecutiveMessage
         boolean isMarkUpText = isNonEmpty && bodyText.matches(ChatMessage.HTML_MARKUP);
 
-        // LatLng message always treated as non-consecutiveMessage
-        boolean isLatLng = isNonEmpty && bodyText.contains("LatLng:");
+        // New GeoLocation message always treated as non-consecutiveMessage
+        boolean isLatLng = isNonEmpty && (bodyText.contains("geo:") || bodyText.contains("LatLng:"));
 
         // system message always treated as non-consecutiveMessage
         boolean isSystemMsg = (msgType == MESSAGE_SYSTEM) || (msgType == MESSAGE_ERROR);

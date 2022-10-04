@@ -16,11 +16,8 @@
     <TextView
         android:id="@+id/reason_field"
         style="@style/MsgTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"
-        android:autoLink="web"
-        android:padding="8dp" />
+        android:autoLink="web" />
 
     <ImageView
         android:id="@+id/captcha"

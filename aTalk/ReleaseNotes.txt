@@ -1,5 +1,19 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.2 (300020)
+Release Date:   10/04/2022
+Author:         cmeng
+- Enhance share streetMap implementation to support both gms (google playstore) and osm (fDroid) releases.
+- Improve StreetView & Map UI, including location altitude info and user selectable option for location sharing with buddy.
+- Rename "send_cont_location_updates" button text to "Follow me"; flash text when active, reminding user to stop on exit if not required.
+- Implement GeoLocationRequest/Builder parcelable class; replacing android gms LocationRequest for bundle passing
+- Replace gms FusedLocationProviderClient for location request in background service; use aTalk installed device best location provider instead
+- Add data_extraction_rule for backup requirements
+- Upgrade com.github.yalantis:ucrop to 2.2.8; and com.github.bumptech.glide:compiler to 4.13.2
+- Migration to android API-33 invalidate a lot of the android attributes - revert to API-32
+  https://stackoverflow.com/questions/72664051/android-33-issues-in-manifest-and-layout-files-in-android-studio
+
+=========================================================================
 Version:        3.0.1 (300010)
 Release Date:   08/17/2022
 Author:         cmeng

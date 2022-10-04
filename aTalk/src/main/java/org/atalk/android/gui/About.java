@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.atalk.android.gui;
 
 import android.content.Context;
@@ -73,6 +72,7 @@ public class About extends FragmentActivity implements View.OnClickListener
             new String[]{"Mime4j", "https://james.apache.org/mime4j/"},
             new String[]{"miniDNS", "https://github.com/MiniDNS/minidns"},
             new String[]{"Noembed", "https://noembed.com/"},
+            new String[]{"osmdroid", "https://github.com/osmdroid/osmdroid"},
             new String[]{"otr4j", "https://github.com/jitsi/otr4j"},
             new String[]{"opensles", "https://github.com/openssl/openssl "},
             new String[]{"osgi.core", "http://grepcode.com/snapshot/repo1.maven.org/maven2/org.osgi/org.osgi.core/6.0.0"},

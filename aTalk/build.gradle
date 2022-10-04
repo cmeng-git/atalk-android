@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 300010
-        versionName "3.0.1"
+        versionCode 300020
+        versionName "3.0.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -254,12 +254,12 @@ dependencies {
     }
     implementation 'com.karumi:dexter:6.2.3'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.1'
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
-    implementation 'com.github.seancfoley:ipaddress:5.3.3'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'com.github.seancfoley:ipaddress:5.3.4'
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v5.0.0'
 
-    implementation 'com.github.yalantis:ucrop:2.2.7'
+    implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     implementation 'com.google.android.material:material:1.6.1'
@@ -273,7 +273,7 @@ dependencies {
 
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'org.apache.james:apache-mime4j-core:0.8.6'
+    implementation 'org.apache.james:apache-mime4j-core:0.8.7'
     implementation 'org.bitlet:weupnp:0.1.4'
 
     // bcprov-jdk15on-1.65 works with Android. From bcprov-jdk15on-1.66, Java 16 (major version 59) is required which Android Studio does not support.
@@ -335,9 +335,12 @@ dependencies {
     // osgi v8.0.0 is not compatible with android api-21
     implementation 'org.osgi:osgi.core:7.0.0'
 
-    playstoreImplementation "com.google.android.gms:play-services-location:20.0.0"
+    // playstore version use google map services
     playstoreImplementation "com.google.android.gms:play-services-maps:18.1.0"
     playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
+
+    // fdroid version use osmdroid library
+    fdroidImplementation "org.osmdroid:osmdroid-android:6.1.14"
 
     /*
      * https://www.javatips.net/api/jarjar-master/jarjar-gradle/src/main/java/org/anarres/gradle/plugin/jarjar/JarjarController.java

@@ -8,7 +8,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
 
         // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
         // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
@@ -30,7 +30,7 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 21
-    compileSdk = 33
+    compileSdk = 32
     buildTools = '32.0.0'
 }
 

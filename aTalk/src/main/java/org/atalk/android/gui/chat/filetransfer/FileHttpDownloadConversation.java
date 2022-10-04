@@ -266,9 +266,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                     || status == FileTransferStatusChangeEvent.CANCELED
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.DECLINED) {
-                // must do this in UI, otherwise the status is not being updated to FileRecord
+                // must update this in UI, otherwise the status is not being updated to FileRecord
                 fileTransfer.removeStatusListener(FileHttpDownloadConversation.this);
-                // removeProgressListener();
             }
         });
     }
@@ -400,7 +399,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             }
             Cursor cursor = downloadManager.query(query);
             if (cursor.moveToFirst()) {
-                size = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                size = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
             }
             cursor.close();
         }
@@ -424,7 +423,7 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             if (!cursor.moveToFirst())
                 return DownloadManager.STATUS_FAILED;
             else {
-                return cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
+                return cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
             }
         }
     }
@@ -562,8 +561,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             return;
         }
         do {
-            fileSize = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-            long progress = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+            fileSize = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+            long progress = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
 
             if (messageViewHolder.progressBar.isShown()) {
                 messageViewHolder.fileLabel.setText(getFileLabel(fileName, fileSize));

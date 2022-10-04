@@ -13,7 +13,7 @@
         android:title="@string/service_gui_INVITE"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/send_location"
+        android:id="@+id/share_location"
         android:icon="@drawable/ic_location_dark"
         android:title="@string/service_gui_GEO_SEND"
         app:showAsAction="ifRoom" />

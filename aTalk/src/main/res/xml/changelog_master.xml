@@ -6,8 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.0.1 (08/17/2022)" versioncode="300010">
+    <release version="3.0.2 (10/04/2022)" versioncode="300020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Enhance share streetMap implementation to support both gms (google playstore) and osm (fdroid) releases</change>
+        <change>Improve StreetView &amp; Map UI, including location altitude info and user selectable option for location sharing with buddy</change>
+        <change>Rename "send_cont_location_updates" button text to "Follow me"; flash text when active, reminding user to stop on exit if not required</change>
+        <change>Implement GeoLocationRequest/Builder parcelable class; replacing android gms LocationRequest for bundle passing</change>
+        <change>Replace gms FusedLocationProviderClient for location request in background service; use aTalk installed device best location provider instead</change>
+        <change>Revert to android API-32; API-33 invalidate a lot of the android attributes</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.0.1 (08/17/2022)" versioncode="300010">
         <change>Implement Jingle Event IQ and Provider to handle event-killed sent from server</change>
         <change>Wait for session-terminate response from remote before unregister JingleSession Handler locally, else 'item-not-found'</change>
         <change>Cleanup jingle_rtp, do not send session-terminate stanza after the call has disconnected</change>
