@@ -741,8 +741,8 @@ public class AccountManager
         Cursor cursor = mDB.query(AccountID.TABLE_NAME, null, AccountID.PROTOCOL + "=?",
                 args, null, null, null);
         while (cursor.moveToNext()) {
-            accounts.put(cursor.getString(cursor.getColumnIndex(AccountID.ACCOUNT_UID)),
-                    cursor.getString(cursor.getColumnIndex(AccountID.ACCOUNT_UUID)));
+            accounts.put(cursor.getString(cursor.getColumnIndexOrThrow(AccountID.ACCOUNT_UID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(AccountID.ACCOUNT_UUID)));
         }
         cursor.close();
         return accounts;

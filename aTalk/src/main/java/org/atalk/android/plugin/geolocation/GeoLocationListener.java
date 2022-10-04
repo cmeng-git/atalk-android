@@ -1,12 +1,18 @@
-package com.akhgupta.easylocation;
+package org.atalk.android.plugin.geolocation;
 
 import android.location.Location;
 
-interface EasyLocationListener {
+public interface GeoLocationListener
+{
     void onLocationPermissionGranted();
+
     void onLocationPermissionDenied();
+
     void onLocationReceived(Location location, String locAddress);
-    void noLocationReceived();
+
+    void onLocationReceivedNone();
+
     void onLocationProviderEnabled();
+
     void onLocationProviderDisabled();
 }

@@ -184,11 +184,11 @@ public class MclStorageManager implements MetaContactListListener
         Cursor cursor = mDB.query(MetaContactGroup.TABLE_NAME, null,
                 MetaContactGroup.ACCOUNT_UUID + "=?", args, null, null, MetaContactGroup.ID);
         while (cursor.moveToNext()) {
-            String parentProtoGroupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PARENT_PROTO_GROUP_UID));
-            String groupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_GROUP_UID));
-            String groupName = cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_GROUP_NAME));
-            protoGroupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PROTO_GROUP_UID));
-            String persistentData = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PERSISTENT_DATA));
+            String parentProtoGroupUID = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.PARENT_PROTO_GROUP_UID));
+            String groupUID = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_GROUP_UID));
+            String groupName = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_GROUP_NAME));
+            protoGroupUID = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.PROTO_GROUP_UID));
+            String persistentData = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.PERSISTENT_DATA));
 
             Timber.d("### Fetching contact group: %s: %s for %s", parentProtoGroupUID, protoGroupUID, accountUuid);
             MetaContactGroupImpl metaGroup = metaGroupMap.get(parentProtoGroupUID);
@@ -212,16 +212,16 @@ public class MclStorageManager implements MetaContactListListener
                 MetaContactGroup.ACCOUNT_UUID + "=?", args, null, null, null);
 
         while (cursor.moveToNext()) {
-            String metaUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_UID));
-            protoGroupUID = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PROTO_GROUP_UID));
-            String contactAddress = cursor.getString(cursor.getColumnIndex(MetaContactGroup.CONTACT_JID));
-            String displayName = cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_DISPLAY_NAME));
+            String metaUID = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_UID));
+            protoGroupUID = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.PROTO_GROUP_UID));
+            String contactAddress = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.CONTACT_JID));
+            String displayName = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_DISPLAY_NAME));
             boolean isDisplayNameUserDefined = Boolean.parseBoolean(
-                    cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_USER_DEFINED)));
-            String persistentData = cursor.getString(cursor.getColumnIndex(MetaContactGroup.PERSISTENT_DATA));
+                    cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_USER_DEFINED)));
+            String persistentData = cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.PERSISTENT_DATA));
             JSONObject details = new JSONObject();
             try {
-                details = new JSONObject(cursor.getString(cursor.getColumnIndex(MetaContactGroup.MC_DETAILS)));
+                details = new JSONObject(cursor.getString(cursor.getColumnIndexOrThrow(MetaContactGroup.MC_DETAILS)));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

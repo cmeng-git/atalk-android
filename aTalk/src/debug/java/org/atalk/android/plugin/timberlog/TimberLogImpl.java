@@ -1,6 +1,8 @@
 package org.atalk.android.plugin.timberlog;
 import androidx.annotation.NonNull;
 
+import java.util.Locale;
+
 import timber.log.Timber;
 
 public class TimberLogImpl
@@ -12,7 +14,7 @@ public class TimberLogImpl
             @Override
             protected String createStackElementTag(@NonNull StackTraceElement element)
             {
-                return String.format("(%s:%s)#%s",
+                return String.format(Locale.US, "(%s:%s)#%s",
                         element.getFileName(),
                         element.getLineNumber(),
                         element.getMethodName());

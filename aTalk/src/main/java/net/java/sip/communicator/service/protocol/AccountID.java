@@ -1507,14 +1507,14 @@ public class AccountID
      */
     public static AccountID fromCursor(SQLiteDatabase db, Cursor cursor, ProtocolProviderFactory factory)
     {
-        String accountUuid = cursor.getString(cursor.getColumnIndex(ACCOUNT_UUID));
+        String accountUuid = cursor.getString(cursor.getColumnIndexOrThrow(ACCOUNT_UUID));
 
         Map<String, String> accountProperties = new Hashtable<>();
         accountProperties.put(ProtocolProviderFactory.ACCOUNT_UUID, accountUuid);
-        accountProperties.put(ProtocolProviderFactory.PROTOCOL, cursor.getString(cursor.getColumnIndex(PROTOCOL)));
-        accountProperties.put(ProtocolProviderFactory.USER_ID, cursor.getString(cursor.getColumnIndex(USER_ID)));
-        accountProperties.put(ProtocolProviderFactory.ACCOUNT_UID, cursor.getString(cursor.getColumnIndex(ACCOUNT_UID)));
-        accountProperties.put(ProtocolProviderFactory.KEYS, cursor.getString(cursor.getColumnIndex(KEYS)));
+        accountProperties.put(ProtocolProviderFactory.PROTOCOL, cursor.getString(cursor.getColumnIndexOrThrow(PROTOCOL)));
+        accountProperties.put(ProtocolProviderFactory.USER_ID, cursor.getString(cursor.getColumnIndexOrThrow(USER_ID)));
+        accountProperties.put(ProtocolProviderFactory.ACCOUNT_UID, cursor.getString(cursor.getColumnIndexOrThrow(ACCOUNT_UID)));
+        accountProperties.put(ProtocolProviderFactory.KEYS, cursor.getString(cursor.getColumnIndexOrThrow(KEYS)));
 
         // Retrieve the remaining account properties from table
         String[] args = {accountUuid};

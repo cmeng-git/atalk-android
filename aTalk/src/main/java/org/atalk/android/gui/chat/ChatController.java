@@ -189,7 +189,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     public void onShow()
     {
         if (!isAttached) {
-            this.isAttached = true;
+            isAttached = true;
 
             // Timber.d("ChatController attached to %s", chatFragment.hashCode());
             chatPanel = chatFragment.getChatPanel();
@@ -324,6 +324,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public void sendMessage(String message, int encType)
     {
+        // Sometimes it seems the chatPanel is not inSync with the chatSession i.e Conference instead of MetaContact
         String correctionUID = chatPanel.getCorrectionUID();
 
         int encryption = IMessage.ENCRYPTION_NONE;

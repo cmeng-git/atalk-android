@@ -42,8 +42,7 @@ public class CallContactActivity extends OSGiActivity
             if (intent.getDataString() != null)
                 phoneNumber = PhoneNumberUtils.getNumberFromIntent(intent, this);
             Fragment ccFragment = CallContactFragment.newInstance(phoneNumber);
-            getSupportFragmentManager().beginTransaction().add(android.R.id.content,
-                    ccFragment).commit();
+            getSupportFragmentManager().beginTransaction().add(android.R.id.content, ccFragment).commit();
         }
     }
 }

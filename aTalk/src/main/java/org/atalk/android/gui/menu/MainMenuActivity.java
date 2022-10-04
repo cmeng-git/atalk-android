@@ -47,7 +47,7 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.textspeech.TTSActivity;
-import org.atalk.android.plugin.geolocation.GeoLocation;
+import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.*;
@@ -137,10 +137,6 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-
-        if (BuildConfig.FLAVOR.equals("fdroid") && (menu.findItem(R.id.show_location) != null)) {
-            menu.removeItem(R.id.show_location);
-        }
 
         // Get the SearchView and set the search theme
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -283,8 +279,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                     menuVbItem.actionPerformed();
                 break;
             case R.id.show_location:
-                Intent intent = new Intent(this, GeoLocation.class);
-                intent.putExtra(GeoLocation.SEND_LOCATION, false);
+                Intent intent = new Intent(this, GeoLocationActivity.class);
+                intent.putExtra(GeoLocationActivity.SHARE_ALLOW, false);
                 startActivity(intent);
                 break;
             case R.id.telephony:

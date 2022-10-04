@@ -697,13 +697,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (result.size() >= count)
                 break;
 
-            sessionUuid = cursor.getString(cursor.getColumnIndex(ChatSession.SESSION_UUID));
+            sessionUuid = cursor.getString(cursor.getColumnIndexOrThrow(ChatSession.SESSION_UUID));
             // skip for null sessionUuid i.e. message from non-persistent contact e.g server announcement.
             if (StringUtils.isEmpty(sessionUuid))
                 continue;
 
-            accountUuid = cursor.getString(cursor.getColumnIndex(ChatSession.ACCOUNT_UUID));
-            entityJid = cursor.getString(cursor.getColumnIndex(ChatSession.ENTITY_JID));
+            accountUuid = cursor.getString(cursor.getColumnIndexOrThrow(ChatSession.ACCOUNT_UUID));
+            entityJid = cursor.getString(cursor.getColumnIndexOrThrow(ChatSession.ENTITY_JID));
 
             // find contact or chatRoom for given contactJid; skip if not found contacts,
             // disabled accounts and hidden one

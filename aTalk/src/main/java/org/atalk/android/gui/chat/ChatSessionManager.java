@@ -15,15 +15,30 @@ import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.conference.*;
+import org.atalk.android.gui.chat.conference.AdHocChatRoomProviderWrapper;
+import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
+import org.atalk.android.gui.chat.conference.AdHocConferenceChatSession;
+import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.AdHocChatRoomList;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -85,15 +100,12 @@ public class ChatSessionManager
      * Adds an active chat.
      *
      * @param chatPanel the <code>ChatPanel</code> corresponding to the active chat
-     * @return the active chat identifier
      */
-
-    private synchronized static String addActiveChat(ChatPanel chatPanel)
+    private synchronized static void addActiveChat(ChatPanel chatPanel)
     {
-        String key = chatPanel.getChatSession().getChatId();
-        activeChats.put(key, chatPanel);
+        String chatId = chatPanel.getChatSession().getChatId();
+        activeChats.put(chatId, chatPanel);
         fireChatCreated(chatPanel);
-        return key;
     }
 
     /**
@@ -177,11 +189,10 @@ public class ChatSessionManager
 
         if (chatId != null) {
             currentChatId = chatId;
-
-            ChatPanel currChat = getActiveChat(currentChatId);
+            ChatPanel currChat = getActiveChat(chatId);
             if (currChat != null) {
                 lastDescriptor = currChat.getChatSession().getDescriptor();
-                // Timber.d("Current chat descriptor: %s", lastDescriptor);
+                // Timber.d("Current chat descriptor: %s = %s", chatId, lastDescriptor);
             }
 
             // Notifies about new current chat session
@@ -294,9 +305,7 @@ public class ChatSessionManager
      */
     public static Intent getChatIntent(Object descriptor)
     {
-        /*
-         * A string identifier that uniquely represents this descriptor in the containing chat session database
-         */
+         // A string identifier that uniquely represents this descriptor in the containing chat session database
         String chatId;
         int chatMode;
 
@@ -309,9 +318,12 @@ public class ChatSessionManager
             chatId = ((ChatRoomWrapper) descriptor).getChatRoomID();
             chatMode = MUC_CC;
         }
-        else {
+        else if (descriptor instanceof AdHocChatRoomWrapper) {
             chatId = ((AdHocChatRoomWrapper) descriptor).getAdHocChatRoomID();
             chatMode = MUC_ADHOC;
+        }
+        else {
+            return null;
         }
 
         Intent chatIntent = new Intent(aTalkApp.getGlobalContext(), ChatActivity.class);
@@ -695,21 +707,20 @@ public class ChatSessionManager
      * Creates a <code>ChatPanel</code> for the given contact and saves it in the list of created <code>ChatPanel</code>s.
      *
      * @param metaContact the <code>MetaContact</code> to create a <code>ChatPanel</code> for
-     *
-     * // @param protocolContact
-     * the <code>Contact</code> (respectively its <code>ChatTransport</code>) to be selected in the newly created <code>ChatPanel</code>;
-     * <code>null</code> to select the default <code>Contact</code> of <code>metaContact</code> if it is
-     * online or one of its <code>Contact</code>s which supports offline messaging
-     * // @param contactResource the <code>ContactResource</code>, to be selected in the newly created <code>ChatPanel</code>
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(MetaContact metaContact)
     {
+        /*
+         * The Contact, respectively its ChatTransport to be selected in the newly created ChatPanel; select the
+         * default Contact of  metaContact if it is online or one of its Contacts which supports offline messaging
+         */
         Contact protocolContact = getDefaultContact(metaContact);
         if (protocolContact == null)
             return null;
 
         ChatPanel chatPanel = new ChatPanel(metaContact);
+        // The ContactResource to be selected in the newly created ChatPanel
         ContactResource contactResource = ContactResource.BASE_RESOURCE;
         Collection<ContactResource> resources = metaContact.getDefaultContact().getResources();
         // cmeng: resources == null if user account not registered with server
@@ -759,7 +770,6 @@ public class ChatSessionManager
         chatPanel.setChatSession(chatSession);
 
         addActiveChat(chatPanel);
-        // chatSession.loadHistory(escapedMessageID);
         return chatPanel;
     }
 
@@ -791,7 +801,6 @@ public class ChatSessionManager
         chatPanel.setChatSession(chatSession);
 
         addActiveChat(chatPanel);
-        // chatSession.loadHistory(escapedMessageID);
         return chatPanel;
     }
 
@@ -876,7 +885,7 @@ public class ChatSessionManager
         /**
          * The source chat room.
          */
-        private ChatRoomWrapper chatRoomWrapper;
+        private final ChatRoomWrapper chatRoomWrapper;
 
         /**
          * Constructs.
@@ -906,7 +915,7 @@ public class ChatSessionManager
         /**
          * The source chat room.
          */
-        private AdHocChatRoomWrapper chatRoomWrapper;
+        private final AdHocChatRoomWrapper chatRoomWrapper;
 
         /**
          * Constructs.
@@ -936,8 +945,8 @@ public class ChatSessionManager
         /**
          * The source chat room.
          */
-        private ChatRoom chatRoom;
-        private String escapedMessageID;
+        private final ChatRoom chatRoom;
+        private final String escapedMessageID;
 
         /**
          * Constructs.
@@ -968,8 +977,8 @@ public class ChatSessionManager
         /**
          * The source chat room.
          */
-        private AdHocChatRoom adHocChatRoom;
-        private String escapedMessageID;
+        private final AdHocChatRoom adHocChatRoom;
+        private final String escapedMessageID;
 
         /**
          * Constructs.

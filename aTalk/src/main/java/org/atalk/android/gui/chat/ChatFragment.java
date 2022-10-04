@@ -104,6 +104,7 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.HtmlImageGetter;
 import org.atalk.android.gui.util.XhtmlImageParser;
 import org.atalk.android.gui.util.event.EventListener;
+import org.atalk.android.plugin.geolocation.SvpApiImpl;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
@@ -1049,12 +1050,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                 // Create a new message view holder only if message is non-consecutive i.e non-merged message
                 if ((lastMsg == null) || (!lastMsg.isConsecutiveMessage(newMessage))) {
-                    messages.add(new MessageDisplay(newMessage));
+                    MessageDisplay msg = new MessageDisplay(newMessage);
+                    messages.add(msg);
                     lastMsgIdx++;
 
-                    // Start service for Split Street View Panorama and Map support.
-                    if (mSVP_Started) {
-                        mSVP = svpApi.svpHandler(mSVP, getMessageDisplay(lastMsgIdx));
+                    // Update street view map location if the view is focus.
+                    if (mSVP_Started && msg.hasLatLng) {
+                        mSVP = svpApi.svpHandler(mSVP, msg.mLocation);
                     }
                 }
                 else {
@@ -1767,7 +1769,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         /**
          * Class used to cache processed message contents. Prevents from re-processing on each View display.
          */
-        class MessageDisplay implements OnClickListener, View.OnLongClickListener
+        private class MessageDisplay implements OnClickListener, View.OnLongClickListener
         {
             /**
              * Row identifier.
@@ -1824,10 +1826,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             protected boolean hasLatLng = false;
 
             /**
-             * Lat & Lng info in the incoming message
+             * double[] values containing Latitude, Longitude and Altitude extract from ChatMessage
              */
-            protected double latitude;
-            protected double longitude;
+            protected double[] mLocation;
 
             /**
              * Creates a new instance of <code>MessageDisplay</code> that will be used for displaying
@@ -1892,18 +1893,22 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             else
                                 sLng = sLng.replaceAll("[^0-9.]+", "");
 
+                            String sAlt = "0.0";
+                            if (location.length == 3) {
+                                sAlt = location[2].replaceAll("[^0-9.]+", "");
+                            }
+
                             hasLatLng = true;
-                            latitude = Double.parseDouble(sLat);
-                            longitude = Double.parseDouble(sLng);
+                            mLocation = new double[]{Double.parseDouble(sLat), Double.parseDouble(sLng), Double.parseDouble(sAlt)};
                         } catch (NumberFormatException ex) {
-                            Timber.w("GeoLocation Number Format Exception %s: ", ex.getMessage());
+                            Timber.w("GeoLocationActivity Number Format Exception %s: ", ex.getMessage());
                         }
                     }
                 }
             }
 
             /**
-             * Perform google street and map view fetch when user clicks the show map button
+             * Show street map view when user clicks the show map button
              *
              * @param view view
              */
@@ -1911,7 +1916,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             public void onClick(View view)
             {
                 mSVP_Started = true;
-                svpApi.onSVPClick(mChatActivity, latitude, longitude);
+                svpApi.onSVPClick(mChatActivity, mLocation);
             }
 
             /**
@@ -1922,17 +1927,17 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             @Override
             public boolean onLongClick(View v)
             {
-                ArrayList<double[]> mLatLng = new ArrayList<>();
+                ArrayList<double[]> location = new ArrayList<>();
                 int smt = getMessageType();
                 List<MessageDisplay> displayMessages = getMessageDisplays();
                 for (MessageDisplay dm : displayMessages) {
                     if (dm.hasLatLng && (smt == dm.getMessageType())) {
-                        mLatLng.add(new double[]{dm.latitude, dm.longitude});
+                        location.add(dm.mLocation);
                     }
                 }
-                if (!mLatLng.isEmpty()) {
+                if (!location.isEmpty()) {
                     mSVP_Started = true;
-                    svpApi.onSVPLongClick(mChatActivity, mLatLng);
+                    svpApi.onSVPLongClick(mChatActivity, location);
                 }
                 return true;
             }
@@ -2521,7 +2526,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
      * // @param FileSendConversation send file component to use for file transfer & visualization
      * // @param msgId he view position on chatFragment
      */
-
     public class SendFile extends AsyncTask<Void, Void, Exception>
     {
         private final FileSendConversation sendFTConversion;

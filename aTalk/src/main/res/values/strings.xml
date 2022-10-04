@@ -281,14 +281,17 @@
     <string name="service_gui_GEO_LATITUDE">Latitude:</string>
     <string name="service_gui_GEO_LOCATION">Location:</string>
     <string name="service_gui_GEO_LONGITUDE">Longitude:</string>
+    <string name="service_gui_GEO_ALTITUDE">Altitude:</string>
     <string name="service_gui_GEO_SEND">Send GPS-Location</string>
     <string name="service_gui_GEO_SHOW">StreetViews &amp; Map</string>
-    <string name="service_gui_GPS_TRACK">Continuous StreetViews &amp; Map update</string>
-    <string name="apply_new_interval_setting">Click \"Send Cont. Location updates\" Button to apply the new interval setting</string>
-    <string name="send_cont_location_updates">Cont. Location updates (%1$dm) @%2$dsec</string>
-    <string name="send_single_location_fix">Single Location fix update</string>
+    <string name="service_gui_GPS_SHARE">Share geo-locations</string>
+    <string name="apply_new_location_setting">Click \"Follow me\" Button to apply the new setting</string>
+    <string name="btn_center_map_description">Center on my location</string>
+    <string name="btn_follow_me_description">Follow me</string>
     <string name="show_google_map">StreetView &amp; Map</string>
-    <string name="stop_location_updates">Stop sending Location updates</string>
+    <string name="single_location_fix">Single location update</string>
+    <string name="start_follow_me">Follow me (%1$dm) @%2$dS</string>
+    <string name="stop_follow_me">Stop follow-me (%1$dm) @%2$dS</string>
 
     <!-- Google Map -->
     <string name="gmap_name">GoogleMap</string>

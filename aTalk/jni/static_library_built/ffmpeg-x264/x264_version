@@ -1,0 +1,4 @@
+#define X264_REV 3095
+#define X264_REV_DIFF 0
+#define X264_VERSION " r3095 baee400"
+#define X264_POINTVER "0.164.3095 baee400"

@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.atalk.android.plugin.geolocation;
-
-import static org.atalk.android.R.id.map;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,7 +42,6 @@ import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.service.osgi.OSGiActivity;
 
 import java.util.ArrayList;
 
@@ -54,7 +50,7 @@ import timber.log.Timber;
 /**
  * This shows how to create a simple activity with streetView and a map
  */
-public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
+public class SplitStreetViewPanoramaAndMapActivity extends AppCompatActivity
         implements OnMarkerDragListener, OnStreetViewPanoramaChangeListener, SensorEventListener
 {
     public static final String MARKER_POSITION_KEY = "MarkerPosition";
@@ -97,18 +93,16 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
         }
 
         SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
-                (SupportStreetViewPanoramaFragment) getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
+                (SupportStreetViewPanoramaFragment) getSupportFragmentManager().findFragmentById(R.id.street_view);
         streetViewPanoramaFragment.getStreetViewPanoramaAsync(
                 panorama -> {
                     mStreetViewPanorama = panorama;
-                    mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(
-                            SplitStreetViewPanoramaAndMapActivity.this);
-                    // Only need to set the position once as the streetView fragment will
-                    // maintain its state.
+                    mStreetViewPanorama.setOnStreetViewPanoramaChangeListener(this);
+                    // Only need to set the position once as the streetView fragment will maintain its state.
                     mStreetViewPanorama.setPosition(markerPosition);
                 });
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_view);
         mapFragment.getMapAsync(map -> {
             mMap = map;
             map.setOnMarkerDragListener(SplitStreetViewPanoramaAndMapActivity.this);
@@ -158,9 +152,8 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
         }
     }
 
-
     @Override
-    public void onStreetViewPanoramaChange(@NonNull StreetViewPanoramaLocation location)
+    public void onStreetViewPanoramaChange(StreetViewPanoramaLocation location)
     {
         if (location != null) {
             mMarker.setPosition(location.position);
@@ -282,20 +275,16 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
         }
     }
 
-    public void onLocationChanged(Location location)
-    {
-        onLocationChanged(new LatLng(location.getLatitude(), location.getLongitude()));
-    }
-
     /**
      * Move the marker to the location mLatLng for both the street and map view
      *
-     * @param mLatLng the new LatTng location to move to
+     * @param latLng the new LatTng location to move to
      */
-    public void onLocationChanged(LatLng mLatLng)
+    public void onLocationChanged(LatLng latLng)
     {
+        Timber.d("Update map view: %s", latLng);
         if (mMap != null) {
-            LatLng markerPosition = new LatLng(mLatLng.latitude, mLatLng.longitude);
+            LatLng markerPosition = new LatLng(latLng.latitude, latLng.longitude);
             mMarker.setPosition(markerPosition);
             mStreetViewPanorama.setPosition(markerPosition);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
@@ -303,7 +292,7 @@ public class SplitStreetViewPanoramaAndMapActivity extends OSGiActivity
     }
 
     /**
-     * Animate the location path given in an array in 2 second interval
+     * Animate the location path given in an array at 2 second interval
      *
      * @param mList the ArrayList<LatLng>
      */
