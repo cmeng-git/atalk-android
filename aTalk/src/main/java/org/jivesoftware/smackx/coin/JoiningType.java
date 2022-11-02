@@ -33,7 +33,7 @@ public enum JoiningType
     private final String type;
 
     /**
-     * Creates a <tt>JoiningType</tt> instance with the specified name.
+     * Creates a <code>JoiningType</code> instance with the specified name.
      *
      * @param type type name.
      */
@@ -54,11 +54,11 @@ public enum JoiningType
     }
 
     /**
-     * Returns a <tt>JoiningType</tt>.
+     * Returns a <code>JoiningType</code>.
      *
-     * @param typeStr the <tt>String</tt> that we'd like to parse.
+     * @param typeStr the <code>String</code> that we'd like to parse.
      * @return an JoiningType.
-     * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
+     * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
      */
     public static JoiningType fromString(String typeStr)
             throws IllegalArgumentException

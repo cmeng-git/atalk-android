@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents a CoreVideo <tt>CVImageBufferRef</tt>.
+ * Represents a CoreVideo <code>CVImageBufferRef</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -17,16 +17,16 @@ public class CVImageBuffer
 	}
 
 	/**
-	 * The CoreVideo <tt>CVImageBufferRef</tt> represented by this instance.
+	 * The CoreVideo <code>CVImageBufferRef</code> represented by this instance.
 	 */
 	private long ptr;
 
 	/**
-	 * Initializes a new <tt>CVImageBuffer</tt> instance which is to represent a specific CoreVideo
-	 * <tt>CVImageBufferRef</tt>.
+	 * Initializes a new <code>CVImageBuffer</code> instance which is to represent a specific CoreVideo
+	 * <code>CVImageBufferRef</code>.
 	 *
 	 * @param ptr
-	 *        the CoreVideo <tt>CVImageBufferRef</tt> to be represented by the new instance
+	 *        the CoreVideo <code>CVImageBufferRef</code> to be represented by the new instance
 	 */
 	public CVImageBuffer(long ptr)
 	{
@@ -34,9 +34,9 @@ public class CVImageBuffer
 	}
 
 	/**
-	 * Gets the CoreVideo <tt>CVImageBufferRef</tt> represented by this instance.
+	 * Gets the CoreVideo <code>CVImageBufferRef</code> represented by this instance.
 	 *
-	 * @return the CoreVideo <tt>CVImageBufferRef</tt> represented by this instance
+	 * @return the CoreVideo <code>CVImageBufferRef</code> represented by this instance
 	 */
 	protected long getPtr()
 	{
@@ -44,10 +44,10 @@ public class CVImageBuffer
 	}
 
 	/**
-	 * Sets the CoreVideo <tt>CVImageBufferRef</tt> represented by this instance.
+	 * Sets the CoreVideo <code>CVImageBufferRef</code> represented by this instance.
 	 *
 	 * @param ptr
-	 *        the CoreVideo <tt>CVImageBufferRef</tt> to be represented by this instance
+	 *        the CoreVideo <code>CVImageBufferRef</code> to be represented by this instance
 	 */
 	protected void setPtr(long ptr)
 	{

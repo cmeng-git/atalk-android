@@ -41,25 +41,25 @@ import timber.log.Timber;
 public class DeviceConfiguration extends PropertyChangeNotifier implements PropertyChangeListener
 {
     /**
-     * The name of the <tt>DeviceConfiguration</tt> property which represents the device used by
-     * <tt>DeviceConfiguration</tt> for audio capture.
+     * The name of the <code>DeviceConfiguration</code> property which represents the device used by
+     * <code>DeviceConfiguration</code> for audio capture.
      */
     public static final String AUDIO_CAPTURE_DEVICE = CaptureDevices.PROP_DEVICE;
 
     /**
-     * The name of the <tt>DeviceConfiguration</tt> property which represents the device used by
-     * <tt>DeviceConfiguration</tt> for audio notify.
+     * The name of the <code>DeviceConfiguration</code> property which represents the device used by
+     * <code>DeviceConfiguration</code> for audio notify.
      */
     public static final String AUDIO_NOTIFY_DEVICE = NotifyDevices.PROP_DEVICE;
 
     /**
-     * The name of the <tt>DeviceConfiguration</tt> property which represents the device used by
-     * <tt>DeviceConfiguration</tt> for audio playback.
+     * The name of the <code>DeviceConfiguration</code> property which represents the device used by
+     * <code>DeviceConfiguration</code> for audio playback.
      */
     public static final String AUDIO_PLAYBACK_DEVICE = PlaybackDevices.PROP_DEVICE;
 
     /**
-     * The list of class names of custom <tt>Renderer</tt> implementations to be registered with JMF.
+     * The list of class names of custom <code>Renderer</code> implementations to be registered with JMF.
      */
     private static final String[] CUSTOM_RENDERERS = new String[]{
             OSUtils.IS_ANDROID ? ".audio.AudioTrackRenderer" : null,
@@ -95,7 +95,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     public static final int DEFAULT_VIDEO_BITRATE = 128;
 
     /**
-     * The default frame rate, <tt>-1</tt> unlimited.
+     * The default frame rate, <code>-1</code> unlimited.
      */
     public static final int DEFAULT_VIDEO_FRAMERATE = -1;
 
@@ -115,7 +115,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     public static final int DEFAULT_VIDEO_RTP_PACING_THRESHOLD = 256;
 
     /**
-     * The name of the <tt>long</tt> property which determines the filter length in milliseconds to
+     * The name of the <code>long</code> property which determines the filter length in milliseconds to
      * be used by the echo cancellation implementation. The recommended filter length is
      * approximately the third of the room reverberation time. For example, in a small room,
      * reverberation time is in the order of 300 ms, so a filter length of 100 ms is a good choice
@@ -134,8 +134,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private static final String PROP_VIDEO_BITRATE = "neomedia.video.bitrate";
 
     /**
-     * The <tt>ConfigurationService</tt> property which stores the device used by
-     * <tt>DeviceConfiguration</tt> for video capture.
+     * The <code>ConfigurationService</code> property which stores the device used by
+     * <code>DeviceConfiguration</code> for video capture.
      */
     private static final String PROP_VIDEO_DEVICE = "neomedia.videoDevice";
 
@@ -179,13 +179,13 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     };
 
     /**
-     * The name of the <tt>DeviceConfiguration</tt> property which represents the device used by
-     * <tt>DeviceConfiguration</tt> for video capture.
+     * The name of the <code>DeviceConfiguration</code> property which represents the device used by
+     * <code>DeviceConfiguration</code> for video capture.
      */
     public static final String VIDEO_CAPTURE_DEVICE = "VIDEO_CAPTURE_DEVICE";
 
     /**
-     * Fixes the list of <tt>Renderer</tt>s registered with FMJ in order to resolve operating system-specific issues.
+     * Fixes the list of <code>Renderer</code>s registered with FMJ in order to resolve operating system-specific issues.
      */
     private static void fixRenderers()
     {
@@ -237,7 +237,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private int frameRate = DEFAULT_VIDEO_FRAMERATE;
 
     /**
-     * The value of the <tt>ConfigurationService</tt> property
+     * The value of the <code>ConfigurationService</code> property
      * {@link MediaServiceImpl#DISABLE_SET_AUDIO_SYSTEM_PNAME} at the time of the initialization of this instance.
      */
     private final boolean setAudioSystemIsDisabled;
@@ -263,7 +263,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     private Dimension videoSize;
 
     /**
-     * Initializes a new <tt>DeviceConfiguration</tt> instance.
+     * Initializes a new <code>DeviceConfiguration</code> instance.
      */
     public DeviceConfiguration()
     {
@@ -300,9 +300,9 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Adds this instance as a <tt>PropertyChangeListener</tt> to all <tt>DeviceSystem</tt>s which
+     * Adds this instance as a <code>PropertyChangeListener</code> to all <code>DeviceSystem</code>s which
      * support reinitialization/reloading in order to be able, for example, to switch from a
-     * default/automatic selection of &quot;None&quot; to an <tt>DeviceSystem</tt> which has started
+     * default/automatic selection of &quot;None&quot; to an <code>DeviceSystem</code> which has started
      * providing at least one device at runtime.
      */
     private void addDeviceSystemPropertyChangeListener()
@@ -498,11 +498,11 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
 
     /**
      * Gets the list of audio capture devices which are available through this
-     * <tt>DeviceConfiguration</tt>, amongst which is {@link #getAudioCaptureDevice()} and represent
+     * <code>DeviceConfiguration</code>, amongst which is {@link #getAudioCaptureDevice()} and represent
      * acceptable values for {@link //#setAudioCaptureDevice(CaptureDeviceInfo, boolean)}
      *
-     * @return an array of <tt>CaptureDeviceInfo</tt> describing the audio capture devices available
-     * through this <tt>DeviceConfiguration</tt>
+     * @return an array of <code>CaptureDeviceInfo</code> describing the audio capture devices available
+     * through this <code>DeviceConfiguration</code>
      */
     public List<CaptureDeviceInfo2> getAvailableAudioCaptureDevices()
     {
@@ -510,10 +510,10 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Returns a list of available <tt>AudioSystem</tt>s. By default, an <tt>AudioSystem</tt> is
+     * Returns a list of available <code>AudioSystem</code>s. By default, an <code>AudioSystem</code> is
      * considered available if it reports at least one device.
      *
-     * @return an array of available <tt>AudioSystem</tt>s
+     * @return an array of available <code>AudioSystem</code>s
      */
     public AudioSystem[] getAvailableAudioSystems()
     {
@@ -557,12 +557,12 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
 
     /**
      * Gets the list of video capture devices which are available through this
-     * <tt>DeviceConfiguration</tt>, amongst which is {@link #getVideoCaptureDevice(MediaUseCase)}
+     * <code>DeviceConfiguration</code>, amongst which is {@link #getVideoCaptureDevice(MediaUseCase)}
      * and represent acceptable values for {@link #setVideoCaptureDevice(CaptureDeviceInfo, boolean)}
      *
-     * @param useCase extract video capture devices that correspond to this <tt>MediaUseCase</tt>
-     * @return an array of <tt>CaptureDeviceInfo</tt> describing the video capture devices available
-     * through this <tt>DeviceConfiguration</tt>
+     * @param useCase extract video capture devices that correspond to this <code>MediaUseCase</code>
+     * @return an array of <code>CaptureDeviceInfo</code> describing the video capture devices available
+     * through this <code>DeviceConfiguration</code>
      */
     public List<CaptureDeviceInfo> getAvailableVideoCaptureDevices(MediaUseCase useCase)
     {
@@ -613,9 +613,9 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Gets the frame rate set on this <tt>DeviceConfiguration</tt>.
+     * Gets the frame rate set on this <code>DeviceConfiguration</code>.
      *
-     * @return the frame rate set on this <tt>DeviceConfiguration</tt>. The default value is
+     * @return the frame rate set on this <code>DeviceConfiguration</code>. The default value is
      * {@link #DEFAULT_VIDEO_FRAMERATE}
      */
     public int getFrameRate()
@@ -656,7 +656,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Returns a device that we could use for video capture.
      *
-     * @param useCase <tt>MediaUseCase</tt> that will determined device we will use
+     * @param useCase <code>MediaUseCase</code> that will determined device we will use
      * @return the CaptureDeviceInfo of a device that we could use for video capture.
      */
     public CaptureDeviceInfo getVideoCaptureDevice(MediaUseCase useCase)
@@ -702,9 +702,9 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Gets the video size set on this <tt>DeviceConfiguration</tt>.
+     * Gets the video size set on this <code>DeviceConfiguration</code>.
      *
-     * @return the video size set on this <tt>DeviceConfiguration</tt>
+     * @return the video size set on this <code>DeviceConfiguration</code>
      */
     public Dimension getVideoSize()
     {
@@ -723,11 +723,11 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Notifies this <tt>PropertyChangeListener</tt> about <tt>PropertyChangeEvent</tt>s fired by,
-     * for example, the <tt>ConfigurationService</tt> and the <tt>DeviceSystem</tt>s which support
+     * Notifies this <code>PropertyChangeListener</code> about <code>PropertyChangeEvent</code>s fired by,
+     * for example, the <code>ConfigurationService</code> and the <code>DeviceSystem</code>s which support
      * reinitialization/reloading.
      *
-     * @param ev the <tt>PropertyChangeEvent</tt> to notify this <tt>PropertyChangeListener</tt> about
+     * @param ev the <code>PropertyChangeEvent</code> to notify this <code>PropertyChangeListener</code> about
      * and which describes the source and other specifics of the notification
      */
     public void propertyChange(PropertyChangeEvent ev)
@@ -790,7 +790,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Registers the custom <tt>Renderer</tt> implementations defined by class name in
+     * Registers the custom <code>Renderer</code> implementations defined by class name in
      * {@link #CUSTOM_RENDERERS} with JMF.
      */
     private void registerCustomRenderers()
@@ -906,7 +906,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Sets and stores the frame rate.
      *
-     * @param frameRate the frame rate to be set on this <tt>DeviceConfiguration</tt>
+     * @param frameRate the frame rate to be set on this <code>DeviceConfiguration</code>
      */
     public void setFrameRate(int frameRate)
     {
@@ -940,10 +940,10 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     }
 
     /**
-     * Sets the device which is to be used by this <tt>DeviceConfiguration</tt> for video capture.
+     * Sets the device which is to be used by this <code>DeviceConfiguration</code> for video capture.
      *
-     * @param device a <tt>CaptureDeviceInfo</tt> describing device to be used by this
-     * <tt>DeviceConfiguration</tt> for video capture.
+     * @param device a <code>CaptureDeviceInfo</code> describing device to be used by this
+     * <code>DeviceConfiguration</code> for video capture.
      * @param save whether we will save this option or not.
      */
     public void setVideoCaptureDevice(CaptureDeviceInfo device, boolean save)
@@ -988,7 +988,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     /**
      * Sets and stores the video size selected by user
      *
-     * @param videoSize the video size to be set on this <tt>DeviceConfiguration</tt>
+     * @param videoSize the video size to be set on this <code>DeviceConfiguration</code>
      */
     public void setVideoSize(Dimension videoSize)
     {

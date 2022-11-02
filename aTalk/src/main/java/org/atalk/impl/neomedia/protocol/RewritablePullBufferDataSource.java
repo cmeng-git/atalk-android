@@ -15,11 +15,11 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>PullBufferDataSource</tt> wrapper which provides mute support for the wrapped
+ * Implements a <code>PullBufferDataSource</code> wrapper which provides mute support for the wrapped
  * instance.
  * <p>
- * Because the class wouldn't work for our use case without it, <tt>CaptureDevice</tt> is
- * implemented and is being delegated to the wrapped <tt>DataSource</tt> (if it supports the
+ * Because the class wouldn't work for our use case without it, <code>CaptureDevice</code> is
+ * implemented and is being delegated to the wrapped <code>DataSource</code> (if it supports the
  * interface in question).
  * </p>
  *
@@ -31,7 +31,7 @@ public class RewritablePullBufferDataSource
 		implements MuteDataSource, InbandDTMFDataSource
 {
 	/**
-	 * The indicator which determines whether this <tt>DataSource</tt> is mute.
+	 * The indicator which determines whether this <code>DataSource</code> is mute.
 	 */
 	private boolean mute;
 
@@ -41,11 +41,11 @@ public class RewritablePullBufferDataSource
 	private final LinkedList<DTMFInbandTone> tones = new LinkedList<>();
 
 	/**
-	 * Initializes a new <tt>RewritablePullBufferDataSource</tt> instance which is to provide mute
-	 * support for a specific <tt>PullBufferDataSource</tt>.
+	 * Initializes a new <code>RewritablePullBufferDataSource</code> instance which is to provide mute
+	 * support for a specific <code>PullBufferDataSource</code>.
 	 *
 	 * @param dataSource
-	 * 		the <tt>PullBufferDataSource</tt> the new instance is to provide mute support for
+	 * 		the <code>PullBufferDataSource</code> the new instance is to provide mute support for
 	 */
 	public RewritablePullBufferDataSource(PullBufferDataSource dataSource)
 	{
@@ -53,10 +53,10 @@ public class RewritablePullBufferDataSource
 	}
 
 	/**
-	 * Sets the mute state of this <tt>DataSource</tt>.
+	 * Sets the mute state of this <code>DataSource</code>.
 	 *
 	 * @param mute
-	 * 		<tt>true</tt> to mute this <tt>DataSource</tt>; otherwise, <tt>false</tt>
+	 * 		<code>true</code> to mute this <code>DataSource</code>; otherwise, <code>false</code>
 	 */
 	public void setMute(boolean mute)
 	{
@@ -64,9 +64,9 @@ public class RewritablePullBufferDataSource
 	}
 
 	/**
-	 * Determines whether this <tt>DataSource</tt> is mute.
+	 * Determines whether this <code>DataSource</code> is mute.
 	 *
-	 * @return <tt>true</tt> if this <tt>DataSource</tt> is mute; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this <code>DataSource</code> is mute; otherwise, <code>false</code>
 	 */
 	public boolean isMute()
 	{
@@ -85,10 +85,10 @@ public class RewritablePullBufferDataSource
 	}
 
 	/**
-	 * Determines whether this <tt>DataSource</tt> sends a DTMF tone.
+	 * Determines whether this <code>DataSource</code> sends a DTMF tone.
 	 *
-	 * @return <tt>true</tt> if this <tt>DataSource</tt> is sending a DTMF tone; otherwise,
-	 * <tt>false</tt>.
+	 * @return <code>true</code> if this <code>DataSource</code> is sending a DTMF tone; otherwise,
+	 * <code>false</code>.
 	 */
 	public boolean isSendingDTMF()
 	{
@@ -109,7 +109,7 @@ public class RewritablePullBufferDataSource
 	 * {@inheritDoc}
 	 * <p>
 	 * Overrides the super implementation to include the type hierarchy of the very wrapped
-	 * <tt>dataSource</tt> instance into the search for the specified <tt>controlType</tt>.
+	 * <code>dataSource</code> instance into the search for the specified <code>controlType</code>.
 	 */
 	@Override
 	public Object getControl(String controlType)
@@ -129,10 +129,10 @@ public class RewritablePullBufferDataSource
 
 	/**
 	 * Implements {@link PullBufferDataSource#getStreams()}. Wraps the streams of the wrapped
-	 * <tt>PullBufferDataSource</tt> into <tt>MutePullBufferStream</tt> instances in order to
+	 * <code>PullBufferDataSource</code> into <code>MutePullBufferStream</code> instances in order to
 	 * provide mute support to them.
 	 *
-	 * @return an array of <tt>PullBufferStream</tt> instances with enabled mute support
+	 * @return an array of <code>PullBufferStream</code> instances with enabled mute support
 	 */
 	@Override
 	public PullBufferStream[] getStreams()
@@ -146,7 +146,7 @@ public class RewritablePullBufferDataSource
 	}
 
 	/**
-	 * Implements a <tt>PullBufferStream</tt> wrapper which provides mute support for the wrapped
+	 * Implements a <code>PullBufferStream</code> wrapper which provides mute support for the wrapped
 	 * instance.
 	 */
 	private class MutePullBufferStream extends SourceStreamDelegate<PullBufferStream>
@@ -154,11 +154,11 @@ public class RewritablePullBufferDataSource
 	{
 
 		/**
-		 * Initializes a new <tt>MutePullBufferStream</tt> instance which is to provide mute
-		 * support for a specific <tt>PullBufferStream</tt>.
+		 * Initializes a new <code>MutePullBufferStream</code> instance which is to provide mute
+		 * support for a specific <code>PullBufferStream</code>.
 		 *
 		 * @param stream
-		 * 		the <tt>PullBufferStream</tt> the new instance is to provide mute support for
+		 * 		the <code>PullBufferStream</code> the new instance is to provide mute support for
 		 */
 		private MutePullBufferStream(PullBufferStream stream)
 		{
@@ -167,9 +167,9 @@ public class RewritablePullBufferDataSource
 
 		/**
 		 * Implements {@link PullBufferStream#getFormat()}. Delegates to the wrapped
-		 * <tt>PullBufferStream</tt>.
+		 * <code>PullBufferStream</code>.
 		 *
-		 * @return the <tt>Format</tt> of the wrapped <tt>PullBufferStream</tt>
+		 * @return the <code>Format</code> of the wrapped <code>PullBufferStream</code>
 		 */
 		public Format getFormat()
 		{
@@ -199,7 +199,7 @@ public class RewritablePullBufferDataSource
 		/**
 		 * Implements PullBufferStream#willReadBlock(). Delegates to the wrapped PullSourceStream.
 		 *
-		 * @return <tt>true</tt> if read would block; otherwise returns <tt>false</tt>.
+		 * @return <code>true</code> if read would block; otherwise returns <code>false</code>.
 		 */
 		public boolean willReadBlock()
 		{

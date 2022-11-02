@@ -29,16 +29,16 @@ public enum RTPLevelRelayType
     TRANSLATOR;
 
     /**
-     * Parses a <tt>String</tt> into an <tt>RTPLevelRelayType</tt> enum value. The specified
-     * <tt>String</tt> to parse must be in a format as produced by {@link #toString()}; otherwise,
+     * Parses a <code>String</code> into an <code>RTPLevelRelayType</code> enum value. The specified
+     * <code>String</code> to parse must be in a format as produced by {@link #toString()}; otherwise,
      * the method will throw an exception.
      *
-     * @param s the <tt>String</tt> to parse into an <tt>RTPLevelRelayType</tt> enum value
-     * @return an <tt>RTPLevelRelayType</tt> enum value on which <tt>toString()</tt> produces the
-     * specified <tt>s</tt>
-     * @throws IllegalArgumentException if none of the <tt>RTPLevelRelayType</tt> enum values produce the specified
-     * <tt>s</tt> when <tt>toString()</tt> is invoked on them
-     * @throws NullPointerException if <tt>s</tt> is <tt>null</tt>
+     * @param s the <code>String</code> to parse into an <code>RTPLevelRelayType</code> enum value
+     * @return an <code>RTPLevelRelayType</code> enum value on which <code>toString()</code> produces the
+     * specified <code>s</code>
+     * @throws IllegalArgumentException if none of the <code>RTPLevelRelayType</code> enum values produce the specified
+     * <code>s</code> when <code>toString()</code> is invoked on them
+     * @throws NullPointerException if <code>s</code> is <code>null</code>
      */
     public static RTPLevelRelayType parseRTPLevelRelayType(String s)
     {

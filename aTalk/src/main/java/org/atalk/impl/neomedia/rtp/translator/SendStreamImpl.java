@@ -15,9 +15,9 @@ import javax.media.rtp.rtcp.*;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 
 /**
- * Implements a <tt>SendStream</tt> which is an endpoint-specific view of an actual
- * <tt>SendStream</tt> of the <tt>RTPManager</tt> of an <tt>RTPTranslatorImpl</tt>. When the last
- * endpoint-specific view of an actual <tt>SendStream</tt> is closed, the actual <tt>SendStream</tt>
+ * Implements a <code>SendStream</code> which is an endpoint-specific view of an actual
+ * <code>SendStream</code> of the <code>RTPManager</code> of an <code>RTPTranslatorImpl</code>. When the last
+ * endpoint-specific view of an actual <code>SendStream</code> is closed, the actual <code>SendStream</code>
  * is closed.
  *
  * @author Lyubomir Marinov

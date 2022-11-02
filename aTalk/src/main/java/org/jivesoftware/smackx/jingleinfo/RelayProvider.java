@@ -30,9 +30,9 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtension>
      * element of the packet extension. As required by the smack API, at the end of the method
      * call, the parser will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>Server</tt> element.
+     * @param parser an XML parser positioned at the opening <code>Server</code> element.
      * @return a new {@link RelayExtension} instance.
-     * @throws ParseException, XmlPullParserException, IOException if an error occurs parsing the XML.
+     * @throws SmackParsingException, XmlPullParserException, IOException if an error occurs parsing the XML.
      */
 
     @Override
@@ -50,7 +50,7 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtension>
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(ServerExtension.ELEMENT)) {
-                    ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
+                    ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
                             ServerExtension.ELEMENT, ServerExtension.NAMESPACE);
                     ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
                     ext.addChildExtension(childExtension);
@@ -70,11 +70,11 @@ public class RelayProvider extends ExtensionElementProvider<RelayExtension>
 
     /**
      * Returns the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element that we encounter in
-     * <tt>parser</tt>.
+     * <code>parser</code>.
      *
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element we come across or
-     * <tt>null</tt> if we encounter a closing tag first.
+     * <code>null</code> if we encounter a closing tag first.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public static String parseText(XmlPullParser parser)

@@ -22,7 +22,7 @@ import javax.media.protocol.BufferTransferHandler;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>CaptureDevice</tt> which provides silence in the form of audio media.
+ * Implements a <code>CaptureDevice</code> which provides silence in the form of audio media.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
@@ -31,18 +31,18 @@ import timber.log.Timber;
 public class DataSource extends AbstractPushBufferCaptureDevice
 {
     /**
-     * The compile-time flag which determines whether <tt>AudioSilenceCaptureDevice</tt> and, more
-     * specifically, <tt>AudioSilenceStream</tt> are to be used by <tt>AudioMixer</tt> for the mere
-     * purposes of ticking the clock which makes <tt>AudioMixer</tt> read media from its inputs, mix
-     * it, and write it to its outputs. The preferred value is <tt>true</tt> because it causes the
-     * <tt>AudioMixer</tt> to not push media unless at least one <tt>Channel</tt> is receiving
+     * The compile-time flag which determines whether <code>AudioSilenceCaptureDevice</code> and, more
+     * specifically, <code>AudioSilenceStream</code> are to be used by <code>AudioMixer</code> for the mere
+     * purposes of ticking the clock which makes <code>AudioMixer</code> read media from its inputs, mix
+     * it, and write it to its outputs. The preferred value is <code>true</code> because it causes the
+     * <code>AudioMixer</code> to not push media unless at least one <code>Channel</code> is receiving
      * actual media.
      */
     private static final boolean CLOCK_ONLY = true;
 
     /**
      * The interval of time in milliseconds between two consecutive ticks of the clock used by
-     * <tt>AudioSilenceCaptureDevice</tt> and, more specifically, <tt>AudioSilenceStream</tt>.
+     * <code>AudioSilenceCaptureDevice</code> and, more specifically, <code>AudioSilenceStream</code>.
      */
     private static final long CLOCK_TICK_INTERVAL = 20;
 
@@ -58,7 +58,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     public static final String NO_TRANSFER_DATA = "noTransferData";
 
     /**
-     * The list of <tt>Format</tt>s supported by the <tt>AudioSilenceCaptureDevice</tt> instances.
+     * The list of <code>Format</code>s supported by the <code>AudioSilenceCaptureDevice</code> instances.
      */
     public static final Format[] SUPPORTED_FORMATS = new Format[]{
             new AudioFormat(
@@ -90,9 +90,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     /**
      * {@inheritDoc}
      *
-     * Overrides the super implementation in order to return the list of <tt>Format</tt>s hardcoded
-     * as supported in <tt>AudioSilenceCaptureDevice</tt> because the super looks them up by
-     * <tt>CaptureDeviceInfo</tt> and this instance does not have one.
+     * Overrides the super implementation in order to return the list of <code>Format</code>s hardcoded
+     * as supported in <code>AudioSilenceCaptureDevice</code> because the super looks them up by
+     * <code>CaptureDeviceInfo</code> and this instance does not have one.
      */
     @Override
     protected Format[] getSupportedFormats(int streamIndex)
@@ -101,7 +101,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Implements a <tt>PushBufferStream</tt> which provides silence in the form of audio media.
+     * Implements a <code>PushBufferStream</code> which provides silence in the form of audio media.
      */
     private static class AudioSilenceStream extends AbstractPushBufferStream<DataSource>
             implements Runnable
@@ -113,8 +113,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         private boolean started;
 
         /**
-         * The <tt>Thread</tt> which pushes available media data out of this instance to its
-         * consumer i.e. <tt>BufferTransferHandler</tt>.
+         * The <code>Thread</code> which pushes available media data out of this instance to its
+         * consumer i.e. <code>BufferTransferHandler</code>.
          */
         private Thread thread;
 
@@ -130,15 +130,15 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         private final boolean transferData;
 
         /**
-         * Initializes a new <tt>AudioSilenceStream</tt> which is to be exposed
-         * by a specific <tt>AudioSilenceCaptureDevice</tt> and which is to have
-         * its <tt>Format</tt>-related information abstracted by a specific <tt>FormatControl</tt>.
+         * Initializes a new <code>AudioSilenceStream</code> which is to be exposed
+         * by a specific <code>AudioSilenceCaptureDevice</code> and which is to have
+         * its <code>Format</code>-related information abstracted by a specific <code>FormatControl</code>.
          *
-         * @param dataSource the <tt>AudioSilenceCaptureDevice</tt> which is
+         * @param dataSource the <code>AudioSilenceCaptureDevice</code> which is
          * initializing the new instance and which is to expose it in its array
-         * of <tt>PushBufferStream</tt>s
-         * @param formatControl the <tt>FormatControl</tt> which is to abstract
-         * the <tt>Format</tt>-related information of the new instance
+         * of <code>PushBufferStream</code>s
+         * @param formatControl the <code>FormatControl</code> which is to abstract
+         * the <code>Format</code>-related information of the new instance
          * @param transferData {@code true} if the new instance is to invoke
          * {@code BufferTransferHandler.transferData(PushBufferStream)} and,
          * thus, tick the media clock that it represents; otherwise, {@code false}.
@@ -150,11 +150,11 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         }
 
         /**
-         * Reads available media data from this instance into a specific <tt>Buffer</tt>.
+         * Reads available media data from this instance into a specific <code>Buffer</code>.
          *
-         * @param buffer the <tt>Buffer</tt> to write the available media data into
+         * @param buffer the <code>Buffer</code> to write the available media data into
          * @throws IOException if an I/O error has prevented the reading of available media data from this
-         * instance into the specified <tt>buffer</tt>
+         * instance into the specified <code>buffer</code>
          */
         @Override
         public void read(Buffer buffer)
@@ -179,7 +179,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
         /**
          * Runs in {@link #thread} and pushes available media data out of this instance to its
-         * consumer i.e. <tt>BufferTransferHandler</tt>.
+         * consumer i.e. <code>BufferTransferHandler</code>.
          */
         @Override
         public void run()

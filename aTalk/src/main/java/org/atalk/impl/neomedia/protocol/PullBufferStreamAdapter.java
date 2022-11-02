@@ -12,8 +12,8 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.*;
 
 /**
- * Represents a <tt>PullBufferStream</tt> which reads its data from a specific
- * <tt>PullSourceStream</tt>.
+ * Represents a <code>PullBufferStream</code> which reads its data from a specific
+ * <code>PullSourceStream</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -22,13 +22,13 @@ public class PullBufferStreamAdapter extends BufferStreamAdapter<PullSourceStrea
 {
 
 	/**
-	 * Initializes a new <tt>PullBufferStreamAdapter</tt> instance which reads its data from a
-	 * specific <tt>PullSourceStream</tt> with a specific <tt>Format</tt>
+	 * Initializes a new <code>PullBufferStreamAdapter</code> instance which reads its data from a
+	 * specific <code>PullSourceStream</code> with a specific <code>Format</code>
 	 *
 	 * @param stream
-	 * 		the <tt>PullSourceStream</tt> the new instance is to read its data from
+	 * 		the <code>PullSourceStream</code> the new instance is to read its data from
 	 * @param format
-	 * 		the <tt>Format</tt> of the specified input <tt>stream</tt> and of the new instance
+	 * 		the <code>Format</code> of the specified input <code>stream</code> and of the new instance
 	 */
 	public PullBufferStreamAdapter(PullSourceStream stream, Format format)
 	{
@@ -36,11 +36,11 @@ public class PullBufferStreamAdapter extends BufferStreamAdapter<PullSourceStrea
 	}
 
 	/**
-	 * Gets the frame size measured in bytes defined by a specific <tt>Format</tt>.
+	 * Gets the frame size measured in bytes defined by a specific <code>Format</code>.
 	 *
 	 * @param format
-	 * 		the <tt>Format</tt> to determine the frame size in bytes of
-	 * @return the frame size measured in bytes defined by the specified <tt>Format</tt>
+	 * 		the <code>Format</code> to determine the frame size in bytes of
+	 * @return the frame size measured in bytes defined by the specified <code>Format</code>
 	 */
 	private static int getFrameSizeInBytes(Format format)
 	{
@@ -57,7 +57,7 @@ public class PullBufferStreamAdapter extends BufferStreamAdapter<PullSourceStrea
 	 * either allocating a new byte[] buffer or using the existing one in the specified Buffer.
 	 *
 	 * @param buffer
-	 * 		<tt>Buffer</tt> to read
+	 * 		<code>Buffer</code> to read
 	 * @throws IOException
 	 * 		if I/O errors occurred during read operation
 	 */
@@ -92,8 +92,8 @@ public class PullBufferStreamAdapter extends BufferStreamAdapter<PullSourceStrea
 	}
 
 	/**
-	 * Implements <tt>BufferStreamAdapter#doRead(Buffer, byte[], int, int)</tt>. Delegates to the
-	 * wrapped <tt>PullSourceStream</tt>.
+	 * Implements <code>BufferStreamAdapter#doRead(Buffer, byte[], int, int)</code>. Delegates to the
+	 * wrapped <code>PullSourceStream</code>.
 	 *
 	 * @param buffer
 	 * @param data

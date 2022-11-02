@@ -131,8 +131,7 @@ public class ColibriConferenceIQ extends IQ
      * has entered graceful shutdown mode and new conferences can no longer be created.
      *
      * @param request the IQ for which error response will be created.
-     * @return an IQ of 'error' type and 'service-unavailable' condition plus the body of request
-     * IQ.
+     * @return an IQ of 'error' type and 'service-unavailable' condition plus the body of request IQ.
      */
     public static IQ createGracefulShutdownErrorResponse(final IQ request)
     {

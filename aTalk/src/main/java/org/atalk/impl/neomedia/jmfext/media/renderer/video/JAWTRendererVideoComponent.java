@@ -10,36 +10,36 @@ import org.atalk.impl.neomedia.codec.video.SwScale;
 import org.atalk.util.OSUtils;
 
 /**
- * Implements an AWT <tt>Component</tt> in which <tt>JAWTRenderer</tt> paints.
+ * Implements an AWT <code>Component</code> in which <code>JAWTRenderer</code> paints.
  *
  * @author Lyubomir Marinov
  */
 public class JAWTRendererVideoComponent extends Canvas
 {
 	/**
-	 * The serial version UID of the <tt>JAWTRendererVideoComponent</tt> class defined to silence a
+	 * The serial version UID of the <code>JAWTRendererVideoComponent</code> class defined to silence a
 	 * serialization compile-time warning.
 	 */
 	private static final long serialVersionUID = 0L;
 
 	/**
-	 * The <tt>JAWTRenderer</tt> which paints in this <tt>JAWTRendererVideoComponent</tt>.
+	 * The <code>JAWTRenderer</code> which paints in this <code>JAWTRendererVideoComponent</code>.
 	 */
 	protected final JAWTRenderer renderer;
 
 	/**
-	 * The indicator which determines whether the native counterpart of this <tt>JAWTRenderer</tt>
-	 * wants <tt>paint</tt> calls on its AWT <tt>Component</tt> to be delivered. For example, after
+	 * The indicator which determines whether the native counterpart of this <code>JAWTRenderer</code>
+	 * wants <code>paint</code> calls on its AWT <code>Component</code> to be delivered. For example, after
 	 * the native counterpart has been able to acquire the native handle of the AWT
-	 * <tt>Component</tt>, it may be able to determine when the native handle needs painting
-	 * without waiting for AWT to call <tt>paint</tt> on the <tt>Component</tt>. In such a
-	 * scenario, the native counterpart may indicate with <tt>false</tt> that it does not need
-	 * further <tt>paint</tt> deliveries.
+	 * <code>Component</code>, it may be able to determine when the native handle needs painting
+	 * without waiting for AWT to call <code>paint</code> on the <code>Component</code>. In such a
+	 * scenario, the native counterpart may indicate with <code>false</code> that it does not need
+	 * further <code>paint</code> deliveries.
 	 */
 	private boolean wantsPaint = true;
 
 	/**
-	 * Initializes a new <tt>JAWTRendererVideoComponent</tt> instance.
+	 * Initializes a new <code>JAWTRendererVideoComponent</code> instance.
 	 *
 	 * @param renderer
 	 */
@@ -50,8 +50,8 @@ public class JAWTRendererVideoComponent extends Canvas
 
 	/**
 	 * Overrides {@link Component#addNotify()} to reset the indicator which determines whether the
-	 * native counterpart of this <tt>JAWTRenderer</tt> wants <tt>paint</tt> calls on its AWT
-	 * <tt>Component</tt> to be delivered.
+	 * native counterpart of this <code>JAWTRenderer</code> wants <code>paint</code> calls on its AWT
+	 * <code>Component</code> to be delivered.
 	 */
 	@Override
 	public void addNotify()
@@ -101,11 +101,11 @@ public class JAWTRendererVideoComponent extends Canvas
 	}
 
 	/**
-	 * Gets the handle of the native counterpart of the <tt>JAWTRenderer</tt> which paints in this
-	 * <tt>AWTVideoComponent</tt>.
+	 * Gets the handle of the native counterpart of the <code>JAWTRenderer</code> which paints in this
+	 * <code>AWTVideoComponent</code>.
 	 *
-	 * @return the handle of the native counterpart of the <tt>JAWTRenderer</tt> which paints in
-	 * this <tt>AWTVideoComponent</tt>
+	 * @return the handle of the native counterpart of the <code>JAWTRenderer</code> which paints in
+	 * this <code>AWTVideoComponent</code>
 	 */
 	protected long getHandle()
 	{
@@ -113,11 +113,11 @@ public class JAWTRendererVideoComponent extends Canvas
 	}
 
 	/**
-	 * Gets the synchronization lock which protects the access to the <tt>handle</tt> property of
-	 * this <tt>AWTVideoComponent</tt>.
+	 * Gets the synchronization lock which protects the access to the <code>handle</code> property of
+	 * this <code>AWTVideoComponent</code>.
 	 *
-	 * @return the synchronization lock which protects the access to the <tt>handle</tt>
-	 * property of this <tt>AWTVideoComponent</tt>
+	 * @return the synchronization lock which protects the access to the <code>handle</code>
+	 * property of this <code>AWTVideoComponent</code>
 	 */
 	protected Object getHandleLock()
 	{
@@ -125,8 +125,8 @@ public class JAWTRendererVideoComponent extends Canvas
 	}
 
 	/**
-	 * Overrides {@link Canvas#paint(Graphics)} to paint this <tt>Component</tt> in the native
-	 * counterpart of its associated <tt>JAWTRenderer</tt>.
+	 * Overrides {@link Canvas#paint(Graphics)} to paint this <code>Component</code> in the native
+	 * counterpart of its associated <code>JAWTRenderer</code>.
 	 */
 	@Override
 	public void paint(Graphics g)
@@ -163,8 +163,8 @@ public class JAWTRendererVideoComponent extends Canvas
 
 	/**
 	 * Overrides {@link Component#removeNotify()} to reset the indicator which determines whether
-	 * the native counterpart of this <tt>JAWTRenderer</tt> wants <tt>paint</tt> calls on its AWT
-	 * <tt>Component</tt> to be delivered.
+	 * the native counterpart of this <code>JAWTRenderer</code> wants <code>paint</code> calls on its AWT
+	 * <code>Component</code> to be delivered.
 	 */
 	@Override
 	public void removeNotify()

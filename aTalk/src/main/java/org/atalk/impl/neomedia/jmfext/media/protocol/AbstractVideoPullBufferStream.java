@@ -12,7 +12,7 @@ import javax.media.control.*;
 import javax.media.protocol.PullBufferDataSource;
 
 /**
- * Provides a base implementation of <tt>PullBufferStream</tt> for video in order to facilitate
+ * Provides a base implementation of <code>PullBufferStream</code> for video in order to facilitate
  * implementers by taking care of boilerplate in the most common cases.
  *
  * @author Lyubomir Marinov
@@ -22,15 +22,15 @@ public abstract class AbstractVideoPullBufferStream<T extends PullBufferDataSour
 {
 
 	/**
-	 * The output frame rate of this <tt>AbstractVideoPullBufferStream</tt> which has been
+	 * The output frame rate of this <code>AbstractVideoPullBufferStream</code> which has been
 	 * specified by {@link #frameRateControl} and depending on which
 	 * {@link #minimumVideoFrameInterval} has been calculated.
 	 */
 	private float frameRate;
 
 	/**
-	 * The <tt>FrameRateControl</tt> which gets and sets the output frame rate of this
-	 * <tt>AbstractVideoPullBufferStream</tt>.
+	 * The <code>FrameRateControl</code> which gets and sets the output frame rate of this
+	 * <code>AbstractVideoPullBufferStream</code>.
 	 */
 	private FrameRateControl frameRateControl;
 
@@ -41,14 +41,14 @@ public abstract class AbstractVideoPullBufferStream<T extends PullBufferDataSour
 	private long minimumVideoFrameInterval;
 
 	/**
-	 * Initializes a new <tt>AbstractVideoPullBufferStream</tt> instance which is to have its
-	 * <tt>Format</tt>-related information abstracted by a specific <tt>FormatControl</tt>.
+	 * Initializes a new <code>AbstractVideoPullBufferStream</code> instance which is to have its
+	 * <code>Format</code>-related information abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param dataSource
-	 * 		the <tt>PullBufferDataSource</tt> which is creating the new instance so that it
-	 * 		becomes one of its <tt>streams</tt>
+	 * 		the <code>PullBufferDataSource</code> which is creating the new instance so that it
+	 * 		becomes one of its <code>streams</code>
 	 * @param formatControl
-	 * 		the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 * 		the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 * 		information of the new instance
 	 */
 	protected AbstractVideoPullBufferStream(T dataSource, FormatControl formatControl)
@@ -57,25 +57,25 @@ public abstract class AbstractVideoPullBufferStream<T extends PullBufferDataSour
 	}
 
 	/**
-	 * Blocks and reads into a <tt>Buffer</tt> from this <tt>PullBufferStream</tt>.
+	 * Blocks and reads into a <code>Buffer</code> from this <code>PullBufferStream</code>.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> this <tt>PullBufferStream</tt> is to read into
+	 * 		the <code>Buffer</code> this <code>PullBufferStream</code> is to read into
 	 * @throws IOException
-	 * 		if an I/O error occurs while this <tt>PullBufferStream</tt> reads into the specified
-	 * 		<tt>Buffer</tt>
+	 * 		if an I/O error occurs while this <code>PullBufferStream</code> reads into the specified
+	 * 		<code>Buffer</code>
 	 */
 	protected abstract void doRead(Buffer buffer)
 			throws IOException;
 
 	/**
-	 * Blocks and reads into a <tt>Buffer</tt> from this <tt>PullBufferStream</tt>.
+	 * Blocks and reads into a <code>Buffer</code> from this <code>PullBufferStream</code>.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> this <tt>PullBufferStream</tt> is to read into
+	 * 		the <code>Buffer</code> this <code>PullBufferStream</code> is to read into
 	 * @throws IOException
-	 * 		if an I/O error occurs while this <tt>PullBufferStream</tt> reads into the specified
-	 * 		<tt>Buffer</tt>
+	 * 		if an I/O error occurs while this <code>PullBufferStream</code> reads into the specified
+	 * 		<code>Buffer</code>
 	 */
 	public void read(Buffer buffer)
 			throws IOException
@@ -124,11 +124,11 @@ public abstract class AbstractVideoPullBufferStream<T extends PullBufferDataSour
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>AbstractBufferStream</tt>.
+	 * Starts the transfer of media data from this <code>AbstractBufferStream</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while starting the transfer of media data from this
-	 * 		<tt>AbstractBufferStream</tt>
+	 * 		<code>AbstractBufferStream</code>
 	 * @see AbstractBufferStream#start()
 	 */
 	@Override
@@ -141,11 +141,11 @@ public abstract class AbstractVideoPullBufferStream<T extends PullBufferDataSour
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>AbstractBufferStream</tt>.
+	 * Stops the transfer of media data from this <code>AbstractBufferStream</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while stopping the transfer of media data from this
-	 * 		<tt>AbstractBufferStream</tt>
+	 * 		<code>AbstractBufferStream</code>
 	 * @see AbstractBufferStream#stop()
 	 */
 	@Override

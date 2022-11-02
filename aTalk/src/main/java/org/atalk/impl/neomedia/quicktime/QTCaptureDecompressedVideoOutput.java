@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents a QTKit <tt>QTCaptureDecompressedVideoOutput</tt> object.
+ * Represents a QTKit <code>QTCaptureDecompressedVideoOutput</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -14,8 +14,8 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 {
 
 	/**
-	 * Initializes a new <tt>QTCaptureDecompressedVideoOutput</tt> which represents a new QTKit
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> object.
+	 * Initializes a new <code>QTCaptureDecompressedVideoOutput</code> which represents a new QTKit
+	 * <code>QTCaptureDecompressedVideoOutput</code> object.
 	 */
 	public QTCaptureDecompressedVideoOutput()
 	{
@@ -23,11 +23,11 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	}
 
 	/**
-	 * Initializes a new <tt>QTCaptureDecompressedVideoOutput</tt> which is to represent a new
-	 * QTKit <tt>QTCaptureDecompressedVideoOutput</tt> object.
+	 * Initializes a new <code>QTCaptureDecompressedVideoOutput</code> which is to represent a new
+	 * QTKit <code>QTCaptureDecompressedVideoOutput</code> object.
 	 *
 	 * @param ptr
-	 * 		the pointer to the QTKit <tt>QTCaptureDecompressedVideoOutput</tt> object to be
+	 * 		the pointer to the QTKit <code>QTCaptureDecompressedVideoOutput</code> object to be
 	 * 		represented by the new instance
 	 */
 	public QTCaptureDecompressedVideoOutput(long ptr)
@@ -49,12 +49,12 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	}
 
 	/**
-	 * Gets the minimum time interval between which this <tt>QTCaptureDecompressedVideoOutput</tt>
+	 * Gets the minimum time interval between which this <code>QTCaptureDecompressedVideoOutput</code>
 	 * will output consecutive video frames.
 	 *
 	 * @return the minimum time interval between which this
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> will output consecutive video frames. It is
-	 * equivalent to the inverse of the maximum frame rate. The value of <tt>0</tt>
+	 * <code>QTCaptureDecompressedVideoOutput</code> will output consecutive video frames. It is
+	 * equivalent to the inverse of the maximum frame rate. The value of <code>0</code>
 	 * indicates an unlimited maximum frame rate.
 	 */
 	public double minimumVideoFrameInterval()
@@ -64,15 +64,15 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 
 	/**
 	 * Gets the minimum time interval between which a specific
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> instance will output consecutive video frames.
+	 * <code>QTCaptureDecompressedVideoOutput</code> instance will output consecutive video frames.
 	 *
 	 * @param ptr
-	 * 		a pointer to the <tt>QTCaptureDecompressedVideoOutput</tt> instance to get the minimum
+	 * 		a pointer to the <code>QTCaptureDecompressedVideoOutput</code> instance to get the minimum
 	 * 		time interval between consecutive video frame output of
 	 * @return the minimum time interval between which a specific
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> instance will output consecutive video
+	 * <code>QTCaptureDecompressedVideoOutput</code> instance will output consecutive video
 	 * frames. It is equivalent to the inverse of the maximum frame rate. The value of
-	 * <tt>0</tt> indicates an unlimited maximum frame rate.
+	 * <code>0</code> indicates an unlimited maximum frame rate.
 	 */
 	private static native double minimumVideoFrameInterval(long ptr);
 
@@ -101,13 +101,13 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	private static native void setDelegate(long ptr, Delegate delegate);
 
 	/**
-	 * Sets the minimum time interval between which this <tt>QTCaptureDecompressedVideoOutput</tt>
+	 * Sets the minimum time interval between which this <code>QTCaptureDecompressedVideoOutput</code>
 	 * is to output consecutive video frames.
 	 *
 	 * @param minimumVideoFrameInterval
-	 * 		the minimum time interval between which this <tt>QTCaptureDecompressedVideoOutput</tt>
+	 * 		the minimum time interval between which this <code>QTCaptureDecompressedVideoOutput</code>
 	 * 		is to output consecutive video frames. It is equivalent to the inverse of the maximum
-	 * 		frame rate. The value of <tt>0</tt> indicates an unlimited frame rate.
+	 * 		frame rate. The value of <code>0</code> indicates an unlimited frame rate.
 	 */
 	public void setMinimumVideoFrameInterval(double minimumVideoFrameInterval)
 	{
@@ -116,16 +116,16 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 
 	/**
 	 * Sets the minimum time interval between which a specific
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> instance is to output consecutive video frames.
+	 * <code>QTCaptureDecompressedVideoOutput</code> instance is to output consecutive video frames.
 	 *
 	 * @param ptr
-	 * 		a pointer to the <tt>QTCaptureDecompressedVideoOutput</tt> instance to set the minimum
+	 * 		a pointer to the <code>QTCaptureDecompressedVideoOutput</code> instance to set the minimum
 	 * 		time interval between consecutive video frame output on
 	 * @param minimumVideoFrameInterval
 	 * 		the minimum time interval between which a specific
-	 * 		<tt>QTCaptureDecompressedVideoOutput</tt> instance is to output consecutive video
+	 * 		<code>QTCaptureDecompressedVideoOutput</code> instance is to output consecutive video
 	 * 		frames. It is equivalent to the inverse of the maximum frame rate. The value of
-	 * 		<tt>0</tt> indicates an unlimited frame rate.
+	 * 		<code>0</code> indicates an unlimited frame rate.
 	 */
 	private static native void setMinimumVideoFrameInterval(long ptr,
 			double minimumVideoFrameInterval);
@@ -138,8 +138,8 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	private static native void setPixelBufferAttributes(long ptr, long pixelBufferAttributesPtr);
 
 	/**
-	 * Represents the receiver of <tt>CVImageBuffer</tt> video frames and their associated
-	 * <tt>QTSampleBuffer</tt>s captured by a <tt>QTCaptureDecompressedVideoOutput</tt>.
+	 * Represents the receiver of <code>CVImageBuffer</code> video frames and their associated
+	 * <code>QTSampleBuffer</code>s captured by a <code>QTCaptureDecompressedVideoOutput</code>.
 	 */
 	public static abstract class Delegate
 	{
@@ -148,14 +148,14 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 		private MutableCVPixelBuffer videoFrame;
 
 		/**
-		 * Notifies this <tt>Delegate</tt> that the <tt>QTCaptureOutput</tt> to which it is set has
-		 * output a specific <tt>CVImageBuffer</tt> representing a video frame with a specific
-		 * <tt>QTSampleBuffer</tt>.
+		 * Notifies this <code>Delegate</code> that the <code>QTCaptureOutput</code> to which it is set has
+		 * output a specific <code>CVImageBuffer</code> representing a video frame with a specific
+		 * <code>QTSampleBuffer</code>.
 		 *
 		 * @param videoFrame
-		 * 		the <tt>CVImageBuffer</tt> which represents the output video frame
+		 * 		the <code>CVImageBuffer</code> which represents the output video frame
 		 * @param sampleBuffer
-		 * 		the <tt>QTSampleBuffer</tt> which represents additional details about the output
+		 * 		the <code>QTSampleBuffer</code> which represents additional details about the output
 		 * 		video samples
 		 */
 		public abstract void outputVideoFrameWithSampleBuffer(CVImageBuffer videoFrame,
@@ -178,17 +178,17 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	}
 
 	/**
-	 * Represents a <tt>CVPixelBuffer</tt> which allows public changing of the CoreVideo
-	 * <tt>CVPixelBufferRef</tt> it represents.
+	 * Represents a <code>CVPixelBuffer</code> which allows public changing of the CoreVideo
+	 * <code>CVPixelBufferRef</code> it represents.
 	 */
 	private static class MutableCVPixelBuffer extends CVPixelBuffer
 	{
 		/**
-		 * Initializes a new <tt>MutableCVPixelBuffer</tt> which is to represent a specific
-		 * CoreVideo <tt>CVPixelBufferRef</tt>.
+		 * Initializes a new <code>MutableCVPixelBuffer</code> which is to represent a specific
+		 * CoreVideo <code>CVPixelBufferRef</code>.
 		 *
 		 * @param ptr
-		 * 		the CoreVideo <tt>CVPixelBufferRef</tt> to be represented by the new instance
+		 * 		the CoreVideo <code>CVPixelBufferRef</code> to be represented by the new instance
 		 */
 		private MutableCVPixelBuffer(long ptr)
 		{
@@ -196,10 +196,10 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 		}
 
 		/**
-		 * Sets the CoreVideo <tt>CVImageBufferRef</tt> represented by this instance.
+		 * Sets the CoreVideo <code>CVImageBufferRef</code> represented by this instance.
 		 *
 		 * @param ptr
-		 * 		the CoreVideo <tt>CVImageBufferRef</tt> to be represented by this instance
+		 * 		the CoreVideo <code>CVImageBufferRef</code> to be represented by this instance
 		 * @see CVPixelBuffer#setPtr(long)
 		 */
 		@Override
@@ -210,17 +210,17 @@ public class QTCaptureDecompressedVideoOutput extends QTCaptureOutput
 	}
 
 	/**
-	 * Represents a <tt>QTSampleBuffer</tt> which allows public changing of the QTKit
-	 * <tt>QTSampleBuffer</tt> object it represents.
+	 * Represents a <code>QTSampleBuffer</code> which allows public changing of the QTKit
+	 * <code>QTSampleBuffer</code> object it represents.
 	 */
 	private static class MutableQTSampleBuffer extends QTSampleBuffer
 	{
 		/**
-		 * Initializes a new <tt>MutableQTSampleBuffer</tt> instance which is to represent a
-		 * specific QTKit <tt>QTSampleBuffer</tt> object.
+		 * Initializes a new <code>MutableQTSampleBuffer</code> instance which is to represent a
+		 * specific QTKit <code>QTSampleBuffer</code> object.
 		 *
 		 * @param ptr
-		 * 		the pointer to the QTKit <tt>QTSampleBuffer</tt> object to be represented by the
+		 * 		the pointer to the QTKit <code>QTSampleBuffer</code> object to be represented by the
 		 * 		new instance
 		 */
 		private MutableQTSampleBuffer(long ptr)

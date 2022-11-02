@@ -16,7 +16,7 @@
  */
 
 /**
- * Smack's API for XEP-XXXX: Jingle Encrypted Transfers</a>.
+ * Smack's API for XEP-0391: Jingle Encrypted Transfers.
  * Providers.
  */
 package org.jivesoftware.smackx.jet.provider;

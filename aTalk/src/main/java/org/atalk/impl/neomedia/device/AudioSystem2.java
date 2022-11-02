@@ -21,13 +21,13 @@ public abstract class AudioSystem2 extends AudioSystem
      * /**
      * The number of times that {@link #willOpenStream()} has been invoked without an intervening
      * {@link #didOpenStream()} i.e. the number of API clients who are currently executing a
-     * <tt>Pa_OpenStream</tt>-like function and which are thus inhibiting
-     * <tt>updateAvailableDeviceList()</tt>.
+     * <code>Pa_OpenStream</code>-like function and which are thus inhibiting
+     * <code>updateAvailableDeviceList()</code>.
      */
     private int openStream = 0;
 
     /**
-     * The <tt>Object</tt> which synchronizes that access to {@link #openStream} and
+     * The <code>Object</code> which synchronizes that access to {@link #openStream} and
      * {@link #updateAvailableDeviceList}.
      */
     private final Object openStreamSyncRoot = new Object();
@@ -35,19 +35,19 @@ public abstract class AudioSystem2 extends AudioSystem
     /**
      * The number of times that {@link #willUpdateAvailableDeviceList()} has been invoked without an
      * intervening {@link #didUpdateAvailableDeviceList()} i.e. the number of API clients who are
-     * currently executing <tt>updateAvailableDeviceList()</tt> and who are thus inhibiting
-     * <tt>openStream</tt>.
+     * currently executing <code>updateAvailableDeviceList()</code> and who are thus inhibiting
+     * <code>openStream</code>.
      */
     private int updateAvailableDeviceList = 0;
 
     /**
-     * The list of <tt>UpdateAvailableDeviceListListener</tt>s which are to be notified before and
-     * after this <tt>AudioSystem</tt>'s method <tt>updateAvailableDeviceList()</tt> is invoked.
+     * The list of <code>UpdateAvailableDeviceListListener</code>s which are to be notified before and
+     * after this <code>AudioSystem</code>'s method <code>updateAvailableDeviceList()</code> is invoked.
      */
     private final List<WeakReference<UpdateAvailableDeviceListListener>> updateAvailableDeviceListListeners = new LinkedList<>();
 
     /**
-     * The <tt>Object</tt> which ensures that this <tt>AudioSystem</tt>'s function to update the
+     * The <code>Object</code> which ensures that this <code>AudioSystem</code>'s function to update the
      * list of available devices will not be invoked concurrently. The condition should hold true on
      * the native side but, anyway, it should not hurt (much) to enforce it on the Java side as
      * well.
@@ -61,15 +61,15 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Adds a listener which is to be notified before and after this <tt>AudioSystem</tt>'s method
-     * <tt>updateAvailableDeviceList()</tt> is invoked.
+     * Adds a listener which is to be notified before and after this <code>AudioSystem</code>'s method
+     * <code>updateAvailableDeviceList()</code> is invoked.
      * <p>
-     * <b>Note</b>: The <tt>AudioSystem2</tt> class keeps a <tt>WeakReference</tt> to the specified
-     * <tt>listener</tt> in order to avoid memory leaks.
+     * <b>Note</b>: The <code>AudioSystem2</code> class keeps a <code>WeakReference</code> to the specified
+     * <code>listener</code> in order to avoid memory leaks.
      * </p>
      *
-     * @param listener the <tt>UpdateAvailableDeviceListListener</tt> to be notified before and after this
-     * <tt>AudioSystem</tt>'s method <tt>updateAvailableDeviceList()</tt> is invoked
+     * @param listener the <code>UpdateAvailableDeviceListListener</code> to be notified before and after this
+     * <code>AudioSystem</code>'s method <code>updateAvailableDeviceList()</code> is invoked
      */
     public void addUpdateAvailableDeviceListListener(UpdateAvailableDeviceListListener listener)
     {
@@ -96,10 +96,10 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Sorts a specific list of <tt>CaptureDeviceInfo2</tt>s so that the ones representing USB
+     * Sorts a specific list of <code>CaptureDeviceInfo2</code>s so that the ones representing USB
      * devices appear at the beginning/top of the specified list.
      *
-     * @param devices the list of <tt>CaptureDeviceInfo2</tt>s to be sorted so that the ones representing
+     * @param devices the list of <code>CaptureDeviceInfo2</code>s to be sorted so that the ones representing
      * USB devices appear at the beginning/top of the list
      */
     protected static void bubbleUpUsbDevices(List<CaptureDeviceInfo2> devices)
@@ -123,8 +123,8 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Notifies this <tt>AudioSystem</tt> that an API client finished executing a
-     * <tt>Pa_OpenStream</tt>-like function.
+     * Notifies this <code>AudioSystem</code> that an API client finished executing a
+     * <code>Pa_OpenStream</code>-like function.
      */
     public void didOpenStream()
     {
@@ -138,8 +138,8 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Notifies this <tt>AudioSystem</tt> that a it has finished executing
-     * <tt>updateAvailableDeviceList()</tt>.
+     * Notifies this <code>AudioSystem</code> that a it has finished executing
+     * <code>updateAvailableDeviceList()</code>.
      */
     private void didUpdateAvailableDeviceList()
     {
@@ -155,11 +155,11 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Notifies the registered <tt>UpdateAvailableDeviceListListener</tt>s that this
-     * <tt>AudioSystem</tt>'s method <tt>updateAvailableDeviceList()</tt> will be or was invoked.
+     * Notifies the registered <code>UpdateAvailableDeviceListListener</code>s that this
+     * <code>AudioSystem</code>'s method <code>updateAvailableDeviceList()</code> will be or was invoked.
      *
-     * @param will <tt>true</tt> if this <tt>AudioSystem</tt>'s method
-     * <tt>updateAvailableDeviceList()</tt> will be invoked or <tt>false</tt> if it was invoked
+     * @param will <code>true</code> if this <code>AudioSystem</code>'s method
+     * <code>updateAvailableDeviceList()</code> will be invoked or <code>false</code> if it was invoked
      */
     private void fireUpdateAvailableDeviceListEvent(boolean will)
     {
@@ -190,10 +190,10 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Attempts to reorder specific lists of capture and playback/notify <tt>CaptureDeviceInfo2</tt>
+     * Attempts to reorder specific lists of capture and playback/notify <code>CaptureDeviceInfo2</code>
      * s so that devices from the same hardware appear at the same indices in the respective lists.
      * The judgment with respect to the belonging to the same hardware is based on the names of the
-     * specified <tt>CaptureDeviceInfo2</tt>s. The implementation is provided as a fallback to stand
+     * specified <code>CaptureDeviceInfo2</code>s. The implementation is provided as a fallback to stand
      * in for scenarios in which more accurate relevant information is not available.
      *
      * @param captureDevices
@@ -249,14 +249,14 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Reinitializes this <tt>AudioSystem</tt> in order to bring it up to date with possible changes
-     * in the list of available devices. Invokes <tt>updateAvailableDeviceList()</tt> to update the
+     * Reinitializes this <code>AudioSystem</code> in order to bring it up to date with possible changes
+     * in the list of available devices. Invokes <code>updateAvailableDeviceList()</code> to update the
      * devices on the native side and then {@link #initialize()} to reflect any changes on the Java
-     * side. Invoked by the native side of this <tt>AudioSystem</tt> when it detects that the list
+     * side. Invoked by the native side of this <code>AudioSystem</code> when it detects that the list
      * of available devices has changed.
      *
-     * @throws Exception if there was an error during the invocation of <tt>updateAvailableDeviceList()</tt>
-     * and <tt>DeviceSystem.initialize()</tt>
+     * @throws Exception if there was an error during the invocation of <code>updateAvailableDeviceList()</code>
+     * and <code>DeviceSystem.initialize()</code>
      */
     protected void reinitialize()
             throws Exception
@@ -299,7 +299,7 @@ public abstract class AudioSystem2 extends AudioSystem
     protected abstract void updateAvailableDeviceList();
 
     /**
-     * Waits for all API clients to finish executing a <tt>Pa_OpenStream</tt> -like function.
+     * Waits for all API clients to finish executing a <code>Pa_OpenStream</code> -like function.
      */
     private void waitForOpenStream()
     {
@@ -317,7 +317,7 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Waits for all API clients to finish executing <tt>updateAvailableDeviceList()</tt>.
+     * Waits for all API clients to finish executing <code>updateAvailableDeviceList()</code>.
      */
     private void waitForUpdateAvailableDeviceList()
     {
@@ -335,8 +335,8 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Notifies this <tt>AudioSystem</tt> that an API client will start executing a
-     * <tt>Pa_OpenStream</tt>-like function.
+     * Notifies this <code>AudioSystem</code> that an API client will start executing a
+     * <code>Pa_OpenStream</code>-like function.
      */
     public void willOpenStream()
     {
@@ -349,7 +349,7 @@ public abstract class AudioSystem2 extends AudioSystem
     }
 
     /**
-     * Notifies this <tt>AudioSystem</tt> that it will start executing <tt>updateAvailableDeviceList()</tt>.
+     * Notifies this <code>AudioSystem</code> that it will start executing <code>updateAvailableDeviceList()</code>.
      */
     private void willUpdateAvailableDeviceList()
     {

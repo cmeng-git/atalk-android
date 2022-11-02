@@ -42,7 +42,7 @@ public class AudioMutedExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>AudioMutedExtension</tt>.
+     * Creates new instance of <code>AudioMutedExtension</code>.
      */
     public AudioMutedExtension()
     {
@@ -52,8 +52,8 @@ public class AudioMutedExtension extends AbstractExtensionElement
     /**
      * Check whether or not user's audio is in muted status.
      *
-     * @return <tt>true</tt> if muted, <tt>false</tt> if unmuted or
-     * <tt>null</tt> if no valid info found in the extension body.
+     * @return <code>true</code> if muted, <code>false</code> if unmuted or
+     * <code>null</code> if no valid info found in the extension body.
      */
     public Boolean isAudioMuted()
     {
@@ -63,7 +63,7 @@ public class AudioMutedExtension extends AbstractExtensionElement
     /**
      * Sets user's audio muted status.
      *
-     * @param audioMuted <tt>true</tt> or <tt>false</tt> which indicates audio
+     * @param audioMuted <code>true</code> or <code>false</code> which indicates audio
      * muted status of the user.
      */
     public void setAudioMuted(Boolean audioMuted)

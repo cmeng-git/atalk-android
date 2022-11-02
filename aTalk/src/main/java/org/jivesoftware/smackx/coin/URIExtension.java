@@ -17,6 +17,8 @@ import javax.xml.namespace.QName;
 
 /**
  * URI packet extension.
+ * XEP-0370: Jingle HTTP Transport Method 0.2 (2017-09-11)
+ * https://xmpp.org/extensions/xep-0370.html
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng

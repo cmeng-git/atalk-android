@@ -21,7 +21,7 @@ import javax.media.protocol.*;
 import timber.log.Timber;
 
 /**
- * Implements <tt>PushBufferDataSource</tt> for a specific <tt>PullBufferDataSource</tt>.
+ * Implements <code>PushBufferDataSource</code> for a specific <code>PullBufferDataSource</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -29,13 +29,13 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 {
 
     /**
-     * Implements <tt>PushBufferStream</tt> for a specific <tt>PullBufferStream</tt>.
+     * Implements <code>PushBufferStream</code> for a specific <code>PullBufferStream</code>.
      */
     private static class PushBufferStreamAdapter implements PushBufferStream
     {
 
         /**
-         * The <tt>Buffer</tt> which contains the media data read by this instance from
+         * The <code>Buffer</code> which contains the media data read by this instance from
          * {@link #stream} and to be returned by this implementation of
          * {@link PushBufferStream#read(Buffer)} by copying.
          */
@@ -55,42 +55,42 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
         private boolean started = false;
 
         /**
-         * The <tt>PullBufferStream</tt> to which this instance provides <tt>PushBufferStream</tt>
+         * The <code>PullBufferStream</code> to which this instance provides <code>PushBufferStream</code>
          * capabilities.
          */
         public final PullBufferStream stream;
 
         /**
-         * The <tt>IOException</tt>, if any, which has been thrown by the last call to
+         * The <code>IOException</code>, if any, which has been thrown by the last call to
          * {@link PullBufferStream#read(Buffer)} on {@link #stream} and which still hasn't been
          * rethrown by this implementation of {@link PushBufferStream#read(Buffer)}.
          */
         private IOException streamReadException;
 
         /**
-         * The <tt>Thread</tt> which currently reads media data from {@link #stream} into
+         * The <code>Thread</code> which currently reads media data from {@link #stream} into
          * {@link #buffer}.
          */
         private Thread streamReadThread;
 
         /**
-         * The <tt>Object</tt> which synchronizes the access to {@link #streamReadThread}-related
+         * The <code>Object</code> which synchronizes the access to {@link #streamReadThread}-related
          * members.
          */
         private final Object streamReadThreadSyncRoot = new Object();
 
         /**
-         * The <tt>BufferTransferHandler</tt> through which this <tt>PushBufferStream</tt> notifies
+         * The <code>BufferTransferHandler</code> through which this <code>PushBufferStream</code> notifies
          * its user that media data is available for reading.
          */
         private BufferTransferHandler transferHandler;
 
         /**
-         * Initializes a new <tt>PushBufferStreamAdapter</tt> instance which is to implement
-         * <tt>PushBufferStream</tt> for a specific <tt>PullBufferStream</tt>.
+         * Initializes a new <code>PushBufferStreamAdapter</code> instance which is to implement
+         * <code>PushBufferStream</code> for a specific <code>PullBufferStream</code>.
          *
-         * @param stream the <tt>PullBufferStream</tt> the new instance is to implement
-         * <tt>PushBufferStream</tt> for
+         * @param stream the <code>PullBufferStream</code> the new instance is to implement
+         * <code>PushBufferStream</code> for
          */
         public PushBufferStreamAdapter(PullBufferStream stream)
         {
@@ -100,7 +100,7 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
         }
 
         /**
-         * Disposes of this <tt>PushBufferStreamAdapter</tt>. Afterwards, this instance is not
+         * Disposes of this <code>PushBufferStreamAdapter</code>. Afterwards, this instance is not
          * guaranteed to be operation and considered to be available for garbage collection.
          */
         void close()
@@ -110,11 +110,11 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link SourceStream#endOfStream()}. Delegates to the wrapped
-         * <tt>PullBufferStream</tt>.
+         * <code>PullBufferStream</code>.
          *
-         * @return <tt>true</tt> if the wrapped <tt>PullBufferStream</tt> has reached the end of
+         * @return <code>true</code> if the wrapped <code>PullBufferStream</code> has reached the end of
          * the
-         * media data; otherwise, <tt>false</tt>
+         * media data; otherwise, <code>false</code>
          */
         @Override
         public boolean endOfStream()
@@ -124,9 +124,9 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link SourceStream#getContentDescriptor()}. Delegates to the wrapped
-         * <tt>PullBufferStream</tt>.
+         * <code>PullBufferStream</code>.
          *
-         * @return the <tt>ContentDescriptor</tt> of the wrapped <tt>PullBufferStream</tt> which
+         * @return the <code>ContentDescriptor</code> of the wrapped <code>PullBufferStream</code> which
          * describes the type of the media data it gives access to
          */
         @Override
@@ -137,9 +137,9 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link SourceStream#getContentLength()}. Delegates to the wrapped
-         * <tt>PullBufferStream</tt>.
+         * <code>PullBufferStream</code>.
          *
-         * @return the length of the content the wrapped <tt>PullBufferStream</tt> gives access to
+         * @return the length of the content the wrapped <code>PullBufferStream</code> gives access to
          */
         @Override
         public long getContentLength()
@@ -149,14 +149,14 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link javax.media.Controls#getControl(String)}. Delegates to the wrapped
-         * <tt>PullBufferStream</tt>.
+         * <code>PullBufferStream</code>.
          *
-         * @param controlType a <tt>String</tt> value which specifies the type of the control of the wrapped
-         * <tt>PullBufferStream</tt> to be retrieved
-         * @return an <tt>Object</tt> which represents the control of the wrapped
-         * <tt>PushBufferStream</tt> of the requested type if the wrapped
-         * <tt>PushBufferStream</tt> has such a control; <tt>null</tt> if the wrapped
-         * <tt>PushBufferStream</tt> does not have a control of the specified type
+         * @param controlType a <code>String</code> value which specifies the type of the control of the wrapped
+         * <code>PullBufferStream</code> to be retrieved
+         * @return an <code>Object</code> which represents the control of the wrapped
+         * <code>PushBufferStream</code> of the requested type if the wrapped
+         * <code>PushBufferStream</code> has such a control; <code>null</code> if the wrapped
+         * <code>PushBufferStream</code> does not have a control of the specified type
          */
         @Override
         public Object getControl(String controlType)
@@ -166,10 +166,10 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link javax.media.Controls#getControls()}. Delegates to the wrapped
-         * <tt>PushBufferStream</tt>.
+         * <code>PushBufferStream</code>.
          *
-         * @return an array of <tt>Object</tt>s which represent the controls available for the
-         * wrapped <tt>PushBufferStream</tt>
+         * @return an array of <code>Object</code>s which represent the controls available for the
+         * wrapped <code>PushBufferStream</code>
          */
         @Override
         public Object[] getControls()
@@ -179,9 +179,9 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link PushBufferStream#getFormat()}. Delegates to the wrapped
-         * <tt>PullBufferStream</tt>.
+         * <code>PullBufferStream</code>.
          *
-         * @return the <tt>Format</tt> of the wrapped <tt>PullBufferStream</tt>
+         * @return the <code>Format</code> of the wrapped <code>PullBufferStream</code>
          */
         @Override
         public Format getFormat()
@@ -192,10 +192,10 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
         /**
          * Implements {@link PushBufferStream#read(Buffer)}.
          *
-         * @param buffer a <tt>Buffer</tt> in which media data is to be written by this
-         * <tt>PushBufferDataSource</tt>
+         * @param buffer a <code>Buffer</code> in which media data is to be written by this
+         * <code>PushBufferDataSource</code>
          * @throws IOException if anything wrong happens while reading media data from this
-         * <tt>PushBufferDataSource</tt> into the specified <tt>buffer</tt>
+         * <code>PushBufferDataSource</code> into the specified <code>buffer</code>
          */
         @Override
         public void read(Buffer buffer)
@@ -264,10 +264,10 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
         /**
          * Implements {@link PushBufferStream#setTransferHandler(BufferTransferHandler)}. Sets the
-         * means through which this <tt>PushBufferStream</tt> is to notify its user that media data
+         * means through which this <code>PushBufferStream</code> is to notify its user that media data
          * is available for reading.
          *
-         * @param transferHandler the <tt>BufferTransferHandler</tt> through which <tt>PushBufferStream</tt> is to
+         * @param transferHandler the <code>BufferTransferHandler</code> through which <code>PushBufferStream</code> is to
          * notify its user that media data is available for reading
          */
         @Override
@@ -278,8 +278,8 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
         }
 
         /**
-         * Starts the reading of media data of this <tt>PushBufferStreamAdapter</tt> from the
-         * wrapped <tt>PullBufferStream</tt>.
+         * Starts the reading of media data of this <code>PushBufferStreamAdapter</code> from the
+         * wrapped <code>PullBufferStream</code>.
          */
         void start()
         {
@@ -321,8 +321,8 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
         }
 
         /**
-         * Stops the reading of media data of this <tt>PushBufferStreamAdapter</tt> from the
-         * wrapped <tt>PullBufferStream</tt>.
+         * Stops the reading of media data of this <code>PushBufferStreamAdapter</code> from the
+         * wrapped <code>PullBufferStream</code>.
          */
         void stop()
         {
@@ -350,7 +350,7 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
     }
 
     /**
-     * The indicator which determines whether the <tt>PushBufferStreamAdapater</tt> instances
+     * The indicator which determines whether the <code>PushBufferStreamAdapater</code> instances
      * should wait for their {@link PushBufferStreamAdapter#streamReadThread}s to exit before their
      * {@link PushBufferStreamAdapter#stop()} returns.
      */
@@ -358,22 +358,22 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
     /**
      * The indicator which determines whether {@link #start()} has been called on this
-     * <tt>DataSource</tt> without a subsequent call to {@link #stop()}.
+     * <code>DataSource</code> without a subsequent call to {@link #stop()}.
      */
     private boolean started = false;
 
     /**
-     * The <tt>PushBufferStream</tt>s through which this <tt>PushBufferDataSource</tt> gives access
+     * The <code>PushBufferStream</code>s through which this <code>PushBufferDataSource</code> gives access
      * to its media data.
      */
     private final List<PushBufferStreamAdapter> streams = new ArrayList<>();
 
     /**
-     * Initializes a new <tt>PushBufferDataSourceAdapter</tt> which is to implement
-     * <tt>PushBufferDataSource</tt> capabilities for a specific <tt>PullBufferDataSource</tt>.
+     * Initializes a new <code>PushBufferDataSourceAdapter</code> which is to implement
+     * <code>PushBufferDataSource</code> capabilities for a specific <code>PullBufferDataSource</code>.
      *
-     * @param dataSource the <tt>PullBufferDataSource</tt> the new instance is to implement
-     * <tt>PushBufferDataSource</tt> capabilities for
+     * @param dataSource the <code>PullBufferDataSource</code> the new instance is to implement
+     * <code>PushBufferDataSource</code> capabilities for
      */
     public PushBufferDataSourceAdapter(PullBufferDataSource dataSource)
     {
@@ -382,8 +382,8 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
 
     /**
      * Implements {@link DataSource#disconnect()}. Disposes of the
-     * <tt>PushBufferStreamAdapter</tt>s which wrap the <tt>PullBufferStream</tt>s of the
-     * <tt>PullBufferDataSource</tt> wrapped by this instance.
+     * <code>PushBufferStreamAdapter</code>s which wrap the <code>PullBufferStream</code>s of the
+     * <code>PullBufferDataSource</code> wrapped by this instance.
      */
     @Override
     public void disconnect()
@@ -402,11 +402,11 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
     }
 
     /**
-     * Implements {@link PushBufferDataSource#getStreams()}. Gets the <tt>PushBufferStream</tt>s
-     * through which this <tt>PushBufferDataSource</tt> gives access to its media data.
+     * Implements {@link PushBufferDataSource#getStreams()}. Gets the <code>PushBufferStream</code>s
+     * through which this <code>PushBufferDataSource</code> gives access to its media data.
      *
-     * @return an array of <tt>PushBufferStream</tt>s through which this
-     * <tt>PushBufferDataSource</tt> gives access to its media data
+     * @return an array of <code>PushBufferStream</code>s through which this
+     * <code>PushBufferDataSource</code> gives access to its media data
      */
     @Override
     public PushBufferStream[] getStreams()
@@ -471,12 +471,12 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
     }
 
     /**
-     * Sets the priority of the <tt>streamReadThread</tt> of a <tt>PushBufferStreamAdapter</tt>
-     * that adapts a specific <tt>PullBufferStream</tt> in accord with the <tt>Format</tt> of the
+     * Sets the priority of the <code>streamReadThread</code> of a <code>PushBufferStreamAdapter</code>
+     * that adapts a specific <code>PullBufferStream</code> in accord with the <code>Format</code> of the
      * media data.
      *
-     * @param stream the <tt>PullBufferStream</tt> adapted by a <tt>PushBufferStreamAdapter</tt> that is to
-     * have the priority of its <tt>streamReadThread</tt> set
+     * @param stream the <code>PullBufferStream</code> adapted by a <code>PushBufferStreamAdapter</code> that is to
+     * have the priority of its <code>streamReadThread</code> set
      */
     private static void setStreamReadThreadPriority(PullBufferStream stream)
     {
@@ -503,13 +503,13 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
     }
 
     /**
-     * Implements {@link DataSource#start()}. Starts the wrapped <tt>PullBufferDataSource</tt> and
-     * the pushing from the <tt>PushBufferStreamAdapter</tt>s which wrap the
-     * <tt>PullBufferStream</tt>s of the <tt>PullBufferDataSource</tt> wrapped by this instance.
+     * Implements {@link DataSource#start()}. Starts the wrapped <code>PullBufferDataSource</code> and
+     * the pushing from the <code>PushBufferStreamAdapter</code>s which wrap the
+     * <code>PullBufferStream</code>s of the <code>PullBufferDataSource</code> wrapped by this instance.
      *
-     * @throws IOException if anything wrong happens while starting the wrapped <tt>PullBufferDataSource</tt> or
-     * the pushing from the <tt>PushBufferStreamAdapter</tt>s which wrap the
-     * <tt>PullBufferStream</tt>s of the <tt>PullBufferDataSource</tt> wrapped by this
+     * @throws IOException if anything wrong happens while starting the wrapped <code>PullBufferDataSource</code> or
+     * the pushing from the <code>PushBufferStreamAdapter</code>s which wrap the
+     * <code>PullBufferStream</code>s of the <code>PullBufferDataSource</code> wrapped by this
      * instance
      */
     @Override
@@ -527,13 +527,13 @@ public class PushBufferDataSourceAdapter extends PushBufferDataSourceDelegate<Pu
     }
 
     /**
-     * Implements {@link DataSource#start()}. Stops the wrapped <tt>PullBufferDataSource</tt> and
-     * the pushing from the <tt>PushBufferStreamAdapter</tt>s which wrap the
-     * <tt>PullBufferStream</tt>s of the <tt>PullBufferDataSource</tt> wrapped by this instance.
+     * Implements {@link DataSource#start()}. Stops the wrapped <code>PullBufferDataSource</code> and
+     * the pushing from the <code>PushBufferStreamAdapter</code>s which wrap the
+     * <code>PullBufferStream</code>s of the <code>PullBufferDataSource</code> wrapped by this instance.
      *
-     * @throws IOException if anything wrong happens while stopping the wrapped <tt>PullBufferDataSource</tt> or
-     * the pushing from the <tt>PushBufferStreamAdapter</tt>s which wrap the
-     * <tt>PullBufferStream</tt>s of the <tt>PullBufferDataSource</tt> wrapped by this
+     * @throws IOException if anything wrong happens while stopping the wrapped <code>PullBufferDataSource</code> or
+     * the pushing from the <code>PushBufferStreamAdapter</code>s which wrap the
+     * <code>PullBufferStream</code>s of the <code>PullBufferDataSource</code> wrapped by this
      * instance
      */
     @Override

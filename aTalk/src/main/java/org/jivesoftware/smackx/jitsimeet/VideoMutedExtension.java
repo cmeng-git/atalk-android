@@ -1,7 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,7 +38,7 @@ public class VideoMutedExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>VideoMutedExtensionElement</tt>.
+     * Creates new instance of <code>VideoMutedExtensionElement</code>.
      */
     public VideoMutedExtension()
     {
@@ -48,7 +48,7 @@ public class VideoMutedExtension extends AbstractExtensionElement
     /**
      * Check whether or not user's video is in muted status.
      *
-     * @return <tt>true</tt> if muted, <tt>false</tt> if unmuted or <tt>null</tt> if no valid info
+     * @return <code>true</code> if muted, <code>false</code> if unmuted or <code>null</code> if no valid info
      * found in the extension body.
      */
     public Boolean isVideoMuted()
@@ -59,7 +59,7 @@ public class VideoMutedExtension extends AbstractExtensionElement
     /**
      * Sets user's video muted status.
      *
-     * @param videoMuted <tt>true</tt> or <tt>false</tt> which indicates video muted status of the user.
+     * @param videoMuted <code>true</code> or <code>false</code> which indicates video muted status of the user.
      */
     public void setVideoMuted(Boolean videoMuted)
     {

@@ -53,7 +53,7 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int WAITING = 5;
 
     /**
-     * Indicates that the file transfer is in negotiation.
+     * Indicates that the file transfer is in protocol negotiation phase.
      */
     public static final int PREPARING = 6;
 

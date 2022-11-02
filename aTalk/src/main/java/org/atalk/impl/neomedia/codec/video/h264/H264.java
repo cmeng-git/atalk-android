@@ -7,7 +7,7 @@ public class H264
 {
     /**
      * The bytes to prefix any NAL unit to be output by this
-     * <tt>DePacketizer</tt> and given to a H.264 decoder. Includes
+     * <code>DePacketizer</code> and given to a H.264 decoder. Includes
      * start_code_prefix_one_3bytes. According to "B.1 Byte stream NAL unit
      * syntax and semantics" of "ITU-T Rec. H.264 Advanced video coding for
      * generic audiovisual services", zero_byte "shall be present" when "the

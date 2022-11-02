@@ -766,8 +766,8 @@ public class MediaHandler extends PropertyChangeNotifier
             if (srtpControl == null) {
 
                 /*
-                 * The default SrtpControl is currently ZRTP without the hello-hash. It needs to
-                 * be linked to the srtpControls Map.
+                 * The default SrtpControl is currently ZRTP without the hello-hash.
+                 * It needs to be linked to the srtpControls Map.
                  */
 
                 final AccountID accountID = callPeerMediaHandler.getPeer().getProtocolProvider().getAccountID();

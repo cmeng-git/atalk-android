@@ -43,7 +43,7 @@ import java.util.Locale;
 import timber.log.Timber;
 
 /**
- * GeoLocationHelper service that retrieve current location update, and broadcast to the intended receiver.
+ * GeoLocation service that retrieve current location update, and broadcast to the intended receiver.
  * Use the best available Location provider on the device in onCreate()
  *
  * @author Eng Chong Meng
@@ -119,11 +119,14 @@ public class LocationBgService extends Service implements LocationListenerCompat
         Timber.i("Requesting location updates");
         startFallbackToLastLocationTimer();
 
+        // Use higher accuracy location fix for SINGLE_FIX request
+        // int quality = (GeoConstants.SINGLE_FIX == mLocationMode) ? LocationRequestCompat.QUALITY_HIGH_ACCURACY :
+        //        LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY;
         try {
             LocationRequestCompat locationRequest = new LocationRequestCompat.Builder(mLocationUpdateMinTime)
                     .setMinUpdateIntervalMillis(mLocationUpdateMinTime)
                     .setMinUpdateDistanceMeters(mLocationUpdateMinDistance)
-                    .setQuality(LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
+                    .setQuality( LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
                     .build();
             LocationManagerCompat.requestLocationUpdates(mLocationManager, mProvider, locationRequest, this, Looper.myLooper());
         } catch (SecurityException unlikely) {
@@ -183,17 +186,21 @@ public class LocationBgService extends Service implements LocationListenerCompat
     {
         // Timber.d("New location received: %s", location);
         if (location != null) {
+            // force to a certain location for testing
+            // ocation.setLatitude(34.687274);
+            // location.setLongitude(135.525453);
+            // location.setAltitude(12.023f);
+
             GeoPreferenceUtil.getInstance(this).saveLastKnownLocation(location);
+            String locAddress = null;
+            if (mAddressRequest) {
+                locAddress = getLocationAddress(location);
+            }
 
             // Notify anyone listening for broadcasts about the new location.
             Intent intent = new Intent();
             intent.setAction(GeoConstants.INTENT_LOCATION_RECEIVED);
             intent.putExtra(GeoIntentKey.LOCATION, location);
-
-            String locAddress = null;
-            if (mAddressRequest) {
-                locAddress = getLocationAddress(location);
-            }
             intent.putExtra(GeoIntentKey.ADDRESS, locAddress);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
@@ -231,7 +238,7 @@ public class LocationBgService extends Service implements LocationListenerCompat
                 }
                 locAddress = TextUtils.join(" \n", addressFragments);
             }
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             Timber.e("Get location address: %s", e.getMessage());
         }
         return locAddress;

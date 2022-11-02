@@ -28,7 +28,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>PullBufferStream</tt> which read an rtpdump file to generate a RTP stream from
+ * Implements a <code>PullBufferStream</code> which read an rtpdump file to generate a RTP stream from
  * the payloads recorded in a rtpdump file.
  *
  * @author Thomas Kuntz
@@ -36,33 +36,33 @@ import timber.log.Timber;
 public class RtpdumpStream extends AbstractVideoPullBufferStream<DataSource>
 {
     /**
-     * The <tt>RawPacketScheduler</tt> responsible for throttling our RTP packet reading.
+     * The <code>RawPacketScheduler</code> responsible for throttling our RTP packet reading.
      */
     private final RawPacketScheduler rawPacketScheduler;
 
     /**
-     * Boolean indicating if the last call to <tt>doRead</tt> return a marked rtp packet (to
-     * know if <tt>timestamp</tt> needs to be updated).
+     * Boolean indicating if the last call to <code>doRead</code> return a marked rtp packet (to
+     * know if <code>timestamp</code> needs to be updated).
      */
     private boolean lastReadWasMarked = true;
 
     /**
-     * The <tt>RtpdumpFileReader</tt> used by this stream to get the rtp payload.
+     * The <code>RtpdumpFileReader</code> used by this stream to get the rtp payload.
      */
     private RtpdumpFileReader rtpFileReader;
 
     /**
-     * The timestamp to use for the timestamp of the next <tt>Buffer</tt> filled in
+     * The timestamp to use for the timestamp of the next <code>Buffer</code> filled in
      * {@link #doRead(javax.media.Buffer)}
      */
     private long timestamp;
 
     /**
-     * Initializes a new <tt>RtpdumpStream</tt> instance
+     * Initializes a new <code>RtpdumpStream</code> instance
      *
-     * @param dataSource the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-     * its <tt>streams</tt>
-     * @param formatControl the <tt>FormatControl</tt> of the new instance which is to specify the format in which
+     * @param dataSource the <code>DataSource</code> which is creating the new instance so that it becomes one of
+     * its <code>streams</code>
+     * @param formatControl the <code>FormatControl</code> of the new instance which is to specify the format in which
      * it is to provide its media data
      */
     RtpdumpStream(DataSource dataSource, FormatControl formatControl)
@@ -91,11 +91,11 @@ public class RtpdumpStream extends AbstractVideoPullBufferStream<DataSource>
     }
 
     /**
-     * Reads available media data from this instance into a specific <tt>Buffer</tt>.
+     * Reads available media data from this instance into a specific <code>Buffer</code>.
      *
-     * @param buffer the <tt>Buffer</tt> to write the available media data into
+     * @param buffer the <code>Buffer</code> to write the available media data into
      * @throws IOException if an I/O error has prevented the reading of available media data from this instance
-     * into the specified <tt>Buffer</tt>
+     * into the specified <code>Buffer</code>
      */
     @Override
     protected void doRead(Buffer buffer)

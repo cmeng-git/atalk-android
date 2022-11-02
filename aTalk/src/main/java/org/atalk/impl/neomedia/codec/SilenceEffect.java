@@ -13,8 +13,8 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * An <tt>Effect</tt> which detects discontinuities in an audio stream by monitoring the input
- * <tt>Buffer</tt>s' timestamps and lengths, and inserts silence to account for missing data.
+ * An <code>Effect</code> which detects discontinuities in an audio stream by monitoring the input
+ * <code>Buffer</code>s' timestamps and lengths, and inserts silence to account for missing data.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -22,19 +22,19 @@ import timber.log.Timber;
 public class SilenceEffect extends AbstractCodec2 implements Effect
 {
     /**
-     * The indicator which determines whether <tt>SilenceEffect</tt> instances are to perform the
-     * copying of the data from input <tt>Buffer</tt>s to output <tt>Buffer</tt>s themselves (e.g.
+     * The indicator which determines whether <code>SilenceEffect</code> instances are to perform the
+     * copying of the data from input <code>Buffer</code>s to output <code>Buffer</code>s themselves (e.g.
      * using {@link System#arraycopy(Object, int, Object, int, int)}).
      */
     private static final boolean COPY_DATA_FROM_INPUT_TO_OUTPUT = true;
 
     /**
-     * The name of this <tt>PlugIn</tt>.
+     * The name of this <code>PlugIn</code>.
      */
     private static final String NAME = "Silence Effect";
 
     /**
-     * The maximum number of samples of silence to insert in a single <tt>Buffer</tt>.
+     * The maximum number of samples of silence to insert in a single <code>Buffer</code>.
      */
     private static final int MAX_SAMPLES_PER_PACKET = 48000;
 
@@ -49,12 +49,12 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     private static final int sampleSizeInBits = 16;
 
     /**
-     * Max samples of silence to insert between two <tt>Buffer</tt>s.
+     * Max samples of silence to insert between two <code>Buffer</code>s.
      */
     private static final int MAX_SAMPLES_SILENCE = sampleRate * 3; // 3sec
 
     /**
-     * The <tt>Format</tt>s supported as input/output by this <tt>Effect</tt>.
+     * The <code>Format</code>s supported as input/output by this <code>Effect</code>.
      */
     public static final Format[] SUPPORTED_FORMATS = new Format[]{new AudioFormat(
             AudioFormat.LINEAR,
@@ -66,14 +66,14 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     };
 
     /**
-     * Whether to use the input <tt>Buffer</tt>s' RTP timestamps (with
-     * <tt>Buffer.getRtpTimestamp()</tt>), or their "regular" timestamps (with
-     * <tt>Buffer.getTimestamp()</tt>).
+     * Whether to use the input <code>Buffer</code>s' RTP timestamps (with
+     * <code>Buffer.getRtpTimestamp()</code>), or their "regular" timestamps (with
+     * <code>Buffer.getTimestamp()</code>).
      */
     private final boolean useRtpTimestamp;
 
     /**
-     * The clock rate for the timestamps of input <tt>Buffer</tt>s (i.e. the number of units which
+     * The clock rate for the timestamps of input <code>Buffer</code>s (i.e. the number of units which
      * constitute one second).
      */
     private final int clockRate;
@@ -84,15 +84,15 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     private int totalSamplesInserted = 0;
 
     /**
-     * The timestamp (either the RTP timestamp, or the <tt>Buffer</tt>'s timestamp, according to the
-     * value of {@link #useRtpTimestamp}) of the last sample that was output by this <tt>Codec</tt>.
+     * The timestamp (either the RTP timestamp, or the <code>Buffer</code>'s timestamp, according to the
+     * value of {@link #useRtpTimestamp}) of the last sample that was output by this <code>Codec</code>.
      */
     private long lastOutputTimestamp = Buffer.TIME_UNKNOWN;
 
     private Listener listener = null;
 
     /**
-     * Initializes a new <tt>SilenceEffect</tt>, which is to use the input <tt>Buffer</tt>s'
+     * Initializes a new <code>SilenceEffect</code>, which is to use the input <code>Buffer</code>s'
      * timestamps (as opposed to using their RTP timestamps).
      */
     public SilenceEffect()
@@ -105,7 +105,7 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     }
 
     /**
-     * Initializes a new <tt>SilenceEffect</tt>, which is to use the input <tt>Buffer</tt>s' RTP
+     * Initializes a new <code>SilenceEffect</code>, which is to use the input <code>Buffer</code>s' RTP
      * timestamps.
      *
      * @param rtpClockRate the clock rate that the RTP timestamps use.
@@ -136,12 +136,12 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     }
 
     /**
-     * Processes <tt>inBuf</tt>, and either copies its data to <tt>outBuf</tt> or copies silence
+     * Processes <code>inBuf</code>, and either copies its data to <code>outBuf</code> or copies silence
      *
-     * @param inBuf the input <tt>Buffer</tt>.
-     * @param outBuf the output <tt>Buffer</tt>.
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuf</tt>'s date was copied to <tt>outBuf</tt>,
-     * and <tt>INPUT_BUFFER_NOT_CONSUMED</tt> if silence was inserted instead.
+     * @param inBuf the input <code>Buffer</code>.
+     * @param outBuf the output <code>Buffer</code>.
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuf</code>'s date was copied to <code>outBuf</code>,
+     * and <code>INPUT_BUFFER_NOT_CONSUMED</code> if silence was inserted instead.
      */
     @Override
     protected int doProcess(Buffer inBuf, Buffer outBuf)
@@ -239,15 +239,15 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     }
 
     /**
-     * Returns the timestamp obtained by adding <tt>samplesToAdd</tt> samples (using a sample rate
-     * of <tt>this.sampleRate</tt> per second) to timestamp (with a clock rate of
-     * <tt>this.clockRate</tt> per second).
+     * Returns the timestamp obtained by adding <code>samplesToAdd</code> samples (using a sample rate
+     * of <code>this.sampleRate</code> per second) to timestamp (with a clock rate of
+     * <code>this.clockRate</code> per second).
      *
      * @param oldTimestamp the timestamp to which to add.
      * @param samplesToAdd the number of samples to add.
-     * @return the timestamp obtained by adding <tt>samplesToAdd</tt> samples (using a sample rate
-     * of <tt>this.sampleRate</tt> per second) to timestamp (with a clock rate of
-     * <tt>this.clockRate</tt> per second).
+     * @return the timestamp obtained by adding <code>samplesToAdd</code> samples (using a sample rate
+     * of <code>this.sampleRate</code> per second) to timestamp (with a clock rate of
+     * <code>this.clockRate</code> per second).
      */
     private long calculateTimestamp(long oldTimestamp, long samplesToAdd)
     {
@@ -264,12 +264,12 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     }
 
     /**
-     * Fills the data of <tt>buf</tt> to at most <tt>samples</tt> samples of silence. Returns the
+     * Fills the data of <code>buf</code> to at most <code>samples</code> samples of silence. Returns the
      * actual number of samples used.
      *
-     * @param buf the <tt>Buffer</tt> to fill with silence
+     * @param buf the <code>Buffer</code> to fill with silence
      * @param samples the number of samples of silence to fill.
-     * @return the number of samples of silence added in <tt>buf</tt>.
+     * @return the number of samples of silence added in <code>buf</code>.
      */
     private int setSilence(Buffer buf, int samples)
     {
@@ -285,9 +285,9 @@ public class SilenceEffect extends AbstractCodec2 implements Effect
     }
 
     /**
-     * Resets the state of this <tt>SilenceEffect</tt>.
+     * Resets the state of this <code>SilenceEffect</code>.
      *
-     * TODO: is it appropriate to override the <tt>reset()</tt> method?
+     * TODO: is it appropriate to override the <code>reset()</code> method?
      */
     public void resetSilence()
     {

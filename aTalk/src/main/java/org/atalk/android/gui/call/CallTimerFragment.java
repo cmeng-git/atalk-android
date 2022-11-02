@@ -113,7 +113,7 @@ public class CallTimerFragment extends OSGiFragment
             try {
                 this.callDurationTimer.schedule(new CallTimerTask(), new Date(System.currentTimeMillis()), 1000);
                 this.isCallTimerStarted = true;
-            } catch (IllegalStateException e) {  // Timer already cancelled.
+            } catch (IllegalStateException e) {  // Timer already canceled.
                 Timber.w("Start call timber error: %s", e.getMessage());
             }
         }

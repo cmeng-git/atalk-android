@@ -20,7 +20,7 @@ import javax.media.format.AudioFormat;
 import androidx.annotation.NonNull;
 
 /**
- * Implements an <tt>AudioSystem</tt> using the native PulseAudio API/library.
+ * Implements an <code>AudioSystem</code> using the native PulseAudio API/library.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -28,7 +28,7 @@ import androidx.annotation.NonNull;
 public class PulseAudioSystem extends AudioSystem
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying PulseAudio <tt>CaptureDevice</tt>s.
+     * The protocol of the <code>MediaLocator</code>s identifying PulseAudio <code>CaptureDevice</code>s.
      */
     private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_PULSEAUDIO;
 
@@ -43,7 +43,7 @@ public class PulseAudioSystem extends AudioSystem
     public static final String MEDIA_ROLE_PHONE = "phone";
 
     /**
-     * The human-readable name of the <tt>CaptureDeviceInfo</tt> which is to represent the
+     * The human-readable name of the <code>CaptureDeviceInfo</code> which is to represent the
      * automatic, default PulseAudio device to be used in the absence of a specification of a PulseAudio device.
      */
     private static final String NULL_DEV_CAPTURE_DEVICE_INFO_NAME = "Default";
@@ -52,7 +52,7 @@ public class PulseAudioSystem extends AudioSystem
      * Pause or resume the playback of a specific PulseAudio stream temporarily.
      *
      * @param stream the PulseAudio stream to pause or resume the playback of
-     * @param b <tt>true</tt> to pause or <tt>false</tt> to resume the playback of the specified <tt>stream</tt>
+     * @param b <code>true</code> to pause or <code>false</code> to resume the playback of the specified <code>stream</code>
      */
     public static void corkStream(long stream, boolean b)
             throws IOException
@@ -69,12 +69,12 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Returns the one and only instance of <tt>PulseAudioSystem</tt> known to the
-     * <tt>AudioSystem</tt> framework.
+     * Returns the one and only instance of <code>PulseAudioSystem</code> known to the
+     * <code>AudioSystem</code> framework.
      *
-     * @return the one and only instance of <tt>PulseAudioSystem</tt> known to the
-     * <tt>AudioSystem</tt> framework or <tt>null</tt> if no such system is known to the
-     * <tt>AudioSystem</tt> framework
+     * @return the one and only instance of <code>PulseAudioSystem</code> known to the
+     * <code>AudioSystem</code> framework or <code>null</code> if no such system is known to the
+     * <code>AudioSystem</code> framework
      */
     public static PulseAudioSystem getPulseAudioSystem()
     {
@@ -95,12 +95,12 @@ public class PulseAudioSystem extends AudioSystem
     private long context;
 
     /**
-     * The PulseAudio main loop associated with this <tt>PulseAudioSystem</tt>.
+     * The PulseAudio main loop associated with this <code>PulseAudioSystem</code>.
      */
     private long mainloop;
 
     /**
-     * Initializes a new <tt>PulseAudioSystem</tt> instance.
+     * Initializes a new <code>PulseAudioSystem</code> instance.
      *
      * @throws Exception if anything goes wrong while initializing the new instance
      */
@@ -179,8 +179,8 @@ public class PulseAudioSystem extends AudioSystem
     /**
      * {@inheritDoc}
      *
-     * Overrides the implementation provided by <tt>AudioSystem</tt> because the PulseAudio
-     * <tt>Renderer</tt> implementation does not follow the convention of <tt>AudioSystem</tt>.
+     * Overrides the implementation provided by <code>AudioSystem</code> because the PulseAudio
+     * <code>Renderer</code> implementation does not follow the convention of <code>AudioSystem</code>.
      */
     @Override
     public Renderer createRenderer(boolean playback)
@@ -221,9 +221,9 @@ public class PulseAudioSystem extends AudioSystem
      * @param mediaName the human-readable name of the new PulseAudio stream
      * @param mediaRole the PulseAudio logic role of the new stream
      * @return a new PulseAudio stream which is to input or output audio at the specified
-     * <tt>sampleRate</tt>, with the specified number of <tt>channels</tt>, to be associated
-     * with the specified human-readable <tt>mediaName</tt>, and have the specified
-     * PulseAudio logic <tt>mediaRole</tt>
+     * <code>sampleRate</code>, with the specified number of <code>channels</code>, to be associated
+     * with the specified human-readable <code>mediaName</code>, and have the specified
+     * PulseAudio logic <code>mediaRole</code>
      */
     public long createStream(int sampleRate, int channels, String mediaName, String mediaRole)
             throws RuntimeException
@@ -356,7 +356,7 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Locks the PulseAudio event loop object associated with this <tt>PulseAudioSystem</tt>,
+     * Locks the PulseAudio event loop object associated with this <code>PulseAudioSystem</code>,
      * effectively blocking the PulseAudio event loop thread from processing events. May be used to
      * enforce exclusive access to all PulseAudio objects attached to the PulseAudio event loop. The
      * lock is recursive. The method may not be called inside the PulseAudio event loop thread.
@@ -369,10 +369,10 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Populates a specific <tt>pa_proplist</tt> which is to be used with a <tt>pa_context</tt> with
+     * Populates a specific <code>pa_proplist</code> which is to be used with a <code>pa_context</code> with
      * properties such as the application name and version.
      *
-     * @param proplist the <tt>pa_proplist</tt> which is to be populated with <tt>pa_context</tt>-related
+     * @param proplist the <code>pa_proplist</code> which is to be populated with <code>pa_context</code>-related
      * properties such as the application name and version
      */
     private void populateContextProplist(long proplist)
@@ -392,9 +392,9 @@ public class PulseAudioSystem extends AudioSystem
     /**
      * Signals all threads waiting for a signalling event in {@link #waitMainloop()}.
      *
-     * @param waitForAccept <tt>true</tt> to not return before the signal is accepted by a
-     * <tt>pa_threaded_mainloop_accept()<tt>; otherwise,
-     * <tt>false</tt>
+     * @param waitForAccept <code>true</code> to not return before the signal is accepted by a
+     * <code>pa_threaded_mainloop_accept()<code>; otherwise,
+     * <code>false</code>
      */
     public void signalMainloop(boolean waitForAccept)
     {
@@ -402,16 +402,16 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Called back from <tt>pa_context_get_sink_info_list()</tt> to report information about a
+     * Called back from <code>pa_context_get_sink_info_list()</code> to report information about a
      * specific sink.
      *
      * @param context the connection context for asynchronous communication with the PulseAudio server which
-     * is reporting the <tt>sinkInfo</tt>
+     * is reporting the <code>sinkInfo</code>
      * @param sinkInfo the information about the sink being reported
-     * @param deviceList the list of <tt>CaptureDeviceInfo</tt>s which reperesents existing devices and into
-     * which the callback is represent the <tt>sinkInfo</tt>
-     * @param formatList the list of <tt>Format</tt>s supported by the various <tt>CaptureDeviceInfo</tt>s in
-     * <tt>deviceList</tt> and into which the callback is to represent the <tt>sinkInfo</tt>
+     * @param deviceList the list of <code>CaptureDeviceInfo</code>s which reperesents existing devices and into
+     * which the callback is represent the <code>sinkInfo</code>
+     * @param formatList the list of <code>Format</code>s supported by the various <code>CaptureDeviceInfo</code>s in
+     * <code>deviceList</code> and into which the callback is to represent the <code>sinkInfo</code>
      */
     private void sinkInfoListCb(long context, long sinkInfo, List<CaptureDeviceInfo2> deviceList,
             List<Format> formatList)
@@ -431,17 +431,17 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Called back from <tt>pa_context_get_source_info_list()</tt> to report information about a
+     * Called back from <code>pa_context_get_source_info_list()</code> to report information about a
      * specific source.
      *
      * @param context the connection context for asynchronous communication with the PulseAudio server which
-     * is reporting the <tt>sourceInfo</tt>
+     * is reporting the <code>sourceInfo</code>
      * @param sourceInfo the information about the source being reported
-     * @param deviceList the list of <tt>CaptureDeviceInfo</tt>s which reperesents existing devices and into
-     * which the callback is represent the <tt>sourceInfo</tt>
-     * @param formatList the list of <tt>Format</tt>s supported by the various <tt>CaptureDeviceInfo</tt>s in
-     * <tt>deviceList</tt> and into which the callback is to represent the
-     * <tt>sourceInfo</tt>
+     * @param deviceList the list of <code>CaptureDeviceInfo</code>s which reperesents existing devices and into
+     * which the callback is represent the <code>sourceInfo</code>
+     * @param formatList the list of <code>Format</code>s supported by the various <code>CaptureDeviceInfo</code>s in
+     * <code>deviceList</code> and into which the callback is to represent the
+     * <code>sourceInfo</code>
      */
     private void sourceInfoListCb(long context, long sourceInfo,
             List<CaptureDeviceInfo2> deviceList, List<Format> formatList)
@@ -486,11 +486,11 @@ public class PulseAudioSystem extends AudioSystem
 
     /**
      * Starts a new PulseAudio event loop thread and associates it with this
-     * <tt>PulseAudioSystem</tt>.
+     * <code>PulseAudioSystem</code>.
      *
      * @throws RuntimeException if a PulseAudio event loop thread exists and is associated with this
-     * <tt>PulseAudioSystem</tt> or a new PulseAudio event loop thread initialized for the
-     * purposes of association with this <tt>PulseAudioSystem</tt> failed to start
+     * <code>PulseAudioSystem</code> or a new PulseAudio event loop thread initialized for the
+     * purposes of association with this <code>PulseAudioSystem</code> failed to start
      */
     private void startMainloop()
     {
@@ -513,7 +513,7 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Terminates the PulseAudio event loop thread associated with this <tt>PulseAudioSystem</tt>
+     * Terminates the PulseAudio event loop thread associated with this <code>PulseAudioSystem</code>
      * cleanly. Make sure to unlock the PulseAudio main loop object before calling the method.
      */
     private void stopMainloop()
@@ -529,11 +529,11 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Returns a human-readable <tt>String</tt> representation of this <tt>PulseAudioSystem</tt>.
+     * Returns a human-readable <code>String</code> representation of this <code>PulseAudioSystem</code>.
      * Always returns &quot;PulseAudio&quot;.
      *
-     * @return &quot;PulseAudio&quot; as a human-readable <tt>String</tt> representation of this
-     * <tt>PulseAudioSystem</tt>
+     * @return &quot;PulseAudio&quot; as a human-readable <code>String</code> representation of this
+     * <code>PulseAudioSystem</code>
      */
     @NonNull
     @Override
@@ -543,7 +543,7 @@ public class PulseAudioSystem extends AudioSystem
     }
 
     /**
-     * Unlocks the PulseAudio event look object associated with this <tt>PulseAudioSystem</tt>,
+     * Unlocks the PulseAudio event look object associated with this <code>PulseAudioSystem</code>,
      * inverse of {@link #lockMainloop()}.
      */
     public void unlockMainloop()
@@ -553,11 +553,11 @@ public class PulseAudioSystem extends AudioSystem
 
     /**
      * Waits for a specific PulseAudio context to get into a specific state,
-     * <tt>PA_CONTEXT_FAILED</tt>, or <tt>PA_CONTEXT_TERMINATED</tt>.
+     * <code>PA_CONTEXT_FAILED</code>, or <code>PA_CONTEXT_TERMINATED</code>.
      *
      * @param context the PulseAudio context to wait for
-     * @param stateToWaitFor the PulseAudio state of the specified <tt>context</tt> to wait for
-     * @return the state of the specified <tt>context</tt> which caused the method to return
+     * @param stateToWaitFor the PulseAudio state of the specified <code>context</code> to wait for
+     * @return the state of the specified <code>context</code> which caused the method to return
      */
     private int waitForContextState(long context, int stateToWaitFor)
     {
@@ -577,11 +577,11 @@ public class PulseAudioSystem extends AudioSystem
 
     /**
      * Waits for a specific PulseAudio stream to get into a specific state,
-     * <tt>PA_STREAM_FAILED</tt>, or <tt>PA_STREAM_TERMINATED</tt>.
+     * <code>PA_STREAM_FAILED</code>, or <code>PA_STREAM_TERMINATED</code>.
      *
      * @param stream the PulseAudio stream to wait for
-     * @param stateToWaitFor the PulseAudio state of the specified <tt>stream</tt> to wait for
-     * @return the state of the specified <tt>stream</tt> which caused the method to return
+     * @param stateToWaitFor the PulseAudio state of the specified <code>stream</code> to wait for
+     * @return the state of the specified <code>stream</code> which caused the method to return
      */
     public int waitForStreamState(long stream, int stateToWaitFor)
     {
@@ -601,7 +601,7 @@ public class PulseAudioSystem extends AudioSystem
 
     /**
      * Wait for an event to be signalled by the PulseAudio event loop thread associated with this
-     * <tt>PulseAudioSystem</tt>.
+     * <code>PulseAudioSystem</code>.
      */
     public void waitMainloop()
     {

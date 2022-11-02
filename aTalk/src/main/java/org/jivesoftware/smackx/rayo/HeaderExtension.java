@@ -1,7 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,7 +39,7 @@ public class HeaderExtension extends AbstractExtensionElement
     public static final String VALUE_ATTR_NAME = "value";
 
     /**
-     * Creates new instance of <tt>HeaderPacketExtension</tt>.
+     * Creates new instance of <code>HeaderPacketExtension</code>.
      */
     public HeaderExtension()
     {

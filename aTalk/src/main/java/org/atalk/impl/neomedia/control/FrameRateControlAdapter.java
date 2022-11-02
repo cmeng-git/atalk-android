@@ -11,17 +11,17 @@ import javax.media.Control;
 import javax.media.control.FrameRateControl;
 
 /**
- * Provides a default implementation of <tt>FrameRateControl</tt>.
+ * Provides a default implementation of <code>FrameRateControl</code>.
  *
  * @author Lyubomir Marinov
  */
 public class FrameRateControlAdapter implements FrameRateControl
 {
 	/**
-	 * Gets the UI <tt>Component</tt> associated with this <tt>Control</tt> object.
-	 * <tt>FrameRateControlAdapter</tt> always returns <tt>null</tt>.
+	 * Gets the UI <code>Component</code> associated with this <code>Control</code> object.
+	 * <code>FrameRateControlAdapter</code> always returns <code>null</code>.
 	 *
-	 * @return the UI <tt>Component</tt> associated with this <tt>Control</tt> object
+	 * @return the UI <code>Component</code> associated with this <code>Control</code> object
 	 * @see Control#getControlComponent()
 	 */
 	public Component getControlComponent()
@@ -30,10 +30,10 @@ public class FrameRateControlAdapter implements FrameRateControl
 	}
 
 	/**
-	 * Gets the current output frame rate. <tt>FrameRateControlAdapter</tt> always returns
-	 * <tt>-1</tt>.
+	 * Gets the current output frame rate. <code>FrameRateControlAdapter</code> always returns
+	 * <code>-1</code>.
 	 *
-	 * @return the current output frame rate if it is known; otherwise, <tt>-1</tt>
+	 * @return the current output frame rate if it is known; otherwise, <code>-1</code>
 	 * @see FrameRateControl#getFrameRate()
 	 */
 	public float getFrameRate()
@@ -42,10 +42,10 @@ public class FrameRateControlAdapter implements FrameRateControl
 	}
 
 	/**
-	 * Gets the maximum supported output frame rate. <tt>FrameRateControlAdapter</tt> always
-	 * returns <tt>-1</tt>.
+	 * Gets the maximum supported output frame rate. <code>FrameRateControlAdapter</code> always
+	 * returns <code>-1</code>.
 	 *
-	 * @return the maximum supported output frame rate if it is known; otherwise, <tt>-1</tt>
+	 * @return the maximum supported output frame rate if it is known; otherwise, <code>-1</code>
 	 * @see FrameRateControl#getMaxSupportedFrameRate()
 	 */
 	public float getMaxSupportedFrameRate()
@@ -54,11 +54,11 @@ public class FrameRateControlAdapter implements FrameRateControl
 	}
 
 	/**
-	 * Gets the default/preferred output frame rate. <tt>FrameRateControlAdapter</tt> always
+	 * Gets the default/preferred output frame rate. <code>FrameRateControlAdapter</code> always
 	 * returns
-	 * <tt>-1</tt>.
+	 * <code>-1</code>.
 	 *
-	 * @return the default/preferred output frame rate if it is known; otherwise, <tt>-1</tt>
+	 * @return the default/preferred output frame rate if it is known; otherwise, <code>-1</code>
 	 * @see FrameRateControl#getPreferredFrameRate()
 	 */
 	public float getPreferredFrameRate()
@@ -67,11 +67,11 @@ public class FrameRateControlAdapter implements FrameRateControl
 	}
 
 	/**
-	 * Sets the output frame rate. <tt>FrameRateControlAdapter</tt> always returns <tt>-1</tt>.
+	 * Sets the output frame rate. <code>FrameRateControlAdapter</code> always returns <code>-1</code>.
 	 *
 	 * @param frameRate
 	 * 		the output frame rate to change the current one to
-	 * @return the actual current output frame rate or <tt>-1</tt> if it is unknown or not
+	 * @return the actual current output frame rate or <code>-1</code> if it is unknown or not
 	 * controllable
 	 * @see FrameRateControl#setFrameRate(float)
 	 */

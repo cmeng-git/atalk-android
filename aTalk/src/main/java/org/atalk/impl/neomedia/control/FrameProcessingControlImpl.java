@@ -10,10 +10,10 @@ import java.awt.Component;
 import javax.media.control.FrameProcessingControl;
 
 /**
- * Provides a base implementation of <tt>FrameProcessingControl</tt> which keeps track of the
- * <tt>minimalProcessing</tt> property, switches its value to <tt>true</tt> when it's notified that
- * its owner is at least one frame behind and doesn't implement the <tt>controlComponent</tt> and
- * <tt>framesDropped</tt> properties.
+ * Provides a base implementation of <code>FrameProcessingControl</code> which keeps track of the
+ * <code>minimalProcessing</code> property, switches its value to <code>true</code> when it's notified that
+ * its owner is at least one frame behind and doesn't implement the <code>controlComponent</code> and
+ * <code>framesDropped</code> properties.
  *
  * @author Lyubomir Marinov
  */
@@ -21,16 +21,16 @@ public class FrameProcessingControlImpl implements FrameProcessingControl
 {
 
 	/**
-	 * The indicator which determines whether the owner of this <tt>FrameProcessingControl</tt> is
+	 * The indicator which determines whether the owner of this <code>FrameProcessingControl</code> is
 	 * to perform only the minimum operations necessary to keep it working normally but without
 	 * producing output.
 	 */
 	private boolean minimalProcessing = false;
 
 	/**
-	 * Gets the UI <tt>Component</tt> associated with this <tt>Control</tt> object.
+	 * Gets the UI <code>Component</code> associated with this <code>Control</code> object.
 	 *
-	 * @return the UI <tt>Component</tt> associated with this <tt>Control</tt> object
+	 * @return the UI <code>Component</code> associated with this <code>Control</code> object
 	 */
 	public Component getControlComponent()
 	{
@@ -54,12 +54,12 @@ public class FrameProcessingControlImpl implements FrameProcessingControl
 	}
 
 	/**
-	 * Determines whether the owner of this <tt>FrameProcessingControl</tt> is to perform only the
+	 * Determines whether the owner of this <code>FrameProcessingControl</code> is to perform only the
 	 * minimum operations necessary to keep it working normally but without producing output.
 	 *
-	 * @return <tt>true</tt> if the owner of this <tt>FrameProcessingControl</tt> is to perform
+	 * @return <code>true</code> if the owner of this <code>FrameProcessingControl</code> is to perform
 	 * only the minimum operations necessary to keep it working normally but without producing
-	 * output; otherwise, <tt>false</tt>
+	 * output; otherwise, <code>false</code>
 	 */
 	public boolean isMinimalProcessing()
 	{
@@ -67,12 +67,12 @@ public class FrameProcessingControlImpl implements FrameProcessingControl
 	}
 
 	/**
-	 * Sets the number of frames the owner of this <tt>FrameProcessingControl</tt> is lagging
-	 * behind. It is a hint to do minimal processing for the next <tt>framesBehind</tt> frames in
+	 * Sets the number of frames the owner of this <code>FrameProcessingControl</code> is lagging
+	 * behind. It is a hint to do minimal processing for the next <code>framesBehind</code> frames in
 	 * order to catch up.
 	 *
 	 * @param framesBehind
-	 * 		the number of frames the owner of this <tt>FrameProcessingControl</tt> is lagging
+	 * 		the number of frames the owner of this <code>FrameProcessingControl</code> is lagging
 	 * 		behind
 	 */
 	public void setFramesBehind(float framesBehind)
@@ -82,11 +82,11 @@ public class FrameProcessingControlImpl implements FrameProcessingControl
 
 	/**
 	 * Sets the indicator which determines whether the owner of this
-	 * <tt>FrameProcessingControl</tt> is to perform only the minimal operations necessary to
+	 * <code>FrameProcessingControl</code> is to perform only the minimal operations necessary to
 	 * keep it working normally but without producing output.
 	 *
 	 * @param minimalProcessing
-	 * 		<tt>true</tt> if minimal processing mode is to be turned on or <tt>false</tt> if
+	 * 		<code>true</code> if minimal processing mode is to be turned on or <code>false</code> if
 	 * 		minimal processing mode is to be turned off
 	 * @return the actual minimal processing mode in effect after the set attempt
 	 */

@@ -26,7 +26,7 @@ public class DescriptionProvider extends ExtensionElementProvider<DescriptionExt
      * opening element of the packet extension. As required by the smack API, at the end of the
      * method call, the parser will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>description</tt> element.
+     * @param parser an XML parser positioned at the opening <code>description</code> element.
      * @return a new {@link DescriptionExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */

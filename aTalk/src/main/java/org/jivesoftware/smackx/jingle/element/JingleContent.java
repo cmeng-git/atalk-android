@@ -126,6 +126,11 @@ public final class JingleContent extends AbstractXmlElement
         return attributeVal == null ? null : Senders.valueOf(attributeVal);
     }
 
+    /**
+     * Gets the description for this Jingle content.
+     *
+     * @return The description.
+     */
     public JingleContentDescription getDescription()
     {
         return mDescription;
@@ -146,11 +151,6 @@ public final class JingleContent extends AbstractXmlElement
         return mSecurity;
     }
 
-    /**
-     * Gets the description for this Jingle content.
-     *
-     * @return The description.
-     */
 
     public void setSenders(Senders senders)
     {

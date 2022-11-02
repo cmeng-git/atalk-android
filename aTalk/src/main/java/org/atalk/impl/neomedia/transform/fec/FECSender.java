@@ -13,7 +13,7 @@ import org.atalk.service.neomedia.RawPacket;
 import timber.log.Timber;
 
 /**
- * <tt>PacketTransformer</tt> which adds ulpfec packets. Works for a specific SSRC.
+ * <code>PacketTransformer</code> which adds ulpfec packets. Works for a specific SSRC.
  *
  * @author Boris Grozev
  * @author Eng Chong Meng
@@ -21,7 +21,7 @@ import timber.log.Timber;
 class FECSender implements PacketTransformer
 {
     /**
-     * The single SSRC with which this <tt>FECSender</tt> works.
+     * The single SSRC with which this <code>FECSender</code> works.
      */
     private long ssrc;
 
@@ -31,7 +31,7 @@ class FECSender implements PacketTransformer
     private byte ulpfecPT;
 
     /**
-     * An ulpfec packet will be generated for every <tt>fecRate</tt> media packets. If set to 0, no
+     * An ulpfec packet will be generated for every <code>fecRate</code> media packets. If set to 0, no
      * ulpfec packets will be generated.
      */
     private int fecRate;
@@ -47,15 +47,15 @@ class FECSender implements PacketTransformer
     private int nbFec = 0;
 
     /**
-     * A fec packet, which will be sent once enough (that is <tt>fecRate</tt>) media packets have
+     * A fec packet, which will be sent once enough (that is <code>fecRate</code>) media packets have
      * passed, and have been "added" to the fec packet. Should be always non-null.
      */
     private FECPacket fecPacket;
 
     /**
-     * Creates a new <tt>FECSender</tt> instance.
+     * Creates a new <code>FECSender</code> instance.
      *
-     * @param ssrc the SSRC with which this <tt>FECSender</tt> will work.
+     * @param ssrc the SSRC with which this <code>FECSender</code> will work.
      * @param fecRate the rate at which to add ulpfec packets.
      * @param ulpfecPT the payload to use for ulpfec packets.
      */
@@ -96,12 +96,12 @@ class FECSender implements PacketTransformer
     }
 
     /**
-     * Processes <tt>pkt</tt> and, if <tt>fecRate</tt> packets have passed, creates a fec packet
-     * protecting the last <tt>fecRate</tt> media packets and adds this fec packet to <tt>pkts</tt>.
+     * Processes <code>pkt</code> and, if <code>fecRate</code> packets have passed, creates a fec packet
+     * protecting the last <code>fecRate</code> media packets and adds this fec packet to <code>pkts</code>.
      *
      * @param pkt media packet to process.
      * @param pkts array to try to use for output.
-     * @return an array that contains <tt>pkt</tt> (after processing) and possible an ulpfec packet
+     * @return an array that contains <code>pkt</code> (after processing) and possible an ulpfec packet
      * if one was added.
      */
     private RawPacket[] transformSingle(RawPacket pkt, RawPacket[] pkts)
@@ -162,7 +162,7 @@ class FECSender implements PacketTransformer
     }
 
     /**
-     * Updates the <tt>fecRate</tt> property. Re-allocates buffers, if needed.
+     * Updates the <code>fecRate</code> property. Re-allocates buffers, if needed.
      *
      * @param newFecRate the new rate to set.
      */
@@ -176,8 +176,8 @@ class FECSender implements PacketTransformer
     }
 
     /**
-     * A <tt>RawPacket</tt> extension which represents an ulpfec packet. Allows
-     * for a media packet to be protected to be added via the <tt>addMedia()</tt>
+     * A <code>RawPacket</code> extension which represents an ulpfec packet. Allows
+     * for a media packet to be protected to be added via the <code>addMedia()</code>
      * method.
      *
      * The format of this packet (see RFC3350 and RFC5109) is as follows:
@@ -234,7 +234,7 @@ class FECSender implements PacketTransformer
         int lastAddedSeq = -1;
 
         /**
-         * This <tt>RawPacket</tt>'s buffer.
+         * This <code>RawPacket</code>'s buffer.
          */
         private byte[] buf;
 
@@ -265,7 +265,7 @@ class FECSender implements PacketTransformer
         private static final int FEC_HDR_LEN = 14;
 
         /**
-         * Creates a new instance, initialized with a buffer obtained using <tt>new</tt>.
+         * Creates a new instance, initialized with a buffer obtained using <code>new</code>.
          *
          * @param ssrc the SSRC
          */
@@ -280,7 +280,7 @@ class FECSender implements PacketTransformer
         }
 
         /**
-         * Adds a media packet to be protected by this <tt>FECPacket</tt>.
+         * Adds a media packet to be protected by this <code>FECPacket</code>.
          *
          * @param media the media packet to add.
          */

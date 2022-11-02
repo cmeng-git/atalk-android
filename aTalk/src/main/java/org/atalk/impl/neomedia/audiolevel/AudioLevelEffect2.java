@@ -12,7 +12,7 @@ import javax.media.format.AudioFormat;
 
 /**
  * An {@link javax.media.Effect} implementation which calculates audio levels based on the samples
- * in the <tt>Buffer</tt> and includes them in the buffer's <tt>headerExtension</tt> field in the
+ * in the <code>Buffer</code> and includes them in the buffer's <code>headerExtension</code> field in the
  * SSRC audio level format specified in RFC6464.
  * <p>
  * The class is based on {@link AudioLevelEffect}, but an important difference is that
@@ -27,8 +27,8 @@ import javax.media.format.AudioFormat;
 public class AudioLevelEffect2 extends ControlsAdapter implements Effect
 {
     /**
-     * The indicator which determines whether <tt>AudioLevelEffect</tt> instances are to perform
-     * the copying of the data from input <tt>Buffer</tt>s to output <tt>Buffer</tt>s themselves
+     * The indicator which determines whether <code>AudioLevelEffect</code> instances are to perform
+     * the copying of the data from input <code>Buffer</code>s to output <code>Buffer</code>s themselves
      * (e.g. using {@link System#arraycopy(Object, int, Object, int, int)}).
      */
     private static final boolean COPY_DATA_FROM_INPUT_TO_OUTPUT = true;
@@ -39,18 +39,18 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     private Format[] supportedAudioFormats;
 
     /**
-     * Whether this effect is enabled or disabled. If disabled, this <tt>Effect</tt> will set the
-     * RTP header extension of the output buffer to <tt>null</tt>.
+     * Whether this effect is enabled or disabled. If disabled, this <code>Effect</code> will set the
+     * RTP header extension of the output buffer to <code>null</code>.
      */
     private boolean enabled = false;
 
     /**
-     * The ID of the RTP header extension for SSRC audio levels, which is to be added by this <tt>Effect</tt>.
+     * The ID of the RTP header extension for SSRC audio levels, which is to be added by this <code>Effect</code>.
      */
     private byte rtpHeaderExtensionId = -1;
 
     /**
-     * Initializes a new <tt>AudioLevelEffect2</tt>.
+     * Initializes a new <code>AudioLevelEffect2</code>.
      */
     public AudioLevelEffect2()
     {
@@ -70,7 +70,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Lists all of the input formats that this codec accepts.
      *
-     * @return An array that contains the supported input <tt>Formats</tt>.
+     * @return An array that contains the supported input <code>Formats</code>.
      */
     public Format[] getSupportedInputFormats()
     {
@@ -80,8 +80,8 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Lists the output formats that this codec can generate.
      *
-     * @param input The <tt>Format</tt> of the data to be used as input to the plug-in.
-     * @return An array that contains the supported output <tt>Formats</tt>.
+     * @param input The <code>Format</code> of the data to be used as input to the plug-in.
+     * @return An array that contains the supported output <code>Formats</code>.
      */
     public Format[] getSupportedOutputFormats(Format input)
     {
@@ -101,8 +101,8 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Sets the format of the data to be input to this codec.
      *
-     * @param format The <tt>Format</tt> to be set.
-     * @return The <tt>Format</tt> that was set.
+     * @param format The <code>Format</code> to be set.
+     * @return The <code>Format</code> that was set.
      */
     public Format setInputFormat(Format format)
     {
@@ -112,8 +112,8 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Sets the format for the data this codec outputs.
      *
-     * @param format The <tt>Format</tt> to be set.
-     * @return The <tt>Format</tt> that was set.
+     * @param format The <code>Format</code> to be set.
+     * @return The <code>Format</code> that was set.
      */
     public Format setOutputFormat(Format format)
     {
@@ -123,9 +123,9 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Performs the media processing defined by this codec.
      *
-     * @param inputBuffer The <tt>Buffer</tt> that contains the media data to be processed.
-     * @param outputBuffer The <tt>Buffer</tt> in which to store the processed media data.
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the processing is successful.
+     * @param inputBuffer The <code>Buffer</code> that contains the media data to be processed.
+     * @param outputBuffer The <code>Buffer</code> in which to store the processed media data.
+     * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful.
      * @see PlugIn
      */
     public int process(Buffer inputBuffer, Buffer outputBuffer)
@@ -191,7 +191,7 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     /**
      * Gets the name of this plug-in as a human-readable string.
      *
-     * @return A <tt>String</tt> that contains the descriptive name of the plug-in.
+     * @return A <code>String</code> that contains the descriptive name of the plug-in.
      */
     public String getName()
     {
@@ -228,9 +228,9 @@ public class AudioLevelEffect2 extends ControlsAdapter implements Effect
     }
 
     /**
-     * Enables or disables this <tt>AudioLevelEffect2</tt> according to the value of <tt>enabled</tt>.
+     * Enables or disables this <code>AudioLevelEffect2</code> according to the value of <code>enabled</code>.
      *
-     * @param enabled whether to enable or disabled this <tt>Effect</tt>.
+     * @param enabled whether to enable or disabled this <code>Effect</code>.
      */
     public void setEnabled(boolean enabled)
     {

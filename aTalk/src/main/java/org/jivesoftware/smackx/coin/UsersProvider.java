@@ -28,7 +28,7 @@ public class UsersProvider extends ExtensionElementProvider<UsersExtension>
      * the packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>Users</tt> element.
+     * @param parser an XML parser positioned at the opening <code>Users</code> element.
      * @return a new {@link UsersExtension} instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */

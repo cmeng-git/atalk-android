@@ -23,11 +23,11 @@ public class QTFormatDescription extends NSObject
 	}
 
 	/**
-	 * Initializes a new <tt>QTFormatDescription</tt> instance which is to represent a specific
-	 * QTKit <tt>QTFormatDescription</tt> object.
+	 * Initializes a new <code>QTFormatDescription</code> instance which is to represent a specific
+	 * QTKit <code>QTFormatDescription</code> object.
 	 *
 	 * @param ptr
-	 * 		the pointer to the QTKit <tt>QTFormatDescription</tt> object which is to be
+	 * 		the pointer to the QTKit <code>QTFormatDescription</code> object which is to be
 	 * 		represented by the new instance
 	 */
 	public QTFormatDescription(long ptr)

@@ -58,25 +58,25 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
 
     /**
      * The rate at which ulpfec packets will be generated and added to the stream by this
-     * <tt>PacketTransformer</tt>. An ulpfec packet will be generated for every <tt>fecRate</tt>
+     * <code>PacketTransformer</code>. An ulpfec packet will be generated for every <code>fecRate</code>
      * media packets. If set to 0, no ulpfec packets will be generated.
      */
     private int fecRate = 0;
 
     /**
-     * Maps an SSRC to a <tt>AbstractFECReceiver</tt> to be used for packets with that SSRC.
+     * Maps an SSRC to a <code>AbstractFECReceiver</code> to be used for packets with that SSRC.
      */
     private final Map<Long, AbstractFECReceiver> fecReceivers = new HashMap<>();
 
     /**
-     * Maps an SSRC to a <tt>FECSender</tt> to be used for packets with that SSRC.
+     * Maps an SSRC to a <code>FECSender</code> to be used for packets with that SSRC.
      */
     private final Map<Long, FECSender> fecSenders = new HashMap<>();
 
     private final MediaStream mediaStream;
 
     /**
-     * Initializes a new <tt>FECTransformEngine</tt> instance.
+     * Initializes a new <code>FECTransformEngine</code> instance.
      *
      * @param incomingPT the RTP payload type number for incoming ulpfec packet.
      * @param outgoingPT the RTP payload type number for outgoing ulpfec packet.
@@ -111,8 +111,8 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
     /**
      * {@inheritDoc}
      *
-     * Assumes that all packets in <tt>pkts</tt> have the same SSRC. Reverse- transforms using the
-     * <tt>FECReceiver</tt> for the SSRC found in <tt>pkts</tt>.
+     * Assumes that all packets in <code>pkts</code> have the same SSRC. Reverse- transforms using the
+     * <code>FECReceiver</code> for the SSRC found in <code>pkts</code>.
      */
     @Override
     public RawPacket[] reverseTransform(RawPacket[] pkts)
@@ -150,7 +150,7 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
     /**
      * {@inheritDoc}
      *
-     * Adds ulpfec packets to the stream (one ulpfec packet after every <tt>fecRate</tt> media
+     * Adds ulpfec packets to the stream (one ulpfec packet after every <code>fecRate</code> media
      * packets.
      */
     @Override
@@ -250,7 +250,7 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
 
     /**
      * Sets the rate at which ulpfec packets will be generated and added to the stream by this
-     * <tt>PacketTransformer</tt>.
+     * <code>PacketTransformer</code>.
      *
      * @param fecRate the rate to set, should be in [0, 16]
      */
@@ -265,10 +265,10 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
 
     /**
      * Get the rate at which ulpfec packets will be generated and added to the stream by this
-     * <tt>PacketTransformer</tt> .
+     * <code>PacketTransformer</code> .
      *
      * @return the rate at which ulpfec packets will be generated and added to the stream by this
-     * <tt>PacketTransformer</tt>.
+     * <code>PacketTransformer</code>.
      */
     public int getFecRate()
     {
@@ -276,12 +276,12 @@ public class FECTransformEngine implements TransformEngine, PacketTransformer
     }
 
     /**
-     * Returns the SSRC in the first non-null element of <tt>pkts</tt> or
-     * <tt>null</tt> if all elements of <tt>pkts</tt> are <tt>null</tt>
+     * Returns the SSRC in the first non-null element of <code>pkts</code> or
+     * <code>null</code> if all elements of <code>pkts</code> are <code>null</code>
      *
      * @param pkts array of to search for SSRC
-     * @return the SSRC in the first non-null element of <tt>pkts</tt> or
-     * <tt>null</tt> if all elements of <tt>pkts</tt> are <tt>null</tt>
+     * @return the SSRC in the first non-null element of <code>pkts</code> or
+     * <code>null</code> if all elements of <code>pkts</code> are <code>null</code>
      */
     private Long findSSRC(RawPacket[] pkts)
     {

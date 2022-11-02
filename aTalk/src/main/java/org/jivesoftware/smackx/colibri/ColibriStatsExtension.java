@@ -17,7 +17,7 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Implements the Jitsi Videobridge <tt>stats</tt> extension within COnferencing with LIghtweight
+ * Implements the Jitsi Videobridge <code>stats</code> extension within COnferencing with LIghtweight
  * BRIdging that will provide various statistics.
  *
  * @author Hristo Terezov
@@ -26,12 +26,12 @@ import timber.log.Timber;
 public class ColibriStatsExtension extends AbstractExtensionElement
 {
     /**
-     * The XML element name of the Jitsi Videobridge <tt>stats</tt> extension.
+     * The XML element name of the Jitsi Videobridge <code>stats</code> extension.
      */
     public static final String ELEMENT = "stats";
 
     /**
-     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <tt>stats</tt> extension.
+     * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge <code>stats</code> extension.
      */
     public static final String NAMESPACE = "http://jitsi.org/protocol/colibri";
 
@@ -424,7 +424,7 @@ public class ColibriStatsExtension extends AbstractExtensionElement
     }
 
     /**
-     * Constructs new <tt>ColibriStatsExtensionElement</tt>
+     * Constructs new <code>ColibriStatsExtensionElement</code>
      */
     public ColibriStatsExtension()
     {
@@ -516,19 +516,19 @@ public class ColibriStatsExtension extends AbstractExtensionElement
     public static class Stat extends AbstractExtensionElement
     {
         /**
-         * The XML element name of a <tt>content</tt> of a Jitsi Videobridge <tt>stats</tt> IQ.
+         * The XML element name of a <code>content</code> of a Jitsi Videobridge <code>stats</code> IQ.
          */
         public static final String ELEMENT = "stat";
 
         /**
-         * The XML name of the <tt>name</tt> attribute of a <tt>stat</tt> of a <tt>stats</tt> IQ
-         * which represents the <tt>name</tt> property of the statistic.
+         * The XML name of the <code>name</code> attribute of a <code>stat</code> of a <code>stats</code> IQ
+         * which represents the <code>name</code> property of the statistic.
          */
         public static final String NAME_ATTR_NAME = "name";
 
         /**
-         * The XML name of the <tt>name</tt> attribute of a <tt>stat</tt> of a <tt>stats</tt> IQ
-         * which represents the <tt>value</tt> property of the statistic.
+         * The XML name of the <code>name</code> attribute of a <code>stat</code> of a <code>stats</code> IQ
+         * which represents the <code>value</code> property of the statistic.
          */
         public static final String VALUE_ATTR_NAME = "value";
 
@@ -538,7 +538,7 @@ public class ColibriStatsExtension extends AbstractExtensionElement
         }
 
         /**
-         * Constructs new <tt>Stat</tt> by given name and value.
+         * Constructs new <code>Stat</code> by given name and value.
          *
          * @param name the name
          * @param value the value

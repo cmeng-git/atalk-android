@@ -25,11 +25,11 @@ import javax.media.protocol.*;
 import timber.log.Timber;
 
 /**
- * Represents a <tt>PushBufferStream</tt> which reads data from the <tt>SourceStream</tt>s of the
- * input <tt>DataSource</tt>s of the associated <tt>AudioMixer</tt> and pushes it to
- * <tt>AudioMixingPushBufferStream</tt>s for audio mixing.
+ * Represents a <code>PushBufferStream</code> which reads data from the <code>SourceStream</code>s of the
+ * input <code>DataSource</code>s of the associated <code>AudioMixer</code> and pushes it to
+ * <code>AudioMixingPushBufferStream</code>s for audio mixing.
  * <p>
- * Pretty much private to <tt>AudioMixer</tt> but extracted into its own file for the sake of
+ * Pretty much private to <code>AudioMixer</code> but extracted into its own file for the sake of
  * clarity.
  * </p>
  *
@@ -39,42 +39,42 @@ import timber.log.Timber;
 class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferStream
 {
     /**
-     * The <tt>AudioMixer</tt> which created this <tt>AudioMixerPushBufferStream</tt>.
+     * The <code>AudioMixer</code> which created this <code>AudioMixerPushBufferStream</code>.
      */
     private final AudioMixer audioMixer;
 
     /**
-     * The <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt> so that this instance can
-     * track back the <tt>AudioMixingPushBufferDataSource</tt> which outputs the mixed audio stream
-     * and determine whether the associated <tt>SourceStream</tt> is to be included into the mix)
+     * The <code>SourceStream</code>s (in the form of <code>InStreamDesc</code> so that this instance can
+     * track back the <code>AudioMixingPushBufferDataSource</code> which outputs the mixed audio stream
+     * and determine whether the associated <code>SourceStream</code> is to be included into the mix)
      * from which this instance reads its data.
      */
     private InStreamDesc[] inStreams;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #inStreams} -related members.
+     * The <code>Object</code> which synchronizes the access to {@link #inStreams} -related members.
      */
     private final Object inStreamsSyncRoot = new Object();
 
     /**
-     * The cache of <tt>short</tt> arrays utilized by this instance for the purposes of reducing
+     * The cache of <code>short</code> arrays utilized by this instance for the purposes of reducing
      * garbage collection.
      */
     private final ShortArrayCache shortArrayCache = new ShortArrayCache();
 
     /**
-     * The <tt>AudioFormat</tt> of the <tt>Buffer</tt> read during the last read from one of the
+     * The <code>AudioFormat</code> of the <code>Buffer</code> read during the last read from one of the
      * {@link #inStreams}. Only used for debugging purposes.
      */
     private AudioFormat lastReadInFormat;
 
     /**
-     * The <tt>AudioFormat</tt> of the data this instance outputs.
+     * The <code>AudioFormat</code> of the data this instance outputs.
      */
     private final AudioFormat outFormat;
 
     /**
-     * The <tt>AudioMixingPushBufferStream</tt>s to which this instance pushes data for audio
+     * The <code>AudioMixingPushBufferStream</code>s to which this instance pushes data for audio
      * mixing.
      */
     private final List<AudioMixingPushBufferStream> outStreams = new ArrayList<>();
@@ -85,18 +85,18 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
      * {@link #removeOutStream(AudioMixingPushBufferStream)} in order to allow
      * {@link AudioMixer#start(AudioMixerPushBufferStream, long)} and
      * {@link AudioMixer#stop(AudioMixerPushBufferStream, long)} to be invoked outside blocks
-     * synchronized on <tt>outStreams</tt>.
+     * synchronized on <code>outStreams</code>.
      */
     private long outStreamsGeneration;
 
     /**
-     * The <tt>BufferTransferHandler</tt> through which this instance gets notifications from its
-     * input <tt>SourceStream</tt>s that new data is available for audio mixing.
+     * The <code>BufferTransferHandler</code> through which this instance gets notifications from its
+     * input <code>SourceStream</code>s that new data is available for audio mixing.
      */
     private final BufferTransferHandler transferHandler = new BufferTransferHandler()
     {
         /**
-         * The cached <tt>Buffer</tt> instance to be used during the execution of
+         * The cached <code>Buffer</code> instance to be used during the execution of
          * {@link #transferData(PushBufferStream)} in order to reduce garbage collection.
          */
         private final Buffer buffer = new Buffer();
@@ -114,17 +114,17 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     };
 
     /**
-     * A copy of {@link #outStreams} which will cause no <tt>ConcurrentModificationException</tt>
+     * A copy of {@link #outStreams} which will cause no <code>ConcurrentModificationException</code>
      * and which has been introduced to reduce allocations and garbage collection.
      */
     private AudioMixingPushBufferStream[] unmodifiableOutStreams;
 
     /**
-     * Initializes a new <tt>AudioMixerPushBufferStream</tt> instance to output data in a specific
-     * <tt>AudioFormat</tt> for a specific <tt>AudioMixer</tt>.
+     * Initializes a new <code>AudioMixerPushBufferStream</code> instance to output data in a specific
+     * <code>AudioFormat</code> for a specific <code>AudioMixer</code>.
      *
-     * @param audioMixer the <tt>AudioMixer</tt> which creates this instance and for which it is to output data
-     * @param outFormat the <tt>AudioFormat</tt> in which the new instance is to output data
+     * @param audioMixer the <code>AudioMixer</code> which creates this instance and for which it is to output data
+     * @param outFormat the <code>AudioFormat</code> in which the new instance is to output data
      */
     public AudioMixerPushBufferStream(AudioMixer audioMixer, AudioFormat outFormat)
     {
@@ -133,15 +133,15 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Adds a specific <tt>AudioMixingPushBufferStream</tt> to the collection of such streams to
+     * Adds a specific <code>AudioMixingPushBufferStream</code> to the collection of such streams to
      * which this instance is to push the data for audio mixing it reads from its input
-     * <tt>SourceStream</tt>s.
+     * <code>SourceStream</code>s.
      *
-     * @param outStream the <tt>AudioMixingPushBufferStream</tt> to add to the collection of such streams to
+     * @param outStream the <code>AudioMixingPushBufferStream</code> to add to the collection of such streams to
      * which this instance is to push the data for audio mixing it reads from its input
-     * <tt>SourceStream</tt>s
-     * @throws IOException if <tt>outStream</tt> was the first <tt>AudioMixingPushBufferStream</tt> and the
-     * <tt>AudioMixer</tt> failed to start
+     * <code>SourceStream</code>s
+     * @throws IOException if <code>outStream</code> was the first <code>AudioMixingPushBufferStream</code> and the
+     * <code>AudioMixer</code> failed to start
      */
     void addOutStream(AudioMixingPushBufferStream outStream)
             throws IOException
@@ -171,11 +171,11 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Implements {@link SourceStream#endOfStream()}. Delegates to the input <tt>SourceStreams</tt>
+     * Implements {@link SourceStream#endOfStream()}. Delegates to the input <code>SourceStreams</code>
      * of this instance.
      *
-     * @return <tt>true</tt> if all input <tt>SourceStream</tt>s of this instance have reached the
-     * end of their content; <tt>false</tt>, otherwise
+     * @return <code>true</code> if all input <code>SourceStream</code>s of this instance have reached the
+     * end of their content; <code>false</code>, otherwise
      */
     @Override
     public boolean endOfStream()
@@ -193,7 +193,7 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
     /**
      * Attempts to equalize the length in milliseconds of the buffering performed by the
-     * <tt>inStreams</tt> in order to always read and mix one and the same length in milliseconds.
+     * <code>inStreams</code> in order to always read and mix one and the same length in milliseconds.
      */
     void equalizeInStreamBufferLength()
     {
@@ -220,15 +220,15 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Gets the <tt>BufferControl<tt> of a specific input stream. The returned
-     * <tt>BufferControl</tt> may be available through its input <tt>DataSource</tt>, its
-     * transcoding <tt>DataSource</tt> if any or the very input stream.
+     * Gets the <code>BufferControl<code> of a specific input stream. The returned
+     * <code>BufferControl</code> may be available through its input <code>DataSource</code>, its
+     * transcoding <code>DataSource</code> if any or the very input stream.
      *
-     * @param inStreamDesc an <tt>InStreamDesc</tt> which describes the input stream and its originating
-     * <tt>DataSource</tt>s from which the <tt>BufferControl</tt> is to be retrieved
-     * @return the <tt>BufferControl</tt> of the specified input stream found in its input
-     * <tt>DataSource</tt>, its transcoding <tt>DataSource</tt> if any or the very input
-     * stream if such a control exists; otherwise, <tt>null</tt>
+     * @param inStreamDesc an <code>InStreamDesc</code> which describes the input stream and its originating
+     * <code>DataSource</code>s from which the <code>BufferControl</code> is to be retrieved
+     * @return the <code>BufferControl</code> of the specified input stream found in its input
+     * <code>DataSource</code>, its transcoding <code>DataSource</code> if any or the very input
+     * stream if such a control exists; otherwise, <code>null</code>
      */
     private BufferControl getBufferControl(InStreamDesc inStreamDesc)
     {
@@ -265,10 +265,10 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Implements {@link SourceStream#getContentDescriptor()}. Returns a <tt>ContentDescriptor</tt>
+     * Implements {@link SourceStream#getContentDescriptor()}. Returns a <code>ContentDescriptor</code>
      * which describes the content type of this instance.
      *
-     * @return a <tt>ContentDescriptor</tt> which describes the content type of this instance
+     * @return a <code>ContentDescriptor</code> which describes the content type of this instance
      */
     @Override
     public ContentDescriptor getContentDescriptor()
@@ -278,10 +278,10 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
     /**
      * Implements {@link SourceStream#getContentLength()}. Delegates to the input
-     * <tt>SourceStreams</tt> of this instance.
+     * <code>SourceStreams</code> of this instance.
      *
      * @return the length of the content made available by this instance which is the maximum
-     * length of the contents made available by its input <tt>StreamSource</tt>s
+     * length of the contents made available by its input <code>StreamSource</code>s
      */
     @Override
     public long getContentLength()
@@ -303,10 +303,10 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Implements {@link PushBufferStream#getFormat()}. Returns the <tt>AudioFormat</tt> in which
+     * Implements {@link PushBufferStream#getFormat()}. Returns the <code>AudioFormat</code> in which
      * this instance was configured to output its data.
      *
-     * @return the <tt>AudioFormat</tt> in which this instance was configured to output its data
+     * @return the <code>AudioFormat</code> in which this instance was configured to output its data
      */
     @Override
     public AudioFormat getFormat()
@@ -315,10 +315,10 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Gets the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>s) from which this
+     * Gets the <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>s) from which this
      * instance reads audio samples.
      *
-     * @return an array of <tt>InStreamDesc</tt>s which describe the input <tt>SourceStream</tt>s
+     * @return an array of <code>InStreamDesc</code>s which describe the input <code>SourceStream</code>s
      * from which this instance reads audio samples
      */
     InStreamDesc[] getInStreams()
@@ -330,13 +330,13 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
     /**
      * Implements {@link PushBufferStream#read(Buffer)}. Reads audio samples from the input
-     * <tt>SourceStreams</tt> of this instance in various formats, converts the read audio samples
+     * <code>SourceStreams</code> of this instance in various formats, converts the read audio samples
      * to one and the same format and pushes them to the output
-     * <tt>AudioMixingPushBufferStream</tt>s for the very audio mixing.
+     * <code>AudioMixingPushBufferStream</code>s for the very audio mixing.
      *
-     * @param buffer the <tt>Buffer</tt> in which the audio samples read from the input
-     * <tt>SourceStream</tt>s are to be returned to the caller
-     * @throws IOException if any of the input <tt>SourceStream</tt>s throws such an exception while reading
+     * @param buffer the <code>Buffer</code> in which the audio samples read from the input
+     * <code>SourceStream</code>s are to be returned to the caller
+     * @throws IOException if any of the input <code>SourceStream</code>s throws such an exception while reading
      * from them or anything else goes wrong
      */
     @Override
@@ -410,20 +410,20 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Reads audio samples from the input <tt>PullBufferStream</tt>s of this instance and converts
-     * them to a specific output <tt>AudioFormat</tt>. An attempt is made to read a specific
-     * maximum number of samples from each of the <tt>PullBufferStream</tt>s but the very
-     * <tt>PullBufferStream</tt> may not honor the request.
+     * Reads audio samples from the input <code>PullBufferStream</code>s of this instance and converts
+     * them to a specific output <code>AudioFormat</code>. An attempt is made to read a specific
+     * maximum number of samples from each of the <code>PullBufferStream</code>s but the very
+     * <code>PullBufferStream</code> may not honor the request.
      *
-     * @param outFormat the <tt>AudioFormat</tt> in which the audio samples read from the
-     * <tt>PullBufferStream</tt>s are to be converted before being returned
+     * @param outFormat the <code>AudioFormat</code> in which the audio samples read from the
+     * <code>PullBufferStream</code>s are to be converted before being returned
      * @param outSampleCount the maximum number of audio samples to be read from each of the
-     * <tt>PullBufferStream</tt>s but the very <tt>PullBufferStream</tt>s may not honor the
+     * <code>PullBufferStream</code>s but the very <code>PullBufferStream</code>s may not honor the
      * request
-     * @param inSampleDesc an <tt>InStreamDesc</tt> which specifies the input streams to be read and the
+     * @param inSampleDesc an <code>InStreamDesc</code> which specifies the input streams to be read and the
      * collection of audio samples in which the read audio samples are to be returned
      * @return the maximum number of audio samples actually read from the input
-     * <tt>PullBufferStream</tt>s of this instance
+     * <code>PullBufferStream</code>s of this instance
      * @throws IOException if anything goes wrong while reading the specified input streams
      */
     private int readInPullBufferStreams(AudioFormat outFormat, int outSampleCount, InSampleDesc inSampleDesc)
@@ -441,21 +441,21 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Reads audio samples from a specific <tt>PushBufferStream</tt> and converts them to a
-     * specific output <tt>AudioFormat</tt>. An attempt is made to read a specific maximum number
-     * of samples from the specified <tt>PushBufferStream</tt> but the very
-     * <tt>PushBufferStream</tt> may not honor the request.
+     * Reads audio samples from a specific <code>PushBufferStream</code> and converts them to a
+     * specific output <code>AudioFormat</code>. An attempt is made to read a specific maximum number
+     * of samples from the specified <code>PushBufferStream</code> but the very
+     * <code>PushBufferStream</code> may not honor the request.
      *
-     * @param inStreamDesc an <tt>InStreamDesc</tt> which specifies the input <tt>PushBufferStream</tt> to read
+     * @param inStreamDesc an <code>InStreamDesc</code> which specifies the input <code>PushBufferStream</code> to read
      * from
-     * @param outFormat the <tt>AudioFormat</tt> to which the samples read from <tt>inStream</tt> are to be
+     * @param outFormat the <code>AudioFormat</code> to which the samples read from <code>inStream</code> are to be
      * converted before being returned
      * @param sampleCount the maximum number of samples which the read operation should attempt to read from
-     * <tt>inStream</tt> but the very <tt>inStream</tt> may not honor the request
-     * @param outBuffer the <tt>Buffer</tt> into which the array of <tt>int</tt> audio samples read from the
-     * specified <tt>inStream</tt> is to be written
-     * @throws IOException if anything wrong happens while reading <tt>inStream</tt>
-     * @throws UnsupportedFormatException if converting the samples read from <tt>inStream</tt> to <tt>outFormat</tt> fails
+     * <code>inStream</code> but the very <code>inStream</code> may not honor the request
+     * @param outBuffer the <code>Buffer</code> into which the array of <code>int</code> audio samples read from the
+     * specified <code>inStream</code> is to be written
+     * @throws IOException if anything wrong happens while reading <code>inStream</code>
+     * @throws UnsupportedFormatException if converting the samples read from <code>inStream</code> to <code>outFormat</code> fails
      */
     private void readInPushBufferStream(InStreamDesc inStreamDesc, AudioFormat outFormat,
             int sampleCount, Buffer outBuffer)
@@ -596,18 +596,18 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Reads audio samples from the input <tt>PushBufferStream</tt>s of this instance and converts
-     * them to a specific output <tt>AudioFormat</tt>.
+     * Reads audio samples from the input <code>PushBufferStream</code>s of this instance and converts
+     * them to a specific output <code>AudioFormat</code>.
      *
-     * @param outFormat the <tt>AudioFormat</tt> in which the audio samples read from the
-     * <tt>PushBufferStream</tt>s are to be converted before being returned
-     * @param inSampleDesc an <tt>InSampleDesc</tt> which specifies the input streams to be read and the
+     * @param outFormat the <code>AudioFormat</code> in which the audio samples read from the
+     * <code>PushBufferStream</code>s are to be converted before being returned
+     * @param inSampleDesc an <code>InSampleDesc</code> which specifies the input streams to be read and the
      * collection of audio samples in which the read audio samples are to be returned
      * @return the maximum number of audio samples actually read from the input
-     * <tt>PushBufferStream</tt>s of this instance
+     * <code>PushBufferStream</code>s of this instance
      * @throws IOException if anything wrong happens while reading the specified input streams
      * @throws UnsupportedFormatException if any of the input streams provides media in a format different than
-     * <tt>outFormat</tt>
+     * <code>outFormat</code>
      */
     private int readInPushBufferStreams(AudioFormat outFormat, InSampleDesc inSampleDesc)
             throws IOException, UnsupportedFormatException
@@ -685,15 +685,15 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Removes a specific <tt>AudioMixingPushBufferStream</tt> from the collection of such streams
+     * Removes a specific <code>AudioMixingPushBufferStream</code> from the collection of such streams
      * to which this instance pushes the data for audio mixing it reads from its input
-     * <tt>SourceStream</tt>s.
+     * <code>SourceStream</code>s.
      *
-     * @param outStream the <tt>AudioMixingPushBufferStream</tt> to remove from the collection of such streams
+     * @param outStream the <code>AudioMixingPushBufferStream</code> to remove from the collection of such streams
      * to which this instance pushes the data for audio mixing it reads from its input
-     * <tt>SourceStream</tt>s
-     * @throws IOException if <tt>outStream</tt> was the last <tt>AudioMixingPushBufferStream</tt> and the
-     * <tt>AudioMixer</tt> failed to stop
+     * <code>SourceStream</code>s
+     * @throws IOException if <code>outStream</code> was the last <code>AudioMixingPushBufferStream</code> and the
+     * <code>AudioMixer</code> failed to stop
      */
     void removeOutStream(AudioMixingPushBufferStream outStream)
             throws IOException
@@ -721,14 +721,14 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
     /**
      * Pushes a copy of a specific set of input audio samples to a specific
-     * <tt>AudioMixingPushBufferStream</tt> for audio mixing. Audio samples read from input
-     * <tt>DataSource</tt>s which the <tt>AudioMixingPushBufferDataSource</tt> owner of the
-     * specified <tt>AudioMixingPushBufferStream</tt> has specified to not be included in the
-     * output mix are not pushed to the <tt>AudioMixingPushBufferStream</tt> .
+     * <code>AudioMixingPushBufferStream</code> for audio mixing. Audio samples read from input
+     * <code>DataSource</code>s which the <code>AudioMixingPushBufferDataSource</code> owner of the
+     * specified <code>AudioMixingPushBufferStream</code> has specified to not be included in the
+     * output mix are not pushed to the <code>AudioMixingPushBufferStream</code> .
      *
-     * @param outStream the <tt>AudioMixingPushBufferStream</tt> to push the specified set of audio samples to
-     * @param inSampleDesc the set of audio samples to be pushed to <tt>outStream</tt> for audio mixing
-     * @param maxInSampleCount the maximum number of audio samples available in <tt>inSamples</tt>
+     * @param outStream the <code>AudioMixingPushBufferStream</code> to push the specified set of audio samples to
+     * @param inSampleDesc the set of audio samples to be pushed to <code>outStream</code> for audio mixing
+     * @param maxInSampleCount the maximum number of audio samples available in <code>inSamples</code>
      */
     private void setInSamples(AudioMixingPushBufferStream outStream, InSampleDesc inSampleDesc,
             int maxInSampleCount)
@@ -785,13 +785,13 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Sets the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) from which this
-     * instance is to read audio samples and push them to the <tt>AudioMixingPushBufferStream</tt>s
+     * Sets the <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>) from which this
+     * instance is to read audio samples and push them to the <code>AudioMixingPushBufferStream</code>s
      * for audio mixing.
      *
-     * @param inStreams the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) from which this
+     * @param inStreams the <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>) from which this
      * instance is to read audio samples and push them to the
-     * <tt>AudioMixingPushBufferStream</tt>s for audio mixing
+     * <code>AudioMixingPushBufferStream</code>s for audio mixing
      */
     void setInStreams(Collection<InStreamDesc> inStreams)
     {
@@ -851,11 +851,11 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
 
     /**
      * Implements {@link PushBufferStream#setTransferHandler(BufferTransferHandler)}. Because this
-     * instance pushes data to multiple output <tt>AudioMixingPushBufferStreams</tt>, a single
-     * <tt>BufferTransferHandler</tt> is not sufficient and thus this method is unsupported and
-     * throws <tt>UnsupportedOperationException</tt>.
+     * instance pushes data to multiple output <code>AudioMixingPushBufferStreams</code>, a single
+     * <code>BufferTransferHandler</code> is not sufficient and thus this method is unsupported and
+     * throws <code>UnsupportedOperationException</code>.
      *
-     * @param transferHandler the <tt>BufferTransferHandler</tt> to be notified by this <tt>PushBufferStream</tt>
+     * @param transferHandler the <code>BufferTransferHandler</code> to be notified by this <code>PushBufferStream</code>
      * when media is available for reading
      */
     @Override
@@ -866,13 +866,13 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Sets a specific <tt>BufferTransferHandler</tt> to a specific collection of
-     * <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) abstracting the differences
-     * among the various types of <tt>SourceStream</tt>s.
+     * Sets a specific <code>BufferTransferHandler</code> to a specific collection of
+     * <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>) abstracting the differences
+     * among the various types of <code>SourceStream</code>s.
      *
-     * @param inStreams the input <tt>SourceStream</tt>s to which the specified <tt>BufferTransferHandler</tt>
+     * @param inStreams the input <code>SourceStream</code>s to which the specified <code>BufferTransferHandler</code>
      * is to be set
-     * @param transferHandler the <tt>BufferTransferHandler</tt> to be set to the specified <tt>inStreams</tt>
+     * @param transferHandler the <code>BufferTransferHandler</code> to be set to the specified <code>inStreams</code>
      */
     private void setTransferHandler(InStreamDesc[] inStreams, BufferTransferHandler transferHandler)
     {
@@ -914,12 +914,12 @@ class AudioMixerPushBufferStream extends ControlsAdapter implements PushBufferSt
     }
 
     /**
-     * Reads audio samples from the input <tt>SourceStream</tt>s of this instance and pushes
-     * them to its output <tt>AudioMixingPushBufferStream</tt>s for audio mixing.
+     * Reads audio samples from the input <code>SourceStream</code>s of this instance and pushes
+     * them to its output <code>AudioMixingPushBufferStream</code>s for audio mixing.
      *
-     * @param buffer the cached <tt>Buffer</tt> instance to be used during the execution of the method in
-     * order to reduce garbage collection. The <tt>length</tt> of the <tt>buffer</tt> will be
-     * reset to <tt>0</tt> before and after the execution of the method.
+     * @param buffer the cached <code>Buffer</code> instance to be used during the execution of the method in
+     * order to reduce garbage collection. The <code>length</code> of the <code>buffer</code> will be
+     * reset to <code>0</code> before and after the execution of the method.
      */
     protected void transferData(Buffer buffer)
     {

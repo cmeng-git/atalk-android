@@ -29,11 +29,11 @@ public enum StateType
     deleted;
 
     /**
-     * Returns a <tt>StateType</tt>.
+     * Returns a <code>StateType</code>.
      *
-     * @param typeStr the <tt>String</tt> that we'd like to parse.
+     * @param typeStr the <code>String</code> that we'd like to parse.
      * @return a StateType.
-     * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
+     * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
      */
     public static StateType fromString(String typeStr)
             throws IllegalArgumentException

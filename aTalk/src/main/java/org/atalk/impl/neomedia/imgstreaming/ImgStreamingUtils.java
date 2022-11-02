@@ -10,14 +10,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
 /**
- * Provides utility functions used by the <tt>imgstreaming</tt> package(s).
+ * Provides utility functions used by the <code>imgstreaming</code> package(s).
  *
  * @author Sebastien Vincent
  */
 public class ImgStreamingUtils
 {
     /**
-     * Get a scaled <tt>BufferedImage</tt>.
+     * Get a scaled <code>BufferedImage</code>.
      * <p>
      * Mainly inspired by: http://java.developpez.com/faq/gui/?page=graphique_general_images
      * #GRAPHIQUE_IMAGE_redimensionner
@@ -25,8 +25,8 @@ public class ImgStreamingUtils
      * @param src source image
      * @param width width of scaled image
      * @param height height of scaled image
-     * @param type <tt>BufferedImage</tt> type
-     * @return scaled <tt>BufferedImage</tt>
+     * @param type <code>BufferedImage</code> type
+     * @return scaled <code>BufferedImage</code>
      */
     public static BufferedImage getScaledImage(BufferedImage src, int width, int height, int type)
     {
@@ -46,12 +46,12 @@ public class ImgStreamingUtils
     }
 
     /**
-     * Get raw bytes from ARGB <tt>BufferedImage</tt>.
+     * Get raw bytes from ARGB <code>BufferedImage</code>.
      *
-     * @param src ARGB <BufferImage</tt>
+     * @param src ARGB <BufferImage</code>
      * @param output output buffer, if not null and if its length is at least image's (width * height) * 4,
      * method will put bytes in it.
-     * @return raw bytes or null if src is not an ARGB <tt>BufferedImage</tt>
+     * @return raw bytes or null if src is not an ARGB <code>BufferedImage</code>
      */
     public static byte[] getImageBytes(BufferedImage src, byte output[])
     {

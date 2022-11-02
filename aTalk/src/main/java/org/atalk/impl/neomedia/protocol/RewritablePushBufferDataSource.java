@@ -18,11 +18,11 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>PushBufferDataSource</tt> wrapper which provides mute support for the wrapped
+ * Implements a <code>PushBufferDataSource</code> wrapper which provides mute support for the wrapped
  * instance.
  * <p>
- * Because the class wouldn't work for our use case without it, <tt>CaptureDevice</tt> is
- * implemented and is being delegated to the wrapped <tt>DataSource</tt> (if it supports the
+ * Because the class wouldn't work for our use case without it, <code>CaptureDevice</code> is
+ * implemented and is being delegated to the wrapped <code>DataSource</code> (if it supports the
  * interface in question).
  * </p>
  *
@@ -34,7 +34,7 @@ public class RewritablePushBufferDataSource
 {
 
 	/**
-	 * The indicator which determines whether this <tt>DataSource</tt> is mute.
+	 * The indicator which determines whether this <code>DataSource</code> is mute.
 	 */
 	private boolean mute;
 
@@ -44,11 +44,11 @@ public class RewritablePushBufferDataSource
 	private final LinkedList<DTMFInbandTone> tones = new LinkedList<>();
 
 	/**
-	 * Initializes a new <tt>RewritablePushBufferDataSource</tt> instance which is to provide mute
-	 * support for a specific <tt>PushBufferDataSource</tt>.
+	 * Initializes a new <code>RewritablePushBufferDataSource</code> instance which is to provide mute
+	 * support for a specific <code>PushBufferDataSource</code>.
 	 *
 	 * @param dataSource
-	 * 		the <tt>PushBufferDataSource</tt> the new instance is to provide mute support for
+	 * 		the <code>PushBufferDataSource</code> the new instance is to provide mute support for
 	 */
 	public RewritablePushBufferDataSource(PushBufferDataSource dataSource)
 	{
@@ -59,7 +59,7 @@ public class RewritablePushBufferDataSource
 	 * {@inheritDoc}
 	 * <p>
 	 * Overrides the super implementation to include the type hierarchy of the very wrapped
-	 * <tt>dataSource</tt> instance into the search for the specified <tt>controlType</tt>.
+	 * <code>dataSource</code> instance into the search for the specified <code>controlType</code>.
 	 */
 	@Override
 	public Object getControl(String controlType)
@@ -79,10 +79,10 @@ public class RewritablePushBufferDataSource
 
 	/**
 	 * Implements {@link PushBufferDataSource#getStreams()}. Wraps the streams of the wrapped
-	 * <tt>PushBufferDataSource</tt> into <tt>MutePushBufferStream</tt> instances in order to
+	 * <code>PushBufferDataSource</code> into <code>MutePushBufferStream</code> instances in order to
 	 * provide mute support to them.
 	 *
-	 * @return an array of <tt>PushBufferStream</tt> instances with enabled mute support
+	 * @return an array of <code>PushBufferStream</code> instances with enabled mute support
 	 */
 	@Override
 	public PushBufferStream[] getStreams()
@@ -101,9 +101,9 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Determines whether this <tt>DataSource</tt> is mute.
+	 * Determines whether this <code>DataSource</code> is mute.
 	 *
-	 * @return <tt>true</tt> if this <tt>DataSource</tt> is mute; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this <code>DataSource</code> is mute; otherwise, <code>false</code>
 	 */
 	public synchronized boolean isMute()
 	{
@@ -111,11 +111,11 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Replaces the media data contained in a specific <tt>Buffer</tt> with a compatible
+	 * Replaces the media data contained in a specific <code>Buffer</code> with a compatible
 	 * representation of silence.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> the data contained in which is to be replaced with silence
+	 * 		the <code>Buffer</code> the data contained in which is to be replaced with silence
 	 */
 	public static void mute(Buffer buffer)
 	{
@@ -138,10 +138,10 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Sets the mute state of this <tt>DataSource</tt>.
+	 * Sets the mute state of this <code>DataSource</code>.
 	 *
 	 * @param mute
-	 * 		<tt>true</tt> to mute this <tt>DataSource</tt>; otherwise, <tt>false</tt>
+	 * 		<code>true</code> to mute this <code>DataSource</code>; otherwise, <code>false</code>
 	 */
 	public synchronized void setMute(boolean mute)
 	{
@@ -160,10 +160,10 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Determines whether this <tt>DataSource</tt> sends a DTMF tone.
+	 * Determines whether this <code>DataSource</code> sends a DTMF tone.
 	 *
-	 * @return <tt>true</tt> if this <tt>DataSource</tt> is sending a DTMF tone; otherwise,
-	 * <tt>false</tt>.
+	 * @return <code>true</code> if this <code>DataSource</code> is sending a DTMF tone; otherwise,
+	 * <code>false</code>.
 	 */
 	public boolean isSendingDTMF()
 	{
@@ -171,13 +171,13 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Replaces the media data contained in a specific <tt>Buffer</tt> with an inband DTMF tone
+	 * Replaces the media data contained in a specific <code>Buffer</code> with an inband DTMF tone
 	 * signal.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> the data contained in which is to be replaced with the DTMF tone
+	 * 		the <code>Buffer</code> the data contained in which is to be replaced with the DTMF tone
 	 * @param tone
-	 * 		the <tt>DMFTTone</tt> to send via inband DTMF signal.
+	 * 		the <code>DMFTTone</code> to send via inband DTMF signal.
 	 */
 	public static void sendDTMF(Buffer buffer, DTMFInbandTone tone)
 	{
@@ -254,18 +254,18 @@ public class RewritablePushBufferDataSource
 	}
 
 	/**
-	 * Implements a <tt>PushBufferStream</tt> wrapper which provides mute support for the wrapped
+	 * Implements a <code>PushBufferStream</code> wrapper which provides mute support for the wrapped
 	 * instance.
 	 */
 	private class MutePushBufferStream extends SourceStreamDelegate<PushBufferStream>
 			implements PushBufferStream
 	{
 		/**
-		 * Initializes a new <tt>MutePushBufferStream</tt> instance which is to provide mute
-		 * support to a specific <tt>PushBufferStream</tt> .
+		 * Initializes a new <code>MutePushBufferStream</code> instance which is to provide mute
+		 * support to a specific <code>PushBufferStream</code> .
 		 *
 		 * @param stream
-		 * 		the <tt>PushBufferStream</tt> the new instance is to provide mute support to
+		 * 		the <code>PushBufferStream</code> the new instance is to provide mute support to
 		 */
 		public MutePushBufferStream(PushBufferStream stream)
 		{
@@ -274,9 +274,9 @@ public class RewritablePushBufferDataSource
 
 		/**
 		 * Implements {@link PushBufferStream#getFormat()}. Delegates to the wrapped
-		 * <tt>PushBufferStream</tt>.
+		 * <code>PushBufferStream</code>.
 		 *
-		 * @return the <tt>Format</tt> of the wrapped <tt>PushBufferStream</tt>
+		 * @return the <code>Format</code> of the wrapped <code>PushBufferStream</code>
 		 */
 		public Format getFormat()
 		{
@@ -285,13 +285,13 @@ public class RewritablePushBufferDataSource
 
 		/**
 		 * Implements {@link PushBufferStream#read(Buffer)}. If this instance is muted (through its
-		 * owning <tt>RewritablePushBufferDataSource</tt>), overwrites the data read from the
-		 * wrapped <tt>PushBufferStream</tt> with silence data.
+		 * owning <code>RewritablePushBufferDataSource</code>), overwrites the data read from the
+		 * wrapped <code>PushBufferStream</code> with silence data.
 		 *
 		 * @param buffer
-		 * 		a <tt>Buffer</tt> in which the read data is to be returned to the caller
+		 * 		a <code>Buffer</code> in which the read data is to be returned to the caller
 		 * @throws IOException
-		 * 		if reading from the wrapped <tt>PushBufferStream</tt> fails
+		 * 		if reading from the wrapped <code>PushBufferStream</code> fails
 		 */
 		public void read(Buffer buffer)
 				throws IOException
@@ -306,13 +306,13 @@ public class RewritablePushBufferDataSource
 
 		/**
 		 * Implements {@link PushBufferStream#setTransferHandler(BufferTransferHandler)}. Sets up
-		 * the hiding of the wrapped <tt>PushBufferStream</tt> from the specified
-		 * <tt>transferHandler</tt> and thus gives this <tt>MutePushBufferStream</tt> full control
-		 * when the <tt>transferHandler</tt> in question starts calling to the stream given to
-		 * it in <tt>BufferTransferHandler#transferData(PushBufferStream)</tt>.
+		 * the hiding of the wrapped <code>PushBufferStream</code> from the specified
+		 * <code>transferHandler</code> and thus gives this <code>MutePushBufferStream</code> full control
+		 * when the <code>transferHandler</code> in question starts calling to the stream given to
+		 * it in <code>BufferTransferHandler#transferData(PushBufferStream)</code>.
 		 *
 		 * @param transferHandler
-		 * 		a <tt>BufferTransferHandler</tt> to be notified by this instance when data is
+		 * 		a <code>BufferTransferHandler</code> to be notified by this instance when data is
 		 * 		available for reading from it
 		 */
 		public void setTransferHandler(BufferTransferHandler transferHandler)

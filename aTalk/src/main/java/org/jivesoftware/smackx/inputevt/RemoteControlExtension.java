@@ -20,7 +20,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class RemoteControlExtension implements ExtensionElement
 {
     /**
-     * AWT event that represents our <tt>RemoteControlExtension</tt>.
+     * AWT event that represents our <code>RemoteControlExtension</code>.
      */
     private final ComponentEvent event;
 
@@ -72,9 +72,9 @@ public class RemoteControlExtension implements ExtensionElement
      */
 
     /**
-     * Get <tt>ComponentEvent</tt> that represents our <tt>InputExtensionItem</tt>.
+     * Get <code>ComponentEvent</code> that represents our <code>InputExtensionItem</code>.
      *
-     * @return AWT <tt>ComponentEvent</tt>
+     * @return AWT <code>ComponentEvent</code>
      */
     public ComponentEvent getEvent()
     {
@@ -82,7 +82,7 @@ public class RemoteControlExtension implements ExtensionElement
     }
 
     /**
-     * Get the element name of the <tt>ExtensionElement</tt>.
+     * Get the element name of the <code>ExtensionElement</code>.
      *
      * @return "remote-control"
      */

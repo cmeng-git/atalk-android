@@ -22,17 +22,17 @@ public class JNIEncoder extends AbstractCodec2
 {
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JNIEncoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of sample rates of audio data supported as input by <tt>JNIEncoder</tt> instances.
+     * The list of sample rates of audio data supported as input by <code>JNIEncoder</code> instances.
      */
     static final double[] SUPPORTED_INPUT_SAMPLE_RATES = new double[]{8000, 16000, 32000};
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIEncoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JNIEncoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS
             = new Format[]{new AudioFormat(Constants.SPEEX_RTP)};
@@ -58,27 +58,27 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * The pointer to the native <tt>SpeexBits</tt> into which the native Speex encoder (i.e.
+     * The pointer to the native <code>SpeexBits</code> into which the native Speex encoder (i.e.
      * {@link #state}) writes the encoded audio data.
      */
     private long bits = 0;
 
     /**
-     * The duration in nanoseconds of an output <tt>Buffer</tt> produced by this <tt>Codec</tt>.
+     * The duration in nanoseconds of an output <code>Buffer</code> produced by this <code>Codec</code>.
      */
     private long duration = 0;
 
     /**
-     * The number of bytes from an input <tt>Buffer</tt> that this <tt>Codec</tt> processes in one
+     * The number of bytes from an input <code>Buffer</code> that this <code>Codec</code> processes in one
      * call of its {@link #process(Buffer, Buffer)}.
      */
     private int frameSize = 0;
 
     /**
-     * The bytes from an input <tt>Buffer</tt> from a previous call to
-     * {@link #process(Buffer, Buffer)} that this <tt>Codec</tt> didn't process because the total
+     * The bytes from an input <code>Buffer</code> from a previous call to
+     * {@link #process(Buffer, Buffer)} that this <code>Codec</code> didn't process because the total
      * number of bytes was less than {@link #frameSize} and need to be prepended to a subsequent
-     * input <tt>Buffer</tt> in order to process a total of {@link #frameSize} bytes.
+     * input <code>Buffer</code> in order to process a total of {@link #frameSize} bytes.
      */
     private byte[] previousInput;
 
@@ -98,7 +98,7 @@ public class JNIEncoder extends AbstractCodec2
     private long state = 0;
 
     /**
-     * Initializes a new <tt>JNIEncoder</tt> instance.
+     * Initializes a new <code>JNIEncoder</code> instance.
      */
     public JNIEncoder()
     {
@@ -128,12 +128,12 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
      * @see AbstractCodec2#doOpen()
      */
     @Override
@@ -146,11 +146,11 @@ public class JNIEncoder extends AbstractCodec2
     }
 
     /**
-     * Processes (encode) a specific input <tt>Buffer</tt>.
+     * Processes (encode) a specific input <code>Buffer</code>.
      *
      * @param inputBuffer input buffer
      * @param outputBuffer output buffer
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if buffer has been successfully processed
+     * @return <code>BUFFER_PROCESSED_OK</code> if buffer has been successfully processed
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override

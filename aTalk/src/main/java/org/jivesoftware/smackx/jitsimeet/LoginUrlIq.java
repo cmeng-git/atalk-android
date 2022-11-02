@@ -159,7 +159,7 @@ public class LoginUrlIq extends IQ
     }
 
     /**
-     * Returns nullable, <tt>Boolean</tt> value of
+     * Returns nullable, <code>Boolean</code> value of
      * {@link LoginUrlIq#POPUP_ATTR_NAME} attribute.
      */
     public Boolean getPopup()
@@ -170,8 +170,8 @@ public class LoginUrlIq extends IQ
     /**
      * Sets the value of {@link LoginUrlIq#POPUP_ATTR_NAME}.
      *
-     * @param popup <tt>Boolean</tt> value for the popup attribute to be set
-     * or <tt>null</tt> if should be left unspecified.
+     * @param popup <code>Boolean</code> value for the popup attribute to be set
+     * or <code>null</code> if should be left unspecified.
      */
     public void setPopup(Boolean popup)
     {

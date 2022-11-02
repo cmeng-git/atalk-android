@@ -29,22 +29,22 @@ public class OpenGlCtxProvider extends ViewDependentProvider<OpenGLContext>
         implements TextureView.SurfaceTextureListener
 {
     /**
-     * The <tt>OpenGLContext</tt>.
+     * The <code>OpenGLContext</code>.
      */
     protected OpenGLContext mGLContext;
 
     protected AutoFitTextureView mTextureView;
 
     /**
-     * Flag used to inform the <tt>SurfaceStream</tt> that the <tt>onSurfaceTextureUpdated</tt> event has occurred.
+     * Flag used to inform the <code>SurfaceStream</code> that the <code>onSurfaceTextureUpdated</code> event has occurred.
      */
     public boolean textureUpdated = true;
 
     /**
-     * Creates new instance of <tt>OpenGlCtxProvider</tt>.
+     * Creates new instance of <code>OpenGlCtxProvider</code>.
      *
-     * @param activity parent <tt>Activity</tt>.
-     * @param container the container that will hold maintained <tt>View</tt>.
+     * @param activity parent <code>Activity</code>.
+     * @param container the container that will hold maintained <code>View</code>.
      */
     public OpenGlCtxProvider(Activity activity, ViewGroup container)
     {

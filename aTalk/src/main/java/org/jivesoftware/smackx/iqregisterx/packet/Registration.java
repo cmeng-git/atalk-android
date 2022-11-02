@@ -112,7 +112,7 @@ public class Registration extends IQ {
      * return the account registration status.
      *
      * @return the account registration status.
-     * <tt>true</tt> account has already registered
+     * <code>true</code> account has already registered
      */
     public boolean isRegistered() {
         return hasRegistered;

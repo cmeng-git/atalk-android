@@ -14,33 +14,33 @@ import javax.media.rtp.*;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 
 /**
- * Describes a <tt>SendStream</tt> created by the <tt>RTPManager</tt> of an
- * <tt>RTPTranslatorImpl</tt>. Contains information about the <tt>DataSource</tt> and its stream
- * index from which the <tt>SendStream</tt> has been created so that various
- * <tt>StreamRTPManager</tt> receive different views of one and the same <tt>SendStream</tt>.
+ * Describes a <code>SendStream</code> created by the <code>RTPManager</code> of an
+ * <code>RTPTranslatorImpl</code>. Contains information about the <code>DataSource</code> and its stream
+ * index from which the <code>SendStream</code> has been created so that various
+ * <code>StreamRTPManager</code> receive different views of one and the same <code>SendStream</code>.
  *
  * @author Lyubomir Marinov
  */
 class SendStreamDesc
 {
 	/**
-	 * The <tt>DataSource</tt> from which {@link #sendStream} has been created.
+	 * The <code>DataSource</code> from which {@link #sendStream} has been created.
 	 */
 	public final DataSource dataSource;
 
 	/**
-	 * The <tt>SendStream</tt> created from the stream of {@link #dataSource} at index
+	 * The <code>SendStream</code> created from the stream of {@link #dataSource} at index
 	 * {@link #streamIndex}.
 	 */
 	public final SendStream sendStream;
 
 	/**
-	 * The list of <tt>StreamRTPManager</tt>-specific views to {@link #sendStream}.
+	 * The list of <code>StreamRTPManager</code>-specific views to {@link #sendStream}.
 	 */
 	private final List<SendStreamImpl> sendStreams = new LinkedList<>();
 
 	/**
-	 * The number of <tt>StreamRTPManager</tt>s which have started their views of
+	 * The number of <code>StreamRTPManager</code>s which have started their views of
 	 * {@link #sendStream}.
 	 */
 	private int started;

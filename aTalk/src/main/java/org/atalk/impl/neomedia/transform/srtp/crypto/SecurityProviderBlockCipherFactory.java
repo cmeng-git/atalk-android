@@ -13,8 +13,8 @@ import java.security.Security;
 import javax.crypto.Cipher;
 
 /**
- * Implements a <tt>BlockCipherFactory</tt> which initializes <tt>BlockCipher</tt>s that are
- * implemented by a <tt>java.security.Provider</tt>.
+ * Implements a <code>BlockCipherFactory</code> which initializes <code>BlockCipher</code>s that are
+ * implemented by a <code>java.security.Provider</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -22,8 +22,8 @@ import javax.crypto.Cipher;
 public class SecurityProviderBlockCipherFactory implements BlockCipherFactory
 {
     /**
-     * The <tt>java.security.Provider</tt> which provides the implementations of the
-     * <tt>BlockCipher</tt>s to be initialized by this instance.
+     * The <code>java.security.Provider</code> which provides the implementations of the
+     * <code>BlockCipher</code>s to be initialized by this instance.
      */
     private final Provider provider;
 
@@ -33,12 +33,12 @@ public class SecurityProviderBlockCipherFactory implements BlockCipherFactory
     private final String transformation;
 
     /**
-     * Initializes a new <tt>SecurityProvider</tt> instance which is to initialize
-     * <tt>BlockCipher</tt>s that are implemented by a specific <tt>java.security.Provider</tt>.
+     * Initializes a new <code>SecurityProvider</code> instance which is to initialize
+     * <code>BlockCipher</code>s that are implemented by a specific <code>java.security.Provider</code>.
      *
      * @param transformation the name of the transformation
-     * @param provider the <tt>java.security.Provider</tt> which provides the implementations of the
-     * <tt>BlockCipher</tt>s to be initialized by the new instance.
+     * @param provider the <code>java.security.Provider</code> which provides the implementations of the
+     * <code>BlockCipher</code>s to be initialized by the new instance.
      */
     public SecurityProviderBlockCipherFactory(String transformation, Provider provider)
     {
@@ -54,12 +54,12 @@ public class SecurityProviderBlockCipherFactory implements BlockCipherFactory
     }
 
     /**
-     * Initializes a new <tt>SecurityProvider</tt> instance which is to initialize
-     * <tt>BlockCipher</tt>s that are implemented by a specific <tt>java.security.Provider</tt>.
+     * Initializes a new <code>SecurityProvider</code> instance which is to initialize
+     * <code>BlockCipher</code>s that are implemented by a specific <code>java.security.Provider</code>.
      *
      * @param transformation the name of the transformation
-     * @param providerName the name of the <tt>java.security.Provider</tt> which provides the implementations of
-     * the <tt>BlockCipher</tt>s to be initialized by the new instance.
+     * @param providerName the name of the <code>java.security.Provider</code> which provides the implementations of
+     * the <code>BlockCipher</code>s to be initialized by the new instance.
      */
     public SecurityProviderBlockCipherFactory(String transformation, String providerName)
     {

@@ -8,8 +8,8 @@ package org.atalk.impl.neomedia.protocol;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>BufferTransferHandler</tt> wrapper which doesn't expose a
- * <tt>PushBufferStream</tt> but rather a specific substitute in order to give full control to the
+ * Implements a <code>BufferTransferHandler</code> wrapper which doesn't expose a
+ * <code>PushBufferStream</code> but rather a specific substitute in order to give full control to the
  * {@link PushBufferStream#read(javax.media.Buffer)} method of the substitute.
  * <p>
  * The purpose is achieved in {@code #transferData(PushBufferStream)} where the method argument
@@ -34,18 +34,18 @@ public class StreamSubstituteBufferTransferHandler implements BufferTransferHand
 	private final PushBufferStream substitute;
 
 	/**
-	 * The wrapped <tt>BufferTransferHandler</tt> which receives the actual events from the wrapped
-	 * <tt>PushBufferStream</tt>.
+	 * The wrapped <code>BufferTransferHandler</code> which receives the actual events from the wrapped
+	 * <code>PushBufferStream</code>.
 	 */
 	private final BufferTransferHandler transferHandler;
 
 	/**
-	 * Initializes a new <tt>StreamSubstituteBufferTransferHandler</tt> instance which is to
-	 * overwrite the source <tt>PushBufferStream</tt> of a specific <tt>BufferTransferHandler</tt>.
+	 * Initializes a new <code>StreamSubstituteBufferTransferHandler</code> instance which is to
+	 * overwrite the source <code>PushBufferStream</code> of a specific <code>BufferTransferHandler</code>.
 	 *
 	 * @param transferHandler
-	 * 		the <tt>BufferTransferHandler</tt> the new instance is to overwrite the source
-	 * 		<tt>PushBufferStream</tt> of
+	 * 		the <code>BufferTransferHandler</code> the new instance is to overwrite the source
+	 * 		<code>PushBufferStream</code> of
 	 * @param stream
 	 * 		the {@code PushBufferStream} to be overridden for the specified
 	 * 		{@code transferHandler} with the specified (@code substitute}
@@ -68,7 +68,7 @@ public class StreamSubstituteBufferTransferHandler implements BufferTransferHand
 	 * can gain full control.
 	 *
 	 * @param stream
-	 * 		the <tt>PushBufferStream</tt> to transfer
+	 * 		the <code>PushBufferStream</code> to transfer
 	 */
 	public void transferData(PushBufferStream stream)
 	{

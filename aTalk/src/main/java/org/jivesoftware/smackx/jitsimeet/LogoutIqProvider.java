@@ -34,7 +34,7 @@ import java.io.IOException;
 public class LogoutIqProvider extends IQProvider<LogoutIq>
 {
     /**
-     * Creates new instance of <tt>ConferenceIqProvider</tt>.
+     * Creates new instance of <code>ConferenceIqProvider</code>.
      */
     public LogoutIqProvider()
     {

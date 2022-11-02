@@ -28,13 +28,13 @@ import timber.log.Timber;
 public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
 {
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JNIDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS
             = new Format[]{new AudioFormat(Constants.OPUS_RTP)};
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JNIDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{new AudioFormat(
             AudioFormat.LINEAR,
@@ -73,7 +73,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     private int lastFrameSizeInSamplesPerChannel;
 
     /**
-     * The sequence number of the last processed <tt>Buffer</tt>.
+     * The sequence number of the last processed <code>Buffer</code>.
      */
     private long lastSeqNo = Buffer.SEQUENCE_UNKNOWN;
 
@@ -83,9 +83,9 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     private int nbDecodedFec = 0;
 
     /**
-     * The size in bytes of an audio frame in the terms of the output <tt>AudioFormat</tt> of this
-     * instance i.e. based on the values of the <tt>sampleSizeInBits</tt> and <tt>channels</tt>
-     * properties of the <tt>outputFormat</tt> of this instance.
+     * The size in bytes of an audio frame in the terms of the output <code>AudioFormat</code> of this
+     * instance i.e. based on the values of the <code>sampleSizeInBits</code> and <code>channels</code>
+     * properties of the <code>outputFormat</code> of this instance.
      */
     private int outputFrameSize;
 
@@ -95,7 +95,7 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     private int outputSampleRate;
 
     /**
-     * Initializes a new <tt>JNIDecoder</tt> instance.
+     * Initializes a new <code>JNIDecoder</code> instance.
      */
     public JNIDecoder()
     {
@@ -119,12 +119,12 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     }
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
      * @see AbstractCodec2#doOpen()
      */
     @Override
@@ -274,9 +274,9 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     }
 
     /**
-     * Implements {@link Control#getControlComponent()}. <tt>JNIDecoder</tt> does not provide user interface of its own.
+     * Implements {@link Control#getControlComponent()}. <code>JNIDecoder</code> does not provide user interface of its own.
      *
-     * @return <tt>null</tt> to signify that <tt>JNIDecoder</tt> does not provide user interface of its own
+     * @return <code>null</code> to signify that <code>JNIDecoder</code> does not provide user interface of its own
      */
     @Override
     public Component getControlComponent()
@@ -307,8 +307,8 @@ public class JNIDecoder extends AbstractCodec2 implements FECDecoderControl
     /**
      * {@inheritDoc}
      *
-     * Makes sure that the <tt>outputFormat</tt> of this instance is in accord with the
-     * <tt>inputFormat</tt> of this instance.
+     * Makes sure that the <code>outputFormat</code> of this instance is in accord with the
+     * <code>inputFormat</code> of this instance.
      */
     @Override
     public Format setInputFormat(Format format)

@@ -169,7 +169,7 @@ public class ChangeEvent
         StringBuilder buff = new StringBuilder();
         buff.append("ChangeEvent ");
 
-        switch(type)
+        switch (type)
         {
             case IFACE_DOWN: buff.append("Interface down"); break;
             case IFACE_UP: buff.append("Interface up"); break;

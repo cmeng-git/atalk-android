@@ -64,13 +64,13 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     private static final int FEC_BUF_SIZE;
 
     /**
-     * The name of the <tt>ConfigurationService</tt> property which specifies
+     * The name of the <code>ConfigurationService</code> property which specifies
      * the value of {@link #MEDIA_BUF_SIZE}.
      */
     private static final String MEDIA_BUF_SIZE_PNAME = "neomedia.transform.fec.AbstractFECReciever.MEDIA_BUFF_SIZE";
 
     /**
-     * The name of the <tt>ConfigurationService</tt> property which specifies
+     * The name of the <code>ConfigurationService</code> property which specifies
      * the value of {@link #FEC_BUF_SIZE}.
      */
     private static final String FEC_BUF_SIZE_PNAME = "neomedia.transform.fec.AbstractFECReciever.FEC_BUFF_SIZE";
@@ -98,9 +98,9 @@ public abstract class AbstractFECReceiver implements PacketTransformer
      *
      * We keep them ordered by their RTP sequence numbers, so that
      * we can easily select the oldest one to discard when the buffer is
-     * full (when the map has more than <tt>MEDIA_BUFF_SIZE</tt> entries).
+     * full (when the map has more than <code>MEDIA_BUFF_SIZE</code> entries).
      *
-     * We keep them in a <tt>Map</tt> so that we can easily search for a
+     * We keep them in a <code>Map</code> so that we can easily search for a
      * packet with a specific sequence number.
      *
      * Note: This might turn out to be inefficient, especially with increased
@@ -117,9 +117,9 @@ public abstract class AbstractFECReceiver implements PacketTransformer
      *
      * We keep them ordered by their RTP sequence numbers, so that
      * we can easily select the oldest one to discard when the buffer is
-     * full (when the map has more than <tt>FEC_BUFF_SIZE</tt> entries.
+     * full (when the map has more than <code>FEC_BUFF_SIZE</code> entries.
      *
-     * We keep them in a <tt>Map</tt> so that we can easily search for a
+     * We keep them in a <code>Map</code> so that we can easily search for a
      * packet with a specific sequence number.
      *
      * Note: This might turn out to be inefficient, especially with increased
@@ -145,8 +145,8 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     }
 
     /**
-     * Saves <tt>p</tt> into <tt>fecPackets</tt>. If the size of
-     * <tt>fecPackets</tt> has reached <tt>FEC_BUFF_SIZE</tt> discards the
+     * Saves <code>p</code> into <code>fecPackets</code>. If the size of
+     * <code>fecPackets</code> has reached <code>FEC_BUFF_SIZE</code> discards the
      * oldest packet from it.
      *
      * @param p the packet to save.
@@ -160,8 +160,8 @@ public abstract class AbstractFECReceiver implements PacketTransformer
     }
 
     /**
-     * Makes a copy of <tt>p</tt> into <tt>mediaPackets</tt>. If the size of
-     * <tt>mediaPackets</tt> has reached <tt>MEDIA_BUFF_SIZE</tt> discards
+     * Makes a copy of <code>p</code> into <code>mediaPackets</code>. If the size of
+     * <code>mediaPackets</code> has reached <code>MEDIA_BUFF_SIZE</code> discards
      * the oldest packet from it and reuses it.
      *
      * @param p the packet to copy.

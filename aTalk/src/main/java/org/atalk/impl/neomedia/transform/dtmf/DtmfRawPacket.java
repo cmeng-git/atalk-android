@@ -11,7 +11,7 @@ import org.atalk.service.neomedia.RawPacket;
 import timber.log.Timber;
 
 /**
- * <tt>DtmfRawPacket</tt> represent an RTP Packet. You create your <tt>DtmfRawPacket</tt> by calling
+ * <code>DtmfRawPacket</code> represent an RTP Packet. You create your <code>DtmfRawPacket</code> by calling
  * the constructor. You specify the DTMF attributes : code=9, end=false, marker=true ... Then you
  * fill the packet using init( ... dtmf attributes ... );
  *
@@ -43,10 +43,10 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
     private int volume;
 
     /**
-     * Creates a <tt>DtmfRawPacket</tt> using the specified buffer.
+     * Creates a <code>DtmfRawPacket</code> using the specified buffer.
      *
-     * @param buffer the <tt>byte</tt> array that we should use to store packet content
-     * @param offset the index where we should start using the <tt>buffer</tt>.
+     * @param buffer the <code>byte</code> array that we should use to store packet content
+     * @param offset the index where we should start using the <code>buffer</code>.
      * @param length Length of the packet's data.
      * @param payload the payload that has been negotiated for telephone events by our signaling modules.
      */
@@ -57,7 +57,7 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
     }
 
     /**
-     * Used for incoming DTMF packets, creating <tt>DtmfRawPacket</tt> from RTP one.
+     * Used for incoming DTMF packets, creating <code>DtmfRawPacket</code> from RTP one.
      *
      * @param pkt the RTP packet.
      */
@@ -182,9 +182,9 @@ public class DtmfRawPacket extends RawPacket implements Cloneable
     }
 
     /**
-     * Initializes a new <tt>DtmfRawPacket</tt> instance which has the same properties as this instance.
+     * Initializes a new <code>DtmfRawPacket</code> instance which has the same properties as this instance.
      *
-     * @return a new <tt>DtmfRawPacket</tt> instance which has the same properties as this instance
+     * @return a new <code>DtmfRawPacket</code> instance which has the same properties as this instance
      */
     @Override
     public Object clone()

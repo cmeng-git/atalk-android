@@ -18,7 +18,7 @@ import org.atalk.service.neomedia.RawPacket;
 import org.atalk.util.*;
 
 /**
- * Implements a <tt>TransformEngine</tt> which replaces the timestamps in
+ * Implements a <code>TransformEngine</code> which replaces the timestamps in
  * abs-send-time RTP extensions with timestamps generated locally.
  *
  * See https://www.webrtc.org/experiments/rtp-hdrext/abs-send-time
@@ -80,7 +80,7 @@ public class AbsSendTimeEngine extends SinglePacketTransformerAdapter
 	/**
 	 * Implements {@link TransformEngine#getRTCPTransformer()}.
 	 *
-	 * This <tt>TransformEngine</tt> does not transform RTCP packets.
+	 * This <code>TransformEngine</code> does not transform RTCP packets.
 	 *
 	 */
 	@Override
@@ -90,7 +90,7 @@ public class AbsSendTimeEngine extends SinglePacketTransformerAdapter
 	}
 
     /**
-     * Sets the 3 bytes at offset <tt>off</tt> in <tt>buf</tt> to the value of
+     * Sets the 3 bytes at offset <code>off</code> in <code>buf</code> to the value of
      * {@link System#nanoTime()} converted to the fixed point (6.18) format specified in
      * {@link "https://www.webrtc.org/experiments/rtp-hdrext/abs-send-time"}.
      *

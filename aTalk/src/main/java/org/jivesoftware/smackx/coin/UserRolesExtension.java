@@ -43,7 +43,7 @@ public class UserRolesExtension extends AbstractExtensionElement
     /**
      * List of roles.
      */
-    private List<String> roles = new ArrayList<String>();
+    private List<String> roles = new ArrayList<>();
 
     /**
      * Constructor.

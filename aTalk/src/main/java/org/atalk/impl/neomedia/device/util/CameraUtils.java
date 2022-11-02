@@ -23,8 +23,8 @@ import java.util.*;
 import timber.log.Timber;
 
 /**
- * Utility methods for operations on <tt>Camera</tt> objects. Also shares preview surface provider
- * between <tt>MediaRecorder</tt> and <tt>AndroidCamera</tt> device systems.
+ * Utility methods for operations on <code>Camera</code> objects. Also shares preview surface provider
+ * between <code>MediaRecorder</code> and <code>AndroidCamera</code> device systems.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -43,8 +43,8 @@ public class CameraUtils
 
     /**
      * The list of sizes from which the first supported by the respective {@link Camera} is to be
-     * chosen as the size of the one and only <tt>Format</tt> supported by the associated
-     * <tt>MediaRecorder</tt> <tt>CaptureDevice</tt>.
+     * chosen as the size of the one and only <code>Format</code> supported by the associated
+     * <code>MediaRecorder</code> <code>CaptureDevice</code>.
      *
      * User selectable video resolution. The actual resolution use during video call is adjusted so
      * it is within device capability {@link #getOptimalPreviewSize(Dimension, Size[])
@@ -62,10 +62,10 @@ public class CameraUtils
     private static final Map<String, Size[]> cameraSupportSize = new HashMap<>();
 
     /**
-     * Returns <tt>true</tt> if given <tt>size</tt> is on the list of preferred sizes.
+     * Returns <code>true</code> if given <code>size</code> is on the list of preferred sizes.
      *
      * @param size the size to check.
-     * @return <tt>true</tt> if given <tt>size</tt> is on the list of preferred sizes.
+     * @return <code>true</code> if given <code>size</code> is on the list of preferred sizes.
      */
     public static boolean isPreferredSize(Dimension size)
     {
@@ -88,15 +88,15 @@ public class CameraUtils
     }
 
     /**
-     * Constructs a <tt>String</tt> representation of a specific <tt>Iterable</tt> of
-     * <tt>Size</tt>s. The elements of the specified <tt>Iterable</tt> are delimited by
-     * &quot;, &quot;. The method has been introduced because the <tt>Camera.Size</tt> class does
-     * not provide a <tt>String</tt> representation which contains the <tt>width</tt> and the
-     * <tt>height</tt> in human-readable form.
+     * Constructs a <code>String</code> representation of a specific <code>Iterable</code> of
+     * <code>Size</code>s. The elements of the specified <code>Iterable</code> are delimited by
+     * &quot;, &quot;. The method has been introduced because the <code>Camera.Size</code> class does
+     * not provide a <code>String</code> representation which contains the <code>width</code> and the
+     * <code>height</code> in human-readable form.
      *
-     * @param sizes the <tt>Iterable</tt> of <tt>Size</tt>s which is to be represented as a
-     * human-readable <tt>String</tt>
-     * @return the human-readable <tt>String</tt> representation of the specified <tt>sizes</tt>
+     * @param sizes the <code>Iterable</code> of <code>Size</code>s which is to be represented as a
+     * human-readable <code>String</code>
+     * @return the human-readable <code>String</code> representation of the specified <code>sizes</code>
      */
     public static String cameraSizesToString(Iterable<Size> sizes)
     {
@@ -122,13 +122,13 @@ public class CameraUtils
     }
 
     /**
-     * Constructs a <tt>String</tt> representation of a specific <tt>Iterable</tt> of
-     * <tt>Dimension</tt>s. The elements of the specified <tt>Iterable</tt> are delimited by &quot;,
+     * Constructs a <code>String</code> representation of a specific <code>Iterable</code> of
+     * <code>Dimension</code>s. The elements of the specified <code>Iterable</code> are delimited by &quot;,
      * &quot;. The method has been introduced to match {@link CameraUtils#cameraSizesToString(Iterable)}.
      *
-     * @param sizes the <tt>Iterable</tt> of <tt>Dimension</tt>s which is to be represented as a
-     * human-readable <tt>String</tt>
-     * @return the human-readable <tt>String</tt> representation of the specified <tt>sizes</tt>
+     * @param sizes the <code>Iterable</code> of <code>Dimension</code>s which is to be represented as a
+     * human-readable <code>String</code>
+     * @return the human-readable <code>String</code> representation of the specified <code>sizes</code>
      */
     public static String dimensionsToString(Iterable<Dimension> sizes)
     {
@@ -144,7 +144,7 @@ public class CameraUtils
     /**
      * Returns the string representation of the formats contained in given list.
      *
-     * @param formats the list of image formats integers defined in <tt>ImageFormat</tt> class.
+     * @param formats the list of image formats integers defined in <code>ImageFormat</code> class.
      * @return the string representation of the formats contained in given list.
      */
     public static String cameraImgFormatsToString(List<Integer> formats)
@@ -241,7 +241,7 @@ public class CameraUtils
     }
 
     /**
-     * Calculates preview orientation for the {@link android.view.Display}'s <tt>rotation</tt>
+     * Calculates preview orientation for the {@link android.view.Display}'s <code>rotation</code>
      * in degrees for the selected cameraId, also taking into account of the device orientation.
      *
      * valid camera orientation: 0 or 90

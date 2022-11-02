@@ -11,12 +11,12 @@ import javax.media.Buffer;
 import javax.media.protocol.SourceStream;
 
 /**
- * Describes additional information about a specific input audio <tt>SourceStream</tt> of an
- * <tt>AudioMixer</tt> so that the <tt>AudioMixer</tt> can, for example, quickly discover the output
- * <tt>AudioMixingPushBufferDataSource</tt> in the mix of which the contribution of the
- * <tt>SourceStream</tt> is to not be included.
+ * Describes additional information about a specific input audio <code>SourceStream</code> of an
+ * <code>AudioMixer</code> so that the <code>AudioMixer</code> can, for example, quickly discover the output
+ * <code>AudioMixingPushBufferDataSource</code> in the mix of which the contribution of the
+ * <code>SourceStream</code> is to not be included.
  * <p>
- * Private to <tt>AudioMixer</tt> and <tt>AudioMixerPushBufferStream</tt> but extracted into its own
+ * Private to <code>AudioMixer</code> and <code>AudioMixerPushBufferStream</code> but extracted into its own
  * file for the sake of clarity.
  * </p>
  *
@@ -25,32 +25,32 @@ import javax.media.protocol.SourceStream;
 class InStreamDesc
 {
 	/**
-	 * The <tt>Buffer</tt> into which media data is to be read from {@link #inStream}.
+	 * The <code>Buffer</code> into which media data is to be read from {@link #inStream}.
 	 */
 	private SoftReference<Buffer> buffer;
 
 	/**
-	 * The <tt>DataSource</tt> which created the <tt>SourceStream</tt> described by this instance
+	 * The <code>DataSource</code> which created the <code>SourceStream</code> described by this instance
 	 * and additional information about it.
 	 */
 	public final InDataSourceDesc inDataSourceDesc;
 
 	/**
-	 * The <tt>SourceStream</tt> for which additional information is described by this instance.
+	 * The <code>SourceStream</code> for which additional information is described by this instance.
 	 */
 	private SourceStream inStream;
 
 	/**
-	 * Initializes a new <tt>InStreamDesc</tt> instance which is to describe additional information
-	 * about a specific input audio <tt>SourceStream</tt> of an <tt>AudioMixer</tt>. Associates the
-	 * specified <tt>SourceStream</tt> with the <tt>DataSource</tt> which created it and additional
+	 * Initializes a new <code>InStreamDesc</code> instance which is to describe additional information
+	 * about a specific input audio <code>SourceStream</code> of an <code>AudioMixer</code>. Associates the
+	 * specified <code>SourceStream</code> with the <code>DataSource</code> which created it and additional
 	 * information about it.
 	 *
 	 * @param inStream
-	 * 		a <tt>SourceStream</tt> for which additional information is to be described by the new
+	 * 		a <code>SourceStream</code> for which additional information is to be described by the new
 	 * 		instance
 	 * @param inDataSourceDesc
-	 * 		the <tt>DataSource</tt> which created the <tt>SourceStream</tt> to be described by the
+	 * 		the <code>DataSource</code> which created the <code>SourceStream</code> to be described by the
 	 * 		new instance and additional information about it
 	 */
 	public InStreamDesc(SourceStream inStream, InDataSourceDesc inDataSourceDesc)
@@ -60,14 +60,14 @@ class InStreamDesc
 	}
 
 	/**
-	 * Gets the <tt>Buffer</tt> into which media data is to be read from the <tt>SourceStream</tt>
+	 * Gets the <code>Buffer</code> into which media data is to be read from the <code>SourceStream</code>
 	 * described by this instance.
 	 *
 	 * @param create
-	 * 		the indicator which determines whether the <tt>Buffer</tt> is to be created in case it
+	 * 		the indicator which determines whether the <code>Buffer</code> is to be created in case it
 	 * 		does not exist
-	 * @return the <tt>Buffer</tt> into which media data is to be read from the
-	 * <tt>SourceStream</tt> described by this instance
+	 * @return the <code>Buffer</code> into which media data is to be read from the
+	 * <code>SourceStream</code> described by this instance
 	 */
 	public Buffer getBuffer(boolean create)
 	{
@@ -81,9 +81,9 @@ class InStreamDesc
 	}
 
 	/**
-	 * Gets the <tt>SourceStream</tt> described by this instance.
+	 * Gets the <code>SourceStream</code> described by this instance.
 	 *
-	 * @return the <tt>SourceStream</tt> described by this instance
+	 * @return the <code>SourceStream</code> described by this instance
 	 */
 	public SourceStream getInStream()
 	{
@@ -91,11 +91,11 @@ class InStreamDesc
 	}
 
 	/**
-	 * Gets the <tt>AudioMixingPushBufferDataSource</tt> in which the mix contribution of the
-	 * <tt>SourceStream</tt> described by this instance is to not be included.
+	 * Gets the <code>AudioMixingPushBufferDataSource</code> in which the mix contribution of the
+	 * <code>SourceStream</code> described by this instance is to not be included.
 	 *
-	 * @return the <tt>AudioMixingPushBufferDataSource</tt> in which the mix contribution of the
-	 * <tt>SourceStream</tt> described by this instance is to not be included
+	 * @return the <code>AudioMixingPushBufferDataSource</code> in which the mix contribution of the
+	 * <code>SourceStream</code> described by this instance is to not be included
 	 */
 	public AudioMixingPushBufferDataSource getOutDataSource()
 	{
@@ -103,11 +103,11 @@ class InStreamDesc
 	}
 
 	/**
-	 * Sets the <tt>Buffer</tt> into which media data is to be read from the <tt>SourceStream</tt>
+	 * Sets the <code>Buffer</code> into which media data is to be read from the <code>SourceStream</code>
 	 * described by this instance.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> into which media data is to be read from the <tt>SourceStream</tt>
+	 * 		the <code>Buffer</code> into which media data is to be read from the <code>SourceStream</code>
 	 * 		described by this instance
 	 */
 	public void setBuffer(Buffer buffer)
@@ -116,10 +116,10 @@ class InStreamDesc
 	}
 
 	/**
-	 * Sets the <tt>SourceStream</tt> to be described by this instance.
+	 * Sets the <code>SourceStream</code> to be described by this instance.
 	 *
 	 * @param inStream
-	 * 		the <tt>SourceStream</tt> to be described by this instance
+	 * 		the <code>SourceStream</code> to be described by this instance
 	 */
 	public void setInStream(SourceStream inStream)
 	{

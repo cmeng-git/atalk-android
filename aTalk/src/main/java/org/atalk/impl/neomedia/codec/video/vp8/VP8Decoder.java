@@ -68,17 +68,17 @@ public class VP8Decoder extends AbstractCodec2
     private boolean leftoverFrames = false;
 
     /**
-     * The last known height of the video output by this <tt>VPXDecoder</tt>. Used to detect changes in the output size.
+     * The last known height of the video output by this <code>VPXDecoder</code>. Used to detect changes in the output size.
      */
     private int mWidth;
 
     /**
-     * The last known width of the video output by this <tt>VPXDecoder</tt>. Used to detect changes in the output size.
+     * The last known width of the video output by this <code>VPXDecoder</code>. Used to detect changes in the output size.
      */
     private int mHeight;
 
     /**
-     * Initializes a new <tt>VPXDecoder</tt> instance.
+     * Initializes a new <code>VPXDecoder</code> instance.
      */
     public VP8Decoder()
     {
@@ -129,11 +129,11 @@ public class VP8Decoder extends AbstractCodec2
     /**
      * {@inheritDoc}
      *
-     * Decodes a VP8 frame contained in <tt>inputBuffer</tt> into <tt>outputBuffer</tt> (in <tt>AVFrameFormat</tt>)
+     * Decodes a VP8 frame contained in <code>inputBuffer</code> into <code>outputBuffer</code> (in <code>AVFrameFormat</code>)
      *
-     * @param inputBuffer input <tt>Buffer</tt>
-     * @param outputBuffer output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
+     * @param inputBuffer input <code>Buffer</code>
+     * @param outputBuffer output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuffer</code> has been successfully processed
      */
     @Override
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
@@ -202,9 +202,9 @@ public class VP8Decoder extends AbstractCodec2
     }
 
     /**
-     * Get matching outputs for a specified input <tt>Format</tt>.
+     * Get matching outputs for a specified input <code>Format</code>.
      *
-     * @param inputFormat input <tt>Format</tt>
+     * @param inputFormat input <code>Format</code>
      * @return array of matching outputs or null if there are no matching outputs.
      */
     @Override
@@ -222,10 +222,10 @@ public class VP8Decoder extends AbstractCodec2
 
     /**
      * Allocates a new AVFrame and set its data fields to the data fields from the
-     * <tt>vpx_image_t</tt> pointed to by <tt>img</tt>. Also set its 'linesize' according to <tt>img</tt>.
+     * <code>vpx_image_t</code> pointed to by <code>img</code>. Also set its 'linesize' according to <code>img</code>.
      *
-     * @param img pointer to a <tt>vpx_image_t</tt> whose data will be used
-     * @return an AVFrame instance with its data fields set to the fields from <tt>img</tt>
+     * @param img pointer to a <code>vpx_image_t</code> whose data will be used
+     * @return an AVFrame instance with its data fields set to the fields from <code>img</code>
      */
     private AVFrame makeAVFrame(long img)
     {
@@ -249,11 +249,11 @@ public class VP8Decoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
+     * Sets the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>.
      *
-     * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * @param format the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     * @return the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     * if <code>format</code> is compatible with this <code>Codec</code>; otherwise, <code>null</code>
      */
     @Override
     public Format setInputFormat(Format format)
@@ -265,7 +265,7 @@ public class VP8Decoder extends AbstractCodec2
     }
 
     /**
-     * Changes the output format, if necessary, according to the new dimensions given via <tt>width</tt> and <tt>height</tt>.
+     * Changes the output format, if necessary, according to the new dimensions given via <code>width</code> and <code>height</code>.
      *
      * @param width new width
      * @param height new height

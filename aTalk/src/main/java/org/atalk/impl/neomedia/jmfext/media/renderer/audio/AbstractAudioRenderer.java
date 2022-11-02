@@ -21,11 +21,11 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 
 /**
- * Provides an abstract base implementation of <tt>Renderer</tt> which processes media in
- * <tt>AudioFormat</tt> in order to facilitate extenders.
+ * Provides an abstract base implementation of <code>Renderer</code> which processes media in
+ * <code>AudioFormat</code> in order to facilitate extenders.
  *
- * @param <T> the runtime type of the <tt>AudioSystem</tt> which provides the playback device used by
- * the <tt>AbstractAudioRenderer</tt>
+ * @param <T> the runtime type of the <code>AudioSystem</code> which provides the playback device used by
+ * the <code>AbstractAudioRenderer</code>
  *
  * @author Lyubomir Marinov
  */
@@ -33,21 +33,21 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
         extends AbstractRenderer<AudioFormat>
 {
     /**
-     * The byte order of the running Java virtual machine expressed in the <tt>endian</tt> term of
+     * The byte order of the running Java virtual machine expressed in the <code>endian</code> term of
      * {@link AudioFormat}.
      */
     public static final int JAVA_AUDIO_FORMAT_ENDIAN = AudioFormat.BIG_ENDIAN;
 
     /**
      * The native byte order of the hardware upon which this Java virtual machine is running
-     * expressed in the <tt>endian</tt> term of {@link AudioFormat}.
+     * expressed in the <code>endian</code> term of {@link AudioFormat}.
      */
     public static final int NATIVE_AUDIO_FORMAT_ENDIAN
             = (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN)
             ? AudioFormat.BIG_ENDIAN : AudioFormat.LITTLE_ENDIAN;
 
     /**
-     * The <tt>AudioSystem</tt> which provides the playback device used by this <tt>Renderer</tt>.
+     * The <code>AudioSystem</code> which provides the playback device used by this <code>Renderer</code>.
      */
     protected final T audioSystem;
 
@@ -58,18 +58,18 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     protected final AudioSystem.DataFlow dataFlow;
 
     /**
-     * The <tt>GainControl</tt> through which the volume/gain of the media rendered by this
+     * The <code>GainControl</code> through which the volume/gain of the media rendered by this
      * instance is (to be) controlled.
      */
     private GainControl gainControl;
 
     /**
-     * The <tt>MediaLocator</tt> which specifies the playback device to be used by this <tt>Renderer</tt>.
+     * The <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>.
      */
     private MediaLocator locator;
 
     /**
-     * The <tt>PropertyChangeListener</tt> which listens to changes in the values of the properties
+     * The <code>PropertyChangeListener</code> which listens to changes in the values of the properties
      * of {@link #audioSystem}.
      */
     private final PropertyChangeListener propertyChangeListener = new PropertyChangeListener()
@@ -81,16 +81,16 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     };
 
     /**
-     * The <tt>VolumeControl</tt> through which the volume/gain of the media rendered by this
-     * instance is (to be) controlled. If non-<tt>null</tt>, overrides {@link #gainControl}.
+     * The <code>VolumeControl</code> through which the volume/gain of the media rendered by this
+     * instance is (to be) controlled. If non-<code>null</code>, overrides {@link #gainControl}.
      */
     private VolumeControl volumeControl;
 
     /**
-     * Initializes a new <tt>AbstractAudioRenderer</tt> instance which is to use playback devices
-     * provided by a specific <tt>AudioSystem</tt>.
+     * Initializes a new <code>AbstractAudioRenderer</code> instance which is to use playback devices
+     * provided by a specific <code>AudioSystem</code>.
      *
-     * @param audioSystem the <tt>AudioSystem</tt> which is to provide the playback devices to be used by the
+     * @param audioSystem the <code>AudioSystem</code> which is to provide the playback devices to be used by the
      * new instance
      */
     protected AbstractAudioRenderer(T audioSystem)
@@ -99,17 +99,17 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Initializes a new <tt>AbstractAudioRenderer</tt> instance which is to use notification or
-     * playback (as determined by <tt>dataFlow</tt>) devices provided by a specific <tt>AudioSystem</tt>.
+     * Initializes a new <code>AbstractAudioRenderer</code> instance which is to use notification or
+     * playback (as determined by <code>dataFlow</code>) devices provided by a specific <code>AudioSystem</code>.
      *
-     * @param audioSystem the <tt>AudioSystem</tt> which is to provide the notification or playback devices to
+     * @param audioSystem the <code>AudioSystem</code> which is to provide the notification or playback devices to
      * be used by the new instance
      * @param dataFlow the flow of the media data to be implemented by the new instance i.e. whether
-     * notification or playback devices provided by the specified <tt>audioSystem</tt> are to
+     * notification or playback devices provided by the specified <code>audioSystem</code> are to
      * be used by the new instance. Must be either {@link AudioSystem.DataFlow#NOTIFY} or
      * {@link AudioSystem.DataFlow#PLAYBACK}.
-     * @throws IllegalArgumentException if the specified <tt>dataFlow</tt> is neither
-     * <tt>AudioSystem.DataFlow.NOTIFY</tt> nor <tt>AudioSystem.DataFlow.PLAYBACK</tt>
+     * @throws IllegalArgumentException if the specified <code>dataFlow</code> is neither
+     * <code>AudioSystem.DataFlow.NOTIFY</code> nor <code>AudioSystem.DataFlow.PLAYBACK</code>
      */
     protected AbstractAudioRenderer(T audioSystem, AudioSystem.DataFlow dataFlow)
     {
@@ -137,12 +137,12 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Initializes a new <tt>AbstractAudioRenderer</tt> instance which is to use playback devices
-     * provided by an <tt>AudioSystem</tt> specified by the protocol of the <tt>MediaLocator</tt>s
-     * of the <tt>CaptureDeviceInfo</tt>s registered by the <tt>AudioSystem</tt>.
+     * Initializes a new <code>AbstractAudioRenderer</code> instance which is to use playback devices
+     * provided by an <code>AudioSystem</code> specified by the protocol of the <code>MediaLocator</code>s
+     * of the <code>CaptureDeviceInfo</code>s registered by the <code>AudioSystem</code>.
      *
-     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>
-     * registered by the <tt>AudioSystem</tt> which is to provide the playback devices to be
+     * @param locatorProtocol the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>
+     * registered by the <code>AudioSystem</code> which is to provide the playback devices to be
      * used by the new instance
      */
     protected AbstractAudioRenderer(String locatorProtocol)
@@ -151,19 +151,19 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Initializes a new <tt>AbstractAudioRenderer</tt> instance which is to use notification or
-     * playback devices provided by an <tt>AudioSystem</tt> specified by the protocol of the
-     * <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>s registered by the <tt>AudioSystem</tt>.
+     * Initializes a new <code>AbstractAudioRenderer</code> instance which is to use notification or
+     * playback devices provided by an <code>AudioSystem</code> specified by the protocol of the
+     * <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s registered by the <code>AudioSystem</code>.
      *
-     * @param locatorProtocol the protocol of the <tt>MediaLocator</tt>s of the <tt>CaptureDeviceInfo</tt>
-     * registered by the <tt>AudioSystem</tt> which is to provide the notification or
+     * @param locatorProtocol the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>
+     * registered by the <code>AudioSystem</code> which is to provide the notification or
      * playback devices to be used by the new instance
      * @param dataFlow the flow of the media data to be implemented by the new instance i.e. whether
-     * notification or playback devices provided by the specified <tt>audioSystem</tt> are to
+     * notification or playback devices provided by the specified <code>audioSystem</code> are to
      * be used by the new instance. Must be either {@link AudioSystem.DataFlow#NOTIFY} or
      * {@link AudioSystem.DataFlow#PLAYBACK}.
-     * @throws IllegalArgumentException if the specified <tt>dataFlow</tt> is neither
-     * <tt>AudioSystem.DataFlow.NOTIFY</tt> nor <tt>AudioSystem.DataFlow.PLAYBACK</tt>
+     * @throws IllegalArgumentException if the specified <code>dataFlow</code> is neither
+     * <code>AudioSystem.DataFlow.NOTIFY</code> nor <code>AudioSystem.DataFlow.PLAYBACK</code>
      */
     @SuppressWarnings("unchecked")
     protected AbstractAudioRenderer(String locatorProtocol, AudioSystem.DataFlow dataFlow)
@@ -182,9 +182,9 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
 
     /**
      * Implements {@link javax.media.Controls#getControls()}. Gets the available controls over this
-     * instance. <tt>AbstractAudioRenderer</tt> returns a {@link GainControl} if available.
+     * instance. <code>AbstractAudioRenderer</code> returns a {@link GainControl} if available.
      *
-     * @return an array of <tt>Object</tt>s which represent the available controls over this instance
+     * @return an array of <code>Object</code>s which represent the available controls over this instance
      */
     @Override
     public Object[] getControls()
@@ -194,11 +194,11 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Gets the <tt>GainControl</tt>, if any, which controls the volume level of the audio (to be)
-     * played back by this <tt>Renderer</tt>.
+     * Gets the <code>GainControl</code>, if any, which controls the volume level of the audio (to be)
+     * played back by this <code>Renderer</code>.
      *
-     * @return the <tt>GainControl</tt>, if any, which controls the volume level of the audio (to
-     * be) played back by this <tt>Renderer</tt>
+     * @return the <code>GainControl</code>, if any, which controls the volume level of the audio (to
+     * be) played back by this <code>Renderer</code>
      */
     protected GainControl getGainControl()
     {
@@ -212,9 +212,9 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Gets the <tt>MediaLocator</tt> which specifies the playback device to be used by this <tt>Renderer</tt>.
+     * Gets the <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>.
      *
-     * @return the <tt>MediaLocator</tt> which specifies the playback device to be used by this <tt>Renderer</tt>
+     * @return the <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>
      */
     public MediaLocator getLocator()
     {
@@ -267,9 +267,9 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
      * Notifies this instance that the value of the property of {@link #audioSystem} which
      * identifies the default notification or playback (as determined by {@link #dataFlow}) device
      * has changed. The default implementation does nothing so extenders may safely not call
-     * back to their <tt>AbstractAudioRenderer</tt> super.
+     * back to their <code>AbstractAudioRenderer</code> super.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which specifies details about the change such as the
+     * @param ev a <code>PropertyChangeEvent</code> which specifies details about the change such as the
      * name of the property and its old and new values
      */
     protected void playbackDevicePropertyChange(PropertyChangeEvent ev)
@@ -277,11 +277,11 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Notifies this instance about a specific <tt>PropertyChangeEvent</tt>.
-     * <tt>AbstractAudioRenderer</tt> listens to changes in the values of the properties of
+     * Notifies this instance about a specific <code>PropertyChangeEvent</code>.
+     * <code>AbstractAudioRenderer</code> listens to changes in the values of the properties of
      * {@link #audioSystem}.
      *
-     * @param ev the <tt>PropertyChangeEvent</tt> to notify this instance about
+     * @param ev the <code>PropertyChangeEvent</code> to notify this instance about
      */
     private void propertyChange(PropertyChangeEvent ev)
     {
@@ -303,9 +303,9 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Sets the <tt>MediaLocator</tt> which specifies the playback device to be used by this <tt>Renderer</tt>.
+     * Sets the <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> which specifies the playback device to be used by this <tt>Renderer</tt>
+     * @param locator the <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>
      */
     public void setLocator(MediaLocator locator)
     {
@@ -320,11 +320,11 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
     }
 
     /**
-     * Sets the <tt>VolumeControl</tt> which is to control the volume (level) of the audio (to be)
-     * played back by this <tt>Renderer</tt>.
+     * Sets the <code>VolumeControl</code> which is to control the volume (level) of the audio (to be)
+     * played back by this <code>Renderer</code>.
      *
-     * @param volumeControl the <tt>VolumeControl</tt> which is to control the volume (level) of the audio (to be)
-     * played back by this <tt>Renderer</tt>
+     * @param volumeControl the <code>VolumeControl</code> which is to control the volume (level) of the audio (to be)
+     * played back by this <code>Renderer</code>
      */
     public void setVolumeControl(VolumeControl volumeControl)
     {

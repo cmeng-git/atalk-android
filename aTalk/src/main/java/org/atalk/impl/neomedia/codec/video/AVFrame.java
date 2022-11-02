@@ -11,7 +11,7 @@ import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 
 /**
- * Represents a pointer to a native FFmpeg <tt>AVFrame</tt> object.
+ * Represents a pointer to a native FFmpeg <code>AVFrame</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -35,7 +35,7 @@ public class AVFrame
 	}
 
 	/**
-	 * The <tt>ByteBuffer</tt> whose native memory is set on the native counterpart of this instance/<tt>AVFrame</tt>.
+	 * The <code>ByteBuffer</code> whose native memory is set on the native counterpart of this instance/<code>AVFrame</code>.
 	 */
 	private ByteBuffer data;
 
@@ -46,12 +46,12 @@ public class AVFrame
 	private boolean free;
 
 	/**
-	 * The pointer to the native FFmpeg <tt>AVFrame</tt> object represented by this instance.
+	 * The pointer to the native FFmpeg <code>AVFrame</code> object represented by this instance.
 	 */
 	private long ptr;
 
 	/**
-	 * Initializes a new <tt>FinalizableAVFrame</tt> instance which is to allocate a new native FFmpeg <tt>AVFrame</tt>
+	 * Initializes a new <code>FinalizableAVFrame</code> instance which is to allocate a new native FFmpeg <code>AVFrame</code>
 	 * and represent it.
 	 */
 	public AVFrame() {
@@ -63,12 +63,12 @@ public class AVFrame
 	}
 
 	/**
-	 * Initializes a new <tt>AVFrame</tt> instance which is to represent a specific pointer to a native FFmpeg
-	 * <tt>AVFrame</tt> object. Because the native memory/<tt>AVFrame</tt> has been allocated outside the new instance,
+	 * Initializes a new <code>AVFrame</code> instance which is to represent a specific pointer to a native FFmpeg
+	 * <code>AVFrame</code> object. Because the native memory/<code>AVFrame</code> has been allocated outside the new instance,
 	 * the new instance does not automatically free it upon finalization.
 	 *
 	 * @param ptr
-	 *        the pointer to the native FFmpeg <tt>AVFrame</tt> object to be represented by the new instance
+	 *        the pointer to the native FFmpeg <code>AVFrame</code> object to be represented by the new instance
 	 */
 	public AVFrame(long ptr) {
 		if (ptr == 0)
@@ -93,7 +93,7 @@ public class AVFrame
 	}
 
 	/**
-	 * Deallocates the native memory/FFmpeg <tt>AVFrame</tt> object represented by this instance if this instance has
+	 * Deallocates the native memory/FFmpeg <code>AVFrame</code> object represented by this instance if this instance has
 	 * allocated it upon initialization and it has not been deallocated yet i.e. ensures that {@link #free()} is invoked
 	 * on this instance.
 	 *
@@ -112,7 +112,7 @@ public class AVFrame
 	}
 
 	/**
-	 * Deallocates the native memory/FFmpeg <tt>AVFrame</tt> object represented by this instance if this instance has
+	 * Deallocates the native memory/FFmpeg <code>AVFrame</code> object represented by this instance if this instance has
 	 * allocated it upon initialization and it has not been deallocated yet.
 	 */
 	public synchronized void free()
@@ -130,11 +130,11 @@ public class AVFrame
 	}
 
 	/**
-	 * Gets the <tt>ByteBuffer</tt> whose native memory is set on the native counterpart of this instance/
-	 * <tt>AVFrame</tt>.
+	 * Gets the <code>ByteBuffer</code> whose native memory is set on the native counterpart of this instance/
+	 * <code>AVFrame</code>.
 	 *
-	 * @return the <tt>ByteBuffer</tt> whose native memory is set on the native counterpart of this instance/
-	 *         <tt>AVFrame</tt>.
+	 * @return the <code>ByteBuffer</code> whose native memory is set on the native counterpart of this instance/
+	 *         <code>AVFrame</code>.
 	 */
 	public synchronized ByteBuffer getData()
 	{
@@ -142,9 +142,9 @@ public class AVFrame
 	}
 
 	/**
-	 * Gets the pointer to the native FFmpeg <tt>AVFrame</tt> object represented by this instance.
+	 * Gets the pointer to the native FFmpeg <code>AVFrame</code> object represented by this instance.
 	 *
-	 * @return the pointer to the native FFmpeg <tt>AVFrame</tt> object represented by this instance
+	 * @return the pointer to the native FFmpeg <code>AVFrame</code> object represented by this instance
 	 */
 	public synchronized long getPtr()
 	{

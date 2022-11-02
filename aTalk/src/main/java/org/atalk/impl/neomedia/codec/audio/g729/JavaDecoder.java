@@ -79,13 +79,13 @@ public class JavaDecoder extends AbstractCodec2
 	}
 
 	/**
-	 * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-	 * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-	 * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-	 * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+	 * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+	 * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+	 * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+	 * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
 	 *
 	 * @throws ResourceUnavailableException
-	 *         if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+	 *         if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
 	 * @see AbstractCodecExt#doOpen()
 	 */
 	@Override

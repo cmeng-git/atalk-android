@@ -8,7 +8,7 @@ package org.jivesoftware.smackx.jingleinfo;
 import org.jivesoftware.smack.packet.IQ;
 
 /**
- * The <tt>JingleInfoQueryIQ</tt> is used to discover STUN and relay server via the Google's Jingle
+ * The <code>JingleInfoQueryIQ</code> is used to discover STUN and relay server via the Google's Jingle
  * Server Discovery extension.
  *
  * @author Sebastien Vincent

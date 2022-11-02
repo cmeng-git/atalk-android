@@ -100,7 +100,7 @@ public final class Speex
 	public static native int speex_resampler_set_rate(long state, int in_rate, int out_rate);
 
 	/**
-	 * Prevents the creation of <tt>Speex</tt> instances.
+	 * Prevents the creation of <code>Speex</code> instances.
 	 */
 	private Speex() {
 	}

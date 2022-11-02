@@ -16,29 +16,29 @@ import java.util.*;
 public class QTCaptureDevice extends NSObject
 {
 	/**
-	 * The cached <tt>QTCaptureDevice</tt> instances previously returned by the last call to
+	 * The cached <code>QTCaptureDevice</code> instances previously returned by the last call to
 	 * {@link #inputDevicesWithMediaType(QTMediaType)} .
 	 */
 	private static final Map<QTMediaType, List<QTCaptureDevice>> inputDevices = new HashMap<>();
 
 	/**
-	 * The constant which represents an empty array with <tt>QTFormatDescription</tt> element type.
+	 * The constant which represents an empty array with <code>QTFormatDescription</code> element type.
 	 * Explicitly defined in order to avoid unnecessary allocations.
 	 */
 	private static final QTFormatDescription[] NO_FORMAT_DESCRIPTIONS = new QTFormatDescription[0];
 
 	/**
-	 * The constant which represents an empty array with <tt>QTCaptureDevice</tt> element type.
+	 * The constant which represents an empty array with <code>QTCaptureDevice</code> element type.
 	 * Explicitly defined in order to avoid unnecessary allocations.
 	 */
 	private static final QTCaptureDevice[] NO_INPUT_DEVICES = new QTCaptureDevice[0];
 
 	/**
-	 * Initializes a new <tt>QTCaptureDevice</tt> instance which is to represent a specific QTKit
-	 * <tt>QTCaptureDevice</tt> object.
+	 * Initializes a new <code>QTCaptureDevice</code> instance which is to represent a specific QTKit
+	 * <code>QTCaptureDevice</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> object which is to be represented by
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> object which is to be represented by
 	 *        the new instance
 	 */
 	public QTCaptureDevice(long ptr)
@@ -55,21 +55,21 @@ public class QTCaptureDevice extends NSObject
 	}
 
 	/**
-	 * Releases application control over a specific QTKit <tt>QTCaptureDevice</tt> object acquired
+	 * Releases application control over a specific QTKit <code>QTCaptureDevice</code> object acquired
 	 * in the {@link #open(long)} method.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> object to close
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> object to close
 	 */
 	private static native void close(long ptr);
 
 	/**
-	 * Gets the <tt>QTCaptureDevice</tt> with a specific unique identifier.
+	 * Gets the <code>QTCaptureDevice</code> with a specific unique identifier.
 	 *
 	 * @param deviceUID
-	 *        the unique identifier of the <tt>QTCaptureDevice</tt> to be retrieved
-	 * @return the <tt>QTCaptureDevice</tt> with the specified unique identifier if such a
-	 *         <tt>QTCaptureDevice</tt> exists; otherwise, <tt>null</tt>
+	 *        the unique identifier of the <code>QTCaptureDevice</code> to be retrieved
+	 * @return the <code>QTCaptureDevice</code> with the specified unique identifier if such a
+	 *         <code>QTCaptureDevice</code> exists; otherwise, <code>null</code>
 	 */
 	public static QTCaptureDevice deviceWithUniqueID(String deviceUID)
 	{
@@ -186,11 +186,11 @@ public class QTCaptureDevice extends NSObject
 	private static native long[] inputDevicesWithMediaType(String mediaType);
 
 	/**
-	 * Gets the indicator which determines whether this <tt>QTCaptureDevice</tt> is connected and
+	 * Gets the indicator which determines whether this <code>QTCaptureDevice</code> is connected and
 	 * available to applications.
 	 *
-	 * @return <tt>true</tt> if this <tt>QTCaptureDevice</tt> is connected and available to
-	 *         applications; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this <code>QTCaptureDevice</code> is connected and available to
+	 *         applications; otherwise, <code>false</code>
 	 */
 	public boolean isConnected()
 	{
@@ -198,21 +198,21 @@ public class QTCaptureDevice extends NSObject
 	}
 
 	/**
-	 * Gets the indicator which determines whether a specific QTKit <tt>QTCaptureDevice</tt> object
+	 * Gets the indicator which determines whether a specific QTKit <code>QTCaptureDevice</code> object
 	 * is connected and available to applications.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> object which is to get the indicator
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> object which is to get the indicator
 	 *        for
-	 * @return <tt>true</tt> if the specified QTKit <tt>QTCaptureDevice</tt> object is connected and
-	 *         available to applications; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if the specified QTKit <code>QTCaptureDevice</code> object is connected and
+	 *         available to applications; otherwise, <code>false</code>
 	 */
 	private static native boolean isConnected(long ptr);
 
 	/**
-	 * Gets the localized human-readable name of this <tt>QTCaptureDevice</tt>.
+	 * Gets the localized human-readable name of this <code>QTCaptureDevice</code>.
 	 *
-	 * @return the localized human-readable name of this <tt>QTCaptureDevice</tt>
+	 * @return the localized human-readable name of this <code>QTCaptureDevice</code>
 	 */
 	public String localizedDisplayName()
 	{
@@ -220,23 +220,23 @@ public class QTCaptureDevice extends NSObject
 	}
 
 	/**
-	 * Gets the localized human-readable name of a specific QTKit <tt>QTCaptureDevice</tt> object.
+	 * Gets the localized human-readable name of a specific QTKit <code>QTCaptureDevice</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> object to get the localized
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> object to get the localized
 	 *        human-readable name of
-	 * @return the localized human-readable name of the specified QTKit <tt>QTCaptureDevice</tt>
+	 * @return the localized human-readable name of the specified QTKit <code>QTCaptureDevice</code>
 	 *         object
 	 */
 	private static native String localizedDisplayName(long ptr);
 
 	/**
-	 * Attempts to give the application control over this <tt>QTCaptureDevice</tt> so that it can be
+	 * Attempts to give the application control over this <code>QTCaptureDevice</code> so that it can be
 	 * used for capture.
 	 *
-	 * @return <tt>true</tt> if this device was opened successfully; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this device was opened successfully; otherwise, <code>false</code>
 	 * @throws NSErrorException
-	 *         if this device was not opened successfully and carries an <tt>NSError</tt> describing
+	 *         if this device was not opened successfully and carries an <code>NSError</code> describing
 	 *         why this device could not be opened
 	 */
 	public boolean open()
@@ -246,23 +246,23 @@ public class QTCaptureDevice extends NSObject
 	}
 
 	/**
-	 * Attempts to give the application control over a specific QTKit <tt>QTCaptureDevice</tt>
+	 * Attempts to give the application control over a specific QTKit <code>QTCaptureDevice</code>
 	 * object so that it can be used for capture.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> to be opened
-	 * @return <tt>true</tt> if the device was opened successfully; otherwise, <tt>false</tt>
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> to be opened
+	 * @return <code>true</code> if the device was opened successfully; otherwise, <code>false</code>
 	 * @throws NSErrorException
-	 *         if the device was not opened successfully and carries an <tt>NSError</tt> describing
+	 *         if the device was not opened successfully and carries an <code>NSError</code> describing
 	 *         why the device could not be opened
 	 */
 	private static native boolean open(long ptr)
 		throws NSErrorException;
 
 	/**
-	 * Gets the unique identifier of this <tt>QTCaptureDevice</tt>.
+	 * Gets the unique identifier of this <code>QTCaptureDevice</code>.
 	 *
-	 * @return the unique identifier of this <tt>QTCaptureDevice</tt>
+	 * @return the unique identifier of this <code>QTCaptureDevice</code>
 	 */
 	public String uniqueID()
 	{
@@ -270,12 +270,12 @@ public class QTCaptureDevice extends NSObject
 	}
 
 	/**
-	 * Gets the unique identifier of a specific QTKit <tt>QTCaptureDevice</tt> object.
+	 * Gets the unique identifier of a specific QTKit <code>QTCaptureDevice</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureDevice</tt> object to get the unique identifier
+	 *        the pointer to the QTKit <code>QTCaptureDevice</code> object to get the unique identifier
 	 *        of
-	 * @return the unique identifier of the specified QTKit <tt>QTCaptureDevice</tt> object
+	 * @return the unique identifier of the specified QTKit <code>QTCaptureDevice</code> object
 	 */
 	private static native String uniqueID(long ptr);
 }

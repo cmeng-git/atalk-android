@@ -16,8 +16,8 @@ import javax.media.*;
 import javax.media.protocol.DataSource;
 
 /**
- * Defines the interface for <tt>MediaDevice</tt> required by the <tt>org.atalk.impl.neomedia</tt>
- * implementation of <tt>org.atalk.service.neomedia</tt>.
+ * Defines the interface for <code>MediaDevice</code> required by the <code>org.atalk.impl.neomedia</code>
+ * implementation of <code>org.atalk.service.neomedia</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -25,11 +25,11 @@ import javax.media.protocol.DataSource;
 public abstract class AbstractMediaDevice implements MediaDevice
 {
     /**
-     * Connects to a specific <tt>CaptureDevice</tt> given in the form of a <tt>DataSource</tt>.
+     * Connects to a specific <code>CaptureDevice</code> given in the form of a <code>DataSource</code>.
      * Explicitly defined in order to allow extenders to customize the connect procedure.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> to be connected to
-     * @throws IOException if anything wrong happens while connecting to the specified <tt>captureDevice</tt>
+     * @param captureDevice the <code>CaptureDevice</code> to be connected to
+     * @throws IOException if anything wrong happens while connecting to the specified <code>captureDevice</code>
      */
     public void connect(DataSource captureDevice)
             throws IOException
@@ -47,20 +47,20 @@ public abstract class AbstractMediaDevice implements MediaDevice
     }
 
     /**
-     * Creates a <tt>DataSource</tt> instance for this <tt>MediaDevice</tt> which gives access to the captured media.
+     * Creates a <code>DataSource</code> instance for this <code>MediaDevice</code> which gives access to the captured media.
      *
-     * @return a <tt>DataSource</tt> instance which gives access to the media captured by this <tt>MediaDevice</tt>
+     * @return a <code>DataSource</code> instance which gives access to the media captured by this <code>MediaDevice</code>
      */
     protected abstract DataSource createOutputDataSource();
 
     /**
-     * Initializes a new <tt>Processor</tt> instance which is to be used to play back media on this
-     * <tt>MediaDevice</tt> . Allows extenders to, for example, disable the playback on this
-     * <tt>MediaDevice</tt> by completely overriding and returning <tt>null</tt>.
+     * Initializes a new <code>Processor</code> instance which is to be used to play back media on this
+     * <code>MediaDevice</code> . Allows extenders to, for example, disable the playback on this
+     * <code>MediaDevice</code> by completely overriding and returning <code>null</code>.
      *
-     * @param dataSource the <tt>DataSource</tt> which is to be played back by the new <tt>Processor</tt> instance
-     * @return a new <tt>Processor</tt> instance which is to be used to play back the media provided by the specified
-     * <tt>dataSource</tt> or <tt>null</tt> if the specified <tt>dataSource</tt> is to not be played back
+     * @param dataSource the <code>DataSource</code> which is to be played back by the new <code>Processor</code> instance
+     * @return a new <code>Processor</code> instance which is to be used to play back the media provided by the specified
+     * <code>dataSource</code> or <code>null</code> if the specified <code>dataSource</code> is to not be played back
      * @throws Exception if an exception is thrown by {@link DataSource#connect()},
      * {@link Manager#createProcessor(DataSource)}, or {@link DataSource#disconnect()}
      */
@@ -81,15 +81,15 @@ public abstract class AbstractMediaDevice implements MediaDevice
     }
 
     /**
-     * Initializes a new <tt>Renderer</tt> instance which is to play back media on this
-     * <tt>MediaDevice</tt>. Allows extenders to initialize a specific <tt>Renderer</tt> instance.
-     * The implementation of <tt>AbstractMediaDevice</tt> returns <tt>null</tt> which means that it
-     * is left to FMJ to choose a suitable <tt>Renderer</tt> irrespective of this
-     * <tt>MediaDevice</tt>.
+     * Initializes a new <code>Renderer</code> instance which is to play back media on this
+     * <code>MediaDevice</code>. Allows extenders to initialize a specific <code>Renderer</code> instance.
+     * The implementation of <code>AbstractMediaDevice</code> returns <code>null</code> which means that it
+     * is left to FMJ to choose a suitable <code>Renderer</code> irrespective of this
+     * <code>MediaDevice</code>.
      *
-     * @return a new <tt>Renderer</tt> instance which is to play back media on this
-     * <tt>MediaDevice</tt> or <tt>null</tt> if a suitable <tt>Renderer</tt> is to be chosen
-     * irrespective of this <tt>MediaDevice</tt>
+     * @return a new <code>Renderer</code> instance which is to play back media on this
+     * <code>MediaDevice</code> or <code>null</code> if a suitable <code>Renderer</code> is to be chosen
+     * irrespective of this <code>MediaDevice</code>
      */
     protected Renderer createRenderer()
     {
@@ -97,11 +97,11 @@ public abstract class AbstractMediaDevice implements MediaDevice
     }
 
     /**
-     * Creates a new <tt>MediaDeviceSession</tt> instance which is to represent the use of this
-     * <tt>MediaDevice</tt> by a <tt>MediaStream</tt>.
+     * Creates a new <code>MediaDeviceSession</code> instance which is to represent the use of this
+     * <code>MediaDevice</code> by a <code>MediaStream</code>.
      *
-     * @return a new <tt>MediaDeviceSession</tt> instance which is to represent the use of this
-     * <tt>MediaDevice</tt> by a <tt>MediaStream</tt>
+     * @return a new <code>MediaDeviceSession</code> instance which is to represent the use of this
+     * <code>MediaDevice</code> by a <code>MediaStream</code>
      */
     public MediaDeviceSession createSession()
     {
@@ -114,10 +114,10 @@ public abstract class AbstractMediaDevice implements MediaDevice
     }
 
     /**
-     * Returns a <tt>List</tt> containing (at the time of writing) a single extension descriptor
-     * indicating <tt>RECVONLY</tt> support for mixer-to-client audio levels.
+     * Returns a <code>List</code> containing (at the time of writing) a single extension descriptor
+     * indicating <code>RECVONLY</code> support for mixer-to-client audio levels.
      *
-     * @return a <tt>List</tt> containing the <tt>CSRC_AUDIO_LEVEL_URN</tt> extension descriptor.
+     * @return a <code>List</code> containing the <code>CSRC_AUDIO_LEVEL_URN</code> extension descriptor.
      */
     public List<RTPExtension> getSupportedExtensions()
     {
@@ -125,9 +125,9 @@ public abstract class AbstractMediaDevice implements MediaDevice
     }
 
     /**
-     * Gets a list of <tt>MediaFormat</tt>s supported by this <tt>MediaDevice</tt>.
+     * Gets a list of <code>MediaFormat</code>s supported by this <code>MediaDevice</code>.
      *
-     * @return the list of <tt>MediaFormat</tt>s supported by this device
+     * @return the list of <code>MediaFormat</code>s supported by this device
      * @see MediaDevice#getSupportedFormats()
      */
     public List<MediaFormat> getSupportedFormats()

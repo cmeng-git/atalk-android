@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.protocol;
 import org.atalk.service.neomedia.DTMFInbandTone;
 
 /**
- * All datasources that support inband DTMF functionalities implement <tt>InbandDTMFDataSource</tt>.
+ * All datasources that support inband DTMF functionalities implement <code>InbandDTMFDataSource</code>.
  *
  * @author Vincent Lucas
  */

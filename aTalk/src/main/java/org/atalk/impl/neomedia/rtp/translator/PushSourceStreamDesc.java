@@ -10,49 +10,49 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import javax.media.protocol.*;
 
 /**
- * Describes a <tt>PushSourceStream</tt> associated with an endpoint from which an
- * <tt>RTPTranslatorImpl</tt> is translating.
+ * Describes a <code>PushSourceStream</code> associated with an endpoint from which an
+ * <code>RTPTranslatorImpl</code> is translating.
  *
  * @author Lyubomir Marinov
  */
 class PushSourceStreamDesc
 {
 	/**
-	 * The endpoint <tt>RTPConnector</tt> which owns {@link #stream}.
+	 * The endpoint <code>RTPConnector</code> which owns {@link #stream}.
 	 */
 	public final RTPConnectorDesc connectorDesc;
 
 	/**
-	 * <tt>true</tt> if this instance represents a data/RTP stream or <tt>false</tt> if this
+	 * <code>true</code> if this instance represents a data/RTP stream or <code>false</code> if this
 	 * instance represents a control/RTCP stream
 	 */
 	public final boolean data;
 
 	/**
-	 * The <tt>PushSourceStream</tt> associated with an endpoint from which an
-	 * <tt>RTPTranslatorImpl</tt> is translating.
+	 * The <code>PushSourceStream</code> associated with an endpoint from which an
+	 * <code>RTPTranslatorImpl</code> is translating.
 	 */
 	public final PushSourceStream stream;
 
 	/**
-	 * The <tt>PushBufferStream</tt> control over {@link #stream}, if available, which may provide
-	 * Buffer properties other than <tt>data</tt>, <tt>length</tt> and <tt>offset</tt> such as
-	 * <tt>flags</tt>.
+	 * The <code>PushBufferStream</code> control over {@link #stream}, if available, which may provide
+	 * Buffer properties other than <code>data</code>, <code>length</code> and <code>offset</code> such as
+	 * <code>flags</code>.
 	 */
 	public final PushBufferStream streamAsPushBufferStream;
 
 	/**
-	 * Initializes a new <tt>PushSourceStreamDesc</tt> instance which is to describe a specific
-	 * endpoint <tt>PushSourceStream</tt> for an <tt>RTPTranslatorImpl</tt>.
+	 * Initializes a new <code>PushSourceStreamDesc</code> instance which is to describe a specific
+	 * endpoint <code>PushSourceStream</code> for an <code>RTPTranslatorImpl</code>.
 	 *
 	 * @param connectorDesc
-	 *        the endpoint <tt>RTPConnector</tt> which owns the specified <tt>stream</tt>
+	 *        the endpoint <code>RTPConnector</code> which owns the specified <code>stream</code>
 	 * @param stream
-	 *        the endpoint <tt>PushSourceStream</tt> to be described by the new instance for an
-	 *        <tt>RTPTranslatorImpl</tt>
+	 *        the endpoint <code>PushSourceStream</code> to be described by the new instance for an
+	 *        <code>RTPTranslatorImpl</code>
 	 * @param data
-	 *        <tt>true</tt> if the specified <tt>stream</tt> is a data/RTP stream or <tt>false</tt>
-	 *        if the specified <tt>stream</tt> is a control/RTCP stream
+	 *        <code>true</code> if the specified <code>stream</code> is a data/RTP stream or <code>false</code>
+	 *        if the specified <code>stream</code> is a control/RTCP stream
 	 */
 	public PushSourceStreamDesc(RTPConnectorDesc connectorDesc, PushSourceStream stream,
 		boolean data)

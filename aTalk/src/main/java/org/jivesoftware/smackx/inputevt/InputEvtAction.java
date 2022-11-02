@@ -13,17 +13,17 @@ package org.jivesoftware.smackx.inputevt;
 public enum InputEvtAction
 {
     /**
-     * The <tt>notify</tt> action.
+     * The <code>notify</code> action.
      */
     NOTIFY("notify"),
 
     /**
-     * The <tt>start</tt> action.
+     * The <code>start</code> action.
      */
     START("start"),
 
     /**
-     * The <tt>stop</tt> action.
+     * The <code>stop</code> action.
      */
     STOP("stop");
 
@@ -33,9 +33,9 @@ public enum InputEvtAction
     private final String actionName;
 
     /**
-     * Creates a <tt>InputEvtAction</tt> instance with the specified name.
+     * Creates a <code>InputEvtAction</code> instance with the specified name.
      *
-     * @param actionName the name of the <tt>InputEvtAction</tt> we'd like to create.
+     * @param actionName the name of the <code>InputEvtAction</code> we'd like to create.
      */
     private InputEvtAction(String actionName)
     {
@@ -43,10 +43,10 @@ public enum InputEvtAction
     }
 
     /**
-     * Returns the name of this <tt>InputEvtAction</tt>. The name returned by this method is meant
+     * Returns the name of this <code>InputEvtAction</code>. The name returned by this method is meant
      * for use directly in the XMPP XML string.
      *
-     * @return Returns the name of this <tt>InputEvtAction</tt>.
+     * @return Returns the name of this <code>InputEvtAction</code>.
      */
     @Override
     public String toString()
@@ -55,11 +55,11 @@ public enum InputEvtAction
     }
 
     /**
-     * Returns a <tt>InputEvtAction</tt> value corresponding to the specified <tt>inputActionStr</tt>.
+     * Returns a <code>InputEvtAction</code> value corresponding to the specified <code>inputActionStr</code>.
      *
-     * @param inputActionStr the action <tt>String</tt> that we'd like to parse.
-     * @return a <tt>InputEvtAction</tt> value corresponding to the specified <tt>inputActionStr</tt>.
-     * @throws IllegalArgumentException in case <tt>inputActionStr</tt> is not valid
+     * @param inputActionStr the action <code>String</code> that we'd like to parse.
+     * @return a <code>InputEvtAction</code> value corresponding to the specified <code>inputActionStr</code>.
+     * @throws IllegalArgumentException in case <code>inputActionStr</code> is not valid
      */
     public static InputEvtAction fromString(String inputActionStr)
             throws IllegalArgumentException

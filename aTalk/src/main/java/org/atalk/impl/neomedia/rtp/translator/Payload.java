@@ -3,7 +3,7 @@ package org.atalk.impl.neomedia.rtp.translator;
 import javax.media.rtp.*;
 
 /**
- * A <tt>Payload</tt> type that can be written to an <tt>OutputDataStream</tt>.
+ * A <code>Payload</code> type that can be written to an <code>OutputDataStream</code>.
  *
  * @author George Politis
  */

@@ -41,7 +41,7 @@ public class IceStateExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>IceStateExtensionElement</tt>
+     * Creates new instance of <code>IceStateExtensionElement</code>
      */
     public IceStateExtension()
     {

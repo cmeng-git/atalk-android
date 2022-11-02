@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.3 (300030)
+Release Date:   11/02/2022
+Author:         cmeng
+- Add marker showing user selected location in street map view
+- Disable FollowMe mode only in ZERO_FIX mode, allow tracking even in SINGLE_FIX update request
+- Add copyright overlay to osm UI
+- Catch IllegalArgumentException for passed in Location in LocationBgService#getLocationAddress()
+- Add support for XEP-0215: External Service Discovery
+
+=========================================================================
 Version:        3.0.2 (300020)
 Release Date:   10/04/2022
 Author:         cmeng

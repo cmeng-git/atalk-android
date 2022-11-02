@@ -1054,7 +1054,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     messages.add(msg);
                     lastMsgIdx++;
 
-                    // Update street view map location if the view is focus.
+                    // Update street view map location if the view is infocus.
                     if (mSVP_Started && msg.hasLatLng) {
                         mSVP = svpApi.svpHandler(mSVP, msg.mLocation);
                     }

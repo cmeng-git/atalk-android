@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents a QTKit <tt>QTCaptureInput</tt> object.
+ * Represents a QTKit <code>QTCaptureInput</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -14,11 +14,11 @@ public class QTCaptureInput extends NSObject
 {
 
 	/**
-	 * Initializes a new <tt>QTCaptureInput</tt> instance which is to represent a specific QTKit
-	 * <tt>QTCaptureInput</tt> object.
+	 * Initializes a new <code>QTCaptureInput</code> instance which is to represent a specific QTKit
+	 * <code>QTCaptureInput</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the QTKit <tt>QTCaptureInput</tt> object to be represented by the new
+	 *        the pointer to the QTKit <code>QTCaptureInput</code> object to be represented by the new
 	 *        instance
 	 */
 	public QTCaptureInput(long ptr)

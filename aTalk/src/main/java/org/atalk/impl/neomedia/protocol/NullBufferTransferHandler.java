@@ -9,16 +9,16 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>BufferTransferHandler</tt> which reads from a specified
- * <tt>PushBufferStream</tt> as soon as possible and throws the read data away.
+ * Implements a <code>BufferTransferHandler</code> which reads from a specified
+ * <code>PushBufferStream</code> as soon as possible and throws the read data away.
  *
  * @author Lyubomir Marinov
  */
 public class NullBufferTransferHandler implements BufferTransferHandler
 {
 	/**
-	 * The FMJ <tt>Buffer</tt> into which this <tt>BufferTransferHandler</tt> is to read data from
-	 * any <tt>PushBufferStream</tt>.
+	 * The FMJ <code>Buffer</code> into which this <code>BufferTransferHandler</code> is to read data from
+	 * any <code>PushBufferStream</code>.
 	 */
 	private final Buffer buffer = new Buffer();
 

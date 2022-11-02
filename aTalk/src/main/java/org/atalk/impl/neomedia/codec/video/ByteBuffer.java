@@ -11,8 +11,8 @@ import org.atalk.impl.neomedia.codec.FFmpeg;
 /**
  * Represents a buffer of native memory with a specific size/capacity which may
  * contains a specific number of bytes of valid data. If the memory represented
- * by a <tt>ByteBuffer</tt> instance has been allocated by the
- * <tt>ByteBuffer</tt> instance itself, the native memory will automatically be
+ * by a <code>ByteBuffer</code> instance has been allocated by the
+ * <code>ByteBuffer</code> instance itself, the native memory will automatically be
  * freed upon finalization.
  *
  * @author Lyubomir Marinov
@@ -22,7 +22,7 @@ public class ByteBuffer
 
     /**
      * The maximum number of bytes which may be written into the native memory
-     * represented by this instance. If <tt>0</tt>, this instance has been
+     * represented by this instance. If <code>0</code>, this instance has been
      * initialized to provide read-only access to the native memory it
      * represents and will not deallocate it upon finalization.
      */
@@ -40,8 +40,8 @@ public class ByteBuffer
     private long ptr;
 
     /**
-     * Initializes a new <tt>ByteBuffer</tt> instance with a specific
-     * <tt>capacity</tt> of native memory. The new instance allocates the native
+     * Initializes a new <code>ByteBuffer</code> instance with a specific
+     * <code>capacity</code> of native memory. The new instance allocates the native
      * memory and automatically frees it upon finalization.
      *
      * @param capacity the maximum number of bytes which can be written into the
@@ -61,7 +61,7 @@ public class ByteBuffer
     }
 
     /**
-     * Initializes a new <tt>ByteBuffer</tt> instance which is to represent a
+     * Initializes a new <code>ByteBuffer</code> instance which is to represent a
      * specific block of native memory. Since the specified native memory has
      * been allocated outside the new instance, the new instance will not
      * automatically free it.
@@ -116,7 +116,7 @@ public class ByteBuffer
 
     /**
      * Gets the maximum number of bytes which may be written into the native
-     * memory represented by this instance. If <tt>0</tt>, this instance has
+     * memory represented by this instance. If <code>0</code>, this instance has
      * been initialized to provide read-only access to the native memory it
      * represents and will not deallocate it upon finalization.
      *
@@ -156,7 +156,7 @@ public class ByteBuffer
      *
      * @param length the number of bytes of valid data that the native memory
      * represented by this instance contains
-     * @throws IllegalArgumentException if <tt>length</tt> is a negative value
+     * @throws IllegalArgumentException if <code>length</code> is a negative value
      */
     public void setLength(int length)
     {

@@ -11,7 +11,7 @@ import javax.media.MediaLocator;
 import javax.media.control.FrameRateControl;
 
 /**
- * Provides a base implementation of <tt>PullBufferDataSource</tt> and <tt>CaptureDevice</tt> for
+ * Provides a base implementation of <code>PullBufferDataSource</code> and <code>CaptureDevice</code> for
  * the purposes of video in order to facilitate implementers by taking care of boilerplate in the
  * most common cases.
  *
@@ -21,18 +21,18 @@ public abstract class AbstractVideoPullBufferCaptureDevice extends AbstractPullB
 {
 
 	/**
-	 * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance.
+	 * Initializes a new <code>AbstractVideoPullBufferCaptureDevice</code> instance.
 	 */
 	protected AbstractVideoPullBufferCaptureDevice()
 	{
 	}
 
 	/**
-	 * Initializes a new <tt>AbstractVideoPullBufferCaptureDevice</tt> instance from a specific
-	 * <tt>MediaLocator</tt>.
+	 * Initializes a new <code>AbstractVideoPullBufferCaptureDevice</code> instance from a specific
+	 * <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 * 		the <tt>MediaLocator</tt> to create the new instance from
+	 * 		the <code>MediaLocator</code> to create the new instance from
 	 */
 	protected AbstractVideoPullBufferCaptureDevice(MediaLocator locator)
 	{
@@ -40,11 +40,11 @@ public abstract class AbstractVideoPullBufferCaptureDevice extends AbstractPullB
 	}
 
 	/**
-	 * Creates a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-	 * setting of the frame rate of this <tt>AbstractVideoPullBufferCaptureDevice</tt>.
+	 * Creates a new <code>FrameRateControl</code> instance which is to allow the getting and
+	 * setting of the frame rate of this <code>AbstractVideoPullBufferCaptureDevice</code>.
 	 *
-	 * @return a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-	 * setting of the frame rate of this <tt>AbstractVideoPullBufferCaptureDevice</tt>
+	 * @return a new <code>FrameRateControl</code> instance which is to allow the getting and
+	 * setting of the frame rate of this <code>AbstractVideoPullBufferCaptureDevice</code>
 	 * @see AbstractPullBufferCaptureDevice#createFrameRateControl()
 	 */
 	@Override
@@ -53,7 +53,7 @@ public abstract class AbstractVideoPullBufferCaptureDevice extends AbstractPullB
 		return new FrameRateControlAdapter()
 		{
 			/**
-			 * The output frame rate of this <tt>AbstractVideoPullBufferCaptureDevice</tt>.
+			 * The output frame rate of this <code>AbstractVideoPullBufferCaptureDevice</code>.
 			 */
 			private float frameRate = -1;
 

@@ -8,16 +8,16 @@ package org.atalk.impl.neomedia.rtp.translator;
 import javax.media.rtp.*;
 
 /**
- * Describes an <tt>RTPConnector</tt> associated with an endpoint from and to which an
- * <tt>RTPTranslatorImpl</tt> is translating.
+ * Describes an <code>RTPConnector</code> associated with an endpoint from and to which an
+ * <code>RTPTranslatorImpl</code> is translating.
  *
  * @author Lyubomir Marinov
  */
 class RTPConnectorDesc
 {
 	/**
-	 * The <tt>RTPConnector</tt> associated with an endpoint from and to which an
-	 * <tt>RTPTranslatorImpl</tt> is translating.
+	 * The <code>RTPConnector</code> associated with an endpoint from and to which an
+	 * <code>RTPTranslatorImpl</code> is translating.
 	 */
 	public final RTPConnector connector;
 

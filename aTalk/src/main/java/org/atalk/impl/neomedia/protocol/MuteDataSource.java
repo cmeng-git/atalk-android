@@ -6,24 +6,24 @@
 package org.atalk.impl.neomedia.protocol;
 
 /**
- * All datasources that support muting functionality implement <tt>MuteDataSource</tt>.
+ * All datasources that support muting functionality implement <code>MuteDataSource</code>.
  *
  * @author Damian Minkov
  */
 public interface MuteDataSource
 {
 	/**
-	 * Determines whether this <tt>DataSource</tt> is mute.
+	 * Determines whether this <code>DataSource</code> is mute.
 	 *
-	 * @return <tt>true</tt> if this <tt>DataSource</tt> is mute; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this <code>DataSource</code> is mute; otherwise, <code>false</code>
 	 */
 	public boolean isMute();
 
 	/**
-	 * Sets the mute state of this <tt>DataSource</tt>.
+	 * Sets the mute state of this <code>DataSource</code>.
 	 *
 	 * @param mute
-	 *        <tt>true</tt> to mute this <tt>DataSource</tt>; otherwise, <tt>false</tt>
+	 *        <code>true</code> to mute this <code>DataSource</code>; otherwise, <code>false</code>
 	 */
 	public void setMute(boolean mute);
 }

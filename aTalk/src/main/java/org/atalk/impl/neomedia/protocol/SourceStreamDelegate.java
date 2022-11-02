@@ -8,26 +8,26 @@ package org.atalk.impl.neomedia.protocol;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>SourceStream</tt> which wraps a specific <tt>SourceStream</tt>.
+ * Implements a <code>SourceStream</code> which wraps a specific <code>SourceStream</code>.
  *
  * @param <T>
- * 		the very type of the <tt>SourceStream</tt> wrapped by <tt>SourceStreamDelegate</tt>
+ * 		the very type of the <code>SourceStream</code> wrapped by <code>SourceStreamDelegate</code>
  * @author Lyubomir Marinov
  */
 public class SourceStreamDelegate<T extends SourceStream> implements SourceStream
 {
 
 	/**
-	 * The <tt>SourceStreamDelegate</tt> wrapped by this instance.
+	 * The <code>SourceStreamDelegate</code> wrapped by this instance.
 	 */
 	protected final T stream;
 
 	/**
-	 * Initializes a new <tt>SourceStreamDelegate</tt> instance which is to wrap a specific
-	 * <tt>SourceStream</tt>.
+	 * Initializes a new <code>SourceStreamDelegate</code> instance which is to wrap a specific
+	 * <code>SourceStream</code>.
 	 *
 	 * @param stream
-	 * 		the <tt>SourceStream</tt> the new instance is to wrap
+	 * 		the <code>SourceStream</code> the new instance is to wrap
 	 */
 	public SourceStreamDelegate(T stream)
 	{
@@ -36,10 +36,10 @@ public class SourceStreamDelegate<T extends SourceStream> implements SourceStrea
 
 	/**
 	 * Implements {@link SourceStream#endOfStream()}. Delegates to the wrapped
-	 * <tt>SourceStream</tt>
+	 * <code>SourceStream</code>
 	 * .
 	 *
-	 * @return <tt>true</tt> if the wrapped <tt>SourceStream</tt> has reached the end the
+	 * @return <code>true</code> if the wrapped <code>SourceStream</code> has reached the end the
 	 * content it makes available
 	 */
 	public boolean endOfStream()
@@ -49,10 +49,10 @@ public class SourceStreamDelegate<T extends SourceStream> implements SourceStrea
 
 	/**
 	 * Implements {@link SourceStream#getContentDescriptor()}. Delegates to the wrapped
-	 * <tt>SourceStream</tt>.
+	 * <code>SourceStream</code>.
 	 *
-	 * @return a <tt>ContentDescriptor</tt> which describes the content made available by the
-	 * wrapped <tt>SourceStream</tt>
+	 * @return a <code>ContentDescriptor</code> which describes the content made available by the
+	 * wrapped <code>SourceStream</code>
 	 */
 	public ContentDescriptor getContentDescriptor()
 	{
@@ -61,9 +61,9 @@ public class SourceStreamDelegate<T extends SourceStream> implements SourceStrea
 
 	/**
 	 * Implements {@link SourceStream#getContentLength()}. Delegates to the wrapped
-	 * <tt>SourceStream</tt>.
+	 * <code>SourceStream</code>.
 	 *
-	 * @return the length of the content made available by the wrapped <tt>SourceStream</tt>
+	 * @return the length of the content made available by the wrapped <code>SourceStream</code>
 	 */
 	public long getContentLength()
 	{
@@ -72,12 +72,12 @@ public class SourceStreamDelegate<T extends SourceStream> implements SourceStrea
 
 	/**
 	 * Implements {@link Controls#getControl(String)}. Delegates to the wrapped
-	 * <tt>SourceStream</tt>.
+	 * <code>SourceStream</code>.
 	 *
 	 * @param controlType
-	 * 		a <tt>String</tt> value which specifies the type of the control to be retrieved
-	 * @return an <tt>Object</tt> which represents the control of the wrapped <tt>SourceStream</tt>
-	 * of the specified type if such a control is available; otherwise, <tt>null</tt>
+	 * 		a <code>String</code> value which specifies the type of the control to be retrieved
+	 * @return an <code>Object</code> which represents the control of the wrapped <code>SourceStream</code>
+	 * of the specified type if such a control is available; otherwise, <code>null</code>
 	 */
 	public Object getControl(String controlType)
 	{
@@ -85,10 +85,10 @@ public class SourceStreamDelegate<T extends SourceStream> implements SourceStrea
 	}
 
 	/**
-	 * Implements {@link Controls#getControls()}. Delegates to the wrapped <tt>SourceStream</tt>.
+	 * Implements {@link Controls#getControls()}. Delegates to the wrapped <code>SourceStream</code>.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for the wrapped
-	 * <tt>SourceStream</tt>
+	 * @return an array of <code>Object</code>s which represent the controls available for the wrapped
+	 * <code>SourceStream</code>
 	 */
 	public Object[] getControls()
 	{

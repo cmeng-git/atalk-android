@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import static net.java.sip.communicator.service.protocol.StunServerDescriptor.PROTOCOL_UDP;
+
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -37,13 +39,15 @@ import org.ice4j.ice.harvest.UPNPHarvester;
 import org.ice4j.security.LongTermCredential;
 import org.ice4j.socket.DatagramPacketFilter;
 import org.ice4j.socket.MultiplexingDatagramSocket;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.externalservicediscovery.IceCandidateHarvester;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
 import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 
 import java.beans.PropertyChangeEvent;
@@ -177,6 +181,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         long startGatheringHarvesterTime = System.currentTimeMillis();
         CallPeerJabberImpl peer = getCallPeer();
         ProtocolProviderServiceJabberImpl provider = peer.getProtocolProvider();
+        XMPPConnection connection = provider.getConnection();
         NetworkAddressManagerService namSer = getNetAddrMgr();
         boolean atLeastOneStunServer = false;
         Agent agent = namSer.createIceAgent();
@@ -191,6 +196,15 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         JabberAccountIDImpl accID = (JabberAccountIDImpl) provider.getAccountID();
 
         if (accID.isStunServerDiscoveryEnabled()) {
+            List<StunCandidateHarvester> extServiceHarvester = IceCandidateHarvester.getExtServiceHarvester(connection, PROTOCOL_UDP);
+            Timber.i("Auto discovered STUN/TURN extService harvester: %s", extServiceHarvester);
+            if (!extServiceHarvester.isEmpty()) {
+                for (StunCandidateHarvester iceCandidate : extServiceHarvester) {
+                    agent.addCandidateHarvester(iceCandidate);
+                }
+                atLeastOneStunServer = true;
+            }
+
             // the default server is supposed to use the same user name and password as the account itself.
             String username = accID.getBareJid().toString();
             String password = JabberActivator.getProtocolProviderFactory().loadPassword(accID);
@@ -232,13 +246,14 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     username.getBytes(StandardCharsets.UTF_8),
                     password.getBytes(StandardCharsets.UTF_8));
 
-            Timber.i("Auto discovered STUN/TURN-server harvester is %s", autoHarvester);
+            Timber.i("Auto discovered STUN/TURN-server harvester: %s", autoHarvester);
 
             if (autoHarvester != null) {
                 atLeastOneStunServer = true;
                 agent.addCandidateHarvester(autoHarvester);
             }
         }
+
         // now create stun server descriptors for whatever other STUN/TURN servers the user may have set.
         // cmeng: added to support other protocol (20200428)
         // see https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
@@ -298,7 +313,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 }
 
                 // Skip the rest if one has set up successfully
-                if (atLeastOneStunServer) break;
+                if (atLeastOneStunServer)
+                    break;
             }
         }
 
@@ -316,6 +332,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         if (accID.isUPNPEnabled()) {
             agent.addCandidateHarvester(new UPNPHarvester());
         }
+        // For testing only: see ExternalServiceDiscoveryManager#handleServicePush(ExternalServices)
+        IceCandidateHarvester.IqPushRequestESD(connection);
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;
@@ -330,11 +348,11 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      *
      * Note: android InetAddress.getByName(hostname) returns the first IP found, any may be an IPv6 InetAddress;
      * if mobile network setting for APN=IPV4/IPv6 or APN=IPv6. This causes problem in STUN candidate harvest:
-     * @see https://github.com/jitsi/ice4j/issues/255
      *
      * @param hostname the address itself
      * @param port the port number
      * @param transport the transport to use with this address.
+     * @see https://github.com/jitsi/ice4j/issues/255
      */
     protected List<TransportAddress> getTransportAddress(String hostname, int port, Transport transport)
     {

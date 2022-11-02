@@ -16,7 +16,7 @@ import org.atalk.impl.neomedia.RTPConnectorUDPInputStream;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 
 /**
- * Implement control channel (RTCP) for <tt>TransformInputStream</tt> which notify listeners when
+ * Implement control channel (RTCP) for <code>TransformInputStream</code> which notify listeners when
  * RTCP feedback messages are received.
  *
  * @author Bing SU (nova.su@gmail.com)
@@ -26,12 +26,12 @@ import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 public class ControlTransformInputStream extends RTPConnectorUDPInputStream
 {
 	/**
-	 * The list of <tt>RTCPFeedbackMessageListener</tt>s.
+	 * The list of <code>RTCPFeedbackMessageListener</code>s.
 	 */
 	private final List<RTCPFeedbackMessageListener> listeners = new LinkedList<>();
 
 	/**
-	 * Initializes a new <tt>ControlTransformInputStream</tt> which is to receive packet data from a
+	 * Initializes a new <code>ControlTransformInputStream</code> which is to receive packet data from a
 	 * specific UDP socket.
 	 *
 	 * @param socket
@@ -43,10 +43,10 @@ public class ControlTransformInputStream extends RTPConnectorUDPInputStream
 	}
 
 	/**
-	 * Adds an <tt>RTCPFeedbackMessageListener</tt>.
+	 * Adds an <code>RTCPFeedbackMessageListener</code>.
 	 *
 	 * @param listener
-	 *        the <tt>RTCPFeedbackMessageListener</tt> to add
+	 *        the <code>RTCPFeedbackMessageListener</code> to add
 	 */
 	public void addRTCPFeedbackMessageListener(RTCPFeedbackMessageListener listener)
 	{
@@ -59,10 +59,10 @@ public class ControlTransformInputStream extends RTPConnectorUDPInputStream
 	}
 
 	/**
-	 * Removes an <tt>RTCPFeedbackMessageListener</tt>.
+	 * Removes an <code>RTCPFeedbackMessageListener</code>.
 	 *
 	 * @param listener
-	 *        the <tt>RTCPFeedbackMessageListener</tt> to remove
+	 *        the <code>RTCPFeedbackMessageListener</code> to remove
 	 */
 	public void removeRTCPFeedbackMessageListener(RTCPFeedbackMessageListener listener)
 	{

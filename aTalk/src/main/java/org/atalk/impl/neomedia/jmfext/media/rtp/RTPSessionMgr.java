@@ -13,7 +13,7 @@ import org.atalk.service.neomedia.SSRCFactory;
  * Implements {@link javax.media.rtp.RTPManager} for the purposes of the libjitsi library in general
  * and the neomedia package in particular.
  * <p>
- * Allows <tt>MediaStream</tt> to optionally utilize {@link SSRCFactory}.
+ * Allows <code>MediaStream</code> to optionally utilize {@link SSRCFactory}.
  * </p>
  *
  * @author Lyubomir Marinov
@@ -21,24 +21,24 @@ import org.atalk.service.neomedia.SSRCFactory;
 public class RTPSessionMgr extends net.sf.fmj.media.rtp.RTPSessionMgr
 {
 	/**
-	 * The <tt>SSRCFactory</tt> to be utilized by this instance to generate new synchronization
-	 * source (SSRC) identifiers. If <tt>null</tt>, this instance will employ internal logic to
+	 * The <code>SSRCFactory</code> to be utilized by this instance to generate new synchronization
+	 * source (SSRC) identifiers. If <code>null</code>, this instance will employ internal logic to
 	 * generate new synchronization source (SSRC) identifiers.
 	 */
 	private SSRCFactory ssrcFactory;
 
 	/**
-	 * Initializes a new <tt>RTPSessionMgr</tt> instance.
+	 * Initializes a new <code>RTPSessionMgr</code> instance.
 	 */
 	public RTPSessionMgr()
 	{
 	}
 
 	/**
-	 * Gets the <tt>SSRCFactory</tt> utilized by this instance to generate new synchronization
+	 * Gets the <code>SSRCFactory</code> utilized by this instance to generate new synchronization
 	 * source (SSRC) identifiers.
 	 *
-	 * @return the <tt>SSRCFactory</tt> utilized by this instance or <tt>null</tt> if this instance
+	 * @return the <code>SSRCFactory</code> utilized by this instance or <code>null</code> if this instance
 	 * employs internal logic to generate new synchronization source (SSRC) identifiers
 	 */
 	public SSRCFactory getSSRCFactory()
@@ -60,12 +60,12 @@ public class RTPSessionMgr extends net.sf.fmj.media.rtp.RTPSessionMgr
 	}
 
 	/**
-	 * Sets the <tt>SSRCFactory</tt> to be utilized by this instance to generate new
+	 * Sets the <code>SSRCFactory</code> to be utilized by this instance to generate new
 	 * synchronization source (SSRC) identifiers.
 	 *
 	 * @param ssrcFactory
-	 * 		the <tt>SSRCFactory</tt> to be utilized by this instance to generate new
-	 * 		synchronization source (SSRC) identifiers or <tt>null</tt> if this instance is to
+	 * 		the <code>SSRCFactory</code> to be utilized by this instance to generate new
+	 * 		synchronization source (SSRC) identifiers or <code>null</code> if this instance is to
 	 * 		employ internal logic to generate new synchronization source (SSRC) identifiers
 	 */
 	public void setSSRCFactory(SSRCFactory ssrcFactory)

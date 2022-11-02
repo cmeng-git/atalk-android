@@ -48,7 +48,7 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
     private static final String STATUS_ATTRIBUTE = "status";
 
     /**
-     * Creates new instance of <tt>VideoMutedExtensionElement</tt>.
+     * Creates new instance of <code>VideoMutedExtensionElement</code>.
      */
     public JibriBusyStatusExtension()
     {
@@ -91,10 +91,10 @@ public class JibriBusyStatusExtension extends AbstractExtensionElement
         }
 
         /**
-         * Parses <tt>Status</tt> from given string.
+         * Parses <code>Status</code> from given string.
          *
-         * @param status the string representation of <tt>Status</tt>.
-         * @return <tt>Status</tt> value for given string or
+         * @param status the string representation of <code>Status</code>.
+         * @return <code>Status</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static BusyStatus parse(String status)

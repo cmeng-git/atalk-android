@@ -23,7 +23,7 @@ public class NSObject
 	private long ptr;
 
 	/**
-	 * Initializes a new <tt>NSObject</tt> instance which is to represent a specific Objective-C
+	 * Initializes a new <code>NSObject</code> instance which is to represent a specific Objective-C
 	 * object.
 	 *
 	 * @param ptr
@@ -46,7 +46,7 @@ public class NSObject
 
 	/**
 	 * Decrements the reference count of the Objective-C object represented by this instance. It is
-	 * sent a <tt>dealloc</tt> message when its reference count reaches <tt>0</tt>.
+	 * sent a <code>dealloc</code> message when its reference count reaches <code>0</code>.
 	 */
 	public void release()
 	{
@@ -55,7 +55,7 @@ public class NSObject
 
 	/**
 	 * Decrements the reference count of a specific Objective-C object. It is sent a
-	 * <tt>dealloc</tt> message when its reference count reaches <tt>0</tt>.
+	 * <code>dealloc</code> message when its reference count reaches <code>0</code>.
 	 *
 	 * @param ptr
 	 *        the pointer to the Objective-C object to decrement the reference count of

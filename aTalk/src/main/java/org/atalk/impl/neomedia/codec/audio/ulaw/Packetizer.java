@@ -13,7 +13,7 @@ package org.atalk.impl.neomedia.codec.audio.ulaw;
 public class Packetizer extends com.sun.media.codec.audio.ulaw.Packetizer
 {
 	/**
-	 * Constructs a new ULaw <tt>Packetizer</tt>.
+	 * Constructs a new ULaw <code>Packetizer</code>.
 	 */
 	public Packetizer()
 	{

@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents an Objective-C <tt>NSDictionary</tt> object.
+ * Represents an Objective-C <code>NSDictionary</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -14,11 +14,11 @@ public class NSDictionary extends NSObject
 {
 
 	/**
-	 * Initializes a new <tt>NSDictionary</tt> instance which is to represent a specific Objective-C
-	 * <tt>NSDictionary</tt> object.
+	 * Initializes a new <code>NSDictionary</code> instance which is to represent a specific Objective-C
+	 * <code>NSDictionary</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the Objective-C <tt>NSDictionary</tt> object to be represented by the
+	 *        the pointer to the Objective-C <code>NSDictionary</code> object to be represented by the
 	 *        new instance
 	 */
 	public NSDictionary(long ptr)

@@ -34,7 +34,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
 
     /**
      * The minimum duration in milliseconds to be assumed for the audio streams played by
-     * <tt>AudioSystemClipImpl</tt> in order to ensure that they are played back long enough to be heard.
+     * <code>AudioSystemClipImpl</code> in order to ensure that they are played back long enough to be heard.
      */
     private static final long MIN_AUDIO_STREAM_DURATION = 200;
 

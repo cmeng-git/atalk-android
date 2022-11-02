@@ -40,7 +40,7 @@ import java.io.IOException;
 public class ConferenceIqProvider extends IQProvider<ConferenceIq>
 {
     /**
-     * Creates new instance of <tt>ConferenceIqProvider</tt>.
+     * Creates new instance of <code>ConferenceIqProvider</code>.
      */
     public ConferenceIqProvider()
     {

@@ -39,7 +39,7 @@ public class RegionExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>EtherpadExtensionElement</tt>.
+     * Creates new instance of <code>EtherpadExtensionElement</code>.
      */
     public RegionExtension()
     {

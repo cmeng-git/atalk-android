@@ -6,8 +6,8 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Defines the types of <tt>CVPixelBuffer</tt>s to be output by
- * <tt>QTCaptureDecompressedVideoOutput</tt>.
+ * Defines the types of <code>CVPixelBuffer</code>s to be output by
+ * <code>QTCaptureDecompressedVideoOutput</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -24,7 +24,7 @@ public final class CVPixelFormatType
 	public static final int kCVPixelFormatType_420YpCbCr8Planar = 0x79343230;
 
 	/**
-	 * Prevents the initialization of <tt>CVPixelFormatType</tt> instances.
+	 * Prevents the initialization of <code>CVPixelFormatType</code> instances.
 	 */
 	private CVPixelFormatType()
 	{

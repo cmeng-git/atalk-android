@@ -24,7 +24,7 @@ import javax.media.renderer.VideoRenderer;
 import timber.log.Timber;
 
 /**
- * Dummy renderer used only to construct valid codec graph when decoding into <tt>Surface</tt> is enabled.
+ * Dummy renderer used only to construct valid codec graph when decoding into <code>Surface</code> is enabled.
  * The actual video rendering is performed by MediaCodec, i.e. codec.configure(format, surface, null, 0)
  *
  * @author Pawel Domas

@@ -28,7 +28,7 @@ public class UserLanguagesProvider extends ExtensionElementProvider<ExtensionEle
      * smack API, at the end of the method call, the parser will be positioned on the closing
      * element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>UserLanguages</tt> element.
+     * @param parser an XML parser positioned at the opening <code>UserLanguages</code> element.
      * @return a new {@link UserLanguagesExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */

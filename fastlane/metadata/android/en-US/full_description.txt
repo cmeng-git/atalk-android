@@ -1,8 +1,47 @@
 <i>aTalk</i> is an XMPP client that supports the following features:
 
-* Instant messaging in plain text and End-to-End encryption with <a href="http://conversations.im/omemo/">OMEMO</a> or <a href="https://otr.cypherpunks.ca/index.php#docs">OTR</a>
-* OMEMO encryption is available during multi-user group chat session, giving users maximum privacy and security
-* Supports both voice and video call with ZRTP encryption
-* Send and receive files for all document types and images. For image file, a thumbnail is first sent for preview and acceptance is needed before the actual file is sent
-* Integrated photo editor with zooming and cropping, user can update his/her avatar with ease
-* Multiple accounts support
+* Instant messaging in plain text and End-to-End encryption with OMEMO or OTR
+* SSL Certificate authentication, DNSSEC and DANE Security implementation for enhanced secure connection establishment
+* OMEMO encryption in group chat session enhancing privacy and security
+* OMEMO Media File Sharing for all files including Stickers, Bitmoji and Emoji rich contents
+* Support http file upload for file sharing with offline contact and in group chat
+* Support Stickers, Bitmoji and Emoji rich content sharing via Google Gboard
+* Send and receive files for all document types and images with thumbnail preview and gif animation
+* Auto accept file transfer with max file size option
+* Implement fault-tolerance file transfer algorithm, via Jingle File Transfer, Legacy In-Band/SOCK5 Bytestreams and HttpFileUpload protocols to ease and enhance file sharing reliability
+* Enhance and harmonize UI for file sharing in chat and chatRoom
+* Support share, quote and forward of messages and media with previews prior to sending
+* Support multi-instances of audio media player with functions: Play, Pause, Resume, Stop and Seek
+* Support unread message badges in contact and chatRoom list views
+* User selectable option for heads-up notification and quite hours
+* Share of social media links are tagged with thumbnail and title
+* Support Text to Speech and speech recognition UI with enable option per chat session (contact and group chat)
+* XEP-0012: Last Activity time associated with contacts
+* XEP-0048: Bookmarks for conference room and autoJoin on login
+* XEP-0070: Verifying HTTP Requests via XMPP entity for user authentication without password entry
+* XEP-0071: XHTML-IM Support chat messages containing lightweight text markup
+* XEP-0085: Chat State Notifications
+* XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
+* XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
+* XEP-0184: Message Delivery Receipts with user enable/disable option
+* XEP-0215: External Service Discovery
+* XEP-0251: Jingle Session Transfer: Support both Unattended and Attended call transfer
+* XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
+* Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls
+* Implement Jabber VoIP-PBX gateway Telephony, allowing PBX phone call via service gateway
+* Join or create room with full room configuration support for owner
+* Integrated captcha protected room user interface with retry on failure
+* Support both voice and video call with ZRTP, SDES and DTLS SRTP encryption modes
+* ZRTP crypto algorithms uses SHA-2 384, 256bit ciphers AES256 & TWOFISH-256, enabling elliptic with Curve 25519
+* SDES encryption with AES256 and AES192, acceleration using OpenSSL
+* Support simultaneous media call and message chat sessions
+* Unique GPS-Location implementation as standalone tool, send locations to your desired buddy for real-time tracking or playback animation
+* A 360° street view of your current location use for self-guided tour. The street view tracks and follows your direction of sight
+* Built-in demo for GPS-Location features
+* Integrated photo editor with zooming and cropping, user can update the avatar with ease
+* Last message correction, message carbons and offline messages (OMEMO)
+* Stream Management and mobile network ping interval self-tune optimization support
+* In-Band Registration with captcha option support
+* Multiple accounts creation
+* User selectable Themes support
+* Multi-language UI support (Bahasa Indonesia, English, German, Portuguese, Russian, Slovak and Spanish)

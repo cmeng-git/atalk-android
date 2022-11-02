@@ -18,7 +18,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 /**
- * Implements <tt>java.awt.Component</tt> for <tt>JAWTRenderer</tt> on Android using a {@link GLSurfaceView}.
+ * Implements <code>java.awt.Component</code> for <code>JAWTRenderer</code> on Android using a {@link GLSurfaceView}.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -28,20 +28,20 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
     private static final long serialVersionUID = 1L;
 
     /**
-     * The <tt>JAWTRenderer</tt> which is to use or is using this instance as its visual <tt>Component</tt>.
+     * The <code>JAWTRenderer</code> which is to use or is using this instance as its visual <code>Component</code>.
      */
     private final JAWTRenderer renderer;
 
     /**
-     * The <tt>GLSurfaceView</tt> is the actual visual counterpart of this <tt>java.awt.Component</tt>.
+     * The <code>GLSurfaceView</code> is the actual visual counterpart of this <code>java.awt.Component</code>.
      */
     private GLSurfaceView glSurfaceView;
 
     /**
-     * Initializes a new <tt>JAWTRendererAndroidVideoComponent</tt> which is to be the visual
-     * <tt>Component</tt> of a specific <tt>JAWTRenderer</tt>.
+     * Initializes a new <code>JAWTRendererAndroidVideoComponent</code> which is to be the visual
+     * <code>Component</code> of a specific <code>JAWTRenderer</code>.
      *
-     * @param renderer the <tt>JAWTRenderer</tt> which is to use the new instance as its visual <tt>Component</tt>
+     * @param renderer the <code>JAWTRenderer</code> which is to use the new instance as its visual <code>Component</code>
      */
     public JAWTRendererAndroidVideoComponent(JAWTRenderer renderer)
     {
@@ -52,8 +52,8 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
      * Implements {@link ViewAccessor#getView(Context)}. Gets the {@link View} provided by this
      * instance which is to be used in a specific {@link Context}.
      *
-     * @param context the <tt>Context</tt> in which the provided <tt>View</tt> will be used
-     * @return the <tt>View</tt> provided by this instance which is to be used in a specific <tt>Context</tt>
+     * @param context the <code>Context</code> in which the provided <code>View</code> will be used
+     * @return the <code>View</code> provided by this instance which is to be used in a specific <code>Context</code>
      * @see ViewAccessor#getView(Context)
      */
     public synchronized GLSurfaceView getView(Context context)
@@ -68,7 +68,7 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
                 /**
                  * Implements {@link GLSurfaceView.Renderer#onDrawFrame(GL10)}. Draws the current frame.
                  *
-                 * @param gl the <tt>GL10</tt> interface with which the drawing is to be performed
+                 * @param gl the <code>GL10</code> interface with which the drawing is to be performed
                  */
                 public void onDrawFrame(GL10 gl)
                 {
@@ -91,10 +91,10 @@ public class JAWTRendererAndroidVideoComponent extends Component implements View
     }
 
     /**
-     * Called by the <tt>GLSurfaceView</tt> which is the actual visual counterpart of this
-     * <tt>java.awt.Component</tt> to draw the current frame.
+     * Called by the <code>GLSurfaceView</code> which is the actual visual counterpart of this
+     * <code>java.awt.Component</code> to draw the current frame.
      *
-     * @param gl the <tt>GL10</tt> interface with which the drawing is to be performed
+     * @param gl the <code>GL10</code> interface with which the drawing is to be performed
      */
     protected void onDrawFrame(GL10 gl)
     {

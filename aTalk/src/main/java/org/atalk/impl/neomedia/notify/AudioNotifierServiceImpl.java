@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 import javax.media.CaptureDeviceInfo;
 
 /**
- * The implementation of <tt>AudioNotifierService</tt>.
+ * The implementation of <code>AudioNotifierService</code>.
  *
  * @author Yana Stamcheva
  * @author Lyubomir Marinov
@@ -27,30 +27,30 @@ import javax.media.CaptureDeviceInfo;
 public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyChangeListener
 {
     /**
-     * The cache of <tt>SCAudioClip</tt> instances which we may reuse. The reuse is complex because
-     * a <tt>SCAudioClip</tt> may be used by a single user at a time.
+     * The cache of <code>SCAudioClip</code> instances which we may reuse. The reuse is complex because
+     * a <code>SCAudioClip</code> may be used by a single user at a time.
      */
     private Map<AudioKey, SCAudioClip> audios;
 
     /**
-     * The <tt>Object</tt> which synchronizes the access to {@link #audios}.
+     * The <code>Object</code> which synchronizes the access to {@link #audios}.
      */
     private final Object audiosSyncRoot = new Object();
 
     /**
-     * The <tt>DeviceConfiguration</tt> which provides information about the notify and playback
-     * devices on which this instance plays <tt>SCAudioClip</tt>s.
+     * The <code>DeviceConfiguration</code> which provides information about the notify and playback
+     * devices on which this instance plays <code>SCAudioClip</code>s.
      */
     private final DeviceConfiguration deviceConfiguration;
 
     /**
-     * The indicator which determined whether <tt>SCAudioClip</tt>s are to be played by this
+     * The indicator which determined whether <code>SCAudioClip</code>s are to be played by this
      * instance.
      */
     private boolean mute;
 
     /**
-     * Initializes a new <tt>AudioNotifierServiceImpl</tt> instance.
+     * Initializes a new <code>AudioNotifierServiceImpl</code> instance.
      */
     public AudioNotifierServiceImpl()
     {
@@ -84,7 +84,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      * Uses notification device if any.
      *
      * @param uri the path where the audio file could be found
-     * @return a newly created <tt>SCAudioClip</tt> from <tt>uri</tt>
+     * @return a newly created <code>SCAudioClip</code> from <code>uri</code>
      */
     public SCAudioClip createAudio(String uri)
     {
@@ -96,7 +96,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      *
      * @param uri the path where the audio file could be found
      * @param playback use or not the playback device.
-     * @return a newly created <tt>SCAudioClip</tt> from <tt>uri</tt>
+     * @return a newly created <code>SCAudioClip</code> from <code>uri</code>
      */
     public SCAudioClip createAudio(String uri, boolean playback)
     {
@@ -151,14 +151,14 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                 audio = new SCAudioClip()
                 {
                     /**
-                     * Evaluates a specific <tt>loopCondition</tt> as defined by
+                     * Evaluates a specific <code>loopCondition</code> as defined by
                      * {@link SCAudioClip#play(int, Callable)}.
                      *
-                     * @param loopCondition the <tt>Callable&lt;Boolean&gt;</tt> which represents the
-                     * <tt>loopCondition</tt> to be evaluated
-                     * @return {@link Boolean#FALSE} if <tt>loopCondition</tt> is <tt>null</tt>; otherwise,
-                     * the value returned by invoking {@link Callable#call()} on the specified <tt>loopCondition</tt>
-                     * @throws Exception if the specified <tt>loopCondition</tt> throws an <tt>Exception</tt>
+                     * @param loopCondition the <code>Callable&lt;Boolean&gt;</code> which represents the
+                     * <code>loopCondition</code> to be evaluated
+                     * @return {@link Boolean#FALSE} if <code>loopCondition</code> is <code>null</code>; otherwise,
+                     * the value returned by invoking {@link Callable#call()} on the specified <code>loopCondition</code>
+                     * @throws Exception if the specified <code>loopCondition</code> throws an <code>Exception</code>
                      */
                     private Boolean evaluateLoopCondition(Callable<Boolean> loopCondition)
                             throws Exception
@@ -174,7 +174,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                     /**
                      * {@inheritDoc}
                      *
-                     * Returns the wrapped <tt>SCAudioClip</tt> into the cache from it has earlier
+                     * Returns the wrapped <code>SCAudioClip</code> into the cache from it has earlier
                      * been retrieved in order to allow its reuse.
                      */
                     @Override
@@ -221,10 +221,10 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                     }
 
                     /**
-                     * Determines whether this audio is started i.e. a <tt>play</tt> method was
-                     * invoked and no subsequent <tt>stop</tt> has been invoked yet.
+                     * Determines whether this audio is started i.e. a <code>play</code> method was
+                     * invoked and no subsequent <code>stop</code> has been invoked yet.
                      *
-                     * @return <tt>true</tt> if this audio is started; otherwise, <tt>false</tt>
+                     * @return <code>true</code> if this audio is started; otherwise, <code>false</code>
                      */
                     public boolean isStarted()
                     {
@@ -247,9 +247,9 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     }
 
     /**
-     * Returns <tt>true</tt> if the sound is currently disabled; <tt>false</tt>, otherwise.
+     * Returns <code>true</code> if the sound is currently disabled; <code>false</code>, otherwise.
      *
-     * @return <tt>true</tt> if the sound is currently disabled; <tt>false</tt>, otherwise
+     * @return <code>true</code> if the sound is currently disabled; <code>false</code>, otherwise
      */
     public boolean isMute()
     {
@@ -277,10 +277,10 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     }
 
     /**
-     * Enables or disables the sound in the application. If <tt>false</tt>, we try to restore all
+     * Enables or disables the sound in the application. If <code>false</code>, we try to restore all
      * looping sounds if any.
      *
-     * @param mute when <tt>true</tt> disables the sound; otherwise, enables the sound.
+     * @param mute when <code>true</code> disables the sound; otherwise, enables the sound.
      */
     public void setMute(boolean mute)
     {
@@ -289,9 +289,9 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     }
 
     /**
-     * Implements the key of {@link AudioNotifierServiceImpl#audios}. Combines the <tt>uri</tt> of
-     * the <tt>SCAudioClip</tt> with the indicator which determines whether the
-     * <tt>SCAudioClip</tt> in question uses the playback or the notify audio device.
+     * Implements the key of {@link AudioNotifierServiceImpl#audios}. Combines the <code>uri</code> of
+     * the <code>SCAudioClip</code> with the indicator which determines whether the
+     * <code>SCAudioClip</code> in question uses the playback or the notify audio device.
      */
     private static class AudioKey
     {
@@ -306,7 +306,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
         final String uri;
 
         /**
-         * Initializes a new <tt>AudioKey</tt> instance.
+         * Initializes a new <code>AudioKey</code> instance.
          *
          * @param uri
          * @param playback

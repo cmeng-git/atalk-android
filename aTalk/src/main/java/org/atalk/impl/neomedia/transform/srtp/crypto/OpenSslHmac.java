@@ -9,7 +9,7 @@ import org.bouncycastle.crypto.*;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 /**
- * Implements the interface <tt>org.bouncycastle.crypto.Mac</tt> using the OpenSSL Crypto library.
+ * Implements the interface <code>org.bouncycastle.crypto.Mac</code> using the OpenSSL Crypto library.
  *
  * @author Lyubomir Marinov
  */
@@ -62,7 +62,7 @@ public class OpenSslHmac implements Mac
     public static final int SHA1 = 1;
 
     /**
-     * Initializes a new <tt>OpenSslHmac</tt> instance with a specific digest algorithm.
+     * Initializes a new <code>OpenSslHmac</code> instance with a specific digest algorithm.
      *
      * @param digestAlgorithm the algorithm of the digest to initialize the new instance with
      * @see OpenSslHmac#SHA1

@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import java.io.IOException;
 
 /**
- * The <tt>CaptchaProvider</tt> is an extension element provider that is meant to be used for
+ * The <code>CaptchaProvider</code> is an extension element provider that is meant to be used for
  * thumbnail & captcha requests and responses. Implementing XEP-0158: CAPTCHA Forms
  *
  * @author Eng Chong Meng
@@ -36,7 +36,7 @@ import java.io.IOException;
 public class CaptchaProvider extends ExtensionElementProvider<CaptchaExtension>
 {
     /**
-     * Parses the given <tt>XmlPullParser</tt> into a DataForm packet and returns it.
+     * Parses the given <code>XmlPullParser</code> into a DataForm packet and returns it.
      * Note: parse first XmlPullParser.OPEN_TAG is already consumed on first entry.
      * XEP-0158: CAPTCHA Forms
      *

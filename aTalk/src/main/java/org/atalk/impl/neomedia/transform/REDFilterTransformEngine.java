@@ -35,7 +35,7 @@ public class REDFilterTransformEngine extends SinglePacketTransformerAdapter
     private final byte redPayloadType;
 
     /**
-     * Initializes a new <tt>REDFilterTransformEngine</tt> with the given payload type number for
+     * Initializes a new <code>REDFilterTransformEngine</code> with the given payload type number for
      * RED.
      *
      * @param redPayloadType the RED payload type number.

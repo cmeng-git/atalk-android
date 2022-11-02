@@ -16,7 +16,7 @@
 package org.atalk.util.concurrent;
 
 /**
- * Represents an asynchronous processible task which determines the intervals
+ * Represents an asynchronous processable task which determines the intervals
  * (the lengths of which may vary) at which it is to be invoked.
  *
  * webrtc/modules/interface/module.h
@@ -31,8 +31,7 @@ public interface RecurringRunnable extends Runnable
 	 * thread to call {@link #run()}. The method is called on the same
 	 * worker thread as Process will be called on.
 	 *
-	 * @return the number of milliseconds until this instance wants a worker
-	 * thread to call {@link #run()}
+	 * @return the number of milliseconds until this instance wants a worker thread to call {@link #run()}
 	 */
 	long getTimeUntilNextRun();
 }

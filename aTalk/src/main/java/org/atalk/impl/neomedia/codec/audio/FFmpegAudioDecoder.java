@@ -14,19 +14,19 @@ import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**
- * Implements an audio <tt>Codec</tt> using the FFmpeg library.
+ * Implements an audio <code>Codec</code> using the FFmpeg library.
  *
  * @author Lyubomir Marinov
  */
 public class FFmpegAudioDecoder extends AbstractFFmpegAudioCodec
 {
 	/**
-	 * Asserts that an decoder with a specific <tt>AVCodecID</tt> is found by FFmpeg.
+	 * Asserts that an decoder with a specific <code>AVCodecID</code> is found by FFmpeg.
 	 *
 	 * @param codecID
-	 *        the <tt>AVCodecID</tt> of the decoder to find
+	 *        the <code>AVCodecID</code> of the decoder to find
 	 * @throws RuntimeException
-	 *         if no decoder with the specified <tt>codecID</tt> is found by FFmpeg
+	 *         if no decoder with the specified <code>codecID</code> is found by FFmpeg
 	 */
 	public static void assertFindAVCodec(int codecID)
 	{
@@ -43,15 +43,15 @@ public class FFmpegAudioDecoder extends AbstractFFmpegAudioCodec
 	private long frame;
 
 	/**
-	 * Initializes a new <tt>FFmpegAudioDecoder</tt> instance with a specific <tt>PlugIn</tt> name,
-	 * a specific <tt>AVCodecID</tt>, and a specific list of <tt>Format</tt>s supported as output.
+	 * Initializes a new <code>FFmpegAudioDecoder</code> instance with a specific <code>PlugIn</code> name,
+	 * a specific <code>AVCodecID</code>, and a specific list of <code>Format</code>s supported as output.
 	 *
 	 * @param name
-	 *        the <tt>PlugIn</tt> name of the new instance
+	 *        the <code>PlugIn</code> name of the new instance
 	 * @param codecID
-	 *        the <tt>AVCodecID</tt> of the FFmpeg codec to be represented by the new instance
+	 *        the <code>AVCodecID</code> of the FFmpeg codec to be represented by the new instance
 	 * @param supportedOutputFormats
-	 *        the list of <tt>Format</tt>s supported by the new instance as output
+	 *        the list of <code>Format</code>s supported by the new instance as output
 	 */
 	protected FFmpegAudioDecoder(String name, int codecID, Format[] supportedOutputFormats)
 	{

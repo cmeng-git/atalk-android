@@ -25,7 +25,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements an audio <tt>Renderer</tt> which uses Pa.
+ * Implements an audio <code>Renderer</code> which uses Pa.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -34,14 +34,14 @@ import timber.log.Timber;
 public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
 {
     /**
-     * The constant which represents an empty array with <tt>Format</tt> element type. Explicitly
+     * The constant which represents an empty array with <code>Format</code> element type. Explicitly
      * defined in order to reduce unnecessary allocations.
      */
     private static final Format[] EMPTY_SUPPORTED_INPUT_FORMATS = new Format[0];
 
     /**
      * The flag which indicates that {@link #open()} has been called on a
-     * <tt>PortAudioRenderer</tt> without an intervening {@link #close()}. The state it
+     * <code>PortAudioRenderer</code> without an intervening {@link #close()}. The state it
      * represents is from the public point of view. The private point of view is represented by
      * {@link #stream}.
      */
@@ -49,25 +49,25 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
 
     /**
      * The flag which indicates that {@link #start()} has been called on a
-     * <tt>PortAudioRenderer</tt> without an intervening {@link #stop()}. The state it
+     * <code>PortAudioRenderer</code> without an intervening {@link #stop()}. The state it
      * represents is from the public point of view. The private point of view is represented by
      * {@link #started}.
      */
     private static final byte FLAG_STARTED = 2;
 
     /**
-     * The human-readable name of the <tt>PortAudioRenderer</tt> JMF plug-in.
+     * The human-readable name of the <code>PortAudioRenderer</code> JMF plug-in.
      */
     private static final String PLUGIN_NAME = "PortAudio Renderer";
 
     /**
-     * The list of JMF <tt>Format</tt>s of audio data which <tt>PortAudioRenderer</tt> instances
+     * The list of JMF <code>Format</code>s of audio data which <code>PortAudioRenderer</code> instances
      * are capable of rendering.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of the sample rates supported by <tt>PortAudioRenderer</tt> as input.
+     * The list of the sample rates supported by <code>PortAudioRenderer</code> as input.
      */
     private static final double[] SUPPORTED_INPUT_SAMPLE_RATES = new double[]{8000, 11025, 16000,
             22050, 32000, 44100, 48000};
@@ -109,16 +109,16 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     private int bytesPerBuffer;
 
     /**
-     * The <tt>DiagnosticsControl</tt> implementation of this instance which allows the
-     * diagnosis of the functional health of <tt>Pa_WriteStream</tt>.
+     * The <code>DiagnosticsControl</code> implementation of this instance which allows the
+     * diagnosis of the functional health of <code>Pa_WriteStream</code>.
      */
     private final DiagnosticsControl diagnosticsControl = new DiagnosticsControl()
     {
         /**
          * {@inheritDoc}
          *
-         * <tt>PortAudioRenderer</tt>'s <tt>DiagnosticsControl</tt> implementation does not provide
-         * its own user interface and always returns <tt>null</tt>.
+         * <code>PortAudioRenderer</code>'s <code>DiagnosticsControl</code> implementation does not provide
+         * its own user interface and always returns <code>null</code>.
          */
         public Component getControlComponent()
         {
@@ -137,7 +137,7 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
          * {@inheritDoc}
          *
          * Returns the identifier of the PortAudio device written through this
-         * <tt>PortAudioRenderer</tt>.
+         * <code>PortAudioRenderer</code>.
          */
         @Override
         public String toString()
@@ -166,11 +166,11 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     };
 
     /**
-     * The flags which represent certain state of this <tt>PortAudioRenderer</tt>. Acceptable
+     * The flags which represent certain state of this <code>PortAudioRenderer</code>. Acceptable
      * values
-     * are among the <tt>FLAG_XXX</tt> constants defined by the <tt>PortAudioRenderer</tt> class.
+     * are among the <code>FLAG_XXX</code> constants defined by the <code>PortAudioRenderer</code> class.
      * For example, {@link #FLAG_OPEN} indicates that from the public point of view {@link #open()}
-     * has been invoked on this <tt>Renderer</tt> without an intervening {@link #close()}.
+     * has been invoked on this <code>Renderer</code> without an intervening {@link #close()}.
      */
     private byte flags = 0;
 
@@ -183,11 +183,11 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     private long outputParameters = 0;
 
     /**
-     * The <tt>PaUpdateAvailableDeviceListListener</tt> which is to be notified before and after
-     * PortAudio's native function <tt>Pa_UpdateAvailableDeviceList()</tt> is invoked. It will
+     * The <code>PaUpdateAvailableDeviceListListener</code> which is to be notified before and after
+     * PortAudio's native function <code>Pa_UpdateAvailableDeviceList()</code> is invoked. It will
      * close
      * {@link #stream} before the invocation in order to mitigate memory corruption afterwards and
-     * it will attempt to restore the state of this <tt>Renderer</tt> after the invocation.
+     * it will attempt to restore the state of this <code>Renderer</code> after the invocation.
      */
     private final UpdateAvailableDeviceListListener paUpdateAvailableDeviceListListener
             = new UpdateAvailableDeviceListListener()
@@ -245,7 +245,7 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     };
 
     /**
-     * The indicator which determines whether this <tt>Renderer</tt> is started.
+     * The indicator which determines whether this <code>Renderer</code> is started.
      */
     private boolean started = false;
 
@@ -266,14 +266,14 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     private Format[] supportedInputFormats;
 
     /**
-     * The time in milliseconds at which <tt>Pa_WriteStream</tt> has started malfunctioning. For
-     * example, <tt>Pa_WriteStream</tt> returning <tt>paTimedOut</tt> and/or Windows Multimedia
-     * reporting <tt>MMSYSERR_NODRIVER</tt> (may) indicate abnormal functioning.
+     * The time in milliseconds at which <code>Pa_WriteStream</code> has started malfunctioning. For
+     * example, <code>Pa_WriteStream</code> returning <code>paTimedOut</code> and/or Windows Multimedia
+     * reporting <code>MMSYSERR_NODRIVER</code> (may) indicate abnormal functioning.
      */
     private long writeIsMalfunctioningSince = DiagnosticsControl.NEVER;
 
     /**
-     * Initializes a new <tt>PortAudioRenderer</tt> instance.
+     * Initializes a new <code>PortAudioRenderer</code> instance.
      */
     public PortAudioRenderer()
     {
@@ -281,10 +281,10 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Initializes a new <tt>PortAudioRenderer</tt> instance which is to either perform playback or
+     * Initializes a new <code>PortAudioRenderer</code> instance which is to either perform playback or
      * sound a notification.
      *
-     * @param playback <tt>true</tt> if the new instance is to perform playback or <tt>false</tt> if the new
+     * @param playback <code>true</code> if the new instance is to perform playback or <code>false</code> if the new
      * instance is to sound a notification
      */
     public PortAudioRenderer(boolean enableVolumeControl)
@@ -302,7 +302,7 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Closes this <tt>PlugIn</tt>.
+     * Closes this <code>PlugIn</code>.
      */
     @Override
     public synchronized void close()
@@ -342,10 +342,10 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Gets the list of JMF <tt>Format</tt>s of audio data which this <tt>Renderer</tt> is capable
+     * Gets the list of JMF <code>Format</code>s of audio data which this <code>Renderer</code> is capable
      * of rendering.
      *
-     * @return an array of JMF <tt>Format</tt>s of audio data which this <tt>Renderer</tt> is
+     * @return an array of JMF <code>Format</code>s of audio data which this <code>Renderer</code> is
      * capable of rendering
      */
     @Override
@@ -539,9 +539,9 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
 
     /**
      * Notifies this instance that the value of the {@link AudioSystem#PROP_PLAYBACK_DEVICE}
-     * property of its associated <tt>AudioSystem</tt> has changed.
+     * property of its associated <code>AudioSystem</code> has changed.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which specifies details about the change such as the
+     * @param ev a <code>PropertyChangeEvent</code> which specifies details about the change such as the
      * name of the property and its old and new values
      */
     @Override
@@ -578,11 +578,11 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Renders the audio data contained in a specific <tt>Buffer</tt> onto the PortAudio device
-     * represented by this <tt>Renderer</tt>.
+     * Renders the audio data contained in a specific <code>Buffer</code> onto the PortAudio device
+     * represented by this <code>Renderer</code>.
      *
-     * @param buffer the <tt>Buffer</tt> which contains the audio data to be rendered
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>buffer</tt> has been successfully
+     * @param buffer the <code>Buffer</code> which contains the audio data to be rendered
+     * @return <code>BUFFER_PROCESSED_OK</code> if the specified <code>buffer</code> has been successfully
      * processed
      */
     public int process(Buffer buffer)
@@ -702,10 +702,10 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Sets the <tt>MediaLocator</tt> which specifies the device index of the PortAudio device
+     * Sets the <code>MediaLocator</code> which specifies the device index of the PortAudio device
      * to be used by this instance for rendering.
      *
-     * @param locator a <tt>MediaLocator</tt> which specifies the device index of the PortAudio device to be
+     * @param locator a <code>MediaLocator</code> which specifies the device index of the PortAudio device to be
      * used by this instance for rendering
      */
     @Override
@@ -717,9 +717,9 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Indicates whether <tt>Pa_WriteStream</tt> is malfunctioning.
+     * Indicates whether <code>Pa_WriteStream</code> is malfunctioning.
      *
-     * @param writeIsMalfunctioning <tt>true</tt> if <tt>Pa_WriteStream</tt> is malfunctioning; otherwise, <tt>false</tt>
+     * @param writeIsMalfunctioning <code>true</code> if <code>Pa_WriteStream</code> is malfunctioning; otherwise, <code>false</code>
      */
     private void setWriteIsMalfunctioning(boolean writeIsMalfunctioning)
     {
@@ -735,7 +735,7 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
 
     /**
      * Starts the rendering process. Any audio data available in the internal resources associated
-     * with this <tt>PortAudioRenderer</tt> will begin being rendered.
+     * with this <code>PortAudioRenderer</code> will begin being rendered.
      */
     public synchronized void start()
     {
@@ -772,8 +772,8 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
     }
 
     /**
-     * Waits on this instance while {@link #streamIsBusy} is equal to <tt>true</tt> i.e. until it
-     * becomes <tt>false</tt>. The method should only be called by a thread that is the owner of
+     * Waits on this instance while {@link #streamIsBusy} is equal to <code>true</code> i.e. until it
+     * becomes <code>false</code>. The method should only be called by a thread that is the owner of
      * this object's monitor.
      */
     private void waitWhileStreamIsBusy()

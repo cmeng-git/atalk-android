@@ -36,7 +36,7 @@ import javax.xml.namespace.QName;
 public class VCardTempXUpdate implements ExtensionElement
 {
     /**
-     * The <tt>Logger</tt> used by the <tt>VCardTempXUpdatePresenceExtension</tt> class and its
+     * The <code>Logger</code> used by the <code>VCardTempXUpdatePresenceExtension</code> class and its
      * instances for logging output.
      */
     private static final Logger LOGGER = Logger.getLogger(VCardTempXUpdate.class.getName());

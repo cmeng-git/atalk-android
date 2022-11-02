@@ -17,9 +17,9 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.*;
 
 /**
- * Represents a <tt>DataSource</tt> which transcodes the tracks of a specific input
- * <tt>DataSource</tt> into a specific output <tt>Format</tt>. The transcoding is attempted only for
- * tracks which actually support it for the specified output <tt>Format</tt>.
+ * Represents a <code>DataSource</code> which transcodes the tracks of a specific input
+ * <code>DataSource</code> into a specific output <code>Format</code>. The transcoding is attempted only for
+ * tracks which actually support it for the specified output <code>Format</code>.
  *
  * @author Lubomir Marinov
  * @author Eng Chong Meng
@@ -28,37 +28,37 @@ public class TranscodingDataSource extends DataSource
 {
 
 	/**
-	 * The <tt>DataSource</tt> which has its tracks transcoded by this instance.
+	 * The <code>DataSource</code> which has its tracks transcoded by this instance.
 	 */
 	private final DataSource inputDataSource;
 
 	/**
-	 * The <tt>DataSource</tt> which contains the transcoded tracks of <tt>inputDataSource</tt> and
-	 * which is wrapped by this instance. It is the output of <tt>transcodingProcessor</tt>.
+	 * The <code>DataSource</code> which contains the transcoded tracks of <code>inputDataSource</code> and
+	 * which is wrapped by this instance. It is the output of <code>transcodingProcessor</code>.
 	 */
 	private DataSource outputDataSource;
 
 	/**
-	 * The <tt>Format</tt> in which the tracks of <tt>inputDataSource</tt> are transcoded.
+	 * The <code>Format</code> in which the tracks of <code>inputDataSource</code> are transcoded.
 	 */
 	private final Format outputFormat;
 
 	/**
-	 * The <tt>Processor</tt> which carries out the actual transcoding of the tracks of
-	 * <tt>inputDataSource</tt>.
+	 * The <code>Processor</code> which carries out the actual transcoding of the tracks of
+	 * <code>inputDataSource</code>.
 	 */
 	private Processor transcodingProcessor;
 
 	/**
-	 * Initializes a new <tt>TranscodingDataSource</tt> instance to transcode the tracks of a
-	 * specific <tt>DataSource</tt> into a specific output <tt>Format</tt>.
+	 * Initializes a new <code>TranscodingDataSource</code> instance to transcode the tracks of a
+	 * specific <code>DataSource</code> into a specific output <code>Format</code>.
 	 *
 	 * @param inputDataSource
-	 * 		the <tt>DataSource</tt> which is to have its tracks transcoded in a specific output
-	 * 		<tt>Format</tt>
+	 * 		the <code>DataSource</code> which is to have its tracks transcoded in a specific output
+	 * 		<code>Format</code>
 	 * @param outputFormat
-	 * 		the <tt>Format</tt> in which the new instance is to transcode the tracks of
-	 * 		<tt>inputDataSource</tt>
+	 * 		the <code>Format</code> in which the new instance is to transcode the tracks of
+	 * 		<code>inputDataSource</code>
 	 */
 	public TranscodingDataSource(DataSource inputDataSource, Format outputFormat)
 	{
@@ -70,12 +70,12 @@ public class TranscodingDataSource extends DataSource
 
 	/**
 	 * Implements {@link DataSource#connect()}. Sets up the very transcoding process and just does
-	 * not start it i.e. creates a <tt>Processor</tt> on the <tt>inputDataSource</tt>, sets
-	 * <tt>outputFormat</tt> on its tracks (which support a <tt>Format</tt> compatible with
-	 * <tt>outputFormat</tt>) and connects to its <tt>output DataSource</tt>.
+	 * not start it i.e. creates a <code>Processor</code> on the <code>inputDataSource</code>, sets
+	 * <code>outputFormat</code> on its tracks (which support a <code>Format</code> compatible with
+	 * <code>outputFormat</code>) and connects to its <code>output DataSource</code>.
 	 *
 	 * @throws IOException
-	 * 		if creating the transcoding <tt>Processor</tt>, setting its <tt>Format</tt> or
+	 * 		if creating the transcoding <code>Processor</code>, setting its <code>Format</code> or
 	 * 		connecting to it fails
 	 */
 	@Override
@@ -143,8 +143,8 @@ public class TranscodingDataSource extends DataSource
 
 	/**
 	 * Implements {@link DataSource#disconnect()}. Stops and undoes the whole setup of the very
-	 * transcoding process i.e. disconnects from the output <tt>DataSource</tt> of the
-	 * transcodingProcessor and disposes of the <tt>transcodingProcessor</tt>.
+	 * transcoding process i.e. disconnects from the output <code>DataSource</code> of the
+	 * transcodingProcessor and disposes of the <code>transcodingProcessor</code>.
 	 */
 	@Override
 	public synchronized void disconnect()
@@ -172,8 +172,8 @@ public class TranscodingDataSource extends DataSource
 	 * Implements {@link DataSource#getContentType()}. Delegates to the actual output of the
 	 * transcoding.
 	 *
-	 * @return a <tt>String</tt> value which describes the type of the content made available by
-	 * this <tt>DataSource</tt>
+	 * @return a <code>String</code> value which describes the type of the content made available by
+	 * this <code>DataSource</code>
 	 */
 	@Override
 	public synchronized String getContentType()
@@ -186,9 +186,9 @@ public class TranscodingDataSource extends DataSource
 	 * transcoding.
 	 *
 	 * @param controlType
-	 * 		a <tt>String</tt> value which names the type of the control to be retrieved
-	 * @return an <tt>Object</tt> which represents the control of this instance with the specified
-	 * type if such a control is available; otherwise, <tt>null</tt>
+	 * 		a <code>String</code> value which names the type of the control to be retrieved
+	 * @return an <code>Object</code> which represents the control of this instance with the specified
+	 * type if such a control is available; otherwise, <code>null</code>
 	 */
 	@Override
 	public synchronized Object getControl(String controlType)
@@ -204,7 +204,7 @@ public class TranscodingDataSource extends DataSource
 	 * Implements {@link DataSource#getControls()}. Delegates to the actual output of the
 	 * transcoding.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for this
+	 * @return an array of <code>Object</code>s which represent the controls available for this
 	 * instance
 	 */
 	@Override
@@ -218,7 +218,7 @@ public class TranscodingDataSource extends DataSource
 	 * Implements {@link DataSource#getDuration()}. Delegates to the actual output of the
 	 * transcoding.
 	 *
-	 * @return a <tt>Time</tt> value which describes the duration of the content made available by
+	 * @return a <code>Time</code> value which describes the duration of the content made available by
 	 * this instance
 	 */
 	@Override
@@ -229,10 +229,10 @@ public class TranscodingDataSource extends DataSource
 
 	/**
 	 * Gets the output streams that this instance provides. Some of them may be the result of
-	 * transcoding the tracks of the input <tt>DataSource</tt> of this instance in the output
-	 * <tt>Format</tt> of this instance.
+	 * transcoding the tracks of the input <code>DataSource</code> of this instance in the output
+	 * <code>Format</code> of this instance.
 	 *
-	 * @return an array of <tt>SourceStream</tt>s which represents the collection of output streams
+	 * @return an array of <code>SourceStream</code>s which represents the collection of output streams
 	 * that this instance provides
 	 */
 	public synchronized SourceStream[] getStreams()
@@ -285,9 +285,9 @@ public class TranscodingDataSource extends DataSource
 	}
 
 	/**
-	 * Returns this instance's <tt>Processor</tt> object
+	 * Returns this instance's <code>Processor</code> object
 	 *
-	 * @return this instance's <tt>Processor</tt> object
+	 * @return this instance's <code>Processor</code> object
 	 */
 	public Processor getTranscodingProcessor()
 	{

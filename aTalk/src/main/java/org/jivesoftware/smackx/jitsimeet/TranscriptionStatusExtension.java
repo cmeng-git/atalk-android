@@ -26,8 +26,8 @@ import javax.xml.namespace.QName;
  * transcription status to all conference participants.
  *
  * Status meaning:
- * <tt>{@link Status#OFF}</tt> - transcription stopped(available to start)
- * <tt>{@link Status#ON}</tt> - transcription in progress
+ * <code>{@link Status#OFF}</code> - transcription stopped(available to start)
+ * <code>{@link Status#ON}</code> - transcription in progress
  */
 public class TranscriptionStatusExtension extends AbstractExtensionElement
 {

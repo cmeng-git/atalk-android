@@ -33,7 +33,7 @@ public class Decoder extends AbstractCodec
 	}
 
 	/**
-	 * Constructs a new <tt>Decoder</tt>.
+	 * Constructs a new <code>Decoder</code>.
 	 */
 	public Decoder()
 	{

@@ -13,15 +13,15 @@ import javax.media.rtp.*;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 
 /**
- * Describes additional information about a <tt>StreamRTPManager</tt> for the purposes of
- * <tt>RTPTranslatorImpl</tt>.
+ * Describes additional information about a <code>StreamRTPManager</code> for the purposes of
+ * <code>RTPTranslatorImpl</code>.
  *
  * @author Lyubomir Marinov
  */
 class StreamRTPManagerDesc
 {
 	/**
-	 * An array with <tt>int</tt> element type and no elements explicitly defined to reduce
+	 * An array with <code>int</code> element type and no elements explicitly defined to reduce
 	 * unnecessary allocations.
 	 */
 	private static final int[] EMPTY_INT_ARRAY = new int[0];
@@ -32,7 +32,7 @@ class StreamRTPManagerDesc
 
 	/**
 	 * The list of synchronization source (SSRC) identifiers received by {@link #streamRTPManager}
-	 * (as <tt>ReceiveStream</tt>s).
+	 * (as <code>ReceiveStream</code>s).
 	 */
 	private int[] receiveSSRCs = EMPTY_INT_ARRAY;
 
@@ -41,11 +41,11 @@ class StreamRTPManagerDesc
 	public final StreamRTPManager streamRTPManager;
 
 	/**
-	 * Initializes a new <tt>StreamRTPManagerDesc</tt> instance which is to describe a specific
-	 * <tt>StreamRTPManager</tt>.
+	 * Initializes a new <code>StreamRTPManagerDesc</code> instance which is to describe a specific
+	 * <code>StreamRTPManager</code>.
 	 *
 	 * @param streamRTPManager
-	 *        the <tt>StreamRTPManager</tt> to be described by the new instance
+	 *        the <code>StreamRTPManager</code> to be described by the new instance
 	 */
 	public StreamRTPManagerDesc(StreamRTPManager streamRTPManager)
 	{
@@ -61,11 +61,11 @@ class StreamRTPManagerDesc
 
 	/**
 	 * Adds a new synchronization source (SSRC) identifier to the list of SSRC received by the
-	 * associated <tt>StreamRTPManager</tt>.
+	 * associated <code>StreamRTPManager</code>.
 	 *
 	 * @param receiveSSRC
 	 *        the new SSRC to add to the list of SSRC received by the associated
-	 *        <tt>StreamRTPManager</tt>
+	 *        <code>StreamRTPManager</code>
 	 */
 	public synchronized void addReceiveSSRC(int receiveSSRC)
 	{
@@ -89,13 +89,13 @@ class StreamRTPManagerDesc
 
 	/**
 	 * Determines whether the list of synchronization source (SSRC) identifiers received by the
-	 * associated <tt>StreamRTPManager</tt> contains a specific SSRC.
+	 * associated <code>StreamRTPManager</code> contains a specific SSRC.
 	 *
 	 * @param receiveSSRC
 	 *        the SSRC to check whether it is contained in the list of SSRC received by the
-	 *        associated <tt>StreamRTPManager</tt>
-	 * @return <tt>true</tt> if the specified <tt>receiveSSRC</tt> is contained in the list of SSRC
-	 *         received by the associated <tt>StreamRTPManager</tt>; otherwise, <tt>false</tt>
+	 *        associated <code>StreamRTPManager</code>
+	 * @return <code>true</code> if the specified <code>receiveSSRC</code> is contained in the list of SSRC
+	 *         received by the associated <code>StreamRTPManager</code>; otherwise, <code>false</code>
 	 */
 	public synchronized boolean containsReceiveSSRC(int receiveSSRC)
 	{

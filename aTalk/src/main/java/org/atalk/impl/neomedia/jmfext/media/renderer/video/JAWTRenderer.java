@@ -23,7 +23,7 @@ import javax.swing.SwingUtilities;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>VideoRenderer</tt> which uses JAWT to perform native painting in an AWT or Swing <tt>Component</tt>.
+ * Implements a <code>VideoRenderer</code> which uses JAWT to perform native painting in an AWT or Swing <code>Component</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -31,15 +31,15 @@ import timber.log.Timber;
 public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements VideoRenderer
 {
     /**
-     * The default, initial height and width to set on the <tt>Component</tt>s of
-     * <tt>JAWTRenderer</tt>s before video frames with actual sizes are processed. Introduced to
+     * The default, initial height and width to set on the <code>Component</code>s of
+     * <code>JAWTRenderer</code>s before video frames with actual sizes are processed. Introduced to
      * mitigate multiple failures to realize the actual video frame size and/or to properly scale
-     * the visual/video <tt>Component</tt>s.
+     * the visual/video <code>Component</code>s.
      */
     private static final int DEFAULT_COMPONENT_HEIGHT_OR_WIDTH = 16;
 
     /**
-     * The human-readable <tt>PlugIn</tt> name of the <tt>JAWTRenderer</tt> instances.
+     * The human-readable <code>PlugIn</code> name of the <code>JAWTRenderer</code> instances.
      */
     private static final String PLUGIN_NAME = "JAWT Renderer";
 
@@ -83,69 +83,69 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     static native void addNotify(long handle, Component component);
 
     /**
-     * Closes the native counterpart of a <tt>JAWTRenderer</tt> specified by its handle as returned
-     * by {@link #open(Component)} and rendering into a specific AWT <tt>Component</tt>. Releases
+     * Closes the native counterpart of a <code>JAWTRenderer</code> specified by its handle as returned
+     * by {@link #open(Component)} and rendering into a specific AWT <code>Component</code>. Releases
      * the resources which the specified native counterpart has retained during its execution and
      * its handle is considered to be invalid afterwards.
      *
-     * @param handle the handle to the native counterpart of a <tt>JAWTRenderer</tt> as returned by
+     * @param handle the handle to the native counterpart of a <code>JAWTRenderer</code> as returned by
      * {@link #open(Component)} which is to be closed
-     * @param component the AWT <tt>Component</tt> into which the <tt>JAWTRenderer</tt> and its native
-     * counterpart are drawing. The platform-specific info of <tt>component</tt> is not guaranteed to be valid.
+     * @param component the AWT <code>Component</code> into which the <code>JAWTRenderer</code> and its native
+     * counterpart are drawing. The platform-specific info of <code>component</code> is not guaranteed to be valid.
      */
     private static native void close(long handle, Component component);
 
     /**
-     * Opens a handle to a native counterpart of a <tt>JAWTRenderer</tt> which is to draw into a
-     * specific AWT <tt>Component</tt>.
+     * Opens a handle to a native counterpart of a <code>JAWTRenderer</code> which is to draw into a
+     * specific AWT <code>Component</code>.
      *
-     * @param component the AWT <tt>Component</tt> into which a <tt>JAWTRenderer</tt> and the native
-     * counterpart to be opened are to draw. The platform-specific info of <tt>component</tt>
+     * @param component the AWT <code>Component</code> into which a <code>JAWTRenderer</code> and the native
+     * counterpart to be opened are to draw. The platform-specific info of <code>component</code>
      * is not guaranteed to be valid.
-     * @return a handle to a native counterpart of a <tt>JAWTRenderer</tt> which is to draw into
-     * the specified AWT <tt>Component</tt>
+     * @return a handle to a native counterpart of a <code>JAWTRenderer</code> which is to draw into
+     * the specified AWT <code>Component</code>
      * @throws ResourceUnavailableException if there is a problem during opening
      */
     private static native long open(Component component)
             throws ResourceUnavailableException;
 
     /**
-     * Paints a specific <tt>Component</tt> which is the AWT <tt>Component</tt> of a
-     * <tt>JAWTRenderer</tt> specified by the handle to its native counterpart.
+     * Paints a specific <code>Component</code> which is the AWT <code>Component</code> of a
+     * <code>JAWTRenderer</code> specified by the handle to its native counterpart.
      *
-     * @param handle the handle to the native counterpart of a <tt>JAWTRenderer</tt> which is to draw into
-     * the specified AWT <tt>Component</tt>
-     * @param component the AWT <tt>Component</tt> into which the <tt>JAWTRenderer</tt> and its native
-     * counterpart specified by <tt>handle</tt> are to draw. The platform-specific info of
-     * <tt>component</tt> is guaranteed to be valid only during the execution of <tt>paint</tt>.
-     * @param g the <tt>Graphics</tt> context into which the drawing is to be performed
+     * @param handle the handle to the native counterpart of a <code>JAWTRenderer</code> which is to draw into
+     * the specified AWT <code>Component</code>
+     * @param component the AWT <code>Component</code> into which the <code>JAWTRenderer</code> and its native
+     * counterpart specified by <code>handle</code> are to draw. The platform-specific info of
+     * <code>component</code> is guaranteed to be valid only during the execution of <code>paint</code>.
+     * @param g the <code>Graphics</code> context into which the drawing is to be performed
      * @param zOrder
-     * @return <tt>true</tt> if the native counterpart of a <tt>JAWTRenderer</tt> wants to continue
-     * receiving the <tt>paint</tt> calls on the AWT <tt>Component</tt>; otherwise, false.
+     * @return <code>true</code> if the native counterpart of a <code>JAWTRenderer</code> wants to continue
+     * receiving the <code>paint</code> calls on the AWT <code>Component</code>; otherwise, false.
      * For example, after the native counterpart has been able to acquire the native handle
-     * of the AWT <tt>Component</tt>, it may be able to determine when the native handle
-     * needs painting without waiting for AWT to call <tt>paint</tt> on the
-     * <tt>Component</tt>. In such a scenario, the native counterpart may indicate with
-     * <tt>false</tt> that it does not need further <tt>paint</tt> deliveries.
+     * of the AWT <code>Component</code>, it may be able to determine when the native handle
+     * needs painting without waiting for AWT to call <code>paint</code> on the
+     * <code>Component</code>. In such a scenario, the native counterpart may indicate with
+     * <code>false</code> that it does not need further <code>paint</code> deliveries.
      */
     static native boolean paint(long handle, Component component, Graphics g, int zOrder);
 
     /**
-     * Processes the data provided in a specific <tt>int</tt> array with a specific offset and
-     * length and renders it to the output device represented by a <tt>JAWTRenderer</tt> specified
+     * Processes the data provided in a specific <code>int</code> array with a specific offset and
+     * length and renders it to the output device represented by a <code>JAWTRenderer</code> specified
      * by the handle to it native counterpart.
      *
-     * @param handle the handle to the native counterpart of a <tt>JAWTRenderer</tt> to process the
+     * @param handle the handle to the native counterpart of a <code>JAWTRenderer</code> to process the
      * specified data and render it
-     * @param component the <tt>AWT</tt> component into which the specified <tt>JAWTRenderer</tt> and its
+     * @param component the <code>AWT</code> component into which the specified <code>JAWTRenderer</code> and its
      * native counterpart draw
-     * @param data an <tt>int</tt> array which contains the data to be processed and rendered
-     * @param offset the index in <tt>data</tt> at which the data to be processed and rendered starts
-     * @param length the number of elements in <tt>data</tt> starting at <tt>offset</tt> which represent
+     * @param data an <code>int</code> array which contains the data to be processed and rendered
+     * @param offset the index in <code>data</code> at which the data to be processed and rendered starts
+     * @param length the number of elements in <code>data</code> starting at <code>offset</code> which represent
      * the data to be processed and rendered
-     * @param width the width of the video frame in <tt>data</tt>
-     * @param height the height of the video frame in <tt>data</tt>
-     * @return <tt>true</tt> if data has been successfully processed
+     * @param width the width of the video frame in <code>data</code>
+     * @param height the height of the video frame in <code>data</code>
+     * @return <code>true</code> if data has been successfully processed
      */
     static native boolean process(long handle, Component component, int[] data, int offset,
             int length, int width, int height);
@@ -155,43 +155,43 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     private static native String sysctlbyname(String name);
 
     /**
-     * The AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> draws.
+     * The AWT <code>Component</code> into which this <code>VideoRenderer</code> draws.
      */
     private Component component;
 
     /**
-     * The handle to the native counterpart of this <tt>JAWTRenderer</tt>.
+     * The handle to the native counterpart of this <code>JAWTRenderer</code>.
      */
     private long handle = 0;
 
     /**
-     * The last known height of the input processed by this <tt>JAWTRenderer</tt>.
+     * The last known height of the input processed by this <code>JAWTRenderer</code>.
      */
     private int height = 0;
 
     /**
-     * The <tt>Runnable</tt> which is executed to bring the invocations of
+     * The <code>Runnable</code> which is executed to bring the invocations of
      * {@link #reflectInputFormatOnComponent()} into the AWT event dispatching thread.
      */
     private final Runnable reflectInputFormatOnComponentInEventDispatchThread
             = this::reflectInputFormatOnComponentInEventDispatchThread;
 
     /**
-     * The last known width of the input processed by this <tt>JAWTRenderer</tt>.
+     * The last known width of the input processed by this <code>JAWTRenderer</code>.
      */
     private int width = 0;
 
     /**
-     * Initializes a new <tt>JAWTRenderer</tt> instance.
+     * Initializes a new <code>JAWTRenderer</code> instance.
      */
     public JAWTRenderer()
     {
     }
 
     /**
-     * Closes this <tt>PlugIn</tt> and releases the resources it has retained during its execution.
-     * No more data will be accepted by this <tt>PlugIn</tt> afterwards. A closed <tt>PlugIn</tt>
-     * can be reinstated by calling <tt>open</tt> again.
+     * Closes this <code>PlugIn</code> and releases the resources it has retained during its execution.
+     * No more data will be accepted by this <code>PlugIn</code> afterwards. A closed <code>PlugIn</code>
+     * can be reinstated by calling <code>open</code> again.
      */
     @Override
     public synchronized void close()
@@ -203,11 +203,11 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the region in the component of this <tt>VideoRenderer</tt> where the video is rendered.
-     * <tt>JAWTRenderer</tt> always uses the entire component i.e. always returns <tt>null</tt>.
+     * Gets the region in the component of this <code>VideoRenderer</code> where the video is rendered.
+     * <code>JAWTRenderer</code> always uses the entire component i.e. always returns <code>null</code>.
      *
-     * @return the region in the component of this <tt>VideoRenderer</tt> where the video is
-     * rendered; <tt>null</tt> if the entire component is used
+     * @return the region in the component of this <code>VideoRenderer</code> where the video is
+     * rendered; <code>null</code> if the entire component is used
      */
     @Override
     public Rectangle getBounds()
@@ -216,9 +216,9 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> draws.
+     * Gets the AWT <code>Component</code> into which this <code>VideoRenderer</code> draws.
      *
-     * @return the AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> draws
+     * @return the AWT <code>Component</code> into which this <code>VideoRenderer</code> draws
      */
     @Override
     public synchronized Component getComponent()
@@ -259,9 +259,9 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the handle to the native counterpart of this <tt>JAWTRenderer</tt>.
+     * Gets the handle to the native counterpart of this <code>JAWTRenderer</code>.
      *
-     * @return the handle to the native counterpart of this <tt>JAWTRenderer</tt>
+     * @return the handle to the native counterpart of this <code>JAWTRenderer</code>
      */
     public long getHandle()
     {
@@ -269,11 +269,11 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the <tt>Object</tt> which synchronizes the access to the handle to the native
-     * counterpart of this <tt>JAWTRenderer</tt>.
+     * Gets the <code>Object</code> which synchronizes the access to the handle to the native
+     * counterpart of this <code>JAWTRenderer</code>.
      *
-     * @return the <tt>Object</tt> which synchronizes the access to the handle to the native
-     * counterpart of this <tt>JAWTRenderer</tt>
+     * @return the <code>Object</code> which synchronizes the access to the handle to the native
+     * counterpart of this <code>JAWTRenderer</code>
      */
     public Object getHandleLock()
     {
@@ -281,9 +281,9 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the human-readable name of this <tt>PlugIn</tt>.
+     * Gets the human-readable name of this <code>PlugIn</code>.
      *
-     * @return the human-readable name of this <tt>PlugIn</tt>
+     * @return the human-readable name of this <code>PlugIn</code>
      */
     @Override
     public String getName()
@@ -292,10 +292,10 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Gets the list of input <tt>Format</tt>s supported by this <tt>Renderer</tt>.
+     * Gets the list of input <code>Format</code>s supported by this <code>Renderer</code>.
      *
-     * @return an array of <tt>Format</tt> elements which represent the input <tt>Format</tt>s
-     * supported by this <tt>Renderer</tt>
+     * @return an array of <code>Format</code> elements which represent the input <code>Format</code>s
+     * supported by this <code>Renderer</code>
      */
     @Override
     public Format[] getSupportedInputFormats()
@@ -304,9 +304,9 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Opens this <tt>PlugIn</tt> and acquires the resources that it needs to operate. The input
-     * format of this <tt>Renderer</tt> has to be set before <tt>open</tt> is called. Buffers
-     * should not be passed into this <tt>PlugIn</tt> without first calling <tt>open</tt>.
+     * Opens this <code>PlugIn</code> and acquires the resources that it needs to operate. The input
+     * format of this <code>Renderer</code> has to be set before <code>open</code> is called. Buffers
+     * should not be passed into this <code>PlugIn</code> without first calling <code>open</code>.
      *
      * @throws ResourceUnavailableException if there is a problem during opening
      */
@@ -343,12 +343,12 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Processes the data provided in a specific <tt>Buffer</tt> and renders it to the output
-     * device represented by this <tt>Renderer</tt>.
+     * Processes the data provided in a specific <code>Buffer</code> and renders it to the output
+     * device represented by this <code>Renderer</code>.
      *
-     * @param buffer a <tt>Buffer</tt> containing the data to be processed and rendered
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the processing is successful; otherwise, the other
-     * possible return codes defined in the <tt>PlugIn</tt> interface
+     * @param buffer a <code>Buffer</code> containing the data to be processed and rendered
+     * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful; otherwise, the other
+     * possible return codes defined in the <code>PlugIn</code> interface
      */
     @Override
     public synchronized int process(Buffer buffer)
@@ -400,10 +400,10 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Sets properties of the AWT <tt>Component</tt> of this <tt>Renderer</tt> which depend on the
-     * properties of the <tt>inputFormat</tt> of this <tt>Renderer</tt>. Makes sure that the
-     * procedure is executed on the AWT event dispatching thread because an AWT <tt>Component</tt>'s
-     * properties (such as <tt>preferredSize</tt>) should be accessed in the AWT event dispatching thread.
+     * Sets properties of the AWT <code>Component</code> of this <code>Renderer</code> which depend on the
+     * properties of the <code>inputFormat</code> of this <code>Renderer</code>. Makes sure that the
+     * procedure is executed on the AWT event dispatching thread because an AWT <code>Component</code>'s
+     * properties (such as <code>preferredSize</code>) should be accessed in the AWT event dispatching thread.
      */
     private void reflectInputFormatOnComponent()
     {
@@ -416,8 +416,8 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Sets properties of the AWT <tt>Component</tt> of this <tt>Renderer</tt> which depend on the
-     * properties of the <tt>inputFormat</tt> of this <tt>Renderer</tt>. The invocation is presumed
+     * Sets properties of the AWT <code>Component</code> of this <code>Renderer</code> which depend on the
+     * properties of the <code>inputFormat</code> of this <code>Renderer</code>. The invocation is presumed
      * to be performed on the AWT event dispatching thread.
      */
     private void reflectInputFormatOnComponentInEventDispatchThread()
@@ -457,12 +457,12 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Sets the region in the component of this <tt>VideoRenderer</tt> where the video is to be
-     * rendered. <tt>JAWTRenderer</tt> always uses the entire component and, consequently, the
+     * Sets the region in the component of this <code>VideoRenderer</code> where the video is to be
+     * rendered. <code>JAWTRenderer</code> always uses the entire component and, consequently, the
      * method does nothing.
      *
-     * @param bounds the region in the component of this <tt>VideoRenderer</tt> where the video is to be
-     * rendered; <tt>null</tt> if the entire component is to be used
+     * @param bounds the region in the component of this <code>VideoRenderer</code> where the video is to be
+     * rendered; <code>null</code> if the entire component is to be used
      */
     @Override
     public void setBounds(Rectangle bounds)
@@ -470,13 +470,13 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Sets the AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> is to draw.
-     * <tt>JAWTRenderer</tt> cannot draw into any other AWT <tt>Component</tt> but its own so it
-     * always returns <tt>false</tt>.
+     * Sets the AWT <code>Component</code> into which this <code>VideoRenderer</code> is to draw.
+     * <code>JAWTRenderer</code> cannot draw into any other AWT <code>Component</code> but its own so it
+     * always returns <code>false</code>.
      *
-     * @param component the AWT <tt>Component</tt> into which this <tt>VideoRenderer</tt> is to draw
-     * @return <tt>true</tt> if this <tt>VideoRenderer</tt> accepted the specified
-     * <tt>component</tt> as the AWT <tt>Component</tt> into which it is to draw; <tt>false</tt>, otherwise
+     * @param component the AWT <code>Component</code> into which this <code>VideoRenderer</code> is to draw
+     * @return <code>true</code> if this <code>VideoRenderer</code> accepted the specified
+     * <code>component</code> as the AWT <code>Component</code> into which it is to draw; <code>false</code>, otherwise
      */
     @Override
     public boolean setComponent(Component component)
@@ -485,14 +485,14 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Sets the <tt>Format</tt> of the input to be processed by this <tt>Renderer</tt>.
+     * Sets the <code>Format</code> of the input to be processed by this <code>Renderer</code>.
      *
-     * @param format the <tt>Format</tt> to be set as the <tt>Format</tt> of the input to be processed by
-     * this <tt>Renderer</tt>
-     * @return the <tt>Format</tt> of the input to be processed by this <tt>Renderer</tt> if the
-     * specified <tt>format</tt> is supported or <tt>null</tt> if the specified
-     * <tt>format</tt> is not supported by this <tt>Renderer</tt>. Typically, it is the
-     * supported input <tt>Format</tt> which most closely matches the specified <tt>Format</tt>.
+     * @param format the <code>Format</code> to be set as the <code>Format</code> of the input to be processed by
+     * this <code>Renderer</code>
+     * @return the <code>Format</code> of the input to be processed by this <code>Renderer</code> if the
+     * specified <code>format</code> is supported or <code>null</code> if the specified
+     * <code>format</code> is not supported by this <code>Renderer</code>. Typically, it is the
+     * supported input <code>Format</code> which most closely matches the specified <code>Format</code>.
      */
     @Override
     public synchronized Format setInputFormat(Format format)
@@ -528,7 +528,7 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
     }
 
     /**
-     * Starts the rendering process. Begins rendering any data available in the internal buffers of this <tt>Renderer</tt>.
+     * Starts the rendering process. Begins rendering any data available in the internal buffers of this <code>Renderer</code>.
      */
     @Override
     public void start()

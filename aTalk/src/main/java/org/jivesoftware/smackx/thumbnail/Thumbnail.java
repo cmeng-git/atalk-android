@@ -15,8 +15,8 @@ import org.jivesoftware.smackx.bob.ContentId;
 import javax.xml.namespace.QName;
 
 /**
- * The <tt>Thumbnail</tt> represents a "thumbnail" XML element, that is contained in the file
- * element, we're sending to notify for a file transfer. The <tt>Thumbnail</tt>'s role is to
+ * The <code>Thumbnail</code> represents a "thumbnail" XML element, that is contained in the file
+ * element, we're sending to notify for a file transfer. The <code>Thumbnail</code>'s role is to
  * advertise a thumbnail. Implementing XEP-0264: Jingle Content Thumbnails v0.4
  * https://xmpp.org/extensions/xep-0264.html
  *
@@ -81,7 +81,7 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Creates a <tt>ThumbnailExtensionElement</tt> by specifying all extension attributes.
+     * Creates a <code>ThumbnailExtensionElement</code> by specifying all extension attributes.
      *
      * @param thumbnailData the byte array containing the thumbnail data
      * @param mediaType the mime type attribute
@@ -108,11 +108,11 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Creates a <tt>Thumbnail</tt> by parsing the given <tt>xml</tt>.
+     * Creates a <code>Thumbnail</code> by parsing the given <code>xml</code>.
      * <thumbnail xmlns="urn:xmpp:thumbs:1" uri='cid:sha1+2845ad11024a99dc61fe2bad3c59c5fb0a23cd1c@atalk.org"
      * mime-type="image/png" width="64" height="64"/>
      *
-     * @param parser the XML from which we obtain the needed information to create this <tt>Thumbnail</tt>
+     * @param parser the XML from which we obtain the needed information to create this <code>Thumbnail</code>
      */
     public Thumbnail(XmlPullParser parser)
     {
@@ -162,7 +162,7 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Creates the cid attribute value for the given  <tt>thumbnailData</tt>.
+     * Creates the cid attribute value for the given  <code>thumbnailData</code>.
      *
      * @param thumbnailData the byte array containing the data
      * @return the cid attribute value for the thumbnail extension
@@ -173,9 +173,9 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Returns the uri, corresponding to this <tt>Thumbnail</tt>.
+     * Returns the uri, corresponding to this <code>Thumbnail</code>.
      *
-     * @return the uri, corresponding to this <tt>Thumbnail</tt>
+     * @return the uri, corresponding to this <code>Thumbnail</code>
      */
     public String getUri()
     {
@@ -183,7 +183,7 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Sets the uri of this <tt>Thumbnail</tt>.
+     * Sets the uri of this <code>Thumbnail</code>.
      *
      * @param uri the uri to set
      */
@@ -193,9 +193,9 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Returns the Content-ID, corresponding to this <tt>Thumbnail</tt>.
+     * Returns the Content-ID, corresponding to this <code>Thumbnail</code>.
      *
-     * @return the Content-ID, corresponding to this <tt>Thumbnail</tt>
+     * @return the Content-ID, corresponding to this <code>Thumbnail</code>
      */
     public ContentId getCid()
     {
@@ -203,7 +203,7 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Sets the content-ID of this <tt>Thumbnail</tt>.
+     * Sets the content-ID of this <code>Thumbnail</code>.
      *
      * @param cid the content-ID to set
      */
@@ -213,9 +213,9 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Returns the mime type of this <tt>Thumbnail</tt>.
+     * Returns the mime type of this <code>Thumbnail</code>.
      *
-     * @return the mime type of this <tt>Thumbnail</tt>
+     * @return the mime type of this <code>Thumbnail</code>
      */
     public String getMediaType()
     {
@@ -233,9 +233,9 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Returns the width of this <tt>Thumbnail</tt>.
+     * Returns the width of this <code>Thumbnail</code>.
      *
-     * @return the width of this <tt>Thumbnail</tt>
+     * @return the width of this <code>Thumbnail</code>
      */
     public int getWidth()
     {
@@ -253,9 +253,9 @@ public class Thumbnail implements ExtensionElement
     }
 
     /**
-     * Returns the height of this <tt>Thumbnail</tt>.
+     * Returns the height of this <code>Thumbnail</code>.
      *
-     * @return the height of this <tt>Thumbnail</tt>
+     * @return the height of this <code>Thumbnail</code>
      */
     public int getHeight()
     {

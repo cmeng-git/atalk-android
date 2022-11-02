@@ -35,10 +35,10 @@ class OveruseEstimator
     private static final int kMinFramePeriodHistoryLength = 60;
 
     /**
-     * Creates and returns a deep copy of a <tt>double</tt> two-dimensional matrix.
+     * Creates and returns a deep copy of a <code>double</code> two-dimensional matrix.
      *
-     * @param matrix the <tt>double</tt> two-dimensional matrix to create and return a deep copy of
-     * @return a deep copy of <tt>matrix</tt>
+     * @param matrix the <code>double</code> two-dimensional matrix to create and return a deep copy of
+     * @return a deep copy of <code>matrix</code>
      */
     private static double[][] clone(double[][] matrix)
     {

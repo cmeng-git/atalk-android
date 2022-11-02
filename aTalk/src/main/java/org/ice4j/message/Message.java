@@ -35,6 +35,7 @@ import org.ice4j.stack.*;
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
  * @author Aakash Garg
+ * @author Eng Chong Meng
  */
 public abstract class Message
 {

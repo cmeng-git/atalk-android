@@ -19,8 +19,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jxmpp.jid.Jid;
 
 /**
- * IQ used for the signaling of audio muting functionality in Jitsi Meet
- * conferences.
+ * IQ used for the signaling of audio muting functionality in Jitsi Meet conferences.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -103,7 +102,7 @@ public class MuteIq extends IQ
     /**
      * The action contained in the text part of 'mute' XML element body.
      *
-     * @param mute <tt>true</tt> to mute the participant. <tt>null</tt> means no
+     * @param mute <code>true</code> to mute the participant. <code>null</code> means no
      * action is included in result XML.
      */
     public void setMute(Boolean mute)
@@ -112,8 +111,8 @@ public class MuteIq extends IQ
     }
 
     /**
-     * Returns <tt>true</tt> to mute the participant, <tt>false</tt> to unmute
-     * or <tt>null</tt> if the action has not been specified(which is invalid).
+     * Returns <code>true</code> to mute the participant, <code>false</code> to unmute
+     * or <code>null</code> if the action has not been specified(which is invalid).
      */
     public Boolean getMute()
     {

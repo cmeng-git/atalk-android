@@ -26,8 +26,7 @@ import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.*;
 
 /**
- * The http utils bundle activator. Do nothing just provide access to some
- * services.
+ * The http utils bundle activator. Do nothing just provide access to some services.
  *
  * @author Damian Minkov
  */
@@ -76,12 +75,10 @@ public class HttpUtilActivator implements BundleActivator
     }
 
     /**
-     * Returns a reference to a CredentialsStorageConfigurationService
-     * implementation currently registered in the bundle context or null if no
-     * such implementation was found.
+     * Returns a reference to a CredentialsStorageConfigurationService implementation currently
+     * registered in the bundle context or null if no such implementation was found.
      *
-     * @return a currently valid implementation of the
-     * CredentialsStorageService.
+     * @return a currently valid implementation of the CredentialsStorageService.
      */
     public static CredentialsStorageService getCredentialsService()
     {
@@ -134,8 +131,7 @@ public class HttpUtilActivator implements BundleActivator
 
     /**
      * Returns a reference to a ConfigurationService implementation currently
-     * registered in the bundle context or null if no such implementation was
-     * found.
+     * registered in the bundle context or null if no such implementation was found.
      *
      * @return a currently valid implementation of the ConfigurationService.
      */

@@ -63,7 +63,7 @@ public class LogoutIq extends IQ
     private String logoutUrl;
 
     /**
-     * Creates new instance of <tt>LogoutIq</tt>.
+     * Creates new instance of <code>LogoutIq</code>.
      */
     public LogoutIq()
     {

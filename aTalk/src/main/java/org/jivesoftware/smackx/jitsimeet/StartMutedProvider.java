@@ -33,7 +33,7 @@ import java.io.IOException;
 public class StartMutedProvider extends ExtensionElementProvider<StartMutedExtension>
 {
     /**
-     * Registers this extension provider into the <tt>ProviderManager</tt>.
+     * Registers this extension provider into the <code>ProviderManager</code>.
      */
     public static void registerStartMutedProvider()
     {

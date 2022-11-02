@@ -23,42 +23,42 @@ import java.io.IOException;
 public class RemoteControlExtensionProvider extends ExtensionElementProvider<RemoteControlExtension>
 {
     /**
-     * The name of the remote-info XML element <tt>remote-control</tt>.
+     * The name of the remote-info XML element <code>remote-control</code>.
      */
     public static final String ELEMENT_REMOTE_CONTROL = "remote-control";
 
     /**
-     * The name of the remote-info XML element <tt>mouse-move</tt>.
+     * The name of the remote-info XML element <code>mouse-move</code>.
      */
     public static final String ELEMENT_MOUSE_MOVE = "mouse-move";
 
     /**
-     * The name of the remote-info XML element <tt>mouse-wheel</tt>.
+     * The name of the remote-info XML element <code>mouse-wheel</code>.
      */
     public static final String ELEMENT_MOUSE_WHEEL = "mouse-wheel";
 
     /**
-     * The name of the remote-info XML element <tt>mouse-press</tt>.
+     * The name of the remote-info XML element <code>mouse-press</code>.
      */
     public static final String ELEMENT_MOUSE_PRESS = "mouse-press";
 
     /**
-     * The name of the remote-info XML element <tt>mouse-release</tt>.
+     * The name of the remote-info XML element <code>mouse-release</code>.
      */
     public static final String ELEMENT_MOUSE_RELEASE = "mouse-release";
 
     /**
-     * The name of the remote-info XML element <tt>key-press</tt>.
+     * The name of the remote-info XML element <code>key-press</code>.
      */
     public static final String ELEMENT_KEY_PRESS = "key-press";
 
     /**
-     * The name of the remote-info XML element <tt>key-release</tt>.
+     * The name of the remote-info XML element <code>key-release</code>.
      */
     public static final String ELEMENT_KEY_RELEASE = "key-release";
 
     /**
-     * The name of the remote-info XML element <tt>key-type</tt>.
+     * The name of the remote-info XML element <code>key-type</code>.
      */
     public static final String ELEMENT_KEY_TYPE = "key-type";
 
@@ -68,7 +68,7 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
     public static final String NAMESPACE = "http://jitsi.org/protocol/inputevt";
 
     /**
-     * Component to be used in custom generated <tt>MouseEvent</tt> and <tt>KeyEvent</tt>.
+     * Component to be used in custom generated <code>MouseEvent</code> and <code>KeyEvent</code>.
      */
     // private static final Component component = new Canvas();
 
@@ -80,10 +80,10 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
     }
 
     /**
-     * Parses the extension and returns a <tt>ExtensionElement</tt>.
+     * Parses the extension and returns a <code>ExtensionElement</code>.
      *
      * @param parser XML parser
-     * @return a <tt>ExtensionElement</tt> that represents a remote-control element.
+     * @return a <code>ExtensionElement</code> that represents a remote-control element.
      * @throws Exception if an error occurs during XML parsing
      */
     public ExtensionElement parseExtension(XmlPullParser parser)
@@ -162,10 +162,10 @@ public class RemoteControlExtensionProvider extends ExtensionElementProvider<Rem
     }
 
     /**
-     * Appends a specific array of <tt>String</tt>s to a specific <tt>StringBuffer</tt>.
+     * Appends a specific array of <code>String</code>s to a specific <code>StringBuffer</code>.
      *
-     * @param stringBuffer the <tt>StringBuffer</tt> to append the specified <tt>strings</tt> to
-     * @param strings the <tt>String</tt> values to be appended to the specified <tt>stringBuffer</tt>
+     * @param stringBuffer the <code>StringBuffer</code> to append the specified <code>strings</code> to
+     * @param strings the <code>String</code> values to be appended to the specified <code>stringBuffer</code>
      */
     private static void append(StringBuffer stringBuffer, String... strings)
     {

@@ -13,7 +13,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import java.io.IOException;
 
 /**
- * Implements an <tt>IQProvider</tt> which parses incoming <tt>InputEvtIQ</tt>s.
+ * Implements an <code>IQProvider</code> which parses incoming <code>InputEvtIQ</code>s.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
@@ -21,10 +21,10 @@ import java.io.IOException;
 public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
 {
     /**
-     * Parse the Input IQ sub-document and returns the corresponding <tt>InputEvtIQ</tt>.
+     * Parse the Input IQ sub-document and returns the corresponding <code>InputEvtIQ</code>.
      *
      * @param parser XML parser
-     * @return <tt>InputEvtIQ</tt>
+     * @return <code>InputEvtIQ</code>
      * @throws IOException, XmlPullParserException if something goes wrong during parsing
      */
     @Override

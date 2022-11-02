@@ -22,12 +22,12 @@ public class JNIDecoder extends AbstractCodec2
 {
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JNIDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JNIDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{
             new AudioFormat(
@@ -62,18 +62,18 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * The pointer to the native <tt>SpeexBits</tt> from which the native Speex decoder (i.e.
+     * The pointer to the native <code>SpeexBits</code> from which the native Speex decoder (i.e.
      * {@link #state}) reads the encoded audio data.
      */
     private long bits = 0;
 
     /**
-     * The duration in nanoseconds of an output <tt>Buffer</tt> produced by this <tt>Codec</tt>.
+     * The duration in nanoseconds of an output <code>Buffer</code> produced by this <code>Codec</code>.
      */
     private long duration = 0;
 
     /**
-     * The number of bytes from an input <tt>Buffer</tt> that this <tt>Codec</tt> processes in one
+     * The number of bytes from an input <code>Buffer</code> that this <code>Codec</code> processes in one
      * call of its {@link #process(Buffer, Buffer)}.
      */
     private int frameSize = 0;
@@ -89,7 +89,7 @@ public class JNIDecoder extends AbstractCodec2
     private long state = 0;
 
     /**
-     * Initializes a new <tt>JNIDecoder</tt> instance.
+     * Initializes a new <code>JNIDecoder</code> instance.
      */
     public JNIDecoder()
     {
@@ -117,12 +117,12 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs
      * to operate cannot be acquired
      * @see AbstractCodec2#doOpen()
      */
@@ -136,11 +136,11 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Decodes Speex media from a specific input <tt>Buffer</tt>
+     * Decodes Speex media from a specific input <code>Buffer</code>
      *
-     * @param inputBuffer input <tt>Buffer</tt>
-     * @param outputBuffer output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
+     * @param inputBuffer input <code>Buffer</code>
+     * @param outputBuffer output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuffer</code> has been successfully processed
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
@@ -238,10 +238,10 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Get all supported output <tt>Format</tt>s.
+     * Get all supported output <code>Format</code>s.
      *
-     * @param inputFormat input <tt>Format</tt> to determine corresponding output <tt>Format/tt>s
-     * @return array of supported <tt>Format</tt>
+     * @param inputFormat input <code>Format</code> to determine corresponding output <code>Format/code>s
+     * @return array of supported <code>Format</code>
      * @see AbstractCodec2#getMatchingOutputFormats(Format)
      */
     @Override
@@ -264,11 +264,11 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
+     * Sets the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>.
      *
-     * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of the media data to be input for processing in this
-     * <tt>Codec</tt> if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * @param format the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     * @return the <code>Format</code> of the media data to be input for processing in this
+     * <code>Codec</code> if <code>format</code> is compatible with this <code>Codec</code>; otherwise, <code>null</code>
      * @see AbstractCodec2#setInputFormat(Format)
      */
     @Override

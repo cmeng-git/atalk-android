@@ -114,7 +114,7 @@ public class ProcessorUtility implements ControllerListener
         synchronized (stateLock) {
             // Wait until we get an event that confirms the
             // success of the method, or a failure event.
-            // See StateListener inner class
+            // See JmStateListener inner class
             while ((processor.getState() < state) && !failed) {
                 try {
                     // don't wait forever, there is some other problem where we wait on an already closed

@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.device;
 import androidx.annotation.NonNull;
 
 /**
- * Implements an <tt>AudioSystem</tt> without any devices which allows the user to select to use no
+ * Implements an <code>AudioSystem</code> without any devices which allows the user to select to use no
  * audio capture, notification and playback.
  *
  * @author Lyubomir Marinov

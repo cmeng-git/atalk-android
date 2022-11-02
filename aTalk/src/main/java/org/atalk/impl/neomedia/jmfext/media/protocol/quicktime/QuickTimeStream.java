@@ -31,7 +31,7 @@ import org.atalk.impl.neomedia.quicktime.QTCaptureOutput;
 import org.atalk.impl.neomedia.quicktime.QTSampleBuffer;
 
 /**
- * Implements a <tt>PushBufferStream</tt> using QuickTime/QTKit.
+ * Implements a <code>PushBufferStream</code> using QuickTime/QTKit.
  *
  * @author Lyubomir Marinov
  */
@@ -40,25 +40,25 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 
 	/**
 	 * The indicator which determines whether {@link #captureOutput} automatically drops late
-	 * frames. If <tt>false</tt>, we have to drop them ourselves because QuickTime/QTKit will buffer
+	 * frames. If <code>false</code>, we have to drop them ourselves because QuickTime/QTKit will buffer
 	 * them all and the video will be late.
 	 */
 	private final boolean automaticallyDropsLateVideoFrames;
 
 	/**
-	 * The pool of <tt>ByteBuffer</tt>s this instances is using to transfer the media data captured
-	 * by {@link #captureOutput} out of this instance through the <tt>Buffer</tt>s specified in its
+	 * The pool of <code>ByteBuffer</code>s this instances is using to transfer the media data captured
+	 * by {@link #captureOutput} out of this instance through the <code>Buffer</code>s specified in its
 	 * {@link #read(Buffer)}.
 	 */
 	private final ByteBufferPool byteBufferPool = new ByteBufferPool();
 
 	/**
-	 * The <tt>QTCaptureOutput</tt> represented by this <tt>SourceStream</tt>.
+	 * The <code>QTCaptureOutput</code> represented by this <code>SourceStream</code>.
 	 */
 	final QTCaptureDecompressedVideoOutput captureOutput = new QTCaptureDecompressedVideoOutput();
 
 	/**
-	 * The <tt>VideoFormat</tt> which has been successfully set on {@link #captureOutput}.
+	 * The <code>VideoFormat</code> which has been successfully set on {@link #captureOutput}.
 	 */
 	private VideoFormat captureOutputFormat;
 
@@ -68,13 +68,13 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	private ByteBuffer data;
 
 	/**
-	 * The <tt>Format</tt> of {@link #data} if known. If possible, determined by the
-	 * <tt>CVPixelBuffer</tt> video frame from which <tt>data</tt> is acquired.
+	 * The <code>Format</code> of {@link #data} if known. If possible, determined by the
+	 * <code>CVPixelBuffer</code> video frame from which <code>data</code> is acquired.
 	 */
 	private Format dataFormat;
 
 	/**
-	 * The <tt>Object</tt> which synchronizes the access to the {@link #data}-related fields of this
+	 * The <code>Object</code> which synchronizes the access to the {@link #data}-related fields of this
 	 * instance.
 	 */
 	private final Object dataSyncRoot = new Object();
@@ -85,20 +85,20 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	private long dataTimeStamp;
 
 	/**
-	 * The last-known <tt>Format</tt> of the media data made available by this
-	 * <tt>PushBufferStream</tt>.
+	 * The last-known <code>Format</code> of the media data made available by this
+	 * <code>PushBufferStream</code>.
 	 */
 	private Format format;
 
 	/**
 	 * The captured media data to become the value of {@link #data} as soon as the latter becomes is
-	 * consumed. Thus prepares this <tt>QuickTimeStream</tt> to provide the latest available frame
+	 * consumed. Thus prepares this <code>QuickTimeStream</code> to provide the latest available frame
 	 * and not wait for QuickTime/QTKit to capture a new one.
 	 */
 	private ByteBuffer nextData;
 
 	/**
-	 * The <tt>Format</tt> of {@link #nextData} if known.
+	 * The <code>Format</code> of {@link #nextData} if known.
 	 */
 	private Format nextDataFormat;
 
@@ -108,22 +108,22 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	private long nextDataTimeStamp;
 
 	/**
-	 * The <tt>Thread</tt> which is to call
+	 * The <code>Thread</code> which is to call
 	 * {@link BufferTransferHandler#transferData(PushBufferStream)} for this
-	 * <tt>QuickTimeStream</tt> so that the call is not made in QuickTime/QTKit and we can drop late
-	 * frames when {@link #automaticallyDropsLateVideoFrames} is <tt>false</tt>.
+	 * <code>QuickTimeStream</code> so that the call is not made in QuickTime/QTKit and we can drop late
+	 * frames when {@link #automaticallyDropsLateVideoFrames} is <code>false</code>.
 	 */
 	private Thread transferDataThread;
 
 	/**
-	 * Initializes a new <tt>QuickTimeStream</tt> instance which is to have its <tt>Format</tt>
-	 * -related information abstracted by a specific <tt>FormatControl</tt>.
+	 * Initializes a new <code>QuickTimeStream</code> instance which is to have its <code>Format</code>
+	 * -related information abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param dataSource
-	 *        the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-	 *        its <tt>streams</tt>
+	 *        the <code>DataSource</code> which is creating the new instance so that it becomes one of
+	 *        its <code>streams</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
 	 */
 	QuickTimeStream(DataSource dataSource, FormatControl formatControl)
@@ -143,14 +143,14 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 		{
 
 			/**
-			 * Notifies this <tt>Delegate</tt> that the <tt>QTCaptureOutput</tt> to which it is set
-			 * has output a specific <tt>CVImageBuffer</tt> representing a video frame with a
-			 * specific <tt>QTSampleBuffer</tt>.
+			 * Notifies this <code>Delegate</code> that the <code>QTCaptureOutput</code> to which it is set
+			 * has output a specific <code>CVImageBuffer</code> representing a video frame with a
+			 * specific <code>QTSampleBuffer</code>.
 			 *
 			 * @param videoFrame
-			 *        the <tt>CVImageBuffer</tt> which represents the output video frame
+			 *        the <code>CVImageBuffer</code> which represents the output video frame
 			 * @param sampleBuffer
-			 *        the <tt>QTSampleBuffer</tt> which represents additional details about the
+			 *        the <code>QTSampleBuffer</code> which represents additional details about the
 			 *        output video samples
 			 */
 			@Override
@@ -174,15 +174,15 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Notifies this instance that its <tt>QTCaptureOutput</tt> has output a specific
-	 * <tt>CVImageBuffer</tt> representing a video frame with a specific <tt>QTSampleBuffer</tt>.
+	 * Notifies this instance that its <code>QTCaptureOutput</code> has output a specific
+	 * <code>CVImageBuffer</code> representing a video frame with a specific <code>QTSampleBuffer</code>.
 	 *
 	 * @param captureOutput
-	 *        the <tt>QTCaptureOutput</tt> which has output a video frame
+	 *        the <code>QTCaptureOutput</code> which has output a video frame
 	 * @param videoFrame
-	 *        the <tt>CVImageBuffer</tt> which represents the output video frame
+	 *        the <code>CVImageBuffer</code> which represents the output video frame
 	 * @param sampleBuffer
-	 *        the <tt>QTSampleBuffer</tt> which represents additional details about the output video
+	 *        the <code>QTSampleBuffer</code> which represents additional details about the output video
 	 *        samples
 	 */
 	private void captureOutputDidOutputVideoFrameWithSampleBuffer(QTCaptureOutput captureOutput,
@@ -258,12 +258,12 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of this <tt>PushBufferStream</tt> as directly known by it.
+	 * Gets the <code>Format</code> of this <code>PushBufferStream</code> as directly known by it.
 	 *
-	 * @return the <tt>Format</tt> of this <tt>PushBufferStream</tt> as directly known by it or
-	 *         <tt>null</tt> if this <tt>PushBufferStream</tt> does not directly know its
-	 *         <tt>Format</tt> and it relies on the <tt>PushBufferDataSource</tt> which created it
-	 *         to report its <tt>Format</tt>
+	 * @return the <code>Format</code> of this <code>PushBufferStream</code> as directly known by it or
+	 *         <code>null</code> if this <code>PushBufferStream</code> does not directly know its
+	 *         <code>Format</code> and it relies on the <code>PushBufferDataSource</code> which created it
+	 *         to report its <code>Format</code>
 	 */
 	@Override
 	protected Format doGetFormat()
@@ -297,11 +297,11 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of the media data made available by this <tt>PushBufferStream</tt>
+	 * Gets the <code>Format</code> of the media data made available by this <code>PushBufferStream</code>
 	 * as indicated by {@link #captureOutput}.
 	 *
-	 * @return the <tt>Format</tt> of the media data made available by this
-	 *         <tt>PushBufferStream</tt> as indicated by {@link #captureOutput}
+	 * @return the <code>Format</code> of the media data made available by this
+	 *         <code>PushBufferStream</code> as indicated by {@link #captureOutput}
 	 */
 	private Format getCaptureOutputFormat()
 	{
@@ -361,11 +361,11 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Gets the output frame rate of the <tt>QTCaptureDecompressedVideoOutput</tt> represented by
-	 * this <tt>QuickTimeStream</tt>.
+	 * Gets the output frame rate of the <code>QTCaptureDecompressedVideoOutput</code> represented by
+	 * this <code>QuickTimeStream</code>.
 	 *
-	 * @return the output frame rate of the <tt>QTCaptureDecompressedVideoOutput</tt> represented by
-	 *         this <tt>QuickTimeStream</tt>
+	 * @return the output frame rate of the <code>QTCaptureDecompressedVideoOutput</code> represented by
+	 *         this <code>QuickTimeStream</code>
 	 */
 	public float getFrameRate()
 	{
@@ -373,14 +373,14 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of the media data made available by this <tt>PushBufferStream</tt>
-	 * as indicated by a specific <tt>CVPixelBuffer</tt>.
+	 * Gets the <code>Format</code> of the media data made available by this <code>PushBufferStream</code>
+	 * as indicated by a specific <code>CVPixelBuffer</code>.
 	 *
 	 * @param videoFrame
-	 *        the <tt>CVPixelBuffer</tt> which provides details about the <tt>Format</tt> of the
-	 *        media data made available by this <tt>PushBufferStream</tt>
-	 * @return the <tt>Format</tt> of the media data made available by this
-	 *         <tt>PushBufferStream</tt> as indicated by the specified <tt>CVPixelBuffer</tt>
+	 *        the <code>CVPixelBuffer</code> which provides details about the <code>Format</code> of the
+	 *        media data made available by this <code>PushBufferStream</code>
+	 * @return the <code>Format</code> of the media data made available by this
+	 *         <code>PushBufferStream</code> as indicated by the specified <code>CVPixelBuffer</code>
 	 */
 	private Format getVideoFrameFormat(CVPixelBuffer videoFrame)
 	{
@@ -398,15 +398,15 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Reads media data from this <tt>PushBufferStream</tt> into a specific <tt>Buffer</tt> without
+	 * Reads media data from this <code>PushBufferStream</code> into a specific <code>Buffer</code> without
 	 * blocking.
 	 *
 	 * @param buffer
-	 *        the <tt>Buffer</tt> in which media data is to be read from this
-	 *        <tt>PushBufferStream</tt>
+	 *        the <code>Buffer</code> in which media data is to be read from this
+	 *        <code>PushBufferStream</code>
 	 * @throws IOException
-	 *         if anything goes wrong while reading media data from this <tt>PushBufferStream</tt>
-	 *         into the specified <tt>buffer</tt>
+	 *         if anything goes wrong while reading media data from this <code>PushBufferStream</code>
+	 *         into the specified <code>buffer</code>
 	 */
 	public void read(Buffer buffer)
 		throws IOException
@@ -525,11 +525,11 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Sets the <tt>Format</tt> of the media data made available by this <tt>PushBufferStream</tt>
+	 * Sets the <code>Format</code> of the media data made available by this <code>PushBufferStream</code>
 	 * to {@link #captureOutput}.
 	 *
 	 * @param format
-	 *        the <tt>Format</tt> of the media data made available by this <tt>PushBufferStream</tt>
+	 *        the <code>Format</code> of the media data made available by this <code>PushBufferStream</code>
 	 *        to be set to {@link #captureOutput}
 	 */
 	private void setCaptureOutputFormat(Format format)
@@ -612,14 +612,14 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Sets the output frame rate of the <tt>QTCaptureDecompressedVideoOutput</tt> represented by
-	 * this <tt>QuickTimeStream</tt>.
+	 * Sets the output frame rate of the <code>QTCaptureDecompressedVideoOutput</code> represented by
+	 * this <code>QuickTimeStream</code>.
 	 *
 	 * @param frameRate
-	 *        the output frame rate to be set on the <tt>QTCaptureDecompressedVideoOutput</tt>
-	 *        represented by this <tt>QuickTimeStream</tt>
-	 * @return the output frame rate of the <tt>QTCaptureDecompressedVideoOutput</tt> represented by
-	 *         this <tt>QuickTimeStream</tt>
+	 *        the output frame rate to be set on the <code>QTCaptureDecompressedVideoOutput</code>
+	 *        represented by this <code>QuickTimeStream</code>
+	 * @return the output frame rate of the <code>QTCaptureDecompressedVideoOutput</code> represented by
+	 *         this <code>QuickTimeStream</code>
 	 */
 	public float setFrameRate(float frameRate)
 	{
@@ -628,11 +628,11 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>PushBufferStream</tt>.
+	 * Starts the transfer of media data from this <code>PushBufferStream</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while starting the transfer of media data from this
-	 *         <tt>PushBufferStream</tt>
+	 *         <code>PushBufferStream</code>
 	 */
 	@Override
 	public void start()
@@ -654,11 +654,11 @@ public class QuickTimeStream extends AbstractPushBufferStream<DataSource>
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>PushBufferStream</tt>.
+	 * Stops the transfer of media data from this <code>PushBufferStream</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while stopping the transfer of media data from this
-	 *         <tt>PushBufferStream</tt>
+	 *         <code>PushBufferStream</code>
 	 */
 	@Override
 	public void stop()

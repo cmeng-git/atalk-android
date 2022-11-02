@@ -20,7 +20,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * GeoLocationHelper request parcelable with builder implementation.
+ * Parcelable  geoLocation request with builder implementation.
+ * Replace gms LocationRequest for both gms and fdroid support
  *
  * @author Eng Chong Meng
  */

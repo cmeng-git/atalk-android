@@ -90,7 +90,7 @@ public class VP8Encoder extends AbstractCodec2
     private int mHeight = DeviceConfiguration.DEFAULT_VIDEO_WIDTH;
 
     /**
-     * Initializes a new <tt>VP8Encoder</tt> instance.
+     * Initializes a new <code>VP8Encoder</code> instance.
      */
     public VP8Encoder()
     {
@@ -203,11 +203,11 @@ public class VP8Encoder extends AbstractCodec2
     /**
      * {@inheritDoc}
      *
-     * Encode the frame in <tt>inputBuffer</tt> (in <tt>YUVFormat</tt>) into a VP8 frame (in <tt>outputBuffer</tt>)
+     * Encode the frame in <code>inputBuffer</code> (in <code>YUVFormat</code>) into a VP8 frame (in <code>outputBuffer</code>)
      *
-     * @param inputBuffer  input <tt>Buffer</tt>
-     * @param outputBuffer output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
+     * @param inputBuffer  input <code>Buffer</code>
+     * @param outputBuffer output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuffer</code> has been successfully processed
      */
     @Override
     protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
@@ -358,11 +358,11 @@ public class VP8Encoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-     * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+     * media data or <code>null</code> if <code>format</code> was found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)

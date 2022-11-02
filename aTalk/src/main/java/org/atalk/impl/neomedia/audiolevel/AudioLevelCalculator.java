@@ -26,15 +26,15 @@ public class AudioLevelCalculator
 	public static final byte MIN_AUDIO_LEVEL = 127;
 
 	/**
-	 * Calculates the audio level of a signal with specific <tt>samples</tt>.
+	 * Calculates the audio level of a signal with specific <code>samples</code>.
 	 *
 	 * @param samples
 	 * 		the samples of the signal to calculate the audio level of
 	 * @param offset
-	 * 		the offset in <tt>samples</tt> in which the samples start
+	 * 		the offset in <code>samples</code> in which the samples start
 	 * @param length
-	 * 		the length in bytes of the signal in <tt>samples<tt>
-	 * 		starting at <tt>offset</tt>
+	 * 		the length in bytes of the signal in <code>samples<code>
+	 * 		starting at <code>offset</code>
 	 * @return the audio level of the specified signal
 	 */
 	public static byte calculateAudioLevel(byte[] samples, int offset, int length)

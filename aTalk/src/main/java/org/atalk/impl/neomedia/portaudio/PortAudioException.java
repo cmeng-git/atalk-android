@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.portaudio;
 
 /**
- * Implements <tt>Exception</tt> for the PortAudio capture and playback system.
+ * Implements <code>Exception</code> for the PortAudio capture and playback system.
  *
  * @author Lyubomir Marinov
  * @author Damian Minkov
@@ -31,7 +31,7 @@ public class PortAudioException extends Exception
 	private final Pa.HostApiTypeId hostApiType;
 
 	/**
-	 * Initializes a new <tt>PortAudioException</tt> instance with a specific detail message.
+	 * Initializes a new <code>PortAudioException</code> instance with a specific detail message.
 	 *
 	 * @param message
 	 * 		the detail message to initialize the new instance with
@@ -42,7 +42,7 @@ public class PortAudioException extends Exception
 	}
 
 	/**
-	 * Initializes a new <tt>PortAudioException</tt> instance with a specific detail message.
+	 * Initializes a new <code>PortAudioException</code> instance with a specific detail message.
 	 *
 	 * @param message
 	 * 		the detail message to initialize the new instance with
@@ -74,7 +74,7 @@ public class PortAudioException extends Exception
 	 * by this instance.
 	 *
 	 * @return the host API, if any, which returned the error code and (detailed) message
-	 * represented by this instance; otherwise, <tt>null</tt>
+	 * represented by this instance; otherwise, <code>null</code>
 	 */
 	public Pa.HostApiTypeId getHostApiType()
 	{
@@ -82,9 +82,9 @@ public class PortAudioException extends Exception
 	}
 
 	/**
-	 * Returns a human-readable representation/description of this <tt>Throwable</tt>.
+	 * Returns a human-readable representation/description of this <code>Throwable</code>.
 	 *
-	 * @return a human-readable representation/description of this <tt>Throwable</tt>
+	 * @return a human-readable representation/description of this <code>Throwable</code>
 	 */
 	@Override
 	public String toString()

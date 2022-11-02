@@ -22,10 +22,10 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
 {
     /**
      * The RED payload type for incoming packets. Only RTP packets with this payload type will be
-     * reverse-transformed by this <tt>PacketTransformer</tt>.
+     * reverse-transformed by this <code>PacketTransformer</code>.
      *
      * The special value "-1" is used to effectively disable reverse-transforming packets by this
-     * <tt>PacketTransformer</tt>.
+     * <code>PacketTransformer</code>.
      */
     private byte incomingPT;
 
@@ -33,12 +33,12 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
      * The payload type to set when constructing RED packets (e.g. for outgoing) packets.
      *
      * The special value "-1" is used to effectively disable transforming packets by this
-     * <tt>PacketTransformer</tt>.
+     * <code>PacketTransformer</code>.
      */
     private byte outgoingPT;
 
     /**
-     * Initializes a new <tt>REDTransformEngine</tt> instance.
+     * Initializes a new <code>REDTransformEngine</code> instance.
      *
      * @param incomingPT the RED payload type number for incoming packets.
      * @param outgoingPT the RED payload type number for outgoing packets.
@@ -50,7 +50,7 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
     }
 
     /**
-     * Initializes a new <tt>REDTransformEngine</tt> instance.
+     * Initializes a new <code>REDTransformEngine</code> instance.
      */
     public REDTransformEngine()
     {
@@ -118,11 +118,11 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
     /**
      * {@inheritDoc}
      *
-     * Encapsulates the packets in <tt>pkts</tt> with RED (RFC2198).
+     * Encapsulates the packets in <code>pkts</code> with RED (RFC2198).
      *
      * Effectively inserts the following 1-byte RED header right after the
      * RTP header (where "Block PT" is the payload type of the original packet)
-     * and changes the payload type of the packet to <tt>outgoingPT</tt>
+     * and changes the payload type of the packet to <code>outgoingPT</code>
      *
      * 0 1 2 3 4 5 6 7
      * +-+-+-+-+-+-+-+-+
@@ -161,7 +161,7 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
     }
 
     /**
-     * Transforms the RFC2198 packet <tt>pkt</tt> into an array of RTP packets.
+     * Transforms the RFC2198 packet <code>pkt</code> into an array of RTP packets.
      */
     private RawPacket[] reverseTransformSingle(RawPacket pkt, RawPacket[] pkts)
     {
@@ -241,7 +241,7 @@ public class REDTransformEngine implements TransformEngine, PacketTransformer
     /**
      * {@inheritDoc}
      *
-     * Return the single <tt>PacketTransformer</tt> for this <tt>TransformEngine</tt>
+     * Return the single <code>PacketTransformer</code> for this <code>TransformEngine</code>
      */
     @Override
     public PacketTransformer getRTPTransformer()

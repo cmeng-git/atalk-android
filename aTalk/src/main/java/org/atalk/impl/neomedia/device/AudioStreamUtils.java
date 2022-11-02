@@ -63,7 +63,7 @@ public class AudioStreamUtils
     }
 
     /**
-     * Returns the audio format for the WAV <tt>InputStream</tt>. Or null if format cannot be obtained.
+     * Returns the audio format for the WAV <code>InputStream</code>. Or null if format cannot be obtained.
      *
      * @param audioInputStream the input stream.
      * @return the format of the audio stream.

@@ -32,8 +32,8 @@ import timber.log.Timber;
 public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
 {
     /**
-     * The pool of <tt>ByteBuffer</tt>s this instances is using to optimize the allocations and
-     * de-allocations of <tt>ByteBuffer</tt>s.
+     * The pool of <code>ByteBuffer</code>s this instances is using to optimize the allocations and
+     * de-allocations of <code>ByteBuffer</code>s.
      */
     private final ByteBufferPool byteBufferPool = new ByteBufferPool();
 
@@ -63,11 +63,11 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     private int y = 0;
 
     /**
-     * Initializes a new <tt>ImageStream</tt> instance which is to have a specific <tt>FormatControl</tt>
+     * Initializes a new <code>ImageStream</code> instance which is to have a specific <code>FormatControl</code>
      *
-     * @param dataSource the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-     * its <tt>streams</tt>
-     * @param formatControl the <tt>FormatControl</tt> of the new instance which is to specify the format in which
+     * @param dataSource the <code>DataSource</code> which is creating the new instance so that it becomes one of
+     * its <code>streams</code>
+     * @param formatControl the <code>FormatControl</code> of the new instance which is to specify the format in which
      * it is to provide its media data
      */
     ImageStream(DataSource dataSource, FormatControl formatControl)
@@ -76,11 +76,11 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     }
 
     /**
-     * Blocks and reads into a <tt>Buffer</tt> from this <tt>PullBufferStream</tt>.
+     * Blocks and reads into a <code>Buffer</code> from this <code>PullBufferStream</code>.
      *
-     * @param buffer the <tt>Buffer</tt> this <tt>PullBufferStream</tt> is to read into
-     * @throws IOException if an I/O error occurs while this <tt>PullBufferStream</tt> reads into the specified
-     * <tt>Buffer</tt>
+     * @param buffer the <code>Buffer</code> this <code>PullBufferStream</code> is to read into
+     * @throws IOException if an I/O error occurs while this <code>PullBufferStream</code> reads into the specified
+     * <code>Buffer</code>
      * @see AbstractVideoPullBufferStream#doRead(Buffer)
      */
     @Override
@@ -231,9 +231,9 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     }
 
     /**
-     * Sets the index of the display to be used by this <tt>ImageStream</tt>.
+     * Sets the index of the display to be used by this <code>ImageStream</code>.
      *
-     * @param displayIndex the index of the display to be used by this <tt>ImageStream</tt>
+     * @param displayIndex the index of the display to be used by this <code>ImageStream</code>
      */
     public void setDisplayIndex(int displayIndex)
     {
@@ -241,7 +241,7 @@ public class ImageStream extends AbstractVideoPullBufferStream<DataSource>
     }
 
     /**
-     * Sets the origin to be captured by this <tt>ImageStream</tt>.
+     * Sets the origin to be captured by this <code>ImageStream</code>.
      *
      * @param x the x coordinate of the origin to be set on this instance
      * @param y the y coordinate of the origin to be set on this instance

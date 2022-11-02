@@ -9,7 +9,7 @@ import org.atalk.service.neomedia.RawPacket;
 
 /**
  * Encapsulate the concept of packet transformation. Given an array of packets,
- * <tt>PacketTransformer</tt> can either "transform" each one of them, or "reverse transform" (e.g.
+ * <code>PacketTransformer</code> can either "transform" each one of them, or "reverse transform" (e.g.
  * restore) each one of them.
  *
  * @author Bing SU (nova.su@gmail.com)
@@ -18,7 +18,7 @@ import org.atalk.service.neomedia.RawPacket;
 public interface PacketTransformer
 {
 	/**
-	 * Closes this <tt>PacketTransformer</tt> i.e. releases the resources allocated by it and
+	 * Closes this <code>PacketTransformer</code> i.e. releases the resources allocated by it and
 	 * prepares it for garbage collection.
 	 */
 	void close();

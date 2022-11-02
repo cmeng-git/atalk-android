@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.avatar;
 
 import android.content.Context;
@@ -90,7 +89,7 @@ public class AvatarManager extends Manager
     protected VCardTempXUpdate vCardTempXUpdate = null;
 
     /**
-     * If <tt>true</tt>, then proceed to download VCard when a new photoHash is received from
+     * If <code>true</code>, then proceed to download VCard when a new photoHash is received from
      * <presence/>. Default to false as client application may want to extract VCard info other
      * than the photo image
      */
@@ -162,7 +161,7 @@ public class AvatarManager extends Manager
     }
 
     /**
-     * Set to <tt>false</tt> if XEP-0153 VCard Avatar is used for avatar update.
+     * Set to <code>false</code> if XEP-0153 VCard Avatar is used for avatar update.
      * Then <presence/> will include VCardTempXUpdate x-extension with avatarId in <photo/>
      *
      * @param userAvatarMode true (default) to enable XEP-0054 User Avatar Mode
@@ -206,7 +205,7 @@ public class AvatarManager extends Manager
      * Calculate the avatarId and save its image to cache
      *
      * @param avatarImage Byte[] value of avatar image data.
-     * @return <tt>avatarId</tt> i.e SHA-1 Hash of the avatarImage. Return "" when avatar is empty
+     * @return <code>avatarId</code> i.e SHA-1 Hash of the avatarImage. Return "" when avatar is empty
      */
     protected static String addAvatarImage(byte[] avatarImage)
     {
@@ -350,7 +349,7 @@ public class AvatarManager extends Manager
      * i.e. must be in persistentAvatarCache if enabled; otherwise search in cacheAvatar
      *
      * @param avatarId the id of the avatar (Hash)
-     * @return <tt>true</tt> if avatarId is avatarId is new. <tt>false</tt> otherwise
+     * @return <code>true</code> if avatarId is avatarId is new. <code>false</code> otherwise
      */
     protected static boolean isAvatarNew(BareJid jid, String avatarId)
     {
@@ -373,7 +372,7 @@ public class AvatarManager extends Manager
      *
      * @param userId the known owner of the avatarHash
      * @param avatarHash the id of the avatar (Hash)
-     * @return <tt>true</tt> if avatarHash is owned by more than one user. <tt>false</tt> otherwise
+     * @return <code>true</code> if avatarHash is owned by more than one user. <code>false</code> otherwise
      */
     protected boolean isHashMultipleOwner(BareJid userId, String avatarHash)
     {
@@ -516,7 +515,7 @@ public class AvatarManager extends Manager
      * registered account of this connection.
      *
      * @param imageBytes The avatar image and must not be null
-     * @param updateVcardTemp <tt>true</tt> to setAvatarHash() if new
+     * @param updateVcardTemp <code>true</code> to setAvatarHash() if new
      * @return "false" if the new avatar image is the same as the current one. "true" if this
      * presence extension has been updated with the new avatar image.
      */

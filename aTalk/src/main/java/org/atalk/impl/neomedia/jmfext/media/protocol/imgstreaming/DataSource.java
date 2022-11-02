@@ -14,7 +14,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCapt
 import java.awt.Component;
 
 /**
- * Implements <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the purposes of image and desktop
+ * Implements <code>CaptureDevice</code> and <code>DataSource</code> for the purposes of image and desktop
  * streaming.
  *
  * @author Sebastien Vincent
@@ -24,8 +24,8 @@ import java.awt.Component;
 public class DataSource extends AbstractVideoPullBufferCaptureDevice
 {
 	/**
-	 * The <tt>ImgStreamingControl</tt> implementation which allows controlling this
-	 * <tt>DataSource</tt> through the "standard" FMJ/JMF <tt>javax.media.Control</tt> means.
+	 * The <code>ImgStreamingControl</code> implementation which allows controlling this
+	 * <code>DataSource</code> through the "standard" FMJ/JMF <code>javax.media.Control</code> means.
 	 */
 	private final ImgStreamingControl imgStreamingControl = new ImgStreamingControl()
 	{
@@ -45,17 +45,17 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	};
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance.
+	 * Initializes a new <code>DataSource</code> instance.
 	 */
 	public DataSource()
 	{
 	}
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance from a specific <tt>MediaLocator</tt>.
+	 * Initializes a new <code>DataSource</code> instance from a specific <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 *        the <tt>MediaLocator</tt> to initialize the new instance from
+	 *        the <code>MediaLocator</code> to initialize the new instance from
 	 */
 	public DataSource(MediaLocator locator)
 	{
@@ -63,20 +63,20 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	}
 
 	/**
-	 * Creates a new <tt>PullBufferStream</tt> which is to be at a specific zero-based index in the
-	 * list of streams of this <tt>PullBufferDataSource</tt>. The <tt>Format</tt>-related
-	 * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+	 * Creates a new <code>PullBufferStream</code> which is to be at a specific zero-based index in the
+	 * list of streams of this <code>PullBufferDataSource</code>. The <code>Format</code>-related
+	 * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PullBufferStream</tt> in the list of streams of this
-	 *        <tt>PullBufferDataSource</tt>
+	 *        the zero-based index of the <code>PullBufferStream</code> in the list of streams of this
+	 *        <code>PullBufferDataSource</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
-	 * @return a new <tt>PullBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-	 *         in the list of streams of this <tt>PullBufferDataSource</tt> and which has its
-	 *         <tt>Format</tt>-related information abstracted by the specified
-	 *         <tt>formatControl</tt>
+	 * @return a new <code>PullBufferStream</code> which is to be at the specified <code>streamIndex</code>
+	 *         in the list of streams of this <code>PullBufferDataSource</code> and which has its
+	 *         <code>Format</code>-related information abstracted by the specified
+	 *         <code>formatControl</code>
 	 * @see AbstractPullBufferCaptureDevice#createStream(int, FormatControl)
 	 */
 	@Override
@@ -115,8 +115,8 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	 *
 	 * @param controlType
 	 *        the type of the control available for this instance to be retrieved
-	 * @return an <tt>Object</tt> which represents the control of the specified type available for
-	 *         this instance if such a control is indeed available; otherwise, <tt>null</tt>
+	 * @return an <code>Object</code> which represents the control of the specified type available for
+	 *         this instance if such a control is indeed available; otherwise, <code>null</code>
 	 */
 	@Override
 	public Object getControl(String controlType)
@@ -135,18 +135,18 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	}
 
 	/**
-	 * Set the display index and the origin of the <tt>ImageStream</tt> associated with a specific
-	 * index in this <tt>DataSource</tt>.
+	 * Set the display index and the origin of the <code>ImageStream</code> associated with a specific
+	 * index in this <code>DataSource</code>.
 	 *
 	 * @param streamIndex
-	 *        the index in this <tt>DataSource</tt> of the <tt>ImageStream</tt> to set the display
+	 *        the index in this <code>DataSource</code> of the <code>ImageStream</code> to set the display
 	 *        index and the origin of
 	 * @param displayIndex
-	 *        the display index to set on the specified <tt>ImageStream</tt>
+	 *        the display index to set on the specified <code>ImageStream</code>
 	 * @param x
-	 *        the x coordinate of the origin to set on the specified <tt>ImageStream</tt>
+	 *        the x coordinate of the origin to set on the specified <code>ImageStream</code>
 	 * @param y
-	 *        the y coordinate of the origin to set on the specified <tt>ImageStream</tt>
+	 *        the y coordinate of the origin to set on the specified <code>ImageStream</code>
 	 */
 	public void setOrigin(int streamIndex, int displayIndex, int x, int y)
 	{

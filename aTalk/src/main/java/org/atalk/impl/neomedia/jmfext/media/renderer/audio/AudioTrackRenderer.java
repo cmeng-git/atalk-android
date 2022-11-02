@@ -24,7 +24,7 @@ import timber.log.Timber;
 import static android.media.AudioTrack.STATE_INITIALIZED;
 
 /**
- * Implements an audio <tt>Renderer</tt> which uses {@link AudioTrack}.
+ * Implements an audio <code>Renderer</code> which uses {@link AudioTrack}.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -35,27 +35,27 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
             = (BasicVolumeControl.MAX_VOLUME_PERCENT - BasicVolumeControl.MIN_VOLUME_PERCENT) / 100;
 
     /**
-     * The length of the valid volume value range accepted by <tt>AudioTrack</tt> instances.
+     * The length of the valid volume value range accepted by <code>AudioTrack</code> instances.
      */
     private static final float AUDIO_TRACK_VOLUME_RANGE;
 
     /**
-     * The latency in milliseconds to be incurred by <tt>AudioTrackRenderer</tt>.
+     * The latency in milliseconds to be incurred by <code>AudioTrackRenderer</code>.
      */
     private static final int LATENCY = 0;
 
     /**
-     * The maximum valid volume value accepted by <tt>AudioTrack</tt> instances.
+     * The maximum valid volume value accepted by <code>AudioTrack</code> instances.
      */
     private static final float MAX_AUDIO_TRACK_VOLUME = AudioTrack.getMaxVolume();
 
     /**
-     * The minimum valid volume value accepted by <tt>AudioTrack</tt> instances.
+     * The minimum valid volume value accepted by <code>AudioTrack</code> instances.
      */
     private static final float MIN_AUDIO_TRACK_VOLUME = AudioTrack.getMinVolume();
 
     /**
-     * The human-readable name of the <tt>AudioTrackRenderer</tt> FMJ plug-in.
+     * The human-readable name of the <code>AudioTrackRenderer</code> FMJ plug-in.
      */
     private static final String PLUGIN_NAME = "android.media.AudioTrack Renderer";
 
@@ -66,7 +66,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * using {@link AudioTrack#setStereoVolume(float, float)}.
      * <p>
      * Currently we use software gain control. Output volume is controlled using
-     * <tt>AudioManager</tt> by adjusting stream volume. When the minimum value is reached we keep
+     * <code>AudioManager</code> by adjusting stream volume. When the minimum value is reached we keep
      * lowering the volume using software gain control. The opposite happens for the maximum volume.
      * See {@link CallVolumeCtrlFragment}.
      */
@@ -77,7 +77,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * The <tt>AudioTrack</tt> which implements the output device represented by this <tt>Renderer</tt>
+     * The <code>AudioTrack</code> which implements the output device represented by this <code>Renderer</code>
      * and renders to it.
      */
     private AudioTrack audioTrack;
@@ -89,7 +89,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     private int audioTrackWriteLengthInBytes;
 
     /**
-     * The <tt>GainControl</tt> through which the volume/gain of rendered media is controlled.
+     * The <code>GainControl</code> through which the volume/gain of rendered media is controlled.
      */
     private final GainControl gainControl;
 
@@ -116,29 +116,29 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     private int latencyLength;
 
     /**
-     * The <tt>Thread</tt> which reads from {@link #latency} and writes into {@link #audioTrack}.
+     * The <code>Thread</code> which reads from {@link #latency} and writes into {@link #audioTrack}.
      */
     private Thread latencyThread;
 
     /**
-     * The indicator which determines whether this <tt>AudioTrackRenderer</tt> is to set the
+     * The indicator which determines whether this <code>AudioTrackRenderer</code> is to set the
      * priority of the thread in which its {@link #process(Buffer)} method is executed.
      */
     private boolean setThreadPriority = true;
 
     /**
      * The type of audio stream in the terms of {@link AudioManager} to be rendered to the output
-     * device represented by this <tt>AudioTrackRenderer</tt>.
+     * device represented by this <code>AudioTrackRenderer</code>.
      */
     private int streamType;
 
     /**
-     * The list of <tt>Format</tt>s of media data supported as input by this <tt>Renderer</tt>.
+     * The list of <code>Format</code>s of media data supported as input by this <code>Renderer</code>.
      */
     private Format[] supportedInputFormats;
 
     /**
-     * Initializes a new <tt>AudioTrackRenderer</tt> instance.
+     * Initializes a new <code>AudioTrackRenderer</code> instance.
      */
     public AudioTrackRenderer()
     {
@@ -146,10 +146,10 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * Initializes a new <tt>AudioTrackRenderer</tt> instance.
+     * Initializes a new <code>AudioTrackRenderer</code> instance.
      *
-     * @param enableGainControl <tt>true</tt> to enable controlling the volume/gain of the rendered media;
-     * otherwise, <tt>false</tt>
+     * @param enableGainControl <code>true</code> to enable controlling the volume/gain of the rendered media;
+     * otherwise, <code>false</code>
      */
     public AudioTrackRenderer(boolean enableGainControl)
     {
@@ -209,10 +209,10 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Gets the type of audio stream in the terms of {@link AudioManager} to be rendered to the
-     * output device represented by this <tt>AudioTrackRenderer</tt>.
+     * output device represented by this <code>AudioTrackRenderer</code>.
      *
-     * @return the type of audio stream in the terms of <tt>AudioManager</tt> to be rendered to the
-     * output device represented by this <tt>AudioTrackRenderer</tt>
+     * @return the type of audio stream in the terms of <code>AudioManager</code> to be rendered to the
+     * output device represented by this <code>AudioTrackRenderer</code>
      */
     private int getStreamType()
     {
@@ -221,9 +221,9 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Implements {@link Renderer#getSupportedInputFormats()}. Gets the list of input
-     * <tt>Format</tt>s supported by this <tt>Renderer</tt>.
+     * <code>Format</code>s supported by this <code>Renderer</code>.
      *
-     * @return the list of input <tt>Format</tt>s supported by this <tt>Renderer</tt>
+     * @return the list of input <code>Format</code>s supported by this <code>Renderer</code>
      * @see Renderer#getSupportedInputFormats()
      */
     public Format[] getSupportedInputFormats()
@@ -416,10 +416,10 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Implements {@link Renderer#process(Buffer)}. Processes the media data contained in a
-     * specific {@link Buffer} and renders it to the output device represented by this <tt>Renderer</tt>.
+     * specific {@link Buffer} and renders it to the output device represented by this <code>Renderer</code>.
      *
-     * @param buffer the <tt>Buffer</tt> containing the media data to be processed and rendered to the
-     * output device represented by this <tt>Renderer</tt>
+     * @param buffer the <code>Buffer</code> containing the media data to be processed and rendered to the
+     * output device represented by this <code>Renderer</code>
      * @return one or a combination of the constants defined in {@link PlugIn}
      * @see Renderer#process(Buffer)
      */
@@ -664,7 +664,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * Implements {@link Renderer#start()}. Starts rendering to the output device represented by this <tt>Renderer</tt>.
+     * Implements {@link Renderer#start()}. Starts rendering to the output device represented by this <code>Renderer</code>.
      *
      * @see Renderer#start()
      */
@@ -677,7 +677,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * Implements {@link Renderer#stop()}. Stops rendering to the output device represented by this <tt>Renderer</tt>.
+     * Implements {@link Renderer#stop()}. Stops rendering to the output device represented by this <code>Renderer</code>.
      *
      * @see Renderer#stop()
      */

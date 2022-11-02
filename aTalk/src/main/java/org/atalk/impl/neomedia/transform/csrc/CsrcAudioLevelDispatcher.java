@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * A simple dispatcher that handles new audio levels reported from incoming
  * RTP packets and then asynchronously delivers them to associated
- * <tt>AudioMediaStreamImpl</tt>. The asynchronous processing is necessary
+ * <code>AudioMediaStreamImpl</code>. The asynchronous processing is necessary
  * due to time sensitive nature of incoming RTP packets.
  *
  * @author Emil Ivov
@@ -26,20 +26,20 @@ public class CsrcAudioLevelDispatcher
 {
     /**
      * The executor service to asynchronously execute method which delivers
-     * audio level updates to <tt>AudioMediaStreamImpl</tt>
+     * audio level updates to <code>AudioMediaStreamImpl</code>
      */
     private static final ExecutorService threadPool
-        = ExecutorUtils.newCachedThreadPool(true, CsrcAudioLevelDispatcher.class.getName() + "-");
+            = ExecutorUtils.newCachedThreadPool(true, CsrcAudioLevelDispatcher.class.getName() + "-");
 
     /**
-     * The levels added to this instance (by the <tt>reverseTransform</tt>
-     * method of a <tt>PacketTransformer</tt> implementation) last.
+     * The levels added to this instance (by the <code>reverseTransform</code>
+     * method of a <code>PacketTransformer</code> implementation) last.
      */
     private final AtomicReference<long[]> levels = new AtomicReference<>();
 
     /**
-     * The <tt>AudioMediaStreamImpl</tt> which listens to this event dispatcher.
-     * If <tt>null</tt>, this event dispatcher is stopped. If non-<tt>null</tt>,
+     * The <code>AudioMediaStreamImpl</code> which listens to this event dispatcher.
+     * If <code>null</code>, this event dispatcher is stopped. If non-<code>null</code>,
      * this event dispatcher is started.
      */
     private final AudioMediaStreamImpl mediaStream;
@@ -57,10 +57,10 @@ public class CsrcAudioLevelDispatcher
     private final Runnable deliverRunnable = this::deliverAudioLevelsToMediaStream;
 
     /**
-     * Initializes a new <tt>CsrcAudioLevelDispatcher</tt> to dispatch events
-     * to a specific <tt>AudioMediaStreamImpl</tt>.
+     * Initializes a new <code>CsrcAudioLevelDispatcher</code> to dispatch events
+     * to a specific <code>AudioMediaStreamImpl</code>.
      *
-     * @param mediaStream the <tt>AudioMediaStreamImpl</tt> to which the new instance is to dispatch events
+     * @param mediaStream the <code>AudioMediaStreamImpl</code> to which the new instance is to dispatch events
      */
     public CsrcAudioLevelDispatcher(AudioMediaStreamImpl mediaStream)
     {
@@ -74,7 +74,7 @@ public class CsrcAudioLevelDispatcher
      * A level matrix that we should deliver to our media stream and its listeners in a separate thread.
      *
      * @param levels the levels that we'd like to queue for processing.
-     * @param rtpTime the timestamp carried by the RTP packet which carries the specified <tt>levels</tt>
+     * @param rtpTime the timestamp carried by the RTP packet which carries the specified <code>levels</code>
      */
     public void addLevels(long[] levels, long rtpTime)
     {

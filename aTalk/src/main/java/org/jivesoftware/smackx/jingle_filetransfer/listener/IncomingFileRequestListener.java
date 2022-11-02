@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.listener;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileRequestController;
 
 /**
- * User interface for incoming file request listener
+ * User interface for incoming file request listener.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng

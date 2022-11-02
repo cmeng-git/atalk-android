@@ -200,7 +200,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     /**
      * Implements {@link TransformEngine#getRTCPTransformer()}.
      *
-     * This <tt>TransformEngine</tt> does not transform RTCP packets.
+     * This <code>TransformEngine</code> does not transform RTCP packets.
      */
     @Override
     public PacketTransformer getRTCPTransformer()

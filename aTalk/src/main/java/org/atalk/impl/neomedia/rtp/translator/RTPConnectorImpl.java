@@ -17,15 +17,15 @@ import javax.media.rtp.OutputDataStream;
 import javax.media.rtp.RTPConnector;
 
 /**
- * Implements the <tt>RTPConnector</tt> with which this instance initializes its <tt>RTPManager</tt>
- * . It delegates to the <tt>RTPConnector</tt> of the various <tt>StreamRTPManager</tt>s.
+ * Implements the <code>RTPConnector</code> with which this instance initializes its <code>RTPManager</code>
+ * . It delegates to the <code>RTPConnector</code> of the various <code>StreamRTPManager</code>s.
  *
  * @author Lyubomir Marinov
  */
 class RTPConnectorImpl implements RTPConnector
 {
     /**
-     * The <tt>RTPConnector</tt>s this instance delegates to.
+     * The <code>RTPConnector</code>s this instance delegates to.
      */
     private final List<RTPConnectorDesc> connectors = new LinkedList<RTPConnectorDesc>();
 
@@ -277,13 +277,13 @@ class RTPConnectorImpl implements RTPConnector
     }
 
     /**
-     * Writes an <tt>RTCPFeedbackMessage</tt> into a destination identified by a specific
-     * <tt>MediaStream</tt>.
+     * Writes an <code>RTCPFeedbackMessage</code> into a destination identified by a specific
+     * <code>MediaStream</code>.
      *
      * @param controlPayload
      * @param destination
-     * @return <tt>true</tt> if the <tt>controlPayload</tt> was written into the
-     * <tt>destination</tt>; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the <code>controlPayload</code> was written into the
+     * <code>destination</code>; otherwise, <code>false</code>
      */
     boolean writeControlPayload(Payload controlPayload, MediaStream destination)
     {

@@ -48,7 +48,7 @@ import javax.media.protocol.PushBufferStream;
 import timber.log.Timber;
 
 /**
- * Implements <tt>PushBufferDataSource</tt> and <tt>CaptureDevice</tt> using Android's <tt>MediaRecorder</tt>.
+ * Implements <code>PushBufferDataSource</code> and <code>CaptureDevice</code> using Android's <code>MediaRecorder</code>.
  *
  * @author Lyubomir Marinov
  * @author Pawel Domas
@@ -58,8 +58,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 {
     /**
      * The path of the file into which the bytes read from {@link #mediaRecorder} are to be dumped.
-     * If the value is not <tt>null</tt>, the bytes in question will only be dumped to the specified
-     * file and will not be made available through the <tt>DataSource</tt>.
+     * If the value is not <code>null</code>, the bytes in question will only be dumped to the specified
+     * file and will not be made available through the <code>DataSource</code>.
      */
     private static final String DUMP_FILE = null;
 
@@ -72,9 +72,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private static final String INTEGER_OVERFLOW_IOE_MESSAGE = "INTEGER_OVERFLOW";
 
     /**
-     * The name of the <tt>LocalServerSocket</tt> created by the <tt>DataSource</tt> class to be
-     * utilized by the <tt>MediaRecorder</tt>s which implement the actual capturing of the media
-     * data for the purposes of the <tt>DataSource</tt> instances.
+     * The name of the <code>LocalServerSocket</code> created by the <code>DataSource</code> class to be
+     * utilized by the <code>MediaRecorder</code>s which implement the actual capturing of the media
+     * data for the purposes of the <code>DataSource</code> instances.
      */
     private static final String LOCAL_SERVER_SOCKET_NAME = DataSource.class.getName() + ".localServerSocket";
 
@@ -96,7 +96,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     /**
      * The priority to be set to the thread executing the {@link MediaRecorderStream#read(Buffer)}
-     * method of a given <tt>MediaRecorderStream</tt>.
+     * method of a given <code>MediaRecorderStream</code>.
      */
     private static final int THREAD_PRIORITY = Process.THREAD_PRIORITY_URGENT_DISPLAY;
 
@@ -107,8 +107,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private static final Map<String, DataSource> dataSources = new HashMap<>();
 
     /**
-     * The path of the file into which {@link #mediaRecorder} is to write. If the value is not <tt>null</tt>, no
-     * bytes will be read from the <tt>mediaRecorder</tt> by the <tt>DataSource</tt> and made available through it.
+     * The path of the file into which {@link #mediaRecorder} is to write. If the value is not <code>null</code>, no
+     * bytes will be read from the <code>mediaRecorder</code> by the <code>DataSource</code> and made available through it.
      */
     private String mOutputFile = null;
 
@@ -178,14 +178,14 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private final Semaphore mCameraOpenCloseLock = new Semaphore(1);
 
     /**
-     * The <tt>MediaRecorder</tt> which implements the actual capturing of media data for this <tt>DataSource</tt>.
+     * The <code>MediaRecorder</code> which implements the actual capturing of media data for this <code>DataSource</code>.
      */
     private MediaRecorder mediaRecorder;
 
     private byte[] nal;
 
     /**
-     * The <tt>Buffer</tt> flags to be applied when {@link #nal} is read out of the associated <tt>MediaRecorderStream</tt>.
+     * The <code>Buffer</code> flags to be applied when {@link #nal} is read out of the associated <code>MediaRecorderStream</code>.
      */
     private int nalFlags;
 
@@ -195,20 +195,20 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private int nalLength;
 
     /**
-     * The <tt>Object</tt> to synchronize the access to {@link #nal}, {@link #nalLength}, etc.
+     * The <code>Object</code> to synchronize the access to {@link #nal}, {@link #nalLength}, etc.
      */
     private final Object nalSyncRoot = new Object();
 
     private long nextLocalSocketKey = 0;
 
     /**
-     * The <tt>nal_unit_type</tt> of the NAL unit preceding {@link #nal}.
+     * The <code>nal_unit_type</code> of the NAL unit preceding {@link #nal}.
      */
     private int prevNALUnitType = 0;
 
     /**
      * The interval of time in nanoseconds between two consecutive video frames produced by this
-     * <tt>DataSource</tt> with which the time stamps of <tt>Buffer</tt>s are to be increased.
+     * <code>DataSource</code> with which the time stamps of <code>Buffer</code>s are to be increased.
      */
     private long videoFrameInterval;
 
@@ -222,7 +222,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     protected ParcelFileDescriptor mParcelWrite;
 
     /**
-     * Initializes a new <tt>DataSource</tt> instance.
+     * Initializes a new <code>DataSource</code> instance.
      */
     public DataSource()
     {
@@ -230,9 +230,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Initializes a new <tt>DataSource</tt> from a specific <tt>MediaLocator</tt>.
+     * Initializes a new <code>DataSource</code> from a specific <code>MediaLocator</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> to create the new instance from
+     * @param locator the <code>MediaLocator</code> to create the new instance from
      */
     public DataSource(MediaLocator locator)
     {
@@ -241,17 +241,17 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Create a new <tt>PushBufferStream</tt> which is to be at a specific zero-based index in the
-     * list of streams of this <tt>PushBufferDataSource</tt>. The <tt>Format</tt>-related
-     * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+     * Create a new <code>PushBufferStream</code> which is to be at a specific zero-based index in the
+     * list of streams of this <code>PushBufferDataSource</code>. The <code>Format</code>-related
+     * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> in the list of streams of this
-     * <tt>PushBufferDataSource</tt>
-     * @param formatControl the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+     * @param streamIndex the zero-based index of the <code>PushBufferStream</code> in the list of streams of this
+     * <code>PushBufferDataSource</code>
+     * @param formatControl the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
      * information of the new instance
-     * @return a new <tt>PushBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-     * in the list of streams of this <tt>PushBufferDataSource</tt> and which has its
-     * <tt>Format</tt>-related information abstracted by the specified <tt>formatControl</tt>
+     * @return a new <code>PushBufferStream</code> which is to be at the specified <code>streamIndex</code>
+     * in the list of streams of this <code>PushBufferDataSource</code> and which has its
+     * <code>Format</code>-related information abstracted by the specified <code>formatControl</code>
      * @see AbstractPushBufferCaptureDevice#createStream(int, FormatControl)
      */
     protected AbstractPushBufferStream createStream(int streamIndex, FormatControl formatControl)
@@ -268,9 +268,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Starts the transfer of media data from this <tt>DataSource</tt>.
+     * Starts the transfer of media data from this <code>DataSource</code>.
      *
-     * @throws IOException if anything goes wrong while starting the transfer of media data from this <tt>DataSource</tt>
+     * @throws IOException if anything goes wrong while starting the transfer of media data from this <code>DataSource</code>
      * @see AbstractPushBufferCaptureDevice#doStart()
      */
     @SuppressLint("MissingPermission")
@@ -499,7 +499,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Configures the camera and media recorder to work with given <tt>videoFormat</tt>.
+     * Configures the camera and media recorder to work with given <code>videoFormat</code>.
      * Note: Do not change the order of the parameters setup before referring to MediaRecorder class
      *
      * @param videoFormat the video format to be used.
@@ -691,9 +691,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Stops the transfer of media data from this <tt>DataSource</tt>.
+     * Stops the transfer of media data from this <code>DataSource</code>.
      *
-     * @throws java.io.IOException if anything goes wrong while stopping the transfer of media data from this <tt>DataSource</tt>
+     * @throws java.io.IOException if anything goes wrong while stopping the transfer of media data from this <code>DataSource</code>
      * @see AbstractPushBufferCaptureDevice#doStop()
      */
     @Override
@@ -1064,8 +1064,8 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Notifies this <tt>DataSource</tt> that a NAL unit has just been read from the associated
-     * <tt>MediaRecorder</tt> into {@link #nal}.
+     * Notifies this <code>DataSource</code> that a NAL unit has just been read from the associated
+     * <code>MediaRecorder</code> into {@link #nal}.
      */
     private void nalRead()
     {
@@ -1351,18 +1351,18 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PushBufferDataSource</tt>. The <tt>PushBufferStream</tt> does not exist at the time of
-     * the attempt to set its <tt>Format</tt>.
+     * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+     * <code>PushBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>PushBufferDataSource</code>. The <code>PushBufferStream</code> does not exist at the time of
+     * the attempt to set its <code>Format</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt>
-     * @param newValue the <tt>Format</tt> which is to be set
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PushBufferStream</tt> or <tt>null</tt> if the attempt to set the
-     * <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in effect
+     * @param streamIndex the zero-based index of the <code>PushBufferStream</code> the <code>Format</code> of which is to be set
+     * @param oldValue the last-known <code>Format</code> for the <code>PushBufferStream</code> at the specified <code>streamIndex</code>
+     * @param newValue the <code>Format</code> which is to be set
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PushBufferStream</code> or <code>null</code> if the attempt to set the
+     * <code>Format</code> did not success and any last-known <code>Format</code> is to be left in effect
      * @see AbstractPushBufferCaptureDevice#setFormat(int, Format, Format)
      */
     @Override
@@ -1386,11 +1386,11 @@ public class DataSource extends AbstractPushBufferCaptureDevice
 
     /**
      * Asynchronously calls {@link MediaRecorder#stop()} and {@link MediaRecorder#release()} on a
-     * specific <tt>MediaRecorder</tt>. Allows initiating <tt>stop</tt> and <tt>release</tt> on the
-     * specified <tt>mediaRecorder</tt> which may be slow and performing additional cleanup in the meantime.
+     * specific <code>MediaRecorder</code>. Allows initiating <code>stop</code> and <code>release</code> on the
+     * specified <code>mediaRecorder</code> which may be slow and performing additional cleanup in the meantime.
      *
-     * @param mediaRecorder the <tt>MediaRecorder</tt> to stop and release
-     * @return an array with a single <tt>int</tt> element which represents the state of the stop
+     * @param mediaRecorder the <code>MediaRecorder</code> to stop and release
+     * @return an array with a single <code>int</code> element which represents the state of the stop
      * and release performed by the method. The array is signaled upon changes to its
      * element's value via {@link Object#notify()}. The value is one of
      * {@link #MEDIA_RECORDER_STOPPING} and {@link #MEDIA_RECORDER_STOPPED}.
@@ -1445,7 +1445,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     }
 
     /**
-     * Writes the (current) {@link #nal} into the <tt>MediaRecorderStream</tt> made available by this <tt>DataSource</tt>.
+     * Writes the (current) {@link #nal} into the <code>MediaRecorderStream</code> made available by this <code>DataSource</code>.
      */
     private void writeNAL()
     {
@@ -1517,9 +1517,9 @@ public class DataSource extends AbstractPushBufferCaptureDevice
         }
 
         /**
-         * Writes the (current) {@link DataSource#nal} into this <tt>MediaRecorderStream</tt> i.e.
-         * forces this <tt>MediaRecorderStream</tt> to notify its associated
-         * <tt>BufferTransferHandler</tt> that data is available for transfer.
+         * Writes the (current) {@link DataSource#nal} into this <code>MediaRecorderStream</code> i.e.
+         * forces this <code>MediaRecorderStream</code> to notify its associated
+         * <code>BufferTransferHandler</code> that data is available for transfer.
          */
         void writeNAL()
         {

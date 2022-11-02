@@ -35,7 +35,7 @@ import java.io.IOException;
 public class MuteIqProvider extends IQProvider<MuteIq>
 {
     /**
-     * Registers this IQ provider into given <tt>ProviderManager</tt>.
+     * Registers this IQ provider into given <code>ProviderManager</code>.
      */
     public static void registerMuteIqProvider()
     {

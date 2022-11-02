@@ -11,13 +11,13 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * Represents a base class for adapters of <tt>SourceStream</tt>s, usually ones reading data in
- * arrays of bytes and not in <tt>Buffer</tt>s, to <tt>SourceStream</tt>s reading data in
- * <tt>Buffer</tt>s. An example use is creating a PushBufferStream representation of a
+ * Represents a base class for adapters of <code>SourceStream</code>s, usually ones reading data in
+ * arrays of bytes and not in <code>Buffer</code>s, to <code>SourceStream</code>s reading data in
+ * <code>Buffer</code>s. An example use is creating a PushBufferStream representation of a
  * PushSourceStream.
  *
  * @param <T>
- * 		the very type of <tt>SourceStream</tt> to be adapted by a <tt>BufferStreamAdapter</tt>
+ * 		the very type of <code>SourceStream</code> to be adapted by a <code>BufferStreamAdapter</code>
  * @author Lyubomir Marinov
  */
 public abstract class BufferStreamAdapter<T extends SourceStream>
@@ -25,24 +25,24 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 {
 
 	/**
-	 * The <tt>Format</tt> of this stream to be reported through the output <tt>Buffer</tt> this
+	 * The <code>Format</code> of this stream to be reported through the output <code>Buffer</code> this
 	 * instance reads data into.
 	 */
 	private final Format format;
 
 	/**
-	 * The <tt>SourceStream</tt> being adapted by this instance.
+	 * The <code>SourceStream</code> being adapted by this instance.
 	 */
 	protected final T stream;
 
 	/**
-	 * Initializes a new <tt>BufferStreamAdapter</tt> which is to adapt a specific
-	 * <tt>SourceStream</tt> into a <tt>SourceStream</tt> with a specific <tt>Format</tt>.
+	 * Initializes a new <code>BufferStreamAdapter</code> which is to adapt a specific
+	 * <code>SourceStream</code> into a <code>SourceStream</code> with a specific <code>Format</code>.
 	 *
 	 * @param stream
-	 * 		the <tt>SourceStream</tt> to be adapted
+	 * 		the <code>SourceStream</code> to be adapted
 	 * @param format
-	 * 		the specific <tt>Format</tt> of the <tt>SourceStream</tt>
+	 * 		the specific <code>Format</code> of the <code>SourceStream</code>
 	 */
 	public BufferStreamAdapter(T stream, Format format)
 	{
@@ -63,7 +63,7 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	/**
 	 * Implements SourceStream#getContentDescriptor(). Delegates to the wrapped SourceStream.
 	 *
-	 * @return the <tt>ContentDescriptor</tt> of the stream
+	 * @return the <code>ContentDescriptor</code> of the stream
 	 */
 	public ContentDescriptor getContentDescriptor()
 	{
@@ -84,9 +84,9 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	 * Implements Controls#getControl(String). Delegates to the wrapped SourceStream.
 	 *
 	 * @param controlType
-	 * 		a <tt>String</tt> value naming the type of the control of this instance to be
+	 * 		a <code>String</code> value naming the type of the control of this instance to be
 	 * 		retrieved
-	 * @return an <tt>Object</tt> which represents the control of this instance with the specified
+	 * @return an <code>Object</code> which represents the control of this instance with the specified
 	 * type
 	 */
 	public Object getControl(String controlType)
@@ -97,7 +97,7 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	/**
 	 * Implements Controls#getControls(). Delegates to the wrapped SourceStream.
 	 *
-	 * @return array of JMF <tt>Control</tt> objects
+	 * @return array of JMF <code>Control</code> objects
 	 */
 	public Object[] getControls()
 	{
@@ -105,9 +105,9 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of the data this stream provides.
+	 * Gets the <code>Format</code> of the data this stream provides.
 	 *
-	 * @return the <tt>Format</tt> of the data this stream provides
+	 * @return the <code>Format</code> of the data this stream provides
 	 */
 	public Format getFormat()
 	{
@@ -115,9 +115,9 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	}
 
 	/**
-	 * Gets the <tt>SourceStream</tt> wrapped by this instance.
+	 * Gets the <code>SourceStream</code> wrapped by this instance.
 	 *
-	 * @return the <tt>SourceStream</tt> wrapped by this instance
+	 * @return the <code>SourceStream</code> wrapped by this instance
 	 */
 	public T getStream()
 	{
@@ -125,14 +125,14 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	}
 
 	/**
-	 * Reads byte data from this stream into a specific <tt>Buffer</tt> which is to use a specific
+	 * Reads byte data from this stream into a specific <code>Buffer</code> which is to use a specific
 	 * array of bytes for its data.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> to read byte data into from this instance
+	 * 		the <code>Buffer</code> to read byte data into from this instance
 	 * @param data
-	 * 		the array of <tt>byte</tt>s to read data into from this instance and to be set as the
-	 * 		data of the specified <tt>buffer</tt>
+	 * 		the array of <code>byte</code>s to read data into from this instance and to be set as the
+	 * 		data of the specified <code>buffer</code>
 	 * @throws IOException
 	 * 		if I/O related errors occurred during read operation
 	 */
@@ -159,24 +159,24 @@ public abstract class BufferStreamAdapter<T extends SourceStream>
 	}
 
 	/**
-	 * Reads byte data from this stream into a specific array of <tt>byte</tt>s starting the
+	 * Reads byte data from this stream into a specific array of <code>byte</code>s starting the
 	 * storing
 	 * at a specific offset and reading at most a specific number of bytes.
 	 *
 	 * @param buffer
-	 * 		an optional <tt>Buffer</tt> instance associated with the specified <tt>data</tt>,
-	 * 		<tt>offset</tt> and <tt>length</tt> and provided to the method in case the
-	 * 		implementation would like to provide additional <tt>Buffer</tt> properties such as
-	 * 		<tt>flags</tt>
+	 * 		an optional <code>Buffer</code> instance associated with the specified <code>data</code>,
+	 * 		<code>offset</code> and <code>length</code> and provided to the method in case the
+	 * 		implementation would like to provide additional <code>Buffer</code> properties such as
+	 * 		<code>flags</code>
 	 * @param data
-	 * 		the array of <tt>byte</tt>s into which the data read from this stream is to be written
+	 * 		the array of <code>byte</code>s into which the data read from this stream is to be written
 	 * @param offset
-	 * 		the offset in the specified <tt>data</tt> at which writing data read from this stream
+	 * 		the offset in the specified <code>data</code> at which writing data read from this stream
 	 * 		should start
 	 * @param length
-	 * 		the maximum number of bytes to be written into the specified <tt>data</tt>
+	 * 		the maximum number of bytes to be written into the specified <code>data</code>
 	 * @return the number of bytes read from this stream and written into the specified
-	 * <tt>data</tt>
+	 * <code>data</code>
 	 * @throws IOException
 	 * 		if I/O related errors occurred during read operation
 	 */

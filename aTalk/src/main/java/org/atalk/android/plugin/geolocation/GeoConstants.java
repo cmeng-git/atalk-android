@@ -17,15 +17,15 @@
 package org.atalk.android.plugin.geolocation;
 
 /**
- * GeoLocationHelper application constant definitions.
+ * GeoLocation application constant definitions.
  *
  * @author Eng Chong Meng
  */
 public class GeoConstants
 {
-    public static final int ZERO_FIX = 0;
-    public static final int SINGLE_FIX = 1;
-    public static final int FOLLOW_ME_FIX = 2;
+    public static final int ZERO_FIX = 0; // user defined location to show on map view (for fdroid release)
+    public static final int SINGLE_FIX = 1; // Location provider updated location to show on map view
+    public static final int FOLLOW_ME_FIX = 2; // Location providers updated location with user on motion
     public static final String ACTION_LOCATION_FETCH_START = "location.fetch.start";
     public static final String ACTION_LOCATION_FETCH_STOP = "location.fetch.stop";
     public static final String INTENT_LOCATION_RECEIVED = "intent.location.received";

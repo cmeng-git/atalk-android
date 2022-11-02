@@ -27,23 +27,23 @@ import timber.log.Timber;
  * associated ZRTP multi-stream sessions.
  *
  * Coordinate this callback class with the associated GUI implementation class
- * @see net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  *
  * @author Emanuel Onica
  * @author Werner Dittmann
  * @author Yana Stamcheva
  * @author Eng Chong Meng
+ * @see net.java.sip.communicator.impl.gui.main.call.ZrtpSecurityPanel
  */
 public class SecurityEventManager extends ZrtpUserCallback
 {
     /**
-     * A warning <tt>String</tt> that we display to the user.
+     * A warning <code>String</code> that we display to the user.
      */
     public static final String WARNING_NO_RS_MATCH
             = aTalkApp.getResString(R.string.impl_media_security_WARNING_NO_RS_MATCH);
 
     /**
-     * A warning <tt>String</tt> that we display to the user.
+     * A warning <code>String</code> that we display to the user.
      */
     public static final String WARNING_NO_EXPECTED_RS_MATCH
             = aTalkApp.getResString(R.string.impl_media_security_WARNING_NO_EXPECTED_RS_MATCH);
@@ -97,7 +97,7 @@ public class SecurityEventManager extends ZrtpUserCallback
     /**
      * Set the type of this session.
      *
-     * @param sessionType the <tt>MediaType</tt> of this session
+     * @param sessionType the <code>MediaType</code> of this session
      */
     public void setSessionType(MediaType sessionType)
     {
@@ -299,11 +299,11 @@ public class SecurityEventManager extends ZrtpUserCallback
     }
 
     /**
-     * Converts the <tt>sessionType</tt> into a <tt>String</tt>.
+     * Converts the <code>sessionType</code> into a <code>String</code>.
      *
-     * @param sessionType the <tt>MediaType</tt> to be converted into a <tt>String</tt> for the purposes of this
-     * <tt>SecurityEventManager</tt>
-     * @return a <tt>String</tt> representation of <tt>sessionType</tt>.
+     * @param sessionType the <code>MediaType</code> to be converted into a <code>String</code> for the purposes of this
+     * <code>SecurityEventManager</code>
+     * @return a <code>String</code> representation of <code>sessionType</code>.
      */
     private String sessionTypeToString(MediaType sessionType)
     {

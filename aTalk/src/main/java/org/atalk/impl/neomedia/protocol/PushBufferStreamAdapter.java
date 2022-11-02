@@ -11,8 +11,8 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * Represents a <tt>PushBufferStream</tt> which reads its data from a specific
- * <tt>PushSourceStream</tt>.
+ * Represents a <code>PushBufferStream</code> which reads its data from a specific
+ * <code>PushSourceStream</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -21,13 +21,13 @@ public class PushBufferStreamAdapter extends BufferStreamAdapter<PushSourceStrea
 {
 
 	/**
-	 * Initializes a new <tt>PushBufferStreamAdapter</tt> instance which reads its data from a
-	 * specific <tt>PushSourceStream</tt> with a specific <tt>Format</tt>
+	 * Initializes a new <code>PushBufferStreamAdapter</code> instance which reads its data from a
+	 * specific <code>PushSourceStream</code> with a specific <code>Format</code>
 	 *
 	 * @param stream
-	 * 		the <tt>PushSourceStream</tt> the new instance is to read its data from
+	 * 		the <code>PushSourceStream</code> the new instance is to read its data from
 	 * @param format
-	 * 		the <tt>Format</tt> of the specified input <tt>stream</tt> and of the new instance
+	 * 		the <code>Format</code> of the specified input <code>stream</code> and of the new instance
 	 */
 	public PushBufferStreamAdapter(PushSourceStream stream, Format format)
 	{
@@ -39,7 +39,7 @@ public class PushBufferStreamAdapter extends BufferStreamAdapter<PushSourceStrea
 	 * allocating a new byte[] buffer of size equal to PushSourceStream#getMinimumTransferSize().
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> to read
+	 * 		the <code>Buffer</code> to read
 	 * @throws IOException
 	 * 		if I/O related errors occurred during read operation
 	 */
@@ -59,8 +59,8 @@ public class PushBufferStreamAdapter extends BufferStreamAdapter<PushSourceStrea
 	}
 
 	/**
-	 * Implements <tt>BufferStreamAdapter#doRead(Buffer, byte[], int, int)</tt>. Delegates to the
-	 * wrapped <tt>PushSourceStream</tt>.
+	 * Implements <code>BufferStreamAdapter#doRead(Buffer, byte[], int, int)</code>. Delegates to the
+	 * wrapped <code>PushSourceStream</code>.
 	 *
 	 * @param buffer
 	 * @param data
@@ -86,7 +86,7 @@ public class PushBufferStreamAdapter extends BufferStreamAdapter<PushSourceStrea
 	 * SourceTransferHandler.
 	 *
 	 * @param transferHandler
-	 * 		a <tt>BufferTransferHandler</tt> to set
+	 * 		a <code>BufferTransferHandler</code> to set
 	 */
 	public void setTransferHandler(final BufferTransferHandler transferHandler)
 	{

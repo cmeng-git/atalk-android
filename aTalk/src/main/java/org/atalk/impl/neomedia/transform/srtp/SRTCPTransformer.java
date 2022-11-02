@@ -29,11 +29,11 @@ public class SRTCPTransformer extends SinglePacketTransformer
     private final Map<Integer, SrtcpCryptoContext> contexts;
 
     /**
-     * Constructs an <tt>SRTCPTransformer</tt>, sharing its <tt>SRTPContextFactory</tt> instances
-     * with a given <tt>SRTPTransformer</tt>.
+     * Constructs an <code>SRTCPTransformer</code>, sharing its <code>SRTPContextFactory</code> instances
+     * with a given <code>SRTPTransformer</code>.
      *
-     * @param srtpTransformer the <tt>SRTPTransformer</tt> with which this <tt>SRTCPTransformer</tt> will share its
-     * <tt>SRTPContextFactory</tt> instances.
+     * @param srtpTransformer the <code>SRTPTransformer</code> with which this <code>SRTCPTransformer</code> will share its
+     * <code>SRTPContextFactory</code> instances.
      */
     public SRTCPTransformer(SRTPTransformer srtpTransformer)
     {
@@ -67,7 +67,7 @@ public class SRTCPTransformer extends SinglePacketTransformer
      * Sets a new key factory when key material has changed.
      *
      * @param factory The associated context factory for transformations.
-     * @param forward <tt>true</tt> if the supplied factory is for forward transformations, <tt>false</tt>
+     * @param forward <code>true</code> if the supplied factory is for forward transformations, <code>false</code>
      * for the reverse transformation factory.
      */
     public void updateFactory(SrtpContextFactory factory, boolean forward)
@@ -90,7 +90,7 @@ public class SRTCPTransformer extends SinglePacketTransformer
     }
 
     /**
-     * Closes this <tt>SRTCPTransformer</tt> and the underlying transform engine. It closes all
+     * Closes this <code>SRTCPTransformer</code> and the underlying transform engine. It closes all
      * stored crypto contexts. It deletes key data and forces a cleanup of the crypto contexts.
      */
     public void close()

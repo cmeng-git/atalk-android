@@ -1,8 +1,9 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -46,10 +47,10 @@ public class EndExtension extends AbstractExtensionElement
     }
 
     /**
-     * Checks if given <tt>elementName</tt> is valid end reason element.
+     * Checks if given <code>elementName</code> is valid end reason element.
      *
      * @param elementName the XML element name to check.
-     * @return <tt>true</tt> if given <tt>elementName</tt> is valid end reason element.
+     * @return <code>true</code> if given <code>elementName</code> is valid end reason element.
      */
     public static boolean isValidReason(String elementName)
     {
@@ -72,7 +73,7 @@ public class EndExtension extends AbstractExtensionElement
     }
 
     /**
-     * Sets new {@link ReasonExtension} for this <tt>EndExtensionElement</tt> instance.
+     * Sets new {@link ReasonExtension} for this <code>EndExtensionElement</code> instance.
      *
      * @param newReason the new {@link ReasonExtension} to set.
      */
@@ -88,7 +89,7 @@ public class EndExtension extends AbstractExtensionElement
 
     /**
      * Creates 'Presence' packet containing call ended Rayo notification that contains specified end
-     * <tt>reason</tt>.
+     * <code>reason</code>.
      *
      * @param connection XMPP Connection
      * @param from source JID of this event.

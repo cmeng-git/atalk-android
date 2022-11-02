@@ -25,7 +25,7 @@ public class MediaProvider extends ExtensionElementProvider<MediaExtension>
      * the packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>Media</tt> element.
+     * @param parser an XML parser positioned at the opening <code>Media</code> element.
      * @return a new {@link MediaExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */

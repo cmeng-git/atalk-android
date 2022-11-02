@@ -10,7 +10,7 @@ import java.awt.Component;
 import javax.media.control.BufferControl;
 
 /**
- * Represents a wrapper of a specific <tt>BufferControl</tt> which does not call the setters of the
+ * Represents a wrapper of a specific <code>BufferControl</code> which does not call the setters of the
  * wrapped instance and calls only the getters.
  *
  * @author Lubomir Marinov
@@ -19,16 +19,16 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 {
 
 	/**
-	 * The <tt>BufferControl</tt> wrapped by this instance.
+	 * The <code>BufferControl</code> wrapped by this instance.
 	 */
 	private final BufferControl bufferControl;
 
 	/**
-	 * Initializes a new <tt>ReadOnlyBufferControlDelegate</tt> instance which is to wrap a
-	 * specific <tt>BufferControl</tt> and call only its getters.
+	 * Initializes a new <code>ReadOnlyBufferControlDelegate</code> instance which is to wrap a
+	 * specific <code>BufferControl</code> and call only its getters.
 	 *
 	 * @param bufferControl
-	 * 		the <tt>BufferControl</tt> to be wrapped by the new instance
+	 * 		the <code>BufferControl</code> to be wrapped by the new instance
 	 */
 	public ReadOnlyBufferControlDelegate(BufferControl bufferControl)
 	{
@@ -37,10 +37,10 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 
 	/**
 	 * Implements {@link BufferControl#getBufferLength()}. Gets the length in milliseconds of the
-	 * buffering performed by the owner of the wrapped <tt>BufferControl</tt>.
+	 * buffering performed by the owner of the wrapped <code>BufferControl</code>.
 	 *
 	 * @return the length in milliseconds of the buffering performed by the owner of the wrapped
-	 * <tt>BufferControl</tt>
+	 * <code>BufferControl</code>
 	 */
 	public long getBufferLength()
 	{
@@ -48,12 +48,12 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 	}
 
 	/**
-	 * Implements {@link javax.media.Control#getControlComponent()}. Gets the UI <tt>Component</tt>
-	 * representing this instance and exported by the owner of the wrapped <tt>BufferControl</tt>.
+	 * Implements {@link javax.media.Control#getControlComponent()}. Gets the UI <code>Component</code>
+	 * representing this instance and exported by the owner of the wrapped <code>BufferControl</code>.
 	 *
-	 * @return the UI <tt>Component</tt> representing the wrapped <tt>BufferControl</tt> and
-	 * exported by its owner if such a <tt>Component</tt> is available; otherwise,
-	 * <tt>null</tt>
+	 * @return the UI <code>Component</code> representing the wrapped <code>BufferControl</code> and
+	 * exported by its owner if such a <code>Component</code> is available; otherwise,
+	 * <code>null</code>
 	 */
 	public Component getControlComponent()
 	{
@@ -62,10 +62,10 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 
 	/**
 	 * Implements {@link BufferControl#getEnabledThreshold()}. Gets the indicator of the wrapped
-	 * <tt>BufferControl</tt> which determines whether threshold calculations are enabled.
+	 * <code>BufferControl</code> which determines whether threshold calculations are enabled.
 	 *
-	 * @return <tt>true</tt> if threshold calculations are enabled in the wrapped
-	 * <tt>BufferControl</tt>; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if threshold calculations are enabled in the wrapped
+	 * <code>BufferControl</code>; otherwise, <code>false</code>
 	 */
 	public boolean getEnabledThreshold()
 	{
@@ -74,10 +74,10 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 
 	/**
 	 * Implements {@link BufferControl#getMinimumThreshold()}. Gets the minimum threshold in
-	 * milliseconds for the buffering performed by the owner of the wrapped <tt>BufferControl</tt>.
+	 * milliseconds for the buffering performed by the owner of the wrapped <code>BufferControl</code>.
 	 *
 	 * @return the minimum threshold in milliseconds for the buffering performed by the owner of
-	 * the wrapped <tt>BufferControl</tt>
+	 * the wrapped <code>BufferControl</code>
 	 */
 	public long getMinimumThreshold()
 	{
@@ -90,9 +90,9 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 	 *
 	 * @param bufferLength
 	 * 		the length in milliseconds of the buffering to be performed by the owner of the
-	 * 		wrapped <tt>BufferControl</tt>
+	 * 		wrapped <code>BufferControl</code>
 	 * @return the length in milliseconds of the buffering performed by the owner of the wrapped
-	 * <tt>BufferControl</tt> that is actually in effect
+	 * <code>BufferControl</code> that is actually in effect
 	 */
 	public long setBufferLength(long bufferLength)
 	{
@@ -104,7 +104,7 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 	 * because this instance provides read-only support.
 	 *
 	 * @param enabledThreshold
-	 * 		<tt>true</tt> if threshold calculations are to be enabled; otherwise, <tt>false</tt>
+	 * 		<code>true</code> if threshold calculations are to be enabled; otherwise, <code>false</code>
 	 */
 	public void setEnabledThreshold(boolean enabledThreshold)
 	{
@@ -116,9 +116,9 @@ public class ReadOnlyBufferControlDelegate implements BufferControl
 	 *
 	 * @param minimumThreshold
 	 * 		the minimum threshold in milliseconds for the buffering to be performed by the owner
-	 * 		of the wrapped <tt>BufferControl</tt>
+	 * 		of the wrapped <code>BufferControl</code>
 	 * @return the minimum threshold in milliseconds for the buffering performed by the owner of
-	 * the wrapped <tt>BufferControl</tt> that is actually in effect
+	 * the wrapped <code>BufferControl</code> that is actually in effect
 	 */
 	public long setMinimumThreshold(long minimumThreshold)
 	{

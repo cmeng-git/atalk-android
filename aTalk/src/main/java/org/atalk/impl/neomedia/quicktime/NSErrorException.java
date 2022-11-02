@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Defines an <tt>Exception</tt> which reports an <tt>NSError</tt>.
+ * Defines an <code>Exception</code> which reports an <code>NSError</code>.
  *
  * @author Lyubomir Marinov
  */
@@ -14,16 +14,16 @@ public class NSErrorException extends Exception
 {
 
 	/**
-	 * The <tt>NSError</tt> reported by this instance.
+	 * The <code>NSError</code> reported by this instance.
 	 */
 	private final NSError error;
 
 	/**
-	 * Initializes a new <tt>NSErrorException</tt> instance which is to report a specific
-	 * Objective-C <tt>NSError</tt>.
+	 * Initializes a new <code>NSErrorException</code> instance which is to report a specific
+	 * Objective-C <code>NSError</code>.
 	 *
 	 * @param errorPtr
-	 *        the pointer to the Objective-C <tt>NSError</tt> object to be reported by the new
+	 *        the pointer to the Objective-C <code>NSError</code> object to be reported by the new
 	 *        instance
 	 */
 	public NSErrorException(long errorPtr)
@@ -32,11 +32,11 @@ public class NSErrorException extends Exception
 	}
 
 	/**
-	 * Initializes a new <tt>NSErrorException</tt> instance which is to report a specific
-	 * <tt>NSError</tt>.
+	 * Initializes a new <code>NSErrorException</code> instance which is to report a specific
+	 * <code>NSError</code>.
 	 *
 	 * @param error
-	 *        the <tt>NSError</tt> to be reported by the new instance
+	 *        the <code>NSError</code> to be reported by the new instance
 	 */
 	public NSErrorException(NSError error)
 	{
@@ -44,9 +44,9 @@ public class NSErrorException extends Exception
 	}
 
 	/**
-	 * Gets the <tt>NSError</tt> reported by this instance.
+	 * Gets the <code>NSError</code> reported by this instance.
 	 *
-	 * @return the <tt>NSError</tt> reported by this instance
+	 * @return the <code>NSError</code> reported by this instance
 	 */
 	public NSError getError()
 	{

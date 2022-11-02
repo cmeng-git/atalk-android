@@ -472,9 +472,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     {
         ContactViewHolder viewHolder = null;
 
-        Object object = view.getTag();
-
         // Use by media call button activation
+        Object object = view.getTag();
         if (object instanceof ContactViewHolder) {
             viewHolder = (ContactViewHolder) view.getTag();
             int groupPos = viewHolder.groupPosition;

@@ -36,12 +36,12 @@ import javax.media.format.VideoFormat;
 public class OMXDecoder extends AbstractCodec2
 {
     /**
-     * The list of <tt>Format</tt>s of video data supported as input by <tt>OMXDecoder</tt> instances.
+     * The list of <code>Format</code>s of video data supported as input by <code>OMXDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS = {new VideoFormat(Constants.H264)};
 
     /**
-     * The list of <tt>Format</tt>s of video data supported as output by <tt>OMXDecoder</tt> instances.
+     * The list of <code>Format</code>s of video data supported as output by <code>OMXDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = {
             new RGBFormat(
@@ -60,7 +60,7 @@ public class OMXDecoder extends AbstractCodec2
     private long ptr;
 
     /**
-     * Initializes a new <tt>OMXDecoder</tt> instance.
+     * Initializes a new <code>OMXDecoder</code> instance.
      */
     public OMXDecoder()
     {
@@ -83,12 +83,12 @@ public class OMXDecoder extends AbstractCodec2
             throws ResourceUnavailableException;
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to
+     * Opens this <code>Codec</code> and acquires the resources that it needs to
      * operate. All required input and/or output formats are assumed to have
-     * been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
      * @throws ResourceUnavailableException if any of the resources that this
-     * <tt>Codec</tt> needs to operate cannot be acquired
+     * <code>Codec</code> needs to operate cannot be acquired
      */
     @Override
     protected void doOpen()

@@ -29,10 +29,10 @@ import javax.xml.namespace.QName;
  * recording status to all conference participants.
  *
  * Status meaning:
- * <tt>{@link JibriIq.Status#UNDEFINED}</tt> - recording not available
- * <tt>{@link JibriIq.Status#OFF}</tt> - recording stopped(available to start)
- * <tt>{@link JibriIq.Status#PENDING}</tt> - starting recording
- * <tt>{@link JibriIq.Status#ON}</tt> - recording in progress
+ * <code>{@link JibriIq.Status#UNDEFINED}</code> - recording not available
+ * <code>{@link JibriIq.Status#OFF}</code> - recording stopped(available to start)
+ * <code>{@link JibriIq.Status#PENDING}</code> - starting recording
+ * <code>{@link JibriIq.Status#ON}</code> - recording in progress
  */
 public class RecordingStatus extends AbstractExtensionElement
 {
@@ -144,7 +144,7 @@ public class RecordingStatus extends AbstractExtensionElement
     }
 
     /**
-     * Returns <tt>XMPPError</tt> associated with current
+     * Returns <code>XMPPError</code> associated with current
      * {@link RecordingStatus}.
      */
     public StanzaError getError()
@@ -154,10 +154,10 @@ public class RecordingStatus extends AbstractExtensionElement
     }
 
     /**
-     * Gets <tt>{@link XMPPErrorPE}</tt> from the list of child packet
+     * Gets <code>{@link XMPPErrorPE}</code> from the list of child packet
      * extensions.
      *
-     * @return {@link XMPPErrorPE} or <tt>null</tt> if not found.
+     * @return {@link XMPPErrorPE} or <code>null</code> if not found.
      */
     private XMPPErrorPE getErrorPE()
     {
@@ -166,10 +166,10 @@ public class RecordingStatus extends AbstractExtensionElement
     }
 
     /**
-     * Sets <tt>XMPPError</tt> on this <tt>RecordingStatus</tt>.
+     * Sets <code>XMPPError</code> on this <code>RecordingStatus</code>.
      *
-     * @param error <tt>XMPPError</tt> to add error details to this
-     * <tt>RecordingStatus</tt> instance or <tt>null</tt> to have it removed.
+     * @param error <code>XMPPError</code> to add error details to this
+     * <code>RecordingStatus</code> instance or <code>null</code> to have it removed.
      */
     public void setError(StanzaError error)
     {

@@ -25,7 +25,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements <tt>PullBufferStream</tt> for PortAudio.
+ * Implements <code>PullBufferStream</code> for PortAudio.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -58,7 +58,7 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
 
     /**
      * The indicator which determines whether audio quality improvement is enabled for this
-     * <tt>PortAudioStream</tt> in accord with the preferences of the user.
+     * <code>PortAudioStream</code> in accord with the preferences of the user.
      */
     private final boolean audioQualityImprovement;
 
@@ -70,21 +70,21 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
 
     /**
      * The device identifier (the device UID, or if not available, the device name) of the PortAudio
-     * device read through this <tt>PullBufferStream</tt>.
+     * device read through this <code>PullBufferStream</code>.
      */
     private String deviceID;
 
     /**
-     * The <tt>DiagnosticsControl</tt> implementation of this instance which allows the diagnosis of
-     * the functional health of <tt>Pa_ReadStream</tt>.
+     * The <code>DiagnosticsControl</code> implementation of this instance which allows the diagnosis of
+     * the functional health of <code>Pa_ReadStream</code>.
      */
     private final DiagnosticsControl diagnosticsControl = new DiagnosticsControl()
     {
         /**
          * {@inheritDoc}
          *
-         * <tt>PortAudioStream</tt>'s <tt>DiagnosticsControl</tt> implementation does not provide
-         * its own user interface and always returns <tt>null</tt>.
+         * <code>PortAudioStream</code>'s <code>DiagnosticsControl</code> implementation does not provide
+         * its own user interface and always returns <code>null</code>.
          */
         public Component getControlComponent()
         {
@@ -102,7 +102,7 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
         /**
          * {@inheritDoc}
          *
-         * Returns the identifier of the PortAudio device read through this <tt>PortAudioStream</tt>
+         * Returns the identifier of the PortAudio device read through this <code>PortAudioStream</code>
          * .
          */
         @Override
@@ -128,8 +128,8 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     };
 
     /**
-     * The last-known <tt>Format</tt> of the media data made available by this
-     * <tt>PullBufferStream</tt>.
+     * The last-known <code>Format</code> of the media data made available by this
+     * <code>PullBufferStream</code>.
      */
     private AudioFormat format;
 
@@ -139,7 +139,7 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     private int framesPerBuffer;
 
     /**
-     * The <tt>GainControl</tt> through which the volume/gain of captured media is controlled.
+     * The <code>GainControl</code> through which the volume/gain of captured media is controlled.
      */
     private final GainControl gainControl;
 
@@ -221,9 +221,9 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     };
 
     /**
-     * The time in milliseconds at which <tt>Pa_ReadStream</tt> has started malfunctioning. For
-     * example, <tt>Pa_ReadStream</tt> returning <tt>paTimedOut</tt> and/or Windows Multimedia
-     * reporting <tt>MMSYSERR_NODRIVER</tt> (may) indicate abnormal functioning.
+     * The time in milliseconds at which <code>Pa_ReadStream</code> has started malfunctioning. For
+     * example, <code>Pa_ReadStream</code> returning <code>paTimedOut</code> and/or Windows Multimedia
+     * reporting <code>MMSYSERR_NODRIVER</code> (may) indicate abnormal functioning.
      */
     private long readIsMalfunctioningSince = NEVER;
 
@@ -246,15 +246,15 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     private boolean streamIsBusy = false;
 
     /**
-     * Initializes a new <tt>PortAudioStream</tt> instance which is to have its <tt>Format</tt>
-     * -related information abstracted by a specific <tt>FormatControl</tt>.
+     * Initializes a new <code>PortAudioStream</code> instance which is to have its <code>Format</code>
+     * -related information abstracted by a specific <code>FormatControl</code>.
      *
-     * @param dataSource the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-     * its <tt>streams</tt>
-     * @param formatControl the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+     * @param dataSource the <code>DataSource</code> which is creating the new instance so that it becomes one of
+     * its <code>streams</code>
+     * @param formatControl the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
      * information of the new instance
-     * @param audioQualityImprovement <tt>true</tt> to enable audio quality improvement for the new instance in accord with
-     * the preferences of the user or <tt>false</tt> to completely disable audio quality
+     * @param audioQualityImprovement <code>true</code> to enable audio quality improvement for the new instance in accord with
+     * the preferences of the user or <code>false</code> to completely disable audio quality
      * improvement
      */
     public PortAudioStream(DataSource dataSource, FormatControl formatControl,
@@ -367,12 +367,12 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Gets the <tt>Format</tt> of this <tt>PullBufferStream</tt> as directly known by it.
+     * Gets the <code>Format</code> of this <code>PullBufferStream</code> as directly known by it.
      *
-     * @return the <tt>Format</tt> of this <tt>PullBufferStream</tt> as directly known by it or
-     * <tt>null</tt> if this <tt>PullBufferStream</tt> does not directly know its
-     * <tt>Format</tt> and it relies on the <tt>PullBufferDataSource</tt> which created it
-     * to report its <tt>Format</tt>
+     * @return the <code>Format</code> of this <code>PullBufferStream</code> as directly known by it or
+     * <code>null</code> if this <code>PullBufferStream</code> does not directly know its
+     * <code>Format</code> and it relies on the <code>PullBufferDataSource</code> which created it
+     * to report its <code>Format</code>
      * @see AbstractPullBufferStream#doGetFormat()
      */
     @Override
@@ -382,13 +382,13 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Reads media data from this <tt>PullBufferStream</tt> into a specific <tt>Buffer</tt> with
+     * Reads media data from this <code>PullBufferStream</code> into a specific <code>Buffer</code> with
      * blocking.
      *
-     * @param buffer the <tt>Buffer</tt> in which media data is to be read from this
-     * <tt>PullBufferStream</tt>
-     * @throws IOException if anything goes wrong while reading media data from this <tt>PullBufferStream</tt>
-     * into the specified <tt>buffer</tt>
+     * @param buffer the <code>Buffer</code> in which media data is to be read from this
+     * <code>PullBufferStream</code>
+     * @throws IOException if anything goes wrong while reading media data from this <code>PullBufferStream</code>
+     * into the specified <code>buffer</code>
      */
     public void read(Buffer buffer)
             throws IOException
@@ -493,7 +493,7 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
 
     /**
      * Sets the device index of the PortAudio device to be read through this
-     * <tt>PullBufferStream</tt>.
+     * <code>PullBufferStream</code>.
      *
      * @param deviceID The ID of the device used to be read trough this PortAudioStream. This String contains
      * the deviceUID, or if not available, the device name. If set to null, then there was no
@@ -598,9 +598,9 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Indicates whether <tt>Pa_ReadStream</tt> is malfunctioning.
+     * Indicates whether <code>Pa_ReadStream</code> is malfunctioning.
      *
-     * @param malfunctioning <tt>true</tt> if <tt>Pa_ReadStream</tt> is malfunctioning; otherwise, <tt>false</tt>
+     * @param malfunctioning <code>true</code> if <code>Pa_ReadStream</code> is malfunctioning; otherwise, <code>false</code>
      */
     private void setReadIsMalfunctioning(boolean malfunctioning)
     {
@@ -615,10 +615,10 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Starts the transfer of media data from this <tt>PullBufferStream</tt>.
+     * Starts the transfer of media data from this <code>PullBufferStream</code>.
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>PullBufferStream</tt>
+     * <code>PullBufferStream</code>
      */
     @Override
     public synchronized void start()
@@ -638,10 +638,10 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Stops the transfer of media data from this <tt>PullBufferStream</tt>.
+     * Stops the transfer of media data from this <code>PullBufferStream</code>.
      *
      * @throws IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>PullBufferStream</tt>
+     * <code>PullBufferStream</code>
      */
     @Override
     public synchronized void stop()
@@ -664,8 +664,8 @@ public class PortAudioStream extends AbstractPullBufferStream<DataSource>
     }
 
     /**
-     * Waits on this instance while {@link #streamIsBusy} is equal to <tt>true</tt> i.e. until it
-     * becomes <tt>false</tt>. The method should only be called by a thread that is the owner of
+     * Waits on this instance while {@link #streamIsBusy} is equal to <code>true</code> i.e. until it
+     * becomes <code>false</code>. The method should only be called by a thread that is the owner of
      * this object's monitor.
      */
     private void waitWhileStreamIsBusy()

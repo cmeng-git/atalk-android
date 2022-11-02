@@ -12,9 +12,9 @@ import javax.media.format.AudioFormat;
 
 /**
  * Describes a specific set of audio samples read from a specific set of input streams specified by
- * their <tt>InStreamDesc</tt>s.
+ * their <code>InStreamDesc</code>s.
  * <p>
- * Private to <tt>AudioMixerPushBufferStream</tt> but extracted into its own file for the sake of
+ * Private to <code>AudioMixerPushBufferStream</code> but extracted into its own file for the sake of
  * clarity.
  * </p>
  *
@@ -23,12 +23,12 @@ import javax.media.format.AudioFormat;
 class InSampleDesc
 {
 	/**
-	 * The <tt>Buffer</tt> into which media data is to be read from {@link #inStreams}.
+	 * The <code>Buffer</code> into which media data is to be read from {@link #inStreams}.
 	 */
 	private SoftReference<Buffer> buffer;
 
 	/**
-	 * The <tt>AudioFormat</tt> of {@link #inSamples}.
+	 * The <code>AudioFormat</code> of {@link #inSamples}.
 	 */
 	public final AudioFormat format;
 
@@ -43,21 +43,21 @@ class InSampleDesc
 	public final InStreamDesc[] inStreams;
 
 	/**
-	 * The time stamp of <tt>inSamples</tt> to be reported in the <tt>Buffer</tt>s of the
-	 * <tt>AudioMixingPushBufferStream</tt>s when mixes are read from them.
+	 * The time stamp of <code>inSamples</code> to be reported in the <code>Buffer</code>s of the
+	 * <code>AudioMixingPushBufferStream</code>s when mixes are read from them.
 	 */
 	private long timeStamp = Buffer.TIME_UNKNOWN;
 
 	/**
-	 * Initializes a new <tt>InSampleDesc</tt> instance which is to describe a specific set of audio
-	 * samples read from a specific set of input streams specified by their <tt>InStreamDesc</tt>s.
+	 * Initializes a new <code>InSampleDesc</code> instance which is to describe a specific set of audio
+	 * samples read from a specific set of input streams specified by their <code>InStreamDesc</code>s.
 	 *
 	 * @param inSamples
-	 * 		the set of audio samples read from <tt>inStreams</tt>
+	 * 		the set of audio samples read from <code>inStreams</code>
 	 * @param inStreams
-	 * 		the set of input streams from which <tt>inSamples</tt> were read
+	 * 		the set of input streams from which <code>inSamples</code> were read
 	 * @param format
-	 * 		the <tt>AudioFormat</tt> of <tt>inSamples</tt>
+	 * 		the <code>AudioFormat</code> of <code>inSamples</code>
 	 */
 	public InSampleDesc(short[][] inSamples, InStreamDesc[] inStreams, AudioFormat format)
 	{
@@ -67,10 +67,10 @@ class InSampleDesc
 	}
 
 	/**
-	 * Gets the <tt>Buffer</tt> into which media data is to be read from the input streams
+	 * Gets the <code>Buffer</code> into which media data is to be read from the input streams
 	 * associated with this instance.
 	 *
-	 * @return the <tt>Buffer</tt> into which media data is to be read from the input streams
+	 * @return the <code>Buffer</code> into which media data is to be read from the input streams
 	 * associated with this instance
 	 */
 	public Buffer getBuffer()
@@ -85,11 +85,11 @@ class InSampleDesc
 	}
 
 	/**
-	 * Gets the time stamp of <tt>inSamples</tt> to be reported in the <tt>Buffer</tt>s of the
-	 * <tt>AudioMixingPushBufferStream</tt>s when mixes are read from them.
+	 * Gets the time stamp of <code>inSamples</code> to be reported in the <code>Buffer</code>s of the
+	 * <code>AudioMixingPushBufferStream</code>s when mixes are read from them.
 	 *
-	 * @return the time stamp of <tt>inSamples</tt> to be reported in the <tt>Buffer</tt>s of the
-	 * <tt>AudioMixingPushBufferStream</tt>s when mixes are read from them
+	 * @return the time stamp of <code>inSamples</code> to be reported in the <code>Buffer</code>s of the
+	 * <code>AudioMixingPushBufferStream</code>s when mixes are read from them
 	 */
 	public long getTimeStamp()
 	{
@@ -97,11 +97,11 @@ class InSampleDesc
 	}
 
 	/**
-	 * Sets the <tt>Buffer</tt> into which media data is to be read from the input streams
+	 * Sets the <code>Buffer</code> into which media data is to be read from the input streams
 	 * associated with this instance.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> into which media data is to be read from the input streams
+	 * 		the <code>Buffer</code> into which media data is to be read from the input streams
 	 * 		associated with this instance
 	 */
 	private void setBuffer(Buffer buffer)
@@ -110,12 +110,12 @@ class InSampleDesc
 	}
 
 	/**
-	 * Sets the time stamp of <tt>inSamples</tt> to be reported in the <tt>Buffer</tt>s of the
-	 * <tt>AudioMixingPushBufferStream</tt>s when mixes are read from them.
+	 * Sets the time stamp of <code>inSamples</code> to be reported in the <code>Buffer</code>s of the
+	 * <code>AudioMixingPushBufferStream</code>s when mixes are read from them.
 	 *
 	 * @param timeStamp
-	 * 		the time stamp of <tt>inSamples</tt> to be reported in the <tt>Buffer</tt>s of the
-	 * 		<tt>AudioMixingPushBufferStream</tt>s when mixes are read from them
+	 * 		the time stamp of <code>inSamples</code> to be reported in the <code>Buffer</code>s of the
+	 * 		<code>AudioMixingPushBufferStream</code>s when mixes are read from them
 	 */
 	public void setTimeStamp(long timeStamp)
 	{

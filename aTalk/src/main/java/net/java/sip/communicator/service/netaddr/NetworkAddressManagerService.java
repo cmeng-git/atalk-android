@@ -111,11 +111,9 @@ public interface NetworkAddressManagerService
      * @param preferredPort the port number that we should try to bind to first.
      * @param minPort the port number where we should first try to bind before moving to the next
      * one (i.e. <code>minPort + 1</code>)
-     * @param maxPort the maximum port number where we should try binding before giving up and
-     * throwing an exception.
+     * @param maxPort the maximum port number where we should try binding before giving up and throwing an exception.
      * @return the newly created <code>DatagramSocket</code>.
-     * @throws IllegalArgumentException if either <code>minPort</code> or <code>maxPort</code> is not a
-     * valid port number.
+     * @throws IllegalArgumentException if either <code>minPort</code> or <code>maxPort</code> is not a valid port number.
      * @throws IOException if an error occurs while the underlying resolver lib is using sockets.
      * @throws BindException if we couldn't find a free port between <code>minPort</code> and
      * <code>maxPort</code> before reaching the maximum allowed number of retries.
@@ -124,8 +122,7 @@ public interface NetworkAddressManagerService
             throws IllegalArgumentException, IOException, BindException;
 
     /**
-     * Adds new <code>NetworkConfigurationChangeListener</code> which will be informed for network
-     * configuration changes.
+     * Adds new <code>NetworkConfigurationChangeListener</code> which will be informed for network configuration changes.
      *
      * @param listener the listener.
      */

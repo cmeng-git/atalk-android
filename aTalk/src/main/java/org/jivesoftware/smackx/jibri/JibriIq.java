@@ -230,7 +230,7 @@ public class JibriIq extends IQ
     /**
      * Returns the value of {@link #STREAM_ID_ATTR_NAME} attribute.
      *
-     * @return a <tt>String</tt> which contains the value of "stream id" attribute or <tt>null</tt> if empty.
+     * @return a <code>String</code> which contains the value of "stream id" attribute or <code>null</code> if empty.
      */
     public String getStreamId()
     {
@@ -240,7 +240,7 @@ public class JibriIq extends IQ
     /**
      * Returns the value of {@link #YOUTUBE_BROADCAST_ID_ATTR_NAME} attribute.
      *
-     * @return a <tt>String</tt> which contains the value of the
+     * @return a <code>String</code> which contains the value of the
      * {@link #YOUTUBE_BROADCAST_ID_ATTR_NAME} attribute, or null if empty.
      */
     public String getYoutubeBroadcastId()
@@ -251,7 +251,7 @@ public class JibriIq extends IQ
     /**
      * Sets the value for {@link #STREAM_ID_ATTR_NAME} attribute.
      *
-     * @param streamId a <tt>String</tt> for the stream id attribute or <tt>null</tt> to remove it from XML element.
+     * @param streamId a <code>String</code> for the stream id attribute or <code>null</code> to remove it from XML element.
      */
     public void setStreamId(String streamId)
     {
@@ -261,8 +261,8 @@ public class JibriIq extends IQ
     /**
      * Sets the value for {@link #YOUTUBE_BROADCAST_ID_ATTR_NAME} attribute.
      *
-     * @param youTubeBroadcastId a <tt>String</tt> for the stream id attribute or
-     * <tt>null</tt> to remove it from XML element.
+     * @param youTubeBroadcastId a <code>String</code> for the stream id attribute or
+     * <code>null</code> to remove it from XML element.
      */
     public void setYouTubeBroadcastId(String youTubeBroadcastId)
     {
@@ -312,7 +312,7 @@ public class JibriIq extends IQ
     /**
      * Returns the value of {@link #ROOM_ATTR_NAME} attribute.
      *
-     * @return a <tt>String</tt> which contains the value of the room attribute or <tt>null</tt> if empty.
+     * @return a <code>String</code> which contains the value of the room attribute or <code>null</code> if empty.
      * @see #room
      */
     public EntityBareJid getRoom()
@@ -323,7 +323,7 @@ public class JibriIq extends IQ
     /**
      * Sets the value for {@link #ROOM_ATTR_NAME} attribute.
      *
-     * @param room a <tt>String</tt> for the room attribute or <tt>null</tt> to remove it from XML element.
+     * @param room a <code>String</code> for the room attribute or <code>null</code> to remove it from XML element.
      * @see #room
      */
     public void setRoom(EntityBareJid room)
@@ -496,10 +496,10 @@ public class JibriIq extends IQ
         }
 
         /**
-         * Parses <tt>Action</tt> from given string.
+         * Parses <code>Action</code> from given string.
          *
-         * @param action the string representation of <tt>Action</tt>.
-         * @return <tt>Action</tt> value for given string or {@link #UNDEFINED} if given string
+         * @param action the string representation of <code>Action</code>.
+         * @return <code>Action</code> value for given string or {@link #UNDEFINED} if given string
          * does not reflect any of valid values.
          */
         public static Action parse(String action)
@@ -560,10 +560,10 @@ public class JibriIq extends IQ
         }
 
         /**
-         * Parses <tt>RecordingMode</tt> from given string.
+         * Parses <code>RecordingMode</code> from given string.
          *
-         * @param status the string representation of <tt>RecordingMode</tt>.
-         * @return <tt>RecordingMode</tt> value for given string or
+         * @param status the string representation of <code>RecordingMode</code>.
+         * @return <code>RecordingMode</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static RecordingMode parse(String status)
@@ -602,10 +602,10 @@ public class JibriIq extends IQ
         }
 
         /**
-         * Parses <tt>Status</tt> from given string.
+         * Parses <code>Status</code> from given string.
          *
-         * @param status the string representation of <tt>Status</tt>.
-         * @return <tt>Status</tt> value for given string or
+         * @param status the string representation of <code>Status</code>.
+         * @return <code>Status</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static FailureReason parse(String status)
@@ -672,10 +672,10 @@ public class JibriIq extends IQ
         }
 
         /**
-         * Parses <tt>Status</tt> from given string.
+         * Parses <code>Status</code> from given string.
          *
-         * @param status the string representation of <tt>Status</tt>.
-         * @return <tt>Status</tt> value for given string or {@link #UNDEFINED} if given string
+         * @param status the string representation of <code>Status</code>.
+         * @return <code>Status</code> value for given string or {@link #UNDEFINED} if given string
          * does not reflect any of valid values.
          */
         public static Status parse(String status)

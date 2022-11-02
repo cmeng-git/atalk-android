@@ -18,10 +18,10 @@ import timber.log.Timber;
  * The surface must be present before the camera is started and for this purpose
  * {@link #obtainObject()} method shall be used.
  *
- * When the call is ended, before the <tt>Activity</tt> is finished we should ensure that the camera
+ * When the call is ended, before the <code>Activity</code> is finished we should ensure that the camera
  * has been stopped (which is done by video telephony internals), so we should wait for it to be
  * disposed by invoking method {@link #waitForObjectRelease()}. It will block current
- * <tt>Thread</tt> until it happens or an <tt>Exception</tt> will be thrown if timeout occurs.
+ * <code>Thread</code> until it happens or an <code>Exception</code> will be thrown if timeout occurs.
  */
 public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
         implements SurfaceHolder.Callback
@@ -30,16 +30,16 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
 
     /**
      * Flag indicates whether {@link SurfaceView#setZOrderMediaOverlay(boolean)} should be called on
-     * created <tt>SurfaceView</tt>.
+     * created <code>SurfaceView</code>.
      */
     private final boolean setZMediaOverlay;
 
     /**
-     * Create a new instance of <tt>PreviewSurfaceProvider</tt>.
+     * Create a new instance of <code>PreviewSurfaceProvider</code>.
      *
-     * @param parent parent <tt>OSGiActivity</tt> instance.
-     * @param container the <tt>ViewGroup</tt> that will hold maintained <tt>SurfaceView</tt>.
-     * @param setZMediaOverlay if set to <tt>true</tt> then the <tt>SurfaceView</tt> will be
+     * @param parent parent <code>OSGiActivity</code> instance.
+     * @param container the <code>ViewGroup</code> that will hold maintained <code>SurfaceView</code>.
+     * @param setZMediaOverlay if set to <code>true</code> then the <code>SurfaceView</code> will be
      * displayed on the top of other surfaces e.g. local camera surface preview
      */
     public PreviewSurfaceProvider(AppCompatActivity parent, ViewGroup container, boolean setZMediaOverlay)
@@ -68,7 +68,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     }
 
     /**
-     * Method is called before <tt>Camera</tt> is started and shall return non <tt>null</tt> {@link SurfaceHolder} instance.
+     * Method is called before <code>Camera</code> is started and shall return non <code>null</code> {@link SurfaceHolder} instance.
      * The is also used by android decoder.
      *
      * @return {@link SurfaceHolder} instance that will be used for local video preview
@@ -81,7 +81,7 @@ public class PreviewSurfaceProvider extends ViewDependentProvider<SurfaceHolder>
     }
 
     /**
-     * Method is called when <tt>Camera</tt> is stopped and it's safe to release the {@link Surface} object.
+     * Method is called when <code>Camera</code> is stopped and it's safe to release the {@link Surface} object.
      */
     @Override
     public void onObjectReleased()

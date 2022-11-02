@@ -83,10 +83,10 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
     }
 
     /**
-     * Parse the Coin IQ sub-document and returns the corresponding <tt>CoinIQ</tt>.
+     * Parse the Coin IQ sub-document and returns the corresponding <code>CoinIQ</code>.
      *
      * @param parser XML parser
-     * @return <tt>CoinIQ</tt>
+     * @return <code>CoinIQ</code>
      * @throws IOException, XmlPullParserException, ParseException if something goes wrong during parsing
      */
 
@@ -160,11 +160,11 @@ public class CoinIQProvider extends IQProvider<CoinIQ>
 
     /**
      * Returns the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element that we encounter in
-     * <tt>parser</tt>.
+     * <code>parser</code>.
      *
      * @param parser the parse that we'll be probing for text.
      * @return the content of the next {@link XmlPullParser.Event#TEXT_CHARACTERS} element we come across or
-     * <tt>null</tt> if we encounter a closing tag first.
+     * <code>null</code> if we encounter a closing tag first.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */
     public static String parseText(XmlPullParser parser)

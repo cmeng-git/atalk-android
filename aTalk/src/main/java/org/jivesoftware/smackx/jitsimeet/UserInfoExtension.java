@@ -55,9 +55,9 @@ public class UserInfoExtension extends AbstractExtensionElement
     }
 
     /**
-     * Returns <tt>true</tt> if the user is considered a "robot"(recorder
-     * component, SIP gateway etc.), <tt>false</tt> if it's not and
-     * <tt>null</tt> if the attribute value is not defined.
+     * Returns <code>true</code> if the user is considered a "robot"(recorder
+     * component, SIP gateway etc.), <code>false</code> if it's not and
+     * <code>null</code> if the attribute value is not defined.
      */
     public Boolean isRobot()
     {
@@ -73,8 +73,8 @@ public class UserInfoExtension extends AbstractExtensionElement
     /**
      * Sets new value for the "robot" attribute.
      *
-     * @param isRobot <tt>true</tt> if the user is considered a robot or
-     * <tt>false</tt> otherwise. Pass <tt>null</tt> to remove the attribute.
+     * @param isRobot <code>true</code> if the user is considered a robot or
+     * <code>false</code> otherwise. Pass <code>null</code> to remove the attribute.
      * @see {@link #ROBOT_ATTRIBUTE_NAME}
      */
     public void setIsRobot(Boolean isRobot)

@@ -68,7 +68,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     /**
      * For the receiver only, the rollover counter guessed from the sequence number of the received
      * packet that is currently being processed (i.e. the value is valid during the execution of
-     * {@link #reverseTransformPacket(ByteArrayBuffer, boolean)} only.) RFC 3711 refers to it by the name <tt>v</tt>.
+     * {@link #reverseTransformPacket(ByteArrayBuffer, boolean)} only.) RFC 3711 refers to it by the name <code>v</code>.
      */
     private int guessedROC;
 
@@ -80,7 +80,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     private int roc;
 
     /**
-     * RFC 3711: for the receiver only, a 16-bit sequence number <tt>s_l</tt>,
+     * RFC 3711: for the receiver only, a 16-bit sequence number <code>s_l</code>,
      * which can be thought of as the highest received RTP sequence number (see
      * Section 3.3.1 for its handling), which SHOULD be authenticated since
      * message authentication is RECOMMENDED.
@@ -89,7 +89,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
 
     /**
      * The indicator which determines whether this instance is used by an SRTP
-     * sender (<tt>true</tt>) or receiver (<tt>false</tt>).
+     * sender (<code>true</code>) or receiver (<code>false</code>).
      */
     private final boolean sender;
 
@@ -102,7 +102,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Constructs an empty SrtpCryptoContext using ssrc. The other parameters are set to default null value.
      *
-     * @param sender <tt>true</tt> if the new instance is to be used by an SRTP sender; <tt>false</tt> if
+     * @param sender <code>true</code> if the new instance is to be used by an SRTP sender; <code>false</code> if
      * the new instance is to be used by an SRTP receiver
      * @param ssrc SSRC of this SrtpCryptoContext
      */
@@ -116,7 +116,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     /**
      * Constructs a normal SrtpCryptoContext based on the given parameters.
      *
-     * @param sender <tt>true</tt> if the new instance is to be used by an SRTP sender; <tt>false</tt> if
+     * @param sender <code>true</code> if the new instance is to be used by an SRTP sender; <code>false</code> if
      * the new instance is to be used by an SRTP receiver
      * @param ssrc the RTP SSRC that this SRTP cryptographic context protects.
      * @param roc the initial Roll-Over-Counter according to RFC 3711. These are the upper 32-bits
@@ -141,12 +141,12 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
     }
 
     /**
-     * Authenticates a specific <tt>RawPacket</tt> if the <tt>policy</tt> of this
-     * <tt>SrtpCryptoContext</tt> specifies that authentication is to be performed.
+     * Authenticates a specific <code>RawPacket</code> if the <code>policy</code> of this
+     * <code>SrtpCryptoContext</code> specifies that authentication is to be performed.
      *
-     * @param pkt the <tt>RawPacket</tt> to authenticate
-     * @return <tt>true</tt> if the <tt>policy</tt> of this <tt>SrtpCryptoContext</tt> specifies that authentication
-     * is to not be performed or <tt>pkt</tt> was successfully authenticated; otherwise, <tt>false</tt>
+     * @param pkt the <code>RawPacket</code> to authenticate
+     * @return <code>true</code> if the <code>policy</code> of this <code>SrtpCryptoContext</code> specifies that authentication
+     * is to not be performed or <code>pkt</code> was successfully authenticated; otherwise, <code>false</code>
      */
     private SrtpErrorStatus authenticatePacket(ByteArrayBuffer pkt)
     {
@@ -178,8 +178,8 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      *
      * @param seqNo sequence number of the packet
      * @param guessedIndex guessed ROC
-     * @return <tt>true</tt> if the specified sequence number indicates that the
-     * packet is not a replayed one; <tt>false</tt>, otherwise.
+     * @return <code>true</code> if the specified sequence number indicates that the
+     * packet is not a replayed one; <code>false</code>, otherwise.
      */
     SrtpErrorStatus checkReplay(int seqNo, long guessedIndex)
     {
@@ -207,7 +207,6 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
         else {
             return SrtpErrorStatus.OK; // Packet not received yet.
         }
-
     }
 
     /**
@@ -248,7 +247,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * SRTP packet with a specific sequence number.
      *
      * @param seqNo the sequence number of the received SRTP packet.
-     * @return the SRTP index of the received SRTP packet with the specified <tt>seqNo</tt>
+     * @return the SRTP index of the received SRTP packet with the specified <code>seqNo</code>
      */
     private long guessIndex(int seqNo)
     {
@@ -394,7 +393,6 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
                 }
                 // Update the rollover counter and highest sequence number if necessary.
                 update(seqNo, guessedIndex);
-
                 ret = SrtpErrorStatus.OK;
             }
             else {
@@ -413,7 +411,6 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
             seqNumSet = false;
             s_l = 0;
         }
-
         return ret;
     }
 
@@ -485,7 +482,7 @@ public class SrtpCryptoContext extends BaseSrtpCryptoContext
      * {@link #replayWindow}). This method is called after all checks were successful.
      *
      * @param seqNo the sequence number of the accepted SRTP packet
-     * @param guessedIndex the SRTP index of the accepted SRTP packet calculated by <tt>guessIndex(int)</tt>
+     * @param guessedIndex the SRTP index of the accepted SRTP packet calculated by <code>guessIndex(int)</code>
      */
     private void update(int seqNo, long guessedIndex)
     {

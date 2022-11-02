@@ -228,7 +228,8 @@ public class YoutubePlayerFragment extends Fragment
      * Extract the youtube videoId from the following string formats:
      * a. vCKCkc8llaM
      * b. https://youtu.be/vCKCkc8llaM
-     * c. https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox\
+     * c. https://youtube.com/watch?v=14VrDQSnfzI&feature=share
+     * d. https://www.youtube.com/playlist?list=PL0KROm2A3S8HaMLBxYPF5kuEEtTYvUJox\
      *
      * @param url Any of the above url string
      * @return the youtube videoId
@@ -236,7 +237,10 @@ public class YoutubePlayerFragment extends Fragment
     private String getVideoId(String url)
     {
         String mVideoId = url.substring(mediaUrl.lastIndexOf('/') + 1);
-        return mVideoId.substring(mVideoId.lastIndexOf('=') + 1);
+        if (mVideoId.contains("=")) {
+            mVideoId = mVideoId.substring(mVideoId.indexOf("=") + 1).split("&")[0];
+        }
+        return mVideoId;
     }
 
     /**
@@ -281,8 +285,8 @@ public class YoutubePlayerFragment extends Fragment
     private void initPlayerMenu()
     {
         Objects.requireNonNull(youTubePlayerView.getPlayerUiController()
-                .showMenuButton(true)
-                .getMenu())
+                        .showMenuButton(true)
+                        .getMenu())
                 .addItem(new MenuItem("menu item1", R.drawable.ic_speed,
                         view -> Toast.makeText(mContext, "item1 clicked", Toast.LENGTH_SHORT).show())
                 )

@@ -97,11 +97,11 @@ public enum JingleAction
      * action indicates a willingness to proceed with the session (which might necessitate further
      * negotiation before media can be exchanged). The <code>session-accept</code> action indicates
      * acceptance only of the content definition(s) whose disposition type is "session" (the default
-     * value of the <content/> element's 'disposition' attribute), not any content definition(s)
+     * value of the &lt;content/&gt; element's 'disposition' attribute), not any content definition(s)
      * whose disposition type is something other than "session" (e.g., "early-session" for early media).
      *
-     * In the <code>session-accept</code> stanza, the <jingle/> element MUST contain one or more
-     * <content/> elements, each of which MUST contain one <description/> element and one <transport/> element.
+     * In the <code>session-accept</code> stanza, the &lt;jingle/&gt; element MUST contain one or more
+     * &lt;content/&gt; elements, each of which MUST contain one &lt;description/&gt; element and one &lt;transport/&gt; element.
      */
     session_accept,
 
@@ -113,10 +113,10 @@ public enum JingleAction
 
     /**
      * The <code>session-initiate</code> action is used to request negotiation of a new Jingle session.
-     * When sending a <code>session-initiate</code> with one <content/> element, the value of the
-     * <content/> element's 'disposition' attribute MUST be "session" (if there are multiple
-     * <content/> elements then at least one MUST have a disposition of "session"); if this rule is
-     * violated, the responder MUST return a <bad-request/> error to the initiator.
+     * When sending a <code>session-initiate</code> with one &lt;content/&gt; element, the value of the
+     * &lt;content/&gt; element's 'disposition' attribute MUST be "session" (if there are multiple
+     * &lt;content/&gt; elements then at least one MUST have a disposition of "session"); if this rule is
+     * violated, the responder MUST return a &lt;bad-request/&gt; error to the initiator.
      */
     session_initiate,
 

@@ -20,9 +20,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 
 /**
  * @see SrtpCipherCtr
- * SrtpCipherCtr implementation using Java and a <tt>BlockCipher</tt>.
+ * SrtpCipherCtr implementation using Java and a <code>BlockCipher</code>.
  *
- * You can use any <tt>BlockCipher</tt> with <tt>BLKLEN</tt> bytes key and
+ * You can use any <code>BlockCipher</code> with <code>BLKLEN</code> bytes key and
  * block size like TwofishEngine instead of AES.
  */
 public class SrtpCipherCtrJava extends SrtpCipherCtr

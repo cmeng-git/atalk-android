@@ -30,14 +30,14 @@ import javax.media.control.FormatControl;
 import timber.log.Timber;
 
 /**
- * Camera stream that uses <tt>Surface</tt> to capture video data. First input <tt>Surface</tt> is
- * obtained from <tt>MediaCodec</tt>. Then it is passed as preview surface to the camera init.
- * Note: <tt>Surface</tt> instance is passed through buffer objects in read method;
+ * Camera stream that uses <code>Surface</code> to capture video data. First input <code>Surface</code> is
+ * obtained from <code>MediaCodec</code>. Then it is passed as preview surface to the camera init.
+ * Note: <code>Surface</code> instance is passed through buffer objects in read method;
  * this stream #onInitPreview() won't start until it is provided.
  *
- * In order to display local camera preview in the app, <tt>TextureView</tt> is created in video
- * call <tt>Activity</tt>. It is used to create Open GL context that shares video texture and can
- * render it. Rendering is done here on camera capture <tt>Thread</tt>.
+ * In order to display local camera preview in the app, <code>TextureView</code> is created in video
+ * call <code>Activity</code>. It is used to create Open GL context that shares video texture and can
+ * render it. Rendering is done here on camera capture <code>Thread</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -46,7 +46,7 @@ public class SurfaceStream extends CameraStreamBase
         implements SurfaceTexture.OnFrameAvailableListener
 {
     /**
-     * <tt>OpenGlCtxProvider</tt> used by this instance.
+     * <code>OpenGlCtxProvider</code> used by this instance.
      */
     private OpenGlCtxProvider myCtxProvider;
 
@@ -56,7 +56,7 @@ public class SurfaceStream extends CameraStreamBase
     private OpenGLContext mDisplayTV;
 
     /**
-     * Codec input surface obtained from <tt>MediaCodec</tt> for remote video streaming.
+     * Codec input surface obtained from <code>MediaCodec</code> for remote video streaming.
      */
     private CodecInputSurface mEncoderSurface;
 
@@ -97,9 +97,9 @@ public class SurfaceStream extends CameraStreamBase
     private boolean paintDone;
 
     /**
-     * Creates a new instance of <tt>SurfaceStream</tt>.
+     * Creates a new instance of <code>SurfaceStream</code>.
      *
-     * @param parent parent <tt>DataSource</tt>.
+     * @param parent parent <code>DataSource</code>.
      * @param formatControl format control used by this instance.
      */
     SurfaceStream(DataSource parent, FormatControl formatControl)
@@ -141,7 +141,7 @@ public class SurfaceStream extends CameraStreamBase
      * same captureThread for GL and CameraSurfaceRenderer to work properly
      * Note: onInitPreview is executed in the mBackgroundHandler thread
      *
-     * @param surface Encoder Surface object obtained from <tt>MediaCodec</tt> via read().
+     * @param surface Encoder Surface object obtained from <code>MediaCodec</code> via read().
      * @see AndroidEncoder#configureMediaCodec(MediaCodec, String)
      * link: https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglMakeCurrent.xhtml
      */

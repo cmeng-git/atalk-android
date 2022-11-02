@@ -10,7 +10,7 @@ import javax.media.Controls;
 import timber.log.Timber;
 
 /**
- * Provides an abstract implementation of <tt>Controls</tt> which facilitates implementers by
+ * Provides an abstract implementation of <code>Controls</code> which facilitates implementers by
  * requiring them to only implement {@link Controls#getControls()}.
  *
  * @author Lyubomir Marinov
@@ -23,9 +23,9 @@ public abstract class AbstractControls implements Controls
 	 * looks for a control of the specified type in the returned array of controls.
 	 *
 	 * @param controlType
-	 * 		a <tt>String</tt> value naming the type of the control of this instance to be
+	 * 		a <code>String</code> value naming the type of the control of this instance to be
 	 * 		retrieved
-	 * @return an <tt>Object</tt> which represents the control of this instance with the specified
+	 * @return an <code>Object</code> which represents the control of this instance with the specified
 	 * type
 	 */
 	public Object getControl(String controlType)
@@ -34,18 +34,18 @@ public abstract class AbstractControls implements Controls
 	}
 
 	/**
-	 * Gets the control of a specific <tt>Controls</tt> implementation of a specific type if such a
+	 * Gets the control of a specific <code>Controls</code> implementation of a specific type if such a
 	 * control is made available through {@link Controls#getControls()}; otherwise, returns
-	 * <tt>null</tt>.
+	 * <code>null</code>.
 	 *
 	 * @param controlsImpl
-	 * 		the implementation of <tt>Controls</tt> which is to be queried for its list of
+	 * 		the implementation of <code>Controls</code> which is to be queried for its list of
 	 * 		controls so that the control of the specified type can be looked for
 	 * @param controlType
-	 * 		a <tt>String</tt> value which names the type of the control to be retrieved
-	 * @return an <tt>Object</tt> which represents the control of <tt>controlsImpl</tt> of the
-	 * specified <tt>controlType</tt> if such a control is made available through
-	 * <tt>Controls#getControls()</tt>; otherwise, <tt>null</tt>
+	 * 		a <code>String</code> value which names the type of the control to be retrieved
+	 * @return an <code>Object</code> which represents the control of <code>controlsImpl</code> of the
+	 * specified <code>controlType</code> if such a control is made available through
+	 * <code>Controls#getControls()</code>; otherwise, <code>null</code>
 	 */
 	public static Object getControl(Controls controlsImpl, String controlType)
 	{
@@ -72,21 +72,21 @@ public abstract class AbstractControls implements Controls
 	}
 
 	/**
-	 * Returns an instance of a specific <tt>Class</tt> which is either a control of a specific
-	 * <tt>Controls</tt> implementation or the <tt>Controls</tt> implementation itself if it is an
-	 * instance of the specified <tt>Class</tt>. The method is similar to
-	 * {@link #getControl(Controls, String)} in querying the specified <tt>Controls</tt>
-	 * implementation about a control of the specified <tt>Class</tt> but is different in
-	 * looking at the type hierarchy of the <tt>Controls</tt> implementation for the specified
-	 * <tt>Class</tt>.
+	 * Returns an instance of a specific <code>Class</code> which is either a control of a specific
+	 * <code>Controls</code> implementation or the <code>Controls</code> implementation itself if it is an
+	 * instance of the specified <code>Class</code>. The method is similar to
+	 * {@link #getControl(Controls, String)} in querying the specified <code>Controls</code>
+	 * implementation about a control of the specified <code>Class</code> but is different in
+	 * looking at the type hierarchy of the <code>Controls</code> implementation for the specified
+	 * <code>Class</code>.
 	 *
 	 * @param controlsImpl
-	 * 		the <tt>Controls</tt> implementation to query
+	 * 		the <code>Controls</code> implementation to query
 	 * @param controlType
 	 * 		the runtime type of the instance to be returned
-	 * @return an instance of the specified <tt>controlType</tt> if such an instance can be found
-	 * among the controls of the specified <tt>controlsImpl</tt> or <tt>controlsImpl</tt> is
-	 * an instance of the specified <tt>controlType</tt>; otherwise, <tt>null</tt>
+	 * @return an instance of the specified <code>controlType</code> if such an instance can be found
+	 * among the controls of the specified <code>controlsImpl</code> or <code>controlsImpl</code> is
+	 * an instance of the specified <code>controlType</code>; otherwise, <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T queryInterface(Controls controlsImpl, Class<T> controlType)
@@ -104,20 +104,20 @@ public abstract class AbstractControls implements Controls
 	}
 
 	/**
-	 * Returns an instance of a specific <tt>Class</tt> which is either a control of a specific
-	 * <tt>Controls</tt> implementation or the <tt>Controls</tt> implementation itself if it is an
-	 * instance of the specified <tt>Class</tt>. The method is similar to
-	 * {@link #getControl(Controls, String)} in querying the specified <tt>Controls</tt>
-	 * implementation about a control of the specified <tt>Class</tt> but is different in looking at
-	 * the type hierarchy of the <tt>Controls</tt> implementation for the specified <tt>Class</tt>.
+	 * Returns an instance of a specific <code>Class</code> which is either a control of a specific
+	 * <code>Controls</code> implementation or the <code>Controls</code> implementation itself if it is an
+	 * instance of the specified <code>Class</code>. The method is similar to
+	 * {@link #getControl(Controls, String)} in querying the specified <code>Controls</code>
+	 * implementation about a control of the specified <code>Class</code> but is different in looking at
+	 * the type hierarchy of the <code>Controls</code> implementation for the specified <code>Class</code>.
 	 *
 	 * @param controlsImpl
-	 * 		the <tt>Controls</tt> implementation to query
+	 * 		the <code>Controls</code> implementation to query
 	 * @param controlType
 	 * 		the runtime type of the instance to be returned
-	 * @return an instance of the specified <tt>controlType</tt> if such an instance can be found
-	 * among the controls of the specified <tt>controlsImpl</tt> or <tt>controlsImpl</tt> is
-	 * an instance of the specified <tt>controlType</tt>; otherwise, <tt>null</tt>
+	 * @return an instance of the specified <code>controlType</code> if such an instance can be found
+	 * among the controls of the specified <code>controlsImpl</code> or <code>controlsImpl</code> is
+	 * an instance of the specified <code>controlType</code>; otherwise, <code>null</code>
 	 */
 	public static Object queryInterface(Controls controlsImpl, String controlType)
 	{

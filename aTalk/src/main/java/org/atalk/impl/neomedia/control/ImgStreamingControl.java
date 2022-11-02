@@ -8,8 +8,8 @@ package org.atalk.impl.neomedia.control;
 import javax.media.Control;
 
 /**
- * Defines the interface for controlling <tt>CaptureDevice</tt>s/ <tt>DataSource</tt>s associated
- * with the <tt>imgstreaming</tt> FMJ/JMF protocol.
+ * Defines the interface for controlling <code>CaptureDevice</code>s/ <code>DataSource</code>s associated
+ * with the <code>imgstreaming</code> FMJ/JMF protocol.
  *
  * @author Lyubomir Marinov
  */
@@ -17,10 +17,10 @@ public interface ImgStreamingControl extends Control
 {
 	/**
 	 * Set the display index and the origin of the stream associated with a specific index in the
-	 * <tt>DataSource</tt> of this <tt>Control</tt>.
+	 * <code>DataSource</code> of this <code>Control</code>.
 	 *
 	 * @param streamIndex
-	 * 		the index in the associated <tt>DataSource</tt> of the stream to set the display index
+	 * 		the index in the associated <code>DataSource</code> of the stream to set the display index
 	 * 		and the origin of
 	 * @param displayIndex
 	 * 		the display index to set on the specified stream

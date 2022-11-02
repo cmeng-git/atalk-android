@@ -25,7 +25,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Implements an FMJ <tt>Codec</tt> using Android's {@link MediaCodec}.
+ * Implements an FMJ <code>Codec</code> using Android's {@link MediaCodec}.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -40,45 +40,45 @@ public class AndroidMediaCodec extends AbstractCodec2
     /* frames per second * /
 
     /**
-     * The map of FMJ <tt>Format</tt> encodings to <tt>MediaCodec</tt> mime types which allows
+     * The map of FMJ <code>Format</code> encodings to <code>MediaCodec</code> mime types which allows
      * converting between the two.
      */
     private static final String[] FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES;
 
     /**
-     * The mime type of H.264-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of H.264-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     private static final String H264_MEDIA_CODEC_TYPE = "video/avc";
 
     /**
-     * The constant defined by OpenMAX IL to signify that a <tt>colorFormat</tt> value defined in
-     * the terms of Android's <tt>MediaCodec</tt> class is unknown.
+     * The constant defined by OpenMAX IL to signify that a <code>colorFormat</code> value defined in
+     * the terms of Android's <code>MediaCodec</code> class is unknown.
      */
     private static final int OMX_COLOR_FormatUnused = 0;
 
     /**
-     * The map of <tt>FFmpeg</tt> pixel formats to <tt>MediaCodec</tt> <tt>colorFormat</tt>s which
+     * The map of <code>FFmpeg</code> pixel formats to <code>MediaCodec</code> <code>colorFormat</code>s which
      * allows converting between the two.
      */
     private static final int[] PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of media data supported as input by <tt>AndroidMediaCodec</tt> instances.
+     * The list of <code>Format</code>s of media data supported as input by <code>AndroidMediaCodec</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of media data supported as output by <tt>AndroidMediaCodec</tt> instances.
+     * The list of <code>Format</code>s of media data supported as output by <code>AndroidMediaCodec</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS;
 
     /**
-     * The mime type of VP8-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of VP8-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     private static final String VP8_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp8";
 
     /**
-     * The mime type of VP9-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of VP9-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     private static final String VP9_MEDIA_CODEC_TYPE = "video/x-vnd.on2.vp9";
 
@@ -216,13 +216,13 @@ public class AndroidMediaCodec extends AbstractCodec2
 
     /**
      * Invokes {@link MediaCodecInfo#getCapabilitiesForType(String)} on a specific
-     * <tt>MediaCodecInfo</tt> instance with a specific supported/mime type and logs and swallows
-     * any <tt>IllegalArgumentException</tt>. Such an exception has been seen thrown on at least one
+     * <code>MediaCodecInfo</code> instance with a specific supported/mime type and logs and swallows
+     * any <code>IllegalArgumentException</code>. Such an exception has been seen thrown on at least one
      * device with no known reason.
      *
-     * @param codecInfo the <tt>MediaCodecInfo</tt> to invoke the method on
+     * @param codecInfo the <code>MediaCodecInfo</code> to invoke the method on
      * @param type the supported/mime type to pass as an argument to the method to be invoked
-     * @return the result of the invocation of the method on the specified <tt>codecInfo</tt>
+     * @return the result of the invocation of the method on the specified <code>codecInfo</code>
      */
     private static MediaCodecInfo.CodecCapabilities getCapabilitiesForType(
             MediaCodecInfo codecInfo, String type)
@@ -239,13 +239,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Gets an FMJ <tt>VideoFormat</tt> instance which represents the same information about media
-     * data as a specific <tt>colorFormat</tt> defined in the terms of Android's <tt>MediaCodec</tt> class.
+     * Gets an FMJ <code>VideoFormat</code> instance which represents the same information about media
+     * data as a specific <code>colorFormat</code> defined in the terms of Android's <code>MediaCodec</code> class.
      *
-     * @param colorFormat the <tt>colorFormat</tt> value in the terms of Android's <tt>MediaCodec</tt> class to
-     * get an FMJ <tt>VideoFormat</tt> equivalent of
-     * @return an FMJ <tt>VideoFormat</tt> instance which represents the same information about
-     * media data as (i.e. is equivalent to) the specified <tt>colorFormat</tt>
+     * @param colorFormat the <code>colorFormat</code> value in the terms of Android's <code>MediaCodec</code> class to
+     * get an FMJ <code>VideoFormat</code> equivalent of
+     * @return an FMJ <code>VideoFormat</code> instance which represents the same information about
+     * media data as (i.e. is equivalent to) the specified <code>colorFormat</code>
      */
     private static VideoFormat getFmjFormatFromMediaCodecColorFormat(int colorFormat)
     {
@@ -262,13 +262,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Gets an FMJ <tt>Format</tt> instance which represents the same information about media data
-     * as a specific mime type defined in the terms of Android's <tt>MediaCodec</tt> class.
+     * Gets an FMJ <code>Format</code> instance which represents the same information about media data
+     * as a specific mime type defined in the terms of Android's <code>MediaCodec</code> class.
      *
-     * @param type the mime type in the terms of Android's <tt>MediaCodec</tt> class to get an FMJ
-     * <tt>Format</tt> equivalent of
-     * @return an FMJ <tt>Format</tt> instance which represents the same information about media
-     * data as (i.e. is equivalent to) the specified <tt>type</tt>
+     * @param type the mime type in the terms of Android's <code>MediaCodec</code> class to get an FMJ
+     * <code>Format</code> equivalent of
+     * @return an FMJ <code>Format</code> instance which represents the same information about media
+     * data as (i.e. is equivalent to) the specified <code>type</code>
      */
     private static Format getFmjFormatFromMediaCodecType(String type)
     {
@@ -285,13 +285,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Gets a <tt>colorFormat</tt> value defined in the terms of Android's <tt>MediaCodec</tt> class
-     * which is equivalent to a specific FMJ <tt>Format</tt>.
+     * Gets a <code>colorFormat</code> value defined in the terms of Android's <code>MediaCodec</code> class
+     * which is equivalent to a specific FMJ <code>Format</code>.
      *
-     * @param format the FMJ <tt>Format</tt> to get the equivalent to
-     * @return a <tt>colorFormat</tt> value defined in the terms of Android's <tt>MediaCodec</tt>
-     * class which is equivalent to the specified <tt>format</tt> or
-     * {@link #OMX_COLOR_FormatUnused} if no equivalent is known to <tt>AndroidMediaCodec</tt>
+     * @param format the FMJ <code>Format</code> to get the equivalent to
+     * @return a <code>colorFormat</code> value defined in the terms of Android's <code>MediaCodec</code>
+     * class which is equivalent to the specified <code>format</code> or
+     * {@link #OMX_COLOR_FormatUnused} if no equivalent is known to <code>AndroidMediaCodec</code>
      */
     private static int getMediaCodecColorFormatFromFmjFormat(Format format)
     {
@@ -308,13 +308,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Gets a mime type defined in the terms of Android's <tt>MediaCodec</tt> class which is
-     * equivalent to a specific FMJ <tt>Format</tt>.
+     * Gets a mime type defined in the terms of Android's <code>MediaCodec</code> class which is
+     * equivalent to a specific FMJ <code>Format</code>.
      *
-     * @param format the FMJ <tt>Format</tt> to get the equivalent to
-     * @return a mime type defined in the terms of Android's <tt>MediaCodec</tt> class which is
-     * equivalent to the specified <tt>format</tt> or <tt>null</tt> if no equivalent is
-     * known to <tt>AndroidMediaCodec</tt>
+     * @param format the FMJ <code>Format</code> to get the equivalent to
+     * @return a mime type defined in the terms of Android's <code>MediaCodec</code> class which is
+     * equivalent to the specified <code>format</code> or <code>null</code> if no equivalent is
+     * known to <code>AndroidMediaCodec</code>
      */
     private static String getMediaCodecTypeFromFmjFormat(Format format)
     {
@@ -330,14 +330,14 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Determines whether a specific FMJ <tt>Format</tt> matches (i.e. is equivalent to) a specific
-     * <tt>colorFormat</tt> defined in the terms of Android's <tt>MediaCodec</tt> class.
+     * Determines whether a specific FMJ <code>Format</code> matches (i.e. is equivalent to) a specific
+     * <code>colorFormat</code> defined in the terms of Android's <code>MediaCodec</code> class.
      *
-     * @param format the FMJ <tt>Format</tt> to be compared to the specified <tt>colorFormat</tt>
-     * @param colorFormat the <tt>colorFormat</tt> defined in the terms of Android's <tt>MediaCodec</tt> class
-     * to be compared to the specified <tt>format</tt>
-     * @return <tt>true</tt> if the specified <tt>format</tt> matches (i.e. is equivalent to) the
-     * specified <tt>colorFormat</tt>; otherwise, <tt>false</tt>
+     * @param format the FMJ <code>Format</code> to be compared to the specified <code>colorFormat</code>
+     * @param colorFormat the <code>colorFormat</code> defined in the terms of Android's <code>MediaCodec</code> class
+     * to be compared to the specified <code>format</code>
+     * @return <code>true</code> if the specified <code>format</code> matches (i.e. is equivalent to) the
+     * specified <code>colorFormat</code>; otherwise, <code>false</code>
      */
     private static boolean matchesMediaCodecColorFormat(Format format, int colorFormat)
     {
@@ -347,14 +347,14 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Determines whether a specific FMJ <tt>Format</tt> matches (i.e. is equivalent to) a specific
-     * mime type defined in the terms of Android's <tt>MediaCodec</tt> class.
+     * Determines whether a specific FMJ <code>Format</code> matches (i.e. is equivalent to) a specific
+     * mime type defined in the terms of Android's <code>MediaCodec</code> class.
      *
-     * @param format the FMJ <tt>Format</tt> to be compared to the specified <tt>type</tt>
-     * @param type the media type defined in the terms of Android's <tt>MediaCodec</tt> class to be
-     * compared to the specified <tt>format</tt>
-     * @return <tt>true</tt> if the specified <tt>format</tt> matches (i.e. is equal to) the
-     * specified <tt>type</tt>; otherwise, <tt>false</tt>
+     * @param format the FMJ <code>Format</code> to be compared to the specified <code>type</code>
+     * @param type the media type defined in the terms of Android's <code>MediaCodec</code> class to be
+     * compared to the specified <code>format</code>
+     * @return <code>true</code> if the specified <code>format</code> matches (i.e. is equal to) the
+     * specified <code>type</code>; otherwise, <code>false</code>
      */
     private static boolean matchesMediaCodecType(Format format, String type)
     {
@@ -363,14 +363,14 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * The <tt>AVFrame</tt> instance into which this <tt>Codec</tt> outputs media (data) if the
-     * <tt>outputFormat</tt> is an <tt>AVFrameFormat</tt> instance.
+     * The <code>AVFrame</code> instance into which this <code>Codec</code> outputs media (data) if the
+     * <code>outputFormat</code> is an <code>AVFrameFormat</code> instance.
      */
     private AVFrame avFrame;
 
     /**
-     * A <tt>byte</tt> in the form of an array which is used to copy the bytes of a
-     * <tt>java.nio.ByteBuffer</tt> into native memory (because the <tt>memcpy</tt> implementation
+     * A <code>byte</code> in the form of an array which is used to copy the bytes of a
+     * <code>java.nio.ByteBuffer</code> into native memory (because the <code>memcpy</code> implementation
      * requires an array. Allocated once to reduce garbage collection.
      */
     private final byte[] b = new byte[1];
@@ -378,7 +378,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     private final ByteBufferPool byteBufferPool = new ByteBufferPool();
 
     /**
-     * The <tt>colorFormat</tt> value defined in the terms of Android's <tt>MediaCodec</tt> class
+     * The <code>colorFormat</code> value defined in the terms of Android's <code>MediaCodec</code> class
      * with which {@link #mediaCodec} is configured.
      */
     private int colorFormat = OMX_COLOR_FormatUnused;
@@ -390,8 +390,8 @@ public class AndroidMediaCodec extends AbstractCodec2
     private boolean encoder;
 
     /**
-     * The <tt>MediaCodec.BufferInfo</tt> instance which is populated by {@link #mediaCodec} to
-     * describe the offset and length/size of the <tt>java.nio.ByteBuffer</tt>s it utilizes.
+     * The <code>MediaCodec.BufferInfo</code> instance which is populated by {@link #mediaCodec} to
+     * describe the offset and length/size of the <code>java.nio.ByteBuffer</code>s it utilizes.
      * Allocated once to reduce garbage collection at runtime.
      */
     private final MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
@@ -399,7 +399,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     private java.nio.ByteBuffer[] inputBuffers;
 
     /**
-     * Android's <tt>MediaCodec</tt> instance which is wrapped by this instance and which performs
+     * Android's <code>MediaCodec</code> instance which is wrapped by this instance and which performs
      * the very media processing (during the execution of {@link #doProcess(Buffer, Buffer)}).
      */
     private MediaCodec mediaCodec;
@@ -407,13 +407,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     private java.nio.ByteBuffer[] outputBuffers;
 
     /**
-     * The mime type defined in the terms of Android's <tt>MediaCodec</tt> class with which
+     * The mime type defined in the terms of Android's <code>MediaCodec</code> class with which
      * {@link #mediaCodec} is configured.
      */
     private String type;
 
     /**
-     * Initializes a new <tt>AndroidMediaCodec</tt> instance.
+     * Initializes a new <code>AndroidMediaCodec</code> instance.
      */
     public AndroidMediaCodec()
     {
@@ -694,8 +694,8 @@ public class AndroidMediaCodec extends AbstractCodec2
     }
 
     /**
-     * Configures and starts {@link #mediaCodec} if the <tt>inputFormat</tt> and
-     * <tt>outputFormat</tt> properties of this <tt>Codec</tt> have already been assigned suitable
+     * Configures and starts {@link #mediaCodec} if the <code>inputFormat</code> and
+     * <code>outputFormat</code> properties of this <code>Codec</code> have already been assigned suitable
      * values.
      */
     private void maybeConfigureAndStart()
@@ -845,7 +845,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * {@inheritDoc}
      *
      * Makes sure that {@link #mediaCodec} is in accord in terms of properties with the
-     * <tt>inputFormat</tt> and <tt>outputFormat</tt> set on this <tt>Codec</tt>.
+     * <code>inputFormat</code> and <code>outputFormat</code> set on this <code>Codec</code>.
      */
     @Override
     public Format setInputFormat(Format format)
@@ -863,7 +863,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * {@inheritDoc}
      *
      * Makes sure that {@link #mediaCodec} is in accord in terms of properties with the
-     * <tt>inputFormat</tt> and <tt>outputFormat</tt> set on this <tt>Codec</tt>.
+     * <code>inputFormat</code> and <code>outputFormat</code> set on this <code>Codec</code>.
      */
     @Override
     public Format setOutputFormat(Format format)

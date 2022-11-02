@@ -24,12 +24,12 @@ import java.util.*;
 public class JavaEncoder extends AbstractCodec2 implements FormatParametersAwareCodec
 {
 	/**
-	 * The duration an output <tt>Buffer</tt> produced by this <tt>Codec</tt>.
+	 * The duration an output <code>Buffer</code> produced by this <code>Codec</code>.
 	 */
 	private int duration = 0;
 
 	/**
-	 * The <tt>ilbc_encoder</tt> adapted to <tt>Codec</tt> by this instance.
+	 * The <code>ilbc_encoder</code> adapted to <code>Codec</code> by this instance.
 	 */
 	private ilbc_encoder enc = null;
 
@@ -55,7 +55,7 @@ public class JavaEncoder extends AbstractCodec2 implements FormatParametersAware
 	private int prevInLen;
 
 	/**
-	 * Initializes a new iLBC <tt>JavaEncoder</tt> instance.
+	 * Initializes a new iLBC <code>JavaEncoder</code> instance.
 	 */
 	public JavaEncoder()
 	{
@@ -230,7 +230,7 @@ public class JavaEncoder extends AbstractCodec2 implements FormatParametersAware
 	}
 
 	/**
-	 * Sets the format parameters to <tt>fmtps</tt>
+	 * Sets the format parameters to <code>fmtps</code>
 	 *
 	 * @param fmtps
 	 *        The format parameters to set

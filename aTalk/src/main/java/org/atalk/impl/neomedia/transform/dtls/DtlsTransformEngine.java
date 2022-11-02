@@ -33,17 +33,17 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     private boolean disposed = false;
 
     /**
-     * The <tt>DtlsControl</tt> which has initialized this instance.
+     * The <code>DtlsControl</code> which has initialized this instance.
      */
     private final DtlsControlImpl dtlsControl;
 
     /**
-     * The <tt>PacketTransformer</tt>s of this <tt>TransformEngine</tt> for data/RTP and control/RTCP packets.
+     * The <code>PacketTransformer</code>s of this <code>TransformEngine</code> for data/RTP and control/RTCP packets.
      */
     private final DtlsPacketTransformer[] packetTransformers = new DtlsPacketTransformer[2];
 
     /**
-     * Initializes a new <tt>DtlsTransformEngine</tt> instance.
+     * Initializes a new <code>DtlsTransformEngine</code> instance.
      */
     public DtlsTransformEngine(DtlsControlImpl dtlsControl)
     {
@@ -69,11 +69,11 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     }
 
     /**
-     * Initializes a new <tt>DtlsPacketTransformer</tt> instance which is to work on control/RTCP or data/RTP packets.
+     * Initializes a new <code>DtlsPacketTransformer</code> instance which is to work on control/RTCP or data/RTP packets.
      *
      * @param componentID the ID of the component for which the new instance is to work
-     * @return a new <tt>DtlsPacketTransformer</tt> instance which is to work on control/RTCP or
-     * data/RTP packets (in accord with <tt>data</tt>)
+     * @return a new <code>DtlsPacketTransformer</code> instance which is to work on control/RTCP or
+     * data/RTP packets (in accord with <code>data</code>)
      */
     protected DtlsPacketTransformer createPacketTransformer(int componentID)
     {
@@ -81,9 +81,9 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     }
 
     /**
-     * Gets the <tt>DtlsControl</tt> which has initialized this instance.
+     * Gets the <code>DtlsControl</code> which has initialized this instance.
      *
-     * @return the <tt>DtlsControl</tt> which has initialized this instance
+     * @return the <code>DtlsControl</code> which has initialized this instance
      */
     DtlsControlImpl getDtlsControl()
     {
@@ -91,12 +91,12 @@ public class DtlsTransformEngine implements SrtpControl.TransformEngine
     }
 
     /**
-     * Gets the <tt>PacketTransformer</tt> of this <tt>TransformEngine</tt> which is to work or
+     * Gets the <code>PacketTransformer</code> of this <code>TransformEngine</code> which is to work or
      * works for the component with a specific ID.
      *
-     * @param componentID the ID of the component for which the returned <tt>PacketTransformer</tt> is to work or works
-     * @return the <tt>PacketTransformer</tt>, if any, which is to work or works for the component
-     * with the specified <tt>componentID</tt>
+     * @param componentID the ID of the component for which the returned <code>PacketTransformer</code> is to work or works
+     * @return the <code>PacketTransformer</code>, if any, which is to work or works for the component
+     * with the specified <code>componentID</code>
      */
     private DtlsPacketTransformer getPacketTransformer(int componentID)
     {

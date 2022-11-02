@@ -52,7 +52,7 @@ public class SRTPTransformer extends SinglePacketTransformer
     private final Map<Integer, SrtpCryptoContext> contexts;
 
     /**
-     * Initializes a new <tt>SRTPTransformer</tt> instance.
+     * Initializes a new <code>SRTPTransformer</code> instance.
      *
      * @param factory the context factory to be used by the new instance for both directions.
      */
@@ -78,8 +78,8 @@ public class SRTPTransformer extends SinglePacketTransformer
      * Sets a new key factory when key material has changed.
      *
      * @param factory The associated context factory for transformations.
-     * @param forward <tt>true</tt> if the supplied factory is for forward transformations,
-     * <tt>false</tt> for the reverse transformation factory.
+     * @param forward <code>true</code> if the supplied factory is for forward transformations,
+     * <code>false</code> for the reverse transformation factory.
      */
     public void setContextFactory(SrtpContextFactory factory, boolean forward)
     {
@@ -100,7 +100,7 @@ public class SRTPTransformer extends SinglePacketTransformer
     }
 
     /**
-     * Closes this <tt>SRTPTransformer</tt> and the underlying transform engines.It closes all
+     * Closes this <code>SRTPTransformer</code> and the underlying transform engines.It closes all
      * stored crypto contexts. It deletes key data and forces a cleanup of the crypto contexts.
      */
     public void close()

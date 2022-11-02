@@ -31,7 +31,7 @@ public class Encoder extends AbstractCodec
 	}
 
 	/**
-	 * Constructs a new <tt>Encoder</tt>.
+	 * Constructs a new <code>Encoder</code>.
 	 */
 	public Encoder()
 	{

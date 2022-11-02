@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import javax.xml.namespace.QName;
 
 /**
- * The <tt>Captcha</tt> implementing XEP-0158: CAPTCHA Forms is an extension element to
+ * The <code>Captcha</code> implementing XEP-0158: CAPTCHA Forms is an extension element to
  * include data Form, information in an XMPP stanza. Its use include fighting against Spam group chat
  *
  * @author Eng Chong Meng
@@ -60,7 +60,7 @@ public class CaptchaExtension implements ExtensionElement
     private DataForm mForm;
 
     /**
-     * Creates a <tt>Captcha</tt> form, by specifying the form
+     * Creates a <code>Captcha</code> form, by specifying the form
      *
      * @param form the DataForm
      */
@@ -100,7 +100,7 @@ public class CaptchaExtension implements ExtensionElement
     }
 
     /**
-     * Returns the XML representation of the <tt>Captcha</tt>.
+     * Returns the XML representation of the <code>Captcha</code>.
      *
      * <captcha xmlns='urn:xmpp:captcha'>
      * <x xmlns='jabber:x:data' type='submit'>

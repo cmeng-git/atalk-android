@@ -244,7 +244,7 @@ public class SrtpPolicy
      * Turn this off if you need to send identical packets more than once (e.g., retransmission to a peer that
      * does not support the rtx payload.)  <b>Note</b>: Never re-send a packet with a different payload!
      *
-     * @param enabled <tt>true</tt> if send-side replay protection is to be enabled; <tt>false</tt> if not.
+     * @param enabled <code>true</code> if send-side replay protection is to be enabled; <code>false</code> if not.
      */
     public void setSendReplayEnabled(boolean enabled)
     {
@@ -278,7 +278,7 @@ public class SrtpPolicy
      * an RTP translator, with peers that are doing retransmission without using the rtx payload.)
      * <b>Note</b>: You must make sure your packet handling is idempotent!
      *
-     * @param enabled <tt>true</tt> if receive-side replay protection is to be enabled; <tt>false</tt> if not.
+     * @param enabled <code>true</code> if receive-side replay protection is to be enabled; <code>false</code> if not.
      */
     public void setReceiveReplayEnabled(boolean enabled)
     {

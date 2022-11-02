@@ -16,14 +16,14 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.*;
 
 /**
- * Enables reading from a <tt>PushBufferStream</tt> a certain maximum number of data units (e.g.
- * bytes, shorts, ints) even if the <tt>PushBufferStream</tt> itself pushes a larger number of data
+ * Enables reading from a <code>PushBufferStream</code> a certain maximum number of data units (e.g.
+ * bytes, shorts, ints) even if the <code>PushBufferStream</code> itself pushes a larger number of data
  * units.
  * <p>
- * An example use of this functionality is pacing a <tt>PushBufferStream</tt> which pushes more data
- * units in a single step than a <tt>CaptureDevice</tt>. When these two undergo audio mixing, the
- * different numbers of per-push data units will cause the <tt>PushBufferStream</tt> "play" itself
- * faster than the <tt>CaptureDevice</tt>.
+ * An example use of this functionality is pacing a <code>PushBufferStream</code> which pushes more data
+ * units in a single step than a <code>CaptureDevice</code>. When these two undergo audio mixing, the
+ * different numbers of per-push data units will cause the <code>PushBufferStream</code> "play" itself
+ * faster than the <code>CaptureDevice</code>.
  * </p>
  *
  * @author Lyubomir Marinov
@@ -33,31 +33,31 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * The default length in milliseconds of the buffering to be performed by
-	 * <tt>CachePushBufferStream</tt>s.
+	 * <code>CachePushBufferStream</code>s.
 	 */
 	public static final long DEFAULT_BUFFER_LENGTH = 20;
 
 	/**
-	 * The maximum number of <tt>Buffer</tt>s to be cached in a <tt>CachingPushBufferStream</tt>.
+	 * The maximum number of <code>Buffer</code>s to be cached in a <code>CachingPushBufferStream</code>.
 	 * Generally, defined to a relatively large value which allows large buffering and yet tries to
-	 * prevent <tt>OutOfMemoryError</tt>.
+	 * prevent <code>OutOfMemoryError</code>.
 	 */
 	private static final int MAX_CACHE_SIZE = 1024;
 
 	/**
-	 * The <tt>BufferControl</tt> of this <tt>PushBufferStream</tt> which allows the adjustment of
+	 * The <code>BufferControl</code> of this <code>PushBufferStream</code> which allows the adjustment of
 	 * the size of the buffering it performs.
 	 */
 	private BufferControl bufferControl;
 
 	/**
-	 * The <tt>Object</tt> which synchronizes the access to {@link #bufferControl}.
+	 * The <code>Object</code> which synchronizes the access to {@link #bufferControl}.
 	 */
 	private final Object bufferControlSyncRoot = new Object();
 
 	/**
-	 * The list of <tt>Buffer</tt>s in which this instance stores the data it reads from the
-	 * wrapped <tt>PushBufferStream</tt> and from which it reads in chunks later on when its
+	 * The list of <code>Buffer</code>s in which this instance stores the data it reads from the
+	 * wrapped <code>PushBufferStream</code> and from which it reads in chunks later on when its
 	 * {@link #read(Buffer)} method is called.
 	 */
 	private final List<Buffer> cache = new LinkedList<Buffer>();
@@ -68,29 +68,29 @@ public class CachingPushBufferStream implements PushBufferStream
 	private long cacheLengthInMillis = 0;
 
 	/**
-	 * The last <tt>IOException</tt> this stream has received from the <tt>#read(Buffer)</tt>
+	 * The last <code>IOException</code> this stream has received from the <code>#read(Buffer)</code>
 	 * method of the wrapped stream and to be thrown by this stream on the earliest call of its
-	 * <tt>#read(Buffer)</tt> method.
+	 * <code>#read(Buffer)</code> method.
 	 */
 	private IOException readException;
 
 	/**
-	 * The <tt>PushBufferStream</tt> being paced by this instance with respect to the maximum
+	 * The <code>PushBufferStream</code> being paced by this instance with respect to the maximum
 	 * number of data units it provides in a single push.
 	 */
 	private final PushBufferStream stream;
 
 	/**
-	 * The <tt>BufferTransferHandler</tt> set on {@link #stream}.
+	 * The <code>BufferTransferHandler</code> set on {@link #stream}.
 	 */
 	private BufferTransferHandler transferHandler;
 
 	/**
-	 * Initializes a new <tt>CachingPushBufferStream</tt> instance which is to pace the number of
-	 * per-push data units a specific <tt>PushBufferStream</tt> provides.
+	 * Initializes a new <code>CachingPushBufferStream</code> instance which is to pace the number of
+	 * per-push data units a specific <code>PushBufferStream</code> provides.
 	 *
 	 * @param stream
-	 * 		the <tt>PushBufferStream</tt> to be paced with respect to the number of per-push data
+	 * 		the <code>PushBufferStream</code> to be paced with respect to the number of per-push data
 	 * 		units it provides
 	 */
 	public CachingPushBufferStream(PushBufferStream stream)
@@ -99,12 +99,12 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Determines whether adding a new <tt>Buffer</tt> to {@link #cache} is acceptable given the
-	 * maximum size of the <tt>cache</tt> and the length of the media currently available in it.
+	 * Determines whether adding a new <code>Buffer</code> to {@link #cache} is acceptable given the
+	 * maximum size of the <code>cache</code> and the length of the media currently available in it.
 	 *
-	 * @return <tt>true</tt> if adding a new <tt>Buffer</tt> to <tt>cache</tt> is acceptable;
-	 * otherwise, <tt>false</tt> which means that the reading from the wrapped
-	 * <tt>PushBufferStream</tt> should be blocked until <tt>true</tt> is returned
+	 * @return <code>true</code> if adding a new <code>Buffer</code> to <code>cache</code> is acceptable;
+	 * otherwise, <code>false</code> which means that the reading from the wrapped
+	 * <code>PushBufferStream</code> should be blocked until <code>true</code> is returned
 	 */
 	private boolean canWriteInCache()
 	{
@@ -146,11 +146,11 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link SourceStream#endOfStream()}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt> when the cache of this instance is fully read; otherwise, returns
-	 * <tt>false</tt>.
+	 * <code>PushBufferStream</code> when the cache of this instance is fully read; otherwise, returns
+	 * <code>false</code>.
 	 *
-	 * @return <tt>true</tt> if this <tt>PushBufferStream</tt> has reached the end of the
-	 * content it makes available; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if this <code>PushBufferStream</code> has reached the end of the
+	 * content it makes available; otherwise, <code>false</code>
 	 */
 	public boolean endOfStream()
 	{
@@ -163,11 +163,11 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Gets the <tt>BufferControl</tt> of this <tt>PushBufferStream</tt> which allows the
+	 * Gets the <code>BufferControl</code> of this <code>PushBufferStream</code> which allows the
 	 * adjustment of the size of the buffering it performs. If it does not exist yet, it is
 	 * created.
 	 *
-	 * @return the <tt>BufferControl</tt> of this <tt>PushBufferStream</tt> which allows the
+	 * @return the <code>BufferControl</code> of this <code>PushBufferStream</code> which allows the
 	 * adjustment of the size of the buffering it performs
 	 */
 	private BufferControl getBufferControl()
@@ -181,10 +181,10 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Gets the length in milliseconds of the buffering performed by this
-	 * <tt>PushBufferStream</tt>.
+	 * <code>PushBufferStream</code>.
 	 *
 	 * @return the length in milliseconds of the buffering performed by this
-	 * <tt>PushBufferStream</tt> if such a value has been set; otherwise,
+	 * <code>PushBufferStream</code> if such a value has been set; otherwise,
 	 * {@link BufferControl#DEFAULT_VALUE}
 	 */
 	private long getBufferLength()
@@ -197,10 +197,10 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link SourceStream#getContentDescriptor()}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt>.
+	 * <code>PushBufferStream</code>.
 	 *
-	 * @return a <tt>ContentDescriptor</tt> which describes the type of the content made available
-	 * by the wrapped <tt>PushBufferStream</tt>
+	 * @return a <code>ContentDescriptor</code> which describes the type of the content made available
+	 * by the wrapped <code>PushBufferStream</code>
 	 */
 	public ContentDescriptor getContentDescriptor()
 	{
@@ -209,9 +209,9 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link SourceStream#getContentLength()}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt>.
+	 * <code>PushBufferStream</code>.
 	 *
-	 * @return the length of the content made available by the wrapped <tt>PushBufferStream</tt>
+	 * @return the length of the content made available by the wrapped <code>PushBufferStream</code>
 	 */
 	public long getContentLength()
 	{
@@ -220,16 +220,16 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link javax.media.Controls#getControl(String)}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt> and gives access to the <tt>BufferControl</tt> of this instance if
-	 * such a <tt>controlType</tt> is specified and the wrapped <tt>PushBufferStream</tt> does not
+	 * <code>PushBufferStream</code> and gives access to the <code>BufferControl</code> of this instance if
+	 * such a <code>controlType</code> is specified and the wrapped <code>PushBufferStream</code> does not
 	 * have such a control available.
 	 *
 	 * @param controlType
-	 * 		a <tt>String</tt> value which names the type of the control of the wrapped
-	 * 		<tt>PushBufferStream</tt> to be retrieved
-	 * @return an <tt>Object</tt> which represents the control of the wrapped
-	 * <tt>PushBufferStream</tt> with the specified type if such a control is available;
-	 * otherwise, <tt>null</tt>
+	 * 		a <code>String</code> value which names the type of the control of the wrapped
+	 * 		<code>PushBufferStream</code> to be retrieved
+	 * @return an <code>Object</code> which represents the control of the wrapped
+	 * <code>PushBufferStream</code> with the specified type if such a control is available;
+	 * otherwise, <code>null</code>
 	 */
 	public Object getControl(String controlType)
 	{
@@ -243,11 +243,11 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link javax.media.Controls#getControls()}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt> and adds the <tt>BufferControl</tt> of this instance if the
-	 * wrapped <tt>PushBufferStream</tt> does not have a control of such type available.
+	 * <code>PushBufferStream</code> and adds the <code>BufferControl</code> of this instance if the
+	 * wrapped <code>PushBufferStream</code> does not have a control of such type available.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the control available for the wrapped
-	 * <tt>PushBufferStream</tt>
+	 * @return an array of <code>Object</code>s which represent the control available for the wrapped
+	 * <code>PushBufferStream</code>
 	 */
 	public Object[] getControls()
 	{
@@ -283,10 +283,10 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link PushBufferStream#getFormat()}. Delegates to the wrapped
-	 * <tt>PushBufferStream</tt>.
+	 * <code>PushBufferStream</code>.
 	 *
-	 * @return the <tt>Format</tt> of the media data available for reading in this
-	 * <tt>PushBufferStream</tt>
+	 * @return the <code>Format</code> of the media data available for reading in this
+	 * <code>PushBufferStream</code>
 	 */
 	public Format getFormat()
 	{
@@ -294,15 +294,15 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Gets the length in milliseconds of the media in a specific <tt>Buffer</tt> (often
+	 * Gets the length in milliseconds of the media in a specific <code>Buffer</code> (often
 	 * referred to as duration).
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> which contains media the length in milliseconds of which is to be
+	 * 		the <code>Buffer</code> which contains media the length in milliseconds of which is to be
 	 * 		calculated
-	 * @return the length in milliseconds of the media in <tt>buffer</tt> if there actually is
-	 * media in <tt>buffer</tt> and its length in milliseconds can be calculated; otherwise,
-	 * <tt>0</tt>
+	 * @return the length in milliseconds of the media in <code>buffer</code> if there actually is
+	 * media in <code>buffer</code> and its length in milliseconds can be calculated; otherwise,
+	 * <code>0</code>
 	 */
 	private long getLengthInMillis(Buffer buffer)
 	{
@@ -328,9 +328,9 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Gets the <tt>PushBufferStream</tt> wrapped by this instance.
+	 * Gets the <code>PushBufferStream</code> wrapped by this instance.
 	 *
-	 * @return the <tt>PushBufferStream</tt> wrapped by this instance
+	 * @return the <code>PushBufferStream</code> wrapped by this instance
 	 */
 	public PushBufferStream getStream()
 	{
@@ -338,12 +338,12 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Implements {@link PushBufferStream#read(Buffer)}. If an <tt>IOException</tt> has been thrown
+	 * Implements {@link PushBufferStream#read(Buffer)}. If an <code>IOException</code> has been thrown
 	 * by the wrapped stream when data was last read from it, re-throws it. If there has been no
 	 * such exception, reads from the cache of this instance.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> to receive the read media data
+	 * 		the <code>Buffer</code> to receive the read media data
 	 * @throws IOException
 	 * 		if the wrapped stream has thrown such an exception when data was last read from it
 	 */
@@ -386,25 +386,25 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Reads data from a specific input <tt>Buffer</tt> (if such data is available) and writes the
-	 * read data into a specific output <tt>Buffer</tt>. The input <tt>Buffer</tt> will be modified
-	 * to reflect the number of read data units. If the output <tt>Buffer</tt> has allocated an
+	 * Reads data from a specific input <code>Buffer</code> (if such data is available) and writes the
+	 * read data into a specific output <code>Buffer</code>. The input <code>Buffer</code> will be modified
+	 * to reflect the number of read data units. If the output <code>Buffer</code> has allocated an
 	 * array for storing the read data and the type of this array matches that of the input
-	 * <tt>Buffer</tt>, it will be used and thus the output <tt>Buffer</tt> may control the maximum
+	 * <code>Buffer</code>, it will be used and thus the output <code>Buffer</code> may control the maximum
 	 * number of data units to be read into it.
 	 *
 	 * @param in
-	 * 		the <tt>Buffer</tt> to read data from
+	 * 		the <code>Buffer</code> to read data from
 	 * @param out
-	 * 		the <tt>Buffer</tt> into which to write the data read from the specified <tt>in</tt>
+	 * 		the <code>Buffer</code> into which to write the data read from the specified <code>in</code>
 	 * @param outOffset
-	 * 		the offset in <tt>out</tt> at which the data read from <tt>in</tt> is to be written
-	 * @return the offset in <tt>out</tt> at which a next round of writing is to continue;
-	 * <tt>-1</tt> if no more writing in <tt>out</tt> is to be performed and <tt>out</tt> is
+	 * 		the offset in <code>out</code> at which the data read from <code>in</code> is to be written
+	 * @return the offset in <code>out</code> at which a next round of writing is to continue;
+	 * <code>-1</code> if no more writing in <code>out</code> is to be performed and <code>out</code> is
 	 * to be returned to the caller
 	 * @throws IOException
-	 * 		if reading from <tt>in</tt> into <tt>out</tt> fails including if either of the
-	 * 		formats of <tt>in</tt> and <tt>out</tt> are not supported
+	 * 		if reading from <code>in</code> into <code>out</code> fails including if either of the
+	 * 		formats of <code>in</code> and <code>out</code> are not supported
 	 */
 	private int read(Buffer in, Buffer out, int outOffset)
 			throws IOException
@@ -493,13 +493,13 @@ public class CachingPushBufferStream implements PushBufferStream
 
 	/**
 	 * Implements {@link PushBufferStream#setTransferHandler(BufferTransferHandler)}. Delegates to
-	 * the wrapped <tt>PushBufferStream<tt> but wraps the specified
+	 * the wrapped <code>PushBufferStream<code> but wraps the specified
 	 * BufferTransferHandler in order to intercept the calls to
 	 * {@link BufferTransferHandler#transferData(PushBufferStream)} and read
-	 * data from the wrapped <tt>PushBufferStream</tt> into the cache during the calls in question.
+	 * data from the wrapped <code>PushBufferStream</code> into the cache during the calls in question.
 	 *
 	 * @param transferHandler
-	 * 		the <tt>BufferTransferHandler</tt> to be notified by this <tt>PushBufferStream</tt>
+	 * 		the <code>BufferTransferHandler</code> to be notified by this <code>PushBufferStream</code>
 	 * 		when media data is available for reading
 	 */
 	public void setTransferHandler(BufferTransferHandler transferHandler)
@@ -525,13 +525,13 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Reads data from the wrapped/input <tt>PushBufferStream</tt> into the cache of this stream if
+	 * Reads data from the wrapped/input <code>PushBufferStream</code> into the cache of this stream if
 	 * the cache accepts it. If the cache does not accept a new read, blocks the calling thread
 	 * until the cache accepts a new read and data is read from the wrapped
-	 * <tt>PushBufferStream</tt> into the cache.
+	 * <code>PushBufferStream</code> into the cache.
 	 *
 	 * @param transferHandler
-	 * 		the <tt>BufferTransferHandler</tt> which has been notified
+	 * 		the <code>BufferTransferHandler</code> which has been notified
 	 */
 	protected void transferData(BufferTransferHandler transferHandler)
 	{
@@ -609,8 +609,8 @@ public class CachingPushBufferStream implements PushBufferStream
 	}
 
 	/**
-	 * Implements a <tt>BufferControl</tt> which enables the adjustment of the length of the
-	 * buffering performed by a <tt>CachingPushBufferStream</tt>.
+	 * Implements a <code>BufferControl</code> which enables the adjustment of the length of the
+	 * buffering performed by a <code>CachingPushBufferStream</code>.
 	 */
 	private static class BufferControlImpl implements BufferControl
 	{
@@ -649,13 +649,13 @@ public class CachingPushBufferStream implements PushBufferStream
 		}
 
 		/**
-		 * Implements {@link Control#getControlComponent()}. Gets the UI <tt>Component</tt>
+		 * Implements {@link Control#getControlComponent()}. Gets the UI <code>Component</code>
 		 * representing this instance and exported by the owner of this instance. Returns
-		 * <tt>null</tt>.
+		 * <code>null</code>.
 		 *
-		 * @return the UI <tt>Component</tt> representing this instance and exported by the
-		 * owner of this instance if such a <tt>Component</tt> is available; otherwise,
-		 * <tt>null</tt>
+		 * @return the UI <code>Component</code> representing this instance and exported by the
+		 * owner of this instance if such a <code>Component</code> is available; otherwise,
+		 * <code>null</code>
 		 */
 		public Component getControlComponent()
 		{
@@ -666,7 +666,7 @@ public class CachingPushBufferStream implements PushBufferStream
 		 * Implements {@link BufferControl#getEnabledThreshold()}. Gets the indicator which
 		 * determines whether threshold calculations are enabled.
 		 *
-		 * @return <tt>true</tt> if threshold calculations are enabled; otherwise, <tt>false</tt>
+		 * @return <code>true</code> if threshold calculations are enabled; otherwise, <code>false</code>
 		 */
 		public boolean getEnabledThreshold()
 		{
@@ -695,7 +695,7 @@ public class CachingPushBufferStream implements PushBufferStream
 		 * 		instance
 		 * @return the length in milliseconds of the buffering performed by the owner of this
 		 * instance that is actually in effect after the attempt to set it to the specified
-		 * <tt>bufferLength</tt>
+		 * <code>bufferLength</code>
 		 */
 		public long setBufferLength(long bufferLength)
 		{
@@ -710,8 +710,8 @@ public class CachingPushBufferStream implements PushBufferStream
 		 * determines whether threshold calculations are enabled.
 		 *
 		 * @param enabledThreshold
-		 * 		<tt>true</tt> if threshold calculations are to be enabled; otherwise,
-		 * 		<tt>false</tt>
+		 * 		<code>true</code> if threshold calculations are to be enabled; otherwise,
+		 * 		<code>false</code>
 		 */
 		public void setEnabledThreshold(boolean enabledThreshold)
 		{
@@ -729,7 +729,7 @@ public class CachingPushBufferStream implements PushBufferStream
 		 * 		owner of this instance
 		 * @return the minimum threshold in milliseconds for the buffering performed by the
 		 * owner of this instance that is actually in effect after the attempt to set it to the
-		 * specified <tt>minimumThreshold</tt>
+		 * specified <code>minimumThreshold</code>
 		 */
 		public long setMinimumThreshold(long minimumThreshold)
 		{

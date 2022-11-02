@@ -497,7 +497,7 @@ public class MUCServiceImpl extends MUCService
                 else {
                     startChatActivity(chatRoomWrapper);
                     /*
-                     * Retry until Exception or cancelled by user; join chatRoom captcha challenge from server
+                     * Retry until Exception or canceled by user; join chatRoom captcha challenge from server
                      * @see ChatRoomJabberImpl#joinAs(),
                      */
                     boolean retry = true;

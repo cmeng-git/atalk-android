@@ -20,7 +20,7 @@ import javax.media.rtp.*;
 
 /**
  *  Represents a listener for every packet which is read by a
- *  <tt>MediaDevice</tt>
+ *  <code>MediaDevice</code>
  *
  *  @author Boris Grozev
  *  @author Nik Vaessen
@@ -28,12 +28,12 @@ import javax.media.rtp.*;
 public interface ReceiveStreamBufferListener
 {
     /**
-     * Notify the listener that the data in the <tt>Buffer</tt> (as byte[])
+     * Notify the listener that the data in the <code>Buffer</code> (as byte[])
      * has been read by the MediaDevice the listener is attached to
      *
-     * @param receiveStream the <tt>ReceiveStream</tt> which provided the
+     * @param receiveStream the <code>ReceiveStream</code> which provided the
      *                      packet(s)
-     * @param buffer the <tt>Buffer</tt> into which the packets has been read
+     * @param buffer the <code>Buffer</code> into which the packets has been read
      */
     void bufferReceived(ReceiveStream receiveStream, Buffer buffer);
 }

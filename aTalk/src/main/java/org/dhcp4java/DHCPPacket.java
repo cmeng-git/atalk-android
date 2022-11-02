@@ -1175,7 +1175,7 @@ public class DHCPPacket implements Cloneable, Serializable
             return InetAddress.getByAddress(this.getGiaddrRaw());
         } catch (UnknownHostException e) {
             Timber.e(e, "Unexpected UnknownHostException");
-            return null;    // normaly impossible
+            return null;    // normally impossible
         }
     }
 

@@ -51,10 +51,10 @@ public class ShutdownIQ extends IQ
     }
 
     /**
-     * Checks if given element is a valid one for <tt>ShutdownIQ</tt>.
+     * Checks if given element is a valid one for <code>ShutdownIQ</code>.
      *
      * @param elementName the name if XML element name inside of the IQ.
-     * @return <tt>true</tt> if given <tt>elementName</tt> is correct for <tt>ShutdownIQ</tt>.
+     * @return <code>true</code> if given <code>elementName</code> is correct for <code>ShutdownIQ</code>.
      */
     public static boolean isValidElementName(String elementName)
     {
@@ -65,7 +65,7 @@ public class ShutdownIQ extends IQ
      * Creates shutdown IQ for given element name.
      *
      * @param elementName can be {@link #FORCE_ELEMENT} or {@link #GRACEFUL_ELEMENT}
-     * @return new <tt>ShutdownIQ</tt> instance for given element name.
+     * @return new <code>ShutdownIQ</code> instance for given element name.
      * @throws IllegalArgumentException if given element name is neither {@link #FORCE_ELEMENT} nor
      * {@link #GRACEFUL_ELEMENT}.
      */
@@ -102,7 +102,7 @@ public class ShutdownIQ extends IQ
     }
 
     /**
-     * Returns <tt>true</tt> if this IQ instance is a "graceful shutdown" one. Otherwise it is a
+     * Returns <code>true</code> if this IQ instance is a "graceful shutdown" one. Otherwise it is a
      * force shutdown IQ.
      */
     public boolean isGracefulShutdown()

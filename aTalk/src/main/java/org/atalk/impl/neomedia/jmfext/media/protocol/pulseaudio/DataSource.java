@@ -23,7 +23,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements <tt>CaptureDevice</tt> and <tt>DataSource</tt> using the native PulseAudio
+ * Implements <code>CaptureDevice</code> and <code>DataSource</code> using the native PulseAudio
  * API/library.
  *
  * @author Lyubomir Marinov
@@ -36,7 +36,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
     private static final int FRAGSIZE_IN_TENS_OF_MILLIS = 2;
 
     /**
-     * The indicator which determines whether <tt>DataSource</tt> instances apply audio volume
+     * The indicator which determines whether <code>DataSource</code> instances apply audio volume
      * levels on the audio data to be renderer or leave the task to PulseAudio.
      */
     private static final boolean SOFTWARE_GAIN;
@@ -69,12 +69,12 @@ public class DataSource extends AbstractPullBufferCaptureDevice
     }
 
     /**
-     * Implements a <tt>PullBufferStream</tt> using the native PulseAudio API/library.
+     * Implements a <code>PullBufferStream</code> using the native PulseAudio API/library.
      */
     private class PulseAudioStream extends AbstractPullBufferStream<DataSource>
     {
         /**
-         * The <tt>PulseAudioSystem</tt> instance which provides the capture device and allows
+         * The <code>PulseAudioSystem</code> instance which provides the capture device and allows
          * creating {@link #stream}.
          */
         private final PulseAudioSystem audioSystem;
@@ -82,7 +82,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         private byte[] buffer;
 
         /**
-         * The number of channels of audio data this <tt>PulseAudioStream</tt> is configured to
+         * The number of channels of audio data this <code>PulseAudioStream</code> is configured to
          * input.
          */
         private int channels;
@@ -93,7 +93,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         private boolean corked = true;
 
         /**
-         * The <tt>pa_cvolume</tt> (structure) instance used by this <tt>PulseAudioRenderer</tt> to
+         * The <code>pa_cvolume</code> (structure) instance used by this <code>PulseAudioRenderer</code> to
          * set the per-channel volume of {@link #stream}.
          */
         private long cvolume;
@@ -101,8 +101,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         private int fragsize;
 
         /**
-         * The <tt>GainControl</tt> which specifies the volume level to be applied to the audio data
-         * input through this <tt>PulseAudioStream</tt>.
+         * The <code>GainControl</code> which specifies the volume level to be applied to the audio data
+         * input through this <code>PulseAudioStream</code>.
          */
         private final GainControl gainControl;
 
@@ -122,7 +122,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         private int offset;
 
         /**
-         * The PulseAudio callback which notifies this <tt>PulseAudioStream</tt> that
+         * The PulseAudio callback which notifies this <code>PulseAudioStream</code> that
          * {@link #stream} has audio data available to input.
          */
         private final PA.stream_request_cb_t readCb = new PA.stream_request_cb_t()
@@ -140,10 +140,10 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         private long stream;
 
         /**
-         * Initializes a new <tt>PulseAudioStream</tt> which is to have its <tt>Format</tt>-related
-         * information abstracted by a specific <tt>FormatControl</tt>.
+         * Initializes a new <code>PulseAudioStream</code> which is to have its <code>Format</code>-related
+         * information abstracted by a specific <code>FormatControl</code>.
          *
-         * @param formatControl the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+         * @param formatControl the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
          * information of the new instance
          */
         public PulseAudioStream(FormatControl formatControl)
@@ -161,10 +161,10 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         }
 
         /**
-         * Connects this <tt>PulseAudioStream</tt> to the configured source and prepares it to input
-         * audio data in the configured FMJ <tt>Format</tt>.
+         * Connects this <code>PulseAudioStream</code> to the configured source and prepares it to input
+         * audio data in the configured FMJ <code>Format</code>.
          *
-         * @throws IOException if this <tt>PulseAudioStream</tt> fails to connect to the configured source
+         * @throws IOException if this <code>PulseAudioStream</code> fails to connect to the configured source
          */
         @SuppressWarnings("unused")
         public void connect()
@@ -179,11 +179,11 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         }
 
         /**
-         * Connects this <tt>PulseAudioStream</tt> to the configured source and prepares it to input
-         * audio data in the configured FMJ <tt>Format</tt>. The method executes with the assumption
+         * Connects this <code>PulseAudioStream</code> to the configured source and prepares it to input
+         * audio data in the configured FMJ <code>Format</code>. The method executes with the assumption
          * that the PulseAudio event loop object is locked by the executing thread.
          *
-         * @throws IOException if this <tt>PulseAudioStream</tt> fails to connect to the configured source
+         * @throws IOException if this <code>PulseAudioStream</code> fails to connect to the configured source
          */
         private void connectWithMainloopLock()
                 throws IOException
@@ -293,7 +293,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         /**
          * Pauses or resumes the input of audio data through {@link #stream}.
          *
-         * @param b <tt>true</tt> to pause the input of audio data or <tt>false</tt> to resume it
+         * @param b <code>true</code> to pause the input of audio data or <code>false</code> to resume it
          */
         private void cork(boolean b)
                 throws IOException
@@ -307,7 +307,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         }
 
         /**
-         * Disconnects this <tt>PulseAudioStream</tt> and its <tt>DataSource</tt> from the connected
+         * Disconnects this <code>PulseAudioStream</code> and its <code>DataSource</code> from the connected
          * capture device.
          */
         public void disconnect()
@@ -468,10 +468,10 @@ public class DataSource extends AbstractPullBufferCaptureDevice
         }
 
         /**
-         * Sets the volume of a specific PulseAudio <tt>stream</tt> to a specific <tt>level</tt>.
+         * Sets the volume of a specific PulseAudio <code>stream</code> to a specific <code>level</code>.
          *
          * @param stream the PulseAudio stream to set the volume of
-         * @param level the volume to set on <tt>stream</tt>
+         * @param level the volume to set on <code>stream</code>
          */
         private void setStreamVolume(long stream, float level)
         {
@@ -537,7 +537,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
     }
 
     /**
-     * Initializes a new <tt>DataSource</tt> instance.
+     * Initializes a new <code>DataSource</code> instance.
      */
     public DataSource()
     {
@@ -578,10 +578,10 @@ public class DataSource extends AbstractPullBufferCaptureDevice
     }
 
     /**
-     * Returns the name of the PulseAudio source that this <tt>DataSource</tt> is configured to
+     * Returns the name of the PulseAudio source that this <code>DataSource</code> is configured to
      * input audio data from.
      *
-     * @return the name of the PulseAudio source that this <tt>DataSource</tt> is configured to
+     * @return the name of the PulseAudio source that this <code>DataSource</code> is configured to
      * input audio data from
      */
     private String getLocatorDev()

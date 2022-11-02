@@ -19,7 +19,7 @@ import org.atalk.service.neomedia.codec.Constants;
 public class Packetizer extends com.ibm.media.codec.audio.AudioPacketizer
 {
 	/**
-	 * Initializes a new <tt>Packetizer</tt> instance.
+	 * Initializes a new <code>Packetizer</code> instance.
 	 */
 	public Packetizer()
 	{
@@ -63,10 +63,10 @@ public class Packetizer extends com.ibm.media.codec.audio.AudioPacketizer
 	}
 
 	/**
-	 * Sets the packet size to be used by this <tt>Packetizer</tt>.
+	 * Sets the packet size to be used by this <code>Packetizer</code>.
 	 *
 	 * @param newPacketSize
-	 *        the new packet size to be used by this <tt>Packetizer</tt>
+	 *        the new packet size to be used by this <code>Packetizer</code>
 	 */
 	private synchronized void setPacketSize(int newPacketSize)
 	{

@@ -21,9 +21,6 @@ import android.content.Intent;
 import android.location.Location;
 
 import org.atalk.android.aTalkApp;
-import org.osmdroid.util.GeoPoint;
-
-import timber.log.Timber;
 
 /**
  * OSM class for displaying map view

@@ -37,10 +37,10 @@ public class AndroidCamera extends CaptureDeviceInfo
     public static final int FACING_FRONT = CameraCharacteristics.LENS_FACING_FRONT;
 
     /**
-     * Creates a new instance of <tt>AndroidCamera</tt>
+     * Creates a new instance of <code>AndroidCamera</code>
      *
      * @param name human readable name of the camera e.g. front camera.
-     * @param locator the <tt>MediaLocator</tt> identifying the camera and it's system.
+     * @param locator the <code>MediaLocator</code> identifying the camera and it's system.
      * @param formats list of supported formats.
      */
     public AndroidCamera(String name, MediaLocator locator, Format[] formats)
@@ -49,12 +49,12 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Creates <tt>MediaLocator</tt> for given parameters.
+     * Creates <code>MediaLocator</code> for given parameters.
      *
      * @param locatorProtocol locator protocol that identifies device system.
      * @param cameraId ID of camera that identifies the camera.
-     * @param facing direction of the corresponding to given <tt>cameraId</tt>.
-     * @return camera <tt>MediaLocator</tt> for given parameters.
+     * @param facing direction of the corresponding to given <code>cameraId</code>.
+     * @return camera <code>MediaLocator</code> for given parameters.
      */
     public static MediaLocator constructLocator(String locatorProtocol, String cameraId, int facing)
     {
@@ -62,9 +62,9 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Returns the protocol part of <tt>MediaLocator</tt> that identifies camera device system.
+     * Returns the protocol part of <code>MediaLocator</code> that identifies camera device system.
      *
-     * @return the protocol part of <tt>MediaLocator</tt> that identifies camera device system.
+     * @return the protocol part of <code>MediaLocator</code> that identifies camera device system.
      */
     public String getCameraProtocol()
     {
@@ -82,10 +82,10 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Extracts camera id from given <tt>locator</tt>.
+     * Extracts camera id from given <code>locator</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> that identifies the camera.
-     * @return extracted camera id from given <tt>locator</tt>.
+     * @param locator the <code>MediaLocator</code> that identifies the camera.
+     * @return extracted camera id from given <code>locator</code>.
      */
     public static String getCameraId(MediaLocator locator)
     {
@@ -94,10 +94,10 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Extracts camera facing from given <tt>locator</tt>.
+     * Extracts camera facing from given <code>locator</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> that identifies the camera.
-     * @return extracted camera facing from given <tt>locator</tt>.
+     * @param locator the <code>MediaLocator</code> that identifies the camera.
+     * @return extracted camera facing from given <code>locator</code>.
      */
     public static int getCameraFacing(MediaLocator locator)
     {
@@ -135,10 +135,10 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     /**
-     * Finds camera with given <tt>facing</tt> from the same device system as currently selected camera.
+     * Finds camera with given <code>facing</code> from the same device system as currently selected camera.
      *
      * @param facing the facing direction of camera to find.
-     * @return camera with given <tt>facing</tt> from the same device system as currently selected camera.
+     * @return camera with given <code>facing</code> from the same device system as currently selected camera.
      */
     public static AndroidCamera getCameraFromCurrentDeviceSystem(int facing)
     {

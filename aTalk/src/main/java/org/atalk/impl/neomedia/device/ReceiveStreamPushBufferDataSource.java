@@ -12,10 +12,10 @@ import org.atalk.impl.neomedia.protocol.NullBufferTransferHandler;
 import org.atalk.impl.neomedia.protocol.PushBufferDataSourceDelegate;
 
 /**
- * Wraps the <tt>DataSource</tt> of a specific <tt>ReceiveStream</tt> so that calls to its
+ * Wraps the <code>DataSource</code> of a specific <code>ReceiveStream</code> so that calls to its
  * {@link DataSource#disconnect()} can be explicitly controlled. It is introduced because it seems
- * that after the <tt>DataSource</tt> of a <tt>ReceiveStream</tt> is disconnected, it cannot be
- * connected to or started and if a <tt>Processor</tt> is created on it, it freezes in the
+ * that after the <code>DataSource</code> of a <code>ReceiveStream</code> is disconnected, it cannot be
+ * connected to or started and if a <code>Processor</code> is created on it, it freezes in the
  * {@link javax.media.Processor#Configuring} state.
  *
  * @author Lyubomir Marinov
@@ -24,11 +24,11 @@ public class ReceiveStreamPushBufferDataSource extends
 		PushBufferDataSourceDelegate<PushBufferDataSource>
 {
 	/**
-	 * Sets a <tt>BufferTransferHandler</tt> on a specific <tt>ReceiveStream</tt> which reads data
+	 * Sets a <code>BufferTransferHandler</code> on a specific <code>ReceiveStream</code> which reads data
 	 * as soon as possible and throws it away.
 	 *
 	 * @param receiveStream
-	 *        the <tt>ReceiveStream</tt> on which to set a <tt>BufferTransferHandler</tt> which
+	 *        the <code>ReceiveStream</code> on which to set a <code>BufferTransferHandler</code> which
 	 *        reads data as soon as possible and throws it away
 	 */
 	public static void setNullTransferHandler(ReceiveStream receiveStream)
@@ -57,7 +57,7 @@ public class ReceiveStreamPushBufferDataSource extends
 	}
 
 	/**
-	 * The <tt>ReceiveStream</tt> which has its <tt>DataSource</tt> wrapped by this instance.
+	 * The <code>ReceiveStream</code> which has its <code>DataSource</code> wrapped by this instance.
 	 * Currently, remembered just to be made available to callers in case they need it and not used
 	 * by this instance.
 	 */
@@ -65,19 +65,19 @@ public class ReceiveStreamPushBufferDataSource extends
 
 	/**
 	 * The indicator which determines whether {@link DataSource#disconnect()} is to be called on the
-	 * wrapped <tt>DataSource</tt> when it is called on this instance.
+	 * wrapped <code>DataSource</code> when it is called on this instance.
 	 */
 	private boolean suppressDisconnect;
 
 	/**
-	 * Initializes a new <tt>ReceiveStreamPushBufferDataSource</tt> instance which is to wrap a
-	 * specific <tt>DataSource</tt> of a specific <tt>ReceiveStream</tt> for the purposes of
+	 * Initializes a new <code>ReceiveStreamPushBufferDataSource</code> instance which is to wrap a
+	 * specific <code>DataSource</code> of a specific <code>ReceiveStream</code> for the purposes of
 	 * enabling explicitly control of calls to its {@link DataSource#disconnect()}.
 	 *
 	 * @param receiveStream
-	 *        the <tt>ReceiveStream</tt> which is to have its <tt>DataSource</tt>
+	 *        the <code>ReceiveStream</code> which is to have its <code>DataSource</code>
 	 * @param dataSource
-	 *        the <tt>DataSource</tt> of <tt>receiveStream</tt> which is to be wrapped by this
+	 *        the <code>DataSource</code> of <code>receiveStream</code> which is to be wrapped by this
 	 *        instance
 	 */
 	public ReceiveStreamPushBufferDataSource(ReceiveStream receiveStream,
@@ -89,20 +89,20 @@ public class ReceiveStreamPushBufferDataSource extends
 	}
 
 	/**
-	 * Initializes a new <tt>ReceiveStreamPushBufferDataSource</tt> instance which is to wrap a
-	 * specific <tt>DataSource</tt> of a specific <tt>ReceiveStream</tt> for the purposes of
+	 * Initializes a new <code>ReceiveStreamPushBufferDataSource</code> instance which is to wrap a
+	 * specific <code>DataSource</code> of a specific <code>ReceiveStream</code> for the purposes of
 	 * enabling explicitly control of calls to its {@link DataSource#disconnect()} and, optionally,
 	 * activates the suppresses the call in question.
 	 *
 	 * @param receiveStream
-	 *        the <tt>ReceiveStream</tt> which is to have its <tt>DataSource</tt>
+	 *        the <code>ReceiveStream</code> which is to have its <code>DataSource</code>
 	 * @param dataSource
-	 *        the <tt>DataSource</tt> of <tt>receiveStream</tt> which is to be wrapped by this
+	 *        the <code>DataSource</code> of <code>receiveStream</code> which is to be wrapped by this
 	 *        instance
 	 * @param suppressDisconnect
-	 *        <tt>true</tt> if calls to <tt>DataSource#disconnect()</tt> on the wrapped
-	 *        <tt>dataSource</tt> are to be suppressed when there are such calls on the new
-	 *        instance; otherwise, <tt>false</tt>
+	 *        <code>true</code> if calls to <code>DataSource#disconnect()</code> on the wrapped
+	 *        <code>dataSource</code> are to be suppressed when there are such calls on the new
+	 *        instance; otherwise, <code>false</code>
 	 */
 	public ReceiveStreamPushBufferDataSource(ReceiveStream receiveStream,
 		PushBufferDataSource dataSource, boolean suppressDisconnect)
@@ -113,8 +113,8 @@ public class ReceiveStreamPushBufferDataSource extends
 	}
 
 	/**
-	 * Implements {@link DataSource#disconnect()}. Disconnects the wrapped <tt>DataSource</tt> if it
-	 * has not been explicitly suppressed by setting the <tt>suppressDisconnect</tt> property of
+	 * Implements {@link DataSource#disconnect()}. Disconnects the wrapped <code>DataSource</code> if it
+	 * has not been explicitly suppressed by setting the <code>suppressDisconnect</code> property of
 	 * this instance.
 	 */
 	@Override
@@ -125,9 +125,9 @@ public class ReceiveStreamPushBufferDataSource extends
 	}
 
 	/**
-	 * Gets the <tt>ReceiveStream</tt> which has its <tt>DataSource</tt> wrapped by this instance.
+	 * Gets the <code>ReceiveStream</code> which has its <code>DataSource</code> wrapped by this instance.
 	 *
-	 * @return the <tt>ReceiveStream</tt> which has its <tt>DataSource</tt> wrapped by this instance
+	 * @return the <code>ReceiveStream</code> which has its <code>DataSource</code> wrapped by this instance
 	 */
 	public ReceiveStream getReceiveStream()
 	{
@@ -136,10 +136,10 @@ public class ReceiveStreamPushBufferDataSource extends
 
 	/**
 	 * Implements {@link PushBufferDataSource#getStreams()}. Delegates to the wrapped
-	 * <tt>DataSource</tt> of the <tt>ReceiveStream</tt>.
+	 * <code>DataSource</code> of the <code>ReceiveStream</code>.
 	 *
-	 * @return an array of the <tt>PushBufferStream</tt>s of the wrapped <tt>DataSource</tt> of the
-	 *         <tt>ReceiveStream</tt>
+	 * @return an array of the <code>PushBufferStream</code>s of the wrapped <code>DataSource</code> of the
+	 *         <code>ReceiveStream</code>
 	 */
 	@Override
 	public PushBufferStream[] getStreams()
@@ -149,12 +149,12 @@ public class ReceiveStreamPushBufferDataSource extends
 
 	/**
 	 * Sets the indicator which determines whether calls to {@link DataSource#disconnect()} on the
-	 * wrapped <tt>DataSource</tt> are to be suppressed when there are such calls on this instance.
+	 * wrapped <code>DataSource</code> are to be suppressed when there are such calls on this instance.
 	 *
 	 * @param suppressDisconnect
-	 *        <tt>true</tt> to suppress calls to <tt>DataSource#disconnect()</tt> on the wrapped
-	 *        <tt>DataSource</tt> when there are such calls on this instance; otherwise,
-	 *        <tt>false</tt>
+	 *        <code>true</code> to suppress calls to <code>DataSource#disconnect()</code> on the wrapped
+	 *        <code>DataSource</code> when there are such calls on this instance; otherwise,
+	 *        <code>false</code>
 	 */
 	public void setSuppressDisconnect(boolean suppressDisconnect)
 	{

@@ -23,6 +23,8 @@ import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory
  * harvester that we could use with ICE4J. Descriptors are normally initialized by protocol wizards.
  * They are then used to convert the data into a {@link String} form suitable for storage in an
  * accounts properties Map.
+ * @see https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
+ * Enhance TURN with TCP, TLS, DTLS transport
  *
  * @author Yana Stamcheva
  * @author Emil Ivov

@@ -50,7 +50,7 @@ public class StartMutedExtension extends AbstractExtensionElement
     public static final String VIDEO_ATTRIBUTE_NAME = "video";
 
     /**
-     * Constructs new instance of <tt>StartMutedExtensionElement</tt>
+     * Constructs new instance of <code>StartMutedExtensionElement</code>
      */
     public StartMutedExtension()
     {

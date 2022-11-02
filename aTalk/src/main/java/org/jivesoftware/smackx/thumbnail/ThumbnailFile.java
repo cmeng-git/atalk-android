@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jxmpp.util.XmppDateTime;
 
 /**
- * The <tt>FileElement</tt> extends the smackx <tt>StreamInitiation.File</tt>
+ * The <code>FileElement</code> extends the smackx <code>StreamInitiation.File</code>
  * in order to provide a file that supports thumbnails.
  *
  * @author Yana Stamcheva
@@ -35,7 +35,7 @@ public class ThumbnailFile extends StreamInitiation.File
     private Thumbnail thumbnail;
 
     /**
-     * Creates a <tt>FileElement</tt> by specifying a base file and a thumbnail to extend it with.
+     * Creates a <code>FileElement</code> by specifying a base file and a thumbnail to extend it with.
      *
      * @param baseFile the file used as a base
      * @param thumbnail the thumbnail to add
@@ -47,7 +47,7 @@ public class ThumbnailFile extends StreamInitiation.File
     }
 
     /**
-     * Creates a <tt>FileElement</tt> by specifying the name and the size of the file.
+     * Creates a <code>FileElement</code> by specifying the name and the size of the file.
      *
      * @param name the name of the file
      * @param size the size of the file
@@ -58,7 +58,7 @@ public class ThumbnailFile extends StreamInitiation.File
     }
 
     /**
-     * Represents this <tt>FileElement</tt> in an XML.
+     * Represents this <code>FileElement</code> in an XML.
      */
     @Override
     public String toXML(XmlEnvironment enclosingNamespace)
@@ -96,9 +96,9 @@ public class ThumbnailFile extends StreamInitiation.File
     }
 
     /**
-     * Returns the <tt>Thumbnail</tt> contained in this <tt>FileElement</tt>.
+     * Returns the <code>Thumbnail</code> contained in this <code>FileElement</code>.
      *
-     * @return the <tt>Thumbnail</tt> contained in this <tt>FileElement</tt>
+     * @return the <code>Thumbnail</code> contained in this <code>FileElement</code>
      */
     public Thumbnail getThumbnail()
     {
@@ -106,9 +106,9 @@ public class ThumbnailFile extends StreamInitiation.File
     }
 
     /**
-     * Sets the given <tt>thumbnail</tt> to this <tt>File</tt>.
+     * Sets the given <code>thumbnail</code> to this <code>File</code>.
      *
-     * @param thumbnail the <tt>Thumbnail</tt> to set
+     * @param thumbnail the <code>Thumbnail</code> to set
      */
     public void setThumbnail(Thumbnail thumbnail)
     {

@@ -14,8 +14,8 @@
 package org.atalk.impl.neomedia.transform;
 
 /**
- * Wraps a <tt>TransformerEngine</tt> (allows the wrapped instance to be swapped without
- * modifications to the <tt>RTPConnector</tt>'s transformer engine chain.
+ * Wraps a <code>TransformerEngine</code> (allows the wrapped instance to be swapped without
+ * modifications to the <code>RTPConnector</code>'s transformer engine chain.
  *
  * @author George Politis
  * @author Lyubomir Marinov

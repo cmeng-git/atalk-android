@@ -1,9 +1,9 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with
- * the License. You may obtain a copy of the License at
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
  * 
@@ -479,7 +479,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
     }
 
     /**
-     * Creates an <code>IceMediaStrean</code> and adds to it an RTP and and RTCP component,
+     * Creates an <code>IceMediaStream</code> and adds to it an RTP and and RTCP component,
      * which also implies running the currently installed harvesters so that they would.
      *
      * @param rtpPort the port that we should try to bind the RTP component on

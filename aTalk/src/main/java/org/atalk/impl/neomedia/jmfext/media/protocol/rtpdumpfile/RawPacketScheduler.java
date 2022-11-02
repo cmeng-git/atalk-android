@@ -51,7 +51,7 @@ public class RawPacketScheduler
 	 * clock are respected.
 	 *
 	 * @param rtpPacket
-	 *        the <tt>RTPPacket</tt> to schedule.
+	 *        the <code>RTPPacket</code> to schedule.
 	 */
 	public void schedule(RawPacket rtpPacket)
 		throws InterruptedException

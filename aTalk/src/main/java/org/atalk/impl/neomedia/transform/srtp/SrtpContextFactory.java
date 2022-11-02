@@ -18,7 +18,7 @@ package org.atalk.impl.neomedia.transform.srtp;
 import java.util.Arrays;
 
 /**
- * The <tt>SrtpContextFactory</tt> creates the initial crypto contexts for RTP
+ * The <code>SrtpContextFactory</code> creates the initial crypto contexts for RTP
  * and RTCP encryption using the supplied key material.
  *
  * @author Bing SU (nova.su@gmail.com)
@@ -37,7 +37,7 @@ public class SrtpContextFactory
 
     /**
      * The indicator which determines whether this instance is used by SRTP
-     * senders (<tt>true</tt>) or receiver (<tt>false</tt>).
+     * senders (<code>true</code>) or receiver (<code>false</code>).
      */
     private final boolean sender;
 
@@ -54,8 +54,8 @@ public class SrtpContextFactory
     /**
      * Construct a SrtpTransformEngine based on given master encryption key, master salt key and Srtp/Srtcp policy.
      *
-     * @param sender <tt>true</tt> if the new instance is to be used by an SRTP sender;
-     * <tt>false</tt> if the new instance is to be used by an SRTP receiver
+     * @param sender <code>true</code> if the new instance is to be used by an SRTP sender;
+     * <code>false</code> if the new instance is to be used by an SRTP receiver
      * @param masterKey the master encryption key
      * @param masterSalt the master salt key
      * @param srtpPolicy SRTP policy

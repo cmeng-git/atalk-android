@@ -17,10 +17,7 @@ package org.atalk.util;
 
 /**
  * Helper class to perform various timestamp manipulations and comparisons
- *
  * @author Ethan Lin
- * //FIXME(brian): perhaps this should be moved alongside RTPUtils (or maybe its
- * contents combined with RTPUtils?  This class deals with RTP timestamps)
  */
 public class TimestampUtils
 {

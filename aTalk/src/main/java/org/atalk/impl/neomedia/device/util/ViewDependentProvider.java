@@ -14,9 +14,9 @@ import java.awt.Dimension;
 import timber.log.Timber;
 
 /**
- * <tt>ViewDependentProvider</tt> is used to implement classes that provide objects dependent on
- * <tt>View</tt> visibility state. It means that they can provide it only when <tt>View</tt> is
- * visible, and they have to release the object before <tt>View</tt> is hidden.
+ * <code>ViewDependentProvider</code> is used to implement classes that provide objects dependent on
+ * <code>View</code> visibility state. It means that they can provide it only when <code>View</code> is
+ * visible, and they have to release the object before <code>View</code> is hidden.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -34,7 +34,7 @@ public abstract class ViewDependentProvider<T>
     private static final long CREATE_TIMEOUT = 5000L;
 
     /**
-     * <tt>Activity</tt> context.
+     * <code>Activity</code> context.
      */
     protected final Activity mActivity;
 
@@ -55,24 +55,24 @@ public abstract class ViewDependentProvider<T>
     protected Dimension mVideoSize;
 
     /**
-     * Provided object created when <tt>View</tt> is visible.
+     * Provided object created when <code>View</code> is visible.
      */
     protected T providedObject;
 
     /**
-     * Factory method that creates new <tt>View</tt> instance.
+     * Factory method that creates new <code>View</code> instance.
      *
-     * @return new <tt>View</tt> instance.
+     * @return new <code>View</code> instance.
      */
     protected abstract View createViewInstance();
 
     public abstract void setAspectRatio(int width, int height);
 
     /**
-     * Create a new instance of <tt>ViewDependentProvider</tt>.
+     * Create a new instance of <code>ViewDependentProvider</code>.
      *
-     * @param activity parent <tt>Activity</tt> that manages the <tt>container</tt>.
-     * @param container the container that will hold maintained <tt>View</tt>.
+     * @param activity parent <code>Activity</code> that manages the <code>container</code>.
+     * @param container the container that will hold maintained <code>View</code>.
      */
     public ViewDependentProvider(Activity activity, ViewGroup container)
     {
@@ -81,8 +81,8 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Checks if the view is currently created. If not creates new <tt>View</tt> and adds it to the
-     * <tt>container</tt>.
+     * Checks if the view is currently created. If not creates new <code>View</code> and adds it to the
+     * <code>container</code>.
      */
     protected void ensureViewCreated()
     {
@@ -98,9 +98,9 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Returns maintained <tt>View</tt> object.
+     * Returns maintained <code>View</code> object.
      *
-     * @return maintained <tt>View</tt> object.
+     * @return maintained <code>View</code> object.
      */
     public View getView()
     {
@@ -123,7 +123,7 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Checks if maintained view exists and removes if from the <tt>container</tt>.
+     * Checks if maintained view exists and removes if from the <code>container</code>.
      */
     protected void ensureViewDestroyed()
     {
@@ -150,7 +150,7 @@ public abstract class ViewDependentProvider<T>
     }
 
     /**
-     * Should be called by consumer to obtain the object. It is causing hidden <tt>View</tt> to be
+     * Should be called by consumer to obtain the object. It is causing hidden <code>View</code> to be
      * displayed and eventually {@link #onObjectCreated(Object)} method to be called which results
      * in object creation.
      *
@@ -176,9 +176,9 @@ public abstract class ViewDependentProvider<T>
 
     /**
      * Checks if provider has already the object and returns it immediately. If there is no object,
-     * and we would have to wait for it, then the <tt>null</tt> is returned.
+     * and we would have to wait for it, then the <code>null</code> is returned.
      *
-     * @return the object if it is currently held by this provider or <tt>null</tt> otherwise.
+     * @return the object if it is currently held by this provider or <code>null</code> otherwise.
      */
     synchronized public T tryObtainObject()
     {
@@ -216,7 +216,7 @@ public abstract class ViewDependentProvider<T>
 
     /**
      * Blocks the current thread until subject object is released. It should be used to block UI thread
-     * before the <tt>View</tt> is hidden.
+     * before the <code>View</code> is hidden.
      */
     synchronized public void waitForObjectRelease()
     {

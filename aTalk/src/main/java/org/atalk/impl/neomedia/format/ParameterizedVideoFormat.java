@@ -14,7 +14,7 @@ import javax.media.Format;
 import javax.media.format.VideoFormat;
 
 /**
- * Implements a <tt>VideoFormat</tt> with format parameters (like {@link VideoMediaFormatImpl})
+ * Implements a <code>VideoFormat</code> with format parameters (like {@link VideoMediaFormatImpl})
  * (some of) which (could) distinguish payload types.
  *
  * @author Lyubomir Marinov
@@ -27,12 +27,12 @@ public class ParameterizedVideoFormat extends VideoFormat
     private static final long serialVersionUID = 0L;
 
     /**
-     * The format parameters of this <tt>ParameterizedVideoFormat</tt> instance.
+     * The format parameters of this <code>ParameterizedVideoFormat</code> instance.
      */
     private Map<String, String> fmtps;
 
     /**
-     * Constructs a new <tt>ParameterizedVideoFormat</tt>.
+     * Constructs a new <code>ParameterizedVideoFormat</code>.
      *
      * @param encoding encoding
      * @param size video size
@@ -52,7 +52,7 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>ParameterizedVideoFormat</tt> with a specific , and a specific
+     * Initializes a new <code>ParameterizedVideoFormat</code> with a specific , and a specific
      * set of format parameters.
      *
      * @param encoding the encoding of the new instance
@@ -68,11 +68,11 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>ParameterizedVideoFormat</tt> with a specific encoding, and a specific
+     * Initializes a new <code>ParameterizedVideoFormat</code> with a specific encoding, and a specific
      * set of format parameters.
      *
      * @param encoding the encoding of the new instance
-     * @param fmtps the format parameters of the new instance in the form of an array of <tt>String</tt>s
+     * @param fmtps the format parameters of the new instance in the form of an array of <code>String</code>s
      * in which the key and the value of an association are expressed as consecutive elements.
      */
     public ParameterizedVideoFormat(String encoding, String... fmtps)
@@ -81,9 +81,9 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>ParameterizedVideoFormat</tt> instance which has the same properties as this instance.
+     * Initializes a new <code>ParameterizedVideoFormat</code> instance which has the same properties as this instance.
      *
-     * @return a new <tt>ParameterizedVideoFormat</tt> instance which has the same properties as this instance.
+     * @return a new <code>ParameterizedVideoFormat</code> instance which has the same properties as this instance.
      */
     @Override
     public Object clone()
@@ -104,9 +104,9 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Copies the properties of the specified <tt>Format</tt> into this instance.
+     * Copies the properties of the specified <code>Format</code> into this instance.
      *
-     * @param f the <tt>Format</tt> the properties of which are to be copied into this instance.
+     * @param f the <code>Format</code> the properties of which are to be copied into this instance.
      */
     @Override
     protected void copy(Format f)
@@ -124,13 +124,13 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Determines whether a specific <tt>Object</tt> represents a value that is equal to the value
+     * Determines whether a specific <code>Object</code> represents a value that is equal to the value
      * represented by this instance.
      *
-     * @param obj the <tt>Object</tt> to be determined whether it represents a value that is equal to
+     * @param obj the <code>Object</code> to be determined whether it represents a value that is equal to
      * the value represented by this instance
-     * @return <tt>true</tt> if the specified <tt>obj</tt> represents a value that is equal to the
-     * value represented by this instance; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>obj</code> represents a value that is equal to the
+     * value represented by this instance; otherwise, <code>false</code>
      */
     @Override
     public boolean equals(Object obj)
@@ -172,9 +172,9 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Returns the format parameters <tt>Map</tt>.
+     * Returns the format parameters <code>Map</code>.
      *
-     * @return the format parameters <tt>Map</tt>.
+     * @return the format parameters <code>Map</code>.
      */
     public Map<String, String> getFormatParameters()
     {
@@ -182,12 +182,12 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Finds the attributes shared by two matching <tt>Format</tt>s. If the specified
-     * <tt>Format</tt> does not match this one, the result is undefined.
+     * Finds the attributes shared by two matching <code>Format</code>s. If the specified
+     * <code>Format</code> does not match this one, the result is undefined.
      *
-     * @param format the matching <tt>Format</tt> to intersect with this one
-     * @return a <tt>Format</tt> with its attributes set to the attributes common to this instance
-     * and the specified <tt>format</tt>
+     * @param format the matching <code>Format</code> to intersect with this one
+     * @return a <code>Format</code> with its attributes set to the attributes common to this instance
+     * and the specified <code>format</code>
      */
     @Override
     public Format intersects(Format format)
@@ -207,8 +207,8 @@ public class ParameterizedVideoFormat extends VideoFormat
      * Determines whether a specific format matches this instance i.e. whether their attributes
      * match according to the definition of "match" given by {@link Format#matches(Format)}.
      *
-     * @param format the <tt>Format</tt> to compare to this instance
-     * @return <tt>true</tt> if the specified <tt>format</tt> matches this one; otherwise, <tt>false</tt>
+     * @param format the <code>Format</code> to compare to this instance
+     * @return <code>true</code> if the specified <code>format</code> matches this one; otherwise, <code>false</code>
      */
     @Override
     public boolean matches(Format format)
@@ -217,13 +217,13 @@ public class ParameterizedVideoFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>Map</tt> from an array in which the key, and the value of an
+     * Initializes a new <code>Map</code> from an array in which the key, and the value of an
      * association are expressed as consecutive elements.
      *
-     * @param <T> the very type of the keys and the values to be associated in the new <tt>Map</tt>
-     * @param entries the associations to be created in the new <tt>Map</tt> where the key and value of an
+     * @param <T> the very type of the keys and the values to be associated in the new <code>Map</code>
+     * @param entries the associations to be created in the new <code>Map</code> where the key and value of an
      * association are expressed as consecutive elements
-     * @return a new <tt>Map</tt> with the associations specified by <tt>entries</tt>
+     * @return a new <code>Map</code> with the associations specified by <code>entries</code>
      */
     public static <T> Map<T, T> toMap(T... entries)
     {

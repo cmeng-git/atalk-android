@@ -327,7 +327,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
                 ConfigurationUtils.isPresenceSubscribeAuto());
 
         initAutoAcceptFileSize();
-        // PreferenceUtil.setCheckboxVal(this, P_KEY_CHAT_ALERTS, ConfigurationUtils.isAlerterEnabled());
+        // GeoPreferenceUtil.setCheckboxVal(this, P_KEY_CHAT_ALERTS, ConfigurationUtils.isAlerterEnabled());
     }
 
     /**
@@ -369,7 +369,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     private void initNotificationPreferences()
     {
         // Remove for android play store release
-        // PreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
+        // GeoPreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
         //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
 
         BundleContext bc = AndroidGUIActivator.bundleContext;

@@ -20,8 +20,8 @@ import javax.media.protocol.*;
 import timber.log.Timber;
 
 /**
- * Implements <tt>PushSourceStream</tt> for an <tt>RTPTranslatorImpl</tt>. Reads packets from
- * endpoint <tt>PushSourceStream</tt>s and pushes them to an <tt>RTPTranslatorImpl</tt> to be
+ * Implements <code>PushSourceStream</code> for an <code>RTPTranslatorImpl</code>. Reads packets from
+ * endpoint <code>PushSourceStream</code>s and pushes them to an <code>RTPTranslatorImpl</code> to be
  * translated.
  *
  * @author Lyubomir Marinov
@@ -40,12 +40,12 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
 
     /**
      * The indicator which determines whether {@link #read(byte[], int, int)} read a
-     * <tt>SourcePacket</tt> from {@link #readQ} after a <tt>SourcePacket</tt> was written there.
+     * <code>SourcePacket</code> from {@link #readQ} after a <code>SourcePacket</code> was written there.
      */
     private boolean _read = false;
 
     /**
-     * The <tt>Queue</tt> of <tt>SourcePacket</tt>s to be read out of this instance via
+     * The <code>Queue</code> of <code>SourcePacket</code>s to be read out of this instance via
      * {@link #read(byte[], int, int)}.
      */
     private final Queue<SourcePacket> readQ;
@@ -64,7 +64,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
     private int numDroppedPackets = 0;
 
     /**
-     * The pool of <tt>SourcePacket</tt> instances to reduce their allocations and garbage collection.
+     * The pool of <code>SourcePacket</code> instances to reduce their allocations and garbage collection.
      */
     private final Queue<SourcePacket> sourcePacketPool
             = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
@@ -72,7 +72,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
     private final List<PushSourceStreamDesc> streams = new LinkedList<>();
 
     /**
-     * The <tt>Thread</tt> which invokes
+     * The <code>Thread</code> which invokes
      * {@link SourceTransferHandler#transferData(PushSourceStream)} on {@link #_transferHandler}.
      */
     private Thread transferDataThread;
@@ -292,7 +292,7 @@ class PushSourceStreamImpl implements PushSourceStream, Runnable, SourceTransfer
      * {@inheritDoc}
      * <p>
      * Implements {@link SourceTransferHandler#transferData(PushSourceStream)}. This instance sets
-     * itself as the <tt>transferHandler</tt> of all <tt>PushSourceStream</tt>s that get added to it
+     * itself as the <code>transferHandler</code> of all <code>PushSourceStream</code>s that get added to it
      * (i.e. {@link #streams}). When either one of these pushes media data, this instance pushes
      * that media data.
      */

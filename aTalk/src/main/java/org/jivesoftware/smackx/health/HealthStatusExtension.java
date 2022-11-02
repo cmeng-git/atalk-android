@@ -89,10 +89,10 @@ public class HealthStatusExtension extends AbstractExtensionElement
         }
 
         /**
-         * Parses <tt>Health</tt> from given string.
+         * Parses <code>Health</code> from given string.
          *
-         * @param health the string representation of <tt>Health</tt>.
-         * @return <tt>Health</tt> value for given string or
+         * @param health the string representation of <code>Health</code>.
+         * @return <code>Health</code> value for given string or
          * {@link #UNDEFINED} if given string does not reflect any of valid values.
          */
         public static Health parse(String health)

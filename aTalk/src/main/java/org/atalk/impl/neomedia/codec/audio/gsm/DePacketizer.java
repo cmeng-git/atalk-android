@@ -27,7 +27,7 @@ public class DePacketizer extends AbstractDePacketizer
 	}
 
 	/**
-	 * Constructs a new <tt>DePacketizer</tt>.
+	 * Constructs a new <code>DePacketizer</code>.
 	 */
 	public DePacketizer()
 	{

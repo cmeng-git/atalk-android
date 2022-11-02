@@ -13,9 +13,9 @@ import javax.media.Renderer;
 import timber.log.Timber;
 
 /**
- * Provides an abstract base implementation of <tt>Renderer</tt> in order to facilitate extenders.
+ * Provides an abstract base implementation of <code>Renderer</code> in order to facilitate extenders.
  *
- * @param <T> the type of <tt>Format</tt> of the media data processed as input by <tt>AbstractRenderer</tt>
+ * @param <T> the type of <code>Format</code> of the media data processed as input by <code>AbstractRenderer</code>
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
@@ -23,12 +23,12 @@ public abstract class AbstractRenderer<T extends Format> extends ControlsAdapter
         implements Renderer
 {
     /**
-     * The <tt>Format</tt> of the media data processed as input by this <tt>Renderer</tt>.
+     * The <code>Format</code> of the media data processed as input by this <code>Renderer</code>.
      */
     protected T inputFormat;
 
     /**
-     * Resets the state of this <tt>PlugIn</tt>.
+     * Resets the state of this <code>PlugIn</code>.
      */
     public void reset()
     {
@@ -36,11 +36,11 @@ public abstract class AbstractRenderer<T extends Format> extends ControlsAdapter
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be rendered by this <tt>Renderer</tt>.
+     * Sets the <code>Format</code> of the media data to be rendered by this <code>Renderer</code>.
      *
-     * @param format the <tt>Format</tt> of the media data to be rendered by this <tt>Renderer</tt>
-     * @return <tt>null</tt> if the specified <tt>format</tt> is not compatible with this
-     * <tt>Renderer</tt>; otherwise, the <tt>Format</tt> which has been successfully set
+     * @param format the <code>Format</code> of the media data to be rendered by this <code>Renderer</code>
+     * @return <code>null</code> if the specified <code>format</code> is not compatible with this
+     * <code>Renderer</code>; otherwise, the <code>Format</code> which has been successfully set
      */
     public Format setInputFormat(Format format)
     {

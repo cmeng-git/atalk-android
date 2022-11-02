@@ -14,7 +14,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements an audio <tt>Codec</tt> using the FFmpeg library.
+ * Implements an audio <code>Codec</code> using the FFmpeg library.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -22,10 +22,10 @@ import timber.log.Timber;
 public class FFmpegAudioEncoder extends AbstractFFmpegAudioCodec
 {
     /**
-     * Asserts that an encoder with a specific <tt>AVCodecID</tt> is found by FFmpeg.
+     * Asserts that an encoder with a specific <code>AVCodecID</code> is found by FFmpeg.
      *
-     * @param codecID the <tt>AVCodecID</tt> of the encoder to find
-     * @throws RuntimeException if no encoder with the specified <tt>codecID</tt> is found by FFmpeg
+     * @param codecID the <code>AVCodecID</code> of the encoder to find
+     * @throws RuntimeException if no encoder with the specified <code>codecID</code> is found by FFmpeg
      */
     public static void assertFindAVCodec(int codecID)
     {
@@ -35,9 +35,9 @@ public class FFmpegAudioEncoder extends AbstractFFmpegAudioCodec
     }
 
     /**
-     * The audio data which was given to this <tt>AbstractFFmpegAudioCodec</tt> in a previous call
+     * The audio data which was given to this <code>AbstractFFmpegAudioCodec</code> in a previous call
      * to {@link #doProcess(Buffer, Buffer)} but was less than {@link #frameSizeInBytes} in length
-     * and was thus left to be prepended to the audio data in a next call to <tt>doProcess</tt>.
+     * and was thus left to be prepended to the audio data in a next call to <code>doProcess</code>.
      */
     private byte[] prevIn;
 
@@ -47,12 +47,12 @@ public class FFmpegAudioEncoder extends AbstractFFmpegAudioCodec
     protected int prevInLen;
 
     /**
-     * Initializes a new <tt>FFmpegAudioEncoder</tt> instance with a specific <tt>PlugIn</tt> name,
-     * a specific <tt>AVCodecID</tt>, and a specific list of <tt>Format</tt>s supported as output.
+     * Initializes a new <code>FFmpegAudioEncoder</code> instance with a specific <code>PlugIn</code> name,
+     * a specific <code>AVCodecID</code>, and a specific list of <code>Format</code>s supported as output.
      *
-     * @param name the <tt>PlugIn</tt> name of the new instance
-     * @param codecID the <tt>AVCodecID</tt> of the FFmpeg codec to be represented by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
+     * @param name the <code>PlugIn</code> name of the new instance
+     * @param codecID the <code>AVCodecID</code> of the FFmpeg codec to be represented by the new instance
+     * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output
      */
     protected FFmpegAudioEncoder(String name, int codecID, Format[] supportedOutputFormats)
     {

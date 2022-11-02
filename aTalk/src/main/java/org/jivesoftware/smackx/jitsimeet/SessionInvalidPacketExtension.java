@@ -41,7 +41,7 @@ public class SessionInvalidPacketExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>SessionInvalidPacketExtension</tt>
+     * Creates new instance of <code>SessionInvalidPacketExtension</code>
      */
     public SessionInvalidPacketExtension()
     {

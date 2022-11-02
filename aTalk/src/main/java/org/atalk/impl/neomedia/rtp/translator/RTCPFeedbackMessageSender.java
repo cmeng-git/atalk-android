@@ -53,9 +53,9 @@ public class RTCPFeedbackMessageSender
     private static final int FIR_MAX_RETRIES = 10;
 
     /**
-     * The <tt>RTPTranslatorImpl</tt> through which this <tt>RTCPFeedbackMessageSender</tt> sends
+     * The <code>RTPTranslatorImpl</code> through which this <code>RTCPFeedbackMessageSender</code> sends
      * RTCP feedback message packets. The synchronization source identifier (SSRC) of
-     * <tt>rtpTranslator</tt> is used as the SSRC of packet sender.
+     * <code>rtpTranslator</code> is used as the SSRC of packet sender.
      */
     private final RTPTranslatorImpl rtpTranslator;
 
@@ -73,11 +73,11 @@ public class RTCPFeedbackMessageSender
             = new ConcurrentHashMap<>();
 
     /**
-     * Initializes a new <tt>RTCPFeedbackMessageSender</tt> instance which is to
+     * Initializes a new <code>RTCPFeedbackMessageSender</code> instance which is to
      * send RTCP feedback message packets through a specific
-     * <tt>RTPTranslatorImpl</tt>.
+     * <code>RTPTranslatorImpl</code>.
      *
-     * @param rtpTranslator the <tt>RTPTranslatorImpl</tt> through which the new instance is to send RTCP
+     * @param rtpTranslator the <code>RTPTranslatorImpl</code> through which the new instance is to send RTCP
      * feedback message packets and the SSRC of which is to be used as the SSRC of packet
      * sender
      */
@@ -200,15 +200,15 @@ public class RTCPFeedbackMessageSender
 
     /**
      * Notifies this instance that an RTP packet has been received from a peer
-     * represented by a specific <tt>StreamRTPManagerDesc</tt>.
+     * represented by a specific <code>StreamRTPManagerDesc</code>.
      *
-     * @param streamRTPManager a <tt>StreamRTPManagerDesc</tt> which identifies
+     * @param streamRTPManager a <code>StreamRTPManagerDesc</code> which identifies
      * the peer from which an RTP packet has been received
      * @param buf the buffer which contains the bytes of the received RTP or
      * RTCP packet
-     * @param off the zero-based index in <tt>buf</tt> at which the bytes of the
+     * @param off the zero-based index in <code>buf</code> at which the bytes of the
      * received RTP or RTCP packet begin
-     * @param len the number of bytes in <tt>buf</tt> beginning at <tt>off</tt>
+     * @param len the number of bytes in <code>buf</code> beginning at <code>off</code>
      * which represent the received RTP or RTCP packet
      */
     public void maybeStopRequesting(StreamRTPManagerDesc streamRTPManager,
@@ -230,13 +230,13 @@ public class RTCPFeedbackMessageSender
     }
 
     /**
-     * The <tt>KeyframeRequester</tt> is responsible for sending FIR requests to
+     * The <code>KeyframeRequester</code> is responsible for sending FIR requests to
      * a specific media sender identified by its SSRC.
      */
     class KeyframeRequester extends PeriodicRunnable
     {
         /**
-         * The media sender SSRC of this <tt>KeyframeRequester</tt>
+         * The media sender SSRC of this <code>KeyframeRequester</code>
          */
         private final long mediaSenderSSRC;
 
@@ -274,15 +274,15 @@ public class RTCPFeedbackMessageSender
 
         /**
          * Notifies this instance that an RTP packet has been received from a
-         * peer represented by a specific <tt>StreamRTPManagerDesc</tt>.
+         * peer represented by a specific <code>StreamRTPManagerDesc</code>.
          *
-         * @param streamRTPManager a <tt>StreamRTPManagerDesc</tt> which
+         * @param streamRTPManager a <code>StreamRTPManagerDesc</code> which
          * identifies the peer from which an RTP packet has been received
          * @param buf the buffer which contains the bytes of the received RTP or RTCP packet
-         * @param off the zero-based index in <tt>buf</tt> at which the bytes of
+         * @param off the zero-based index in <code>buf</code> at which the bytes of
          * the received RTP or RTCP packet begin
-         * @param len the number of bytes in <tt>buf</tt> beginning at
-         * <tt>off</tt> which represent the received RTP or RTCP packet
+         * @param len the number of bytes in <code>buf</code> beginning at
+         * <code>off</code> which represent the received RTP or RTCP packet
          */
         public void maybeStopRequesting(
                 StreamRTPManagerDesc streamRTPManager, byte[] buf, int off, int len)

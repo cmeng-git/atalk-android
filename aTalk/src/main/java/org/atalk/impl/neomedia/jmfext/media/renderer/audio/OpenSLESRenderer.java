@@ -16,19 +16,19 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 
 /**
- * Implements an audio <tt>Renderer</tt> which uses OpenSL ES.
+ * Implements an audio <code>Renderer</code> which uses OpenSL ES.
  *
  * @author Lyubomir Marinov
  */
 public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
 {
     /**
-     * The human-readable name of the <tt>OpenSLESRenderer</tt> FMJ plug-in.
+     * The human-readable name of the <code>OpenSLESRenderer</code> FMJ plug-in.
      */
     private static final String PLUGIN_NAME = "OpenSL ES Renderer";
 
     /**
-     * The list of input <tt>Format</tt>s supported by <tt>OpenSLESRenderer</tt> instances.
+     * The list of input <code>Format</code>s supported by <code>OpenSLESRenderer</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS;
 
@@ -54,20 +54,20 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * The <tt>GainControl</tt> through which the volume/gain of rendered media is controlled.
+     * The <code>GainControl</code> through which the volume/gain of rendered media is controlled.
      */
     private final GainControl gainControl;
 
     private long ptr;
 
     /**
-     * The indicator which determines whether this <tt>OpenSLESRenderer</tt> is to set the priority
+     * The indicator which determines whether this <code>OpenSLESRenderer</code> is to set the priority
      * of the thread in which its {@link #process(Buffer)} method is executed.
      */
     private boolean setThreadPriority = true;
 
     /**
-     * Initializes a new <tt>OpenSLESRenderer</tt> instance.
+     * Initializes a new <code>OpenSLESRenderer</code> instance.
      */
     public OpenSLESRenderer()
     {
@@ -75,9 +75,9 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * Initializes a new <tt>OpenSLESRenderer</tt> instance.
+     * Initializes a new <code>OpenSLESRenderer</code> instance.
      *
-     * @param enableGainControl <tt>true</tt> to enable controlling the volume/gain of the rendered media; otherwise, <tt>false</tt>
+     * @param enableGainControl <code>true</code> to enable controlling the volume/gain of the rendered media; otherwise, <code>false</code>
      */
     public OpenSLESRenderer(boolean enableGainControl)
     {
@@ -117,9 +117,9 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
     }
 
     /**
-     * Gets the list of input <tt>Format</tt>s supported by this <tt>OpenSLESRenderer</tt>.
+     * Gets the list of input <code>Format</code>s supported by this <code>OpenSLESRenderer</code>.
      *
-     * @return the list of input <tt>Format</tt>s supported by this <tt>OpenSLESRenderer</tt>
+     * @return the list of input <code>Format</code>s supported by this <code>OpenSLESRenderer</code>
      */
     public Format[] getSupportedInputFormats()
     {
@@ -164,10 +164,10 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Implements {@link Renderer#process(Buffer)}. Processes the media data contained in a specific
-     * {@link Buffer} and renders it to the output device represented by this <tt>Renderer</tt>.
+     * {@link Buffer} and renders it to the output device represented by this <code>Renderer</code>.
      *
-     * @param buffer the <tt>Buffer</tt> containing the media data to be processed and rendered to the
-     * output device represented by this <tt>Renderer</tt>
+     * @param buffer the <code>Buffer</code> containing the media data to be processed and rendered to the
+     * output device represented by this <code>Renderer</code>
      * @return one or a combination of the constants defined in {@link PlugIn}
      * @see Renderer#process(Buffer)
      */
@@ -228,7 +228,7 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Implements {@link Renderer#start()}. Starts rendering to the output device represented by
-     * this <tt>Renderer</tt>.
+     * this <code>Renderer</code>.
      *
      * @see Renderer#start()
      */
@@ -244,7 +244,7 @@ public class OpenSLESRenderer extends AbstractAudioRenderer<AudioSystem>
 
     /**
      * Implements {@link Renderer#stop()}. Stops rendering to the output device represented by this
-     * <tt>Renderer</tt>.
+     * <code>Renderer</code>.
      *
      * @see Renderer#stop()
      */

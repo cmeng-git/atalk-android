@@ -29,26 +29,26 @@ public class TlsClientImpl extends DefaultTlsClient
     private final TlsAuthentication authentication = new TlsAuthenticationImpl();
 
     /**
-     * The <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server.
+     * The <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP client and its server.
      */
     private int chosenProtectionProfile;
 
     /**
-     * The SRTP Master Key Identifier (MKI) used by the <tt>SrtpCryptoContext</tt> associated with
-     * this instance. Since the <tt>SrtpCryptoContext</tt> class does not utilize it, the value is
+     * The SRTP Master Key Identifier (MKI) used by the <code>SrtpCryptoContext</code> associated with
+     * this instance. Since the <code>SrtpCryptoContext</code> class does not utilize it, the value is
      * {@link TlsUtils#EMPTY_BYTES}.
      */
     private final byte[] mki = TlsUtils.EMPTY_BYTES;
 
     /**
-     * The <tt>PacketTransformer</tt> which has initialized this instance.
+     * The <code>PacketTransformer</code> which has initialized this instance.
      */
     private final DtlsPacketTransformer packetTransformer;
 
     /**
-     * Initializes a new <tt>TlsClientImpl</tt> instance.
+     * Initializes a new <code>TlsClientImpl</code> instance.
      *
-     * @param packetTransformer the <tt>PacketTransformer</tt> which is initializing the new instance
+     * @param packetTransformer the <code>PacketTransformer</code> which is initializing the new instance
      */
     public TlsClientImpl(DtlsPacketTransformer packetTransformer)
     {
@@ -67,9 +67,9 @@ public class TlsClientImpl extends DefaultTlsClient
     }
 
     /**
-     * Gets the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server.
+     * Gets the <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP client and its server.
      *
-     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP client and its server
+     * @return the <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP client and its server
      */
     private int getChosenProtectionProfile()
     {
@@ -78,7 +78,7 @@ public class TlsClientImpl extends DefaultTlsClient
 
     /**
      * {@inheritDoc}
-     * The implementation of <tt>TlsClientImpl</tt> always returns <tt>ProtocolVersion.DTLSv12 & DTLSv10</tt>
+     * The implementation of <code>TlsClientImpl</code> always returns <code>ProtocolVersion.DTLSv12 & DTLSv10</code>
      */
     @Override
     protected ProtocolVersion[] getSupportedVersions()
@@ -89,7 +89,7 @@ public class TlsClientImpl extends DefaultTlsClient
     /**
      * {@inheritDoc}
      *
-     * Includes the <tt>use_srtp</tt> extension in the DTLS extended client hello.
+     * Includes the <code>use_srtp</code> extension in the DTLS extended client hello.
      */
     @Override
     public Hashtable getClientExtensions()
@@ -108,9 +108,9 @@ public class TlsClientImpl extends DefaultTlsClient
     }
 
     /**
-     * Gets the <tt>TlsContext</tt> with which this <tt>TlsClient</tt> has been initialized.
+     * Gets the <code>TlsContext</code> with which this <code>TlsClient</code> has been initialized.
      *
-     * @return the <tt>TlsContext</tt> with which this <tt>TlsClient</tt> has been initialized
+     * @return the <code>TlsContext</code> with which this <code>TlsClient</code> has been initialized
      */
     TlsContext getContext()
     {
@@ -118,9 +118,9 @@ public class TlsClientImpl extends DefaultTlsClient
     }
 
     /**
-     * Gets the <tt>DtlsControl</tt> implementation associated with this instance.
+     * Gets the <code>DtlsControl</code> implementation associated with this instance.
      *
-     * @return the <tt>DtlsControl</tt> implementation associated with this instance
+     * @return the <code>DtlsControl</code> implementation associated with this instance
      */
     private DtlsControlImpl getDtlsControl()
     {
@@ -137,7 +137,7 @@ public class TlsClientImpl extends DefaultTlsClient
      *
      * Overrides the super implementation as a simple means of detecting that the security-related
      * negotiations between the local and the remote enpoints are starting. The detection carried
-     * out for the purposes of <tt>SrtpListener</tt>.
+     * out for the purposes of <code>SrtpListener</code>.
      */
     @Override
     public void init(TlsClientContext context)
@@ -181,7 +181,7 @@ public class TlsClientImpl extends DefaultTlsClient
     /**
      * {@inheritDoc}
      *
-     * Makes sure the DTLS extended server hello contains the <tt>use_srtp</tt> extension.
+     * Makes sure the DTLS extended server hello contains the <code>use_srtp</code> extension.
      */
     @Override
     @SuppressWarnings("rawtypes")

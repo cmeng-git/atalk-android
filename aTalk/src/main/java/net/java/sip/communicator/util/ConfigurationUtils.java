@@ -1066,7 +1066,7 @@ public class ConfigurationUtils
      * 3. size <= acceptFileSize
      *
      * @param size current file size
-     * @return true is auto aceept to download
+     * @return true is auto accept to download
      */
     public static boolean isAutoAcceptFile(long size)
     {

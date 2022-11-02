@@ -16,7 +16,7 @@ import org.jivesoftware.smack.provider.*;
 import java.io.IOException;
 
 /**
- * Provider for the <tt>JingleInfoQueryIQ</tt>.
+ * Provider for the <code>JingleInfoQueryIQ</code>.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
@@ -26,17 +26,17 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
     /**
      * STUN packet extension provider.
      */
-    private final ExtensionElementProvider stunProvider = new StunProvider();
+    private final ExtensionElementProvider<?> stunProvider = new StunProvider();
 
     /**
      * Relay packet extension provider.
      */
-    private final ExtensionElementProvider relayProvider = new RelayProvider();
+    private final ExtensionElementProvider<?> relayProvider = new RelayProvider();
 
     /**
-     * Creates a new instance of the <tt>JingleInfoQueryIQProvider</tt> and register all related
+     * Creates a new instance of the <code>JingleInfoQueryIQProvider</code> and register all related
      * extension providers. It is the responsibility of the application to register the
-     * <tt>JingleInfoQueryIQProvider</tt> itself.
+     * <code>JingleInfoQueryIQProvider</code> itself.
      */
     public JingleInfoQueryIQProvider()
     {
@@ -45,7 +45,7 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
     }
 
     /**
-     * Parses a JingleInfoQueryIQ</tt>.
+     * Parses a JingleInfoQueryIQ</code>.
      *
      * @param parser an XML parser.
      * @return a new {@link JingleInfoQueryIQ} instance.
@@ -65,10 +65,10 @@ public class JingleInfoQueryIQProvider extends IQProvider<JingleInfoQueryIQ>
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(StunExtension.ELEMENT)) {
-                    iq.addExtension((StunExtension) stunProvider.parse(parser));
+                    iq.addExtension(stunProvider.parse(parser));
                 }
                 else if (elementName.equals(RelayExtension.ELEMENT)) {
-                    iq.addExtension((RelayExtension) relayProvider.parse(parser));
+                    iq.addExtension(relayProvider.parse(parser));
                 }
             }
             if (eventType == XmlPullParser.Event.END_ELEMENT) {

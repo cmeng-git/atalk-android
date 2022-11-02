@@ -40,7 +40,7 @@ import timber.log.Timber;
 public class RawPacketCache implements AutoCloseable
 {
     /**
-     * The <tt>ConfigurationService</tt> used to load caching configuration.
+     * The <code>ConfigurationService</code> used to load caching configuration.
      */
     private final static ConfigurationService cfg = LibJitsi.getConfigurationService();
 
@@ -63,7 +63,7 @@ public class RawPacketCache implements AutoCloseable
             = "neomedia.transform.CachingTransformer.CACHE_SIZE_MILLIS";
 
     /**
-     * Packets added to the cache more than <tt>SIZE_MILLIS</tt> ago might be
+     * Packets added to the cache more than <code>SIZE_MILLIS</code> ago might be
      * cleared from the cache.
      *
      * FIXME(gp) the cache size should be adaptive based on the RTT.
@@ -95,7 +95,7 @@ public class RawPacketCache implements AutoCloseable
     private static int SSRC_TIMEOUT_MILLIS = SIZE_MILLIS + 50;
 
     /**
-     * The pool of <tt>RawPacket</tt>s which we use to avoid allocation and GC.
+     * The pool of <code>RawPacket</code>s which we use to avoid allocation and GC.
      */
     private final Queue<RawPacket> pool = new LinkedBlockingQueue<>(POOL_SIZE);
 
@@ -149,7 +149,7 @@ public class RawPacketCache implements AutoCloseable
     private AtomicInteger totalPacketsAdded = new AtomicInteger(0);
 
     /**
-     * Contains a <tt>Cache</tt> instance for each SSRC.
+     * Contains a <code>Cache</code> instance for each SSRC.
      */
     private final Map<Long, Cache> caches = new HashMap<>();
 
@@ -195,13 +195,13 @@ public class RawPacketCache implements AutoCloseable
 
     /**
      * Gets the packet, encapsulated in a {@link Container} with the given SSRC
-     * and RTP sequence number from the cache. If no such packet is found, returns <tt>null</tt>.
+     * and RTP sequence number from the cache. If no such packet is found, returns <code>null</code>.
      *
      * @param ssrc The SSRC of the packet.
      * @param seq the RTP sequence number of the packet.
      * @return the packet, encapsulated in a {@link Container} with the given
      * SSRC and RTP sequence number from the cache. If no such packet is found,
-     * returns <tt>null</tt>.
+     * returns <code>null</code>.
      */
     public Container getContainer(long ssrc, int seq)
     {
@@ -223,12 +223,12 @@ public class RawPacketCache implements AutoCloseable
 
     /**
      * Gets the packet with the given SSRC and RTP sequence number from the
-     * cache. If no such packet is found, returns <tt>null</tt>.
+     * cache. If no such packet is found, returns <code>null</code>.
      *
      * @param ssrc The SSRC of the packet.
      * @param seq the RTP sequence number of the packet.
      * @return the packet with the given SSRC and RTP sequence number from the cache. If no such
-     * packet is found, returns <tt>null</tt>.
+     * packet is found, returns <code>null</code>.
      */
     public RawPacket get(long ssrc, int seq)
     {
@@ -238,12 +238,12 @@ public class RawPacketCache implements AutoCloseable
 
     /**
      * Gets the {@link Cache} instance which caches packets with SSRC
-     * <tt>ssrc</tt>, creating if <tt>create</tt> is set and creation is
+     * <code>ssrc</code>, creating if <code>create</code> is set and creation is
      * possible (the maximum number of caches hasn't been reached).
      *
      * @param ssrc the SSRC.
      * @param create whether to create an instance if one doesn't already exist.
-     * @return the cache for <tt>ssrc</tt> or <tt>null</tt>.
+     * @return the cache for <code>ssrc</code> or <code>null</code>.
      */
     private Cache getCache(long ssrc, boolean create)
     {
@@ -279,11 +279,11 @@ public class RawPacketCache implements AutoCloseable
     }
 
     /**
-     * Gets an unused <tt>RawPacket</tt> with at least <tt>len</tt> bytes of
+     * Gets an unused <code>RawPacket</code> with at least <code>len</code> bytes of
      * buffer space.
      *
      * @param len the minimum available length
-     * @return An unused <tt>RawPacket</tt> with at least <tt>len</tt> bytes of
+     * @return An unused <code>RawPacket</code> with at least <code>len</code> bytes of
      * buffer space.
      */
     private RawPacket getFreePacket(int len)
@@ -397,7 +397,7 @@ public class RawPacketCache implements AutoCloseable
         /**
          * The underlying container. It maps a packet index (based on its RTP
          * sequence number, in the same way as used in SRTP (RFC3711)) to the
-         * <tt>RawPacket</tt> with the packet contents.
+         * <code>RawPacket</code> with the packet contents.
          */
         private TreeMap<Integer, Container> cache = new TreeMap<>();
 
@@ -417,7 +417,7 @@ public class RawPacketCache implements AutoCloseable
         private int s_l = -1;
 
         /**
-         * Inserts a packet into this <tt>Cache</tt>.
+         * Inserts a packet into this <code>Cache</code>.
          *
          * @param pkt the packet to insert.
          */
@@ -458,12 +458,12 @@ public class RawPacketCache implements AutoCloseable
 
         /**
          * Calculates the index of an RTP packet based on its RTP sequence
-         * number and updates the <tt>s_l</tt> and <tt>ROC</tt> fields. Based
+         * number and updates the <code>s_l</code> and <code>ROC</code> fields. Based
          * on the procedure outlined in RFC3711
          *
          * @param seq the RTP sequence number of the RTP packet.
          * @return the index of the RTP sequence number with sequence number
-         * <tt>seq</tt>.
+         * <code>seq</code>.
          */
         private int calculateIndex(int seq)
         {
@@ -531,7 +531,7 @@ public class RawPacketCache implements AutoCloseable
             if (container == null && ROC > 0)
                 container = cache.get(seq + (ROC - 1) * 0x1_0000);
 
-            // Since the cache only stores <tt>SIZE_MILLIS</tt> milliseconds of
+            // Since the cache only stores <code>SIZE_MILLIS</code> milliseconds of
             // packets, we assume that it doesn't contain packets spanning
             // more than one ROC.
             return container;

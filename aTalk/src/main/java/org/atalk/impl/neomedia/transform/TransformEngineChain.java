@@ -10,7 +10,7 @@ import org.atalk.service.neomedia.RawPacket;
 import java.util.*;
 
 /**
- * The engine chain allows using numerous <tt>TransformEngine</tt>s on a single stream.
+ * The engine chain allows using numerous <code>TransformEngine</code>s on a single stream.
  *
  * @author Emil Ivov
  * @author Lyubomir Marinov
@@ -18,7 +18,7 @@ import java.util.*;
 public class TransformEngineChain implements TransformEngine
 {
 	/**
-	 * The sequence of <tt>TransformEngine</tt>s whose <tt>PacketTransformer</tt>s this engine chain
+	 * The sequence of <code>TransformEngine</code>s whose <code>PacketTransformer</code>s this engine chain
 	 * will be applying to RTP and RTCP packets. Implemented as copy-on-write storage for the
 	 * purposes of performance.
 	 */
@@ -30,24 +30,24 @@ public class TransformEngineChain implements TransformEngine
 	private List<TransformEngine> engineChainAsList;
 
 	/**
-	 * The sequence of <tt>PacketTransformer</tt>s that this engine chain will be applying to RTCP
+	 * The sequence of <code>PacketTransformer</code>s that this engine chain will be applying to RTCP
 	 * packets.
 	 */
 	private PacketTransformerChain rtcpTransformChain;
 
 	/**
-	 * The sequence of <tt>PacketTransformer</tt>s that this engine chain will be applying to RTP
+	 * The sequence of <code>PacketTransformer</code>s that this engine chain will be applying to RTP
 	 * packets.
 	 */
 	private PacketTransformerChain rtpTransformChain;
 
 	/**
-	 * Creates a new <tt>TransformEngineChain</tt> using the <tt>engineChain</tt> array. Engines
-	 * will be applied in the order specified by the <tt>engineChain</tt> array for outgoing packets
+	 * Creates a new <code>TransformEngineChain</code> using the <code>engineChain</code> array. Engines
+	 * will be applied in the order specified by the <code>engineChain</code> array for outgoing packets
 	 * and in the reverse order for incoming packets.
 	 *
 	 * @param engineChain
-	 *        an array containing <tt>TransformEngine</tt>s in the order that they are to be applied
+	 *        an array containing <code>TransformEngine</code>s in the order that they are to be applied
 	 *        on outgoing packets.
 	 */
 	public TransformEngineChain(TransformEngine[] engineChain)
@@ -56,7 +56,7 @@ public class TransformEngineChain implements TransformEngine
 	}
 
 	/**
-	 * Creates a new <tt>TransformEngineChain</tt> without initializing the array of transformers to
+	 * Creates a new <code>TransformEngineChain</code> without initializing the array of transformers to
 	 * be used. Allows extending classes to initialize the array on their own.
 	 */
 	protected TransformEngineChain()
@@ -160,10 +160,10 @@ public class TransformEngineChain implements TransformEngine
     }
 
 	/**
-	 * Gets the sequence of <tt>TransformEngine</tt>s whose <tt>PacketTransformer</tt>s this engine
+	 * Gets the sequence of <code>TransformEngine</code>s whose <code>PacketTransformer</code>s this engine
 	 * chain applies to RTP and RTCP packets.
 	 *
-	 * @return the sequence of <tt>TransformEngine</tt>s whose <tt>PacketTransformer</tt>s this
+	 * @return the sequence of <code>TransformEngine</code>s whose <code>PacketTransformer</code>s this
 	 *         engine chain applies to RTP and RTCP packets
 	 */
 	public TransformEngine[] getEngineChain()
@@ -172,10 +172,10 @@ public class TransformEngineChain implements TransformEngine
 	}
 
 	/**
-	 * Returns the meta <tt>PacketTransformer</tt> that will be applying RTCP transformations from
-	 * all engines registered in this <tt>TransformEngineChain</tt>.
+	 * Returns the meta <code>PacketTransformer</code> that will be applying RTCP transformations from
+	 * all engines registered in this <code>TransformEngineChain</code>.
 	 *
-	 * @return a <tt>PacketTransformerChain</tt> over all RTCP transformers in this engine chain.
+	 * @return a <code>PacketTransformerChain</code> over all RTCP transformers in this engine chain.
 	 */
 	@Override
 	public PacketTransformer getRTCPTransformer()
@@ -209,10 +209,10 @@ public class TransformEngineChain implements TransformEngine
 	}
 
 	/**
-	 * Returns the meta <tt>PacketTransformer</tt> that will be applying RTCP transformations from
-	 * all engines registered in this <tt>TransformEngineChain</tt>.
+	 * Returns the meta <code>PacketTransformer</code> that will be applying RTCP transformations from
+	 * all engines registered in this <code>TransformEngineChain</code>.
 	 *
-	 * @return a <tt>PacketTransformerChain</tt> over all RTP transformers in this engine chain.
+	 * @return a <code>PacketTransformerChain</code> over all RTP transformers in this engine chain.
 	 */
 	@Override
 	public PacketTransformer getRTPTransformer()
@@ -260,7 +260,7 @@ public class TransformEngineChain implements TransformEngine
 	}
 
 	/**
-	 * A <tt>PacketTransformerChain</tt> is a meta <tt>PacketTransformer</tt> that applies all
+	 * A <code>PacketTransformerChain</code> is a meta <code>PacketTransformer</code> that applies all
 	 * transformers present in this engine chain. The class respects the order of the engine chain
 	 * for outgoing packets and reverses it for incoming packets.
 	 */
@@ -275,12 +275,12 @@ public class TransformEngineChain implements TransformEngine
 
 		/**
 		 * Creates an instance of this packet transformer and prepares it to deal with RTP or RTCP
-		 * according to the <tt>isRtp</tt> argument.
+		 * according to the <code>isRtp</code> argument.
 		 *
 		 * @param rtp
-		 *        <tt>true</tt> if this transformer will be dealing with RTP (i.e. will transform
+		 *        <code>true</code> if this transformer will be dealing with RTP (i.e. will transform
 		 *        packets via the RTP transformers in this chain rather than the RTCP ones) and
-		 *        <tt>false</tt> otherwise.
+		 *        <code>false</code> otherwise.
 		 */
 		public PacketTransformerChain(boolean rtp)
 		{
@@ -309,7 +309,7 @@ public class TransformEngineChain implements TransformEngine
 		/**
 		 * {@inheritDoc}
 		 *
-		 * Reverse-transforms the given packets using each of the <tt>TransformEngine</tt>-s in the
+		 * Reverse-transforms the given packets using each of the <code>TransformEngine</code>-s in the
 		 * engine chain in reverse order.
 		 */
 		@Override

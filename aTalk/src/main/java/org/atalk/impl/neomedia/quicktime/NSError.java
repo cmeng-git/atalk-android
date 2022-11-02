@@ -6,18 +6,18 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents an Objective-C <tt>NSError</tt> object.
+ * Represents an Objective-C <code>NSError</code> object.
  *
  * @author Lyubomir Marinov
  */
 public class NSError extends NSObject
 {
 	/**
-	 * Initializes a new <tt>NSError</tt> instance which is to represent a specific Objective-C
-	 * <tt>NSError</tt> object.
+	 * Initializes a new <code>NSError</code> instance which is to represent a specific Objective-C
+	 * <code>NSError</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the Objective-C <tt>NSError</tt> object to be represented by the new
+	 *        the pointer to the Objective-C <code>NSError</code> object to be represented by the new
 	 *        instance
 	 */
 	public NSError(long ptr)

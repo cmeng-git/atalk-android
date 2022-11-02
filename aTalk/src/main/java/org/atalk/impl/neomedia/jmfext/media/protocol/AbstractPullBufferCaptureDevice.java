@@ -13,7 +13,7 @@ import javax.media.control.FrameRateControl;
 import javax.media.protocol.*;
 
 /**
- * Provides a base implementation of <tt>PullBufferDataSource</tt> and <tt>CaptureDevice</tt> in
+ * Provides a base implementation of <code>PullBufferDataSource</code> and <code>CaptureDevice</code> in
  * order to facilitate implementers by taking care of boilerplate in the most common cases.
  *
  * @author Lyubomir Marinov
@@ -23,13 +23,13 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
 {
 
     /**
-     * The <tt>CaptureDeviceInfo</tt>.
+     * The <code>CaptureDeviceInfo</code>.
      */
     private CaptureDeviceInfo deviceInfo;
 
     /**
-     * The <tt>AbstractBufferCaptureDevice</tt> which provides the implementation of this
-     * <tt>AbstractPullBufferCaptureDevice</tt>.
+     * The <code>AbstractBufferCaptureDevice</code> which provides the implementation of this
+     * <code>AbstractPullBufferCaptureDevice</code>.
      */
     private final AbstractBufferCaptureDevice<AbstractPullBufferStream<?>> impl
             = new AbstractBufferCaptureDevice<AbstractPullBufferStream<?>>()
@@ -99,16 +99,16 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     };
 
     /**
-     * Initializes a new <tt>AbstractPullBufferCaptureDevice</tt> instance.
+     * Initializes a new <code>AbstractPullBufferCaptureDevice</code> instance.
      */
     protected AbstractPullBufferCaptureDevice()
     {
     }
 
     /**
-     * Initializes a new <tt>AbstractPullBufferCaptureDevice</tt> instance from a specific <tt>MediaLocator</tt>.
+     * Initializes a new <code>AbstractPullBufferCaptureDevice</code> instance from a specific <code>MediaLocator</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> to create the new instance from
+     * @param locator the <code>MediaLocator</code> to create the new instance from
      */
     protected AbstractPullBufferCaptureDevice(MediaLocator locator)
     {
@@ -116,10 +116,10 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this <tt>DataSource</tt>.
+     * Opens a connection to the media source specified by the <code>MediaLocator</code> of this <code>DataSource</code>.
      *
      * @throws IOException if anything goes wrong while opening the connection to the media source specified by
-     * the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+     * the <code>MediaLocator</code> of this <code>DataSource</code>
      */
     @Override
     public void connect()
@@ -129,11 +129,11 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Creates a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-     * setting of the frame rate of this <tt>AbstractPullBufferCaptureDevice</tt>.
+     * Creates a new <code>FrameRateControl</code> instance which is to allow the getting and
+     * setting of the frame rate of this <code>AbstractPullBufferCaptureDevice</code>.
      *
-     * @return a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-     * setting of the frame rate of this <tt>AbstractPullBufferCaptureDevice</tt>
+     * @return a new <code>FrameRateControl</code> instance which is to allow the getting and
+     * setting of the frame rate of this <code>AbstractPullBufferCaptureDevice</code>
      */
     protected FrameRateControl createFrameRateControl()
     {
@@ -141,23 +141,23 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Creates a new <tt>PullBufferStream</tt> which is to be at a specific zero-based index in the
-     * list of streams of this <tt>PullBufferDataSource</tt>. The <tt>Format</tt>-related
-     * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+     * Creates a new <code>PullBufferStream</code> which is to be at a specific zero-based index in the
+     * list of streams of this <code>PullBufferDataSource</code>. The <code>Format</code>-related
+     * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PullBufferStream</tt> in the list of streams of this
-     * <tt>PullBufferDataSource</tt>
-     * @param formatControl the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+     * @param streamIndex the zero-based index of the <code>PullBufferStream</code> in the list of streams of this
+     * <code>PullBufferDataSource</code>
+     * @param formatControl the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
      * information of the new instance
-     * @return a new <tt>PullBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-     * in the list of streams of this <tt>PullBufferDataSource</tt> and which has its
-     * <tt>Format</tt>-related information abstracted by the specified <tt>formatControl</tt>
+     * @return a new <code>PullBufferStream</code> which is to be at the specified <code>streamIndex</code>
+     * in the list of streams of this <code>PullBufferDataSource</code> and which has its
+     * <code>Format</code>-related information abstracted by the specified <code>formatControl</code>
      */
     protected abstract AbstractPullBufferStream<?> createStream(int streamIndex, FormatControl formatControl);
 
     /**
-     * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
-     * <tt>DataSource</tt>. If such a connection has not been opened, the call is ignored.
+     * Closes the connection to the media source specified by the <code>MediaLocator</code> of this
+     * <code>DataSource</code>. If such a connection has not been opened, the call is ignored.
      */
     @Override
     public void disconnect()
@@ -166,12 +166,12 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this
-     * <tt>DataSource</tt>. Allows extenders to override and be sure that there will be no request
+     * Opens a connection to the media source specified by the <code>MediaLocator</code> of this
+     * <code>DataSource</code>. Allows extenders to override and be sure that there will be no request
      * to open a connection if the connection has already been opened.
      *
      * @throws IOException if anything goes wrong while opening the connection to the media source specified by
-     * the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+     * the <code>MediaLocator</code> of this <code>DataSource</code>
      */
     protected void doConnect()
             throws IOException
@@ -179,8 +179,8 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
-     * <tt>DataSource</tt>. Allows extenders to override and be sure that there will be no request
+     * Closes the connection to the media source specified by the <code>MediaLocator</code> of this
+     * <code>DataSource</code>. Allows extenders to override and be sure that there will be no request
      * to close a connection if the connection has not been opened yet.
      */
     protected void doDisconnect()
@@ -195,12 +195,12 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Starts the transfer of media data from this <tt>DataSource</tt>. Allows extenders to
+     * Starts the transfer of media data from this <code>DataSource</code>. Allows extenders to
      * override and be sure that there will be no request to start the transfer of media data if
      * it has already been started.
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>DataSource</tt>
+     * <code>DataSource</code>
      */
     protected void doStart()
             throws IOException
@@ -209,10 +209,10 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Stops the transfer of media data from this <tt>DataSource</tt>. Allows extenders to override and be
+     * Stops the transfer of media data from this <code>DataSource</code>. Allows extenders to override and be
      * sure that there will be no request to stop the transfer of media data if it has not been started yet.
      *
-     * @throws IOException if anything goes wrong while stopping the transfer of media data from this <tt>DataSource</tt>
+     * @throws IOException if anything goes wrong while stopping the transfer of media data from this <code>DataSource</code>
      */
     protected void doStop()
             throws IOException
@@ -221,9 +221,9 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of this <tt>CaptureDevice</tt> which describes it.
+     * Gets the <code>CaptureDeviceInfo</code> of this <code>CaptureDevice</code> which describes it.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of this <tt>CaptureDevice</tt> which describes it
+     * @return the <code>CaptureDeviceInfo</code> of this <code>CaptureDevice</code> which describes it
      */
     public CaptureDeviceInfo getCaptureDeviceInfo()
     {
@@ -233,7 +233,7 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
 
     /**
      * Gets the content type of the media represented by this instance. The
-     * <tt>AbstractPullBufferCaptureDevice</tt> implementation always returns
+     * <code>AbstractPullBufferCaptureDevice</code> implementation always returns
      * {@link ContentDescriptor#RAW}.
      *
      * @return the content type of the media represented by this instance
@@ -248,8 +248,8 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
      * Gets the control of the specified type available for this instance.
      *
      * @param controlType the type of the control available for this instance to be retrieved
-     * @return an <tt>Object</tt> which represents the control of the specified type available for
-     * this instance if such a control is indeed available; otherwise, <tt>null</tt>
+     * @return an <code>Object</code> which represents the control of the specified type available for
+     * this instance if such a control is indeed available; otherwise, <code>null</code>
      */
     @Override
     public Object getControl(String controlType)
@@ -260,7 +260,7 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     /**
      * Implements {@link javax.media.Controls#getControls()}. Gets the controls available for this instance.
      *
-     * @return an array of <tt>Object</tt>s which represent the controls available for this instance
+     * @return an array of <code>Object</code>s which represent the controls available for this instance
      */
     @Override
     public Object[] getControls()
@@ -270,7 +270,7 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
 
     /**
      * Gets the duration of the media represented by this instance. The
-     * <tt>AbstractPullBufferCaptureDevice</tt> always returns {@link #DURATION_UNBOUNDED}.
+     * <code>AbstractPullBufferCaptureDevice</code> always returns {@link #DURATION_UNBOUNDED}.
      *
      * @return the duration of the media represented by this instance
      */
@@ -281,20 +281,20 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>PullBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PullBufferDataSource</tt>. The <tt>PullBufferStream</tt> may not exist at the time of
-     * requesting its <tt>Format</tt>. Allows extenders to override the default behavior which
-     * is to report any last-known format or the first <tt>Format</tt> from the list of supported
-     * formats as defined in the JMF registration of this <tt>CaptureDevice</tt>.
+     * Gets the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+     * <code>PullBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>PullBufferDataSource</code>. The <code>PullBufferStream</code> may not exist at the time of
+     * requesting its <code>Format</code>. Allows extenders to override the default behavior which
+     * is to report any last-known format or the first <code>Format</code> from the list of supported
+     * formats as defined in the JMF registration of this <code>CaptureDevice</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PullBufferStream</tt> the <tt>Format</tt> of which is
+     * @param streamIndex the zero-based index of the <code>PullBufferStream</code> the <code>Format</code> of which is
      * to be retrieved
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PullBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PullBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PullBufferDataSource</tt>.
+     * @param oldValue the last-known <code>Format</code> for the <code>PullBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PullBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PullBufferDataSource</code>.
      */
     protected Format getFormat(int streamIndex, Format oldValue)
     {
@@ -302,11 +302,11 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams.
+     * Gets an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams.
      *
-     * @return an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams
+     * @return an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams
      */
     public FormatControl[] getFormatControls()
     {
@@ -314,9 +314,9 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the <tt>Object</tt> which is to synchronize the access to {@link #streams()} and its return value.
+     * Gets the <code>Object</code> which is to synchronize the access to {@link #streams()} and its return value.
      *
-     * @return the <tt>Object</tt> which is to synchronize the access to {@link #streams()} and its return value
+     * @return the <code>Object</code> which is to synchronize the access to {@link #streams()} and its return value
      */
     protected Object getStreamSyncRoot()
     {
@@ -324,11 +324,11 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the <tt>PullBufferStream</tt>s through which this <tt>PullBufferDataSource</tt> gives
+     * Gets the <code>PullBufferStream</code>s through which this <code>PullBufferDataSource</code> gives
      * access to its media data.
      *
-     * @return an array of the <tt>PullBufferStream</tt>s through which this
-     * <tt>PullBufferDataSource</tt> gives access to its media data
+     * @return an array of the <code>PullBufferStream</code>s through which this
+     * <code>PullBufferDataSource</code> gives access to its media data
      */
     @Override
     public PullBufferStream[] getStreams()
@@ -337,15 +337,15 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the <tt>Format</tt>s which are to be reported by a <tt>FormatControl</tt> as supported
-     * formats for a <tt>PullBufferStream</tt> at a specific zero-based index in the list of
-     * streams of this <tt>PullBufferDataSource</tt>.
+     * Gets the <code>Format</code>s which are to be reported by a <code>FormatControl</code> as supported
+     * formats for a <code>PullBufferStream</code> at a specific zero-based index in the list of
+     * streams of this <code>PullBufferDataSource</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PullBufferStream</tt> for which the specified
-     * <tt>FormatControl</tt> is to report the list of supported <tt>Format</tt>s
-     * @return an array of <tt>Format</tt>s to be reported by a <tt>FormatControl</tt> as the
-     * supported formats for the <tt>PullBufferStream</tt> at the specified
-     * <tt>streamIndex</tt> in the list of streams of this <tt>PullBufferDataSource</tt>
+     * @param streamIndex the zero-based index of the <code>PullBufferStream</code> for which the specified
+     * <code>FormatControl</code> is to report the list of supported <code>Format</code>s
+     * @return an array of <code>Format</code>s to be reported by a <code>FormatControl</code> as the
+     * supported formats for the <code>PullBufferStream</code> at the specified
+     * <code>streamIndex</code> in the list of streams of this <code>PullBufferDataSource</code>
      */
     protected Format[] getSupportedFormats(int streamIndex)
     {
@@ -353,9 +353,9 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Sets a specific <tt>CaptureDeviceInfo</tt> on this <tt>CaptureDevice</tt>.
+     * Sets a specific <code>CaptureDeviceInfo</code> on this <code>CaptureDevice</code>.
      *
-     * @param deviceInfo the <tt>CaptureDeviceInfo</tt> on this <tt>CaptureDevice</tt>
+     * @param deviceInfo the <code>CaptureDeviceInfo</code> on this <code>CaptureDevice</code>
      */
     public void setCaptureDeviceInfo(CaptureDeviceInfo deviceInfo)
     {
@@ -363,24 +363,24 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>PullBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PullBufferDataSource</tt>. The <tt>PullBufferStream</tt> does not exist at the time of
-     * the attempt to set its <tt>Format</tt>. Allows extenders to override the default behavior
-     * which is to not attempt to set the specified <tt>Format</tt> so that they can enable setting
-     * the <tt>Format</tt> prior to creating the <tt>PullBufferStream</tt>. If setting the
-     * <tt>Format</tt> of an existing <tt>PullBufferStream</tt> is desired,
-     * <tt>AbstractPullBufferStream#doSetFormat(Format)</tt> should be overridden instead.
+     * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+     * <code>PullBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>PullBufferDataSource</code>. The <code>PullBufferStream</code> does not exist at the time of
+     * the attempt to set its <code>Format</code>. Allows extenders to override the default behavior
+     * which is to not attempt to set the specified <code>Format</code> so that they can enable setting
+     * the <code>Format</code> prior to creating the <code>PullBufferStream</code>. If setting the
+     * <code>Format</code> of an existing <code>PullBufferStream</code> is desired,
+     * <code>AbstractPullBufferStream#doSetFormat(Format)</code> should be overridden instead.
      *
-     * @param streamIndex the zero-based index of the <tt>PullBufferStream</tt> the <tt>Format</tt> of which is
+     * @param streamIndex the zero-based index of the <code>PullBufferStream</code> the <code>Format</code> of which is
      * to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PullBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @param newValue the <tt>Format</tt> which is to be set
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PullBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PullBufferStream</tt> or <tt>null</tt> if the attempt to set the
-     * <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in effect
+     * @param oldValue the last-known <code>Format</code> for the <code>PullBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @param newValue the <code>Format</code> which is to be set
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PullBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PullBufferStream</code> or <code>null</code> if the attempt to set the
+     * <code>Format</code> did not success and any last-known <code>Format</code> is to be left in effect
      */
     protected Format setFormat(int streamIndex, Format oldValue, Format newValue)
     {
@@ -388,10 +388,10 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Starts the transfer of media data from this <tt>DataSource</tt>
+     * Starts the transfer of media data from this <code>DataSource</code>
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>DataSource</tt>
+     * <code>DataSource</code>
      */
     @Override
     public void start()
@@ -401,9 +401,9 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Stops the transfer of media data from this <tt>DataSource</tt>.
+     * Stops the transfer of media data from this <code>DataSource</code>.
      *
-     * @throws IOException if anything goes wrong while stopping the transfer of media data from this <tt>DataSource</tt>
+     * @throws IOException if anything goes wrong while stopping the transfer of media data from this <code>DataSource</code>
      */
     @Override
     public void stop()
@@ -413,11 +413,11 @@ public abstract class AbstractPullBufferCaptureDevice extends PullBufferDataSour
     }
 
     /**
-     * Gets the internal array of <tt>AbstractPushBufferStream</tt>s through which this
-     * <tt>AbstractPushBufferCaptureDevice</tt> gives access to its media data.
+     * Gets the internal array of <code>AbstractPushBufferStream</code>s through which this
+     * <code>AbstractPushBufferCaptureDevice</code> gives access to its media data.
      *
-     * @return the internal array of <tt>AbstractPushBufferStream</tt>s through which this
-     * <tt>AbstractPushBufferCaptureDevice</tt> gives access to its media data
+     * @return the internal array of <code>AbstractPushBufferStream</code>s through which this
+     * <code>AbstractPushBufferCaptureDevice</code> gives access to its media data
      */
     protected AbstractBufferStream<?>[] streams()
     {

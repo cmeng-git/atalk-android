@@ -14,7 +14,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
- * Implementation of <tt>ScreenDevice</tt>.
+ * Implementation of <code>ScreenDevice</code>.
  *
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
@@ -22,15 +22,15 @@ import java.awt.Rectangle;
 public class ScreenDeviceImpl implements ScreenDevice
 {
 	/**
-	 * An array with <tt>ScreenDevice</tt> element type which is empty. Explicitly defined to reduce
+	 * An array with <code>ScreenDevice</code> element type which is empty. Explicitly defined to reduce
 	 * allocations, garbage collection.
 	 */
 	private static final ScreenDevice[] EMPTY_SCREEN_DEVICE_ARRAY = new ScreenDevice[0];
 
 	/**
-	 * Returns all available <tt>ScreenDevice</tt>s.
+	 * Returns all available <code>ScreenDevice</code>s.
 	 *
-	 * @return an array of all available <tt>ScreenDevice</tt>s
+	 * @return an array of all available <code>ScreenDevice</code>s
 	 */
 	public static ScreenDevice[] getAvailableScreenDevices()
 	{
@@ -71,10 +71,10 @@ public class ScreenDeviceImpl implements ScreenDevice
 	}
 
 	/**
-	 * Gets the default <tt>ScreenDevice</tt>. The implementation attempts to return the
-	 * <tt>ScreenDevice</tt> with the highest resolution.
+	 * Gets the default <code>ScreenDevice</code>. The implementation attempts to return the
+	 * <code>ScreenDevice</code> with the highest resolution.
 	 *
-	 * @return the default <tt>ScreenDevice</tt>
+	 * @return the default <code>ScreenDevice</code>
 	 */
 	public static ScreenDevice getDefaultScreenDevice()
 	{
@@ -100,7 +100,7 @@ public class ScreenDeviceImpl implements ScreenDevice
 	private final int index;
 
 	/**
-	 * AWT <tt>GraphicsDevice</tt>.
+	 * AWT <code>GraphicsDevice</code>.
 	 */
 	private final GraphicsDevice screen;
 
@@ -161,9 +161,9 @@ public class ScreenDeviceImpl implements ScreenDevice
 	}
 
 	/**
-	 * Gets the (current) size/resolution of this <tt>ScreenDevice</tt>.
+	 * Gets the (current) size/resolution of this <code>ScreenDevice</code>.
 	 *
-	 * @return the (current) size/resolution of this <tt>ScreenDevice</tt>
+	 * @return the (current) size/resolution of this <code>ScreenDevice</code>
 	 */
 	public Dimension getSize()
 	{

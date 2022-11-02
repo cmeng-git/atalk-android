@@ -822,7 +822,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
             if (leafNode != null) {
                 List<PayloadItem<OmemoDeviceListElement>> items = leafNode.getItems();
                 if (!items.isEmpty()) {
-                    // These will completely remove the deviceList - mny not be good
+                    // These will completely remove the deviceList - may not be good
                     // leafNode.deleteAllItems();
                     // pubsubManager.deleteNode(nodeName);
 

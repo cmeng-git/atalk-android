@@ -46,7 +46,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     }
 
     /**
-     * Cancels the file transfer.
+     * User declines the incoming file transfer/offer.
      */
     @Override
     public void cancel()

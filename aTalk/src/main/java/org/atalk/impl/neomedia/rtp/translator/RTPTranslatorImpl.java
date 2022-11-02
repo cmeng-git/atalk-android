@@ -28,8 +28,8 @@ import javax.media.rtp.event.ReceiveStreamEvent;
 import timber.log.Timber;
 
 /**
- * Implements <tt>RTPTranslator</tt> which represents an RTP translator which forwards RTP and RTCP
- * traffic between multiple <tt>MediaStream</tt>s.
+ * Implements <code>RTPTranslator</code> which represents an RTP translator which forwards RTP and RTCP
+ * traffic between multiple <code>MediaStream</code>s.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -41,10 +41,10 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
      * Logs information about an RTCP packet for debugging purposes.
      *
      * @param obj the object which is the source of the log request
-     * @param methodName the name of the method on <tt>obj</tt> which is the source of the log request
-     * @param buf the <tt>byte</tt>s which (possibly) represent an RTCP packet to be logged for debugging purposes
-     * @param off the position within <tt>buf</tt> at which the valid data begins
-     * @param len the number of bytes in <tt>buf</tt> which constitute the valid data
+     * @param methodName the name of the method on <code>obj</code> which is the source of the log request
+     * @param buf the <code>byte</code>s which (possibly) represent an RTCP packet to be logged for debugging purposes
+     * @param off the position within <code>buf</code> at which the valid data begins
+     * @param len the number of bytes in <code>buf</code> which constitute the valid data
      */
     static void logRTCP(Object obj, String methodName, byte[] buf, int off, int len)
     {
@@ -79,49 +79,49 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
 
 
     /**
-     * The <tt>RTPConnector</tt> which is used by {@link #manager} and which delegates to the
-     * <tt>RTPConnector</tt>s of the <tt>StreamRTPManager</tt>s attached to this instance.
+     * The <code>RTPConnector</code> which is used by {@link #manager} and which delegates to the
+     * <code>RTPConnector</code>s of the <code>StreamRTPManager</code>s attached to this instance.
      */
     private RTPConnectorImpl connector;
 
     /**
-     * A local SSRC for this <tt>RTPTranslator</tt>. This overrides the SSRC of the
-     * <tt>RTPManager</tt> and it does not deal with SSRC collisions. TAG(cat4-local-ssrc-hurricane).
+     * A local SSRC for this <code>RTPTranslator</code>. This overrides the SSRC of the
+     * <code>RTPManager</code> and it does not deal with SSRC collisions. TAG(cat4-local-ssrc-hurricane).
      */
     private long localSSRC = -1;
 
     /**
-     * The <tt>ReadWriteLock</tt> which synchronizes the access to and/or modification of the state
-     * of this instance. Replaces <tt>synchronized</tt> blocks in order to reduce the number of
+     * The <code>ReadWriteLock</code> which synchronizes the access to and/or modification of the state
+     * of this instance. Replaces <code>synchronized</code> blocks in order to reduce the number of
      * exclusive locks and, therefore, the risks of superfluous waiting.
      */
     private final ReadWriteLock _lock = new ReentrantReadWriteLock();
 
     /**
-     * The <tt>RTPManager</tt> which implements the actual RTP management of this instance.
+     * The <code>RTPManager</code> which implements the actual RTP management of this instance.
      */
     private final RTPManager manager = RTPManager.newInstance();
 
     /**
      * An instance which can be used to send RTCP Feedback Messages, using as 'packet sender SSRC'
-     * the SSRC of (the <tt>RTPManager</tt> of) this <tt>RTPTranslator</tt>.
+     * the SSRC of (the <code>RTPManager</code> of) this <code>RTPTranslator</code>.
      */
     private final RTCPFeedbackMessageSender rtcpFeedbackMessageSender = new RTCPFeedbackMessageSender(this);
 
     /**
-     * The <tt>SendStream</tt>s created by the <tt>RTPManager</tt> and the
-     * <tt>StreamRTPManager</tt> -specific views to them.
+     * The <code>SendStream</code>s created by the <code>RTPManager</code> and the
+     * <code>StreamRTPManager</code> -specific views to them.
      */
     private final List<SendStreamDesc> sendStreams = new LinkedList<>();
 
     /**
-     * The list of <tt>StreamRTPManager</tt>s i.e. <tt>MediaStream</tt>s which this instance
+     * The list of <code>StreamRTPManager</code>s i.e. <code>MediaStream</code>s which this instance
      * forwards RTP and RTCP traffic between.
      */
     private final List<StreamRTPManagerDesc> streamRTPManagers = new ArrayList<>();
 
     /**
-     * Initializes a new <tt>RTPTranslatorImpl</tt> instance.
+     * Initializes a new <code>RTPTranslatorImpl</code> instance.
      */
     public RTPTranslatorImpl()
     {
@@ -129,14 +129,14 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Specifies the RTP payload type (number) to be used for a specific <tt>Format</tt>. The
-     * association between the specified <tt>format</tt> and the specified <tt>payloadType</tt> is
-     * being added by a specific <tt>StreamRTPManager</tt> but effects the <tt>RTPTranslatorImpl</tt> globally.
+     * Specifies the RTP payload type (number) to be used for a specific <code>Format</code>. The
+     * association between the specified <code>format</code> and the specified <code>payloadType</code> is
+     * being added by a specific <code>StreamRTPManager</code> but effects the <code>RTPTranslatorImpl</code> globally.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> that is requesting the association of <tt>format</tt> to
-     * <tt>payloadType</tt>
-     * @param format the <tt>Format</tt> which is to be associated with the specified RTP payload type (number)
-     * @param payloadType the RTP payload type (number) to be associated with the specified <tt>format</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> that is requesting the association of <code>format</code> to
+     * <code>payloadType</code>
+     * @param format the <code>Format</code> which is to be associated with the specified RTP payload type (number)
+     * @param payloadType the RTP payload type (number) to be associated with the specified <code>format</code>
      */
     public void addFormat(StreamRTPManager streamRTPManager, Format format, int payloadType)
     {
@@ -160,20 +160,20 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Adds a <tt>ReceiveStreamListener</tt> to be notified about <tt>ReceiveStreamEvent</tt>s
-     * related to a specific neomedia <tt>MediaStream</tt> (expressed as a <tt>StreamRTPManager</tt>
-     * for the purposes of and in the terms of <tt>RTPTranslator</tt>). If the specified
-     * <tt>listener</tt> has already been added, the method does nothing.
+     * Adds a <code>ReceiveStreamListener</code> to be notified about <code>ReceiveStreamEvent</code>s
+     * related to a specific neomedia <code>MediaStream</code> (expressed as a <code>StreamRTPManager</code>
+     * for the purposes of and in the terms of <code>RTPTranslator</code>). If the specified
+     * <code>listener</code> has already been added, the method does nothing.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> which specifies the neomedia <tt>MediaStream</tt> with
-     * which the <tt>ReceiveStreamEvent</tt>s delivered to the specified <tt>listener</tt>
-     * are to be related. In other words, a <tt>ReceiveStreamEvent</tt> received by
-     * <tt>RTPTranslatorImpl</tt> is first examined to determine which
-     * <tt>StreamRTPManager</tt> it is related to and then it is delivered to the
-     * <tt>ReceiveStreamListener</tt>s which have been added to this
-     * <tt>RTPTranslatorImpl</tt> by that <tt>StreamRTPManager</tt>.
-     * @param listener the <tt>ReceiveStreamListener</tt> to be notified about <tt>ReceiveStreamEvent</tt>s
-     * related to the specified <tt>streamRTPManager</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> which specifies the neomedia <code>MediaStream</code> with
+     * which the <code>ReceiveStreamEvent</code>s delivered to the specified <code>listener</code>
+     * are to be related. In other words, a <code>ReceiveStreamEvent</code> received by
+     * <code>RTPTranslatorImpl</code> is first examined to determine which
+     * <code>StreamRTPManager</code> it is related to and then it is delivered to the
+     * <code>ReceiveStreamListener</code>s which have been added to this
+     * <code>RTPTranslatorImpl</code> by that <code>StreamRTPManager</code>.
+     * @param listener the <code>ReceiveStreamListener</code> to be notified about <code>ReceiveStreamEvent</code>s
+     * related to the specified <code>streamRTPManager</code>
      */
     public void addReceiveStreamListener(StreamRTPManager streamRTPManager, ReceiveStreamListener listener)
     {
@@ -181,16 +181,16 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Adds a <tt>RemoteListener</tt> to be notified about <tt>RemoteEvent</tt>s received by this
-     * <tt>RTPTranslatorImpl</tt>. Though the request is being made by a specific
-     * <tt>StreamRTPManager</tt>, the addition of the specified <tt>listener</tt> and the
+     * Adds a <code>RemoteListener</code> to be notified about <code>RemoteEvent</code>s received by this
+     * <code>RTPTranslatorImpl</code>. Though the request is being made by a specific
+     * <code>StreamRTPManager</code>, the addition of the specified <code>listener</code> and the
      * deliveries
-     * of the <tt>RemoteEvent</tt>s are performed irrespective of any <tt>StreamRTPManager</tt>.
+     * of the <code>RemoteEvent</code>s are performed irrespective of any <code>StreamRTPManager</code>.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> which is requesting the addition of the specified
-     * <tt>RemoteListener</tt>
-     * @param listener the <tt>RemoteListener</tt> to be notified about <tt>RemoteEvent</tt>s received by
-     * this <tt>RTPTranslatorImpl</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> which is requesting the addition of the specified
+     * <code>RemoteListener</code>
+     * @param listener the <code>RemoteListener</code> to be notified about <code>RemoteEvent</code>s received by
+     * this <code>RTPTranslatorImpl</code>
      */
     public void addRemoteListener(StreamRTPManager streamRTPManager, RemoteListener listener)
     {
@@ -214,9 +214,9 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Closes a specific <tt>SendStream</tt>.
+     * Closes a specific <code>SendStream</code>.
      *
-     * @param sendStreamDesc a <tt>SendStreamDesc</tt> instance that specifies the <tt>SendStream</tt> to be closed
+     * @param sendStreamDesc a <code>SendStreamDesc</code> instance that specifies the <code>SendStream</code> to be closed
      */
     void closeSendStream(SendStreamDesc sendStreamDesc)
     {
@@ -246,27 +246,27 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Creates a <tt>SendStream</tt> from the stream of a specific <tt>DataSource</tt> that is at a
-     * specific zero-based position within the array/list of streams of that <tt>DataSource</tt>.
+     * Creates a <code>SendStream</code> from the stream of a specific <code>DataSource</code> that is at a
+     * specific zero-based position within the array/list of streams of that <code>DataSource</code>.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> which is requesting the creation of a
-     * <tt>SendStream</tt>. Since multiple <tt>StreamRTPManager</tt> may request the creation
-     * of a <tt>SendStream</tt> from one and the same combination of <tt>dataSource</tt> and
-     * <tt>streamIndex</tt>, the method may not create a completely new <tt>SendStream</tt>
-     * but may return a <tt>StreamRTPManager</tt>-specific view of an existing
-     * <tt>SendStream</tt>.
-     * @param dataSource the <tt>DataSource</tt> which provides the stream from which a <tt>SendStream</tt> is
+     * @param streamRTPManager the <code>StreamRTPManager</code> which is requesting the creation of a
+     * <code>SendStream</code>. Since multiple <code>StreamRTPManager</code> may request the creation
+     * of a <code>SendStream</code> from one and the same combination of <code>dataSource</code> and
+     * <code>streamIndex</code>, the method may not create a completely new <code>SendStream</code>
+     * but may return a <code>StreamRTPManager</code>-specific view of an existing
+     * <code>SendStream</code>.
+     * @param dataSource the <code>DataSource</code> which provides the stream from which a <code>SendStream</code> is
      * to be created
      * @param streamIndex the zero-based position within the array/list of streams of the specified
-     * <tt>dataSource</tt> of the stream from which a <tt>SendStream</tt> is to be created
-     * @return a <tt>SendStream</tt> created from the specified <tt>dataSource</tt> and
-     * <tt>streamIndex</tt>. The returned <tt>SendStream</tt> implementation is a
-     * <tt>streamRTPManager</tt>-dedicated view to an actual <tt>SendStream</tt> which may
+     * <code>dataSource</code> of the stream from which a <code>SendStream</code> is to be created
+     * @return a <code>SendStream</code> created from the specified <code>dataSource</code> and
+     * <code>streamIndex</code>. The returned <code>SendStream</code> implementation is a
+     * <code>streamRTPManager</code>-dedicated view to an actual <code>SendStream</code> which may
      * have been created during a previous execution of the method
      * @throws IOException if an error occurs during the execution of
      * {@link RTPManager#createSendStream(DataSource, int)}
      * @throws UnsupportedFormatException if an error occurs during the execution of
-     * <tt>RTPManager.createSendStream(DataSource, int)</tt>
+     * <code>RTPManager.createSendStream(DataSource, int)</code>
      */
     public SendStream createSendStream(StreamRTPManager streamRTPManager, DataSource dataSource, int streamIndex)
             throws IOException, UnsupportedFormatException
@@ -306,16 +306,16 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
 
     /**
      * Notifies this instance that an RTP or RTCP packet has been received from a peer represented
-     * by a specific <tt>PushSourceStreamDesc</tt>.
+     * by a specific <code>PushSourceStreamDesc</code>.
      *
-     * @param streamDesc a <tt>PushSourceStreamDesc</tt> which identifies the peer from which an RTP or RTCP
+     * @param streamDesc a <code>PushSourceStreamDesc</code> which identifies the peer from which an RTP or RTCP
      * packet has been received
      * @param buf the buffer which contains the bytes of the received RTP or RTCP packet
-     * @param off the zero-based index in <tt>buf</tt> at which the bytes of the received RTP or RTCP packet begin
-     * @param len the number of bytes in <tt>buf</tt> beginning at <tt>off</tt> which represent the
+     * @param off the zero-based index in <code>buf</code> at which the bytes of the received RTP or RTCP packet begin
+     * @param len the number of bytes in <code>buf</code> beginning at <code>off</code> which represent the
      * received RTP or RTCP packet
-     * @param flags <tt>Buffer.FLAG_XXX</tt>
-     * @return the number of bytes in <tt>buf</tt> beginning at <tt>off</tt> which represent the
+     * @param flags <code>Buffer.FLAG_XXX</code>
+     * @return the number of bytes in <code>buf</code> beginning at <code>off</code> which represent the
      * received RTP or RTCP packet
      * @throws IOException if an I/O error occurs while the method processes the specified RTP or RTCP packet
      */
@@ -419,8 +419,8 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
 
     /**
      * Releases the resources allocated by this instance for the purposes of the functioning of a
-     * specific <tt>StreamRTPManager</tt> in the course of its execution and prepares that
-     * <tt>StreamRTPManager</tt> to be garbage collected (as far as this <tt>RTPTranslatorImpl</tt> is concerned).
+     * specific <code>StreamRTPManager</code> in the course of its execution and prepares that
+     * <code>StreamRTPManager</code> to be garbage collected (as far as this <code>RTPTranslatorImpl</code> is concerned).
      */
     public void dispose(StreamRTPManager streamRTPManager)
     {
@@ -466,11 +466,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Finds the first <tt>StreamRTPManager</tt> which is related to a specific receive/remote SSRC.
+     * Finds the first <code>StreamRTPManager</code> which is related to a specific receive/remote SSRC.
      *
-     * @param receiveSSRC the receive/remote SSRC to which the returned <tt>StreamRTPManager</tt> is to be related
-     * @param exclusion the <tt>StreamRTPManager</tt>, if any, to be excluded from the search
-     * @return the first <tt>StreamRTPManager</tt> which is related to the specified <tt>receiveSSRC</tt>
+     * @param receiveSSRC the receive/remote SSRC to which the returned <code>StreamRTPManager</code> is to be related
+     * @param exclusion the <code>StreamRTPManager</code>, if any, to be excluded from the search
+     * @return the first <code>StreamRTPManager</code> which is related to the specified <code>receiveSSRC</code>
      */
     private StreamRTPManagerDesc findStreamRTPManagerDescByReceiveSSRC(int receiveSSRC, StreamRTPManagerDesc exclusion)
     {
@@ -494,12 +494,12 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Exposes {@link RTPManager#getControl(String)} on the internal/underlying <tt>RTPManager</tt>.
+     * Exposes {@link RTPManager#getControl(String)} on the internal/underlying <code>RTPManager</code>.
      *
      * @param streamRTPManager ignored
      * @param controlType
-     * @return the return value of the invocation of <tt>RTPManager.getControl(String)</tt> on the
-     * internal/underlying <tt>RTPManager</tt>
+     * @return the return value of the invocation of <code>RTPManager.getControl(String)</code> on the
+     * internal/underlying <code>RTPManager</code>
      */
     public Object getControl(StreamRTPManager streamRTPManager, String controlType)
     {
@@ -507,11 +507,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Exposes {@link RTPManager#getGlobalReceptionStats()} on the internal/underlying <tt>RTPManager</tt>.
+     * Exposes {@link RTPManager#getGlobalReceptionStats()} on the internal/underlying <code>RTPManager</code>.
      *
      * @param streamRTPManager ignored
-     * @return the return value of the invocation of <tt>RTPManager.getGlobalReceptionStats()</tt>
-     * on the internal/underlying <tt>RTPManager</tt>
+     * @return the return value of the invocation of <code>RTPManager.getGlobalReceptionStats()</code>
+     * on the internal/underlying <code>RTPManager</code>
      */
     public GlobalReceptionStats getGlobalReceptionStats(StreamRTPManager streamRTPManager)
     {
@@ -519,11 +519,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Exposes {@link RTPManager#getGlobalTransmissionStats()} on the internal/underlying <tt>RTPManager</tt>.
+     * Exposes {@link RTPManager#getGlobalTransmissionStats()} on the internal/underlying <code>RTPManager</code>.
      *
      * @param streamRTPManager ignored
      * @return the return value of the invocation of
-     * <tt>RTPManager.getGlobalTransmissionStats()</tt> on the internal/underlying <tt>RTPManager</tt>
+     * <code>RTPManager.getGlobalTransmissionStats()</code> on the internal/underlying <code>RTPManager</code>
      */
     public GlobalTransmissionStats getGlobalTransmissionStats(StreamRTPManager streamRTPManager)
     {
@@ -531,11 +531,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Exposes {@link RTPSessionMgr#getLocalSSRC()} on the internal/underlying <tt>RTPSessionMgr</tt>.
+     * Exposes {@link RTPSessionMgr#getLocalSSRC()} on the internal/underlying <code>RTPSessionMgr</code>.
      *
      * @param streamRTPManager ignored
-     * @return the return value of the invocation of <tt>RTPSessionMgr.getLocalSSRC()</tt> on the
-     * internal/underlying <tt>RTPSessionMgr</tt>
+     * @return the return value of the invocation of <code>RTPSessionMgr.getLocalSSRC()</code> on the
+     * internal/underlying <code>RTPSessionMgr</code>
      */
     public long getLocalSSRC(StreamRTPManager streamRTPManager)
     {
@@ -553,12 +553,12 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Gets the <tt>ReceiveStream</tt>s associated with/related to a neomedia <tt>MediaStream</tt>
-     * (specified in the form of a <tt>StreamRTPManager</tt> instance for the purposes of and in
-     * the terms of <tt>RTPManagerImpl</tt>).
+     * Gets the <code>ReceiveStream</code>s associated with/related to a neomedia <code>MediaStream</code>
+     * (specified in the form of a <code>StreamRTPManager</code> instance for the purposes of and in
+     * the terms of <code>RTPManagerImpl</code>).
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> to which the returned <tt>ReceiveStream</tt>s are to be related
-     * @return the <tt>ReceiveStream</tt>s related to/associated with the specified <tt>streamRTPManager</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> to which the returned <code>ReceiveStream</code>s are to be related
+     * @return the <code>ReceiveStream</code>s related to/associated with the specified <code>streamRTPManager</code>
      */
     public Vector<ReceiveStream> getReceiveStreams(StreamRTPManager streamRTPManager)
     {
@@ -593,11 +593,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Gets the <tt>RTCPFeedbackMessageSender</tt> which should be used for sending RTCP Feedback
-     * Messages from this <tt>RTPTranslator</tt>.
+     * Gets the <code>RTCPFeedbackMessageSender</code> which should be used for sending RTCP Feedback
+     * Messages from this <code>RTPTranslator</code>.
      *
-     * @return the <tt>RTCPFeedbackMessageSender</tt> which should be used for sending RTCP
-     * Feedback Messages from this <tt>RTPTranslator</tt>.
+     * @return the <code>RTCPFeedbackMessageSender</code> which should be used for sending RTCP
+     * Feedback Messages from this <code>RTPTranslator</code>.
      */
     public RTCPFeedbackMessageSender getRtcpFeedbackMessageSender()
     {
@@ -605,12 +605,12 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Gets the <tt>SendStream</tt>s associated with/related to a neomedia <tt>MediaStream</tt>
-     * (specified in the form of a <tt>StreamRTPManager</tt> instance for the purposes of and in
-     * the terms of <tt>RTPManagerImpl</tt>).
+     * Gets the <code>SendStream</code>s associated with/related to a neomedia <code>MediaStream</code>
+     * (specified in the form of a <code>StreamRTPManager</code> instance for the purposes of and in
+     * the terms of <code>RTPManagerImpl</code>).
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> to which the returned <tt>SendStream</tt>s are to be related
-     * @return the <tt>SendStream</tt>s related to/associated with the specified <tt>streamRTPManager</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> to which the returned <code>SendStream</code>s are to be related
+     * @return the <code>SendStream</code>s related to/associated with the specified <code>streamRTPManager</code>
      */
     public Vector<SendStream> getSendStreams(StreamRTPManager streamRTPManager)
     {
@@ -720,17 +720,17 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Removes a <tt>ReceiveStreamListener</tt> to no longer be notified about
-     * <tt>ReceiveStreamEvent</tt>s related to a specific neomedia <tt>MediaStream</tt> (expressed
-     * as a <tt>StreamRTPManager</tt> for the purposes of and in the terms of <tt>RTPTranslator</tt>).
+     * Removes a <code>ReceiveStreamListener</code> to no longer be notified about
+     * <code>ReceiveStreamEvent</code>s related to a specific neomedia <code>MediaStream</code> (expressed
+     * as a <code>StreamRTPManager</code> for the purposes of and in the terms of <code>RTPTranslator</code>).
      * Since {@link #addReceiveStreamListener(StreamRTPManager, ReceiveStreamListener)} does not
-     * add equal <tt>ReceiveStreamListener</tt>s, a single removal is enough to reverse multiple
-     * additions of equal <tt>ReceiveStreamListener</tt>s.
+     * add equal <code>ReceiveStreamListener</code>s, a single removal is enough to reverse multiple
+     * additions of equal <code>ReceiveStreamListener</code>s.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> which specifies the neomedia <tt>MediaStream</tt> with
-     * which the <tt>ReceiveStreamEvent</tt>s delivered to the specified <tt>listener</tt> are to be related
-     * @param listener the <tt>ReceiveStreamListener</tt> to no longer be notified about
-     * <tt>ReceiveStreamEvent</tt>s related to the specified <tt>streamRTPManager</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> which specifies the neomedia <code>MediaStream</code> with
+     * which the <code>ReceiveStreamEvent</code>s delivered to the specified <code>listener</code> are to be related
+     * @param listener the <code>ReceiveStreamListener</code> to no longer be notified about
+     * <code>ReceiveStreamEvent</code>s related to the specified <code>streamRTPManager</code>
      */
     public void removeReceiveStreamListener(StreamRTPManager streamRTPManager, ReceiveStreamListener listener)
     {
@@ -741,16 +741,16 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Removes a <tt>RemoteListener</tt> to no longer be notified about <tt>RemoteEvent</tt>s
-     * received by this <tt>RTPTranslatorImpl</tt>. Though the request is being made by a specific
-     * <tt>StreamRTPManager</tt>, the addition of the specified <tt>listener</tt> and the deliveries
-     * of the <tt>RemoteEvent</tt>s are performed irrespective of any <tt>StreamRTPManager</tt> so
+     * Removes a <code>RemoteListener</code> to no longer be notified about <code>RemoteEvent</code>s
+     * received by this <code>RTPTranslatorImpl</code>. Though the request is being made by a specific
+     * <code>StreamRTPManager</code>, the addition of the specified <code>listener</code> and the deliveries
+     * of the <code>RemoteEvent</code>s are performed irrespective of any <code>StreamRTPManager</code> so
      * the removal follows the same logic.
      *
-     * @param streamRTPManager the <tt>StreamRTPManager</tt> which is requesting the removal of the specified
-     * <tt>RemoteListener</tt>
-     * @param listener the <tt>RemoteListener</tt> to no longer be notified about <tt>RemoteEvent</tt>s
-     * received by this <tt>RTPTranslatorImpl</tt>
+     * @param streamRTPManager the <code>StreamRTPManager</code> which is requesting the removal of the specified
+     * <code>RemoteListener</code>
+     * @param listener the <code>RemoteListener</code> to no longer be notified about <code>RemoteEvent</code>s
+     * received by this <code>RTPTranslatorImpl</code>
      */
     public void removeRemoteListener(StreamRTPManager streamRTPManager, RemoteListener listener)
     {
@@ -778,7 +778,7 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Sets the local SSRC for this <tt>RTPTranslatorImpl</tt>.
+     * Sets the local SSRC for this <code>RTPTranslatorImpl</code>.
      *
      * @param localSSRC the SSRC to set.
      */
@@ -788,11 +788,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Sets the <tt>SSRCFactory</tt> which is to generate new synchronization source (SSRC)
+     * Sets the <code>SSRCFactory</code> which is to generate new synchronization source (SSRC)
      * identifiers.
      *
-     * @param ssrcFactory the <tt>SSRCFactory</tt> which is to generate new synchronization source (SSRC)
-     * identifiers or <tt>null</tt> if this <tt>MediaStream</tt> is to employ internal logic
+     * @param ssrcFactory the <code>SSRCFactory</code> which is to generate new synchronization source (SSRC)
+     * identifiers or <code>null</code> if this <code>MediaStream</code> is to employ internal logic
      * to generate new synchronization source (SSRC) identifiers
      */
     public void setSSRCFactory(SSRCFactory ssrcFactory)
@@ -804,11 +804,11 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Notifies this <tt>ReceiveStreamListener</tt> about a specific event related to a
-     * <tt>ReceiveStream</tt>.
+     * Notifies this <code>ReceiveStreamListener</code> about a specific event related to a
+     * <code>ReceiveStream</code>.
      *
-     * @param event a <tt>ReceiveStreamEvent</tt> which contains the specifics of the event this
-     * <tt>ReceiveStreamListener</tt> is being notified about
+     * @param event a <code>ReceiveStreamEvent</code> which contains the specifics of the event this
+     * <code>ReceiveStreamListener</code> is being notified about
      * @see ReceiveStreamListener#update(ReceiveStreamEvent)
      */
     @Override
@@ -840,14 +840,14 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Notifies this <tt>RTPTranslator</tt> that a <tt>buffer</tt> from a <tt>source</tt> will be
-     * written into a <tt>destination</tt>.
+     * Notifies this <code>RTPTranslator</code> that a <code>buffer</code> from a <code>source</code> will be
+     * written into a <code>destination</code>.
      *
-     * @param source the source of <tt>buffer</tt>
-     * @param pkt the packet from <tt>source</tt> which is to be written into <tt>destination</tt>
-     * @param destination the destination into which <tt>buffer</tt> is to be written
-     * @param data <tt>true</tt> for data/RTP or <tt>false</tt> for control/RTCP
-     * @return <tt>true</tt> if the writing is to continue or <tt>false</tt> if the writing is to
+     * @param source the source of <code>buffer</code>
+     * @param pkt the packet from <code>source</code> which is to be written into <code>destination</code>
+     * @param destination the destination into which <code>buffer</code> is to be written
+     * @param data <code>true</code> for data/RTP or <code>false</code> for control/RTCP
+     * @return <code>true</code> if the writing is to continue or <code>false</code> if the writing is to
      * abort
      */
     boolean willWrite(StreamRTPManagerDesc source, RawPacket pkt,
@@ -860,13 +860,13 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Writes an <tt>RTCPFeedbackMessage</tt> into a destination identified by a specific
-     * <tt>MediaStream</tt>.
+     * Writes an <code>RTCPFeedbackMessage</code> into a destination identified by a specific
+     * <code>MediaStream</code>.
      *
      * @param controlPayload
      * @param destination
-     * @return <tt>true</tt> if the <tt>controlPayload</tt> was written into the
-     * <tt>destination</tt>; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the <code>controlPayload</code> was written into the
+     * <code>destination</code>; otherwise, <code>false</code>
      */
     public boolean writeControlPayload(Payload controlPayload, MediaStream destination)
     {
@@ -875,10 +875,10 @@ public class RTPTranslatorImpl extends AbstractRTPTranslator
     }
 
     /**
-     * Provides access to the underlying <tt>SSRCCache</tt> that holds statistics information about
+     * Provides access to the underlying <code>SSRCCache</code> that holds statistics information about
      * each SSRC that we receive.
      *
-     * @return the underlying <tt>SSRCCache</tt> that holds statistics information about each SSRC
+     * @return the underlying <code>SSRCCache</code> that holds statistics information about each SSRC
      * that we receive.
      */
     @Override

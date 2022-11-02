@@ -256,7 +256,7 @@ public class UserAvatarManager extends AvatarManager
      *
      * @param item the item to publish.
      * @param node the node to publish on.
-     * @return <tt>true</tt> if publish is successful
+     * @return <code>true</code> if publish is successful
      */
     private boolean nodePublish(Item item, String node)
     {

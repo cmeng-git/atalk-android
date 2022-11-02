@@ -19,7 +19,7 @@ import timber.log.Timber;
 
 /**
  * The class finds SPS and PPS parameters in mp4 video file. It is also responsible for caching them
- * in <tt>SharedPreferences</tt>, so that the parameters are read only once for the device.
+ * in <code>SharedPreferences</code>, so that the parameters are read only once for the device.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -168,7 +168,7 @@ public class H264Parameters implements Serializable
     }
 
     /**
-     * Advances random access file pointer by <tt>count</tt> bytes.
+     * Advances random access file pointer by <code>count</code> bytes.
      *
      * @param file the random access file to be used.
      * @param count number of bytes to discard.
@@ -181,11 +181,11 @@ public class H264Parameters implements Serializable
     }
 
     /**
-     * Reads the unsigned int with size of <tt>byteCount</tt>.
+     * Reads the unsigned int with size of <code>byteCount</code>.
      *
      * @param file the file to be used for reading.
      * @param byteCount the size of int to be read.
-     * @return the unsigned int of <tt>byteCount</tt> length read from given <tt>file</tt>.
+     * @return the unsigned int of <code>byteCount</code> length read from given <code>file</code>.
      * @throws IOException if EOF or other IO error occurs.
      */
     private long readUnsignedInt(RandomAccessFile file, int byteCount)
@@ -211,7 +211,7 @@ public class H264Parameters implements Serializable
      * Reads 32 bit unsigned int.
      *
      * @param file the file to be used.
-     * @return the 32 bit unsigned int read from given <tt>file</tt>
+     * @return the 32 bit unsigned int read from given <code>file</code>
      * @throws IOException if EOF or other error occurs.
      */
     private long readUnsignedInt32(RandomAccessFile file)
@@ -224,7 +224,7 @@ public class H264Parameters implements Serializable
      * Reads 64 bit unsigned int.
      *
      * @param file the file to be used.
-     * @return the 64 bit unsigned int read from given <tt>file</tt>
+     * @return the 64 bit unsigned int read from given <code>file</code>
      * @throws IOException if EOF or other error occurs.
      */
     private long readUnsignedInt64(RandomAccessFile file)
@@ -282,11 +282,11 @@ public class H264Parameters implements Serializable
     private static final String VIDEO_SIZE_STORE_ID = "org.atalk.h264parameters.video_size";
 
     /**
-     * Returns previously stored <tt>H264Parameters</tt> instance or <tt>null</tt> if nothing was
+     * Returns previously stored <code>H264Parameters</code> instance or <code>null</code> if nothing was
      * stored or if the video size of given format doesn't match the stored one.
      *
      * @param formatUsed format for which the H264 parameters will be retrieved.
-     * @return previously stored <tt>H264Parameters</tt> instance or <tt>null</tt> if nothing was
+     * @return previously stored <code>H264Parameters</code> instance or <code>null</code> if nothing was
      * stored or format video size doesn't match.
      */
     static H264Parameters getStoredParameters(VideoFormat formatUsed)
@@ -316,9 +316,9 @@ public class H264Parameters implements Serializable
     }
 
     /**
-     * Stores given <tt>H264Parameters</tt> instance using <tt>SharedPreferences</tt>.
+     * Stores given <code>H264Parameters</code> instance using <code>SharedPreferences</code>.
      *
-     * @param params the <tt>H264Parameters</tt> instance to be stored.
+     * @param params the <code>H264Parameters</code> instance to be stored.
      */
     static void storeParameters(H264Parameters params, VideoFormat formatUsed)
     {

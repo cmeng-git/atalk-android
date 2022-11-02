@@ -33,9 +33,9 @@ import timber.log.Timber;
 public class ULPFECReceiver extends AbstractFECReceiver
 {
     /**
-     * A <tt>Set</tt> of packets which will be reused every time a
+     * A <code>Set</code> of packets which will be reused every time a
      * packet is recovered. Defined here to avoid recreating it on every call
-     * to <tt>reverseTransform</tt>.
+     * to <code>reverseTransform</code>.
      */
     private final Set<RawPacket> packetsToRemove = new HashSet<RawPacket>();
 
@@ -104,7 +104,7 @@ public class ULPFECReceiver extends AbstractFECReceiver
     }
 
     /**
-     * A class that allows the recovery of a <tt>RawPacket</tt> given a set
+     * A class that allows the recovery of a <code>RawPacket</code> given a set
      * of media packets and an ulpfec packet.
      *
      * Usage:
@@ -117,7 +117,7 @@ public class ULPFECReceiver extends AbstractFECReceiver
     {
         /**
          * Subset of the media packets which is needed for recovery, given a
-         * specific value of <tt>fecPacket</tt>.
+         * specific value of <code>fecPacket</code>.
          */
         private Set<RawPacket> neededPackets = new HashSet<RawPacket>();
 
@@ -128,9 +128,9 @@ public class ULPFECReceiver extends AbstractFECReceiver
 
         /**
          * Number of media packet which are needed for recovery (given a
-         * specific value of <tt>fecPacket</tt>) which are not available.
-         * If the value is <tt>0</tt>, this indicates that all media packets
-         * referenced in <tt>fecPacket</tt> *are* available, and so no recovery
+         * specific value of <code>fecPacket</code>) which are not available.
+         * If the value is <code>0</code>, this indicates that all media packets
+         * referenced in <code>fecPacket</code> *are* available, and so no recovery
          * is needed.
          */
         private int numMissing = -1;
@@ -165,13 +165,13 @@ public class ULPFECReceiver extends AbstractFECReceiver
         }
 
         /**
-         * Returns <tt>true</tt> if the <tt>RawPacket</tt> last set using
-         * <tt>setFecPacket</tt> can be used to recover a media packet,
-         * <tt>false</tt>otherwise.
+         * Returns <code>true</code> if the <code>RawPacket</code> last set using
+         * <code>setFecPacket</code> can be used to recover a media packet,
+         * <code>false</code>otherwise.
          *
-         * @return <tt>true</tt> if the <tt>RawPacket</tt> last set using
-         * <tt>setFecPacket</tt> can be used to recover a media packet,
-         * <tt>false</tt>otherwise.
+         * @return <code>true</code> if the <code>RawPacket</code> last set using
+         * <code>setFecPacket</code> can be used to recover a media packet,
+         * <code>false</code>otherwise.
          */
         private boolean canRecover()
         {
@@ -180,8 +180,8 @@ public class ULPFECReceiver extends AbstractFECReceiver
 
         /**
          * Sets the ulpfec packet to be used for recovery and also
-         * updates the values of <tt>numMissing</tt>, <tt>sequenceNumber</tt>
-         * and <tt>neededPackets</tt>.
+         * updates the values of <code>numMissing</code>, <code>sequenceNumber</code>
+         * and <code>neededPackets</code>.
          *
          * @param p
          *         the ulpfec packet to set.
@@ -227,8 +227,8 @@ public class ULPFECReceiver extends AbstractFECReceiver
         }
 
         /**
-         * Recovers a media packet using the ulpfec packet <tt>fecPacket</tt>
-         * and the packets in <tt>neededPackets</tt>.
+         * Recovers a media packet using the ulpfec packet <code>fecPacket</code>
+         * and the packets in <code>neededPackets</code>.
          *
          * @return the recovered packet.
          */

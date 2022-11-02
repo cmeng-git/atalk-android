@@ -31,7 +31,7 @@ public class DelayingTransformEngine
     private DelayingTransformer delayingTransformer;
 
     /**
-     * Creates new instance of <tt>DelayingTransformEngine</tt> which will delay
+     * Creates new instance of <code>DelayingTransformEngine</code> which will delay
      * the RTP stream by given amount of packets.
      * @param packetCount the delay counted in packets.
      */

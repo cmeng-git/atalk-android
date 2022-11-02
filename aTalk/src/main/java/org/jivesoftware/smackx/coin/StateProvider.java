@@ -25,7 +25,7 @@ public class StateProvider extends ExtensionElementProvider<StateExtension>
      * the packet extension. As required by the smack API, at the end of the method call, the parser
      * will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>State</tt> element.
+     * @param parser an XML parser positioned at the opening <code>State</code> element.
      * @return a new {@link StateExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */

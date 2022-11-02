@@ -16,7 +16,7 @@ import javax.media.protocol.*;
 import timber.log.Timber;
 
 /**
- * Provides a base implementation of <tt>SourceStream</tt> in order to facilitate implementers by
+ * Provides a base implementation of <code>SourceStream</code> in order to facilitate implementers by
  * taking care of boilerplate in the most common cases.
  *
  * @author Lyubomir Marinov
@@ -26,31 +26,31 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 		implements SourceStream
 {
 	/**
-	 * The (default) <tt>ContentDescriptor</tt> of the <tt>AbstractBufferStream</tt> instances.
+	 * The (default) <code>ContentDescriptor</code> of the <code>AbstractBufferStream</code> instances.
 	 */
 	private static final ContentDescriptor CONTENT_DESCRIPTOR = new ContentDescriptor(ContentDescriptor.RAW);
 
 	/**
-	 * The <tt>DataSource</tt> which has created this instance and which contains it as one of its
-	 * <tt>streams</tt>.
+	 * The <code>DataSource</code> which has created this instance and which contains it as one of its
+	 * <code>streams</code>.
 	 */
 	protected final T dataSource;
 
 	/**
-	 * The <tt>FormatControl</tt> which gives access to the <tt>Format</tt> of the media data
-	 * provided by this <tt>SourceStream</tt> and which, optionally, allows setting it.
+	 * The <code>FormatControl</code> which gives access to the <code>Format</code> of the media data
+	 * provided by this <code>SourceStream</code> and which, optionally, allows setting it.
 	 */
 	protected final FormatControl formatControl;
 
 	/**
-	 * Initializes a new <tt>AbstractBufferStream</tt> instance which is to have its <tt>Format</tt>
-	 * -related information abstracted by a specific <tt>FormatControl</tt>.
+	 * Initializes a new <code>AbstractBufferStream</code> instance which is to have its <code>Format</code>
+	 * -related information abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param dataSource
-	 * 		the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-	 * 		its <tt>streams</tt>
+	 * 		the <code>DataSource</code> which is creating the new instance so that it becomes one of
+	 * 		its <code>streams</code>
 	 * @param formatControl
-	 * 		the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 * 		the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 * 		information of the new instance
 	 */
 	protected AbstractBufferStream(T dataSource, FormatControl formatControl)
@@ -78,14 +78,14 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it.
-	 * Allows extenders to override the <tt>Format</tt> known to the <tt>DataSource</tt> which
-	 * created this instance and possibly provide more details on the currently set <tt>Format</tt>.
+	 * Gets the <code>Format</code> of this <code>AbstractBufferStream</code> as directly known by it.
+	 * Allows extenders to override the <code>Format</code> known to the <code>DataSource</code> which
+	 * created this instance and possibly provide more details on the currently set <code>Format</code>.
 	 *
-	 * @return the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it or
-	 * <tt>null</tt> if this <tt>AbstractBufferStream</tt> does not directly know its
-	 * <tt>Format</tt> and it relies on the <tt>DataSource</tt> which created it to report
-	 * its <tt>Format</tt>
+	 * @return the <code>Format</code> of this <code>AbstractBufferStream</code> as directly known by it or
+	 * <code>null</code> if this <code>AbstractBufferStream</code> does not directly know its
+	 * <code>Format</code> and it relies on the <code>DataSource</code> which created it to report
+	 * its <code>Format</code>
 	 */
 	protected Format doGetFormat()
 	{
@@ -93,15 +93,15 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Attempts to set the <tt>Format</tt> of this <tt>AbstractBufferStream</tt>. Allows extenders
-	 * to enable setting the <tt>Format</tt> of an existing <tt>AbstractBufferStream</tt> (in
-	 * contract to setting it before the <tt>AbstractBufferStream</tt> is created by the
-	 * <tt>DataSource</tt> which will provide it).
+	 * Attempts to set the <code>Format</code> of this <code>AbstractBufferStream</code>. Allows extenders
+	 * to enable setting the <code>Format</code> of an existing <code>AbstractBufferStream</code> (in
+	 * contract to setting it before the <code>AbstractBufferStream</code> is created by the
+	 * <code>DataSource</code> which will provide it).
 	 *
 	 * @param format
-	 * 		the <tt>Format</tt> to be set as the format of this <tt>AbstractBufferStream</tt>
-	 * @return the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> or <tt>null</tt> if the
-	 * attempt to set the <tt>Format</tt> did not succeed and any last-known <tt>Format</tt>
+	 * 		the <code>Format</code> to be set as the format of this <code>AbstractBufferStream</code>
+	 * @return the <code>Format</code> of this <code>AbstractBufferStream</code> or <code>null</code> if the
+	 * attempt to set the <code>Format</code> did not succeed and any last-known <code>Format</code>
 	 * is to be left in effect
 	 */
 	protected Format doSetFormat(Format format)
@@ -110,11 +110,11 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Determines whether the end of this <tt>SourceStream</tt> has been reached. The
-	 * <tt>AbstractBufferStream</tt> implementation always returns <tt>false</tt>.
+	 * Determines whether the end of this <code>SourceStream</code> has been reached. The
+	 * <code>AbstractBufferStream</code> implementation always returns <code>false</code>.
 	 *
-	 * @return <tt>true</tt> if the end of this <tt>SourceStream</tt> has been reached; otherwise,
-	 * <tt>false</tt>
+	 * @return <code>true</code> if the end of this <code>SourceStream</code> has been reached; otherwise,
+	 * <code>false</code>
 	 */
 	public boolean endOfStream()
 	{
@@ -122,13 +122,13 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Gets a <tt>ContentDescriptor</tt> which describes the type of the content made available by
-	 * this <tt>SourceStream</tt>. The <tt>AbstractBufferStream</tt> implementation always
-	 * returns a <tt>ContentDescriptor</tt> with content type equal to
-	 * <tt>ContentDescriptor#RAW</tt>.
+	 * Gets a <code>ContentDescriptor</code> which describes the type of the content made available by
+	 * this <code>SourceStream</code>. The <code>AbstractBufferStream</code> implementation always
+	 * returns a <code>ContentDescriptor</code> with content type equal to
+	 * <code>ContentDescriptor#RAW</code>.
 	 *
-	 * @return a <tt>ContentDescriptor</tt> which describes the type of the content made available
-	 * by this <tt>SourceStream</tt>
+	 * @return a <code>ContentDescriptor</code> which describes the type of the content made available
+	 * by this <code>SourceStream</code>
 	 */
 	public ContentDescriptor getContentDescriptor()
 	{
@@ -136,11 +136,11 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Gets the length in bytes of the content made available by this <tt>SourceStream</tt>. The
-	 * <tt>AbstractBufferStream</tt> implementation always returns <tt>LENGTH_UNKNOWN</tt>.
+	 * Gets the length in bytes of the content made available by this <code>SourceStream</code>. The
+	 * <code>AbstractBufferStream</code> implementation always returns <code>LENGTH_UNKNOWN</code>.
 	 *
-	 * @return the length in bytes of the content made available by this <tt>SourceStream</tt>
-	 * if it is known; otherwise, <tt>LENGTH_UKNOWN</tt>
+	 * @return the length in bytes of the content made available by this <code>SourceStream</code>
+	 * if it is known; otherwise, <code>LENGTH_UKNOWN</code>
 	 */
 	public long getContentLength()
 	{
@@ -151,7 +151,7 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	 * Implements {@link javax.media.protocol.Controls#getControls()}. Gets the controls available
 	 * for this instance.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for this instance
+	 * @return an array of <code>Object</code>s which represent the controls available for this instance
 	 */
 	public Object[] getControls()
 	{
@@ -162,11 +162,11 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of the media data made available by this
-	 * <tt>AbstractBufferStream</tt>.
+	 * Gets the <code>Format</code> of the media data made available by this
+	 * <code>AbstractBufferStream</code>.
 	 *
-	 * @return the <tt>Format</tt> of the media data made available by this
-	 * <tt>AbstractBufferStream</tt>
+	 * @return the <code>Format</code> of the media data made available by this
+	 * <code>AbstractBufferStream</code>
 	 */
 	public Format getFormat()
 	{
@@ -174,9 +174,9 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it.
+	 * Gets the <code>Format</code> of this <code>AbstractBufferStream</code> as directly known by it.
 	 *
-	 * @return the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> as directly known by it
+	 * @return the <code>Format</code> of this <code>AbstractBufferStream</code> as directly known by it
 	 */
 	Format internalGetFormat()
 	{
@@ -184,12 +184,12 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Attempts to set the <tt>Format</tt> of this <tt>AbstractBufferStream</tt>.
+	 * Attempts to set the <code>Format</code> of this <code>AbstractBufferStream</code>.
 	 *
 	 * @param format
-	 * 		the <tt>Format</tt> to be set as the format of this <tt>AbstractBufferStream</tt>
-	 * @return the <tt>Format</tt> of this <tt>AbstractBufferStream</tt> or <tt>null</tt> if the
-	 * attempt to set the <tt>Format</tt> did not succeed and any last-known <tt>Format</tt>
+	 * 		the <code>Format</code> to be set as the format of this <code>AbstractBufferStream</code>
+	 * @return the <code>Format</code> of this <code>AbstractBufferStream</code> or <code>null</code> if the
+	 * attempt to set the <code>Format</code> did not succeed and any last-known <code>Format</code>
 	 * is to be left in effect
 	 */
 	Format internalSetFormat(Format format)
@@ -198,11 +198,11 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>AbstractBufferStream</tt>.
+	 * Starts the transfer of media data from this <code>AbstractBufferStream</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while starting the transfer of media data from this
-	 * 		<tt>AbstractBufferStream</tt>
+	 * 		<code>AbstractBufferStream</code>
 	 */
 	public void start()
 			throws IOException
@@ -210,11 +210,11 @@ abstract class AbstractBufferStream<T extends DataSource> extends AbstractContro
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>AbstractBufferStream</tt>.
+	 * Stops the transfer of media data from this <code>AbstractBufferStream</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while stopping the transfer of media data from this
-	 * 		<tt>AbstractBufferStream</tt>
+	 * 		<code>AbstractBufferStream</code>
 	 */
 	public void stop()
 			throws IOException

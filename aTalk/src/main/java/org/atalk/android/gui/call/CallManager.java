@@ -103,7 +103,6 @@ public class CallManager
             key = String.valueOf(System.currentTimeMillis());
             Timber.e("CallId is not initialized with jingle sid: %s", key);
         }
-
         synchronized (activeCalls) {
             activeCalls.put(key, call);
         }
@@ -290,10 +289,10 @@ public class CallManager
     }
 
     /**
-     * Indicates if the desktop sharing is currently enabled for the given <code>call</code>.
+     * Indicates if the local video is currently enabled for the given <code>call</code>.
      *
-     * @param call the <code>Call</code>, for which we would to check if the desktop sharing is currently enabled
-     * @return <code>true</code> if the desktop sharing is currently enabled for the given
+     * @param call the <code>Call</code>, for which we would to check if the local video streaming is currently enabled
+     * @return <code>true</code> if the local video streaming is currently enabled for the given
      * <code>call</code>, <code>false</code> otherwise
      */
     public static boolean isLocalVideoEnabled(Call call)

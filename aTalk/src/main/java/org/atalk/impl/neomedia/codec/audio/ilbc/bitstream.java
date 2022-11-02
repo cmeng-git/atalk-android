@@ -20,12 +20,12 @@ class bitstream
 	final byte[] buffer;
 
 	/**
-	 * The offset in {@link #buffer} of the first octet of this <tt>bitstream</tt>.
+	 * The offset in {@link #buffer} of the first octet of this <code>bitstream</code>.
 	 */
 	final int buffer_off;
 
 	/**
-	 * The length in {@link #buffer} which is available to octets of this <tt>bitstream</tt>.
+	 * The length in {@link #buffer} which is available to octets of this <code>bitstream</code>.
 	 */
 	final int buffer_len;
 	private int buffer_pos;

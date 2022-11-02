@@ -38,12 +38,12 @@ public class TlsServerImpl extends DefaultTlsServer
     private Vector serverCertReqSigAlgs = null;
 
     /**
-     * The <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client.
+     * The <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client.
      */
     private int chosenProtectionProfile;
 
     /**
-     * The <tt>PacketTransformer</tt> which has initialized this instance.
+     * The <code>PacketTransformer</code> which has initialized this instance.
      */
     private final DtlsPacketTransformer packetTransformer;
 
@@ -58,9 +58,9 @@ public class TlsServerImpl extends DefaultTlsServer
     private TlsCredentialedSigner rsaSignerCredentials;
 
     /**
-     * Initializes a new <tt>TlsServerImpl</tt> instance.
+     * Initializes a new <code>TlsServerImpl</code> instance.
      *
-     * @param packetTransformer the <tt>PacketTransformer</tt> which is initializing the new instance
+     * @param packetTransformer the <code>PacketTransformer</code> which is initializing the new instance
      */
     public TlsServerImpl(DtlsPacketTransformer packetTransformer)
     {
@@ -107,9 +107,9 @@ public class TlsServerImpl extends DefaultTlsServer
     }
 
     /**
-     * Gets the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client.
+     * Gets the <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client.
      *
-     * @return the <tt>SRTPProtectionProfile</tt> negotiated between this DTLS-SRTP server and its client
+     * @return the <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client
      */
     private int getChosenProtectionProfile()
     {
@@ -118,7 +118,7 @@ public class TlsServerImpl extends DefaultTlsServer
 
     /**
      * {@inheritDoc}
-     * The implementation of <tt>TlsClientImpl</tt> always returns <tt>ProtocolVersion.DTLSv12 & DTLSv10</tt>
+     * The implementation of <code>TlsClientImpl</code> always returns <code>ProtocolVersion.DTLSv12 & DTLSv10</code>
      */
     @Override
     protected ProtocolVersion[] getSupportedVersions()
@@ -127,9 +127,9 @@ public class TlsServerImpl extends DefaultTlsServer
     }
 
     /**
-     * Gets the <tt>TlsContext</tt> with which this <tt>TlsServer</tt> has been initialized.
+     * Gets the <code>TlsContext</code> with which this <code>TlsServer</code> has been initialized.
      *
-     * @return the <tt>TlsContext</tt> with which this <tt>TlsServer</tt> has been initialized
+     * @return the <code>TlsContext</code> with which this <code>TlsServer</code> has been initialized
      */
     TlsContext getContext()
     {
@@ -137,9 +137,9 @@ public class TlsServerImpl extends DefaultTlsServer
     }
 
     /**
-     * Gets the <tt>DtlsControl</tt> implementation associated with this instance.
+     * Gets the <code>DtlsControl</code> implementation associated with this instance.
      *
-     * @return the <tt>DtlsControl</tt> implementation associated with this instance
+     * @return the <code>DtlsControl</code> implementation associated with this instance
      */
     private DtlsControlImpl getDtlsControl()
     {
@@ -154,9 +154,9 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * {@inheritDoc}
      * <p>
-     * Depending on the <tt>selectedCipherSuite</tt>, <tt>DefaultTlsServer</tt> will require either
-     * <tt>rsaEncryptionCredentials</tt> or <tt>rsaSignerCredentials</tt> neither of which is
-     * implemented by <tt>DefaultTlsServer</tt>.
+     * Depending on the <code>selectedCipherSuite</code>, <code>DefaultTlsServer</code> will require either
+     * <code>rsaEncryptionCredentials</code> or <code>rsaSignerCredentials</code> neither of which is
+     * implemented by <code>DefaultTlsServer</code>.
      */
     @Override
     protected TlsCredentialedDecryptor getRSAEncryptionCredentials()
@@ -177,9 +177,9 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * {@inheritDoc}
      * <p>
-     * Depending on the <tt>selectedCipherSuite</tt>, <tt>DefaultTlsServer</tt> will require either
-     * <tt>rsaEncryptionCredentials</tt> or <tt>rsaSignerCredentials</tt> neither of which is
-     * implemented by <tt>DefaultTlsServer</tt>.
+     * Depending on the <code>selectedCipherSuite</code>, <code>DefaultTlsServer</code> will require either
+     * <code>rsaEncryptionCredentials</code> or <code>rsaSignerCredentials</code> neither of which is
+     * implemented by <code>DefaultTlsServer</code>.
      *
      * @return
      */
@@ -207,7 +207,7 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * {@inheritDoc}
      * <p>
-     * Includes the <tt>use_srtp</tt> extension in the DTLS extended server hello.
+     * Includes the <code>use_srtp</code> extension in the DTLS extended server hello.
      */
     @Override
     @SuppressWarnings("rawtypes")
@@ -304,7 +304,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * <p>
      * Overrides the super implementation as a simple means of detecting that the security-related
      * negotiations between the local and the remote enpoints are starting. The detection carried
-     * out for the purposes of <tt>SrtpListener</tt>.
+     * out for the purposes of <code>SrtpListener</code>.
      */
     @Override
     public void init(TlsServerContext context)
@@ -367,7 +367,7 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * {@inheritDoc}
      * <p>
-     * Makes sure that the DTLS extended client hello contains the <tt>use_srtp</tt> extension.
+     * Makes sure that the DTLS extended client hello contains the <code>use_srtp</code> extension.
      */
     @Override
     @SuppressWarnings("rawtypes")

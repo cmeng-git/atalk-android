@@ -38,7 +38,7 @@ public class ConferenceIq extends IQ
     public final static String NAMESPACE = "http://jitsi.org/protocol/focus";
 
     /**
-     * XML element name for the <tt>ConferenceIq</tt>.
+     * XML element name for the <code>ConferenceIq</code>.
      */
     public static final String ELEMENT = "conference";
 
@@ -108,7 +108,7 @@ public class ConferenceIq extends IQ
     private String identity;
 
     /**
-     * Creates new instance of <tt>ConferenceIq</tt>.
+     * Creates new instance of <code>ConferenceIq</code>.
      */
     public ConferenceIq()
     {
@@ -142,7 +142,7 @@ public class ConferenceIq extends IQ
     }
 
     /**
-     * Sets the value of {@link #ready} attribute of this <tt>ConferenceIq</tt>.
+     * Sets the value of {@link #ready} attribute of this <code>ConferenceIq</code>.
      *
      * @param ready the value to be set as {@link #ready} attribute value.
      */
@@ -152,7 +152,7 @@ public class ConferenceIq extends IQ
     }
 
     /**
-     * Returns the value of {@link #room} attribute of this <tt>ConferenceIq</tt>.
+     * Returns the value of {@link #room} attribute of this <code>ConferenceIq</code>.
      */
     public EntityBareJid getRoom()
     {
@@ -160,7 +160,7 @@ public class ConferenceIq extends IQ
     }
 
     /**
-     * Sets the {@link #room} attribute of this <tt>ConferenceIq</tt>.
+     * Sets the {@link #room} attribute of this <code>ConferenceIq</code>.
      *
      * @param room the value to be set as {@link #room} attribute value.
      */
@@ -190,7 +190,7 @@ public class ConferenceIq extends IQ
     /**
      * Adds property packet extension to this IQ.
      *
-     * @param property the instance <tt>Property</tt> to be added to this IQ.
+     * @param property the instance <code>Property</code> to be added to this IQ.
      */
     public void addProperty(Property property)
     {
@@ -200,7 +200,7 @@ public class ConferenceIq extends IQ
     /**
      * Returns the list of properties contained in this IQ.
      *
-     * @return list of <tt>Property</tt> contained in this IQ.
+     * @return list of <code>Property</code> contained in this IQ.
      */
     public List<Property> getProperties()
     {
@@ -226,7 +226,7 @@ public class ConferenceIq extends IQ
     /**
      * Returns the value of {@link ConferenceIq#SESSION_ID_ATTR_NAME}
      * attribute which corresponds to the ID of client authentication
-     * session. <tt>null</tt> if not specified.
+     * session. <code>null</code> if not specified.
      */
     public String getSessionId()
     {
@@ -311,7 +311,7 @@ public class ConferenceIq extends IQ
         public static final String VALUE_ATTR_NAME = "value";
 
         /**
-         * Creates new empty <tt>Property</tt> instance.
+         * Creates new empty <code>Property</code> instance.
          */
         public Property()
         {
@@ -319,8 +319,8 @@ public class ConferenceIq extends IQ
         }
 
         /**
-         * Creates new <tt>Property</tt> instance initialized with given
-         * <tt>name</tt> and <tt>value</tt> values.
+         * Creates new <code>Property</code> instance initialized with given
+         * <code>name</code> and <code>value</code> values.
          *
          * @param name a string that will be the name of new property.
          * @param value a string value for new property.

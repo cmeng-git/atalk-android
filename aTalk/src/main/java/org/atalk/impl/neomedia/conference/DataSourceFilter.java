@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.conference;
 import javax.media.protocol.DataSource;
 
 /**
- * Represents a filter which determines whether a specific <tt>DataSource</tt> is to be selected or
+ * Represents a filter which determines whether a specific <code>DataSource</code> is to be selected or
  * deselected by the caller of the filter.
  *
  * @author Lyubomir Marinov
@@ -16,13 +16,13 @@ import javax.media.protocol.DataSource;
 public interface DataSourceFilter
 {
 	/**
-	 * Determines whether a specific <tt>DataSource</tt> is accepted by this filter i.e. whether
+	 * Determines whether a specific <code>DataSource</code> is accepted by this filter i.e. whether
 	 * the caller of this filter should include it in its selection.
 	 *
 	 * @param dataSource
-	 * 		the <tt>DataSource</tt> to be checked whether it is accepted by this filter
-	 * @return <tt>true</tt> if this filter accepts the specified <tt>DataSource</tt> i.e. if the
-	 * caller of this filter should include it in its selection; otherwise, <tt>false</tt>
+	 * 		the <code>DataSource</code> to be checked whether it is accepted by this filter
+	 * @return <code>true</code> if this filter accepts the specified <code>DataSource</code> i.e. if the
+	 * caller of this filter should include it in its selection; otherwise, <code>false</code>
 	 */
 	public boolean accept(DataSource dataSource);
 }

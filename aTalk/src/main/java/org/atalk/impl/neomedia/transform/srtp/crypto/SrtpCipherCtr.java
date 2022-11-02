@@ -20,7 +20,7 @@ package org.atalk.impl.neomedia.transform.srtp.crypto;
  *
  * SRTP Counter Mode is standard block cipher counter mode with special key and
  * special counter initial value (iv). We only increment last 16 bits of the
- * counter, so we can only encrypt 2^16 * <tt>BLKLEN</tt> of data.
+ * counter, so we can only encrypt 2^16 * <code>BLKLEN</code> of data.
  *
  * SRTP Counter Mode AES Encryption algorithm is defined in RFC3711, section 4.1.1.
  */

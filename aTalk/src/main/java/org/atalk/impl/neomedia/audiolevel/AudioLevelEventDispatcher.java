@@ -11,8 +11,8 @@ import javax.media.Buffer;
 
 /**
  * The class implements an audio level measurement thread. The thread will measure new data every
- * time it is added through the <tt>addData()</tt> method and would then deliver it to a registered
- * listener if any. (No measurement would be performed until we have a <tt>levelListener</tt>). We
+ * time it is added through the <code>addData()</code> method and would then deliver it to a registered
+ * listener if any. (No measurement would be performed until we have a <code>levelListener</code>). We
  * use a separate thread so that we could compute and deliver audio levels in a way that won't delay
  * the media processing thread.
  * <p>
@@ -33,8 +33,8 @@ public class AudioLevelEventDispatcher
 	private static final long IDLE_TIMEOUT = 30 * 1000;
 
 	/**
-	 * The <tt>AudioLevelMap</tt> in which the audio calculations run by this
-	 * <tt>AudioLevelEventDispatcher</tt> are to be cached in addition to dispatching them to
+	 * The <code>AudioLevelMap</code> in which the audio calculations run by this
+	 * <code>AudioLevelEventDispatcher</code> are to be cached in addition to dispatching them to
 	 * {@link #listener}.
 	 */
 	private AudioLevelMap cache = null;
@@ -45,7 +45,7 @@ public class AudioLevelEventDispatcher
 	private byte[] data = null;
 
 	/**
-	 * The length of the data last recorded in the <tt>data</tt> array.
+	 * The length of the data last recorded in the <code>data</code> array.
 	 */
 	private int dataLength = 0;
 
@@ -61,22 +61,22 @@ public class AudioLevelEventDispatcher
 	private long ssrc = -1;
 
 	/**
-	 * The <tt>Thread</tt> which runs the actual audio level calculations and dispatches to
+	 * The <code>Thread</code> which runs the actual audio level calculations and dispatches to
 	 * {@link #listener}.
 	 */
 	private Thread thread;
 
 	/**
-	 * The name of the <tt>Thread</tt> which is to run the actual audio level calculations and to
+	 * The name of the <code>Thread</code> which is to run the actual audio level calculations and to
 	 * dispatch to {@link #listener}.
 	 */
 	private final String threadName;
 
 	/**
-	 * Initializes a new <tt>AudioLevelEventDispatcher</tt> instance which is to use a specific
+	 * Initializes a new <code>AudioLevelEventDispatcher</code> instance which is to use a specific
 	 * name
-	 * for its <tt>Thread</tt> which is to run the actual audio level calculations and to dispatch
-	 * to its <tt>SimpleAudioLevelListener</tt>
+	 * for its <code>Thread</code> which is to run the actual audio level calculations and to dispatch
+	 * to its <code>SimpleAudioLevelListener</code>
 	 *
 	 * @param threadName
 	 */
@@ -207,7 +207,7 @@ public class AudioLevelEventDispatcher
 	 * Sets the new listener that will be gathering all events from this dispatcher.
 	 *
 	 * @param listener
-	 * 		the listener that we will be notifying or <tt>null</tt> if we are to remove it.
+	 * 		the listener that we will be notifying or <code>null</code> if we are to remove it.
 	 */
 	public synchronized void setAudioLevelListener(SimpleAudioLevelListener listener)
 	{
@@ -218,11 +218,11 @@ public class AudioLevelEventDispatcher
 	}
 
 	/**
-	 * Sets an <tt>AudioLevelMap</tt> that this dispatcher could use to cache levels it's measuring
+	 * Sets an <code>AudioLevelMap</code> that this dispatcher could use to cache levels it's measuring
 	 * in addition to simply delivering them to a listener.
 	 *
 	 * @param cache
-	 * 		the <tt>AudioLevelMap</tt> where this dispatcher should cache measured results.
+	 * 		the <code>AudioLevelMap</code> where this dispatcher should cache measured results.
 	 * @param ssrc
 	 * 		the SSRC key where entries should be logged
 	 */
@@ -236,7 +236,7 @@ public class AudioLevelEventDispatcher
 	}
 
 	/**
-	 * Starts the <tt>Thread</tt> which is to run the audio level calculations and to dispatch to
+	 * Starts the <code>Thread</code> which is to run the audio level calculations and to dispatch to
 	 * {@link #listener} if necessary or notifies it about a change it the state on which it
 	 * depends.
 	 */
@@ -255,7 +255,7 @@ public class AudioLevelEventDispatcher
 	}
 
 	/**
-	 * Starts the <tt>Thread</tt> which is to run the audio level calculations and to dispatch to
+	 * Starts the <code>Thread</code> which is to run the audio level calculations and to dispatch to
 	 * {@link #listener}.
 	 */
 	private synchronized void startThread()

@@ -35,7 +35,7 @@ public class JibriStatusExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>VideoMutedExtensionElement</tt>.
+     * Creates new instance of <code>VideoMutedExtensionElement</code>.
      */
     public JibriStatusExtension()
     {

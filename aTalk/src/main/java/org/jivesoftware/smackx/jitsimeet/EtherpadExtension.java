@@ -41,7 +41,7 @@ public class EtherpadExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates new instance of <tt>EtherpadExtensionElement</tt>.
+     * Creates new instance of <code>EtherpadExtensionElement</code>.
      */
     public EtherpadExtension()
     {
@@ -49,7 +49,7 @@ public class EtherpadExtension extends AbstractExtensionElement
     }
 
     /**
-     * Sets the <tt>name</tt> of Etherpad document to be shared in Jitsi Meet conference.
+     * Sets the <code>name</code> of Etherpad document to be shared in Jitsi Meet conference.
      *
      * @param name the name of the document to set.
      */
@@ -67,7 +67,7 @@ public class EtherpadExtension extends AbstractExtensionElement
     }
 
     /**
-     * Return new Etherpad packet extension instance with given document <tt>name</tt>.
+     * Return new Etherpad packet extension instance with given document <code>name</code>.
      *
      * @param name the name of shared Etherpad document.
      */

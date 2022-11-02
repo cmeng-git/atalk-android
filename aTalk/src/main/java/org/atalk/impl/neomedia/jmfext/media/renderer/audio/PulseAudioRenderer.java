@@ -20,14 +20,14 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 
 /**
- * Implements an audio <tt>Renderer</tt> which uses PulseAudio.
+ * Implements an audio <code>Renderer</code> which uses PulseAudio.
  *
  * @author Lyubomir Marinov
  */
 public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
 {
     /**
-     * The human-readable <tt>PlugIn</tt> name of the <tt>PulseAudioRenderer</tt> instances.
+     * The human-readable <code>PlugIn</code> name of the <code>PulseAudioRenderer</code> instances.
      */
     private static final String PLUGIN_NAME = "PulseAudio Renderer";
 
@@ -39,7 +39,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     private static final boolean SOFTWARE_GAIN = true;
 
     /**
-     * The list of JMF <tt>Format</tt>s of audio data which <tt>PulseAudioRenderer</tt> instances
+     * The list of JMF <code>Format</code>s of audio data which <code>PulseAudioRenderer</code> instances
      * are capable of rendering.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS = new Format[]{
@@ -56,7 +56,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     };
 
     /**
-     * The number of channels of audio data this <tt>PulseAudioRenderer</tt> is configured to render.
+     * The number of channels of audio data this <code>PulseAudioRenderer</code> is configured to render.
      */
     private int channels;
 
@@ -66,7 +66,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     private boolean corked = true;
 
     /**
-     * The <tt>pa_cvolume</tt> (structure) instance used by this <tt>PulseAudioRenderer</tt> to set
+     * The <code>pa_cvolume</code> (structure) instance used by this <code>PulseAudioRenderer</code> to set
      * the per-channel volume of {@link #stream}.
      */
     private long cvolume;
@@ -77,23 +77,23 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     private String dev;
 
     /**
-     * The level of the volume specified by the <tt>GainControl</tt> associated with this
-     * <tt>PulseAudioRenderer</tt> which has been applied to {@link #stream}.
+     * The level of the volume specified by the <code>GainControl</code> associated with this
+     * <code>PulseAudioRenderer</code> which has been applied to {@link #stream}.
      */
     private float gainControlLevel;
 
     /**
-     * The PulseAudio logic role of the media played back by this <tt>PulseAudioRenderer</tt>.
+     * The PulseAudio logic role of the media played back by this <code>PulseAudioRenderer</code>.
      */
     private final String mediaRole;
 
     /**
-     * The PulseAudio stream which performs the actual rendering of audio data for this <tt>PulseAudioRenderer</tt>.
+     * The PulseAudio stream which performs the actual rendering of audio data for this <code>PulseAudioRenderer</code>.
      */
     private long stream;
 
     /**
-     * The PulseAudio callback which notifies this <tt>PulseAudioRenderer</tt> that {@link #stream}
+     * The PulseAudio callback which notifies this <code>PulseAudioRenderer</code> that {@link #stream}
      * requests audio data to play back.
      */
     private final PA.stream_request_cb_t writeCb = new PA.stream_request_cb_t()
@@ -106,7 +106,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     };
 
     /**
-     * Initializes a new <tt>PulseAudioRenderer</tt> instance with a default PulseAudio media role.
+     * Initializes a new <code>PulseAudioRenderer</code> instance with a default PulseAudio media role.
      */
     public PulseAudioRenderer()
     {
@@ -114,7 +114,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Initializes a new <tt>PulseAudioRenderer</tt> instance with a specific PulseAudio media
+     * Initializes a new <code>PulseAudioRenderer</code> instance with a specific PulseAudio media
      * role.
      *
      * @param mediaRole the PulseAudio media role to initialize the new instance with
@@ -135,12 +135,12 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Applies the volume specified by a specific <tt>GainControl</tt> on a specified sample of audio <tt>data</tt>.
+     * Applies the volume specified by a specific <code>GainControl</code> on a specified sample of audio <code>data</code>.
      *
-     * @param gainControl the <tt>GainControl</tt> which specifies the volume to set on <tt>data</tt>
-     * @param data the audio data to set the volume specified by <tt>gainControl</tt> on
-     * @param offset the offset in <tt>data</tt> at which the valid audio data begins
-     * @param length the number of bytes of valid audio data in <tt>data</tt> beginning at <tt>offset</tt>
+     * @param gainControl the <code>GainControl</code> which specifies the volume to set on <code>data</code>
+     * @param data the audio data to set the volume specified by <code>gainControl</code> on
+     * @param offset the offset in <code>data</code> at which the valid audio data begins
+     * @param length the number of bytes of valid audio data in <code>data</code> beginning at <code>offset</code>
      */
     @SuppressWarnings("unused")
     private void applyGain(GainControl gainControl, byte[] data, int offset, int length)
@@ -199,7 +199,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     /**
      * Pauses or resumes the playback of audio data through {@link #stream}.
      *
-     * @param b <tt>true</tt> to pause the playback of audio data or <tt>false</tt> to resume it
+     * @param b <code>true</code> to pause the playback of audio data or <code>false</code> to resume it
      */
     private void cork(boolean b)
     {
@@ -214,10 +214,10 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Returns the name of the sink this <tt>PulseAudioRenderer</tt> is configured to connect
+     * Returns the name of the sink this <code>PulseAudioRenderer</code> is configured to connect
      * {@link #stream} to.
      *
-     * @return the name of the sink this <tt>PulseAudioRenderer</tt> is configured to connect
+     * @return the name of the sink this <code>PulseAudioRenderer</code> is configured to connect
      * {@link #stream} to
      */
     private String getLocatorDev()
@@ -272,11 +272,11 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Opens this <tt>PulseAudioRenderer</tt> i.e. initializes the PulseAudio stream which is to
+     * Opens this <code>PulseAudioRenderer</code> i.e. initializes the PulseAudio stream which is to
      * play audio data back. The method executes with the assumption that the PulseAudio event loop
      * object is locked by the executing thread.
      *
-     * @throws ResourceUnavailableException if the opening of this <tt>PulseAudioRenderer</tt> failed
+     * @throws ResourceUnavailableException if the opening of this <code>PulseAudioRenderer</code> failed
      */
     private void openWithMainloopLock()
             throws ResourceUnavailableException
@@ -366,9 +366,9 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
 
     /**
      * Notifies this instance that the value of the {@link AudioSystem#PROP_PLAYBACK_DEVICE}
-     * property of its associated <tt>AudioSystem</tt> has changed.
+     * property of its associated <code>AudioSystem</code> has changed.
      *
-     * @param ev a <tt>PropertyChangeEvent</tt> which specifies details about the change such as the
+     * @param ev a <code>PropertyChangeEvent</code> which specifies details about the change such as the
      * name of the property and its old and new values
      */
     @Override
@@ -450,14 +450,14 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Plays back the audio data of a specific FMJ <tt>Buffer</tt> through {@link #stream}. The
+     * Plays back the audio data of a specific FMJ <code>Buffer</code> through {@link #stream}. The
      * method executes with the assumption that the PulseAudio event loop object is locked by the
      * executing thread.
      *
-     * @param buffer the FMJ <tt>Buffer</tt> which specifies the audio data to play back
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>buffer</tt> was successfully
+     * @param buffer the FMJ <code>Buffer</code> which specifies the audio data to play back
+     * @return <code>BUFFER_PROCESSED_OK</code> if the specified <code>buffer</code> was successfully
      * sumbitted for playback through {@link #stream}; otherwise,
-     * <tt>BUFFER_PROCESSED_FAILED</tt>
+     * <code>BUFFER_PROCESSED_FAILED</code>
      */
     private int processWithMainloopLock(Buffer buffer)
     {
@@ -500,8 +500,8 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Sets the volume of a specific PulseAudio <tt>stream</tt> to a level specified by the
-     * <tt>GainControl</tt> associated with this <tt>PulseAudioRenderer</tt>.
+     * Sets the volume of a specific PulseAudio <code>stream</code> to a level specified by the
+     * <code>GainControl</code> associated with this <code>PulseAudioRenderer</code>.
      *
      * @param stream the PulseAudio stream to set the volume of
      */
@@ -530,10 +530,10 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
     }
 
     /**
-     * Sets the volume of a specific PulseAudio <tt>stream</tt> to a specific <tt>level</tt>.
+     * Sets the volume of a specific PulseAudio <code>stream</code> to a specific <code>level</code>.
      *
      * @param stream the PulseAudio stream to set the volume of
-     * @param level the volume to set on <tt>stream</tt>
+     * @param level the volume to set on <code>stream</code>
      */
     private void setStreamVolume(long stream, float level)
     {

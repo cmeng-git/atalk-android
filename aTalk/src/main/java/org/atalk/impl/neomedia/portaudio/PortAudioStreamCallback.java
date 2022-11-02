@@ -31,9 +31,9 @@ public interface PortAudioStreamCallback
 	 * Callback.
 	 *
 	 * @param input
-	 * 		input <tt>ByteBuffer</tt>
+	 * 		input <code>ByteBuffer</code>
 	 * @param output
-	 * 		output <tt>ByteBuffer</tt>
+	 * 		output <code>ByteBuffer</code>
 	 * @return
 	 */
 	public int callback(ByteBuffer input, ByteBuffer output);

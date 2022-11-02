@@ -22,9 +22,9 @@ import java.util.concurrent.RejectedExecutionException;
 import timber.log.Timber;
 
 /**
- * Implements a single-threaded {@link Executor} of {@link RecurringRunnable}s i.e. asynchronous
- * tasks which determine by themselves the intervals (the lengths of which may vary) at which
- * they are to be invoked.
+ * Implements a single-threaded {@link Executor} of {@link RecurringRunnable}s
+ * i.e. asynchronous tasks which determine by themselves the intervals
+ * (the lengths of which may vary) at which they are to be invoked.
  * <p>
  * webrtc/modules/utility/interface/process_thread.h
  * webrtc/modules/utility/source/process_thread_impl.cc
@@ -50,14 +50,12 @@ public class RecurringRunnableExecutor implements Executor
     private Thread thread;
 
     /**
-     * A {@code String} which will be added to the name of {@link #thread}.
-     * Meant to facilitate debugging.
+     * A {@code String} which will be added to the name of {@link #thread}. Meant to facilitate debugging.
      */
     private final String name;
 
     /**
-     * Whether this {@link RecurringRunnableExecutor} is closed. When it is
-     * closed, it should stop its thread(s).
+     * Whether this {@link RecurringRunnableExecutor} is closed. When it is closed, it should stop its thread(s).
      */
     private boolean closed = false;
 
@@ -83,8 +81,7 @@ public class RecurringRunnableExecutor implements Executor
      * De-registers a {@code RecurringRunnable} from this {@code Executor} so
      * that its {@link RecurringRunnable#run()} is no longer invoked (by this instance).
      *
-     * @param recurringRunnable the {@code RecurringRunnable} to
-     * de-register from this instance
+     * @param recurringRunnable the {@code RecurringRunnable} to de-register from this instance
      * @return {@code true} if the list of {@code RecurringRunnable}s of this
      * instance changed because of the method call; otherwise, {@code false}
      */
@@ -122,6 +119,10 @@ public class RecurringRunnableExecutor implements Executor
      * Executes an iteration of the loop implemented by {@link #runInThread()}.
      * Invokes {@link RecurringRunnable#run()} on all {@link #recurringRunnables} which are at or
      * after the time at which they want the method in question called.
+     * TODO(brian): worth investigating if we can invoke the ready runnables
+     * outside the scope of the {@link RecurringRunnableExecutor#recurringRunnables}
+     * lock so we can get rid of a possible deadlock scenario when invoking
+     * a runnable which needs to signal to the executor that it has work ready
      *
      * @return {@code true} to continue with the next iteration of the loop
      * implemented by {@link #runInThread()} or {@code false} to break (out of) the loop

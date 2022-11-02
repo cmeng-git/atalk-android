@@ -16,7 +16,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDe
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
 
 /**
- * Implements a <tt>PullBufferDataSource</tt> and <tt>CaptureDevice</tt> using the Video for Linux
+ * Implements a <code>PullBufferDataSource</code> and <code>CaptureDevice</code> using the Video for Linux
  * Two API Specification.
  *
  * @author Lyubomir Marinov
@@ -36,22 +36,22 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 
 	/**
 	 * The file descriptor of the opened Video for Linux Two API Specification device represented by
-	 * this <tt>DataSource</tt>.
+	 * this <code>DataSource</code>.
 	 */
 	private int fd = -1;
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance.
+	 * Initializes a new <code>DataSource</code> instance.
 	 */
 	public DataSource()
 	{
 	}
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance from a specific <tt>MediaLocator</tt>.
+	 * Initializes a new <code>DataSource</code> instance from a specific <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 *        the <tt>MediaLocator</tt> to create the new instance from
+	 *        the <code>MediaLocator</code> to create the new instance from
 	 */
 	public DataSource(MediaLocator locator)
 	{
@@ -59,20 +59,20 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	}
 
 	/**
-	 * Creates a new <tt>PullBufferStream</tt> which is to be at a specific zero-based index in the
-	 * list of streams of this <tt>PullBufferDataSource</tt>. The <tt>Format</tt>-related
-	 * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+	 * Creates a new <code>PullBufferStream</code> which is to be at a specific zero-based index in the
+	 * list of streams of this <code>PullBufferDataSource</code>. The <code>Format</code>-related
+	 * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PullBufferStream</tt> in the list of streams of this
-	 *        <tt>PullBufferDataSource</tt>
+	 *        the zero-based index of the <code>PullBufferStream</code> in the list of streams of this
+	 *        <code>PullBufferDataSource</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
-	 * @return a new <tt>PullBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-	 *         in the list of streams of this <tt>PullBufferDataSource</tt> and which has its
-	 *         <tt>Format</tt>-related information abstracted by the specified
-	 *         <tt>formatControl</tt>
+	 * @return a new <code>PullBufferStream</code> which is to be at the specified <code>streamIndex</code>
+	 *         in the list of streams of this <code>PullBufferDataSource</code> and which has its
+	 *         <code>Format</code>-related information abstracted by the specified
+	 *         <code>formatControl</code>
 	 */
 	@Override
 	protected Video4Linux2Stream createStream(int streamIndex, FormatControl formatControl)
@@ -81,12 +81,12 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	}
 
 	/**
-	 * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Opens a connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while opening the connection to the media source specified by
-	 *         the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+	 *         the <code>MediaLocator</code> of this <code>DataSource</code>
 	 * @see AbstractPullBufferCaptureDevice#doConnect()
 	 */
 	@Override
@@ -121,8 +121,8 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 	}
 
 	/**
-	 * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Closes the connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 */
 	@Override
 	protected void doDisconnect()
@@ -158,10 +158,10 @@ public class DataSource extends AbstractVideoPullBufferCaptureDevice
 
 	/**
 	 * Gets the name of the Video for Linux Two API Specification device which represents the media
-	 * source of this <tt>DataSource</tt>.
+	 * source of this <code>DataSource</code>.
 	 *
 	 * @return the name of the Video for Linux Two API Specification device which represents the
-	 *         media source of this <tt>DataSource</tt>
+	 *         media source of this <code>DataSource</code>
 	 */
 	private String getDeviceName()
 	{

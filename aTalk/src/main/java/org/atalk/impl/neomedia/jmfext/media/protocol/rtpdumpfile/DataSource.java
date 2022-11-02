@@ -19,7 +19,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.*;
 import javax.media.control.FormatControl;
 
 /**
- * Implements the <tt>CaptureDevice</tt> and <tt>DataSource</tt> for the purpose of rtpdump file
+ * Implements the <code>CaptureDevice</code> and <code>DataSource</code> for the purpose of rtpdump file
  * streaming.
  *
  * @author Thomas Kuntz

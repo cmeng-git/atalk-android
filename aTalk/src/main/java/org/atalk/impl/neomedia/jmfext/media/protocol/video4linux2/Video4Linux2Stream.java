@@ -22,27 +22,27 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferStre
 import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
 
 /**
- * Implements a <tt>PullBufferStream</tt> using the Video for Linux Two API Specification.
+ * Implements a <code>PullBufferStream</code> using the Video for Linux Two API Specification.
  *
  * @author Lyubomir Marinov
  */
 public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource>
 {
 	/**
-	 * The <tt>AVCodecContext</tt> of the MJPEG decoder.
+	 * The <code>AVCodecContext</code> of the MJPEG decoder.
 	 */
 	private long avctx = 0;
 
 	/**
-	 * The <tt>AVFrame</tt> which represents the media data decoded by the MJPEG decoder/
+	 * The <code>AVFrame</code> which represents the media data decoded by the MJPEG decoder/
 	 * {@link #avctx}.
 	 */
 	private long avframe = 0;
 
 	/**
-	 * The pool of <tt>ByteBuffer</tt>s this instances is using to transfer the media data captured
+	 * The pool of <code>ByteBuffer</code>s this instances is using to transfer the media data captured
 	 * by the Video for Linux Two API Specification device out of this instance through the
-	 * <tt>Buffer</tt>s specified in its {@link #read(Buffer)}.
+	 * <code>Buffer</code>s specified in its {@link #read(Buffer)}.
 	 */
 	private final ByteBufferPool byteBufferPool = new ByteBufferPool();
 
@@ -54,27 +54,27 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 
 	/**
 	 * The file descriptor of the Video for Linux Two API Specification device read through this
-	 * <tt>PullBufferStream</tt>.
+	 * <code>PullBufferStream</code>.
 	 */
 	private int fd = -1;
 
 	/**
-	 * The last-known <tt>Format</tt> of the media data made available by this
-	 * <tt>PullBufferStream</tt>
+	 * The last-known <code>Format</code> of the media data made available by this
+	 * <code>PullBufferStream</code>
 	 */
 	private Format format;
 
 	/**
 	 * The lengths in bytes of the buffers in the application's address space through which the
 	 * Video for Linux Two API Specification device provides the captured media data to this
-	 * instance when {@link #requestbuffersMemory} is equal to <tt>V4L2_MEMORY_MAP</tt>.
+	 * instance when {@link #requestbuffersMemory} is equal to <code>V4L2_MEMORY_MAP</code>.
 	 */
 	private int[] mmapLengths;
 
 	/**
 	 * The buffers through which the Video for Linux Two API Specification device provides the
 	 * captured media data to this instance when {@link #requestbuffersMemory} is equal to
-	 * <tt>V4L2_MEMORY_MAP</tt>. These are mapped in the application's address space.
+	 * <code>V4L2_MEMORY_MAP</code>. These are mapped in the application's address space.
 	 */
 	private long[] mmaps;
 
@@ -86,7 +86,7 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	/**
 	 * The number of buffers through which the Video for Linux Two API Specification device provides
 	 * the captured media data to this instance when {@link #requestbuffersMemory} is equal to
-	 * <tt>V4L2_MEMORY_MMAP</tt>.
+	 * <code>V4L2_MEMORY_MMAP</code>.
 	 */
 	private int requestbuffersCount = 0;
 
@@ -102,20 +102,20 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	private boolean startInRead = false;
 
 	/**
-	 * The <tt>v4l2_buffer</tt> instance via which captured media data is fetched from the Video for
+	 * The <code>v4l2_buffer</code> instance via which captured media data is fetched from the Video for
 	 * Linux Two API Specification device to this instance in {@link #read(Buffer)}.
 	 */
 	private long v4l2_buffer;
 
 	/**
-	 * Initializes a new <tt>Video4Linux2Stream</tt> instance which is to have its <tt>Format</tt>
-	 * -related information abstracted by a specific <tt>FormatControl</tt>.
+	 * Initializes a new <code>Video4Linux2Stream</code> instance which is to have its <code>Format</code>
+	 * -related information abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param dataSource
-	 *        the <tt>DataSource</tt> which is creating the new instance so that it becomes one of
-	 *        its <tt>streams</tt>
+	 *        the <code>DataSource</code> which is creating the new instance so that it becomes one of
+	 *        its <code>streams</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
 	 */
 	public Video4Linux2Stream(DataSource dataSource, FormatControl formatControl)
@@ -147,12 +147,12 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of this <tt>PullBufferStream</tt> as directly known by it.
+	 * Gets the <code>Format</code> of this <code>PullBufferStream</code> as directly known by it.
 	 *
-	 * @return the <tt>Format</tt> of this <tt>PullBufferStream</tt> as directly known by it or
-	 *         <tt>null</tt> if this <tt>PullBufferStream</tt> does not directly know its
-	 *         <tt>Format</tt> and it relies on the <tt>PullBufferDataSource</tt> which created it
-	 *         to report its <tt>Format</tt>
+	 * @return the <code>Format</code> of this <code>PullBufferStream</code> as directly known by it or
+	 *         <code>null</code> if this <code>PullBufferStream</code> does not directly know its
+	 *         <code>Format</code> and it relies on the <code>PullBufferDataSource</code> which created it
+	 *         to report its <code>Format</code>
 	 * @see AbstractPullBufferStream#doGetFormat()
 	 */
 	@Override
@@ -177,15 +177,15 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Reads media data from this <tt>PullBufferStream</tt> into a specific <tt>Buffer</tt> with
+	 * Reads media data from this <code>PullBufferStream</code> into a specific <code>Buffer</code> with
 	 * blocking.
 	 *
 	 * @param buffer
-	 *        the <tt>Buffer</tt> in which media data is to be read from this
-	 *        <tt>PullBufferStream</tt>
+	 *        the <code>Buffer</code> in which media data is to be read from this
+	 *        <code>PullBufferStream</code>
 	 * @throws IOException
-	 *         if anything goes wrong while reading media data from this <tt>PullBufferStream</tt>
-	 *         into the specified <tt>buffer</tt>
+	 *         if anything goes wrong while reading media data from this <code>PullBufferStream</code>
+	 *         into the specified <code>buffer</code>
 	 * @see AbstractVideoPullBufferStream#doRead(Buffer)
 	 */
 	@Override
@@ -276,11 +276,11 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Gets the <tt>Format</tt> of the media data captured by the Video for Linux Two API
-	 * Specification device represented by the <tt>fd</tt> of this instance.
+	 * Gets the <code>Format</code> of the media data captured by the Video for Linux Two API
+	 * Specification device represented by the <code>fd</code> of this instance.
 	 *
-	 * @return the <tt>Format</tt> of the media data captured by the Video for Linux Two API
-	 *         Specification device represented by the <tt>fd</tt> of this instance
+	 * @return the <code>Format</code> of the media data captured by the Video for Linux Two API
+	 *         Specification device represented by the <code>fd</code> of this instance
 	 */
 	private Format getFdFormat()
 	{
@@ -319,7 +319,7 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	/**
 	 * Unmaps the buffers through which the Video for Linux Two API Specification device provides
 	 * the captured media data to this instance when {@link #requestbuffersMemory} is equal to
-	 * <tt>V4L2_MEMORY_MMAP</tt> i.e. breaks the buffers' mappings between the driver's and the
+	 * <code>V4L2_MEMORY_MMAP</code> i.e. breaks the buffers' mappings between the driver's and the
 	 * application's address spaces.
 	 */
 	private void munmap()
@@ -345,11 +345,11 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 
 	/**
 	 * Negotiates the input method with the Video for Linux Two API Specification device represented
-	 * by the <tt>fd</tt> of this instance.
+	 * by the <code>fd</code> of this instance.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while negotiating the input method with the Video for Linux
-	 *         Two API Specification device represented by the <tt>fd</tt> of this instance
+	 *         Two API Specification device represented by the <code>fd</code> of this instance
 	 */
 	private void negotiateFdInputMethod()
 		throws IOException
@@ -434,14 +434,14 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 
 	/**
 	 * Sets the file descriptor of the Video for Linux Two API Specification device which is to be
-	 * read through this <tt>PullBufferStream</tt>.
+	 * read through this <code>PullBufferStream</code>.
 	 *
 	 * @param fd
 	 *        the file descriptor of the Video for Linux Two API Specification device which is to be
-	 *        read through this <tt>PullBufferStream</tt>
+	 *        read through this <code>PullBufferStream</code>
 	 * @throws IOException
 	 *         if anything goes wrong while setting the file descriptor of the Video for Linux Two
-	 *         API Specification device which is to be read through this <tt>PullBufferStream</tt>
+	 *         API Specification device which is to be read through this <code>PullBufferStream</code>
 	 */
 	void setFd(int fd)
 		throws IOException
@@ -483,7 +483,7 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 
 	/**
 	 * Sets the crop of the Video for Linux Two API Specification device represented by the
-	 * <tt>fd</tt> of this instance to its default value so that this <tt>PullBufferStream</tt>
+	 * <code>fd</code> of this instance to its default value so that this <code>PullBufferStream</code>
 	 * reads media data without cropping.
 	 */
 	private void setFdCropToDefault()
@@ -492,16 +492,16 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Sets the <tt>Format</tt> in which the Video for Linux Two API Specification device
-	 * represented by the <tt>fd</tt> of this instance is to capture media data.
+	 * Sets the <code>Format</code> in which the Video for Linux Two API Specification device
+	 * represented by the <code>fd</code> of this instance is to capture media data.
 	 *
 	 * @param format
-	 *        the <tt>Format</tt> of the media data to be captured by the Video for Linux Two API
-	 *        Specification device represented by the <tt>fd</tt> of this instance
+	 *        the <code>Format</code> of the media data to be captured by the Video for Linux Two API
+	 *        Specification device represented by the <code>fd</code> of this instance
 	 * @throws IOException
-	 *         if anything goes wrong while setting the <tt>Format</tt> of the media data to be
+	 *         if anything goes wrong while setting the <code>Format</code> of the media data to be
 	 *         captured by the Video for Linux Two API Specification device represented by the
-	 *         <tt>fd</tt> of this instance
+	 *         <code>fd</code> of this instance
 	 */
 	private void setFdFormat(Format format)
 		throws IOException
@@ -555,8 +555,8 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Sets the <tt>Format</tt> in which the Video for Linux Two API Specification device
-	 * represented by the <tt>fd</tt> of this instance is to capture media data.
+	 * Sets the <code>Format</code> in which the Video for Linux Two API Specification device
+	 * represented by the <code>fd</code> of this instance is to capture media data.
 	 *
 	 * @param v4l2_format
 	 *        native format to set on the Video for Linux Two API Specification device
@@ -569,7 +569,7 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	 * @throws IOException
 	 *         if anything goes wrong while setting the native format of the media data to be
 	 *         captured by the Video for Linux Two API Specification device represented by the
-	 *         <tt>fd</tt> of this instance
+	 *         <code>fd</code> of this instance
 	 */
 	private void setFdFormat(long v4l2_format, long fmtPix, Dimension size, int pixelformat)
 		throws IOException
@@ -589,11 +589,11 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>PullBufferStream</tt>.
+	 * Starts the transfer of media data from this <code>PullBufferStream</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while starting the transfer of media data from this
-	 *         <tt>PullBufferStream</tt>
+	 *         <code>PullBufferStream</code>
 	 * @see AbstractPullBufferStream#start()
 	 */
 	@Override
@@ -629,11 +629,11 @@ public class Video4Linux2Stream extends AbstractVideoPullBufferStream<DataSource
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>PullBufferStream</tt>.
+	 * Stops the transfer of media data from this <code>PullBufferStream</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while stopping the transfer of media data from this
-	 *         <tt>PullBufferStream</tt>
+	 *         <code>PullBufferStream</code>
 	 * @see AbstractPullBufferStream#stop()
 	 */
 	@Override

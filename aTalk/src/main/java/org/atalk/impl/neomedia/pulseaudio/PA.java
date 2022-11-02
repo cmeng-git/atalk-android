@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.pulseaudio;
 
 /**
- * Declares the functions, structures and constants of the native <tt>PulseAudio</tt> API for use
+ * Declares the functions, structures and constants of the native <code>PulseAudio</code> API for use
  * within Java in general and neomedia in particular.
  *
  * @author Lyubomir Marinov
@@ -83,12 +83,12 @@ public final class PA
 	public static final String PROP_MEDIA_ROLE = "media.role";
 
 	/**
-	 * The <tt>pa_sample_format_t</tt> value which specifies an invalid value.
+	 * The <code>pa_sample_format_t</code> value which specifies an invalid value.
 	 */
 	public static final int SAMPLE_INVALID = -1;
 
 	/**
-	 * The <tt>pa_sample_format_t</tt> value which specifies signed 16-bit PCM, little endian.
+	 * The <code>pa_sample_format_t</code> value which specifies signed 16-bit PCM, little endian.
 	 */
 	public static final int SAMPLE_S16LE = 3;
 
@@ -215,13 +215,13 @@ public final class PA
 	public static native int stream_drop(long s);
 
 	/**
-	 * Gets the name of the sink or source a specified <tt>pa_stream</tt> is connected to in the
+	 * Gets the name of the sink or source a specified <code>pa_stream</code> is connected to in the
 	 * server.
 	 *
 	 * @param s
-	 *        the <tt>pa_stream</tt> of which to get the name of the sink or source it is connected
+	 *        the <code>pa_stream</code> of which to get the name of the sink or source it is connected
 	 *        to in the server
-	 * @return the name of the sink or source the specified <tt>pa_stream</tt> is connected to in
+	 * @return the name of the sink or source the specified <code>pa_stream</code> is connected to in
 	 *         the server
 	 */
 	public static native String stream_get_device_name(long s);
@@ -270,7 +270,7 @@ public final class PA
 
 	public static native void threaded_mainloop_wait(long m);
 
-	/** Prevents the initialization of <tt>PA</tt> instances. */
+	/** Prevents the initialization of <code>PA</code> instances. */
 	private PA()
 	{
 	}

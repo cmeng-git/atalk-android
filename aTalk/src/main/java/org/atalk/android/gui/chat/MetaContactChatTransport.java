@@ -759,7 +759,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 }
                 else {
                     // For testing only: forced to use legacy file transfer for unencrypted content
-                    // throw new OperationNotSupportedException("Use legacy File Transfer"));
+                    // throw new OperationNotSupportedException("Use legacy File Transfer");
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
                 OutgoingFileOfferJingleImpl outgoingTransfer

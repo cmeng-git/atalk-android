@@ -110,8 +110,8 @@ public class FMJPlugInConfiguration
     };
 
     /**
-     * The package prefixes of the additional JMF <tt>DataSource</tt>s (e.g. low latency PortAudio
-     * and ALSA <tt>CaptureDevice</tt>s).
+     * The package prefixes of the additional JMF <code>DataSource</code>s (e.g. low latency PortAudio
+     * and ALSA <code>CaptureDevice</code>s).
      */
     private static final String[] CUSTOM_PACKAGES = {
             "org.atalk.impl.neomedia.jmfext",
@@ -120,7 +120,7 @@ public class FMJPlugInConfiguration
     };
 
     /**
-     * The list of class names to register as FMJ plugins with type <tt>PlugInManager.MULTIPLEXER</tt>.
+     * The list of class names to register as FMJ plugins with type <code>PlugInManager.MULTIPLEXER</code>.
      */
     private static final String[] CUSTOM_MULTIPLEXERS = {
             "org.atalk.impl.neomedia.recording.BasicWavMux"
@@ -274,7 +274,7 @@ public class FMJPlugInConfiguration
     }
 
     /**
-     * Registers custom libjitsi <tt>Multiplexer</tt> implementations.
+     * Registers custom libjitsi <code>Multiplexer</code> implementations.
      */
     @SuppressWarnings("unchecked")
     public static void registerCustomMultiplexers()

@@ -25,7 +25,7 @@ public final class CVPixelBufferAttributeKey
 	}
 
 	/**
-	 * Prevents the initialization of <tt>CVPixelBufferAttributeKey</tt> instances.
+	 * Prevents the initialization of <code>CVPixelBufferAttributeKey</code> instances.
 	 */
 	private CVPixelBufferAttributeKey()
 	{

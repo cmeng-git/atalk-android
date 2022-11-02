@@ -22,7 +22,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
- * The <tt>IQProvider</tt> for {@link HealthCheckIQ}.
+ * The <code>IQProvider</code> for {@link HealthCheckIQ}.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -30,7 +30,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 {
 	/**
-	 * Registers <tt>HealthCheckIQProvider</tt> as an <tt>IQProvider</tt>
+	 * Registers <code>HealthCheckIQProvider</code> as an <code>IQProvider</code>
 	 */
 	public static void registerIQProvider()
 	{
@@ -39,7 +39,7 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 	}
 
 	/**
-	 * Parses <tt>HealthCheckIQ</tt>.
+	 * Parses <code>HealthCheckIQ</code>.
 	 *
 	 * {@inheritDoc}
 	 */

@@ -12,14 +12,14 @@ public class Tables
 
 	/**
 	 * Copies the specified range of the specified array into a new array. The initial index of the
-	 * range (<tt>from</tt> ) must lie between zero and <tt>original.length</tt>, inclusive. The
-	 * value at <tt>original[from]</tt> is placed into the initial element of the copy (unless
-	 * <tt>from == original.length</tt> or <tt>from == to</tt>). Values from subsequent elements in
+	 * range (<code>from</code> ) must lie between zero and <code>original.length</code>, inclusive. The
+	 * value at <code>original[from]</code> is placed into the initial element of the copy (unless
+	 * <code>from == original.length</code> or <code>from == to</code>). Values from subsequent elements in
 	 * the original array are placed into subsequent elements in the copy. The final index of the
-	 * range (<tt>to</tt>), which must be greater than or equal to <tt>from</tt>, may be greater
-	 * than <tt>original.length</tt>, in which case <tt>0</tt> is placed in all elements of the copy
-	 * whose index is greater than or equal to <tt>original.length - from</tt>. The length of the
-	 * returned array will be <tt>to - from</tt>.
+	 * range (<code>to</code>), which must be greater than or equal to <code>from</code>, may be greater
+	 * than <code>original.length</code>, in which case <code>0</code> is placed in all elements of the copy
+	 * whose index is greater than or equal to <code>original.length - from</code>. The length of the
+	 * returned array will be <code>to - from</code>.
 	 *
 	 * @param original
 	 *        the array from which a range is to be copied
@@ -31,11 +31,11 @@ public class Tables
 	 * @return a new array containing the specified range from the original array, truncated or
 	 *         padded with zeros to obtain the required length
 	 * @throws ArrayIndexOutOfBoundsException
-	 *         if <tt>from &lt; 0</tt> or <tt>from &gt; original.length()</tt>
+	 *         if <code>from &lt; 0</code> or <code>from &gt; original.length()</code>
 	 * @throws IllegalArgumentException
-	 *         if <tt>from &gt; to</tt>
+	 *         if <code>from &gt; to</code>
 	 * @throws NullPointerException
-	 *         if <tt>original</tt> is <tt>null</tt>
+	 *         if <code>original</code> is <code>null</code>
 	 */
 	static int[] copyOfRange(int[] original, int from, int to)
 	{

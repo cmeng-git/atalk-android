@@ -365,7 +365,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
-     * Method fired when the chat message is clicked. {@inheritDoc}
+     * Method fired when the chat message is clicked. {@inheritDoc}.
      * Trigger from @see ChatFragment#
      */
     public void onItemClick(AdapterView<?> adapter, View view, int position, long id)

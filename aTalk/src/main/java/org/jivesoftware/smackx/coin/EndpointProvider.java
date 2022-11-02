@@ -29,7 +29,7 @@ public class EndpointProvider extends ExtensionElementProvider<EndpointExtension
      * opening element of the packet extension. As required by the smack API, at the end of the
      * method call, the parser will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>Endpoint</tt> element.
+     * @param parser an XML parser positioned at the opening <code>Endpoint</code> element.
      * @return a new {@link EndpointExtension} instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */

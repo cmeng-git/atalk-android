@@ -26,14 +26,6 @@ import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
  * Implementation of the Jingle security element as specified in XEP-0391.
  * @see <a href="https://xmpp.org/extensions/xep-0391.html">XEP-0391: Jingle Encrypted Transports 0.1.2 (2018-07-31))</a>
  *
- * <jingle>
- *     <content>
- *         <description/>
- *         <transport/>
- *         <security/> <- You are here.
- *     </content>
- * </jingle>
- *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */

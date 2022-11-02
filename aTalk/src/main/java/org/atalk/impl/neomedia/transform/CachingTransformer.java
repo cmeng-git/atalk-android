@@ -47,7 +47,7 @@ public class CachingTransformer extends SinglePacketTransformerAdapter
     private final RawPacketCache incomingRawPacketCache;
 
     /**
-     * Whether or not this <tt>TransformEngine</tt> has been closed.
+     * Whether or not this <code>TransformEngine</code> has been closed.
      */
     private boolean closed = false;
 

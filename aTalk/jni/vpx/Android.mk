@@ -20,4 +20,7 @@ LOCAL_SRC_FILES := vpx_jni.c
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/android/$(TARGET_ARCH_ABI)/include
 LOCAL_CFLAGS = -DFIXED_POINT -DUSE_KISS_FFT -DEXPORT="" -UHAVE_CONFIG_H -Wdeprecated-declarations
 
+# To build app's native (JNI) code with Address Sanitizer
+# LOCAL_ARM_MODE := arm
+
 include $(BUILD_SHARED_LIBRARY)

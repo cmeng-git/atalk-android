@@ -38,7 +38,7 @@ public enum DisconnectionType
     private final String type;
 
     /**
-     * Creates a <tt>DisconnectionType</tt> instance with the specified name.
+     * Creates a <code>DisconnectionType</code> instance with the specified name.
      *
      * @param type type name.
      */
@@ -59,11 +59,11 @@ public enum DisconnectionType
     }
 
     /**
-     * Returns a <tt>DisconnectionType</tt>.
+     * Returns a <code>DisconnectionType</code>.
      *
-     * @param typeStr the <tt>String</tt> that we'd like to parse.
+     * @param typeStr the <code>String</code> that we'd like to parse.
      * @return an DisconnectionType.
-     * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
+     * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
      */
     public static DisconnectionType fromString(String typeStr)
             throws IllegalArgumentException

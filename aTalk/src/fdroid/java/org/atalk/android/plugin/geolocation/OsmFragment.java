@@ -46,6 +46,8 @@ import androidx.fragment.app.Fragment;
 import org.atalk.android.R;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.CopyrightOverlay;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.views.overlay.compass.IOrientationConsumer;
@@ -79,6 +81,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     private LocationRequestCompat mLocationRequest;
     private String mProvider;
     private MapView mMapView;
+    private Marker mMarker;
 
     public OsmActivity mActivity;
     private Thread mThread = null;
@@ -133,14 +136,14 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     {
         final DisplayMetrics dm = mActivity.getResources().getDisplayMetrics();
 
-        GpsMyLocationProvider mLocationProvider = new GpsMyLocationProvider(mActivity);
-        mLocationProvider.clearLocationSources();
-        mLocationProvider.addLocationSource(mProvider);
-        mLocationProvider.setLocationUpdateMinTime(mLocationUpdateMinTime);
-        mLocationProvider.setLocationUpdateMinDistance(mLocationUpdateMinDistance);
+        GpsMyLocationProvider mGpsMyLocationProvider = new GpsMyLocationProvider(mActivity);
+        mGpsMyLocationProvider.clearLocationSources();
+        mGpsMyLocationProvider.addLocationSource(mProvider);
+        mGpsMyLocationProvider.setLocationUpdateMinTime(mLocationUpdateMinTime);
+        mGpsMyLocationProvider.setLocationUpdateMinDistance(mLocationUpdateMinDistance);
 
         Bitmap navIcon = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.map_navigation_icon);
-        mLocationOverlay = new MyLocationNewOverlay(mLocationProvider, mMapView);
+        mLocationOverlay = new MyLocationNewOverlay(mGpsMyLocationProvider, mMapView);
         mLocationOverlay.setDirectionIcon(navIcon);
         mLocationOverlay.setDirectionAnchor(.5f, .63f);
 
@@ -155,8 +158,9 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
 
         mRotationGestureOverlay = new RotationGestureOverlay(mMapView);
         mRotationGestureOverlay.setEnabled(true);
+        mMarker = new Marker(mMapView);
 
-        mMapView.getController().setZoom(15.0f);
+        mMapView.getController().setZoom(16.0f);
         mMapView.setTilesScaledToDpi(true);
         mMapView.setMultiTouchControls(true);
         mMapView.setFlingEnabled(true);
@@ -164,6 +168,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         mMapView.getOverlays().add(mLocationOverlay);
         mMapView.getOverlays().add(mCompassOverlay);
         mMapView.getOverlays().add(mScaleBarOverlay);
+        mMapView.getOverlays().add(new CopyrightOverlay(mActivity));
         mMapView.getController();
 
         Bundle args = getArguments();
@@ -212,13 +217,16 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         mScaleBarOverlay.enableScaleBar();
 
         // Always locks the current screen orientation when showing map.
-        setDeviceOrientation(true);
+        setDeviceOrientation();
 
-        boolean isFollowMe = (GeoConstants.FOLLOW_ME_FIX == mLocationFetchMode);
+        // Enable followMe if from user selected location to show
+        boolean isFollowMe = (GeoConstants.ZERO_FIX != mLocationFetchMode);
         updateFollowMe(isFollowMe);
-        if (!isFollowMe) { // (GeoConstants.ZERO_FIX == mLocationFetchMode || GeoConstants.SINGLE_FIX == mLocationFetchMode) {
+        if (!isFollowMe) {
             mLocationManager.removeUpdates(this);
             if (mLocation != null) {
+                mMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                mMapView.getOverlays().add(mMarker);
                 showLocation(mLocation);
             }
             if (mLocations != null && !mLocations.isEmpty()) {
@@ -323,7 +331,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         }
     }
 
-    private void setDeviceOrientation(boolean lockScreenOrientation)
+    private void setDeviceOrientation()
     {
         int orientation;
         int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
@@ -351,9 +359,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
         }
 
         // Lock the device in current screen orientation
-        if (lockScreenOrientation) {
             mActivity.setRequestedOrientation(orientation);
-        }
     }
 
     /*
@@ -422,7 +428,7 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     }
 
     /**
-     * Move the marker to the location mLatLng for both the street and map view
+     * Move the marker to the new user selected location on the street map view
      *
      * @param location the new location location to animate to
      */
@@ -430,9 +436,9 @@ public class OsmFragment extends Fragment implements LocationListenerCompat, IOr
     {
         if (mMapView != null) {
             mLocation = location;
-            mLocationOverlay.onLocationChanged(mLocation, null);
             mMapView.getController().animateTo(new GeoPoint(location));
-            mMapView.invalidate();
+            mLocationOverlay.onLocationChanged(mLocation, null);
+            mMarker.setPosition(new GeoPoint(location));
             Timber.d("Animate to location: %s", location);
         }
     }

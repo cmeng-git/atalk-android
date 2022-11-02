@@ -11,7 +11,7 @@ import org.atalk.service.neomedia.RawPacket;
 import java.net.DatagramSocket;
 
 /**
- * Extends <tt>RTPConnectorUDPOutputStream</tt> with transform logic.
+ * Extends <code>RTPConnectorUDPOutputStream</code> with transform logic.
  *
  * In this implementation, UDP socket is used to send the data out. When a normal RTP/RTCP packet is
  * passed down from RTPManager, we first transform the packet using user define PacketTransformer
@@ -30,7 +30,7 @@ public class TransformUDPOutputStream extends RTPConnectorUDPOutputStream
 	private final TransformOutputStreamImpl _impl;
 
 	/**
-	 * Initializes a new <tt>TransformOutputStream</tt> which is to send packet data out through a
+	 * Initializes a new <code>TransformOutputStream</code> which is to send packet data out through a
 	 * specific UDP socket.
 	 *
 	 * @param socket

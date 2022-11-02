@@ -46,19 +46,19 @@ public class RtpdumpFileReader
 	public final static int FILE_HEADER_LENGTH = 4 + 4 + 4 + 2 + 2;
 
 	/**
-	 * The <tt>RandomAccessFile</tt> used to read the rtpdump file.
+	 * The <code>RandomAccessFile</code> used to read the rtpdump file.
 	 * 
-	 * <tt>RandomAccessFile</tt> is used because I need to go to the beginning of the file when the
+	 * <code>RandomAccessFile</code> is used because I need to go to the beginning of the file when the
 	 * loop is activated.
 	 */
 	private RandomAccessFile stream;
 
 	/**
-	 * Initialize a new instance of <tt>RtpdumpFileReader</tt> that will the rtpdump file located by
-	 * <tt>filePath</tt>.
+	 * Initialize a new instance of <code>RtpdumpFileReader</code> that will the rtpdump file located by
+	 * <code>filePath</code>.
 	 * 
 	 * @param filePath
-	 *        the location of the rtpdump file this <tt>RtpdumpFileReader</tt> will read.
+	 *        the location of the rtpdump file this <code>RtpdumpFileReader</code> will read.
 	 */
 	public RtpdumpFileReader(String filePath)
 	{
@@ -78,12 +78,12 @@ public class RtpdumpFileReader
 	 * Get the next rtp packet recorded in the rtpdump file.
 	 * 
 	 * @param loopFile
-	 *        if true, when the end of the rtpdump file is reached, this <tt>RtpdumpFileReader</tt>
+	 *        if true, when the end of the rtpdump file is reached, this <code>RtpdumpFileReader</code>
 	 *        will go back at the beginning of the file and get the first packet.
-	 * @return a <tt>RawPacket</tt> containing all the information and data of the next rtp packet
+	 * @return a <code>RawPacket</code> containing all the information and data of the next rtp packet
 	 *         recorded in the rtpdump file
 	 * @throws IOException
-	 *         if <tt>loopFile</tt> was false and the end of the file is reached.
+	 *         if <code>loopFile</code> was false and the end of the file is reached.
 	 */
 	public RawPacket getNextPacket(boolean loopFile)
 		throws IOException

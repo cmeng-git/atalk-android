@@ -21,7 +21,7 @@ import javax.media.*;
 import javax.media.protocol.*;
 
 /**
- * Implements a <tt>MediaDevice</tt> which provides silence in the form of audio
+ * Implements a <code>MediaDevice</code> which provides silence in the form of audio
  * media and does not play back any (audio) media (because Jitsi Videobridge is
  * a server-side technology).
  *
@@ -57,8 +57,8 @@ public class AudioSilenceMediaDevice
     /**
      * {@inheritDoc}
      *
-     * Overrides the super implementation to initialize a <tt>CaptureDevice</tt>
-     * without asking FMJ to initialize one for a <tt>CaptureDeviceInfo</tt>.
+     * Overrides the super implementation to initialize a <code>CaptureDevice</code>
+     * without asking FMJ to initialize one for a <code>CaptureDeviceInfo</code>.
      */
     @Override
     protected CaptureDevice createCaptureDevice()
@@ -82,7 +82,7 @@ public class AudioSilenceMediaDevice
      * {@inheritDoc}
      *
      * Overrides the super implementation to initialize a
-     * <tt>MediaDeviceSession</tt> which disables the very playback because
+     * <code>MediaDeviceSession</code> which disables the very playback because
      * Jitsi Videobridge is a server-side technology.
      */
     @Override
@@ -111,8 +111,8 @@ public class AudioSilenceMediaDevice
      *
      * Overrides the super implementation to always return
      * {@link MediaDirection#SENDRECV} because this instance stands for a relay
-     * and because the super bases the <tt>MediaDirection</tt> on the
-     * <tt>CaptureDeviceInfo</tt> which this instance does not have.
+     * and because the super bases the <code>MediaDirection</code> on the
+     * <code>CaptureDeviceInfo</code> which this instance does not have.
      */
     @Override
     public MediaDirection getDirection()

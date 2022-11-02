@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- *
+ * Error for Unknown JingleContent Security.
  * @author Paul Schaub
  * @author Eng Chong Meng
  */

@@ -41,6 +41,7 @@ import java.util.List;
 public final class Jingle extends IQ
 {
     public static final String ELEMENT = "jingle";
+
     public static final String NAMESPACE = "urn:xmpp:jingle:1";
 
     public static final String ATTR_ACTION = "action";

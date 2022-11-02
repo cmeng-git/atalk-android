@@ -19,8 +19,8 @@ import javax.media.*;
 import timber.log.Timber;
 
 /**
- * Abstract codec class uses android <tt>MediaCodec</tt> for video decoding/encoding.
- * Eventually <tt>AndroidDecoder</tt> and <tt>AndroidEncoder</tt> can be merged later.
+ * Abstract codec class uses android <code>MediaCodec</code> for video decoding/encoding.
+ * Eventually <code>AndroidDecoder</code> and <code>AndroidEncoder</code> can be merged later.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -28,7 +28,7 @@ import timber.log.Timber;
 abstract class AndroidCodec extends AbstractCodec2
 {
     /**
-     * Copied from <tt>MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface</tt>
+     * Copied from <code>MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface</code>
      */
     private final static int COLOR_FormatSurface = 0x7F000789;
 
@@ -38,31 +38,31 @@ abstract class AndroidCodec extends AbstractCodec2
     private final boolean isEncoder;
 
     /**
-     * <tt>MediaCodec</tt> used by this instance.
+     * <code>MediaCodec</code> used by this instance.
      */
     private MediaCodec codec;
 
     /**
-     * Input <tt>MediaCodec</tt> buffer.
+     * Input <code>MediaCodec</code> buffer.
      */
     java.nio.ByteBuffer codecInputBuf;
 
     /**
-     * Output <tt>MediaCodec</tt> buffer.
+     * Output <code>MediaCodec</code> buffer.
      */
     java.nio.ByteBuffer codecOutputBuf;
 
     /**
-     * <tt>BufferInfo</tt> object that stores codec buffer information.
+     * <code>BufferInfo</code> object that stores codec buffer information.
      */
     MediaCodec.BufferInfo mBufferInfo = new MediaCodec.BufferInfo();
 
     /**
-     * Creates a new instance of <tt>AndroidCodec</tt>.
+     * Creates a new instance of <code>AndroidCodec</code>.
      *
-     * @param name the <tt>PlugIn</tt> name of the new instance
-     * @param formatClass the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output.
+     * @param name the <code>PlugIn</code> name of the new instance
+     * @param formatClass the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
+     * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output.
      */
     protected AndroidCodec(String name, Class<? extends Format> formatClass,
             Format[] supportedOutputFormats, boolean isEncoder)
@@ -72,23 +72,23 @@ abstract class AndroidCodec extends AbstractCodec2
     }
 
     /**
-     * Class should return <tt>true</tt> if surface will be used.
+     * Class should return <code>true</code> if surface will be used.
      *
-     * @return <tt>true</tt> if surface will be used.
+     * @return <code>true</code> if surface will be used.
      */
     protected abstract boolean useSurface();
 
     /**
-     * Returns <tt>Surface</tt> used by this instance for encoding or decoding.
+     * Returns <code>Surface</code> used by this instance for encoding or decoding.
      *
-     * @return <tt>Surface</tt> used by this instance for encoding or decoding.
+     * @return <code>Surface</code> used by this instance for encoding or decoding.
      */
     protected abstract Surface getSurface();
 
     /**
-     * Template method used to configure <tt>MediaCodec</tt> instance. Called before starting the codec.
+     * Template method used to configure <code>MediaCodec</code> instance. Called before starting the codec.
      *
-     * @param codec <tt>MediaCodec</tt> instance to be configured.
+     * @param codec <code>MediaCodec</code> instance to be configured.
      * @param codecType string codec media type.
      * @throws ResourceUnavailableException Resource Unavailable Exception if not supported
      */
@@ -96,9 +96,9 @@ abstract class AndroidCodec extends AbstractCodec2
             throws ResourceUnavailableException;
 
     /**
-     * Selects <tt>MediaFormat</tt> color format used.
+     * Selects <code>MediaFormat</code> color format used.
      *
-     * @return used <tt>MediaFormat</tt> color format.
+     * @return used <code>MediaFormat</code> color format.
      */
     protected int getColorFormat()
     {
@@ -291,7 +291,7 @@ abstract class AndroidCodec extends AbstractCodec2
     }
 
     /**
-     * Method fired when <tt>MediaCodec</tt> detects video size.
+     * Method fired when <code>MediaCodec</code> detects video size.
      *
      * @param dimension video dimension.
      * @see AndroidDecoder#onSizeChanged(Dimension)

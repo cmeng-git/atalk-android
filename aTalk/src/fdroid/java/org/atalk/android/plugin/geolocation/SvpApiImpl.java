@@ -36,7 +36,7 @@ import java.util.List;
 public class SvpApiImpl implements SvpApi
 {
     /**
-     * Perform osMap street map view when user click the show map button
+     * Perform osm street map view when user click the show map button
      */
     @Override
     public void onSVPClick(Activity activity, double[] dblLocation)

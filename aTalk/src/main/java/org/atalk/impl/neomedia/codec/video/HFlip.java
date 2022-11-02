@@ -16,8 +16,8 @@ import javax.media.*;
 import timber.log.Timber;
 
 /**
- * Implements a video <tt>Effect</tt> which horizontally flips
- * <tt>AVFrame</tt>s.
+ * Implements a video <code>Effect</code> which horizontally flips
+ * <code>AVFrame</code>s.
  *
  * @author Sebastien Vincent
  * @author Lyubomir Marinov
@@ -27,43 +27,43 @@ public class HFlip extends AbstractCodec2
         implements Effect
 {
     /**
-     * The list of <tt>Format</tt>s supported by <tt>HFlip</tt> instances as
+     * The list of <code>Format</code>s supported by <code>HFlip</code> instances as
      * input and output.
      */
     private static final Format[] SUPPORTED_FORMATS = new Format[]{new AVFrameFormat()};
 
     /**
-     * The name of the FFmpeg ffsink video source <tt>AVFilter</tt> used by <tt>HFlip</tt>.
+     * The name of the FFmpeg ffsink video source <code>AVFilter</code> used by <code>HFlip</code>.
      */
     private static final String VSINK_FFSINK_NAME = "buffersink";
 
     /**
-     * The name of the FFmpeg buffer video source <tt>AVFilter</tt> used by <tt>HFlip</tt>.
+     * The name of the FFmpeg buffer video source <code>AVFilter</code> used by <code>HFlip</code>.
      */
     private static final String VSRC_BUFFER_NAME = "buffer";
 
     /**
-     * The pointer to the <tt>AVFilterContext</tt> in {@link #graph} of the
+     * The pointer to the <code>AVFilterContext</code> in {@link #graph} of the
      * FFmpeg video source with the name {@link #VSRC_BUFFER_NAME}.
      */
     private long buffer;
 
     /**
-     * The pointer to the <tt>AVFilterContext</tt> in {@link #graph} of the
+     * The pointer to the <code>AVFilterContext</code> in {@link #graph} of the
      * FFmpeg video sink with the name {@link #VSINK_FFSINK_NAME}.
      */
     private long ffsink;
 
     /**
-     * The pointer to the <tt>AVFilterGraph</tt> instance which contains the
-     * FFmpeg hflip filter represented by this <tt>Effect</tt>.
+     * The pointer to the <code>AVFilterGraph</code> instance which contains the
+     * FFmpeg hflip filter represented by this <code>Effect</code>.
      */
     private long graph = 0;
 
     /**
      * The indicator which determines whether the fact that {@link #graph} is
      * equal to zero means that an attempt to initialize it is to be made. If
-     * <tt>false</tt>, indicates that such an attempt has already been made and
+     * <code>false</code>, indicates that such an attempt has already been made and
      * has failed. In other words, prevents multiple initialization attempts
      * with the same parameters.
      */
@@ -75,8 +75,8 @@ public class HFlip extends AbstractCodec2
     private int height;
 
     /**
-     * The pointer to the <tt>AVFrame</tt> instance which is the output (data)
-     * of this <tt>Effect</tt>.
+     * The pointer to the <code>AVFrame</code> instance which is the output (data)
+     * of this <code>Effect</code>.
      */
     private long outputFrame;
 
@@ -91,7 +91,7 @@ public class HFlip extends AbstractCodec2
     private int width;
 
     /**
-     * Initializes a new <tt>HFlip</tt> instance.
+     * Initializes a new <code>HFlip</code> instance.
      */
     public HFlip()
     {
@@ -99,7 +99,7 @@ public class HFlip extends AbstractCodec2
     }
 
     /**
-     * Closes this <tt>Effect</tt>.
+     * Closes this <code>Effect</code>.
      *
      * @see AbstractCodec2#doClose()
      */
@@ -117,7 +117,7 @@ public class HFlip extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Effect</tt>.
+     * Opens this <code>Effect</code>.
      *
      * @throws ResourceUnavailableException if any of the required resource
      * cannot be allocated
@@ -137,11 +137,11 @@ public class HFlip extends AbstractCodec2
     }
 
     /**
-     * Performs the media processing defined by this <tt>Effect</tt>.
+     * Performs the media processing defined by this <code>Effect</code>.
      *
-     * @param inputBuffer the <tt>Buffer</tt> that contains the media data to be processed
-     * @param outputBuffer the <tt>Buffer</tt> in which to store the processed media data
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the processing is successful
+     * @param inputBuffer the <code>Buffer</code> that contains the media data to be processed
+     * @param outputBuffer the <code>Buffer</code> in which to store the processed media data
+     * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
@@ -285,7 +285,7 @@ public class HFlip extends AbstractCodec2
     }
 
     /**
-     * Resets the state of this <tt>PlugIn</tt>.
+     * Resets the state of this <code>PlugIn</code>.
      */
     @Override
     public synchronized void reset()

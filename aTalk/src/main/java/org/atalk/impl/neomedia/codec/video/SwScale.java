@@ -20,7 +20,7 @@ import javax.media.format.*;
 import timber.log.Timber;
 
 /**
- * Implements an FMJ <tt>Codec</tt> which uses libswscale to scale images and
+ * Implements an FMJ <code>Codec</code> which uses libswscale to scale images and
  * convert between color spaces (typically, RGB and YUV).
  *
  * @author Sebastien Vincent
@@ -31,15 +31,15 @@ public class SwScale extends AbstractCodec
 {
     /**
      * The minimum height and/or width of the input and/or output to be passed
-     * to <tt>sws_scale</tt> in order to prevent its crashing.
+     * to <code>sws_scale</code> in order to prevent its crashing.
      */
     public static final int MIN_SWS_SCALE_HEIGHT_OR_WIDTH = 4;
 
     /**
-     * Gets the FFmpeg <tt>PixelFormat</tt> equivalent of a specific FMJ <tt>RGBFormat</tt>.
+     * Gets the FFmpeg <code>PixelFormat</code> equivalent of a specific FMJ <code>RGBFormat</code>.
      *
-     * @param rgb the FMJ <tt>RGBFormat</tt> to get the equivalent FFmpeg <tt>PixelFormat</tt> of
-     * @return the FFmpeg <tt>PixelFormat</tt> equivalent of the specified FMJ <tt>RGBFormat</tt>
+     * @param rgb the FMJ <code>RGBFormat</code> to get the equivalent FFmpeg <code>PixelFormat</code> of
+     * @return the FFmpeg <code>PixelFormat</code> equivalent of the specified FMJ <code>RGBFormat</code>
      */
     private static int getFFmpegPixelFormat(RGBFormat rgb)
     {
@@ -83,12 +83,12 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Gets a <tt>VideoFormat</tt> with a specific size i.e. width and height
-     * using a specific <tt>VideoFormat</tt> as a template.
+     * Gets a <code>VideoFormat</code> with a specific size i.e. width and height
+     * using a specific <code>VideoFormat</code> as a template.
      *
-     * @param format the <tt>VideoFormat</tt> which is the template for the <tt>VideoFormat</tt> to be returned
-     * @param size the size i.e. width and height of the <tt>VideoFormat</tt> to be returned
-     * @return a <tt>VideoFormat</tt> with the specified <tt>size</tt> and based on the specified <tt>format</tt>
+     * @param format the <code>VideoFormat</code> which is the template for the <code>VideoFormat</code> to be returned
+     * @param size the size i.e. width and height of the <code>VideoFormat</code> to be returned
+     * @return a <code>VideoFormat</code> with the specified <code>size</code> and based on the specified <code>format</code>
      */
     private static VideoFormat setSize(VideoFormat format, Dimension size)
     {
@@ -153,7 +153,7 @@ public class SwScale extends AbstractCodec
     private final boolean fixOddYuv420Size;
 
     /**
-     * The <tt>FrameProcessingControl</tt> of this <tt>Codec</tt> which allows
+     * The <code>FrameProcessingControl</code> of this <code>Codec</code> which allows
      * JMF to instruct it to drop frames because it's behind schedule.
      */
     private final FrameProcessingControlImpl frameProcessingControl = new FrameProcessingControlImpl();
@@ -161,8 +161,8 @@ public class SwScale extends AbstractCodec
     /**
      * The indicator which determines whether this instance is to preserve the
      * aspect ratio of the video frames provided to this instance as input to be
-     * processed. If <tt>true</tt>, the <tt>size</tt> of the
-     * <tt>outputFormat</tt> of this instance is used to device a rectangle into
+     * processed. If <code>true</code>, the <code>size</code> of the
+     * <code>outputFormat</code> of this instance is used to device a rectangle into
      * which a scaled video frame should fit with the input aspect ratio preserved.
      */
     private final boolean preserveAspectRatio;
@@ -182,12 +182,12 @@ public class SwScale extends AbstractCodec
     };
 
     /**
-     * The pointer to the <tt>libswscale</tt> context.
+     * The pointer to the <code>libswscale</code> context.
      */
     private long swsContext = 0;
 
     /**
-     * Initializes a new <tt>SwScale</tt> instance which doesn't have an output
+     * Initializes a new <code>SwScale</code> instance which doesn't have an output
      * size and will use a default one when it becomes necessary unless an
      * explicit one is specified in the meantime.
      */
@@ -197,11 +197,11 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Initializes a new <tt>SwScale</tt> instance which can optionally attempt
+     * Initializes a new <code>SwScale</code> instance which can optionally attempt
      * to keep the width and height of YUV 420 output even.
      *
-     * @param fixOddYuv420Size <tt>true</tt> to have the new instance keep the
-     * width and height of YUV 420 output even; otherwise, <tt>false</tt>
+     * @param fixOddYuv420Size <code>true</code> to have the new instance keep the
+     * width and height of YUV 420 output even; otherwise, <code>false</code>
      */
     public SwScale(boolean fixOddYuv420Size)
     {
@@ -209,15 +209,15 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Initializes a new <tt>SwScale</tt> instance which can optionally attempt
+     * Initializes a new <code>SwScale</code> instance which can optionally attempt
      * to keep the width and height of YUV 420 output even and to preserve the
      * aspect ratio of the video frames provided to the instance as input to be processed.
      *
-     * @param fixOddYuv420Size <tt>true</tt> to have the new instance keep the
-     * width and height of YUV 420 output even; otherwise, <tt>false</tt>
-     * @param preserveAspectRatio <tt>true</tt> to have the new instance
+     * @param fixOddYuv420Size <code>true</code> to have the new instance keep the
+     * width and height of YUV 420 output even; otherwise, <code>false</code>
+     * @param preserveAspectRatio <code>true</code> to have the new instance
      * preserve the aspect ratio of the video frames provided to it as input to
-     * be processed; otherwise, <tt>false</tt>
+     * be processed; otherwise, <code>false</code>
      */
     public SwScale(boolean fixOddYuv420Size, boolean preserveAspectRatio)
     {
@@ -249,13 +249,13 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Gets the <tt>Format</tt> in which this <tt>Codec</tt> is currently
+     * Gets the <code>Format</code> in which this <code>Codec</code> is currently
      * configured to accept input media data.
      * <p>
      * Makes the protected super implementation public.
      * </p>
      *
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to accept input media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to accept input media data
      * @see AbstractCodec#getInputFormat()
      */
     @Override
@@ -405,11 +405,11 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Processes (converts color space and/or scales) an input <tt>Buffer</tt> into an output <tt>Buffer</tt>.
+     * Processes (converts color space and/or scales) an input <code>Buffer</code> into an output <code>Buffer</code>.
      *
-     * @param in the input <tt>Buffer</tt> to process (from)
-     * @param out the output <tt>Buffer</tt> to process into
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully processed into <tt>out</tt>
+     * @param in the input <code>Buffer</code> to process (from)
+     * @param out the output <code>Buffer</code> to process into
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>in</code> has been successfully processed into <code>out</code>
      */
     public int process(Buffer in, Buffer out)
     {
@@ -595,13 +595,13 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media
+     * Sets the <code>Format</code> in which this <code>Codec</code> is to output media
      * data.
      *
-     * @param format the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-     * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently
-     * configured to output media data or <tt>null</tt> if <tt>format</tt> was
-     * found to be incompatible with this <tt>Codec</tt>
+     * @param format the <code>Format</code> in which this <code>Codec</code> is to output media data
+     * @return the <code>Format</code> in which this <code>Codec</code> is currently
+     * configured to output media data or <code>null</code> if <code>format</code> was
+     * found to be incompatible with this <code>Codec</code>
      */
     @Override
     public Format setOutputFormat(Format format)
@@ -642,10 +642,10 @@ public class SwScale extends AbstractCodec
     }
 
     /**
-     * Sets the size i.e. width and height of the current <tt>outputFormat</tt> of this <tt>SwScale</tt>
+     * Sets the size i.e. width and height of the current <code>outputFormat</code> of this <code>SwScale</code>
      *
      * @param size the size i.e. width and height to be set on the current
-     * <tt>outputFormat</tt> of this <tt>SwScale</tt>
+     * <code>outputFormat</code> of this <code>SwScale</code>
      */
     private void setOutputFormatSize(Dimension size)
     {

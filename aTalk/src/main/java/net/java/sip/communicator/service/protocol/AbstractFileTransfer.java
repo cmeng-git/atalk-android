@@ -131,7 +131,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      */
     public void fireStatusChangeEvent(JingleReason reason) {
         String reasonText = (reason.getText() != null) ? reason.getText() : reason.asEnum().toString();
-        switch(reason.asEnum()) {
+        switch (reason.asEnum()) {
             case decline:
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, reasonText);
                 break;

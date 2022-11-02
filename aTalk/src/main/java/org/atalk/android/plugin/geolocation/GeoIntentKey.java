@@ -17,7 +17,7 @@
 package org.atalk.android.plugin.geolocation;
 
 /**
- * GeoLocationHelper intent bundle parameters
+ * GeoLocation intent bundle parameters
  *
  * @author Eng Chong Meng
  */

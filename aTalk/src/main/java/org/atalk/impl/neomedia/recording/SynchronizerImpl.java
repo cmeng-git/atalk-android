@@ -36,13 +36,13 @@ public class SynchronizerImpl implements Synchronizer
 	private static final int PT_SDES = 202;
 
     /**
-     * Maps an SSRC to the <tt>SSRCDesc</tt> structure containing information
+     * Maps an SSRC to the <code>SSRCDesc</code> structure containing information
      * about it.
      */
     private final Map<Long, SSRCDesc> ssrcs = new ConcurrentHashMap<>();
 
     /**
-     * Maps an endpoint identifier to an <tt>Endpoint</tt> structure containing
+     * Maps an endpoint identifier to an <code>Endpoint</code> structure containing
      * information about the endpoint.
      */
     private final Map<String, Endpoint> endpoints = new ConcurrentHashMap<>();
@@ -260,12 +260,12 @@ public class SynchronizerImpl implements Synchronizer
 	}
 
 	/**
-	 * Returns the <tt>SSRCDesc</tt> instance mapped to the SSRC <tt>ssrc</tt>. If no instance is
-	 * mapped to <tt>ssrc</tt>, create one and inserts it in the map. Always returns non-null.
+	 * Returns the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>. If no instance is
+	 * mapped to <code>ssrc</code>, create one and inserts it in the map. Always returns non-null.
 	 * 
 	 * @param ssrc
-	 *        the ssrc to get the <tt>SSRCDesc</tt> for.
-	 * @return the <tt>SSRCDesc</tt> instance mapped to the SSRC <tt>ssrc</tt>.
+	 *        the ssrc to get the <code>SSRCDesc</code> for.
+	 * @return the <code>SSRCDesc</code> instance mapped to the SSRC <code>ssrc</code>.
 	 */
 	private SSRCDesc getSSRCDesc(long ssrc)
 	{
@@ -282,12 +282,12 @@ public class SynchronizerImpl implements Synchronizer
     }
 
 	/**
-	 * Returns the <tt>Endpoint</tt> with id <tt>endpointId</tt>. Creates an <tt>Endpoint</tt> if
+	 * Returns the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
 	 * necessary. Always returns non-null.
 	 * 
 	 * @param endpointId
 	 *        the string identifying the endpoint.
-	 * @return the <tt>Endpoint</tt> with id <tt>endpointId</tt>. Creates an <tt>Endpoint</tt> if
+	 * @return the <code>Endpoint</code> with id <code>endpointId</code>. Creates an <code>Endpoint</code> if
 	 *         necessary.
 	 */
 	private Endpoint getEndpoint(String endpointId)
@@ -305,11 +305,11 @@ public class SynchronizerImpl implements Synchronizer
     }
 
 	/**
-	 * Return a set of all items with type CNAME from the RTCP SDES packet <tt>pkt</tt>.
+	 * Return a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
 	 * 
 	 * @param pkt
 	 *        the packet to parse for CNAME items.
-	 * @retur a set of all items with type CNAME from the RTCP SDES packet <tt>pkt</tt>.
+	 * @retur a set of all items with type CNAME from the RTCP SDES packet <code>pkt</code>.
 	 */
 	private Set<CNAMEItem> getCnameItems(RawPacket pkt)
 	{
@@ -346,7 +346,7 @@ public class SynchronizerImpl implements Synchronizer
 	/**
 	 * Reads a portion of a byte array as a string.
 	 * 
-	 * @return the string with length <tt>len</tt>read from <tt>buf</tt> at offset <tt>off</tt>.
+	 * @return the string with length <code>len</code>read from <code>buf</code> at offset <code>off</code>.
 	 */
 	private String readString(byte[] buf, int off, int len)
 	{
@@ -375,11 +375,11 @@ public class SynchronizerImpl implements Synchronizer
 	}
 
 	/**
-	 * Checks whether <tt>pkt</tt> looks like a valid RTCP packet.
+	 * Checks whether <code>pkt</code> looks like a valid RTCP packet.
 	 * 
 	 * @param pkt
 	 *        the packet to check.
-	 * @return <tt>true</tt> if <tt>pkt</tt> seems to be a valid RTCP packet.
+	 * @return <code>true</code> if <code>pkt</code> seems to be a valid RTCP packet.
 	 */
 	private boolean isValidRTCP(RawPacket pkt)
 	{
@@ -403,12 +403,12 @@ public class SynchronizerImpl implements Synchronizer
 	}
 
 	/**
-	 * Returns the value of the packet type field from the RTCP header of <tt>pkt</tt>. Assumes that
-	 * <tt>pkt</tt> is a valid RTCP packet (at least as reported by {@link #isValidRTCP(RawPacket)}).
+	 * Returns the value of the packet type field from the RTCP header of <code>pkt</code>. Assumes that
+	 * <code>pkt</code> is a valid RTCP packet (at least as reported by {@link #isValidRTCP(RawPacket)}).
 	 * 
 	 * @param pkt
 	 *        the packet to get the packet type of.
-	 * @return the value of the packet type field from the RTCP header of <tt>pkt</tt>.
+	 * @return the value of the packet type field from the RTCP header of <code>pkt</code>.
 	 */
 	private int getPacketType(RawPacket pkt)
 	{
@@ -435,7 +435,7 @@ public class SynchronizerImpl implements Synchronizer
     }
 
 	/**
-	 * Represents an SSRC for the purpose of this <tt>Synchronizer</tt>.
+	 * Represents an SSRC for the purpose of this <code>Synchronizer</code>.
 	 */
 	private static class SSRCDesc
 	{

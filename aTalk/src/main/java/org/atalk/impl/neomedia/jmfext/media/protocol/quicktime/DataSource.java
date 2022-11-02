@@ -24,7 +24,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>PushBufferDataSource</tt> and <tt>CaptureDevice</tt> using QuickTime/QTKit.
+ * Implements a <code>PushBufferDataSource</code> and <code>CaptureDevice</code> using QuickTime/QTKit.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -32,24 +32,24 @@ import timber.log.Timber;
 public class DataSource extends AbstractVideoPushBufferCaptureDevice
 {
 	/**
-	 * The <tt>QTCaptureSession</tt> which captures from {@link #device} and pushes media data to
-	 * the <tt>PushBufferStream</tt>s of this <tt>PushBufferDataSource</tt>.
+	 * The <code>QTCaptureSession</code> which captures from {@link #device} and pushes media data to
+	 * the <code>PushBufferStream</code>s of this <code>PushBufferDataSource</code>.
 	 */
 	private QTCaptureSession captureSession;
 
 	/**
-	 * The <tt>QTCaptureDevice</tt> which represents the media source of this <tt>DataSource</tt>.
+	 * The <code>QTCaptureDevice</code> which represents the media source of this <code>DataSource</code>.
 	 */
 	private QTCaptureDevice device;
 
 	/**
-	 * The list of <tt>Format</tt>s to be reported by <tt>DataSource</tt> instances as supported
+	 * The list of <code>Format</code>s to be reported by <code>DataSource</code> instances as supported
 	 * formats.
 	 */
 	private static Format[] supportedFormats;
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance.
+	 * Initializes a new <code>DataSource</code> instance.
 	 */
 	public DataSource()
 	{
@@ -57,10 +57,10 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance from a specific <tt>MediaLocator</tt>.
+	 * Initializes a new <code>DataSource</code> instance from a specific <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 *        the <tt>MediaLocator</tt> to create the new instance from
+	 *        the <code>MediaLocator</code> to create the new instance from
 	 */
 	public DataSource(MediaLocator locator)
 	{
@@ -69,9 +69,9 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 
 	/**
 	 * Overrides {@link AbstractVideoPushBufferCaptureDevice#createFrameRateControl()} to provide a
-	 * <tt>FrameRateControl</tt> which gets and sets the frame rate of the
-	 * <tt>QTCaptureDecompressedVideoOutput</tt> represented by the <tt>QuickTimeStream</tt> made
-	 * available by this <tt>DataSource</tt>.
+	 * <code>FrameRateControl</code> which gets and sets the frame rate of the
+	 * <code>QTCaptureDecompressedVideoOutput</code> represented by the <code>QuickTimeStream</code> made
+	 * available by this <code>DataSource</code>.
 	 *
 	 * {@inheritDoc}
 	 * 
@@ -83,8 +83,8 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 		return new FrameRateControlAdapter()
 		{
 			/**
-			 * The output frame rate to be managed by this <tt>FrameRateControl</tt> when there is
-			 * no <tt>QuickTimeStream</tt> to delegate to.
+			 * The output frame rate to be managed by this <code>FrameRateControl</code> when there is
+			 * no <code>QuickTimeStream</code> to delegate to.
 			 */
 			private float frameRate = -1;
 
@@ -149,20 +149,20 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Creates a new <tt>PushBufferStream</tt> which is to be at a specific zero-based index in the
-	 * list of streams of this <tt>PushBufferDataSource</tt>. The <tt>Format</tt>-related
-	 * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+	 * Creates a new <code>PushBufferStream</code> which is to be at a specific zero-based index in the
+	 * list of streams of this <code>PushBufferDataSource</code>. The <code>Format</code>-related
+	 * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PushBufferStream</tt> in the list of streams of this
-	 *        <tt>PushBufferDataSource</tt>
+	 *        the zero-based index of the <code>PushBufferStream</code> in the list of streams of this
+	 *        <code>PushBufferDataSource</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
-	 * @return a new <tt>PushBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-	 *         in the list of streams of this <tt>PushBufferDataSource</tt> and which has its
-	 *         <tt>Format</tt>-related information abstracted by the specified
-	 *         <tt>formatControl</tt>
+	 * @return a new <code>PushBufferStream</code> which is to be at the specified <code>streamIndex</code>
+	 *         in the list of streams of this <code>PushBufferDataSource</code> and which has its
+	 *         <code>Format</code>-related information abstracted by the specified
+	 *         <code>formatControl</code>
 	 * @see AbstractPushBufferCaptureDevice#createStream(int, FormatControl)
 	 */
 	@Override
@@ -182,12 +182,12 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Opens a connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while opening the connection to the media source specified by
-	 *         the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+	 *         the <code>MediaLocator</code> of this <code>DataSource</code>
 	 * @see AbstractPushBufferCaptureDevice#doConnect()
 	 */
 	@Override
@@ -248,8 +248,8 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Closes the connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @see AbstractPushBufferCaptureDevice#doDisconnect()
 	 */
@@ -266,11 +266,11 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>DataSource</tt>.
+	 * Starts the transfer of media data from this <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while starting the transfer of media data from this
-	 *         <tt>DataSource</tt>
+	 *         <code>DataSource</code>
 	 * @see AbstractPushBufferCaptureDevice#doStart()
 	 */
 	@Override
@@ -283,11 +283,11 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>DataSource</tt>.
+	 * Stops the transfer of media data from this <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while stopping the transfer of media data from this
-	 *         <tt>DataSource</tt>
+	 *         <code>DataSource</code>
 	 * @see AbstractPushBufferCaptureDevice#doStop()
 	 */
 	@Override
@@ -300,16 +300,16 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Gets the <tt>Format</tt>s which are to be reported by a <tt>FormatControl</tt> as supported
-	 * formats for a <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams
-	 * of this <tt>PushBufferDataSource</tt>.
+	 * Gets the <code>Format</code>s which are to be reported by a <code>FormatControl</code> as supported
+	 * formats for a <code>PushBufferStream</code> at a specific zero-based index in the list of streams
+	 * of this <code>PushBufferDataSource</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PushBufferStream</tt> for which the specified
-	 *        <tt>FormatControl</tt> is to report the list of supported <tt>Format</tt>s
-	 * @return an array of <tt>Format</tt>s to be reported by a <tt>FormatControl</tt> as the
-	 *         supported formats for the <tt>PushBufferStream</tt> at the specified
-	 *         <tt>streamIndex</tt> in the list of streams of this <tt>PushBufferDataSource</tt>
+	 *        the zero-based index of the <code>PushBufferStream</code> for which the specified
+	 *        <code>FormatControl</code> is to report the list of supported <code>Format</code>s
+	 * @return an array of <code>Format</code>s to be reported by a <code>FormatControl</code> as the
+	 *         supported formats for the <code>PushBufferStream</code> at the specified
+	 *         <code>streamIndex</code> in the list of streams of this <code>PushBufferDataSource</code>
 	 * @see AbstractPushBufferCaptureDevice#getSupportedFormats(int)
 	 */
 	@Override
@@ -319,14 +319,14 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Gets a list of <tt>Format</tt>s which are more specific than given <tt>Format</tt>s with
+	 * Gets a list of <code>Format</code>s which are more specific than given <code>Format</code>s with
 	 * respect to video size. The implementation tries to come up with sane video sizes (for
 	 * example, by looking for codecs which accept the encodings of the specified generic
-	 * <tt>Format</tt>s and using their sizes if any).
+	 * <code>Format</code>s and using their sizes if any).
 	 *
 	 * @param genericFormats
-	 *        the <tt>Format</tt>s from which more specific are to be derived
-	 * @return a list of <tt>Format</tt>s which are more specific than the given <tt>Format</tt>s
+	 *        the <code>Format</code>s from which more specific are to be derived
+	 * @return a list of <code>Format</code>s which are more specific than the given <code>Format</code>s
 	 *         with respect to video size
 	 */
 	private static synchronized Format[] getSupportedFormats(Format[] genericFormats)
@@ -366,12 +366,12 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Sets the <tt>QTCaptureDevice</tt> which represents the media source of this
-	 * <tt>DataSource</tt>.
+	 * Sets the <code>QTCaptureDevice</code> which represents the media source of this
+	 * <code>DataSource</code>.
 	 *
 	 * @param device
-	 *        the <tt>QTCaptureDevice</tt> which represents the media source of this
-	 *        <tt>DataSource</tt>
+	 *        the <code>QTCaptureDevice</code> which represents the media source of this
+	 *        <code>DataSource</code>
 	 */
 	private void setDevice(QTCaptureDevice device)
 	{
@@ -380,23 +380,23 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-	 * <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams of this
-	 * <tt>PushBufferDataSource</tt>. The <tt>PushBufferStream</tt> does not exist at the time of
-	 * the attempt to set its <tt>Format</tt>.
+	 * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+	 * <code>PushBufferStream</code> at a specific zero-based index in the list of streams of this
+	 * <code>PushBufferDataSource</code>. The <code>PushBufferStream</code> does not exist at the time of
+	 * the attempt to set its <code>Format</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is
+	 *        the zero-based index of the <code>PushBufferStream</code> the <code>Format</code> of which is
 	 *        to be set
 	 * @param oldValue
-	 *        the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified
-	 *        <tt>streamIndex</tt>
+	 *        the last-known <code>Format</code> for the <code>PushBufferStream</code> at the specified
+	 *        <code>streamIndex</code>
 	 * @param newValue
-	 *        the <tt>Format</tt> which is to be set
-	 * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-	 *         <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-	 *         streams of this <tt>PushBufferStream</tt> or <tt>null</tt> if the attempt to set the
-	 *         <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in
+	 *        the <code>Format</code> which is to be set
+	 * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+	 *         <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+	 *         streams of this <code>PushBufferStream</code> or <code>null</code> if the attempt to set the
+	 *         <code>Format</code> did not success and any last-known <code>Format</code> is to be left in
 	 *         effect
 	 * @see AbstractPushBufferCaptureDevice#setFormat(int, Format, Format)
 	 */
@@ -412,10 +412,10 @@ public class DataSource extends AbstractVideoPushBufferCaptureDevice
 	}
 
 	/**
-	 * Sets the <tt>MediaLocator</tt> which specifies the media source of this <tt>DataSource</tt>.
+	 * Sets the <code>MediaLocator</code> which specifies the media source of this <code>DataSource</code>.
 	 *
 	 * @param locator
-	 *        the <tt>MediaLocator</tt> which specifies the media source of this <tt>DataSource</tt>
+	 *        the <code>MediaLocator</code> which specifies the media source of this <code>DataSource</code>
 	 * @see javax.media.protocol.DataSource#setLocator(MediaLocator)
 	 */
 	@Override

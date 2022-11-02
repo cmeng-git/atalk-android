@@ -31,13 +31,13 @@ public class OpenSLESSystem extends AudioSystem
     private static final long SL_DEFAULTDEVICEID_AUDIOINPUT = 0xFFFFFFFFL;
 
     /**
-     * The list of channels to be checked for support by <tt>OpenSLESAuto</tt> in descending order
+     * The list of channels to be checked for support by <code>OpenSLESAuto</code> in descending order
      * of preference.
      */
     private static final int[] SUPPORTED_CHANNELS = {1, 2};
 
     /**
-     * The list of sample sizes in bits to be checked for support by <tt>OpenSLESAuto</tt> in
+     * The list of sample sizes in bits to be checked for support by <code>OpenSLESAuto</code> in
      * descending order of preference.
      */
     private static final int[] SUPPORTED_SAMPLE_SIZES_IN_BITS = {16, 8};
@@ -47,7 +47,7 @@ public class OpenSLESSystem extends AudioSystem
     }
 
     /**
-     * Initializes a new <tt>OpenSLESSystem</tt> instance which discovers and registers OpenSL ES
+     * Initializes a new <code>OpenSLESSystem</code> instance which discovers and registers OpenSL ES
      * capture devices with FMJ.
      *
      * @throws Exception if anything goes wrong while discovering and registering OpenSL ES capture
@@ -148,7 +148,7 @@ public class OpenSLESSystem extends AudioSystem
     }
 
     /**
-     * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
+     * Returns the audio format for the <code>InputStream</code>. Or null if format cannot be obtained.
      *
      * @param audioInputStream the input stream.
      * @return the format of the audio stream.

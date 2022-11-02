@@ -18,7 +18,7 @@ public interface DesktopInteract
 	 * Capture the full desktop screen using native grabber.
 	 * <p>
 	 * Contrary to other captureScreen method, it only returns raw bytes and not
-	 * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+	 * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
 	 * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
 	 * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
 	 *
@@ -34,7 +34,7 @@ public interface DesktopInteract
 	 * Capture the full desktop screen using native grabber.
 	 * <p>
 	 * Contrary to other captureScreen method, it only returns raw bytes and not
-	 * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+	 * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
 	 * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
 	 * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
 	 *
@@ -52,7 +52,7 @@ public interface DesktopInteract
 	 * Capture a part of the desktop screen using native grabber.
 	 * <p>
 	 * Contrary to other captureScreen method, it only returns raw bytes and not
-	 * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+	 * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
 	 * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
 	 * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
 	 *
@@ -76,7 +76,7 @@ public interface DesktopInteract
 	 * Capture a part of the desktop screen using native grabber.
 	 * <p>
 	 * Contrary to other captureScreen method, it only returns raw bytes and not
-	 * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+	 * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
 	 * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
 	 * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
 	 *
@@ -102,7 +102,7 @@ public interface DesktopInteract
 	/**
 	 * Capture the full desktop screen.
 	 *
-	 * @return <tt>BufferedImage</tt> of the desktop screen
+	 * @return <code>BufferedImage</code> of the desktop screen
 	 */
 	public BufferedImage captureScreen();
 
@@ -117,7 +117,7 @@ public interface DesktopInteract
 	 * 		capture width
 	 * @param height
 	 * 		capture height
-	 * @return <tt>BufferedImage</tt> of a part of the desktop screen or null if <tt>Robot</tt>
+	 * @return <code>BufferedImage</code> of a part of the desktop screen or null if <code>Robot</code>
 	 * problem
 	 */
 	public BufferedImage captureScreen(int x, int y, int width, int height);

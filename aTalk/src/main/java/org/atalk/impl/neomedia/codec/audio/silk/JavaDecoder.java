@@ -16,7 +16,7 @@ import javax.media.format.AudioFormat;
 import timber.log.Timber;
 
 /**
- * Implements the SILK decoder as an FMJ/JMF <tt>Codec</tt>.
+ * Implements the SILK decoder as an FMJ/JMF <code>Codec</code>.
  *
  * @author Dingxin Xu
  * @author Boris Grozev
@@ -26,15 +26,15 @@ import timber.log.Timber;
 public class JavaDecoder extends AbstractCodec2
 {
     /**
-     * A private class, an instance of which is registered via <tt>addControl</tt>. This instance
+     * A private class, an instance of which is registered via <code>addControl</code>. This instance
      * will be used by outside classes to access decoder statistics.
      */
     private class Stats implements FECDecoderControl
     {
         /**
-         * Returns the number packets for which FEC data was decoded in <tt>JavaDecoder.this</tt>
+         * Returns the number packets for which FEC data was decoded in <code>JavaDecoder.this</code>
          *
-         * @return Returns the number packets for which FEC data was decoded in <tt>JavaDecoder.this</tt>
+         * @return Returns the number packets for which FEC data was decoded in <code>JavaDecoder.this</code>
          */
         public int fecPacketsDecoded()
         {
@@ -42,9 +42,9 @@ public class JavaDecoder extends AbstractCodec2
         }
 
         /**
-         * Stub. Always return <tt>null</tt>, as it's not used.
+         * Stub. Always return <code>null</code>, as it's not used.
          *
-         * @return <tt>null</tt>
+         * @return <code>null</code>
          */
         public Component getControlComponent()
         {
@@ -62,12 +62,12 @@ public class JavaDecoder extends AbstractCodec2
      */
     private static final int MAX_FRAMES_PER_PAYLOAD = 5;
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input by <tt>JavaDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input by <code>JavaDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_INPUT_FORMATS = JavaEncoder.SUPPORTED_OUTPUT_FORMATS;
 
     /**
-     * The list of <tt>Format</tt>s of audio data supported as output by <tt>JavaDecoder</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as output by <code>JavaDecoder</code> instances.
      */
     private static final Format[] SUPPORTED_OUTPUT_FORMATS = JavaEncoder.SUPPORTED_INPUT_FORMATS;
 
@@ -83,28 +83,28 @@ public class JavaDecoder extends AbstractCodec2
 
     /**
      * The length of an output frame as determined by {@link #FRAME_DURATION} and the
-     * <tt>inputFormat</tt> of this <tt>JavaDecoder</tt>.
+     * <code>inputFormat</code> of this <code>JavaDecoder</code>.
      */
     private short frameLength;
 
     /**
-     * The number of frames decoded from the last input <tt>Buffer</tt> which has not been consumed yet.
+     * The number of frames decoded from the last input <code>Buffer</code> which has not been consumed yet.
      */
     private int framesPerPayload;
 
     /**
-     * The sequence number of the last processed <tt>Buffer</tt>.
+     * The sequence number of the last processed <code>Buffer</code>.
      */
     private long lastSeqNo = Buffer.SEQUENCE_UNKNOWN;
 
     /**
-     * Temporary buffer used when decoding FEC. Defined here to avoid using <tt>new</tt> in <tt>doProcess</tt>.
+     * Temporary buffer used when decoding FEC. Defined here to avoid using <code>new</code> in <code>doProcess</code>.
      */
     private short[] lbrrBytes = new short[1];
 
     /**
      * Temporary buffer used to hold the lbrr data when decoding FEC. Defined here to avoid using
-     * <tt>new</tt> in <tt>doProcess</tt>.
+     * <code>new</code> in <code>doProcess</code>.
      */
     private byte[] lbrrData = new byte[JavaEncoder.MAX_BYTES_PER_FRAME];
 
@@ -136,7 +136,7 @@ public class JavaDecoder extends AbstractCodec2
     private final short[] outLength = new short[1];
 
     /**
-     * Initializes a new <tt>JavaDecoder</tt> instance.
+     * Initializes a new <code>JavaDecoder</code> instance.
      */
     public JavaDecoder()
     {

@@ -27,7 +27,7 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Constructs a new <tt>Packetizer</tt>.
+	 * Constructs a new <code>Packetizer</code>.
 	 */
 	public Packetizer()
 	{

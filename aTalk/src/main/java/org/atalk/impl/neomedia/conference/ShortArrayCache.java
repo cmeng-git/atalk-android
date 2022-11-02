@@ -10,14 +10,14 @@ import java.lang.ref.SoftReference;
 import javax.media.Buffer;
 
 /**
- * Caches <tt>short</tt> arrays for the purposes of reducing garbage collection.
+ * Caches <code>short</code> arrays for the purposes of reducing garbage collection.
  *
  * @author Lyubomir Marinov
  */
 class ShortArrayCache
 {
 	/**
-	 * The cache of <tt>short</tt> arrays managed by this instance for the purposes of reducing
+	 * The cache of <code>short</code> arrays managed by this instance for the purposes of reducing
 	 * garbage collection.
 	 */
 	private SoftReference<short[][]> elements;
@@ -29,13 +29,13 @@ class ShortArrayCache
 	private int length;
 
 	/**
-	 * Allocates a <tt>short</tt> array with length/size greater than or equal to a specific
+	 * Allocates a <code>short</code> array with length/size greater than or equal to a specific
 	 * number. The returned array may be a newly-initialized instance or one of the elements
 	 * cached/pooled by this instance.
 	 *
 	 * @param minSize
 	 * 		the minimum length/size of the array to be returned
-	 * @return a <tt>short</tt> array with length/size greater than or equal to <tt>minSize</tt>
+	 * @return a <code>short</code> array with length/size greater than or equal to <code>minSize</code>
 	 */
 	public synchronized short[] allocateShortArray(int minSize)
 	{
@@ -55,12 +55,12 @@ class ShortArrayCache
 	}
 
 	/**
-	 * Returns a specific non-<tt>null</tt> <tt>short</tt> array into the cache/pool implemented by
+	 * Returns a specific non-<code>null</code> <code>short</code> array into the cache/pool implemented by
 	 * this instance.
 	 *
 	 * @param shortArray
-	 * 		the <tt>short</tt> array to be returned into the cache/pool implemented by this
-	 * 		instance. If <tt>null</tt> , the method does nothing.
+	 * 		the <code>short</code> array to be returned into the cache/pool implemented by this
+	 * 		instance. If <code>null</code> , the method does nothing.
 	 */
 	public synchronized void deallocateShortArray(short[] shortArray)
 	{
@@ -115,16 +115,16 @@ class ShortArrayCache
 	}
 
 	/**
-	 * Ensures that the <tt>data</tt> property of a specific <tt>Buffer</tt> is set to an
-	 * <tt>short</tt> array with length/size greater than or equal to a specific number.
+	 * Ensures that the <code>data</code> property of a specific <code>Buffer</code> is set to an
+	 * <code>short</code> array with length/size greater than or equal to a specific number.
 	 *
 	 * @param buffer
-	 * 		the <tt>Buffer</tt> the <tt>data</tt> property of which is to be validated
+	 * 		the <code>Buffer</code> the <code>data</code> property of which is to be validated
 	 * @param newSize
-	 * 		the minimum length/size of the <tt>short</tt> array to be set as the value of the
-	 * 		<tt>data</tt> property of the specified <tt>buffer</tt> and to be returned
-	 * @return the value of the <tt>data</tt> property of the specified <tt>buffer</tt> which is
-	 * guaranteed to have a length/size of at least <tt>newSize</tt> elements
+	 * 		the minimum length/size of the <code>short</code> array to be set as the value of the
+	 * 		<code>data</code> property of the specified <code>buffer</code> and to be returned
+	 * @return the value of the <code>data</code> property of the specified <code>buffer</code> which is
+	 * guaranteed to have a length/size of at least <code>newSize</code> elements
 	 */
 	public short[] validateShortArraySize(Buffer buffer, int newSize)
 	{

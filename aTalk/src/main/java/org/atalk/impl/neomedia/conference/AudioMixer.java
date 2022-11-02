@@ -31,15 +31,15 @@ import timber.log.Timber;
  * Represents an audio mixer which manages the mixing of multiple audio streams i.e. it is able to
  * output a single audio stream which contains the audio of multiple input audio streams.
  * <p>
- * The input audio streams are provided to the <tt>AudioMixer</tt> through
- * {@link #addInDataSource(DataSource)} in the form of input <tt>DataSource</tt> s giving access to
- * one or more input <tt>SourceStreams</tt>.
+ * The input audio streams are provided to the <code>AudioMixer</code> through
+ * {@link #addInDataSource(DataSource)} in the form of input <code>DataSource</code> s giving access to
+ * one or more input <code>SourceStreams</code>.
  * </p>
  * <p>
  * The output audio stream representing the mix of the multiple input audio streams is provided by
- * the <tt>AudioMixer</tt> in the form of a <tt>AudioMixingPushBufferDataSource</tt> giving access
- * to a <tt>AudioMixingPushBufferStream</tt>. Such an output is obtained through
- * {@link #createOutDataSource()}. The <tt>AudioMixer</tt> is able to provide multiple output audio
+ * the <code>AudioMixer</code> in the form of a <code>AudioMixingPushBufferDataSource</code> giving access
+ * to a <code>AudioMixingPushBufferStream</code>. Such an output is obtained through
+ * {@link #createOutDataSource()}. The <code>AudioMixer</code> is able to provide multiple output audio
  * streams at one and the same time, though, each of them containing the mix of a subset of the
  * input audio streams.
  * </p>
@@ -50,8 +50,8 @@ import timber.log.Timber;
 public class AudioMixer
 {
     /**
-     * The default output <tt>AudioFormat</tt> in which <tt>AudioMixer</tt>,
-     * <tt>AudioMixingPushBufferDataSource</tt> and <tt>AudioMixingPushBufferStream</tt> output
+     * The default output <code>AudioFormat</code> in which <code>AudioMixer</code>,
+     * <code>AudioMixingPushBufferDataSource</code> and <code>AudioMixingPushBufferStream</code> output
      * audio.
      */
     private static final AudioFormat DEFAULT_OUTPUT_FORMAT = new AudioFormat(
@@ -72,12 +72,12 @@ public class AudioMixer
             AudioFormat.SIGNED);
 
     /**
-     * Gets the <tt>Format</tt> in which a specific <tt>DataSource</tt> provides stream data.
+     * Gets the <code>Format</code> in which a specific <code>DataSource</code> provides stream data.
      *
-     * @param dataSource the <tt>DataSource</tt> for which the <tt>Format</tt> in which it provides stream data
+     * @param dataSource the <code>DataSource</code> for which the <code>Format</code> in which it provides stream data
      * is to be determined
-     * @return the <tt>Format</tt> in which the specified <tt>dataSource</tt> provides stream data
-     * if it was determined; otherwise, <tt>null</tt>
+     * @return the <code>Format</code> in which the specified <code>dataSource</code> provides stream data
+     * if it was determined; otherwise, <code>null</code>
      */
     private static Format getFormat(DataSource dataSource)
     {
@@ -88,12 +88,12 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>Format</tt> in which a specific <tt>SourceStream</tt> provides data.
+     * Gets the <code>Format</code> in which a specific <code>SourceStream</code> provides data.
      *
-     * @param stream the <tt>SourceStream</tt> for which the <tt>Format</tt> in which it provides data is
+     * @param stream the <code>SourceStream</code> for which the <code>Format</code> in which it provides data is
      * to be determined
-     * @return the <tt>Format</tt> in which the specified <tt>SourceStream</tt> provides data if it
-     * was determined; otherwise, <tt>null</tt>
+     * @return the <code>Format</code> in which the specified <code>SourceStream</code> provides data if it
+     * was determined; otherwise, <code>null</code>
      */
     private static Format getFormat(SourceStream stream)
     {
@@ -105,49 +105,49 @@ public class AudioMixer
     }
 
     /**
-     * The <tt>BufferControl</tt> of this instance and, respectively, its
-     * <tt>AudioMixingPushBufferDataSource</tt>s.
+     * The <code>BufferControl</code> of this instance and, respectively, its
+     * <code>AudioMixingPushBufferDataSource</code>s.
      */
     private BufferControl bufferControl;
 
     /**
-     * The <tt>CaptureDevice</tt> capabilities provided by the
-     * <tt>AudioMixingPushBufferDataSource</tt>s created by this <tt>AudioMixer</tt> . JMF's
-     * <tt>Manager.createMergingDataSource(DataSource[])</tt> requires the interface implementation
+     * The <code>CaptureDevice</code> capabilities provided by the
+     * <code>AudioMixingPushBufferDataSource</code>s created by this <code>AudioMixer</code> . JMF's
+     * <code>Manager.createMergingDataSource(DataSource[])</code> requires the interface implementation
      * for audio if it is implemented for video and it is indeed the case for our use case of
-     * <tt>AudioMixingPushBufferDataSource</tt>.
+     * <code>AudioMixingPushBufferDataSource</code>.
      */
     protected final CaptureDevice captureDevice;
 
     /**
-     * The number of output <tt>AudioMixingPushBufferDataSource</tt>s reading from this
-     * <tt>AudioMixer</tt> which are connected. When the value is greater than zero, this
-     * <tt>AudioMixer</tt> is connected to the input <tt>DataSource</tt>s it manages.
+     * The number of output <code>AudioMixingPushBufferDataSource</code>s reading from this
+     * <code>AudioMixer</code> which are connected. When the value is greater than zero, this
+     * <code>AudioMixer</code> is connected to the input <code>DataSource</code>s it manages.
      */
     private int connected;
 
     /**
-     * The collection of input <tt>DataSource</tt>s this instance reads audio data from.
+     * The collection of input <code>DataSource</code>s this instance reads audio data from.
      */
     private final List<InDataSourceDesc> inDataSources = new ArrayList<>();
 
     /**
-     * The <tt>AudioMixingPushBufferDataSource</tt> which contains the mix of
-     * <tt>inDataSources</tt> excluding <tt>captureDevice</tt> and is thus meant for playback on
+     * The <code>AudioMixingPushBufferDataSource</code> which contains the mix of
+     * <code>inDataSources</code> excluding <code>captureDevice</code> and is thus meant for playback on
      * the local peer in a call.
      */
     private final AudioMixingPushBufferDataSource localOutDataSource;
 
     /**
-     * The output <tt>AudioMixerPushBufferStream</tt> through which this instance pushes audio
-     * sample data to <tt>AudioMixingPushBufferStream</tt> s to be mixed.
+     * The output <code>AudioMixerPushBufferStream</code> through which this instance pushes audio
+     * sample data to <code>AudioMixingPushBufferStream</code> s to be mixed.
      */
     private AudioMixerPushBufferStream outStream;
 
     /**
-     * The number of output <tt>AudioMixingPushBufferDataSource</tt>s reading from this
-     * <tt>AudioMixer</tt> which are started. When the value is greater than zero, this
-     * <tt>AudioMixer</tt> is started and so are the input <tt>DataSource</tt>s it manages.
+     * The number of output <code>AudioMixingPushBufferDataSource</code>s reading from this
+     * <code>AudioMixer</code> which are started. When the value is greater than zero, this
+     * <code>AudioMixer</code> is started and so are the input <code>DataSource</code>s it manages.
      */
     private int started;
 
@@ -158,17 +158,17 @@ public class AudioMixer
     private long startedGeneration;
 
     /**
-     * Initializes a new <tt>AudioMixer</tt> instance. Because JMF's
-     * <tt>Manager.createMergingDataSource(DataSource[])</tt> requires the implementation of
-     * <tt>CaptureDevice</tt> for audio if it is implemented for video and it is indeed the cause
-     * for our use case of <tt>AudioMixingPushBufferDataSource</tt>, the new <tt>AudioMixer</tt>
-     * instance provides specified <tt>CaptureDevice</tt> capabilities to the
-     * <tt>AudioMixingPushBufferDataSource</tt>s it creates. The specified <tt>CaptureDevice</tt> is
-     * also added as the first input <tt>DataSource</tt> of the new instance.
+     * Initializes a new <code>AudioMixer</code> instance. Because JMF's
+     * <code>Manager.createMergingDataSource(DataSource[])</code> requires the implementation of
+     * <code>CaptureDevice</code> for audio if it is implemented for video and it is indeed the cause
+     * for our use case of <code>AudioMixingPushBufferDataSource</code>, the new <code>AudioMixer</code>
+     * instance provides specified <code>CaptureDevice</code> capabilities to the
+     * <code>AudioMixingPushBufferDataSource</code>s it creates. The specified <code>CaptureDevice</code> is
+     * also added as the first input <code>DataSource</code> of the new instance.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> capabilities to be provided to the
-     * <tt>AudioMixingPushBufferDataSource</tt>s created by the new instance and its first
-     * input <tt>DataSource</tt>
+     * @param captureDevice the <code>CaptureDevice</code> capabilities to be provided to the
+     * <code>AudioMixingPushBufferDataSource</code>s created by the new instance and its first
+     * input <code>DataSource</code>
      */
     public AudioMixer(CaptureDevice captureDevice)
     {
@@ -192,11 +192,11 @@ public class AudioMixer
     }
 
     /**
-     * Adds a new input <tt>DataSource</tt> to the collection of input <tt>DataSource</tt>s from
-     * which this instance reads audio. If the specified <tt>DataSource</tt> indeed provides audio,
+     * Adds a new input <code>DataSource</code> to the collection of input <code>DataSource</code>s from
+     * which this instance reads audio. If the specified <code>DataSource</code> indeed provides audio,
      * the respective contributions to the mix are always included.
      *
-     * @param inDataSource a new <tt>DataSource</tt> to input audio to this instance
+     * @param inDataSource a new <code>DataSource</code> to input audio to this instance
      */
     public void addInDataSource(DataSource inDataSource)
     {
@@ -204,14 +204,14 @@ public class AudioMixer
     }
 
     /**
-     * Adds a new input <tt>DataSource</tt> to the collection of input <tt>DataSource</tt>s from
-     * which this instance reads audio. If the specified <tt>DataSource</tt> indeed provides audio,
+     * Adds a new input <code>DataSource</code> to the collection of input <code>DataSource</code>s from
+     * which this instance reads audio. If the specified <code>DataSource</code> indeed provides audio,
      * the respective contributions to the mix will be excluded from the mix output provided
-     * through a specific <tt>AudioMixingPushBufferDataSource</tt>.
+     * through a specific <code>AudioMixingPushBufferDataSource</code>.
      *
-     * @param inDataSource a new <tt>DataSource</tt> to input audio to this instance
-     * @param outDataSource the <tt>AudioMixingPushBufferDataSource</tt> to not include the audio contributions of
-     * <tt>inDataSource</tt> in the mix it outputs
+     * @param inDataSource a new <code>DataSource</code> to input audio to this instance
+     * @param outDataSource the <code>AudioMixingPushBufferDataSource</code> to not include the audio contributions of
+     * <code>inDataSource</code> in the mix it outputs
      */
     void addInDataSource(DataSource inDataSource, AudioMixingPushBufferDataSource outDataSource)
     {
@@ -260,10 +260,10 @@ public class AudioMixer
     }
 
     /**
-     * Notifies this <tt>AudioMixer</tt> that an output <tt>AudioMixingPushBufferDataSource</tt>
+     * Notifies this <code>AudioMixer</code> that an output <code>AudioMixingPushBufferDataSource</code>
      * reading from it has been connected. The first of the many
-     * <tt>AudioMixingPushBufferDataSource</tt> s reading from this <tt>AudioMixer</tt> which gets
-     * connected causes it to connect to the input <tt>DataSource</tt>s it manages.
+     * <code>AudioMixingPushBufferDataSource</code> s reading from this <code>AudioMixer</code> which gets
+     * connected causes it to connect to the input <code>DataSource</code>s it manages.
      *
      * @throws IOException if input/output error occurred
      */
@@ -295,16 +295,16 @@ public class AudioMixer
     }
 
     /**
-     * Connects to a specific <tt>DataSource</tt> which this <tt>AudioMixer<tt>
-     * will read audio from. The specified <tt>DataSource</tt> is known to exist because of a
-     * specific <tt>DataSource</tt> added as an input to this instance i.e. it may be an actual
-     * input <tt>DataSource</tt> added to this instance or a <tt>DataSource</tt> transcoding an
-     * input <tt>DataSource</tt> added to this instance.
+     * Connects to a specific <code>DataSource</code> which this <code>AudioMixer<code>
+     * will read audio from. The specified <code>DataSource</code> is known to exist because of a
+     * specific <code>DataSource</code> added as an input to this instance i.e. it may be an actual
+     * input <code>DataSource</code> added to this instance or a <code>DataSource</code> transcoding an
+     * input <code>DataSource</code> added to this instance.
      *
-     * @param dataSource the <tt>DataSource</tt> to connect to
-     * @param inDataSource the <tt>DataSource</tt> which is the cause for <tt>dataSource</tt> to exist in this
-     * <tt>AudioMixer</tt>
-     * @throws IOException if anything wrong happens while connecting to <tt>dataSource</tt>
+     * @param dataSource the <code>DataSource</code> to connect to
+     * @param inDataSource the <code>DataSource</code> which is the cause for <code>dataSource</code> to exist in this
+     * <code>AudioMixer</code>
+     * @throws IOException if anything wrong happens while connecting to <code>dataSource</code>
      */
     protected void connect(DataSource dataSource, DataSource inDataSource)
             throws IOException
@@ -313,14 +313,14 @@ public class AudioMixer
     }
 
     /**
-     * Notifies this <tt>AudioMixer</tt> that a specific input <tt>DataSource</tt> has finished its
-     * connecting procedure. Primarily meant for input <tt>DataSource</tt> which have their
-     * connecting executed in a separate thread as are, for example, input <tt>DataSource</tt>s
+     * Notifies this <code>AudioMixer</code> that a specific input <code>DataSource</code> has finished its
+     * connecting procedure. Primarily meant for input <code>DataSource</code> which have their
+     * connecting executed in a separate thread as are, for example, input <code>DataSource</code>s
      * which are being transcoded.
      *
-     * @param inDataSource the <tt>InDataSourceDesc</tt> of the input <tt>DataSource</tt> which has finished its
+     * @param inDataSource the <code>InDataSourceDesc</code> of the input <code>DataSource</code> which has finished its
      * connecting procedure
-     * @throws IOException if anything wrong happens while including <tt>inDataSource</tt> into the mix
+     * @throws IOException if anything wrong happens while including <code>inDataSource</code> into the mix
      */
     void connected(InDataSourceDesc inDataSource)
             throws IOException
@@ -336,15 +336,15 @@ public class AudioMixer
     }
 
     /**
-     * Creates a new <tt>InStreamDesc</tt> instance which is to describe a specific input
-     * <tt>SourceStream</tt> originating from a specific input <tt>DataSource</tt> given by its
-     * <tt>InDataSourceDesc</tt>.
+     * Creates a new <code>InStreamDesc</code> instance which is to describe a specific input
+     * <code>SourceStream</code> originating from a specific input <code>DataSource</code> given by its
+     * <code>InDataSourceDesc</code>.
      *
-     * @param inStream the input <tt>SourceStream</tt> to be described by the new instance
-     * @param inDataSourceDesc the input <tt>DataSource</tt> given by its <tt>InDataSourceDesc</tt> to be described
+     * @param inStream the input <code>SourceStream</code> to be described by the new instance
+     * @param inDataSourceDesc the input <code>DataSource</code> given by its <code>InDataSourceDesc</code> to be described
      * by the new instance
-     * @return a new <tt>InStreamDesc</tt> instance which describes the specified input
-     * <tt>SourceStream</tt> and <tt>DataSource</tt>
+     * @return a new <code>InStreamDesc</code> instance which describes the specified input
+     * <code>SourceStream</code> and <code>DataSource</code>
      */
     private InStreamDesc createInStreamDesc(SourceStream inStream, InDataSourceDesc inDataSourceDesc)
     {
@@ -352,16 +352,16 @@ public class AudioMixer
     }
 
     /**
-     * Creates a new <tt>AudioMixingPushBufferDataSource</tt> which gives access to a single audio
-     * stream representing the mix of the audio streams input into this <tt>AudioMixer</tt> through
-     * its input <tt>DataSource</tt>s. The returned <tt>AudioMixingPushBufferDataSource</tt> can
-     * also be used to include new input <tt>DataSources</tt> in this <tt>AudioMixer</tt> but have
+     * Creates a new <code>AudioMixingPushBufferDataSource</code> which gives access to a single audio
+     * stream representing the mix of the audio streams input into this <code>AudioMixer</code> through
+     * its input <code>DataSource</code>s. The returned <code>AudioMixingPushBufferDataSource</code> can
+     * also be used to include new input <code>DataSources</code> in this <code>AudioMixer</code> but have
      * their contributions not included in the mix available through the returned
-     * <tt>AudioMixingPushBufferDataSource</tt>.
+     * <code>AudioMixingPushBufferDataSource</code>.
      *
-     * @return a new <tt>AudioMixingPushBufferDataSource</tt> which gives access to a single audio
-     * stream representing the mix of the audio streams input into this <tt>AudioMixer</tt>
-     * through its input <tt>DataSource</tt>s
+     * @return a new <code>AudioMixingPushBufferDataSource</code> which gives access to a single audio
+     * stream representing the mix of the audio streams input into this <code>AudioMixer</code>
+     * through its input <code>DataSource</code>s
      */
     public AudioMixingPushBufferDataSource createOutDataSource()
     {
@@ -369,17 +369,17 @@ public class AudioMixer
     }
 
     /**
-     * Creates a <tt>DataSource</tt> which attempts to transcode the tracks of a specific input
-     * <tt>DataSource</tt> into a specific output <tt>Format</tt> .
+     * Creates a <code>DataSource</code> which attempts to transcode the tracks of a specific input
+     * <code>DataSource</code> into a specific output <code>Format</code> .
      *
-     * @param inDataSourceDesc the <tt>InDataSourceDesc</tt> describing the input <tt>DataSource</tt> to be
-     * transcoded into the specified output <tt>Format</tt> and to receive the transcoding
-     * <tt>DataSource</tt>
-     * @param outFormat the <tt>Format</tt> in which the tracks of the input <tt>DataSource</tt> are to be
+     * @param inDataSourceDesc the <code>InDataSourceDesc</code> describing the input <code>DataSource</code> to be
+     * transcoded into the specified output <code>Format</code> and to receive the transcoding
+     * <code>DataSource</code>
+     * @param outFormat the <code>Format</code> in which the tracks of the input <code>DataSource</code> are to be
      * transcoded
-     * @return <tt>true</tt> if a new transcoding <tt>DataSource</tt> has been created for the
-     * input <tt>DataSource</tt> described by <tt>inDataSourceDesc</tt>; otherwise, <tt>false</tt>
-     * @throws IOException if an error occurs while creating the transcoding <tt>DataSource</tt>, connecting to
+     * @return <code>true</code> if a new transcoding <code>DataSource</code> has been created for the
+     * input <code>DataSource</code> described by <code>inDataSourceDesc</code>; otherwise, <code>false</code>
+     * @throws IOException if an error occurs while creating the transcoding <code>DataSource</code>, connecting to
      * it or staring it
      */
     private boolean createTranscodingDataSource(InDataSourceDesc inDataSourceDesc, Format outFormat)
@@ -397,10 +397,10 @@ public class AudioMixer
     }
 
     /**
-     * Notifies this <tt>AudioMixer</tt> that an output <tt>AudioMixingPushBufferDataSource</tt>
+     * Notifies this <code>AudioMixer</code> that an output <code>AudioMixingPushBufferDataSource</code>
      * reading from it has been disconnected. The last of the many
-     * <tt>AudioMixingPushBufferDataSource</tt>s reading from this <tt>AudioMixer</tt> which gets
-     * disconnected causes it to disconnect from the input <tt>DataSource</tt>s it manages.
+     * <code>AudioMixingPushBufferDataSource</code>s reading from this <code>AudioMixer</code> which gets
+     * disconnected causes it to disconnect from the input <code>DataSource</code>s it manages.
      */
     void disconnect()
     {
@@ -428,12 +428,12 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>BufferControl</tt> of this instance and, respectively, its
-     * <tt>AudioMixingPushBufferDataSource</tt> s.
+     * Gets the <code>BufferControl</code> of this instance and, respectively, its
+     * <code>AudioMixingPushBufferDataSource</code> s.
      *
-     * @return the <tt>BufferControl</tt> of this instance and, respectively, its
-     * <tt>AudioMixingPushBufferDataSource</tt>s if such a control is available for the
-     * <tt>CaptureDevice</tt> of this instance; otherwise, <tt>null</tt>
+     * @return the <code>BufferControl</code> of this instance and, respectively, its
+     * <code>AudioMixingPushBufferDataSource</code>s if such a control is available for the
+     * <code>CaptureDevice</code> of this instance; otherwise, <code>null</code>
      */
     BufferControl getBufferControl()
     {
@@ -448,11 +448,11 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> this <tt>AudioMixer</tt>
-     * provides through its output <tt>AudioMixingPushBufferDataSource</tt>s.
+     * Gets the <code>CaptureDeviceInfo</code> of the <code>CaptureDevice</code> this <code>AudioMixer</code>
+     * provides through its output <code>AudioMixingPushBufferDataSource</code>s.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of the <tt>CaptureDevice</tt> this
-     * <tt>AudioMixer</tt> provides through its output <tt>AudioMixingPushBufferDataSource</tt>s
+     * @return the <code>CaptureDeviceInfo</code> of the <code>CaptureDevice</code> this
+     * <code>AudioMixer</code> provides through its output <code>AudioMixingPushBufferDataSource</code>s
      */
     CaptureDeviceInfo getCaptureDeviceInfo()
     {
@@ -460,9 +460,9 @@ public class AudioMixer
     }
 
     /**
-     * Gets the content type of the data output by this <tt>AudioMixer</tt>.
+     * Gets the content type of the data output by this <code>AudioMixer</code>.
      *
-     * @return the content type of the data output by this <tt>AudioMixer</tt>
+     * @return the content type of the data output by this <code>AudioMixer</code>
      */
     String getContentType()
     {
@@ -470,9 +470,9 @@ public class AudioMixer
     }
 
     /**
-     * Gets the duration of each one of the output streams produced by this <tt>AudioMixer</tt>.
+     * Gets the duration of each one of the output streams produced by this <code>AudioMixer</code>.
      *
-     * @return the duration of each one of the output streams produced by this <tt>AudioMixer</tt>
+     * @return the duration of each one of the output streams produced by this <code>AudioMixer</code>
      */
     Time getDuration()
     {
@@ -480,16 +480,16 @@ public class AudioMixer
     }
 
     /**
-     * Gets an <tt>InStreamDesc</tt> from a specific existing list of <tt>InStreamDesc</tt>s which
-     * describes a specific <tt>SourceStream</tt>. If such an <tt>InStreamDesc</tt> does not exist,
-     * returns <tt>null</tt>.
+     * Gets an <code>InStreamDesc</code> from a specific existing list of <code>InStreamDesc</code>s which
+     * describes a specific <code>SourceStream</code>. If such an <code>InStreamDesc</code> does not exist,
+     * returns <code>null</code>.
      *
-     * @param inStream the <tt>SourceStream</tt> to locate an <tt>InStreamDesc</tt> for in
-     * <tt>existingInStreamDescs</tt>
-     * @param existingInStreamDescs the list of existing <tt>InStreamDesc</tt>s in which an <tt>InStreamDesc</tt> for
-     * <tt>inStream</tt> is to be located
-     * @return an <tt>InStreamDesc</tt> from <tt>existingInStreamDescs</tt> which describes
-     * <tt>inStream</tt> if such an <tt>InStreamDesc</tt> exists; otherwise, <tt>null</tt>
+     * @param inStream the <code>SourceStream</code> to locate an <code>InStreamDesc</code> for in
+     * <code>existingInStreamDescs</code>
+     * @param existingInStreamDescs the list of existing <code>InStreamDesc</code>s in which an <code>InStreamDesc</code> for
+     * <code>inStream</code> is to be located
+     * @return an <code>InStreamDesc</code> from <code>existingInStreamDescs</code> which describes
+     * <code>inStream</code> if such an <code>InStreamDesc</code> exists; otherwise, <code>null</code>
      */
     private InStreamDesc getExistingInStreamDesc(SourceStream inStream,
             InStreamDesc[] existingInStreamDescs)
@@ -513,12 +513,12 @@ public class AudioMixer
     }
 
     /**
-     * Gets an array of <tt>FormatControl</tt>s for the <tt>CaptureDevice</tt> this
-     * <tt>AudioMixer</tt> provides through its output <tt>AudioMixingPushBufferDataSource</tt>s.
+     * Gets an array of <code>FormatControl</code>s for the <code>CaptureDevice</code> this
+     * <code>AudioMixer</code> provides through its output <code>AudioMixingPushBufferDataSource</code>s.
      *
-     * @return an array of <tt>FormatControl</tt>s for the <tt>CaptureDevice</tt> this
-     * <tt>AudioMixer</tt> provides through its output
-     * <tt>AudioMixingPushBufferDataSource</tt>s
+     * @return an array of <code>FormatControl</code>s for the <code>CaptureDevice</code> this
+     * <code>AudioMixer</code> provides through its output
+     * <code>AudioMixingPushBufferDataSource</code>s
      */
     FormatControl[] getFormatControls()
     {
@@ -537,23 +537,23 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) of a specific
-     * <tt>DataSource</tt> (provided in the form of <tt>InDataSourceDesc</tt>) which produce
-     * data in a specific <tt>AudioFormat</tt> (or a matching one).
+     * Gets the <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>) of a specific
+     * <code>DataSource</code> (provided in the form of <code>InDataSourceDesc</code>) which produce
+     * data in a specific <code>AudioFormat</code> (or a matching one).
      *
-     * @param inDataSourceDesc the <tt>DataSource</tt> (in the form of <tt>InDataSourceDesc</tt>) which is to be
-     * examined for <tt>SourceStreams</tt> producing data in the specified
-     * <tt>AudioFormat</tt>
-     * @param outFormat the <tt>AudioFormat</tt> in which the collected <tt>SourceStream</tt>s are to produce
+     * @param inDataSourceDesc the <code>DataSource</code> (in the form of <code>InDataSourceDesc</code>) which is to be
+     * examined for <code>SourceStreams</code> producing data in the specified
+     * <code>AudioFormat</code>
+     * @param outFormat the <code>AudioFormat</code> in which the collected <code>SourceStream</code>s are to produce
      * data
-     * @param existingInStreams the <tt>InStreamDesc</tt> instances which already exist and which are used to avoid
-     * creating multiple <tt>InStreamDesc</tt>s for input <tt>SourceStream</tt>s which
+     * @param existingInStreams the <code>InStreamDesc</code> instances which already exist and which are used to avoid
+     * creating multiple <code>InStreamDesc</code>s for input <code>SourceStream</code>s which
      * already have ones
-     * @param inStreams the <tt>List</tt> of <tt>InStreamDesc</tt> in which the discovered
-     * <tt>SourceStream</tt>s are to be returned
-     * @return <tt>true</tt> if <tt>SourceStream</tt>s produced by the specified input
-     * <tt>DataSource</tt> and outputting data in the specified <tt>AudioFormat</tt> were
-     * discovered and reported in <tt>inStreams</tt>; otherwise, <tt>false</tt>
+     * @param inStreams the <code>List</code> of <code>InStreamDesc</code> in which the discovered
+     * <code>SourceStream</code>s are to be returned
+     * @return <code>true</code> if <code>SourceStream</code>s produced by the specified input
+     * <code>DataSource</code> and outputting data in the specified <code>AudioFormat</code> were
+     * discovered and reported in <code>inStreams</code>; otherwise, <code>false</code>
      */
     private boolean getInStreamsFromInDataSource(InDataSourceDesc inDataSourceDesc,
             AudioFormat outFormat, InStreamDesc[] existingInStreams, List<InStreamDesc> inStreams)
@@ -613,20 +613,20 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>) of the
-     * <tt>DataSource</tt>s from which this <tt>AudioMixer</tt> reads data which produce data in a
-     * specific <tt>AudioFormat</tt>. When an input <tt>DataSource</tt> does not have such
-     * <tt>SourceStream</tt>s, an attempt is made to transcode its tracks so that such
-     * <tt>SourceStream</tt>s can be retrieved from it after transcoding.
+     * Gets the <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>) of the
+     * <code>DataSource</code>s from which this <code>AudioMixer</code> reads data which produce data in a
+     * specific <code>AudioFormat</code>. When an input <code>DataSource</code> does not have such
+     * <code>SourceStream</code>s, an attempt is made to transcode its tracks so that such
+     * <code>SourceStream</code>s can be retrieved from it after transcoding.
      *
-     * @param outFormat the <tt>AudioFormat</tt> in which the retrieved <tt>SourceStream</tt>s are to produce
+     * @param outFormat the <code>AudioFormat</code> in which the retrieved <code>SourceStream</code>s are to produce
      * data
-     * @param existingInStreams the <tt>SourceStream</tt>s which are already known to this <tt>AudioMixer</tt>
-     * @return a new collection of <tt>SourceStream</tt>s (in the form of <tt>InStreamDesc</tt>)
-     * retrieved from the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt> and
-     * producing data in the specified <tt>AudioFormat</tt>
-     * @throws IOException if anything wrong goes while retrieving the input <tt>SourceStream</tt>s from the
-     * input <tt>DataSource</tt>s
+     * @param existingInStreams the <code>SourceStream</code>s which are already known to this <code>AudioMixer</code>
+     * @return a new collection of <code>SourceStream</code>s (in the form of <code>InStreamDesc</code>)
+     * retrieved from the input <code>DataSource</code>s of this <code>AudioMixer</code> and
+     * producing data in the specified <code>AudioFormat</code>
+     * @throws IOException if anything wrong goes while retrieving the input <code>SourceStream</code>s from the
+     * input <code>DataSource</code>s
      */
     private Collection<InStreamDesc> getInStreamsFromInDataSources(AudioFormat outFormat,
             InStreamDesc[] existingInStreams)
@@ -648,12 +648,12 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>AudioMixingPushBufferDataSource</tt> containing the mix of all input
-     * <tt>DataSource</tt>s excluding the <tt>CaptureDevice</tt> of this <tt>AudioMixer</tt> and is
+     * Gets the <code>AudioMixingPushBufferDataSource</code> containing the mix of all input
+     * <code>DataSource</code>s excluding the <code>CaptureDevice</code> of this <code>AudioMixer</code> and is
      * thus meant for playback on the local peer in a call.
      *
-     * @return the <tt>AudioMixingPushBufferDataSource</tt> containing the mix of all input
-     * <tt>DataSource</tt>s excluding the <tt>CaptureDevice</tt> of this <tt>AudioMixer</tt>
+     * @return the <code>AudioMixingPushBufferDataSource</code> containing the mix of all input
+     * <code>DataSource</code>s excluding the <code>CaptureDevice</code> of this <code>AudioMixer</code>
      * and is thus meant for playback on the local peer in a call
      */
     public AudioMixingPushBufferDataSource getLocalOutDataSource()
@@ -662,13 +662,13 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>AudioFormat</tt> in which the input <tt>DataSource</tt>s of this
-     * <tt>AudioMixer</tt> can produce data and which is to be the output <tt>Format</tt> of this
-     * <tt>AudioMixer</tt>.
+     * Gets the <code>AudioFormat</code> in which the input <code>DataSource</code>s of this
+     * <code>AudioMixer</code> can produce data and which is to be the output <code>Format</code> of this
+     * <code>AudioMixer</code>.
      *
-     * @return the <tt>AudioFormat</tt> in which the input <tt>DataSource</tt>s of this
-     * <tt>AudioMixer</tt> can produce data and which is to be the output <tt>Format</tt> of
-     * this <tt>AudioMixer</tt>
+     * @return the <code>AudioFormat</code> in which the input <code>DataSource</code>s of this
+     * <code>AudioMixer</code> can produce data and which is to be the output <code>Format</code> of
+     * this <code>AudioMixer</code>
      */
     private AudioFormat getOutFormatFromInDataSources()
     {
@@ -715,13 +715,13 @@ public class AudioMixer
     }
 
     /**
-     * Gets the <tt>AudioMixerPushBufferStream</tt>, first creating it if it does not exist
-     * already, which reads data from the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt>
-     * and pushes it to output <tt>AudioMixingPushBufferStream</tt>s for audio mixing.
+     * Gets the <code>AudioMixerPushBufferStream</code>, first creating it if it does not exist
+     * already, which reads data from the input <code>DataSource</code>s of this <code>AudioMixer</code>
+     * and pushes it to output <code>AudioMixingPushBufferStream</code>s for audio mixing.
      *
-     * @return the <tt>AudioMixerPushBufferStream</tt> which reads data from the input
-     * <tt>DataSource</tt>s of this <tt>AudioMixer</tt> and pushes it to output
-     * <tt>AudioMixingPushBufferStream</tt>s for audio mixing
+     * @return the <code>AudioMixerPushBufferStream</code> which reads data from the input
+     * <code>DataSource</code>s of this <code>AudioMixer</code> and pushes it to output
+     * <code>AudioMixingPushBufferStream</code>s for audio mixing
      */
     AudioMixerPushBufferStream getOutStream()
     {
@@ -752,14 +752,14 @@ public class AudioMixer
     }
 
     /**
-     * Searches this object's <tt>inDataSource</tt>s for one that matches <tt>inDataSource</tt>,
-     * and returns it's associated <tt>TranscodingDataSource</tt>. Currently this is only used
-     * when the <tt>MediaStream</tt> needs access to the codec chain used to playback one of it's
-     * <tt>ReceiveStream</tt>s.
+     * Searches this object's <code>inDataSource</code>s for one that matches <code>inDataSource</code>,
+     * and returns it's associated <code>TranscodingDataSource</code>. Currently this is only used
+     * when the <code>MediaStream</code> needs access to the codec chain used to playback one of it's
+     * <code>ReceiveStream</code>s.
      *
-     * @param inDataSource the <tt>DataSource</tt> to search for.
-     * @return The <tt>TranscodingDataSource</tt> associated with <tt>inDataSource</tt>, if we can
-     * find one, <tt>null</tt> otherwise.
+     * @param inDataSource the <code>DataSource</code> to search for.
+     * @return The <code>TranscodingDataSource</code> associated with <code>inDataSource</code>, if we can
+     * find one, <code>null</code> otherwise.
      */
     public TranscodingDataSource getTranscodingDataSource(DataSource inDataSource)
     {
@@ -779,17 +779,17 @@ public class AudioMixer
     }
 
     /**
-     * Determines whether a specific <tt>Format</tt> matches a specific <tt>Format</tt> in the
-     * sense of JMF <tt>Format</tt> matching. Since this <tt>AudioMixer</tt> and the audio mixing
+     * Determines whether a specific <code>Format</code> matches a specific <code>Format</code> in the
+     * sense of JMF <code>Format</code> matching. Since this <code>AudioMixer</code> and the audio mixing
      * functionality related to it can handle varying characteristics of a certain output
-     * <tt>Format</tt>, the only requirement for the specified <tt>Format</tt>s to match is for
+     * <code>Format</code>, the only requirement for the specified <code>Format</code>s to match is for
      * both of them to have one and the same encoding.
      *
-     * @param input the <tt>Format</tt> for which it is required to determine whether it matches a
-     * specific <tt>Format</tt>
-     * @param pattern the <tt>Format</tt> against which the specified <tt>input</tt> is to be matched
-     * @return <tt>true</tt> if the specified <tt>input<tt> matches the specified
-     * <tt>pattern</tt> in the sense of JMF <tt>Format</tt> matching; otherwise, <tt>false</tt>
+     * @param input the <code>Format</code> for which it is required to determine whether it matches a
+     * specific <code>Format</code>
+     * @param pattern the <code>Format</code> against which the specified <code>input</code> is to be matched
+     * @return <code>true</code> if the specified <code>input<code> matches the specified
+     * <code>pattern</code> in the sense of JMF <code>Format</code> matching; otherwise, <code>false</code>
      */
     private boolean matches(Format input, AudioFormat pattern)
     {
@@ -797,16 +797,16 @@ public class AudioMixer
     }
 
     /**
-     * Reads media from a specific <tt>PushBufferStream</tt> which belongs to a specific
-     * <tt>DataSource</tt> into a specific output <tt>Buffer</tt>. Allows extenders to tap into the
+     * Reads media from a specific <code>PushBufferStream</code> which belongs to a specific
+     * <code>DataSource</code> into a specific output <code>Buffer</code>. Allows extenders to tap into the
      * reading and monitor and customize it.
      *
-     * @param stream the <tt>PushBufferStream</tt> to read media from and known to belong to the specified
-     * <tt>DataSOurce</tt>
-     * @param buffer the output <tt>Buffer</tt> in which the media read from the specified <tt>stream</tt>
+     * @param stream the <code>PushBufferStream</code> to read media from and known to belong to the specified
+     * <code>DataSOurce</code>
+     * @param buffer the output <code>Buffer</code> in which the media read from the specified <code>stream</code>
      * is to be written so that it gets returned to the caller
-     * @param dataSource the <tt>DataSource</tt> from which <tt>stream</tt> originated
-     * @throws IOException if anything wrong happens while reading from the specified <tt>stream</tt>
+     * @param dataSource the <code>DataSource</code> from which <code>stream</code> originated
+     * @throws IOException if anything wrong happens while reading from the specified <code>stream</code>
      */
     protected void read(PushBufferStream stream, Buffer buffer, DataSource dataSource)
             throws IOException
@@ -815,12 +815,12 @@ public class AudioMixer
     }
 
     /**
-     * Removes <tt>DataSource</tt>s accepted by a specific <tt>DataSourceFilter</tt> from the list
-     * of input <tt>DataSource</tt>s of this <tt>AudioMixer</tt> from which it reads audio to be
+     * Removes <code>DataSource</code>s accepted by a specific <code>DataSourceFilter</code> from the list
+     * of input <code>DataSource</code>s of this <code>AudioMixer</code> from which it reads audio to be
      * mixed.
      *
-     * @param dataSourceFilter the <tt>DataSourceFilter</tt> which selects the <tt>DataSource</tt>s to be removed
-     * from the list of input <tt>DataSource</tt>s of this <tt>AudioMixer</tt> from which it
+     * @param dataSourceFilter the <code>DataSourceFilter</code> which selects the <code>DataSource</code>s to be removed
+     * from the list of input <code>DataSource</code>s of this <code>AudioMixer</code> from which it
      * reads audio to be mixed
      */
     public void removeInDataSources(DataSourceFilter dataSourceFilter)
@@ -849,12 +849,12 @@ public class AudioMixer
     }
 
     /**
-     * Sets a specific <tt>AudioFormat</tt>, if possible, as the output format of the input
-     * <tt>DataSource</tt>s of this <tt>AudioMixer</tt> in an attempt to not have to perform
-     * explicit transcoding of the input <tt>SourceStream</tt> s.
+     * Sets a specific <code>AudioFormat</code>, if possible, as the output format of the input
+     * <code>DataSource</code>s of this <code>AudioMixer</code> in an attempt to not have to perform
+     * explicit transcoding of the input <code>SourceStream</code> s.
      *
-     * @param outFormat the <tt>AudioFormat</tt> in which the input <tt>DataSource</tt>s of this
-     * <tt>AudioMixer</tt> are to be instructed to output
+     * @param outFormat the <code>AudioFormat</code> in which the input <code>DataSource</code>s of this
+     * <code>AudioMixer</code> are to be instructed to output
      */
     private void setOutFormatToInDataSources(AudioFormat outFormat)
     {
@@ -884,17 +884,17 @@ public class AudioMixer
     }
 
     /**
-     * Starts the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt>.
+     * Starts the input <code>DataSource</code>s of this <code>AudioMixer</code>.
      *
-     * @param outStream the <tt>AudioMixerPushBufferStream</tt> which requests this <tt>AudioMixer</tt> to
-     * start. If <tt>outStream</tt> is the current one and only
-     * <tt>AudioMixerPushBufferStream</tt> of this <tt>AudioMixer</tt>, this
-     * <tt>AudioMixer</tt> starts if it hasn't started yet. Otherwise, the request is ignored.
-     * @param generation a value generated by <tt>outStream</tt> indicating the order of the invocations of the
-     * <tt>start</tt> and <tt>stop</tt> methods performed by <tt>outStream</tt> allowing it
+     * @param outStream the <code>AudioMixerPushBufferStream</code> which requests this <code>AudioMixer</code> to
+     * start. If <code>outStream</code> is the current one and only
+     * <code>AudioMixerPushBufferStream</code> of this <code>AudioMixer</code>, this
+     * <code>AudioMixer</code> starts if it hasn't started yet. Otherwise, the request is ignored.
+     * @param generation a value generated by <code>outStream</code> indicating the order of the invocations of the
+     * <code>start</code> and <code>stop</code> methods performed by <code>outStream</code> allowing it
      * to execute the said methods outside synchronized blocks for the purposes of reducing
      * deadlock risks
-     * @throws IOException if any of the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt> throws such an
+     * @throws IOException if any of the input <code>DataSource</code>s of this <code>AudioMixer</code> throws such an
      * exception while attempting to start it
      */
     void start(AudioMixerPushBufferStream outStream, long generation)
@@ -927,17 +927,17 @@ public class AudioMixer
     }
 
     /**
-     * Stops the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt>.
+     * Stops the input <code>DataSource</code>s of this <code>AudioMixer</code>.
      *
-     * @param outStream the <tt>AudioMixerPushBufferStream</tt> which requests this <tt>AudioMixer</tt> to
-     * stop. If <tt>outStream</tt> is the current one and only
-     * <tt>AudioMixerPushBufferStream</tt> of this <tt>AudioMixer</tt>, this
-     * <tt>AudioMixer</tt> stops. Otherwise, the request is ignored.
-     * @param generation a value generated by <tt>outStream</tt> indicating the order of the invocations of the
-     * <tt>start</tt> and <tt>stop</tt> methods performed by <tt>outStream</tt> allowing it
+     * @param outStream the <code>AudioMixerPushBufferStream</code> which requests this <code>AudioMixer</code> to
+     * stop. If <code>outStream</code> is the current one and only
+     * <code>AudioMixerPushBufferStream</code> of this <code>AudioMixer</code>, this
+     * <code>AudioMixer</code> stops. Otherwise, the request is ignored.
+     * @param generation a value generated by <code>outStream</code> indicating the order of the invocations of the
+     * <code>start</code> and <code>stop</code> methods performed by <code>outStream</code> allowing it
      * to execute the said methods outside synchronized blocks for the purposes of reducing
      * deadlock risks
-     * @throws IOException if any of the input <tt>DataSource</tt>s of this <tt>AudioMixer</tt> throws such an
+     * @throws IOException if any of the input <code>DataSource</code>s of this <code>AudioMixer</code> throws such an
      * exception while attempting to stop it
      */
     void stop(AudioMixerPushBufferStream outStream, long generation)

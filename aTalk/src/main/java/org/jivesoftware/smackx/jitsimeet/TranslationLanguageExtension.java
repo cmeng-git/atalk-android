@@ -22,13 +22,11 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import javax.xml.namespace.QName;
 
 /**
- * An extension of the presence stanza for sending target translation language
- * to Jigasi.
+ * An extension of the presence stanza for sending target translation language to Jigasi.
  * The extension looks like follows:
  *
  * <pre>
- *  {@code <jitsi_participant_translation_language> target_language_code
- *  </jitsi_participant_translation_language>}
+ *  {@code <jitsi_participant_translation_language> target_language_code </jitsi_participant_translation_language>}
  *  </pre>
  *
  * @author Praveen Kumar Gupta

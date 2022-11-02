@@ -78,11 +78,11 @@ public abstract class AesGcmNoPadding {
      * @param key key
      * @param iv iv
      * @param MODE cipher mode (Cipher.ENCRYPT_MODE / Cipher.DECRYPT_MODE)
-     * @throws NoSuchPaddingException
-     * @throws NoSuchAlgorithmException
-     * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws InvalidKeyException
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
+     * @throws NoSuchAlgorithmException in case there is no {@link java.security.Provider} registered for the used
+     * @throws NoSuchProviderException in case there is no suitable {@link java.security.Provider} registered.
+     * @throws InvalidAlgorithmParameterException in case an invalid algorithms configuration is used.
+     * @throws InvalidKeyException if the key is invalid.
      */
     public AesGcmNoPadding(byte[] key, byte[] iv, int MODE) throws NoSuchPaddingException, NoSuchAlgorithmException,
             NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException {

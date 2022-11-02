@@ -124,6 +124,7 @@ public class About extends FragmentActivity implements View.OnClickListener
             new String[]{"XEP-0199: XMPP Ping 2.0.1", "https://xmpp.org/extensions/xep-0199.html"},
             new String[]{"XEP-0203: Delayed Delivery 2.0", "https://xmpp.org/extensions/xep-0203.html"},
             new String[]{"XEP-0206: XMPP Over BOSH 1.4", "https://xmpp.org/extensions/xep-0206.html"},
+            new String[]{"XEP-0215: External Service Discovery 1.0.0", "https://xmpp.org/extensions/xep-0215.html"},
             new String[]{"XEP-0231: Bits of Binary 1.0", "https://xmpp.org/extensions/xep-0231.html"},
             new String[]{"XEP-0234: Jingle File Transfer 0.19.1", "https://xmpp.org/extensions/xep-0234.html"},
             new String[]{"XEP-0237: Roster Versioning 1.3", "https://xmpp.org/extensions/xep-0237.html"},

@@ -15,8 +15,8 @@ import javax.media.control.FormatControl;
 import javax.media.protocol.*;
 
 /**
- * Represents a <tt>PushBufferDataSource</tt> which is also a <tt>CaptureDevice</tt> through
- * delegation to a specific <tt>CaptureDevice</tt> .
+ * Represents a <code>PushBufferDataSource</code> which is also a <code>CaptureDevice</code> through
+ * delegation to a specific <code>CaptureDevice</code> .
  *
  * @author Lubomir Marinov
  */
@@ -24,24 +24,24 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
         implements CaptureDevice
 {
     /**
-     * The constant which represents an empty array with <tt>PushBufferStream</tt> element type.
+     * The constant which represents an empty array with <code>PushBufferStream</code> element type.
      * Explicitly defined in order to reduce unnecessary allocations.
      */
     protected static final PushBufferStream[] EMPTY_STREAMS = new PushBufferStream[0];
 
     /**
-     * The <tt>CaptureDevice</tt> this instance delegates to in order to implement its
-     * <tt>CaptureDevice</tt> functionality.
+     * The <code>CaptureDevice</code> this instance delegates to in order to implement its
+     * <code>CaptureDevice</code> functionality.
      */
     protected final CaptureDevice captureDevice;
 
     /**
-     * Initializes a new <tt>CaptureDeviceDelegatePushBufferDataSource</tt> instance which
-     * delegates to a specific <tt>CaptureDevice</tt> in order to implement its
-     * <tt>CaptureDevice</tt> functionality.
+     * Initializes a new <code>CaptureDeviceDelegatePushBufferDataSource</code> instance which
+     * delegates to a specific <code>CaptureDevice</code> in order to implement its
+     * <code>CaptureDevice</code> functionality.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> the new instance is to delegate to in order to provide its
-     * <tt>CaptureDevice</tt> functionality
+     * @param captureDevice the <code>CaptureDevice</code> the new instance is to delegate to in order to provide its
+     * <code>CaptureDevice</code> functionality
      */
     public CaptureDeviceDelegatePushBufferDataSource(CaptureDevice captureDevice)
     {
@@ -49,10 +49,10 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
     }
 
     /**
-     * Implements {@link CaptureDevice#connect()}. Delegates to the wrapped <tt>CaptureDevice</tt>
+     * Implements {@link CaptureDevice#connect()}. Delegates to the wrapped <code>CaptureDevice</code>
      * if available; otherwise, does nothing.
      *
-     * @throws IOException if the wrapped <tt>CaptureDevice</tt> throws such an exception
+     * @throws IOException if the wrapped <code>CaptureDevice</code> throws such an exception
      */
     @Override
     public void connect()
@@ -64,7 +64,7 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link CaptureDevice#disconnect()}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if available; otherwise, does nothing.
+     * <code>CaptureDevice</code> if available; otherwise, does nothing.
      */
     @Override
     public void disconnect()
@@ -75,10 +75,10 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link CaptureDevice#getCaptureDeviceInfo()}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if available; otherwise, returns <tt>null</tt>.
+     * <code>CaptureDevice</code> if available; otherwise, returns <code>null</code>.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of the wrapped <tt>CaptureDevice</tt> if available;
-     * otherwise, <tt>null</tt>
+     * @return the <code>CaptureDeviceInfo</code> of the wrapped <code>CaptureDevice</code> if available;
+     * otherwise, <code>null</code>
      */
     public CaptureDeviceInfo getCaptureDeviceInfo()
     {
@@ -87,12 +87,12 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link DataSource#getContentType()}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if it implements <tt>DataSource</tt>; otherwise, returns
+     * <code>CaptureDevice</code> if it implements <code>DataSource</code>; otherwise, returns
      * {@link ContentDescriptor#CONTENT_UNKNOWN}.
      *
-     * @return a <tt>String</tt> value which describes the content type of the wrapped
-     * <tt>CaptureDevice</tt> if it implements <tt>DataSource</tt>; otherwise,
-     * <tt>ContentDescriptor#CONTENT_UNKNOWN</tt>
+     * @return a <code>String</code> value which describes the content type of the wrapped
+     * <code>CaptureDevice</code> if it implements <code>DataSource</code>; otherwise,
+     * <code>ContentDescriptor#CONTENT_UNKNOWN</code>
      */
     @Override
     public String getContentType()
@@ -104,12 +104,12 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link DataSource#getControl(String)}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if it implements <tt>DataSource</tt>; otherwise, returns <tt>null</tt>.
+     * <code>CaptureDevice</code> if it implements <code>DataSource</code>; otherwise, returns <code>null</code>.
      *
-     * @param controlType a <tt>String</tt> value which names the type of the control to be retrieved
-     * @return an <tt>Object</tt> which represents the control of the requested
-     * <tt>controlType</tt> of the wrapped <tt>CaptureDevice</tt> if it implements
-     * <tt>DataSource</tt>; otherwise, <tt>null</tt>
+     * @param controlType a <code>String</code> value which names the type of the control to be retrieved
+     * @return an <code>Object</code> which represents the control of the requested
+     * <code>controlType</code> of the wrapped <code>CaptureDevice</code> if it implements
+     * <code>DataSource</code>; otherwise, <code>null</code>
      */
     @Override
     public Object getControl(String controlType)
@@ -120,12 +120,12 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
     }
 
     /**
-     * Implements {@link DataSource#getControls()}. Delegates to the wrapped <tt>CaptureDevice</tt>
-     * if it implements <tt>DataSource</tt>; otherwise, returns an empty array with <tt>Object</tt>
+     * Implements {@link DataSource#getControls()}. Delegates to the wrapped <code>CaptureDevice</code>
+     * if it implements <code>DataSource</code>; otherwise, returns an empty array with <code>Object</code>
      * element type.
      *
-     * @return the array of controls for the wrapped <tt>CaptureDevice</tt> if it implements
-     * <tt>DataSource</tt>; otherwise, an empty array with <tt>Object</tt> element type
+     * @return the array of controls for the wrapped <code>CaptureDevice</code> if it implements
+     * <code>DataSource</code>; otherwise, an empty array with <code>Object</code> element type
      */
     @Override
     public Object[] getControls()
@@ -136,12 +136,12 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
     }
 
     /**
-     * Implements {@link DataSource#getDuration()}. Delegates to the wrapped <tt>CaptureDevice</tt>
-     * if it implements <tt>DataSource</tt>; otherwise, returns
+     * Implements {@link DataSource#getDuration()}. Delegates to the wrapped <code>CaptureDevice</code>
+     * if it implements <code>DataSource</code>; otherwise, returns
      * {@link DataSource#DURATION_UNKNOWN}.
      *
-     * @return the duration of the wrapped <tt>CaptureDevice</tt> as returned by its implementation
-     * of <tt>DataSource</tt> if any; otherwise, returns <tt>DataSource#DURATION_UNKNOWN</tt>
+     * @return the duration of the wrapped <code>CaptureDevice</code> as returned by its implementation
+     * of <code>DataSource</code> if any; otherwise, returns <code>DataSource#DURATION_UNKNOWN</code>
      */
     @Override
     public Time getDuration()
@@ -153,11 +153,11 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link CaptureDevice#getFormatControls()}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if available; otherwise, returns an empty array with
-     * <tt>FormatControl</tt> element type.
+     * <code>CaptureDevice</code> if available; otherwise, returns an empty array with
+     * <code>FormatControl</code> element type.
      *
-     * @return the array of <tt>FormatControl</tt>s of the wrapped <tt>CaptureDevice</tt> if
-     * available; otherwise, an empty array with <tt>FormatControl</tt> element type
+     * @return the array of <code>FormatControl</code>s of the wrapped <code>CaptureDevice</code> if
+     * available; otherwise, an empty array with <code>FormatControl</code> element type
      */
     public FormatControl[] getFormatControls()
     {
@@ -167,12 +167,12 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
 
     /**
      * Implements {@link PushBufferDataSource#getStreams()}. Delegates to the wrapped
-     * <tt>CaptureDevice</tt> if it implements <tt>PushBufferDataSource</tt>; otherwise, returns an
-     * empty array with <tt>PushBufferStream</tt> element type.
+     * <code>CaptureDevice</code> if it implements <code>PushBufferDataSource</code>; otherwise, returns an
+     * empty array with <code>PushBufferStream</code> element type.
      *
-     * @return an array of <tt>PushBufferStream</tt>s as returned by the wrapped
-     * <tt>CaptureDevice</tt> if it implements <tt>PushBufferDataSource</tt>; otherwise, an
-     * empty array with <tt>PushBufferStream</tt> element type
+     * @return an array of <code>PushBufferStream</code>s as returned by the wrapped
+     * <code>CaptureDevice</code> if it implements <code>PushBufferDataSource</code>; otherwise, an
+     * empty array with <code>PushBufferStream</code> element type
      */
     @Override
     public PushBufferStream[] getStreams()
@@ -183,10 +183,10 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
     }
 
     /**
-     * Implements {@link CaptureDevice#start()}. Delegates to the wrapped <tt>CaptureDevice</tt> if
+     * Implements {@link CaptureDevice#start()}. Delegates to the wrapped <code>CaptureDevice</code> if
      * available; otherwise, does nothing.
      *
-     * @throws IOException if the wrapped <tt>CaptureDevice</tt> throws such an exception
+     * @throws IOException if the wrapped <code>CaptureDevice</code> throws such an exception
      */
     @Override
     public void start()
@@ -197,10 +197,10 @@ public class CaptureDeviceDelegatePushBufferDataSource extends PushBufferDataSou
     }
 
     /**
-     * Implements {@link CaptureDevice#stop()}. Delegates to the wrapped <tt>CaptureDevice</tt> if
+     * Implements {@link CaptureDevice#stop()}. Delegates to the wrapped <code>CaptureDevice</code> if
      * available; otherwise, does nothing.
      *
-     * @throws IOException if the wrapped <tt>CaptureDevice</tt> throws such an exception
+     * @throws IOException if the wrapped <code>CaptureDevice</code> throws such an exception
      */
     @Override
     public void stop()

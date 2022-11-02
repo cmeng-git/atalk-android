@@ -27,7 +27,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Decodes H.264 NAL units and returns the resulting frames as FFmpeg <tt>AVFrame</tt>s (i.e. in YUV format).
+ * Decodes H.264 NAL units and returns the resulting frames as FFmpeg <code>AVFrame</code>s (i.e. in YUV format).
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
@@ -37,7 +37,7 @@ import timber.log.Timber;
 public class JNIDecoder extends AbstractCodec2
 {
     /**
-     * The default output <tt>VideoFormat</tt>.
+     * The default output <code>VideoFormat</code>.
      */
     private static final VideoFormat[] SUPPORTED_OUTPUT_FORMATS
             = new VideoFormat[]{new AVFrameFormat(FFmpeg.PIX_FMT_YUV420P)};
@@ -53,7 +53,7 @@ public class JNIDecoder extends AbstractCodec2
     private long avctx;
 
     /**
-     * The <tt>AVFrame</tt> in which the video frame decoded from the encoded media data is stored.
+     * The <code>AVFrame</code> in which the video frame decoded from the encoded media data is stored.
      */
     private AVFrame avframe;
 
@@ -65,29 +65,29 @@ public class JNIDecoder extends AbstractCodec2
     private boolean gotPictureAtLeastOnce;
 
     /**
-     * The <tt>KeyFrameControl</tt> used by this <tt>JNIDecoder</tt> to control its key frame-related logic.
+     * The <code>KeyFrameControl</code> used by this <code>JNIDecoder</code> to control its key frame-related logic.
      */
     private KeyFrameControl keyFrameControl;
 
     /**
-     * Array of output <tt>VideoFormat</tt>s.
+     * Array of output <code>VideoFormat</code>s.
      */
     private final VideoFormat[] outputFormats;
 
     /**
-     * The last known width of {@link #avctx} i.e. the video output by this <tt>JNIDecoder</tt>.
+     * The last known width of {@link #avctx} i.e. the video output by this <code>JNIDecoder</code>.
      * Used to detect changes in the output size.
      */
     private int mWidth;
 
     /**
-     * The last known height of {@link #avctx} i.e. the video output by this <tt>JNIDecoder</tt>.
+     * The last known height of {@link #avctx} i.e. the video output by this <code>JNIDecoder</code>.
      * Used to detect changes in the output size.
      */
     private int mHeight;
 
     /**
-     * Initializes a new <tt>JNIDecoder</tt> instance which is to decode H.264 NAL units into frames in YUV format.
+     * Initializes a new <code>JNIDecoder</code> instance which is to decode H.264 NAL units into frames in YUV format.
      */
     public JNIDecoder()
     {
@@ -106,10 +106,10 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Check <tt>Format</tt>.
+     * Check <code>Format</code>.
      *
-     * @param format <tt>Format</tt> to check
-     * @return true if <tt>Format</tt> is H264_RTP
+     * @param format <code>Format</code> to check
+     * @return true if <code>Format</code> is H264_RTP
      */
     public boolean checkFormat(Format format)
     {
@@ -117,7 +117,7 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Close <tt>Codec</tt>.
+     * Close <code>Codec</code>.
      */
     @Override
     protected void doClose()
@@ -171,11 +171,11 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Decodes H.264 media data read from a specific input <tt>Buffer</tt> into a specific output <tt>Buffer</tt>.
+     * Decodes H.264 media data read from a specific input <code>Buffer</code> into a specific output <code>Buffer</code>.
      *
-     * @param inBuf input <tt>Buffer</tt>
-     * @param outBuf output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>in</tt> has been successfully processed
+     * @param inBuf input <code>Buffer</code>
+     * @param outBuf output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>in</code> has been successfully processed
      */
     @Override
     protected int doProcess(Buffer inBuf, Buffer outBuf)
@@ -248,9 +248,9 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Get matching outputs for a specified input <tt>Format</tt>.
+     * Get matching outputs for a specified input <code>Format</code>.
      *
-     * @param inputFormat input <tt>Format</tt>
+     * @param inputFormat input <code>Format</code>
      * @return array of matching outputs or null if there are no matching outputs.
      */
     protected Format[] getMatchingOutputFormats(Format inputFormat)
@@ -275,10 +275,10 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Get all supported output <tt>Format</tt>s.
+     * Get all supported output <code>Format</code>s.
      *
-     * @param inputFormat input <tt>Format</tt> to determine corresponding output <tt>Format/tt>s
-     * @return an array of supported output <tt>Format</tt>s
+     * @param inputFormat input <code>Format</code> to determine corresponding output <code>Format/code>s
+     * @return an array of supported output <code>Format</code>s
      */
     @Override
     public Format[] getSupportedOutputFormats(Format inputFormat)
@@ -303,9 +303,9 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Handles any format parameters of the input and/or output <tt>Format</tt>s with which this
-     * <tt>JNIDecoder</tt> has been configured. For example, takes into account the format
-     * parameter <tt>sprop-parameter-sets</tt> if it is specified by the input <tt>Format</tt>.
+     * Handles any format parameters of the input and/or output <code>Format</code>s with which this
+     * <code>JNIDecoder</code> has been configured. For example, takes into account the format
+     * parameter <code>sprop-parameter-sets</code> if it is specified by the input <code>Format</code>.
      */
     private void handleFmtps()
     {
@@ -362,11 +362,11 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
+     * Sets the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>.
      *
-     * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt> if
-     * <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * @param format the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     * @return the <code>Format</code> of the media data to be input for processing in this <code>Codec</code> if
+     * <code>format</code> is compatible with this <code>Codec</code>; otherwise, <code>null</code>
      */
     @Override
     public Format setInputFormat(Format format)
@@ -378,10 +378,10 @@ public class JNIDecoder extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>KeyFrameControl</tt> to be used by this <tt>DePacketizer</tt> as a means of
+     * Sets the <code>KeyFrameControl</code> to be used by this <code>DePacketizer</code> as a means of
      * control over its key frame-related logic.
      *
-     * @param keyFrameControl the <tt>KeyFrameControl</tt> to be used by this <tt>DePacketizer</tt> as a means of
+     * @param keyFrameControl the <code>KeyFrameControl</code> to be used by this <code>DePacketizer</code> as a means of
      * control over its key frame-related logic
      */
     public void setKeyFrameControl(KeyFrameControl keyFrameControl)

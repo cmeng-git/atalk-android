@@ -30,6 +30,8 @@ import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.
 
 /**
  * The dialog fragment that allows user to edit the STUN server descriptor.
+ * @link https://github.com/MilanKral/atalk-android/commit/d61d5165dda4d290280ebb3e93075e8846e255ad
+ * Enhance TURN with TCP, TLS, DTLS transport
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

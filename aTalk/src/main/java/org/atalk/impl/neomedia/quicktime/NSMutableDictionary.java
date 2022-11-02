@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents an Objective-C <tt>NSMutableDictionary</tt> object.
+ * Represents an Objective-C <code>NSMutableDictionary</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -14,8 +14,8 @@ public class NSMutableDictionary extends NSDictionary
 {
 
 	/**
-	 * Initializes a new <tt>NSMutableDictionary</tt> instance which is to represent a new
-	 * Objective-C <tt>NSMutableDictionary</tt> object.
+	 * Initializes a new <code>NSMutableDictionary</code> instance which is to represent a new
+	 * Objective-C <code>NSMutableDictionary</code> object.
 	 */
 	public NSMutableDictionary()
 	{
@@ -23,11 +23,11 @@ public class NSMutableDictionary extends NSDictionary
 	}
 
 	/**
-	 * Initializes a new <tt>NSMutableDictionary</tt> instance which is to represent a specific
-	 * Objective-C <tt>NSMutableDictionary</tt> object.
+	 * Initializes a new <code>NSMutableDictionary</code> instance which is to represent a specific
+	 * Objective-C <code>NSMutableDictionary</code> object.
 	 *
 	 * @param ptr
-	 *        the pointer to the Objective-C <tt>NSMutableDictionary</tt> object to be represented
+	 *        the pointer to the Objective-C <code>NSMutableDictionary</code> object to be represented
 	 *        by the new instance
 	 */
 	public NSMutableDictionary(long ptr)

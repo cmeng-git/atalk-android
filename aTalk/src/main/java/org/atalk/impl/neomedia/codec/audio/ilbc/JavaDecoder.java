@@ -23,7 +23,7 @@ public class JavaDecoder extends AbstractCodec2
 {
 
 	/**
-	 * The <tt>ilbc_decoder</tt> adapted to <tt>Codec</tt> by this instance.
+	 * The <code>ilbc_decoder</code> adapted to <code>Codec</code> by this instance.
 	 */
 	private ilbc_decoder dec;
 
@@ -38,7 +38,7 @@ public class JavaDecoder extends AbstractCodec2
 	private List<Integer> offsets = new ArrayList<Integer>();
 
 	/**
-	 * Initializes a new iLBC <tt>JavaDecoder</tt> instance.
+	 * Initializes a new iLBC <code>JavaDecoder</code> instance.
 	 */
 	public JavaDecoder()
 	{

@@ -8,31 +8,31 @@ package org.atalk.impl.neomedia.rtp.translator;
 import javax.media.rtp.OutputDataStream;
 
 /**
- * Describes an <tt>OutputDataStream</tt> associated with an endpoint to which an
- * <tt>RTPTranslatorImpl</tt> is translating.
+ * Describes an <code>OutputDataStream</code> associated with an endpoint to which an
+ * <code>RTPTranslatorImpl</code> is translating.
  *
  * @author Lyubomir Marinov
  */
 class OutputDataStreamDesc
 {
     /**
-     * The endpoint <tt>RTPConnector</tt> which owns {@link #stream}.
+     * The endpoint <code>RTPConnector</code> which owns {@link #stream}.
      */
     public final RTPConnectorDesc connectorDesc;
 
     /**
-     * The <tt>OutputDataStream</tt> associated with an endpoint to which an
-     * <tt>RTPTranslatorImpl</tt> is translating.
+     * The <code>OutputDataStream</code> associated with an endpoint to which an
+     * <code>RTPTranslatorImpl</code> is translating.
      */
     public final OutputDataStream stream;
 
     /**
-     * Initializes a new <tt>OutputDataStreamDesc</tt> instance which is to describe an endpoint
-     * <tt>OutputDataStream</tt> for an <tt>RTPTranslatorImpl</tt>.
+     * Initializes a new <code>OutputDataStreamDesc</code> instance which is to describe an endpoint
+     * <code>OutputDataStream</code> for an <code>RTPTranslatorImpl</code>.
      *
-     * @param connectorDesc the endpoint <tt>RTPConnector</tt> which own the specified <tt>stream</tt>
-     * @param stream the endpoint <tt>OutputDataStream</tt> to be described by the new instance for an
-     * <tt>RTPTranslatorImpl</tt>
+     * @param connectorDesc the endpoint <code>RTPConnector</code> which own the specified <code>stream</code>
+     * @param stream the endpoint <code>OutputDataStream</code> to be described by the new instance for an
+     * <code>RTPTranslatorImpl</code>
      */
     public OutputDataStreamDesc(RTPConnectorDesc connectorDesc, OutputDataStream stream)
     {

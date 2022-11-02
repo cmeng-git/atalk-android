@@ -13,9 +13,9 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Implements a <tt>VideoFormat</tt> for a <tt>Buffer</tt> carrying <tt>AVFrame</tt> as its <tt>data</tt>. While the
- * <tt>AVFrameFormat</tt> class is not strictly necessary and <tt>VideoFormat</tt> could have be directly used, it is
- * conceived as an appropriate way to avoid possible matching with other <tt>VideoFormat</tt>s and a very obvious one.
+ * Implements a <code>VideoFormat</code> for a <code>Buffer</code> carrying <code>AVFrame</code> as its <code>data</code>. While the
+ * <code>AVFrameFormat</code> class is not strictly necessary and <code>VideoFormat</code> could have be directly used, it is
+ * conceived as an appropriate way to avoid possible matching with other <code>VideoFormat</code>s and a very obvious one.
  *
  * @author Lyubomir Marinov
  * @author Sebastien Vincent
@@ -24,7 +24,7 @@ import timber.log.Timber;
 public class AVFrameFormat extends VideoFormat
 {
     /**
-     * The encoding of the <tt>AVFrameFormat</tt> instances.
+     * The encoding of the <code>AVFrameFormat</code> instances.
      */
     public static final String AVFRAME = "AVFrame";
 
@@ -34,9 +34,9 @@ public class AVFrameFormat extends VideoFormat
     private static final long serialVersionUID = 0L;
 
     /**
-     * The <tt>DeviceSystem</tt>-specific format represented by this instance. It is necessary in the cases of multiple
-     * <tt>DeviceSystem</tt>-specific formats corresponding to one and the same native FFmpeg format in which JMF is
-     * unable to differentiate them yet the device needs to know its <tt>DeviceSystem</tt>-specific format.
+     * The <code>DeviceSystem</code>-specific format represented by this instance. It is necessary in the cases of multiple
+     * <code>DeviceSystem</code>-specific formats corresponding to one and the same native FFmpeg format in which JMF is
+     * unable to differentiate them yet the device needs to know its <code>DeviceSystem</code>-specific format.
      */
     private int deviceSystemPixFmt;
 
@@ -46,7 +46,7 @@ public class AVFrameFormat extends VideoFormat
     private int pixFmt;
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with unspecified size, frame rate and FFmpeg colorspace.
+     * Initializes a new <code>AVFrameFormat</code> instance with unspecified size, frame rate and FFmpeg colorspace.
      */
     public AVFrameFormat()
     {
@@ -59,12 +59,12 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with specific size, frame rate and FFmpeg colorspace.
+     * Initializes a new <code>AVFrameFormat</code> instance with specific size, frame rate and FFmpeg colorspace.
      *
-     * @param size the <tt>Dimension</tt> of the new instance
+     * @param size the <code>Dimension</code> of the new instance
      * @param frameRate the frame rate of the new instance
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
-     * @param deviceSystemPixFmt the <tt>DeviceSystem</tt>-specific colorspace to be represented by the new instance
+     * @param deviceSystemPixFmt the <code>DeviceSystem</code>-specific colorspace to be represented by the new instance
      */
     public AVFrameFormat(Dimension size, float frameRate, int pixFmt, int deviceSystemPixFmt)
     {
@@ -80,7 +80,7 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg
+     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
      * colorspace and unspecified size and frame rate.
      *
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
@@ -91,11 +91,11 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance with a specific FFmpeg
+     * Initializes a new <code>AVFrameFormat</code> instance with a specific FFmpeg
      * colorspace and unspecified size and frame rate.
      *
      * @param pixFmt the FFmpeg colorspace to be represented by the new instance
-     * @param deviceSystemPixFmt the <tt>DeviceSystem</tt>-specific colorspace to be represented by the new instance
+     * @param deviceSystemPixFmt the <code>DeviceSystem</code>-specific colorspace to be represented by the new instance
      */
     public AVFrameFormat(int pixFmt, int deviceSystemPixFmt)
     {
@@ -103,9 +103,9 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Initializes a new <tt>AVFrameFormat</tt> instance which has the same properties as this instance.
+     * Initializes a new <code>AVFrameFormat</code> instance which has the same properties as this instance.
      *
-     * @return a new <tt>AVFrameFormat</tt> instance which has the same properties as this instance
+     * @return a new <code>AVFrameFormat</code> instance which has the same properties as this instance
      */
     @Override
     public Object clone()
@@ -116,9 +116,9 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Copies the properties of the specified <tt>Format</tt> into this instance.
+     * Copies the properties of the specified <code>Format</code> into this instance.
      *
-     * @param f the <tt>Format</tt> the properties of which are to be copied into this instance
+     * @param f the <code>Format</code> the properties of which are to be copied into this instance
      */
     @Override
     protected void copy(Format f)
@@ -134,13 +134,13 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Determines whether a specific <tt>Object</tt> represents a value that is equal to the value represented by this
+     * Determines whether a specific <code>Object</code> represents a value that is equal to the value represented by this
      * instance.
      *
-     * @param obj the <tt>Object</tt> to be determined whether it represents a value that is equal to the value represented
+     * @param obj the <code>Object</code> to be determined whether it represents a value that is equal to the value represented
      * by this instance
-     * @return <tt>true</tt> if the specified <tt>obj</tt> represents a value that is equal to the value represented by
-     * this instance; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>obj</code> represents a value that is equal to the value represented by
+     * this instance; otherwise, <code>false</code>
      */
     @Override
     public boolean equals(Object obj)
@@ -155,9 +155,9 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Gets the <tt>DeviceSystem</tt>-specific format represented by this instance.
+     * Gets the <code>DeviceSystem</code>-specific format represented by this instance.
      *
-     * @return the <tt>DeviceSystem</tt>-specific format represented by this instance
+     * @return the <code>DeviceSystem</code>-specific format represented by this instance
      */
     public int getDeviceSystemPixFmt()
     {
@@ -181,12 +181,12 @@ public class AVFrameFormat extends VideoFormat
     }
 
     /**
-     * Finds the attributes shared by two matching <tt>Format</tt>s. If the
-     * specified <tt>Format</tt> does not match this one, the result is undefined.
+     * Finds the attributes shared by two matching <code>Format</code>s. If the
+     * specified <code>Format</code> does not match this one, the result is undefined.
      *
-     * @param format the matching <tt>Format</tt> to intersect with this one
-     * @return a <tt>Format</tt> with its attributes set to the attributes
-     * common to this instance and the specified <tt>format</tt>
+     * @param format the matching <code>Format</code> to intersect with this one
+     * @return a <code>Format</code> with its attributes set to the attributes
+     * common to this instance and the specified <code>format</code>
      */
     @Override
     public Format intersects(Format format)
@@ -206,8 +206,8 @@ public class AVFrameFormat extends VideoFormat
      * Determines whether a specific format matches this instance i.e. whether their attributes match according to the
      * definition of "match" given by {@link Format#matches(Format)}.
      *
-     * @param format the <tt>Format</tt> to compare to this instance
-     * @return <tt>true</tt> if the specified <tt>format</tt> matches this one; otherwise, <tt>false</tt>
+     * @param format the <code>Format</code> to compare to this instance
+     * @return <code>true</code> if the specified <code>format</code> matches this one; otherwise, <code>false</code>
      */
     @Override
     public boolean matches(Format format)

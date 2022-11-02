@@ -28,10 +28,10 @@ import javax.media.format.AudioFormat;
 public class AudioRecordSystem extends AudioSystem
 {
     /**
-     * Initializes a new <tt>AudioRecordSystem</tt> instance which discovers and registers
-     * <tt>AudioRecord</tt> capture devices with FMJ.
+     * Initializes a new <code>AudioRecordSystem</code> instance which discovers and registers
+     * <code>AudioRecord</code> capture devices with FMJ.
      *
-     * @throws Exception if anything goes wrong while discovering and registering <tt>AudioRecord</tt>
+     * @throws Exception if anything goes wrong while discovering and registering <code>AudioRecord</code>
      * capture devices with FMJ
      */
     public AudioRecordSystem()
@@ -130,7 +130,7 @@ public class AudioRecordSystem extends AudioSystem
     }
 
     /**
-     * Returns the audio format for the <tt>InputStream</tt>. Or null if format cannot be obtained.
+     * Returns the audio format for the <code>InputStream</code>. Or null if format cannot be obtained.
      * Support only Wave format in current implementation.
      *
      * @param audioInputStream the input stream.

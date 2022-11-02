@@ -39,13 +39,13 @@ import timber.log.Timber;
 public class RTPTransformUDPConnector extends RTPConnectorUDPImpl
 {
     /**
-     * The customized <tt>TransformEngine</tt> which contains the concrete transform logic.
+     * The customized <code>TransformEngine</code> which contains the concrete transform logic.
      */
     private TransformEngine engine;
 
     /**
-     * Initializes a new <tt>TransformConnector</tt> which is to use a given pair of datagram
-     * sockets for RTP and RTCP traffic specified in the form of a <tt>StreamConnector</tt>.
+     * Initializes a new <code>TransformConnector</code> which is to use a given pair of datagram
+     * sockets for RTP and RTCP traffic specified in the form of a <code>StreamConnector</code>.
      *
      * @param connector the pair of datagram sockets for RTP and RTCP traffic the new instance is to use
      */
@@ -110,9 +110,9 @@ public class RTPTransformUDPConnector extends RTPConnectorUDPImpl
     }
 
     /**
-     * Gets the customized <tt>TransformEngine</tt> which contains the concrete transform logic.
+     * Gets the customized <code>TransformEngine</code> which contains the concrete transform logic.
      *
-     * @return the <tt>TransformEngine</tt> which contains the concrete transform logic
+     * @return the <code>TransformEngine</code> which contains the concrete transform logic
      */
     public TransformEngine getEngine()
     {
@@ -120,13 +120,13 @@ public class RTPTransformUDPConnector extends RTPConnectorUDPImpl
     }
 
     /**
-     * Gets the <tt>PacketTransformer</tt> specified by the current <tt>TransformerEngine</tt>
+     * Gets the <code>PacketTransformer</code> specified by the current <code>TransformerEngine</code>
      * which is used to transform and reverse-transform RTCP packets.
      *
-     * @return the <tt>PacketTransformer</tt> specified by the current <tt>TransformEngine</tt>
+     * @return the <code>PacketTransformer</code> specified by the current <code>TransformEngine</code>
      * which is used to transform and reverse-transform RTCP packets if there is currently a
-     * <tt>TransformEngine</tt> and it specifies a <tt>TransformEngine</tt> for RTCP data;
-     * otherwise, <tt>null</tt>
+     * <code>TransformEngine</code> and it specifies a <code>TransformEngine</code> for RTCP data;
+     * otherwise, <code>null</code>
      */
     private PacketTransformer getRTCPTransformer()
     {
@@ -135,13 +135,13 @@ public class RTPTransformUDPConnector extends RTPConnectorUDPImpl
     }
 
     /**
-     * Gets the <tt>PacketTransformer</tt> specified by the current <tt>TransformerEngine</tt>
+     * Gets the <code>PacketTransformer</code> specified by the current <code>TransformerEngine</code>
      * which is used to transform and reverse-transform RTP packets.
      *
-     * @return the <tt>PacketTransformer</tt> specified by the current <tt>TransformEngine</tt>
+     * @return the <code>PacketTransformer</code> specified by the current <code>TransformEngine</code>
      * which is used to transform and reverse-transform RTP packets if there is currently a
-     * <tt>TransformEngine</tt> and it specifies a <tt>TransformEngine</tt> for RTP data;
-     * otherwise, <tt>null</tt>
+     * <code>TransformEngine</code> and it specifies a <code>TransformEngine</code> for RTP data;
+     * otherwise, <code>null</code>
      */
     private PacketTransformer getRTPTransformer()
     {
@@ -150,9 +150,9 @@ public class RTPTransformUDPConnector extends RTPConnectorUDPImpl
     }
 
     /**
-     * Sets the customized <tt>TransformEngine</tt> which contains the concrete transform logic.
+     * Sets the customized <code>TransformEngine</code> which contains the concrete transform logic.
      *
-     * @param engine the <tt>TransformEngine</tt> which contains the concrete transform logic
+     * @param engine the <code>TransformEngine</code> which contains the concrete transform logic
      */
     public void setEngine(TransformEngine engine)
     {

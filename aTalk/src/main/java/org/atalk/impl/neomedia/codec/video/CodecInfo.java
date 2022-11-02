@@ -19,7 +19,7 @@ import timber.log.Timber;
 import static android.media.MediaCodecList.REGULAR_CODECS;
 
 /**
- * Class used to manage codecs information for <tt>MediaCodec</tt>.
+ * Class used to manage codecs information for <code>MediaCodec</code>.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -27,17 +27,17 @@ import static android.media.MediaCodecList.REGULAR_CODECS;
 public abstract class CodecInfo
 {
     /**
-     * The mime type of H.264-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of H.264-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     public static final String MEDIA_CODEC_TYPE_H264 = "video/avc";
 
     /**
-     * The mime type of VP8-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of VP8-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     public static final String MEDIA_CODEC_TYPE_VP8 = "video/x-vnd.on2.vp8";
 
     /**
-     * The mime type of VP9-encoded media data as defined by Android's <tt>MediaCodec</tt> class.
+     * The mime type of VP9-encoded media data as defined by Android's <code>MediaCodec</code> class.
      */
     public static final String MEDIA_CODEC_TYPE_VP9 = "video/x-vnd.on2.vp9";
 
@@ -84,27 +84,27 @@ public abstract class CodecInfo
     }
 
     /**
-     * <tt>MediaCodecInfo</tt> encapsulated by this instance.
+     * <code>MediaCodecInfo</code> encapsulated by this instance.
      */
     protected final MediaCodecInfo codecInfo;
 
     /**
-     * <tt>MediaCodecInfo.CodecCapabilities</tt> encapsulated by this instance.
+     * <code>MediaCodecInfo.CodecCapabilities</code> encapsulated by this instance.
      */
     protected final MediaCodecInfo.CodecCapabilities caps;
 
     /**
-     * List of color formats supported by subject <tt>MediaCodec</tt>.
+     * List of color formats supported by subject <code>MediaCodec</code>.
      */
     protected final ArrayList<CodecColorFormat> colors;
 
     /**
-     * Media type of this <tt>CodecInfo</tt>.
+     * Media type of this <code>CodecInfo</code>.
      */
     private final String mediaType;
 
     /**
-     * Profile levels supported by subject <tt>MediaCodec</tt>.
+     * Profile levels supported by subject <code>MediaCodec</code>.
      */
     private ProfileLevel[] profileLevels;
 
@@ -115,7 +115,7 @@ public abstract class CodecInfo
     private boolean banned;
 
     /**
-     * Creates a new instance of <tt>CodecInfo</tt> that will encapsulate given <tt>codecInfo</tt>.
+     * Creates a new instance of <code>CodecInfo</code> that will encapsulate given <code>codecInfo</code>.
      *
      * @param codecInfo the codec info object to encapsulate.
      * @param mediaType media type of the codec
@@ -134,9 +134,9 @@ public abstract class CodecInfo
     }
 
     /**
-     * Returns codec name that can be used to obtain <tt>MediaCodec</tt>.
+     * Returns codec name that can be used to obtain <code>MediaCodec</code>.
      *
-     * @return codec name that can be used to obtain <tt>MediaCodec</tt>.
+     * @return codec name that can be used to obtain <code>MediaCodec</code>.
      */
     public String getName()
     {
@@ -144,11 +144,11 @@ public abstract class CodecInfo
     }
 
     /**
-     * Find the codec for given <tt>mimeType</tt>.
+     * Find the codec for given <code>mimeType</code>.
      *
      * @param mimeType mime type of the codec.
-     * @param isEncoder <tt>true</tt> if encoder should be returned or <tt>false</tt> for decoder.
-     * @return the codec for given <tt>mimeType</tt>.
+     * @param isEncoder <code>true</code> if encoder should be returned or <code>false</code> for decoder.
+     * @return the codec for given <code>mimeType</code>.
      */
     public static CodecInfo getCodecForType(String mimeType, boolean isEncoder)
     {

@@ -11,7 +11,7 @@ import org.atalk.service.neomedia.RawPacket;
 import java.net.Socket;
 
 /**
- * Extends <tt>RTPConnectorTCPOutputStream</tt> with transform logic.
+ * Extends <code>RTPConnectorTCPOutputStream</code> with transform logic.
  *
  * In this implementation, TCP socket is used to send the data out. When a normal RTP/RTCP packet is
  * passed down from RTPManager, we first transform the packet using user define PacketTransformer
@@ -30,7 +30,7 @@ public class TransformTCPOutputStream extends RTPConnectorTCPOutputStream
 	private final TransformOutputStreamImpl _impl;
 
 	/**
-	 * Initializes a new <tt>TransformTCPOutputStream</tt> which is to send packet data out through
+	 * Initializes a new <code>TransformTCPOutputStream</code> which is to send packet data out through
 	 * a specific TCP socket.
 	 *
 	 * @param socket

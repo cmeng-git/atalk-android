@@ -13,7 +13,7 @@ import org.atalk.service.neomedia.RawPacket;
 import java.util.Arrays;
 
 /**
- * Implements a <tt>TransformEngine</tt> which splits incoming RTCP compound packets into individual
+ * Implements a <code>TransformEngine</code> which splits incoming RTCP compound packets into individual
  * packets.
  *
  * @author Boris Grozev
@@ -27,11 +27,11 @@ public class CompoundPacketEngine implements TransformEngine, PacketTransformer
 	private final static int MAX_INDIVIDUAL = 20;
 
 	/**
-	 * Returns the length in bytes of the RTCP packet contained in <tt>buf</tt> at offset
-	 * <tt>off</tt>. Assumes that <tt>buf</tt> is valid at least until index <tt>off</tt>+3.
+	 * Returns the length in bytes of the RTCP packet contained in <code>buf</code> at offset
+	 * <code>off</code>. Assumes that <code>buf</code> is valid at least until index <code>off</code>+3.
 	 * 
-	 * @return the length in bytes of the RTCP packet contained in <tt>buf</tt> at offset
-	 *         <tt>off</tt>.
+	 * @return the length in bytes of the RTCP packet contained in <code>buf</code> at offset
+	 *         <code>off</code>.
 	 */
 	private static int getLengthInBytes(byte[] buf, int off, int len)
 	{
@@ -50,7 +50,7 @@ public class CompoundPacketEngine implements TransformEngine, PacketTransformer
 	}
 
 	/**
-	 * Used in <tt>reverseTransform</tt>, declared here to avoid recreation.
+	 * Used in <code>reverseTransform</code>, declared here to avoid recreation.
 	 */
 	private final int[] counts = new int[MAX_INDIVIDUAL];
 
@@ -67,7 +67,7 @@ public class CompoundPacketEngine implements TransformEngine, PacketTransformer
 	/**
 	 * Returns a reference to this class since it is performing RTCP transformations in here.
 	 *
-	 * @return a reference to <tt>this</tt> instance of the <tt>CompoundPacketEngine</tt>.
+	 * @return a reference to <code>this</code> instance of the <code>CompoundPacketEngine</code>.
 	 */
 	@Override
 	public PacketTransformer getRTCPTransformer()
@@ -76,9 +76,9 @@ public class CompoundPacketEngine implements TransformEngine, PacketTransformer
 	}
 
 	/**
-	 * Always returns <tt>null</tt> since this engine does not require any RTP transformations.
+	 * Always returns <code>null</code> since this engine does not require any RTP transformations.
 	 *
-	 * @return <tt>null</tt> since this engine does not require any RTP transformations.
+	 * @return <code>null</code> since this engine does not require any RTP transformations.
 	 */
 	@Override
 	public PacketTransformer getRTPTransformer()
@@ -169,7 +169,7 @@ public class CompoundPacketEngine implements TransformEngine, PacketTransformer
 	/**
 	 * {@inheritDoc}
 	 *
-	 * The implementation of <tt>CompoundPacketEngine</tt> does not transform when sending RTCP
+	 * The implementation of <code>CompoundPacketEngine</code> does not transform when sending RTCP
 	 * packets because the only purpose is to split received compound RTCP packets.
 	 */
 	@Override

@@ -48,7 +48,7 @@ public class Packetizer extends AbstractCodec2
     private boolean firstPacket = true;
 
     /**
-     * Initializes a new <tt>Packetizer</tt> instance.
+     * Initializes a new <code>Packetizer</code> instance.
      */
     public Packetizer()
     {

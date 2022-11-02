@@ -19,7 +19,7 @@ import java.util.Random;
 import timber.log.Timber;
 
 /**
- * Implements a factory for an AES <tt>BlockCipher</tt>.
+ * Implements a factory for an AES <code>BlockCipher</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -27,42 +27,42 @@ import timber.log.Timber;
 public class Aes
 {
     /**
-     * The block size in bytes of the AES algorithm (implemented by the <tt>BlockCipher</tt>s
-     * initialized by the <tt>Aes</tt> class).
+     * The block size in bytes of the AES algorithm (implemented by the <code>BlockCipher</code>s
+     * initialized by the <code>Aes</code> class).
      */
     private static final int BLOCK_SIZE = 16;
 
     /**
-     * The simple name of the <tt>BlockCipherFactory</tt> class/interface which is used as a class
-     * name suffix by the well-known <tt>BlockCipherFactory</tt> implementations.
+     * The simple name of the <code>BlockCipherFactory</code> class/interface which is used as a class
+     * name suffix by the well-known <code>BlockCipherFactory</code> implementations.
      */
     private static final String BLOCK_CIPHER_FACTORY_SIMPLE_CLASS_NAME = "BlockCipherFactory";
 
     /**
-     * The <tt>BlockCipherFactory</tt> implemented with BouncyCastle. It is the well-known fallback.
+     * The <code>BlockCipherFactory</code> implemented with BouncyCastle. It is the well-known fallback.
      */
     private static final BlockCipherFactory BOUNCYCASTLE_FACTORY = new BouncyCastleBlockCipherFactory();
 
     /**
-     * The <tt>BlockCipherFactory</tt> implementations known to the <tt>Aes</tt>
+     * The <code>BlockCipherFactory</code> implementations known to the <code>Aes</code>
      * class among which the fastest is to be elected as {@link #factory}.
      */
     private static BlockCipherFactory[] factories;
 
     /**
-     * The <tt>BlockCipherFactory</tt> implementation which is (to be) used by the class
-     * <tt>Aes</tt> to initialize <tt>BlockCipher</tt>s.
+     * The <code>BlockCipherFactory</code> implementation which is (to be) used by the class
+     * <code>Aes</code> to initialize <code>BlockCipher</code>s.
      */
     private static BlockCipherFactory factory;
 
     /**
-     * The name of the class to instantiate as a <tt>BlockCipherFactory</tt>
-     * implementation to be used by the class <tt>Aes</tt> to initialize <tt>BlockCipher</tt>s.
+     * The name of the class to instantiate as a <code>BlockCipherFactory</code>
+     * implementation to be used by the class <code>Aes</code> to initialize <code>BlockCipher</code>s.
      */
     private static String FACTORY_CLASS_NAME = null;
 
     /**
-     * The <tt>Class</tt>es of the well-known <tt>BlockCipherFactory</tt> implementations.
+     * The <code>Class</code>es of the well-known <code>BlockCipherFactory</code> implementations.
      */
     private static final Class<?>[] FACTORY_CLASSES = {
             BouncyCastleBlockCipherFactory.class,
@@ -77,8 +77,8 @@ public class Aes
     public static final long FACTORY_TIMEOUT = 60 * 1000;
 
     /**
-     * The class to instantiate as a <tt>BlockCipherFactory</tt> implementation to be used to
-     * initialized <tt>BlockCipher</tt>s.
+     * The class to instantiate as a <code>BlockCipherFactory</code> implementation to be used to
+     * initialized <code>BlockCipher</code>s.
      *
      * @see #FACTORY_CLASS_NAME
      */
@@ -102,7 +102,7 @@ public class Aes
 
     /**
      * The random number generator which generates keys and inputs for the benchmarking of the
-     * <tt>BlockCipherFactory</tt> implementations.
+     * <code>BlockCipherFactory</code> implementations.
      */
     private static final Random random = new Random();
 
@@ -118,12 +118,12 @@ public class Aes
     }
 
     /**
-     * Benchmarks a specific array/list of <tt>BlockCipherFactory</tt> instances
+     * Benchmarks a specific array/list of <code>BlockCipherFactory</code> instances
      * and returns the fastest-performing element.
      *
-     * @param factories the <tt>BlockCipherFactory</tt> instances to benchmark
+     * @param factories the <code>BlockCipherFactory</code> instances to benchmark
      * @param keySize AES key size (16, 24, 32 bytes)
-     * @return the fastest-performing <tt>BlockCipherFactory</tt> among the specified <tt>factories</tt>
+     * @return the fastest-performing <code>BlockCipherFactory</code> among the specified <code>factories</code>
      */
     private static BlockCipherFactory benchmark(BlockCipherFactory[] factories, int keySize)
     {
@@ -197,10 +197,10 @@ public class Aes
     }
 
     /**
-     * Initializes a new <tt>BlockCipher</tt> instance which implements Advanced Encryption Standard (AES).
+     * Initializes a new <code>BlockCipher</code> instance which implements Advanced Encryption Standard (AES).
      *
      * @param keySize length of the AES key (16, 24, 32 bytes)
-     * @return a new <tt>BlockCipher</tt> instance which implements Advanced Encryption Standard (AES)
+     * @return a new <code>BlockCipher</code> instance which implements Advanced Encryption Standard (AES)
      */
     public static BlockCipher createBlockCipher(int keySize)
     {
@@ -271,10 +271,10 @@ public class Aes
     }
 
     /**
-     * Initializes the <tt>BlockCipherFactory</tt> instances to be benchmarked by the class
-     * <tt>Aes</tt> and among which the fastest-performing one is to be selected.
+     * Initializes the <code>BlockCipherFactory</code> instances to be benchmarked by the class
+     * <code>Aes</code> and among which the fastest-performing one is to be selected.
      *
-     * @return the <tt>BlockCipherFactory</tt> instances to be benchmarked by the class <tt>AES</tt>
+     * @return the <code>BlockCipherFactory</code> instances to be benchmarked by the class <code>AES</code>
      * and among which the fastest-performing one is to be selected
      */
     @SuppressWarnings("unchecked")
@@ -352,10 +352,10 @@ public class Aes
     }
 
     /**
-     * Initializes <tt>BlockCipherFactory</tt> instances of specific <tt>Class</tt>es.
+     * Initializes <code>BlockCipherFactory</code> instances of specific <code>Class</code>es.
      *
-     * @param classes the runtime <tt>Class</tt>es to instantiate
-     * @return the <tt>BlockCipherFactory</tt> instances initialized by the specified <tt>classes</tt>
+     * @param classes the runtime <code>Class</code>es to instantiate
+     * @return the <code>BlockCipherFactory</code> instances initialized by the specified <code>classes</code>
      */
     private static BlockCipherFactory[] createBlockCipherFactories(Class<?>[] classes)
     {
@@ -385,14 +385,14 @@ public class Aes
     }
 
     /**
-     * Gets a <tt>BlockCipherFactory</tt> instance to be used by the <tt>AES</tt> class to
-     * initialize <tt>BlockCipher</tt>s.
+     * Gets a <code>BlockCipherFactory</code> instance to be used by the <code>AES</code> class to
+     * initialize <code>BlockCipher</code>s.
      *
-     * Benchmarks the well-known <tt>BlockCipherFactory</tt> implementations and returns the fastest one.
+     * Benchmarks the well-known <code>BlockCipherFactory</code> implementations and returns the fastest one.
      *
      * @param keySize AES key size (16, 24, 32 bytes)
-     * @return a <tt>BlockCipherFactory</tt> instance to be used by the
-     * <tt>Aes</tt> class to initialize <tt>BlockCipher</tt>s
+     * @return a <code>BlockCipherFactory</code> instance to be used by the
+     * <code>Aes</code> class to initialize <code>BlockCipher</code>s
      */
     private static BlockCipherFactory getBlockCipherFactory(int keySize)
     {
@@ -430,11 +430,11 @@ public class Aes
     }
 
     /**
-     * Gets the simple name of the runtime <tt>Class</tt> of a specific <tt>BlockCipherFactory</tt>
+     * Gets the simple name of the runtime <code>Class</code> of a specific <code>BlockCipherFactory</code>
      * to be used for display purposes of brevity and readability.
      *
-     * @param factory the <tt>BlockCipherFactory</tt> for which a simple class name is to be returned
-     * @return the simple name of the runtime <tt>Class</tt> of the specified <tt>factory</tt> to be
+     * @param factory the <code>BlockCipherFactory</code> for which a simple class name is to be returned
+     * @return the simple name of the runtime <code>Class</code> of the specified <code>factory</code> to be
      * used for display purposes of brevity and readability
      */
     private static String getSimpleClassName(BlockCipherFactory factory)
@@ -471,7 +471,7 @@ public class Aes
     }
 
     /**
-     * Implements <tt>BlockCipherFactory</tt> using BouncyCastle.
+     * Implements <code>BlockCipherFactory</code> using BouncyCastle.
      */
     public static class BouncyCastleBlockCipherFactory implements BlockCipherFactory
     {
@@ -489,12 +489,12 @@ public class Aes
     }
 
     /**
-     * Implements <tt>BlockCipherFactory</tt> using Sun JCE.
+     * Implements <code>BlockCipherFactory</code> using Sun JCE.
      */
     public static class SunJCEBlockCipherFactory extends SecurityProviderBlockCipherFactory
     {
         /**
-         * Initializes a new <tt>SunJCEBlockCipherFactory</tt> instance.
+         * Initializes a new <code>SunJCEBlockCipherFactory</code> instance.
          */
         public SunJCEBlockCipherFactory()
         {
@@ -503,27 +503,27 @@ public class Aes
     }
 
     /**
-     * Implements <tt>BlockCipherFactory</tt> using Sun PKCS#11.
+     * Implements <code>BlockCipherFactory</code> using Sun PKCS#11.
      */
     public static class SunPKCS11BlockCipherFactory extends SecurityProviderBlockCipherFactory
     {
         /**
-         * The <tt>java.security.Provider</tt> instance (to be) employed for an (optimized) AES implementation.
+         * The <code>java.security.Provider</code> instance (to be) employed for an (optimized) AES implementation.
          */
         private static Provider provider;
 
         /**
-         * The indicator which determines whether {@link #provider} is to be used. If <tt>true</tt>,
-         * an attempt will be made to initialize a <tt>java.security.Provider</tt> instance. If the
-         * attempt fails, <tt>false</tt> will be assigned in order to not repeatedly attempt the
+         * The indicator which determines whether {@link #provider} is to be used. If <code>true</code>,
+         * an attempt will be made to initialize a <code>java.security.Provider</code> instance. If the
+         * attempt fails, <code>false</code> will be assigned in order to not repeatedly attempt the
          * initialization which is known to have failed.
          */
         private static boolean useProvider = true;
 
         /**
-         * Gets the <tt>java.security.Provider</tt> instance (to be) employed for an (optimized) AES implementation.
+         * Gets the <code>java.security.Provider</code> instance (to be) employed for an (optimized) AES implementation.
          *
-         * @return the <tt>java.security.Provider</tt> instance (to be) employed for an (optimized) AES implementation.
+         * @return the <code>java.security.Provider</code> instance (to be) employed for an (optimized) AES implementation.
          */
         private static synchronized Provider getProvider()
                 throws Exception
@@ -561,9 +561,9 @@ public class Aes
         }
 
         /**
-         * Initializes a new <tt>SunPKCS11BlockCipherFactory</tt> instance.
+         * Initializes a new <code>SunPKCS11BlockCipherFactory</code> instance.
          *
-         * @throws Exception if anything goes wrong while initializing a new <tt>SunPKCS11BlockCipherFactory</tt> instance
+         * @throws Exception if anything goes wrong while initializing a new <code>SunPKCS11BlockCipherFactory</code> instance
          */
         public SunPKCS11BlockCipherFactory()
                 throws Exception

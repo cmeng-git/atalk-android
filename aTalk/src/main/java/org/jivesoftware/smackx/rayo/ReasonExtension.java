@@ -1,7 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -58,7 +58,7 @@ public class ReasonExtension extends AbstractExtensionElement
     public static final String ERROR = "error";
 
     /**
-     * Creates an {@link ReasonExtension} instance for the specified <tt>namespace</tt> and <tt>elementName</tt>.
+     * Creates an {@link ReasonExtension} instance for the specified <code>namespace</code> and <code>elementName</code>.
      *
      * @param elementName the name of the element
      */
@@ -78,9 +78,9 @@ public class ReasonExtension extends AbstractExtensionElement
     }
 
     /**
-     * Sets new value of platform code attribute. Pass <tt>null</tt> to remove.
+     * Sets new value of platform code attribute. Pass <code>null</code> to remove.
      *
-     * @param code new value of platform code attribute. Pass <tt>null</tt> to remove.
+     * @param code new value of platform code attribute. Pass <code>null</code> to remove.
      */
     public void setPlatformCode(String code)
     {

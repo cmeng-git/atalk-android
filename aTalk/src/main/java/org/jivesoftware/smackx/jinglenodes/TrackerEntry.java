@@ -2,6 +2,11 @@ package org.jivesoftware.smackx.jinglenodes;
 
 import org.jxmpp.jid.Jid;
 
+/**
+ * Implementation of the XEP-0278: Jingle Relay Nodes #JIngle Tracker
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0278.html#servicesdefinition">XEP-0278: Jingle Relay Nodes #5. Services Definitions</a>
+ */
 public class TrackerEntry
 {
     public enum Type

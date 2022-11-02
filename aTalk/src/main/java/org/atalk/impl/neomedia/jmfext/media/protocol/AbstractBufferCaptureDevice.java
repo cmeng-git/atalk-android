@@ -25,11 +25,11 @@ import javax.media.protocol.*;
 import timber.log.Timber;
 
 /**
- * Facilitates the implementations of the <tt>CaptureDevice</tt> and <tt>DataSource</tt> interfaces
- * provided by <tt>AbstractPullBufferCaptureDevice</tt> and <tt>AbstractPushBufferCaptureDevice</tt>
+ * Facilitates the implementations of the <code>CaptureDevice</code> and <code>DataSource</code> interfaces
+ * provided by <code>AbstractPullBufferCaptureDevice</code> and <code>AbstractPushBufferCaptureDevice</code>
  *
- * @param <AbstractBufferStreamT> the type of <tt>AbstractBufferStream</tt> through which this
- * <tt>AbstractBufferCaptureDevice</tt> is to give access to its media data
+ * @param <AbstractBufferStreamT> the type of <code>AbstractBufferStream</code> through which this
+ * <code>AbstractBufferCaptureDevice</code> is to give access to its media data
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -38,52 +38,52 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
         implements CaptureDevice, Controls
 {
     /**
-     * The value of the <tt>formatControls</tt> property of <tt>AbstractBufferCaptureDevice</tt>
-     * which represents an empty array of <tt>FormatControl</tt>s. Explicitly defined in order to
+     * The value of the <code>formatControls</code> property of <code>AbstractBufferCaptureDevice</code>
+     * which represents an empty array of <code>FormatControl</code>s. Explicitly defined in order to
      * reduce unnecessary allocations.
      */
     private static final FormatControl[] EMPTY_FORMAT_CONTROLS = new FormatControl[0];
 
     /**
      * The indicator which determines whether a connection to the media source specified by the
-     * <tt>MediaLocator</tt> of this <tt>DataSource</tt> has been opened.
+     * <code>MediaLocator</code> of this <code>DataSource</code> has been opened.
      */
     private boolean connected = false;
 
     /**
-     * The <tt>Object</tt> to synchronize the access to the state related to the <tt>Controls</tt>
-     * interface implementation in order to avoid locking <tt>this</tt> if not necessary.
+     * The <code>Object</code> to synchronize the access to the state related to the <code>Controls</code>
+     * interface implementation in order to avoid locking <code>this</code> if not necessary.
      */
     private final Object controlsSyncRoot = new Object();
 
     /**
-     * The array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams.
+     * The array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams.
      */
     private FormatControl[] formatControls;
 
     /**
-     * The <tt>FrameRateControl</tt>s of this <tt>AbstractBufferCaptureDevice</tt>.
+     * The <code>FrameRateControl</code>s of this <code>AbstractBufferCaptureDevice</code>.
      */
     private FrameRateControl[] frameRateControls;
 
     private final ReentrantLock lock = new ReentrantLock();
 
     /**
-     * The <tt>RTPInfo</tt>s of this <tt>AbstractBufferCaptureDevice</tt>.
+     * The <code>RTPInfo</code>s of this <code>AbstractBufferCaptureDevice</code>.
      */
     private RTPInfo[] rtpInfos;
 
     /**
-     * The indicator which determines whether the transfer of media data from this <tt>DataSource</tt> has been started.
+     * The indicator which determines whether the transfer of media data from this <code>DataSource</code> has been started.
      */
     private boolean started = false;
 
     /**
-     * The <tt>PushBufferStream</tt>s through which this <tt>PushBufferDataSource</tt> gives access to its media data.
+     * The <code>PushBufferStream</code>s through which this <code>PushBufferDataSource</code> gives access to its media data.
      * <p>
      * Warning: Caution is advised when directly using the field and access to it is to be
-     * synchronized with synchronization root <tt>this</tt>.
+     * synchronized with synchronization root <code>this</code>.
      * </p>
      */
     private AbstractBufferStream<?>[] streams;
@@ -91,10 +91,10 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     private final Object streamSyncRoot = new Object();
 
     /**
-     * Opens a connection to the media source of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Opens a connection to the media source of this <code>AbstractBufferCaptureDevice</code>.
      *
      * @throws IOException if anything goes wrong while opening the connection to the media source of this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     public void connect()
             throws IOException
@@ -111,26 +111,26 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Creates a new <tt>FormatControl</tt> instance which is to be associated with a <tt>PushBufferStream</tt>
-     * at a specific zero-based index in the list of streams of this <tt>PushBufferDataSource</tt>.
-     * As the <tt>FormatControl</tt>s of a <tt>PushBufferDataSource</tt> can be requested before {@link #connect()},
-     * its <tt>PushBufferStream</tt>s may not exist at the time of the request for the creation of the
-     * <tt>FormatControl</tt>.
+     * Creates a new <code>FormatControl</code> instance which is to be associated with a <code>PushBufferStream</code>
+     * at a specific zero-based index in the list of streams of this <code>PushBufferDataSource</code>.
+     * As the <code>FormatControl</code>s of a <code>PushBufferDataSource</code> can be requested before {@link #connect()},
+     * its <code>PushBufferStream</code>s may not exist at the time of the request for the creation of the
+     * <code>FormatControl</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> in the list of streams of this
-     * <tt>PushBufferDataSource</tt> which is to be associated with the new <tt>FormatControl</tt> instance
-     * @return a new <tt>FormatControl</tt> instance which is to be associated with a
-     * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PushBufferDataSource</tt>
+     * @param streamIndex the zero-based index of the <code>PushBufferStream</code> in the list of streams of this
+     * <code>PushBufferDataSource</code> which is to be associated with the new <code>FormatControl</code> instance
+     * @return a new <code>FormatControl</code> instance which is to be associated with a
+     * <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PushBufferDataSource</code>
      */
     protected FormatControl createFormatControl(final int streamIndex)
     {
         return new AbstractFormatControl()
         {
             /**
-             * Gets the <tt>Format</tt> of the media data of the owner of this <tt>FormatControl</tt>.
+             * Gets the <code>Format</code> of the media data of the owner of this <code>FormatControl</code>.
              *
-             * @return the <tt>Format</tt> of the media data of the owner of this <tt>FormatControl</tt>
+             * @return the <code>Format</code> of the media data of the owner of this <code>FormatControl</code>
              */
             public Format getFormat()
             {
@@ -139,10 +139,10 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
             }
 
             /**
-             * Gets the <tt>Format</tt>s in which the owner of this <tt>FormatControl</tt> is
+             * Gets the <code>Format</code>s in which the owner of this <code>FormatControl</code> is
              * capable of providing media data.
              *
-             * @return an array of <tt>Format</tt>s in which the owner of this <tt>FormatControl</tt>
+             * @return an array of <code>Format</code>s in which the owner of this <code>FormatControl</code>
              * is capable of providing media data
              */
             public Format[] getSupportedFormats()
@@ -154,12 +154,12 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
 
             /**
              * Implements {@link FormatControl#setFormat(Format)}. Attempts to set the
-             * <tt>Format</tt> in which the owner of this <tt>FormatControl</tt> is to provide media data.
+             * <code>Format</code> in which the owner of this <code>FormatControl</code> is to provide media data.
              *
-             * @param format the <tt>Format</tt> to be set on this instance
-             * @return the currently set <tt>Format</tt> after the attempt to set it on this
-             *         instance if <tt>format</tt> is supported by this instance and regardless of
-             *         whether it was actually set; <tt>null</tt> if <tt>format</tt> is not supported by this instance
+             * @param format the <code>Format</code> to be set on this instance
+             * @return the currently set <code>Format</code> after the attempt to set it on this
+             *         instance if <code>format</code> is supported by this instance and regardless of
+             *         whether it was actually set; <code>null</code> if <code>format</code> is not supported by this instance
              */
             @Override
             public Format setFormat(Format format)
@@ -175,9 +175,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Creates the <tt>FormatControl</tt>s of this <tt>CaptureDevice</tt>.
+     * Creates the <code>FormatControl</code>s of this <code>CaptureDevice</code>.
      *
-     * @return an array of the <tt>FormatControl</tt>s of this <tt>CaptureDevice</tt>
+     * @return an array of the <code>FormatControl</code>s of this <code>CaptureDevice</code>
      */
     protected FormatControl[] createFormatControls()
     {
@@ -186,11 +186,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Creates a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-     * setting of the frame rate of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Creates a new <code>FrameRateControl</code> instance which is to allow the getting and
+     * setting of the frame rate of this <code>AbstractBufferCaptureDevice</code>.
      *
-     * @return a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-     * setting of the frame rate of this <tt>AbstractBufferCaptureDevice</tt>
+     * @return a new <code>FrameRateControl</code> instance which is to allow the getting and
+     * setting of the frame rate of this <code>AbstractBufferCaptureDevice</code>
      */
     protected FrameRateControl createFrameRateControl()
     {
@@ -198,9 +198,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Creates a new <tt>RTPInfo</tt> instance of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Creates a new <code>RTPInfo</code> instance of this <code>AbstractBufferCaptureDevice</code>.
      *
-     * @return a new <tt>RTPInfo</tt> instance of this <tt>AbstractBufferCaptureDevice</tt>
+     * @return a new <code>RTPInfo</code> instance of this <code>AbstractBufferCaptureDevice</code>
      */
     protected RTPInfo createRTPInfo()
     {
@@ -215,26 +215,26 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Create a new <tt>AbstractBufferStream</tt> which is to be at a specific zero-based index in
-     * the list of streams of this <tt>AbstractBufferCaptureDevice</tt>. The <tt>Format</tt>-related
-     * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+     * Create a new <code>AbstractBufferStream</code> which is to be at a specific zero-based index in
+     * the list of streams of this <code>AbstractBufferCaptureDevice</code>. The <code>Format</code>-related
+     * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> in the list of streams of
-     * this <tt>AbstractBufferCaptureDevice</tt>
-     * @param formatControl the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> in the list of streams of
+     * this <code>AbstractBufferCaptureDevice</code>
+     * @param formatControl the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
      * information of the new instance
-     * @return a new <tt>AbstractBufferStream</tt> which is to be at the specified
-     * <tt>streamIndex</tt> in the list of streams of this
-     * <tt>AbstractBufferCaptureDevice</tt> and which has its <tt>Format</tt>-related
-     * information abstracted by the specified <tt>formatControl</tt>
+     * @return a new <code>AbstractBufferStream</code> which is to be at the specified
+     * <code>streamIndex</code> in the list of streams of this
+     * <code>AbstractBufferCaptureDevice</code> and which has its <code>Format</code>-related
+     * information abstracted by the specified <code>formatControl</code>
      */
     protected abstract AbstractBufferStreamT createStream(int streamIndex, FormatControl formatControl);
 
     /**
-     * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for {@link #doStart()}.
+     * Provides the default implementation of <code>AbstractBufferCaptureDevice</code> for {@link #doStart()}.
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      * @see #doStart()
      */
     final void defaultDoStart()
@@ -249,10 +249,10 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for {@link #doStop()}.
+     * Provides the default implementation of <code>AbstractBufferCaptureDevice</code> for {@link #doStop()}.
      *
      * @throws IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      * @see #doStop()
      */
     final void defaultDoStop()
@@ -267,9 +267,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for {@link #getControls()}.
+     * Provides the default implementation of <code>AbstractBufferCaptureDevice</code> for {@link #getControls()}.
      *
-     * @return an array of <tt>Object</tt>s which represent the controls available for this instance
+     * @return an array of <code>Object</code>s which represent the controls available for this instance
      */
     final Object[] defaultGetControls()
     {
@@ -304,15 +304,15 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for {@link #getFormat(int, Format)}.
+     * Provides the default implementation of <code>AbstractBufferCaptureDevice</code> for {@link #getFormat(int, Format)}.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> the <tt>Format</tt> of which
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> the <code>Format</code> of which
      * is to be retrieved
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>AbstractBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>AbstractBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>AbstractBufferCaptureDevice</tt>
+     * @param oldValue the last-known <code>Format</code> for the <code>AbstractBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>AbstractBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>AbstractBufferCaptureDevice</code>
      * @see #getFormat(int, Format)
      */
     final Format defaultGetFormat(int streamIndex, Format oldValue)
@@ -327,14 +327,14 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Provides the default implementation of <tt>AbstractBufferCaptureDevice</tt> for
+     * Provides the default implementation of <code>AbstractBufferCaptureDevice</code> for
      * {@link #getSupportedFormats(int)}.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> for which the specified
-     * <tt>FormatControl</tt> is to report the list of supported <tt>Format</tt>s
-     * @return an array of <tt>Format</tt>s to be reported by a <tt>FormatControl</tt> as the
-     * supported formats for the <tt>AbstractBufferStream</tt> at the specified
-     * <tt>streamIndex</tt> in the list of streams of this <tt>AbstractBufferCaptureDevice</tt>
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> for which the specified
+     * <code>FormatControl</code> is to report the list of supported <code>Format</code>s
+     * @return an array of <code>Format</code>s to be reported by a <code>FormatControl</code> as the
+     * supported formats for the <code>AbstractBufferStream</code> at the specified
+     * <code>streamIndex</code> in the list of streams of this <code>AbstractBufferCaptureDevice</code>
      */
     final Format[] defaultGetSupportedFormats(int streamIndex)
     {
@@ -344,7 +344,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
 
     /**
      * Closes the connection to the media source specified of this
-     * <tt>AbstractBufferCaptureDevice</tt>. If such a connection has not been opened, the call is ignored.
+     * <code>AbstractBufferCaptureDevice</code>. If such a connection has not been opened, the call is ignored.
      */
     public void disconnect()
     {
@@ -366,58 +366,58 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Opens a connection to the media source of this <tt>AbstractBufferCaptureDevice</tt>. Allows
+     * Opens a connection to the media source of this <code>AbstractBufferCaptureDevice</code>. Allows
      * extenders to override and be sure that there will be no request to open a connection if the
      * connection has already been opened.
      *
      * @throws IOException if anything goes wrong while opening the connection to the media source of this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     protected abstract void doConnect()
             throws IOException;
 
     /**
-     * Closes the connection to the media source of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Closes the connection to the media source of this <code>AbstractBufferCaptureDevice</code>.
      * Allows extenders to override and be sure that there will be no request to close a connection
      * if the connection has not been opened yet.
      */
     protected abstract void doDisconnect();
 
     /**
-     * Starts the transfer of media data from this <tt>AbstractBufferCaptureDevice</tt>. Allows
+     * Starts the transfer of media data from this <code>AbstractBufferCaptureDevice</code>. Allows
      * extenders to override and be sure that there will be no request to start the transfer of
      * media data if it has already been started.
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     protected abstract void doStart()
             throws IOException;
 
     /**
-     * Stops the transfer of media data from this <tt>AbstractBufferCaptureDevice</tt>. Allows
+     * Stops the transfer of media data from this <code>AbstractBufferCaptureDevice</code>. Allows
      * extenders to override and be sure that there will be no request to stop the transfer of
      * media data if it has not been started yet.
      *
      * @throws IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     protected abstract void doStop()
             throws IOException;
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of this <tt>CaptureDevice</tt> which describes it.
+     * Gets the <code>CaptureDeviceInfo</code> of this <code>CaptureDevice</code> which describes it.
      *
-     * @return the <tt>CaptureDeviceInfo</tt> of this <tt>CaptureDevice</tt> which describes it
+     * @return the <code>CaptureDeviceInfo</code> of this <code>CaptureDevice</code> which describes it
      */
     public abstract CaptureDeviceInfo getCaptureDeviceInfo();
 
     /**
-     * Gets the <tt>CaptureDeviceInfo</tt> of a specific <tt>CaptureDevice</tt> by locating its
-     * registration in JMF using its <tt>MediaLocator</tt>.
+     * Gets the <code>CaptureDeviceInfo</code> of a specific <code>CaptureDevice</code> by locating its
+     * registration in JMF using its <code>MediaLocator</code>.
      *
-     * @param captureDevice the <tt>CaptureDevice</tt> to gets the <tt>CaptureDeviceInfo</tt> of
-     * @return the <tt>CaptureDeviceInfo</tt> of the specified <tt>CaptureDevice</tt> as registered in JMF
+     * @param captureDevice the <code>CaptureDevice</code> to gets the <code>CaptureDeviceInfo</code> of
+     * @return the <code>CaptureDeviceInfo</code> of the specified <code>CaptureDevice</code> as registered in JMF
      */
     public static CaptureDeviceInfo getCaptureDeviceInfo(DataSource captureDevice)
     {
@@ -439,8 +439,8 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
      * Gets the control of the specified type available for this instance.
      *
      * @param controlType the type of the control available for this instance to be retrieved
-     * @return an <tt>Object</tt> which represents the control of the specified type available for
-     * this instance if such a control is indeed available; otherwise, <tt>null</tt>
+     * @return an <code>Object</code> which represents the control of the specified type available for
+     * this instance if such a control is indeed available; otherwise, <code>null</code>
      */
     public Object getControl(String controlType)
     {
@@ -450,7 +450,7 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     /**
      * Implements {@link javax.media.Controls#getControls()}. Gets the controls available for this instance.
      *
-     * @return an array of <tt>Object</tt>s which represent the controls available for this instance
+     * @return an array of <code>Object</code>s which represent the controls available for this instance
      */
     public Object[] getControls()
     {
@@ -458,29 +458,29 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of an
-     * <tt>AbstractBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>AbstractBufferCaptureDevice</tt>. The <tt>AbstractBufferStream</tt> may not exist at the
-     * time of requesting its <tt>Format</tt>. Allows extenders to override the default behavior
-     * which is to report any last-known format or the first <tt>Format</tt> from the list of
-     * supported formats as defined in the JMF registration of this <tt>CaptureDevice</tt>.
+     * Gets the <code>Format</code> to be reported by the <code>FormatControl</code> of an
+     * <code>AbstractBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>AbstractBufferCaptureDevice</code>. The <code>AbstractBufferStream</code> may not exist at the
+     * time of requesting its <code>Format</code>. Allows extenders to override the default behavior
+     * which is to report any last-known format or the first <code>Format</code> from the list of
+     * supported formats as defined in the JMF registration of this <code>CaptureDevice</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> the <tt>Format</tt> of which
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> the <code>Format</code> of which
      * is to be retrieved
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PushBufferDataSource</tt>.
+     * @param oldValue the last-known <code>Format</code> for the <code>PushBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PushBufferDataSource</code>.
      */
     protected abstract Format getFormat(int streamIndex, Format oldValue);
 
     /**
-     * Gets an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams.
+     * Gets an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams.
      *
-     * @return an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams
+     * @return an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams
      */
     public FormatControl[] getFormatControls()
     {
@@ -488,9 +488,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the <tt>Object</tt> which is to synchronize the access to {@link #streams()} and its return value.
+     * Gets the <code>Object</code> which is to synchronize the access to {@link #streams()} and its return value.
      *
-     * @return the <tt>Object</tt> which is to synchronize the access to {@link #streams()} and its return value
+     * @return the <code>Object</code> which is to synchronize the access to {@link #streams()} and its return value
      */
     Object getStreamSyncRoot()
     {
@@ -498,13 +498,13 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the <tt>AbstractBufferStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data.
+     * Gets the <code>AbstractBufferStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data.
      *
-     * @param <SourceStreamT> the type of <tt>SourceStream</tt> which is to be the element type of the returned array
-     * @param clz the <tt>Class</tt> of <tt>SourceStream</tt> which is to be the element type of the returned array
-     * @return an array of the <tt>SourceStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data
+     * @param <SourceStreamT> the type of <code>SourceStream</code> which is to be the element type of the returned array
+     * @param clz the <code>Class</code> of <code>SourceStream</code> which is to be the element type of the returned array
+     * @return an array of the <code>SourceStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data
      */
     public <SourceStreamT extends SourceStream>
     SourceStreamT[] getStreams(Class<SourceStreamT> clz)
@@ -515,31 +515,31 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the <tt>Format</tt>s which are to be reported by a <tt>FormatControl</tt> as supported
-     * formats for a <tt>AbstractBufferStream</tt> at a specific zero-based index in the list of
-     * streams of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Gets the <code>Format</code>s which are to be reported by a <code>FormatControl</code> as supported
+     * formats for a <code>AbstractBufferStream</code> at a specific zero-based index in the list of
+     * streams of this <code>AbstractBufferCaptureDevice</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> for which the specified
-     * <tt>FormatControl</tt> is to report the list of supported <tt>Format</tt>s
-     * @return an array of <tt>Format</tt>s to be reported by a <tt>FormatControl</tt> as the
-     * supported formats for the <tt>AbstractBufferStream</tt> at the specified
-     * <tt>streamIndex</tt> in the list of streams of this <tt>AbstractBufferCaptureDevice</tt>
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> for which the specified
+     * <code>FormatControl</code> is to report the list of supported <code>Format</code>s
+     * @return an array of <code>Format</code>s to be reported by a <code>FormatControl</code> as the
+     * supported formats for the <code>AbstractBufferStream</code> at the specified
+     * <code>streamIndex</code> in the list of streams of this <code>AbstractBufferCaptureDevice</code>
      */
     protected abstract Format[] getSupportedFormats(int streamIndex);
 
     /**
-     * Gets the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>PushBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>PushBufferDataSource</tt>. The <tt>PushBufferStream</tt> may not exist at the time of
-     * requesting its <tt>Format</tt>.
+     * Gets the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+     * <code>PushBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>PushBufferDataSource</code>. The <code>PushBufferStream</code> may not exist at the time of
+     * requesting its <code>Format</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is
+     * @param streamIndex the zero-based index of the <code>PushBufferStream</code> the <code>Format</code> of which is
      * to be retrieved
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PushBufferDataSource</tt>.
+     * @param oldValue the last-known <code>Format</code> for the <code>PushBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PushBufferDataSource</code>.
      */
     private Format internalGetFormat(int streamIndex, Format oldValue)
     {
@@ -568,11 +568,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams.
+     * Gets an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams.
      *
-     * @return an array of <tt>FormatControl</tt> instances each one of which can be used before
-     * {@link #connect()} to get and set the capture <tt>Format</tt> of each one of the capture streams
+     * @return an array of <code>FormatControl</code> instances each one of which can be used before
+     * {@link #connect()} to get and set the capture <code>Format</code> of each one of the capture streams
      */
     private FormatControl[] internalGetFormatControls()
     {
@@ -585,11 +585,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets an array of <tt>FrameRateControl</tt> instances which can be used to get and/or set the
-     * output frame rate of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Gets an array of <code>FrameRateControl</code> instances which can be used to get and/or set the
+     * output frame rate of this <code>AbstractBufferCaptureDevice</code>.
      *
-     * @return an array of <tt>FrameRateControl</tt> instances which can be used to get and/or set
-     * the output frame rate of this <tt>AbstractBufferCaptureDevice</tt>.
+     * @return an array of <code>FrameRateControl</code> instances which can be used to get and/or set
+     * the output frame rate of this <code>AbstractBufferCaptureDevice</code>.
      */
     private FrameRateControl[] internalGetFrameRateControls()
     {
@@ -607,9 +607,9 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets an array of <tt>RTPInfo</tt> instances of this <tt>AbstractBufferCaptureDevice</tt>.
+     * Gets an array of <code>RTPInfo</code> instances of this <code>AbstractBufferCaptureDevice</code>.
      *
-     * @return an array of <tt>RTPInfo</tt> instances of this <tt>AbstractBufferCaptureDevice</tt>.
+     * @return an array of <code>RTPInfo</code> instances of this <code>AbstractBufferCaptureDevice</code>.
      */
     private RTPInfo[] internalGetRTPInfos()
     {
@@ -625,13 +625,13 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the <tt>AbstractBufferStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data.
+     * Gets the <code>AbstractBufferStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data.
      *
-     * @param <SourceStreamT> the type of <tt>SourceStream</tt> which is to be the element type of the returned array
-     * @param clz the <tt>Class</tt> of <tt>SourceStream</tt> which is to be the element type of the returned array
-     * @return an array of the <tt>SourceStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data
+     * @param <SourceStreamT> the type of <code>SourceStream</code> which is to be the element type of the returned array
+     * @param clz the <code>Class</code> of <code>SourceStream</code> which is to be the element type of the returned array
+     * @return an array of the <code>SourceStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data
      */
     private <SourceStreamT extends SourceStream>
     SourceStreamT[] internalGetStreams(Class<SourceStreamT> clz)
@@ -672,16 +672,16 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a <tt>PushBufferStream</tt>
-     * at a specific zero-based index in the list of streams of this <tt>PushBufferDataSource</tt>.
+     * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a <code>PushBufferStream</code>
+     * at a specific zero-based index in the list of streams of this <code>PushBufferDataSource</code>.
      *
-     * @param streamIndex the zero-based index of the <tt>PushBufferStream</tt> the <tt>Format</tt> of which is to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt>
-     * @param newValue the <tt>Format</tt> which is to be set
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>PushBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>PushBufferStream</tt> or <tt>null</tt> if the attempt to set the
-     * <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in effect
+     * @param streamIndex the zero-based index of the <code>PushBufferStream</code> the <code>Format</code> of which is to be set
+     * @param oldValue the last-known <code>Format</code> for the <code>PushBufferStream</code> at the specified <code>streamIndex</code>
+     * @param newValue the <code>Format</code> which is to be set
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>PushBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>PushBufferStream</code> or <code>null</code> if the attempt to set the
+     * <code>Format</code> did not success and any last-known <code>Format</code> is to be left in effect
      */
     private Format internalSetFormat(int streamIndex, Format oldValue, Format newValue)
     {
@@ -706,32 +706,32 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-     * <tt>AbstractBufferStream</tt> at a specific zero-based index in the list of streams of this
-     * <tt>AbstractBufferCaptureDevice</tt>. The <tt>AbstractBufferStream</tt> does not exist at
-     * the time of the attempt to set its <tt>Format</tt>. Allows extenders to override the default
-     * behavior which is to not attempt to set the specified <tt>Format</tt> so that they can
-     * enable setting the <tt>Format</tt> prior to creating the <tt>AbstractBufferStream</tt>. If
-     * setting the <tt>Format</tt> of an existing <tt>AbstractBufferStream</tt> is desired,
-     * <tt>AbstractBufferStream#doSetFormat(Format)</tt> should be overridden instead.
+     * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+     * <code>AbstractBufferStream</code> at a specific zero-based index in the list of streams of this
+     * <code>AbstractBufferCaptureDevice</code>. The <code>AbstractBufferStream</code> does not exist at
+     * the time of the attempt to set its <code>Format</code>. Allows extenders to override the default
+     * behavior which is to not attempt to set the specified <code>Format</code> so that they can
+     * enable setting the <code>Format</code> prior to creating the <code>AbstractBufferStream</code>. If
+     * setting the <code>Format</code> of an existing <code>AbstractBufferStream</code> is desired,
+     * <code>AbstractBufferStream#doSetFormat(Format)</code> should be overridden instead.
      *
-     * @param streamIndex the zero-based index of the <tt>AbstractBufferStream</tt> the <tt>Format</tt> of which
+     * @param streamIndex the zero-based index of the <code>AbstractBufferStream</code> the <code>Format</code> of which
      * is to be set
-     * @param oldValue the last-known <tt>Format</tt> for the <tt>AbstractBufferStream</tt> at the specified
-     * <tt>streamIndex</tt>
-     * @param newValue the <tt>Format</tt> which is to be set
-     * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-     * <tt>AbstractBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-     * streams of this <tt>AbstractBufferStream</tt> or <tt>null</tt> if the attempt to set
-     * the <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in effect
+     * @param oldValue the last-known <code>Format</code> for the <code>AbstractBufferStream</code> at the specified
+     * <code>streamIndex</code>
+     * @param newValue the <code>Format</code> which is to be set
+     * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+     * <code>AbstractBufferStream</code> at the specified <code>streamIndex</code> in the list of
+     * streams of this <code>AbstractBufferStream</code> or <code>null</code> if the attempt to set
+     * the <code>Format</code> did not success and any last-known <code>Format</code> is to be left in effect
      */
     protected abstract Format setFormat(int streamIndex, Format oldValue, Format newValue);
 
     /**
-     * Starts the transfer of media data from this <tt>AbstractBufferCaptureDevice</tt>.
+     * Starts the transfer of media data from this <code>AbstractBufferCaptureDevice</code>.
      *
      * @throws IOException if anything goes wrong while starting the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     public void start()
             throws IOException
@@ -752,10 +752,10 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Stops the transfer of media data from this <tt>AbstractBufferCaptureDevice</tt>.
+     * Stops the transfer of media data from this <code>AbstractBufferCaptureDevice</code>.
      *
      * @throws IOException if anything goes wrong while stopping the transfer of media data from this
-     * <tt>AbstractBufferCaptureDevice</tt>
+     * <code>AbstractBufferCaptureDevice</code>
      */
     public void stop()
             throws IOException
@@ -772,11 +772,11 @@ public abstract class AbstractBufferCaptureDevice<AbstractBufferStreamT extends 
     }
 
     /**
-     * Gets the internal array of <tt>AbstractBufferStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data.
+     * Gets the internal array of <code>AbstractBufferStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data.
      *
-     * @return the internal array of <tt>AbstractBufferStream</tt>s through which this
-     * <tt>AbstractBufferCaptureDevice</tt> gives access to its media data
+     * @return the internal array of <code>AbstractBufferStream</code>s through which this
+     * <code>AbstractBufferCaptureDevice</code> gives access to its media data
      */
     AbstractBufferStream<?>[] streams()
     {

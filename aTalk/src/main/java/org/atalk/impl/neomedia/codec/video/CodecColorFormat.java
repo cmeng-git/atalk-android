@@ -91,9 +91,9 @@ public class CodecColorFormat
     }
 
     /**
-     * Returns <tt>CodecColorFormat</tt> for given int constant value.
+     * Returns <code>CodecColorFormat</code> for given int constant value.
      * @param value color constant value.
-     * @return <tt>CodecColorFormat</tt> for given int constant value.
+     * @return <code>CodecColorFormat</code> for given int constant value.
      */
     public static CodecColorFormat fromInt(int value)
     {

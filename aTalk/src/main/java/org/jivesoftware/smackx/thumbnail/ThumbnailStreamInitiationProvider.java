@@ -39,7 +39,7 @@ import timber.log.Timber;
 public class ThumbnailStreamInitiationProvider extends IQProvider<StreamInitiation>
 {
     /**
-     * Parses the given <tt>parser</tt> in order to create a <tt>FileElement</tt> from it.
+     * Parses the given <code>parser</code> in order to create a <code>FileElement</code> from it.
      *
      * @param parser the parser to parse
      */

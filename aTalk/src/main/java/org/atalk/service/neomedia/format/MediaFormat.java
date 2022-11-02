@@ -118,9 +118,9 @@ public interface MediaFormat
 
     /**
      * Remove the specific parameter name-value pair from advancedAttributes
-     * @see org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR
      *
      * @param parameterName the key of the <parameter/> name-value pair to be removed
+     * @see org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR
      */
     void removeParameter(String parameterName);
 

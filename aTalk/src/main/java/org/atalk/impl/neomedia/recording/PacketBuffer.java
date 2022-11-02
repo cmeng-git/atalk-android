@@ -13,7 +13,7 @@ import org.atalk.service.neomedia.RawPacket;
 import java.util.*;
 
 /**
- * A <tt>TransformEngine</tt> and <tt>PacketTransformer</tt> which implement a fixed-size buffer.
+ * A <code>TransformEngine</code> and <code>PacketTransformer</code> which implement a fixed-size buffer.
  * The class is specific to video recording. Buffered are only VP8 RTP packets, and they are places
  * in different buffers according to their SSRC.
  *
@@ -22,11 +22,11 @@ import java.util.*;
 public class PacketBuffer implements TransformEngine, PacketTransformer
 {
 	/**
-	 * A <tt>Comparator</tt> implementation for RTP sequence numbers. Compares the sequence numbers
-	 * <tt>a</tt> and <tt>b</tt> of <tt>pkt1</tt> and <tt>pkt2</tt>, taking into account the wrap at
+	 * A <code>Comparator</code> implementation for RTP sequence numbers. Compares the sequence numbers
+	 * <code>a</code> and <code>b</code> of <code>pkt1</code> and <code>pkt2</code>, taking into account the wrap at
 	 * 2^16.
 	 *
-	 * IMPORTANT: This is a valid <tt>Comparator</tt> implementation only if used for subsets of [0,
+	 * IMPORTANT: This is a valid <code>Comparator</code> implementation only if used for subsets of [0,
 	 * 2^16) which don't span more than 2^15 elements.
 	 *
 	 * E.g. it works for: [0, 2^15-1] and ([50000, 2^16) u [0, 10000]) Doesn't work for: [0, 2^15]
@@ -60,7 +60,7 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 	};
 
     /**
-     * The <tt>ConfigurationService</tt> used to load buffering configuration.
+     * The <code>ConfigurationService</code> used to load buffering configuration.
      */
     private final static ConfigurationService cfg =
             LibJitsi.getConfigurationService();
@@ -81,8 +81,8 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
     private static int SIZE = cfg.getInt(PACKET_BUFFER_SIZE_PNAME, 300);
 
     /**
-     * The map of actual <tt>Buffer</tt> instances, one for each SSRC that this
-     * <tt>PacketBuffer</tt> buffers in each instant.
+     * The map of actual <code>Buffer</code> instances, one for each SSRC that this
+     * <code>PacketBuffer</code> buffers in each instant.
      */
     private final Map<Long, Buffer> buffers = new HashMap<>();
 
@@ -100,7 +100,7 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
      * {@link PacketTransformer#reverseTransform(RawPacket[])}.
      *
      * Replaces each packet in the input with a packet (or null) from the
-     * <tt>Buffer</tt> instance for the packet's SSRC.
+     * <code>Buffer</code> instance for the packet's SSRC.
      *
      * @param pkts the transformed packets to be restored.
      * @return
@@ -156,7 +156,7 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 	}
 
 	/**
-	 * Checks whether a particular <tt>RawPacket</tt> will be buffered or not by this instance.
+	 * Checks whether a particular <code>RawPacket</code> will be buffered or not by this instance.
 	 * Currently we only buffer VP8 packets, recognized by their payload type number.
 	 * 
 	 * @param pkt
@@ -169,7 +169,7 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 	}
 
 	/**
-	 * Disables the <tt>Buffer</tt> for a specific SSRC.
+	 * Disables the <code>Buffer</code> for a specific SSRC.
 	 * 
 	 * @param ssrc
 	 */
@@ -192,11 +192,11 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
     }
 
     /**
-     * Gets the <tt>Buffer</tt> instance responsible for buffering packets with
-     * SSRC <tt>ssrc</tt>. Creates it if necessary, always returns non-null.
-     * @param ssrc the SSRC for which go get a <tt>Buffer</tt>.
-     * @return the <tt>Buffer</tt> instance responsible for buffering packets with
-     * SSRC <tt>ssrc</tt>. Creates it if necessary, always returns non-null.
+     * Gets the <code>Buffer</code> instance responsible for buffering packets with
+     * SSRC <code>ssrc</code>. Creates it if necessary, always returns non-null.
+     * @param ssrc the SSRC for which go get a <code>Buffer</code>.
+     * @return the <code>Buffer</code> instance responsible for buffering packets with
+     * SSRC <code>ssrc</code>. Creates it if necessary, always returns non-null.
      */
     private Buffer getBuffer(long ssrc)
     {
@@ -213,12 +213,12 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
     }
 
 	/**
-	 * Empties the <tt>Buffer</tt> for a specific SSRC, and returns its contents as an ordered (by
+	 * Empties the <code>Buffer</code> for a specific SSRC, and returns its contents as an ordered (by
 	 * RTP sequence number) array.
 	 * 
 	 * @param ssrc
-	 *        the SSRC for which to empty the <tt>Buffer</tt>.
-	 * @return the contents of the <tt>Buffer</tt> for SSRC, or an empty array, if there is no
+	 *        the SSRC for which to empty the <code>Buffer</code>.
+	 * @return the contents of the <code>Buffer</code> for SSRC, or an empty array, if there is no
 	 *         buffer for SSRC.
 	 */
 	RawPacket[] emptyBuffer(long ssrc)
@@ -237,22 +237,22 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
     }
 
 	/**
-	 * Represents a buffer for <tt>RawPacket</tt>s.
+	 * Represents a buffer for <code>RawPacket</code>s.
 	 */
 	private static class Buffer
 	{
 		/**
-		 * The actual contents of this <tt>Buffer</tt>.
+		 * The actual contents of this <code>Buffer</code>.
 		 */
 		private final SortedSet<RawPacket> buffer;
 
 		/**
-		 * The maximum capacity of this <tt>Buffer</tt>.
+		 * The maximum capacity of this <code>Buffer</code>.
 		 */
 		private final int capacity;
 
 		/**
-		 * The SSRC that this <tt>Buffer</tt> is associated with.
+		 * The SSRC that this <code>Buffer</code> is associated with.
 		 */
 		private long ssrc;
 
@@ -263,7 +263,7 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 		private boolean disabled = false;
 
 		/**
-		 * Constructs a <tt>Buffer</tt> with the given capacity and SSRC.
+		 * Constructs a <code>Buffer</code> with the given capacity and SSRC.
 		 * 
 		 * @param capacity
 		 *        the capacity.
@@ -278,14 +278,14 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 		}
 
 		/**
-		 * Inserts a specific <tt>RawPacket</tt> in this <tt>Buffer</tt>. If, after the insertion,
-		 * the number of elements stored in the buffer is more than <tt>this.capacity</tt>, removes
+		 * Inserts a specific <code>RawPacket</code> in this <code>Buffer</code>. If, after the insertion,
+		 * the number of elements stored in the buffer is more than <code>this.capacity</code>, removes
 		 * from the buffer and returns the 'first' packet in the buffer. Otherwise, return null.
 		 *
 		 * @param pkt
 		 *        the packet to insert.
 		 * @return Either the 'first' packet in the buffer, or null, according to whether the buffer
-		 *         capacity has been reached after the insertion of <tt>pkt</tt>.
+		 *         capacity has been reached after the insertion of <code>pkt</code>.
 		 */
 		RawPacket insert(RawPacket pkt)
 		{
@@ -305,9 +305,9 @@ public class PacketBuffer implements TransformEngine, PacketTransformer
 		}
 
 		/**
-		 * Empties this <tt>Buffer</tt>, returning all its contents.
+		 * Empties this <code>Buffer</code>, returning all its contents.
 		 * 
-		 * @return the contents of this <tt>Buffer</tt>.
+		 * @return the contents of this <code>Buffer</code>.
 		 */
 		RawPacket[] empty()
 		{

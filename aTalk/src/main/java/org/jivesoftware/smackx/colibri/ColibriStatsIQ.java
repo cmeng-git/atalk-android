@@ -17,13 +17,13 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 public class ColibriStatsIQ extends IQ
 {
     /**
-     * The XML element name of the Jitsi Videobridge <tt>stats</tt> extension.
+     * The XML element name of the Jitsi Videobridge <code>stats</code> extension.
      */
     public static final String ELEMENT = ColibriStatsExtension.ELEMENT;
 
     /**
      * The XML COnferencing with LIghtweight BRIdging namespace of the Jitsi Videobridge
-     * <tt>stats</tt> extension.
+     * <code>stats</code> extension.
      */
     public static final String NAMESPACE = ColibriStatsExtension.NAMESPACE;
 

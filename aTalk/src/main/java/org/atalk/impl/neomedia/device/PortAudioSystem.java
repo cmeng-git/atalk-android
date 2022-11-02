@@ -29,7 +29,7 @@ import timber.log.Timber;
 public class PortAudioSystem extends AudioSystem2
 {
     /**
-     * The protocol of the <tt>MediaLocator</tt>s identifying PortAudio <tt>CaptureDevice</tt>s.
+     * The protocol of the <code>MediaLocator</code>s identifying PortAudio <code>CaptureDevice</code>s.
      */
     private static final String LOCATOR_PROTOCOL = LOCATOR_PROTOCOL_PORTAUDIO;
 
@@ -37,8 +37,8 @@ public class PortAudioSystem extends AudioSystem2
      * Gets a sample rate supported by a PortAudio device with a specific device index with which it
      * is to be registered with JMF.
      *
-     * @param input <tt>true</tt> if the supported sample rate is to be retrieved for the PortAudio device
-     * with the specified device index as an input device or <tt>false</tt> for an output
+     * @param input <code>true</code> if the supported sample rate is to be retrieved for the PortAudio device
+     * with the specified device index as an input device or <code>false</code> for an output
      * device
      * @param deviceIndex the device index of the PortAudio device for which a supported sample rate is to be
      * retrieved
@@ -95,11 +95,11 @@ public class PortAudioSystem extends AudioSystem2
     }
 
     /**
-     * Places a specific <tt>DiagnosticsControl</tt> under monitoring of its functional health
+     * Places a specific <code>DiagnosticsControl</code> under monitoring of its functional health
      * because of a malfunction in its procedure/process. The monitoring will automatically cease
      * after the procedure/process resumes executing normally or is garbage collected.
      *
-     * @param diagnosticsControl the <tt>DiagnosticsControl</tt> to be placed under monitoring of its functional health
+     * @param diagnosticsControl the <code>DiagnosticsControl</code> to be placed under monitoring of its functional health
      * because of a malfunction in its procedure/process
      */
     public static void monitorFunctionalHealth(DiagnosticsControl diagnosticsControl)
@@ -110,7 +110,7 @@ public class PortAudioSystem extends AudioSystem2
     private Runnable devicesChangedCallback;
 
     /**
-     * Initializes a new <tt>PortAudioSystem</tt> instance which creates PortAudio capture and
+     * Initializes a new <code>PortAudioSystem</code> instance which creates PortAudio capture and
      * playback devices by enumerating all host devices with input channels.
      *
      * @throws Exception if anything wrong happens while creating the PortAudio capture and playback devices
@@ -304,7 +304,7 @@ public class PortAudioSystem extends AudioSystem2
     /**
      * {@inheritDoc}
      *
-     * The implementation of <tt>PortAudioSystem</tt> always returns &quot;PortAudio&quot;.
+     * The implementation of <code>PortAudioSystem</code> always returns &quot;PortAudio&quot;.
      */
     @NonNull
     @Override

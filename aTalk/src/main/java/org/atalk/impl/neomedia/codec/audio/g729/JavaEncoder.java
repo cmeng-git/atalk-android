@@ -60,7 +60,7 @@ public class JavaEncoder extends AbstractCodec2 implements AdvancedAttributesAwa
 	private short[] sp16;
 
 	/**
-	 * The duration an output <tt>Buffer</tt> produced by this <tt>Codec</tt> in nanosecond. We
+	 * The duration an output <code>Buffer</code> produced by this <code>Codec</code> in nanosecond. We
 	 * packetize 2 audio frames in one G729 packet by default.
 	 */
 	private int duration = OUTPUT_FRAME_SIZE_IN_BYTES * OUTPUT_FRAMES_COUNT * 1000000;
@@ -132,13 +132,13 @@ public class JavaEncoder extends AbstractCodec2 implements AdvancedAttributesAwa
 	}
 
 	/**
-	 * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-	 * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-	 * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-	 * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+	 * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+	 * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+	 * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+	 * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
 	 *
 	 * @throws ResourceUnavailableException
-	 *         if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+	 *         if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
 	 * @see AbstractCodec2#doOpen()
 	 */
 	@Override
@@ -239,7 +239,7 @@ public class JavaEncoder extends AbstractCodec2 implements AdvancedAttributesAwa
 	}
 
 	/**
-	 * Sets the additional attributes to <tt>attributes</tt>
+	 * Sets the additional attributes to <code>attributes</code>
 	 *
 	 * @param attributes
 	 *        The additional attributes to set

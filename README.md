@@ -50,6 +50,7 @@ aTalk is an xmpp client designed for android and supports the following features
 * XEP-0124: Bidirectional-streams Over Synchronous HTTP (BOSH) with Proxy support
 * XEP-0178: Use of SASL EXTERNAL with TLS Certificates for client authentication
 * XEP-0184: Message Delivery Receipts with user enable/disable option
+* XEP-0215: External Service Discovery
 * XEP-0251: Jingle Session Transfer: Support both Unattended and Attended call transfer
 * XEP-0391: Jingle Encrypted Transports for OMEMO encrypted media file sharing
 * Implement call waiting to accept a second incoming call by placing the in-progress call on hold; and allow switching between calls
@@ -110,6 +111,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0199: XMPP Ping 2.0.1]([https://xmpp.org/extensions/xep-0199.html)
 * [XEP-0203: Delayed Delivery 2.0]([https://xmpp.org/extensions/xep-0203.html)
 * [XEP-0206: XMPP Over BOSH 1.4]([https://xmpp.org/extensions/xep-0206.html)
+* [XEP-0215: External Service Discovery 1.0.0]([https://xmpp.org/extensions/xep-0215.html)
 * [XEP-0231: Bits of Binary 1.0]([https://xmpp.org/extensions/xep-0231.html)
 * [XEP-0234: Jingle File Transfer 0.19.1]([https://xmpp.org/extensions/xep-0234.html)
 * [XEP-0237: Roster Versioning 1.3]([https://xmpp.org/extensions/xep-0237.html)
@@ -198,7 +200,7 @@ Other contributors:
 
 ## aTalk apk build for android
 * Following development environment setups are used to build aTalk.apk<br/>
-  a. Android Studio Chipmunk | 2021.2.1<br/>
+  a. Android Studio Dolphin | 2021.3.1<br/>
   b. Gradle version as specified in ./gradle/gradle-wrapper.properties<br/>
   c. Ubuntu 22.04 with proper environment setup for development<br>
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu

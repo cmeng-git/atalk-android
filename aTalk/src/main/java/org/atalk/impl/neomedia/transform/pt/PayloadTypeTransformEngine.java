@@ -31,19 +31,19 @@ public class PayloadTypeTransformEngine extends SinglePacketTransformerAdapter
 	private Map<Byte, Byte> mappingOverrides = new HashMap<>();
 
 	/**
-	 * This map is a copy of <tt>mappingOverride</tt> that we use during actual transformation
+	 * This map is a copy of <code>mappingOverride</code> that we use during actual transformation
 	 */
 	private Map<Byte, Byte> mappingOverridesCopy = null;
 
 	/**
 	 * Checks if there are any override mappings, if no setting just pass through the packet. If the
-	 * <tt>RawPacket</tt> payload has entry in mappings to override, we override packet payload
+	 * <code>RawPacket</code> payload has entry in mappings to override, we override packet payload
 	 * type.
 	 *
 	 * @param pkt
-	 *        the RTP <tt>RawPacket</tt> that we check for need to change payload type.
+	 *        the RTP <code>RawPacket</code> that we check for need to change payload type.
 	 *
-	 * @return the updated <tt>RawPacket</tt> instance containing the changed payload type.
+	 * @return the updated <code>RawPacket</code> instance containing the changed payload type.
 	 */
     @Override
 	public RawPacket transform(RawPacket pkt)
@@ -61,7 +61,7 @@ public class PayloadTypeTransformEngine extends SinglePacketTransformerAdapter
 	}
 
 	/**
-	 * Closes this <tt>PacketTransformer</tt> i.e. releases the resources allocated by it and
+	 * Closes this <code>PacketTransformer</code> i.e. releases the resources allocated by it and
 	 * prepares it for garbage collection.
 	 */
 	public void close()
@@ -71,7 +71,7 @@ public class PayloadTypeTransformEngine extends SinglePacketTransformerAdapter
 	/**
 	 * Returns a reference to this class since it is performing RTP transformations in here.
 	 *
-	 * @return a reference to <tt>this</tt> instance of the <tt>PayloadTypeTransformEngine</tt>.
+	 * @return a reference to <code>this</code> instance of the <code>PayloadTypeTransformEngine</code>.
 	 */
 	public PacketTransformer getRTPTransformer()
 	{
@@ -79,9 +79,9 @@ public class PayloadTypeTransformEngine extends SinglePacketTransformerAdapter
 	}
 
 	/**
-	 * Always returns <tt>null</tt> since this engine does not require any RTCP transformations.
+	 * Always returns <code>null</code> since this engine does not require any RTCP transformations.
 	 *
-	 * @return <tt>null</tt> since this engine does not require any RTCP transformations.
+	 * @return <code>null</code> since this engine does not require any RTCP transformations.
 	 */
 	public PacketTransformer getRTCPTransformer()
 	{
@@ -90,7 +90,7 @@ public class PayloadTypeTransformEngine extends SinglePacketTransformerAdapter
 
 	/**
 	 * Adds an additional RTP payload type mapping used to override the payload type of outgoing RTP
-	 * packets. If an override for <tt>originalPT<tt/>, was already being overridden, this call
+	 * packets. If an override for <code>originalPT<tt/>, was already being overridden, this call
 	 * is simply going to update the override to the new one.
 	 * <p>
 	 * This method creates a copy of the local overriding map so that mapping overrides could be

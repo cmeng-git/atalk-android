@@ -26,7 +26,7 @@ public final class Pa
 {
     /**
      * Enumerates the unchanging unique identifiers of each of the supported host APIs. The type is
-     * used in the <tt>PaHostApiInfo</tt> structure. The values are guaranteed to be unique and to
+     * used in the <code>PaHostApiInfo</code> structure. The values are guaranteed to be unique and to
      * never change, thus allowing code to be written that conditionally uses host API specific
      * extensions.
      */
@@ -48,12 +48,12 @@ public final class Pa
         paWDMKS(11);
 
         /**
-         * Returns the <tt>PaHostApiTypeId</tt> which has a specific value or <tt>null</tt> if
+         * Returns the <code>PaHostApiTypeId</code> which has a specific value or <code>null</code> if
          * there is no such representation.
          *
          * @param value
-         * @return the <tt>PaHostApiTypeId</tt> which has the specified <tt>value</tt> or
-         * <tt>null</tt> if there is no such representation
+         * @return the <code>PaHostApiTypeId</code> which has the specified <code>value</code> or
+         * <code>null</code> if there is no such representation
          */
         public static HostApiTypeId valueOf(int value)
         {
@@ -81,15 +81,15 @@ public final class Pa
     /**
      * The default value for the sample rate of the input and the output PortAudio streams with
      * which they are to be opened if no other specific sample rate is specified to the PortAudio
-     * <tt>DataSource</tt> or <tt>PortAudioRenderer</tt> that they represent.
+     * <code>DataSource</code> or <code>PortAudioRenderer</code> that they represent.
      */
     public static final double DEFAULT_SAMPLE_RATE = 44100;
 
     private static Runnable devicesChangedCallback;
 
     /**
-     * Can be passed as the framesPerBuffer parameter to <tt>Pa_OpenStream()</tt> or
-     * <tt>Pa_OpenDefaultStream()</tt> to indicate that the stream callback will accept buffers of
+     * Can be passed as the framesPerBuffer parameter to <code>Pa_OpenStream()</code> or
+     * <code>Pa_OpenDefaultStream()</code> to indicate that the stream callback will accept buffers of
      * any size.
      */
     public static final long FRAMES_PER_BUFFER_UNSPECIFIED = 0;
@@ -123,56 +123,56 @@ public final class Pa
     public static final int paNoDevice = -1;
 
     /**
-     * The <tt>PaErrorCode</tt> value defined by the native PortAudio library to signal that no
+     * The <code>PaErrorCode</code> value defined by the native PortAudio library to signal that no
      * error is detected/reported.
      */
     public static final int paNoError = 0;
 
     /**
-     * The <tt>PaErrorCode</tt> value defined by the native PortAudio library to signal that a
+     * The <code>PaErrorCode</code> value defined by the native PortAudio library to signal that a
      * timeout has occurred.
      */
     public static final int paTimedOut = -9987;
 
     /**
-     * The <tt>PaErrorCode</tt> value defined by the native PortAudio library to signal that an
+     * The <code>PaErrorCode</code> value defined by the native PortAudio library to signal that an
      * unanticipated error has been detected by a host API.
      */
     public static final int paUnanticipatedHostError = -9999;
 
     /**
-     * The name of the <tt>double</tt> property which determines the suggested latency to be used
+     * The name of the <code>double</code> property which determines the suggested latency to be used
      * when opening PortAudio streams.
      */
     private static final String PROP_SUGGESTED_LATENCY = "neomedia.portaudio.suggestedLatency";
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paFloat32</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paFloat32</code>.
      */
     public static final long SAMPLE_FORMAT_FLOAT32 = 0x00000001;
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paInt16</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paInt16</code>.
      */
     public static final long SAMPLE_FORMAT_INT16 = 0x00000008;
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paInt24</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paInt24</code>.
      */
     public static final long SAMPLE_FORMAT_INT24 = 0x00000004;
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paInt32</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paInt32</code>.
      */
     public static final long SAMPLE_FORMAT_INT32 = 0x00000002;
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paInt8</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paInt8</code>.
      */
     public static final long SAMPLE_FORMAT_INT8 = 0x00000010;
 
     /**
-     * A type used to specify one or more sample formats. The standard format <tt>paUInt8</tt>.
+     * A type used to specify one or more sample formats. The standard format <code>paUInt8</code>.
      */
     public static final long SAMPLE_FORMAT_UINT8 = 0x00000020;
 
@@ -190,15 +190,15 @@ public final class Pa
      * Flag requests that where possible a full duplex stream will not discard overflowed input
      * samples without calling the stream callback. This flag is only valid for full duplex
      * callback streams and only when used in combination with the
-     * <tt>paFramesPerBufferUnspecified</tt> (<tt>0</tt>) framesPerBuffer parameter. Using this
-     * flag incorrectly results in a <tt>paInvalidFlag</tt> error being returned from
-     * <tt>Pa_OpenStream</tt> and <tt>Pa_OpenDefaultStream</tt>.
+     * <code>paFramesPerBufferUnspecified</code> (<code>0</code>) framesPerBuffer parameter. Using this
+     * flag incorrectly results in a <code>paInvalidFlag</code> error being returned from
+     * <code>Pa_OpenStream</code> and <code>Pa_OpenDefaultStream</code>.
      */
     public static final long STREAM_FLAGS_NEVER_DROP_INPUT = 0x00000004;
 
     /**
      * Flags used to control the behavior of a stream. They are passed as parameters to
-     * <tt>Pa_OpenStream</tt> or <tt>Pa_OpenDefaultStream</tt>.
+     * <code>Pa_OpenStream</code> or <code>Pa_OpenDefaultStream</code>.
      */
     public static final long STREAM_FLAGS_NO_FLAG = 0;
 
@@ -236,7 +236,7 @@ public final class Pa
 
     /**
      * Closes an audio stream. If the audio stream is active it discards any pending buffers as if
-     * <tt>Pa_AbortStream()</tt> had been called.
+     * <code>Pa_AbortStream()</code> had been called.
      *
      * @param stream the steam pointer.
      * @throws PortAudioException
@@ -328,11 +328,11 @@ public final class Pa
     public static native int DeviceInfo_getMaxOutputChannels(long deviceInfo);
 
     /**
-     * Gets the human-readable name of the <tt>PaDeviceInfo</tt> specified by a pointer to it.
+     * Gets the human-readable name of the <code>PaDeviceInfo</code> specified by a pointer to it.
      *
-     * @param deviceInfo the pointer to the <tt>PaDeviceInfo</tt> to get the human-readable name of
-     * @return the human-readable name of the <tt>PaDeviceInfo</tt> pointed to by
-     * <tt>deviceInfo</tt>
+     * @param deviceInfo the pointer to the <code>PaDeviceInfo</code> to get the human-readable name of
+     * @return the human-readable name of the <code>PaDeviceInfo</code> pointed to by
+     * <code>deviceInfo</code>
      */
     public static String DeviceInfo_getName(long deviceInfo)
     {
@@ -340,12 +340,12 @@ public final class Pa
     }
 
     /**
-     * Gets the name as a <tt>byte</tt> array of the PortAudio device specified by the pointer to
-     * its <tt>PaDeviceInfo</tt> instance.
+     * Gets the name as a <code>byte</code> array of the PortAudio device specified by the pointer to
+     * its <code>PaDeviceInfo</code> instance.
      *
-     * @param deviceInfo the pointer to the <tt>PaDeviceInfo</tt> instance to get the name of
-     * @return the name as a <tt>byte</tt> array of the PortAudio device specified by the
-     * <tt>PaDeviceInfo</tt> instance pointed to by <tt>deviceInfo</tt>
+     * @param deviceInfo the pointer to the <code>PaDeviceInfo</code> instance to get the name of
+     * @return the name as a <code>byte</code> array of the PortAudio device specified by the
+     * <code>PaDeviceInfo</code> instance pointed to by <code>deviceInfo</code>
      */
     private static native byte[] DeviceInfo_getNameBytes(long deviceInfo);
 
@@ -385,7 +385,7 @@ public final class Pa
     /**
      * Retrieve the index of the default input device.
      *
-     * @return The default input device index for the default host API, or <tt>paNoDevice</tt>
+     * @return The default input device index for the default host API, or <code>paNoDevice</code>
      * if no
      * default input device is available or an error was encountered.
      */
@@ -394,7 +394,7 @@ public final class Pa
     /**
      * Retrieve the index of the default output device.
      *
-     * @return The default input device index for the default host API, or <tt>paNoDevice</tt>
+     * @return The default input device index for the default host API, or <code>paNoDevice</code>
      * if no
      * default input device is available or an error was encountered.
      */
@@ -410,19 +410,19 @@ public final class Pa
             throws PortAudioException;
 
     /**
-     * Returns the PortAudio index of the device identified by a specific <tt>deviceID</tt> or
-     * {@link Pa#paNoDevice} if no such device exists. The <tt>deviceID</tt> is either a
-     * <tt>deviceUID</tt> or a (PortAudio device) name depending, for example, on operating
+     * Returns the PortAudio index of the device identified by a specific <code>deviceID</code> or
+     * {@link Pa#paNoDevice} if no such device exists. The <code>deviceID</code> is either a
+     * <code>deviceUID</code> or a (PortAudio device) name depending, for example, on operating
      * system/API availability. Since at least names may not be unique, the PortAudio device to
      * return the index of may be identified more specifically by the minimal numbers of
      * channels to be required from the device for input and output.
      *
-     * @param deviceID a <tt>String</tt> identifying the PortAudio device to retrieve the index of. It is
-     * either a <tt>deviceUID</tt> or a (PortAudio device) name.
+     * @param deviceID a <code>String</code> identifying the PortAudio device to retrieve the index of. It is
+     * either a <code>deviceUID</code> or a (PortAudio device) name.
      * @param minInputChannels
      * @param minOutputChannels
-     * @return the PortAudio index of the device identified by the specified <tt>deviceID</tt> or
-     * <tt>Pa.paNoDevice</tt> if no such device exists
+     * @return the PortAudio index of the device identified by the specified <code>deviceID</code> or
+     * <code>Pa.paNoDevice</code> if no such device exists
      */
     public static int getDeviceIndex(String deviceID, int minInputChannels, int minOutputChannels)
     {
@@ -484,10 +484,10 @@ public final class Pa
     public static native long GetHostApiInfo(int hostApiIndex);
 
     /**
-     * Gets the native <tt>PaSampleFormat</tt> with a specific size in bits.
+     * Gets the native <code>PaSampleFormat</code> with a specific size in bits.
      *
-     * @param sampleSizeInBits the size in bits of the native <tt>PaSampleFormat</tt> to get
-     * @return the native <tt>PaSampleFormat</tt> with the specified size in bits
+     * @param sampleSizeInBits the size in bits of the native <code>PaSampleFormat</code> to get
+     * @return the native <code>PaSampleFormat</code> with the specified size in bits
      */
     public static long getPaSampleFormat(int sampleSizeInBits)
     {
@@ -508,7 +508,7 @@ public final class Pa
      *
      * @param format the format.
      * @return The size in bytes of a single sample in the specified format, or
-     * <tt>paSampleFormatNotSupported</tt> if the format is not supported.
+     * <code>paSampleFormatNotSupported</code> if the format is not supported.
      */
     public static native int GetSampleSize(long format);
 
@@ -517,7 +517,7 @@ public final class Pa
      *
      * @param stream pointer to the stream.
      * @return returns a non-negative value representing the maximum number of frames that can be
-     * read from the stream without blocking or busy waiting or, a <tt>PaErrorCode</tt>
+     * read from the stream without blocking or busy waiting or, a <code>PaErrorCode</code>
      * (which are always negative) if PortAudio is not initialized or an error is encountered.
      */
     public static native long GetStreamReadAvailable(long stream);
@@ -644,7 +644,7 @@ public final class Pa
      * granularity for a blocking read/write stream
      * @param streamFlags Flags which modify the behavior of the streaming process.
      * @param streamCallback A pointer to a client supplied function that is responsible for processing and filling
-     * input and output buffers. If <tt>null</tt>, the stream will be opened in 'blocking
+     * input and output buffers. If <code>null</code>, the stream will be opened in 'blocking
      * read/write' mode.
      * @return pointer to the opened stream.
      * @throws PortAudioException
@@ -671,8 +671,8 @@ public final class Pa
      * denoise performed on the audio data it provides.
      *
      * @param stream the (input) PortAudio stream for which denoise is to be enabled or disabled
-     * @param denoise <tt>true</tt> if denoise is to be performed on the audio data provided by
-     * <tt>stream</tt>; otherwise, <tt>false</tt>
+     * @param denoise <code>true</code> if denoise is to be performed on the audio data provided by
+     * <code>stream</code>; otherwise, <code>false</code>
      */
     public static native void setDenoise(long stream, boolean denoise);
 
@@ -688,7 +688,7 @@ public final class Pa
      * @param stream the (input) PortAudio stream for which the number of milliseconds of echo to be
      * canceled is to be set
      * @param echoFilterLengthInMillis the number of milliseconds of echo to be canceled in the audio data provided by
-     * <tt>stream</tt>
+     * <code>stream</code>
      */
     public static native void setEchoFilterLengthInMillis(long stream, long
             echoFilterLengthInMillis);
@@ -716,7 +716,7 @@ public final class Pa
     /**
      * Free StreamParameters resources specified by a pointer to it.
      *
-     * @param streamParameters the pointer to the <tt>PaStreamParameters</tt> to free
+     * @param streamParameters the pointer to the <code>PaStreamParameters</code> to free
      */
     public static void StreamParameters_free(long streamParameters)
     {
@@ -751,10 +751,10 @@ public final class Pa
      *
      * @param stream the pointer to the PortAudio stream to write the samples to
      * @param buffer the buffer containing the samples to be written
-     * @param offset the byte offset in <tt>buffer</tt> at which the samples to be written start
-     * @param frames the number of frames from <tt>buffer</tt> starting at <tt>offset</tt> are to be
+     * @param offset the byte offset in <code>buffer</code> at which the samples to be written start
+     * @param frames the number of frames from <code>buffer</code> starting at <code>offset</code> are to be
      * written with a single write
-     * @param numberOfWrites the number of writes each writing <tt>frames</tt> number of frames to be performed
+     * @param numberOfWrites the number of writes each writing <code>frames</code> number of frames to be performed
      * @throws PortAudioException if anything goes wrong while writing
      */
     public static native void WriteStream(long stream, byte[] buffer, int offset, long frames,
@@ -777,7 +777,7 @@ public final class Pa
     }
 
     /**
-     * Prevents the initialization of <tt>Pa</tt> instances.
+     * Prevents the initialization of <code>Pa</code> instances.
      */
     private Pa()
     {

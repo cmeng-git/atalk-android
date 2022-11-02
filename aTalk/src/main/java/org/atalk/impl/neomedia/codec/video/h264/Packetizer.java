@@ -37,7 +37,7 @@ public class Packetizer extends AbstractPacketizer
 	private static final String PLUGIN_NAME = "H264 Packetizer";
 
 	/**
-	 * The <tt>Formats</tt> supported by <tt>Packetizer</tt> instances as output.
+	 * The <code>Formats</code> supported by <code>Packetizer</code> instances as output.
 	 */
 	static final Format[] SUPPORTED_OUTPUT_FORMATS = {
 			new ParameterizedVideoFormat(
@@ -50,18 +50,18 @@ public class Packetizer extends AbstractPacketizer
 					"1")};
 
 	/**
-	 * Finds the index in <tt>byteStream</tt> at which the start_code_prefix_one_3bytes of a NAL
+	 * Finds the index in <code>byteStream</code> at which the start_code_prefix_one_3bytes of a NAL
 	 * unit begins.
 	 *
 	 * @param byteStream
 	 * 		the H.264 encoded byte stream composed of NAL units in which the index of the
 	 * 		beginning of the start_code_prefix_one_3bytes of a NAL unit is to be found
 	 * @param beginIndex
-	 * 		the inclusive index in <tt>byteStream</tt> at which the search is to begin
+	 * 		the inclusive index in <code>byteStream</code> at which the search is to begin
 	 * @param endIndex
-	 * 		the exclusive index in <tt>byteStream</tt> at which the search is to end
-	 * @return the index in <tt>byteStream</tt> at which the start_code_prefix_one_3bytes of a NAL
-	 * unit begins if it is found; otherwise, <tt>endIndex</tt>
+	 * 		the exclusive index in <code>byteStream</code> at which the search is to end
+	 * @return the index in <code>byteStream</code> at which the start_code_prefix_one_3bytes of a NAL
+	 * unit begins if it is found; otherwise, <code>endIndex</code>
 	 */
 	private static int ff_avc_find_startcode(byte[] byteStream, int beginIndex, int endIndex)
 	{
@@ -81,17 +81,17 @@ public class Packetizer extends AbstractPacketizer
 	private final List<byte[]> nals = new LinkedList<>();
 
 	/**
-	 * The timeStamp of the RTP packets in which <tt>nals</tt> are to be sent.
+	 * The timeStamp of the RTP packets in which <code>nals</code> are to be sent.
 	 */
 	private long nalsTimeStamp;
 
 	/**
-	 * The sequence number of the next RTP packet to be output by this <tt>Packetizer</tt>.
+	 * The sequence number of the next RTP packet to be output by this <code>Packetizer</code>.
 	 */
 	private int sequenceNumber;
 
 	/**
-	 * Initializes a new <tt>Packetizer</tt> instance which is to packetize H.264 encoded data/NAL
+	 * Initializes a new <code>Packetizer</code> instance which is to packetize H.264 encoded data/NAL
 	 * units into RTP packets in accord with RFC 3984 "RTP Payload Format for H.264 Video".
 	 */
 	public Packetizer()
@@ -102,7 +102,7 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Close this <tt>Packetizer</tt>.
+	 * Close this <code>Packetizer</code>.
 	 */
 	@Override
 	public synchronized void close()
@@ -140,9 +140,9 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Gets the name of this <tt>PlugIn</tt>.
+	 * Gets the name of this <code>PlugIn</code>.
 	 *
-	 * @return the name of this <tt>PlugIn</tt>
+	 * @return the name of this <code>PlugIn</code>
 	 */
 	@Override
 	public String getName()
@@ -151,14 +151,14 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Gets the value of the <tt>packetization-mode</tt> format parameter assigned by a specific
-	 * <tt>Format</tt>.
+	 * Gets the value of the <code>packetization-mode</code> format parameter assigned by a specific
+	 * <code>Format</code>.
 	 *
 	 * @param format
-	 * 		the <tt>Format</tt> which assigns a value to the <tt>packetization-mode</tt> format
+	 * 		the <code>Format</code> which assigns a value to the <code>packetization-mode</code> format
 	 * 		parameter
-	 * @return the value of the <tt>packetization-mode</tt> format parameter assigned by the
-	 * specified <tt>format</tt>
+	 * @return the value of the <code>packetization-mode</code> format parameter assigned by the
+	 * specified <code>format</code>
 	 */
 	private String getPacketizationMode(Format format)
 	{
@@ -176,7 +176,7 @@ public class Packetizer extends AbstractPacketizer
 	 * Return the list of formats supported at the output.
 	 *
 	 * @param in
-	 * 		input <tt>Format</tt> to determine corresponding output <tt>Format/tt>s
+	 * 		input <code>Format</code> to determine corresponding output <code>Format/code>s
 	 * @return array of formats supported at output
 	 */
 	@Override
@@ -195,7 +195,7 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Open this <tt>Packetizer</tt>.
+	 * Open this <code>Packetizer</code>.
 	 *
 	 * @throws ResourceUnavailableException
 	 * 		if something goes wrong during initialization of the Packetizer.
@@ -221,13 +221,13 @@ public class Packetizer extends AbstractPacketizer
 	 * @param nal
 	 * 		the bytes which contain the NAL unit of H.264 encoded data to be packetized
 	 * @param nalOffset
-	 * 		the offset in <tt>nal</tt> at which the NAL unit of H.264 encoded data to be
+	 * 		the offset in <code>nal</code> at which the NAL unit of H.264 encoded data to be
 	 * 		packetized begins
 	 * @param nalLength
-	 * 		the length in <tt>nal</tt> beginning at <tt>nalOffset</tt> of the NAL unit of H.264
+	 * 		the length in <code>nal</code> beginning at <code>nalOffset</code> of the NAL unit of H.264
 	 * 		encoded data to be packetized
-	 * @return <tt>true</tt> if at least one RTP packet payload has been packetized i.e. prepared
-	 * for sending; otherwise, <tt>false</tt>
+	 * @return <code>true</code> if at least one RTP packet payload has been packetized i.e. prepared
+	 * for sending; otherwise, <code>false</code>
 	 */
 	private boolean packetizeNAL(byte[] nal, int nalOffset, int nalLength)
 	{
@@ -296,7 +296,7 @@ public class Packetizer extends AbstractPacketizer
 	 * 		input buffer
 	 * @param outBuffer
 	 * 		output buffer
-	 * @return <tt>BUFFER_PROCESSED_OK</tt> if buffer has been successfully processed
+	 * @return <code>BUFFER_PROCESSED_OK</code> if buffer has been successfully processed
 	 */
 	@Override
 	public int process(Buffer inBuffer, Buffer outBuffer)
@@ -442,13 +442,13 @@ public class Packetizer extends AbstractPacketizer
 	}
 
 	/**
-	 * Sets the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data.
+	 * Sets the <code>Format</code> in which this <code>Codec</code> is to output media data.
 	 *
 	 * @param format
-	 * 		the <tt>Format</tt> in which this <tt>Codec</tt> is to output media data
-	 * @return the <tt>Format</tt> in which this <tt>Codec</tt> is currently configured to output
-	 * media data or <tt>null</tt> if <tt>format</tt> was found to be incompatible with this
-	 * <tt>Codec</tt>
+	 * 		the <code>Format</code> in which this <code>Codec</code> is to output media data
+	 * @return the <code>Format</code> in which this <code>Codec</code> is currently configured to output
+	 * media data or <code>null</code> if <code>format</code> was found to be incompatible with this
+	 * <code>Codec</code>
 	 */
 	@Override
 	public Format setOutputFormat(Format format)

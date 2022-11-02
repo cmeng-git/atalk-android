@@ -10,7 +10,7 @@ import java.util.Objects;
 import javax.media.*;
 
 /**
- * Adds some important information (i.e. device type, UID.) to FMJ <tt>CaptureDeviceInfo</tt>.
+ * Adds some important information (i.e. device type, UID.) to FMJ <code>CaptureDeviceInfo</code>.
  *
  * @author Vincent Lucas
  * @author Lyubomir Marinov
@@ -34,15 +34,15 @@ public class CaptureDeviceInfo2 extends CaptureDeviceInfo
     private final String modelIdentifier;
 
     /**
-     * Initializes a new <tt>CaptureDeviceInfo2</tt> instance from a specific
-     * <tt>CaptureDeviceInfo</tt> instance and additional information specific to the
-     * <tt>CaptureDeviceInfo2</tt> class. Because the properties of the specified
-     * <tt>captureDeviceInfo</tt> are copied into the new instance, the constructor is to be used
-     * when a <tt>CaptureDeviceInfo</tt> exists for other purposes already; otherwise, it is
+     * Initializes a new <code>CaptureDeviceInfo2</code> instance from a specific
+     * <code>CaptureDeviceInfo</code> instance and additional information specific to the
+     * <code>CaptureDeviceInfo2</code> class. Because the properties of the specified
+     * <code>captureDeviceInfo</code> are copied into the new instance, the constructor is to be used
+     * when a <code>CaptureDeviceInfo</code> exists for other purposes already; otherwise, it is
      * preferable to use
      * {@link #CaptureDeviceInfo2(String, MediaLocator, Format[], String, String, String)} .
      *
-     * @param captureDeviceInfo the <tt>CaptureDeviceInfo</tt> whose properties are to be copied into the new instance
+     * @param captureDeviceInfo the <code>CaptureDeviceInfo</code> whose properties are to be copied into the new instance
      * @param uid the unique identifier of the hardware device (interface) which is to be represented by
      * the new instance
      * @param transportType the transport type (e.g. USB) of the device to be represented by the new instance
@@ -57,13 +57,13 @@ public class CaptureDeviceInfo2 extends CaptureDeviceInfo
     }
 
     /**
-     * Initializes a new <tt>CaptureDeviceInfo2</tt> instance with the specified name, media
+     * Initializes a new <code>CaptureDeviceInfo2</code> instance with the specified name, media
      * locator, and array of Format objects.
      *
      * @param name the human-readable name of the new instance
-     * @param locator the <tt>MediaLocator</tt> which uniquely identifies the device to be described by the
+     * @param locator the <code>MediaLocator</code> which uniquely identifies the device to be described by the
      * new instance
-     * @param formats an array of the <tt>Format</tt>s supported by the device to be described by the new
+     * @param formats an array of the <code>Format</code>s supported by the device to be described by the new
      * instance
      * @param uid the unique identifier of the hardware device (interface) which is to be represented by
      * the new instance
@@ -82,10 +82,10 @@ public class CaptureDeviceInfo2 extends CaptureDeviceInfo
     }
 
     /**
-     * Determines whether a specific <tt>Object</tt> is equal (by value) to this instance.
+     * Determines whether a specific <code>Object</code> is equal (by value) to this instance.
      *
-     * @param obj the <tt>Object</tt> to be determined whether it is equal (by value) to this instance
-     * @return <tt>true</tt> if the specified <tt>obj</tt> is equal (by value) to this instance; otherwise, <tt>false</tt>
+     * @param obj the <code>Object</code> to be determined whether it is equal (by value) to this instance
+     * @return <code>true</code> if the specified <code>obj</code> is equal (by value) to this instance; otherwise, <code>false</code>
      */
     @Override
     public boolean equals(Object obj)
@@ -186,8 +186,8 @@ public class CaptureDeviceInfo2 extends CaptureDeviceInfo
      * this instance.
      *
      * @param transportType the transport type to compare to the transport type of this instance
-     * @return <tt>true</tt> if the specified <tt>transportType</tt> is equal to/the same as the
-     * transport type of this instance; otherwise, <tt>false</tt>
+     * @return <code>true</code> if the specified <code>transportType</code> is equal to/the same as the
+     * transport type of this instance; otherwise, <code>false</code>
      */
     public boolean isSameTransportType(String transportType)
     {

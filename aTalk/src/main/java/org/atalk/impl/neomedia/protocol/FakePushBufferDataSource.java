@@ -15,24 +15,24 @@ import javax.media.protocol.*;
 
 /**
  * Implements {@link PushBufferDataSource} for the purposes of {@link RTPTranslatorImpl} when it
- * does not have a <tt>CaptureDevice</tt> yet <tt>RTPManager.createSendStream(DataSource, int)</tt>
- * has to be called to have <tt>RTPTranslatorImpl</tt> send packets.
+ * does not have a <code>CaptureDevice</code> yet <code>RTPManager.createSendStream(DataSource, int)</code>
+ * has to be called to have <code>RTPTranslatorImpl</code> send packets.
  *
  * @author Lyubomir Marinov
  */
 public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 {
 	/**
-	 * The <tt>Format</tt>s in which this <tt>DataSource</tt> is capable of providing media.
+	 * The <code>Format</code>s in which this <code>DataSource</code> is capable of providing media.
 	 */
 	private final Format[] supportedFormats;
 
 	/**
-	 * Initializes a new <tt>FakePushBufferCaptureDevice</tt> instance which is to report a
-	 * specific list of <tt>Format</tt>s as supported.
+	 * Initializes a new <code>FakePushBufferCaptureDevice</code> instance which is to report a
+	 * specific list of <code>Format</code>s as supported.
 	 *
 	 * @param supportedFormats
-	 * 		the list of <tt>Format</tt>s to be reported as supported by the new instance
+	 * 		the list of <code>Format</code>s to be reported as supported by the new instance
 	 */
 	public FakePushBufferDataSource(Format... supportedFormats)
 	{
@@ -40,12 +40,12 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Opens a connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while opening the connection to the media source specified by
-	 * 		the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+	 * 		the <code>MediaLocator</code> of this <code>DataSource</code>
 	 */
 	@Override
 	public void connect()
@@ -58,20 +58,20 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Create a new <tt>PushBufferStream</tt> which is to be at a specific zero-based index in the
-	 * list of streams of this <tt>PushBufferDataSource</tt>. The <tt>Format</tt>-related
-	 * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt> .
+	 * Create a new <code>PushBufferStream</code> which is to be at a specific zero-based index in the
+	 * list of streams of this <code>PushBufferDataSource</code>. The <code>Format</code>-related
+	 * information of the new instance is to be abstracted by a specific <code>FormatControl</code> .
 	 *
 	 * @param streamIndex
-	 * 		the zero-based index of the <tt>PushBufferStream</tt> in the list of streams of this
-	 * 		<tt>PushBufferDataSource</tt>
+	 * 		the zero-based index of the <code>PushBufferStream</code> in the list of streams of this
+	 * 		<code>PushBufferDataSource</code>
 	 * @param formatControl
-	 * 		the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 * 		the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 * 		information of the new instance
-	 * @return a new <tt>PushBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-	 * in the list of streams of this <tt>PushBufferDataSource</tt> and which has its
-	 * <tt>Format</tt> -related information abstracted by the specified
-	 * <tt>formatControl</tt>
+	 * @return a new <code>PushBufferStream</code> which is to be at the specified <code>streamIndex</code>
+	 * in the list of streams of this <code>PushBufferDataSource</code> and which has its
+	 * <code>Format</code> -related information abstracted by the specified
+	 * <code>formatControl</code>
 	 */
 	@Override
 	protected FakePushBufferStream createStream(int streamIndex, FormatControl formatControl)
@@ -81,7 +81,7 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 
 	/**
 	 * Closes the connection to the media source specified of this
-	 * <tt>AbstractBufferCaptureDevice</tt>. If such a connection has not been opened, the call is
+	 * <code>AbstractBufferCaptureDevice</code>. If such a connection has not been opened, the call is
 	 * ignored.
 	 */
 	@Override
@@ -94,16 +94,16 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Gets the <tt>Format</tt>s which are to be reported by a <tt>FormatControl</tt> as supported
-	 * formats for a <tt>PushBufferStream</tt> at a specific zero-based index in the list of
-	 * streams of this <tt>PushBufferDataSource</tt>.
+	 * Gets the <code>Format</code>s which are to be reported by a <code>FormatControl</code> as supported
+	 * formats for a <code>PushBufferStream</code> at a specific zero-based index in the list of
+	 * streams of this <code>PushBufferDataSource</code>.
 	 *
 	 * @param streamIndex
-	 * 		the zero-based index of the <tt>PushBufferStream</tt> for which the specified
-	 * 		<tt>FormatControl</tt> is to report the list of supported <tt>Format</tt>s
-	 * @return an array of <tt>Format</tt>s to be reported by a <tt>FormatControl</tt> as the
-	 * supported formats for the <tt>PushBufferStream</tt> at the specified
-	 * <tt>streamIndex</tt> in the list of streams of this <tt>PushBufferDataSource</tt>
+	 * 		the zero-based index of the <code>PushBufferStream</code> for which the specified
+	 * 		<code>FormatControl</code> is to report the list of supported <code>Format</code>s
+	 * @return an array of <code>Format</code>s to be reported by a <code>FormatControl</code> as the
+	 * supported formats for the <code>PushBufferStream</code> at the specified
+	 * <code>streamIndex</code> in the list of streams of this <code>PushBufferDataSource</code>
 	 */
 	@Override
 	protected Format[] getSupportedFormats(int streamIndex)
@@ -114,7 +114,7 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Allows setting an arbitrary <tt>Format</tt> on this <tt>DataSource</tt> because it does not
+	 * Allows setting an arbitrary <code>Format</code> on this <code>DataSource</code> because it does not
 	 * really provide any media.
 	 */
 	@Override
@@ -124,11 +124,11 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Starts the transfer of media data from this <tt>DataSource</tt>.
+	 * Starts the transfer of media data from this <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while starting the transfer of media data from this
-	 * 		<tt>DataSource</tt>
+	 * 		<code>DataSource</code>
 	 */
 	@Override
 	public void start()
@@ -141,11 +141,11 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Stops the transfer of media data from this <tt>DataSource</tt>.
+	 * Stops the transfer of media data from this <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 * 		if anything goes wrong while stopping the transfer of media data from this
-	 * 		<tt>DataSource</tt>
+	 * 		<code>DataSource</code>
 	 */
 	@Override
 	public void stop()
@@ -158,20 +158,20 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 	}
 
 	/**
-	 * Implements {@link PushBufferStream} for the purposes of <tt>FakePushBufferDataSource</tt>.
+	 * Implements {@link PushBufferStream} for the purposes of <code>FakePushBufferDataSource</code>.
 	 */
 	private static class FakePushBufferStream
 			extends AbstractPushBufferStream<FakePushBufferDataSource>
 	{
 		/**
-		 * Initializes a new <tt>FakePushBufferStream</tt> instance which is to have its
-		 * <tt>Format</tt>-related information abstracted by a specific <tt>FormatControl</tt>.
+		 * Initializes a new <code>FakePushBufferStream</code> instance which is to have its
+		 * <code>Format</code>-related information abstracted by a specific <code>FormatControl</code>.
 		 *
 		 * @param dataSource
-		 * 		the <tt>FakePushBufferDataSource</tt> which is creating the new instance so that
-		 * 		it becomes one of its <tt>streams</tt>
+		 * 		the <code>FakePushBufferDataSource</code> which is creating the new instance so that
+		 * 		it becomes one of its <code>streams</code>
 		 * @param formatControl
-		 * 		the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+		 * 		the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 		 * 		information of the new instance
 		 */
 		FakePushBufferStream(FakePushBufferDataSource dataSource, FormatControl formatControl)
@@ -182,7 +182,7 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 		/**
 		 * {@inheritDoc}
 		 * <p>
-		 * Allows setting an arbitrary format on this <tt>SourceStream</tt> because it does not
+		 * Allows setting an arbitrary format on this <code>SourceStream</code> because it does not
 		 * really provide any media.
 		 */
 		@Override
@@ -192,15 +192,15 @@ public class FakePushBufferDataSource extends AbstractPushBufferCaptureDevice
 		}
 
 		/**
-		 * Reads media data from this <tt>PushBufferStream</tt> into a specific <tt>Buffer</tt>
+		 * Reads media data from this <code>PushBufferStream</code> into a specific <code>Buffer</code>
 		 * without blocking.
 		 *
 		 * @param buffer
-		 * 		the <tt>Buffer</tt> in which media data is to be read from this
-		 * 		<tt>PushBufferStream</tt>
+		 * 		the <code>Buffer</code> in which media data is to be read from this
+		 * 		<code>PushBufferStream</code>
 		 * @throws IOException
 		 * 		if anything goes wrong while reading media data from this
-		 * 		<tt>PushBufferStream</tt> into the specified <tt>buffer</tt>
+		 * 		<code>PushBufferStream</code> into the specified <code>buffer</code>
 		 */
 		@Override
 		public void read(Buffer buffer)

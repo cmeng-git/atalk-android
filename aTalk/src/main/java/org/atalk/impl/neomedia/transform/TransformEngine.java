@@ -6,25 +6,25 @@
 package org.atalk.impl.neomedia.transform;
 
 /**
- * Defines how to get <tt>PacketTransformer</tt>s for RTP and RTCP packets. A single
- * <tt>PacketTransformer</tt> can be used for both RTP and RTCP packets or there can be two separate
- * <tt>PacketTransformer</tt>s.
+ * Defines how to get <code>PacketTransformer</code>s for RTP and RTCP packets. A single
+ * <code>PacketTransformer</code> can be used for both RTP and RTCP packets or there can be two separate
+ * <code>PacketTransformer</code>s.
  *
  * @author Bing SU (nova.su@gmail.com)
  */
 public interface TransformEngine
 {
 	/**
-	 * Gets the <tt>PacketTransformer</tt> for RTP packets.
+	 * Gets the <code>PacketTransformer</code> for RTP packets.
 	 *
-	 * @return the <tt>PacketTransformer</tt> for RTP packets
+	 * @return the <code>PacketTransformer</code> for RTP packets
 	 */
 	PacketTransformer getRTPTransformer();
 
 	/**
-	 * Gets the <tt>PacketTransformer</tt> for RTCP packets.
+	 * Gets the <code>PacketTransformer</code> for RTCP packets.
 	 *
-	 * @return the <tt>PacketTransformer</tt> for RTCP packets
+	 * @return the <code>PacketTransformer</code> for RTCP packets
 	 */
 	PacketTransformer getRTCPTransformer();
 }

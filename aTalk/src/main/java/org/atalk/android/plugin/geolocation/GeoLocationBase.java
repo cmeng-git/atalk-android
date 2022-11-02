@@ -192,7 +192,6 @@ public class GeoLocationBase extends AppCompatActivity implements View.OnClickLi
                     updateSendButton(true);
                     stopLocationUpdates();
                 }
-
                 mShowMap = true;
                 GeoLocationRequest geoLocationRequest = new GeoLocationRequestBuilder()
                         .setLocationFetchMode(mLocationFetchMode)
@@ -230,7 +229,6 @@ public class GeoLocationBase extends AppCompatActivity implements View.OnClickLi
     private void updateSendButton(boolean followMe)
     {
         if (followMe) {
-            // mBtnSingleFix.setAlpha(1.0f);
             isFollowMe = false;
             mBtnFollowMe.setText(getString(R.string.start_follow_me, gpsMinDistance, sendTimeInterval));
             mBtnFollowMe.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -238,12 +236,10 @@ public class GeoLocationBase extends AppCompatActivity implements View.OnClickLi
             mAnimation.cancel();
         }
         else {
-            // mBtnSingleFix.setAlpha(0.3f);
             isFollowMe = true;
             mBtnFollowMe.setText(getString(R.string.stop_follow_me, gpsMinDistance, sendTimeInterval));
             mAnimation.start();
         }
-        // mBtnSingleFix.setEnabled(!isFollowMe);
     }
 
     public boolean isGpsShare()
@@ -282,6 +278,7 @@ public class GeoLocationBase extends AppCompatActivity implements View.OnClickLi
 
         Timber.d("Update map needed: %s %s %s", isFollowMe,
                 (mLocation != null) ? location.distanceTo(mLocation) : 0, location);
+        // aTalkApp.showToastMessage("on Location Received: " + ((mLocation != null) ? location.distanceTo(mLocation) : 0) + "; " + location);
         mLocation = location;
 
         if (mBtnGpsShare.isChecked() && (mCallBack != null)) {

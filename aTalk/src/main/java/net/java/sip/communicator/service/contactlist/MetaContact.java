@@ -154,8 +154,8 @@ public interface MetaContact extends Comparable<MetaContact>
     MetaContactGroup getParentMetaContactGroup();
 
     /**
-     * Returns a String identifier (the actual contents is left to
-     * implementations) that uniquely represents this <code>MetaContact</code> in the containing <code>MetaContactList</code>
+     * Returns a String identifier (the actual contents is left to implementations)
+     * that uniquely represents this <code>MetaContact</code> in the containing <code>MetaContactList</code>
      *
      * @return String
      */

@@ -28,6 +28,10 @@ APP_STL := c++_shared
 # Enforced the support for Exceptions and RTTI in all generated machine code.
 APP_CPPFLAGS := -frtti -fexceptions
 
+# To build app's native (JNI) code with Address Sanitizer
+# https://developer.android.com/ndk/guides/asan#ndk-build
+# APP_CFLAGS := -fsanitize=address -fno-omit-frame-pointer
+# APP_LDFLAGS := -fsanitize=address
 
 # https://developer.android.com/ndk/guides/ndk-build.html #Debuggable versus Release builds
 # Automatically set by sdk build - SDK r8 (or higher)

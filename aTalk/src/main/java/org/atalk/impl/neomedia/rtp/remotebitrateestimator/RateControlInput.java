@@ -26,12 +26,12 @@ public class RateControlInput
 	}
 
 	/**
-	 * Assigns the values of the fields of <tt>source</tt> to the respective fields of this
-	 * <tt>RateControlInput</tt>.
+	 * Assigns the values of the fields of <code>source</code> to the respective fields of this
+	 * <code>RateControlInput</code>.
 	 *
 	 * @param source
-	 *        the <tt>RateControlInput</tt> the values of the fields of which are to be assigned to
-	 *        the respective fields of this <tt>RateControlInput</tt>
+	 *        the <code>RateControlInput</code> the values of the fields of which are to be assigned to
+	 *        the respective fields of this <code>RateControlInput</code>
 	 */
 	public void copy(RateControlInput source)
 	{

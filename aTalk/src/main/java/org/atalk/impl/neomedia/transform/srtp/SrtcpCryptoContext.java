@@ -245,7 +245,7 @@ public class SrtcpCryptoContext extends BaseSrtpCryptoContext
      * managed transportation) instead.
      *
      * @param pkt the received RTCP packet
-     * @return <tt>SrtpErrorStatus#OK</tt> if the packet can be accepted or another
+     * @return <code>SrtpErrorStatus#OK</code> if the packet can be accepted or another
      * error status if authentication or replay check failed
      */
     synchronized public SrtpErrorStatus reverseTransformPacket(ByteArrayBuffer pkt)

@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.control;
 
 /**
- * Provides a default implementation of <tt>Controls</tt> which does not expose any controls.
+ * Provides a default implementation of <code>Controls</code> which does not expose any controls.
  *
  * @author Lyubomir Marinov
  */
@@ -24,7 +24,7 @@ public class ControlsAdapter extends AbstractControls
 	 * owner of this instance. The current implementation returns an empty array because it has no
 	 * available controls.
 	 *
-	 * @return an array of <tt>Object</tt>s which represent the controls available for the owner of
+	 * @return an array of <code>Object</code>s which represent the controls available for the owner of
 	 * this instance
 	 */
 	public Object[] getControls()

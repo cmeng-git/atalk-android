@@ -12,7 +12,7 @@ import javax.media.Format;
 import javax.media.control.FormatControl;
 
 /**
- * Represents a wrapper of a specific <tt>FormatControl</tt> instance which does not allow setting
+ * Represents a wrapper of a specific <code>FormatControl</code> instance which does not allow setting
  * its format using {@link FormatControl#setFormat(Format)}.
  *
  * @author Lubomir Marinov
@@ -21,17 +21,17 @@ import javax.media.control.FormatControl;
 public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
 {
     /**
-     * The <tt>FormatControl</tt> wrapped by this instance.
+     * The <code>FormatControl</code> wrapped by this instance.
      */
     private final FormatControl formatControl;
 
     /**
-     * Initializes a new <tt>ReadOnlyFormatControlDelegate</tt> instance which is to wrap a
-     * specific <tt>FormatControl</tt> in order to prevent calls to its
+     * Initializes a new <code>ReadOnlyFormatControlDelegate</code> instance which is to wrap a
+     * specific <code>FormatControl</code> in order to prevent calls to its
      * {@link FormatControl#setFormat(Format)}.
      *
-     * @param formatControl the <tt>FormatControl</tt> which is to have calls to its
-     * <tt>FormatControl#setFormat(Format)</tt> prevented
+     * @param formatControl the <code>FormatControl</code> which is to have calls to its
+     * <code>FormatControl#setFormat(Format)</code> prevented
      */
     public ReadOnlyFormatControlDelegate(FormatControl formatControl)
     {
@@ -41,8 +41,8 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
     /**
      * Implements {@link Control#getControlComponent()}.
      *
-     * @return a <tt>Component</tt> which represents UI associated with this instance if any;
-     * otherwise, <tt>null</tt>
+     * @return a <code>Component</code> which represents UI associated with this instance if any;
+     * otherwise, <code>null</code>
      */
     public Component getControlComponent()
     {
@@ -50,10 +50,10 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
     }
 
     /**
-     * Gets the <tt>Format</tt> of the owner of this <tt>FormatControl</tt>. Delegates to the
-     * wrapped <tt>FormatControl</tt>.
+     * Gets the <code>Format</code> of the owner of this <code>FormatControl</code>. Delegates to the
+     * wrapped <code>FormatControl</code>.
      *
-     * @return the <tt>Format</tt> of the owner of this <tt>FormatControl</tt>
+     * @return the <code>Format</code> of the owner of this <code>FormatControl</code>
      */
     public Format getFormat()
     {
@@ -61,10 +61,10 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
     }
 
     /**
-     * Gets the <tt>Format</tt>s supported by the owner of this <tt>FormatControl</tt>.
-     * Delegates to the wrapped <tt>FormatControl</tt>.
+     * Gets the <code>Format</code>s supported by the owner of this <code>FormatControl</code>.
+     * Delegates to the wrapped <code>FormatControl</code>.
      *
-     * @return an array of <tt>Format</tt>s supported by the owner of this <tt>FormatControl</tt>
+     * @return an array of <code>Format</code>s supported by the owner of this <code>FormatControl</code>
      */
     public Format[] getSupportedFormats()
     {
@@ -74,7 +74,7 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
     /**
      * Implements {@link FormatControl#isEnabled()}.
      *
-     * @return <tt>true</tt> if this track is enabled; otherwise, <tt>false</tt>
+     * @return <code>true</code> if this track is enabled; otherwise, <code>false</code>
      */
     public boolean isEnabled()
     {
@@ -84,7 +84,7 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
     /**
      * Implements {@link FormatControl#setEnabled(boolean)}.
      *
-     * @param enabled <tt>true</tt> if this track is to be enabled; otherwise, <tt>false</tt>
+     * @param enabled <code>true</code> if this track is to be enabled; otherwise, <code>false</code>
      */
     public void setEnabled(boolean enabled)
     {
@@ -93,13 +93,13 @@ public class ReadOnlyFormatControlDelegate extends AbstractFormatControl
 
     /**
      * Implements {@link FormatControl#setFormat(Format)}. Not supported and just returns the
-     * currently set format if the specified <tt>Format</tt> is supported and <tt>null</tt> if
+     * currently set format if the specified <code>Format</code> is supported and <code>null</code> if
      * it is not supported.
      *
-     * @param format the <tt>Format</tt> to be set on this instance
-     * @return the currently set <tt>Format</tt> after the attempt to set it on this instance if
-     * <tt>format</tt> is supported by this instance and regardless of whether it was
-     * actually set; <tt>null</tt> if <tt>format</tt> is not supported by this instance
+     * @param format the <code>Format</code> to be set on this instance
+     * @return the currently set <code>Format</code> after the attempt to set it on this instance if
+     * <code>format</code> is supported by this instance and regardless of whether it was
+     * actually set; <code>null</code> if <code>format</code> is not supported by this instance
      */
     public Format setFormat(Format format)
     {

@@ -10,17 +10,17 @@ import org.bouncycastle.crypto.digests.SHA1Digest;
 import org.bouncycastle.crypto.macs.HMac;
 
 /**
- * Implements a factory for an HMAC-SHA1 <tt>org.bouncycastle.crypto.Mac</tt>.
+ * Implements a factory for an HMAC-SHA1 <code>org.bouncycastle.crypto.Mac</code>.
  *
  * @author Lyubomir Marinov
  */
 public class HmacSha1
 {
     /**
-     * Initializes a new <tt>org.bouncycastle.crypto.Mac</tt> instance which
+     * Initializes a new <code>org.bouncycastle.crypto.Mac</code> instance which
      * implements a keyed-hash message authentication code (HMAC) with SHA-1.
      *
-     * @return a new <tt>org.bouncycastle.crypto.Mac</tt> instance which
+     * @return a new <code>org.bouncycastle.crypto.Mac</code> instance which
      * implements a keyed-hash message authentication code (HMAC) with SHA-1
      */
     public static Mac createMac()

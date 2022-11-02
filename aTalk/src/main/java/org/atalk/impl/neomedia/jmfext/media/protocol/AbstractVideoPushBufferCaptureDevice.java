@@ -9,7 +9,7 @@ import javax.media.MediaLocator;
 import javax.media.control.FrameRateControl;
 
 /**
- * Provides a base implementation of <tt>PushBufferDataSource</tt> and <tt>CaptureDevice</tt> for
+ * Provides a base implementation of <code>PushBufferDataSource</code> and <code>CaptureDevice</code> for
  * the purposes of video in order to facilitate implementers by taking care of boilerplate in the
  * most common cases.
  *
@@ -19,7 +19,7 @@ public abstract class AbstractVideoPushBufferCaptureDevice extends AbstractPushB
 {
 
 	/**
-	 * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance.
+	 * Initializes a new <code>AbstractVideoPushBufferCaptureDevice</code> instance.
 	 */
 	protected AbstractVideoPushBufferCaptureDevice()
 	{
@@ -27,11 +27,11 @@ public abstract class AbstractVideoPushBufferCaptureDevice extends AbstractPushB
 	}
 
 	/**
-	 * Initializes a new <tt>AbstractVideoPushBufferCaptureDevice</tt> instance from a specific
-	 * <tt>MediaLocator</tt>.
+	 * Initializes a new <code>AbstractVideoPushBufferCaptureDevice</code> instance from a specific
+	 * <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 * 		the <tt>MediaLocator</tt> to create the new instance from
+	 * 		the <code>MediaLocator</code> to create the new instance from
 	 */
 	protected AbstractVideoPushBufferCaptureDevice(MediaLocator locator)
 	{
@@ -39,11 +39,11 @@ public abstract class AbstractVideoPushBufferCaptureDevice extends AbstractPushB
 	}
 
 	/**
-	 * Creates a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-	 * setting of the frame rate of this <tt>AbstractVideoPushBufferCaptureDevice</tt>.
+	 * Creates a new <code>FrameRateControl</code> instance which is to allow the getting and
+	 * setting of the frame rate of this <code>AbstractVideoPushBufferCaptureDevice</code>.
 	 *
-	 * @return a new <tt>FrameRateControl</tt> instance which is to allow the getting and
-	 * setting of the frame rate of this <tt>AbstractVideoPushBufferCaptureDevice</tt>
+	 * @return a new <code>FrameRateControl</code> instance which is to allow the getting and
+	 * setting of the frame rate of this <code>AbstractVideoPushBufferCaptureDevice</code>
 	 * @see AbstractPushBufferCaptureDevice#createFrameRateControl()
 	 */
 	@Override

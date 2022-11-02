@@ -214,6 +214,7 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
             throw new OperationFailedException("Could not reject file transfer",
                     OperationFailedException.GENERAL_ERROR, e);
         }
+
         fileTransferOpSet.fireFileTransferRequestRejected(
                 new FileTransferRequestEvent(fileTransferOpSet, this, new Date()));
     }

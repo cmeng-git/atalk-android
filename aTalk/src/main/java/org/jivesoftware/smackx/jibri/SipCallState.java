@@ -22,13 +22,13 @@ import org.jivesoftware.smackx.AbstractExtensionElement;
 import javax.xml.namespace.QName;
 
 /**
- * Jicofo adds one <tt>SipCallState</tt> packet extension for each Jibri SIP
+ * Jicofo adds one <code>SipCallState</code> packet extension for each Jibri SIP
  * session to it's MUC presence in Jitsi Meet conference.
  *
  * Status meaning:
- * <tt>{@link JibriIq.Status#PENDING}</tt> - (initial) SIP call is being started
- * <tt>{@link JibriIq.Status#ON}</tt> - SIP call in progress
- * <tt>{@link JibriIq.Status#OFF}</tt> - SIP call has been stopped.  If it was
+ * <code>{@link JibriIq.Status#PENDING}</code> - (initial) SIP call is being started
+ * <code>{@link JibriIq.Status#ON}</code> - SIP call in progress
+ * <code>{@link JibriIq.Status#OFF}</code> - SIP call has been stopped.  If it was
  * not a graceful transition to OFF, a FailureReason will also be given
  *
  * @author Pawel Domas

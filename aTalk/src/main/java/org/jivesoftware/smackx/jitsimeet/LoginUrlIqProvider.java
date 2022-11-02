@@ -36,7 +36,7 @@ import java.io.IOException;
 public class LoginUrlIqProvider extends IQProvider<LoginUrlIq>
 {
     /**
-     * Creates new instance of <tt>ConferenceIqProvider</tt>.
+     * Creates new instance of <code>ConferenceIqProvider</code>.
      */
     public LoginUrlIqProvider()
     {

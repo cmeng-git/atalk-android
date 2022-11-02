@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents a QuickTime/QTKit <tt>QTSampleBuffer</tt> object.
+ * Represents a QuickTime/QTKit <code>QTSampleBuffer</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -14,11 +14,11 @@ public class QTSampleBuffer extends NSObject
 {
 
 	/**
-	 * Initializes a new <tt>QTSampleBuffer</tt> which is to represent a specific QuickTime/QTKit
-	 * <tt>QTSampleBuffer</tt> object.
+	 * Initializes a new <code>QTSampleBuffer</code> which is to represent a specific QuickTime/QTKit
+	 * <code>QTSampleBuffer</code> object.
 	 *
 	 * @param ptr
-	 * 		the pointer to the QuickTime/QTKit <tt>QTSampleBuffer</tt> object to be represented by
+	 * 		the pointer to the QuickTime/QTKit <code>QTSampleBuffer</code> object to be represented by
 	 * 		the new instance
 	 */
 	public QTSampleBuffer(long ptr)

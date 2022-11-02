@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.location.Location;
 
 /**
- * GeoLocationHelper broadcast receiver implementation.
+ * GeoLocation broadcast receiver implementation.
  *
  * @author Eng Chong Meng
  */

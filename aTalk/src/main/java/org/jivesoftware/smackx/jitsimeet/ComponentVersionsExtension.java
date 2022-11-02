@@ -1,7 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -60,7 +60,7 @@ public class ComponentVersionsExtension extends AbstractExtensionElement
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * Creates an {@link AbstractExtensionElement} instance for the specified <tt>namespace</tt> and <tt>elementName</tt>.
+     * Creates an {@link AbstractExtensionElement} instance for the specified <code>namespace</code> and <code>elementName</code>.
      */
     public ComponentVersionsExtension()
     {
@@ -103,7 +103,7 @@ public class ComponentVersionsExtension extends AbstractExtensionElement
         /**
          * Returns the value of the name attribute.
          *
-         * @return <tt>String</tt> which describes the name of video conferencing system component.
+         * @return <code>String</code> which describes the name of video conferencing system component.
          */
         public String getName()
         {
@@ -113,7 +113,7 @@ public class ComponentVersionsExtension extends AbstractExtensionElement
         /**
          * Sets new value for the component's name attribute.
          *
-         * @param name a <tt>String</tt> which describes the name of video conferencing system component.
+         * @param name a <code>String</code> which describes the name of video conferencing system component.
          */
         public void setName(String name)
         {

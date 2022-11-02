@@ -76,17 +76,17 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 	}
 
 	/**
-	 * Initializes a new <tt>JavaSoundClipImpl</tt> instance which is to play audio stored at a
-	 * specific <tt>URL</tt> using <tt>java.applet.AudioClip</tt>.
+	 * Initializes a new <code>JavaSoundClipImpl</code> instance which is to play audio stored at a
+	 * specific <code>URL</code> using <code>java.applet.AudioClip</code>.
 	 *
 	 * @param uri
-	 * 		the <tt>URL</tt> at which the audio is stored and which the new instance is to load
+	 * 		the <code>URL</code> at which the audio is stored and which the new instance is to load
 	 * @param audioNotifier
-	 * 		the <tt>AudioNotifierService</tt> which is initializing the new instance and whose
-	 * 		<tt>mute</tt> property/state is to be monitored by the new instance
+	 * 		the <code>AudioNotifierService</code> which is initializing the new instance and whose
+	 * 		<code>mute</code> property/state is to be monitored by the new instance
 	 * @throws IOException
-	 * 		if a <tt>java.applet.AudioClip</tt> could not be initialized or the audio at the
-	 * 		specified <tt>url</tt> could not be read
+	 * 		if a <code>java.applet.AudioClip</code> could not be initialized or the audio at the
+	 * 		specified <code>url</code> could not be read
 	 */
 	public JavaSoundClipImpl(String uri, AudioNotifierService audioNotifier)
 			throws IOException
@@ -98,7 +98,7 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Stops the <tt>java.applet.AudioClip</tt> wrapped by this instance.
+	 * Stops the <code>java.applet.AudioClip</code> wrapped by this instance.
 	 */
 	@Override
 	protected void internalStop()
@@ -114,7 +114,7 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Plays the <tt>java.applet.AudioClip</tt> wrapped by this instance.
+	 * Plays the <code>java.applet.AudioClip</code> wrapped by this instance.
 	 */
 	@Override
 	protected boolean runOnceInPlayThread()

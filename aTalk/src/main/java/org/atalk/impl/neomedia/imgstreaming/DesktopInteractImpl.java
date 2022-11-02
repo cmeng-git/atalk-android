@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 /**
  * Capture desktop screen either via native code (JNI) if available or by using
- * <tt>java.awt.Robot</tt>.
+ * <code>java.awt.Robot</code>.
  *
  * @author Sebastien Vincent
  * @author Eng Chong Meng
@@ -42,7 +42,7 @@ public class DesktopInteractImpl implements DesktopInteract
      * Capture the full desktop screen using native grabber.
      * <p>
      * Contrary to other captureScreen method, it only returns raw bytes and not
-     * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+     * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
      * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
      * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
      *
@@ -61,7 +61,7 @@ public class DesktopInteractImpl implements DesktopInteract
      * Capture the full desktop screen using native grabber.
      * <p>
      * Contrary to other captureScreen method, it only returns raw bytes and not
-     * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+     * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
      * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
      * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
      *
@@ -80,7 +80,7 @@ public class DesktopInteractImpl implements DesktopInteract
      * Capture a part of the desktop screen using native grabber.
      * <p>
      * Contrary to other captureScreen method, it only returns raw bytes and not
-     * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+     * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
      * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
      * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
      *
@@ -102,7 +102,7 @@ public class DesktopInteractImpl implements DesktopInteract
      * Capture a part of the desktop screen using native grabber.
      * <p>
      * Contrary to other captureScreen method, it only returns raw bytes and not
-     * <tt>BufferedImage</tt>. It is done in order to limit slow operation such as converting ARGB
+     * <code>BufferedImage</code>. It is done in order to limit slow operation such as converting ARGB
      * images (uint32_t) to bytes especially for big big screen. For example a 1920x1200 desktop
      * consumes 9 MB of memory for grabbing and another 9 MB array for conversion operation.
      *
@@ -123,9 +123,9 @@ public class DesktopInteractImpl implements DesktopInteract
     }
 
     /**
-     * Capture the full desktop screen using <tt>java.awt.Robot</tt>.
+     * Capture the full desktop screen using <code>java.awt.Robot</code>.
      *
-     * @return <tt>BufferedImage</tt> of the desktop screen
+     * @return <code>BufferedImage</code> of the desktop screen
      */
     public BufferedImage captureScreen()
     {
@@ -135,13 +135,13 @@ public class DesktopInteractImpl implements DesktopInteract
     }
 
     /**
-     * Capture a part of the desktop screen using <tt>java.awt.Robot</tt>.
+     * Capture a part of the desktop screen using <code>java.awt.Robot</code>.
      *
      * @param x x position to start capture
      * @param y y position to start capture
      * @param width capture width
      * @param height capture height
-     * @return <tt>BufferedImage</tt> of a part of the desktop screen or null if Robot problem
+     * @return <code>BufferedImage</code> of a part of the desktop screen or null if Robot problem
      */
     public BufferedImage captureScreen(int x, int y, int width, int height)
     {

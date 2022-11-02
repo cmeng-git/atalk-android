@@ -28,7 +28,7 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.BufferTransferHandler;
 
 /**
- * Implements a <tt>CaptureDevice</tt> which provides silence in the form of
+ * Implements a <code>CaptureDevice</code> which provides silence in the form of
  * audio media.
  *
  * @author Lyubomir Marinov
@@ -40,14 +40,14 @@ class AudioSilenceCaptureDevice
 
     /**
      * The interval of time in milliseconds between two consecutive ticks of the
-     * clock used by <tt>AudioSilenceCaptureDevice</tt> and, more specifically,
-     * <tt>AudioSilenceStream</tt>.
+     * clock used by <code>AudioSilenceCaptureDevice</code> and, more specifically,
+     * <code>AudioSilenceStream</code>.
      */
     private static final long CLOCK_TICK_INTERVAL = 20;
 
     /**
-     * The list of <tt>Format</tt>s supported by the
-     * <tt>AudioSilenceCaptureDevice</tt> instances.
+     * The list of <code>Format</code>s supported by the
+     * <code>AudioSilenceCaptureDevice</code> instances.
      */
     private static final Format[] SUPPORTED_FORMATS
         = new Format[]
@@ -65,13 +65,13 @@ class AudioSilenceCaptureDevice
                 };
 
     /**
-     * The flag which determines whether <tt>AudioSilenceCaptureDevice</tt> and,
-     * more specifically, <tt>AudioSilenceStream</tt> are to be used by
-     * <tt>AudioMixer</tt> for the mere purposes of ticking the clock which
-     * makes <tt>AudioMixer</tt> read media from its inputs, mix it, and write
-     * it to its outputs. The preferred value is <tt>true</tt> because it
-     * causes the <tt>AudioMixer</tt> to not push media unless at least one
-     * <tt>Channel</tt> is receiving actual media.
+     * The flag which determines whether <code>AudioSilenceCaptureDevice</code> and,
+     * more specifically, <code>AudioSilenceStream</code> are to be used by
+     * <code>AudioMixer</code> for the mere purposes of ticking the clock which
+     * makes <code>AudioMixer</code> read media from its inputs, mix it, and write
+     * it to its outputs. The preferred value is <code>true</code> because it
+     * causes the <code>AudioMixer</code> to not push media unless at least one
+     * <code>Channel</code> is receiving actual media.
      */
     private final boolean clockOnly;
 
@@ -105,9 +105,9 @@ class AudioSilenceCaptureDevice
      * {@inheritDoc}
      *
      * Overrides the super implementation in order to return the list of
-     * <tt>Format</tt>s hardcoded as supported in
-     * <tt>AudioSilenceCaptureDevice</tt> because the super looks them up by
-     * <tt>CaptureDeviceInfo</tt> and this instance does not have one.
+     * <code>Format</code>s hardcoded as supported in
+     * <code>AudioSilenceCaptureDevice</code> because the super looks them up by
+     * <code>CaptureDeviceInfo</code> and this instance does not have one.
      */
     @Override
     protected Format[] getSupportedFormats(int streamIndex)
@@ -116,7 +116,7 @@ class AudioSilenceCaptureDevice
     }
 
     /**
-     * Implements a <tt>PushBufferStream</tt> which provides silence in the form
+     * Implements a <code>PushBufferStream</code> which provides silence in the form
      * of audio media.
      */
     private static class AudioSilenceStream
@@ -130,30 +130,30 @@ class AudioSilenceCaptureDevice
         private boolean started;
 
         /**
-         * The <tt>Thread</tt> which pushes available media data out of this
-         * instance to its consumer i.e. <tt>BufferTransferHandler</tt>.
+         * The <code>Thread</code> which pushes available media data out of this
+         * instance to its consumer i.e. <code>BufferTransferHandler</code>.
          */
         private Thread thread;
 
         /**
          * The flag which determines whether this {@code AudioSilenceStream}
-         * is to be used by <tt>AudioMixer</tt> for the mere purposes of ticking
-         * the clock which makes <tt>AudioMixer</tt> read media from its inputs,
+         * is to be used by <code>AudioMixer</code> for the mere purposes of ticking
+         * the clock which makes <code>AudioMixer</code> read media from its inputs,
          * mix it, and write it to its outputs.
          */
         private final boolean clockOnly;
 
         /**
-         * Initializes a new <tt>AudioSilenceStream</tt> which is to be exposed
-         * by a specific <tt>AudioSilenceCaptureDevice</tt> and which is to have
-         * its <tt>Format</tt>-related information abstracted by a specific
-         * <tt>FormatControl</tt>.
+         * Initializes a new <code>AudioSilenceStream</code> which is to be exposed
+         * by a specific <code>AudioSilenceCaptureDevice</code> and which is to have
+         * its <code>Format</code>-related information abstracted by a specific
+         * <code>FormatControl</code>.
          *
-         * @param dataSource the <tt>AudioSilenceCaptureDevice</tt> which is
+         * @param dataSource the <code>AudioSilenceCaptureDevice</code> which is
          * initializing the new instance and which is to expose it in its array
-         * of <tt>PushBufferStream</tt>s
-         * @param formatControl the <tt>FormatControl</tt> which is to abstract
-         * the <tt>Format</tt>-related information of the new instance
+         * of <code>PushBufferStream</code>s
+         * @param formatControl the <code>FormatControl</code> which is to abstract
+         * the <code>Format</code>-related information of the new instance
          */
         public AudioSilenceStream(
                 AudioSilenceCaptureDevice dataSource,
@@ -166,13 +166,13 @@ class AudioSilenceCaptureDevice
 
         /**
          * Reads available media data from this instance into a specific
-         * <tt>Buffer</tt>.
+         * <code>Buffer</code>.
          *
-         * @param buffer the <tt>Buffer</tt> to write the available media data
+         * @param buffer the <code>Buffer</code> to write the available media data
          * into
          * @throws IOException if an I/O error has prevented the reading of
          * available media data from this instance into the specified
-         * <tt>buffer</tt>
+         * <code>buffer</code>
          */
         @Override
         public void read(Buffer buffer)
@@ -206,7 +206,7 @@ class AudioSilenceCaptureDevice
 
         /**
          * Runs in {@link #thread} and pushes available media data out of this
-         * instance to its consumer i.e. <tt>BufferTransferHandler</tt>.
+         * instance to its consumer i.e. <code>BufferTransferHandler</code>.
          */
         @Override
         public void run()

@@ -183,7 +183,7 @@ public class CallContactFragment extends OSGiFragment
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
             @NonNull int[] grantResults)
     {
-        // If request is cancelled, the result arrays are empty.
+        // If request is canceled, the result arrays are empty.
         if (requestCode == PERMISSION_GET_ACCOUNTS) {
             if ((grantResults.length > 0)
                     && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {

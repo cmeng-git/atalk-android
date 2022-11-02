@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers</a>.
+ * Smack's API for XEP-0391: Jingle Encrypted Transfers.
  */
 package org.jivesoftware.smackx.jet;

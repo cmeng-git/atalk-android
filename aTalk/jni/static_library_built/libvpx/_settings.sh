@@ -68,8 +68,8 @@ configure() {
     armeabi-v7a)
       NDK_ARCH="arm"
       NDK_ABIARCH="arm-linux-androideabi"
-    # clang70: warning: -Wl,--fix-cortex-a8: 'linker' input unused [-Wunused-command-line-argument]
-    # CFLAGS="${CFLAGS_} -Wl,--fix-cortex-a8 -march=${CPU} -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
+      # clang70: warning: -Wl,--fix-cortex-a8: 'linker' input unused [-Wunused-command-line-argument]
+      # CFLAGS="${CFLAGS_} -Wl,--fix-cortex-a8 -march=${CPU} -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
       # CFLAGS="${CFLAGS_} -Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
       CFLAGS="${CFLAGS_} -Os -march=armv7-a"
       LDFLAGS="${LDFLAGS_} -march=armv7-a" # -Wl,--fix-cortex-a8" not valid option
@@ -104,6 +104,7 @@ configure() {
       CFLAGS="${CFLAGS_} -O3 -march=i686 -mtune=intel -msse3 -mfpmath=sse -m32 -fPIC"
       LDFLAGS="-m32"
       ASFLAGS="-D__ANDROID__"
+
     ;;
     x86_64)
       NDK_ARCH="x86_64"
@@ -152,6 +153,9 @@ configure() {
   export RANLIB="${CROSS_PREFIX}ranlib"
   export CPP="${CROSS_PREFIX}cpp"
   export NM="${CROSS_PREFIX}nm"
+
+#  export APP_CFLAGS="-fsanitize=address -fno-omit-frame-pointer"
+#  export APP_LDFLAGS="-fsanitize=address"
 
   echo "**********************************************"
   echo "### Use NDK=${NDK}"

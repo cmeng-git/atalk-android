@@ -33,19 +33,19 @@ public class DatagramTransportImpl implements DatagramTransport
     private final int componentID;
 
     /**
-     * The <tt>RTPConnector</tt> which represents and implements the actual <tt>DatagramSocket</tt>
+     * The <code>RTPConnector</code> which represents and implements the actual <code>DatagramSocket</code>
      * adapted by this instance.
      */
     private AbstractRTPConnector connector;
 
     /**
-     * The pool of <tt>RawPacket</tt>s instances to reduce their allocations and garbage collection.
+     * The pool of <code>RawPacket</code>s instances to reduce their allocations and garbage collection.
      */
     private final Queue<RawPacket> rawPacketPool = new LinkedBlockingQueue<>(RTPConnectorOutputStream.POOL_CAPACITY);
 
     /**
-     * The queue of <tt>RawPacket</tt>s which have been received from the network are awaiting to be
-     * received by the application through this <tt>DatagramTransport</tt>.
+     * The queue of <code>RawPacket</code>s which have been received from the network are awaiting to be
+     * received by the application through this <code>DatagramTransport</code>.
      */
     private final ArrayBlockingQueue<RawPacket> receiveQ;
 
@@ -55,24 +55,24 @@ public class DatagramTransportImpl implements DatagramTransport
     private final int receiveQCapacity;
 
     /**
-     * The <tt>byte</tt> buffer which represents a datagram to be sent. It may consist of multiple
+     * The <code>byte</code> buffer which represents a datagram to be sent. It may consist of multiple
      * DTLS records which are simple encoded consecutively.
      */
     private byte[] sendBuf;
 
     /**
-     * The length in <tt>byte</tt>s of {@link #sendBuf} i.e. the number of <tt>sendBuf</tt> elements
+     * The length in <code>byte</code>s of {@link #sendBuf} i.e. the number of <code>sendBuf</code> elements
      * which constitute actual DTLS records.
      */
     private int sendBufLength;
 
     /**
-     * The <tt>Object</tt> that synchronizes the access to {@link #sendBuf}, {@link #sendBufLength}.
+     * The <code>Object</code> that synchronizes the access to {@link #sendBuf}, {@link #sendBufLength}.
      */
     private final Object sendBufSyncRoot = new Object();
 
     /**
-     * Initializes a new <tt>DatagramTransportImpl</tt>.
+     * Initializes a new <code>DatagramTransportImpl</code>.
      *
      * @param componentID {@link Component#RTP} if the new instance is to work on data/RTP packets or
      * {@link Component#RTCP} if the new instance is to work on control/RTCP packets
@@ -110,9 +110,9 @@ public class DatagramTransportImpl implements DatagramTransport
 
     /**
      * Works around a bug in the Bouncy Castle Crypto APIs which may cause
-     * <tt>org.bouncycastle.tls.DTLSReliableHandshake.receiveMessage()</tt> to enter an endless loop.
+     * <code>org.bouncycastle.tls.DTLSReliableHandshake.receiveMessage()</code> to enter an endless loop.
      *
-     * @param cause the <tt>Throwable</tt> which would have been thrown if the bug did not exist
+     * @param cause the <code>Throwable</code> which would have been thrown if the bug did not exist
      */
     private void breakOutOfDTLSReliableHandshakeReceiveMessage(Throwable cause)
     {
@@ -229,11 +229,11 @@ public class DatagramTransportImpl implements DatagramTransport
     }
 
     /**
-     * Queues a packet received from the network to be received by the application through this <tt>DatagramTransport</tt>.
+     * Queues a packet received from the network to be received by the application through this <code>DatagramTransport</code>.
      *
-     * @param buf the array of <tt>byte</tt>s which contains the packet to be queued
-     * @param off the offset within <tt>buf</tt> at which the packet to be queued starts
-     * @param len the length within <tt>buf</tt> starting at <tt>off</tt> of the packet to be queued
+     * @param buf the array of <code>byte</code>s which contains the packet to be queued
+     * @param off the offset within <code>buf</code> at which the packet to be queued starts
+     * @param len the length within <code>buf</code> starting at <code>off</code> of the packet to be queued
      */
     void queueReceive(byte[] buf, int off, int len)
     {
@@ -474,11 +474,11 @@ public class DatagramTransportImpl implements DatagramTransport
     }
 
     /**
-     * Sets the <tt>RTPConnector</tt> which represents and implements the actual
-     * <tt>DatagramSocket</tt> to be adapted by this instance.
+     * Sets the <code>RTPConnector</code> which represents and implements the actual
+     * <code>DatagramSocket</code> to be adapted by this instance.
      *
-     * @param connector the <tt>RTPConnector</tt> which represents and implements the actual
-     * <tt>DatagramSocket</tt> to be adapted by this instance
+     * @param connector the <code>RTPConnector</code> which represents and implements the actual
+     * <code>DatagramSocket</code> to be adapted by this instance
      */
     void setConnector(AbstractRTPConnector connector)
     {

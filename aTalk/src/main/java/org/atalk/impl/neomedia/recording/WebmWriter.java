@@ -10,13 +10,13 @@ public class WebmWriter
 	}
 
 	/**
-	 * Constant corresponding to <tt>VPX_FRAME_IS_KEY</tt> from libvpx's <tt>vpx/vpx_encoder.h</tt>
+	 * Constant corresponding to <code>VPX_FRAME_IS_KEY</code> from libvpx's <code>vpx/vpx_encoder.h</code>
 	 */
 	public static int FLAG_FRAME_IS_KEY = 0x01;
 
 	/**
-	 * Constant corresponding to <tt>VPX_FRAME_IS_INVISIBLE</tt> from libvpx's
-	 * <tt>vpx/vpx_encoder.h</tt>
+	 * Constant corresponding to <code>VPX_FRAME_IS_INVISIBLE</code> from libvpx's
+	 * <code>vpx/vpx_encoder.h</code>
 	 */
 	public static int FLAG_FRAME_IS_INVISIBLE = 0x04;
 
@@ -25,7 +25,7 @@ public class WebmWriter
 	private native long allocCfg();
 
 	/**
-	 * Free-s <tt>glob</tt> and closes the file opened for writing.
+	 * Free-s <code>glob</code> and closes the file opened for writing.
 	 * 
 	 * @param glob
 	 */

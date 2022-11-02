@@ -27,7 +27,7 @@ public class ConferenceMediumProvider extends ExtensionElementProvider<Conferenc
      * the smack API, at the end of the method call, the parser will be positioned on the closing
      * element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>ConferenceMedium</tt> element.
+     * @param parser an XML parser positioned at the opening <code>ConferenceMedium</code> element.
      * @return a new {@link ConferenceMediumExtension} instance.
      * @throws IOException, XmlPullParserException if an error occurs parsing the XML.
      */

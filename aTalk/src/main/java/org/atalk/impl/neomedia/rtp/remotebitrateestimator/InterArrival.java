@@ -276,7 +276,7 @@ class InterArrival
         public long lastSystemTimeMs = -1L;
 
         /**
-         * Assigns the values of the fields of <tt>source</tt> to the respective fields of this
+         * Assigns the values of the fields of <code>source</code> to the respective fields of this
          * {@code TimestampGroup}.
          *
          * @param source the {@code TimestampGroup} the values of the fields of which are to be assigned to

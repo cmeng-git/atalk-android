@@ -307,7 +307,7 @@ public class OperationSetChatStateNotificationsJabberImpl extends
         }
 
         /**
-         * Called when a notification that the receiver of the message cancelled the reply is received.
+         * Called when a notification that the receiver of the message canceled the reply is received.
          *
          * @param from the user that sent the notification.
          * @param packetID the id of the message that was sent.

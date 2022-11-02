@@ -12,7 +12,7 @@ import javax.media.*;
 import javax.media.format.AudioFormat;
 
 /**
- * An effect that would pass data to the <tt>AudioLevelEventDispatcher</tt> so that it would
+ * An effect that would pass data to the <code>AudioLevelEventDispatcher</code> so that it would
  * calculate levels and dispatch changes to interested parties.
  *
  * @author Damian Minkov
@@ -23,14 +23,14 @@ public class AudioLevelEffect extends ControlsAdapter
 		implements Effect
 {
 	/**
-	 * The indicator which determines whether <tt>AudioLevelEffect</tt> instances are to perform
-	 * the copying of the data from input <tt>Buffer</tt>s to output <tt>Buffer</tt>s themselves
+	 * The indicator which determines whether <code>AudioLevelEffect</code> instances are to perform
+	 * the copying of the data from input <code>Buffer</code>s to output <code>Buffer</code>s themselves
 	 * (e.g. using {@link System#arraycopy(Object, int, Object, int, int)}).
 	 */
 	private static final boolean COPY_DATA_FROM_INPUT_TO_OUTPUT = true;
 
 	/**
-	 * The <tt>SimpleAudioLevelListener</tt> which this instance associates with its
+	 * The <code>SimpleAudioLevelListener</code> which this instance associates with its
 	 * {@link #eventDispatcher}.
 	 */
 	private SimpleAudioLevelListener audioLevelListener = null;
@@ -72,14 +72,14 @@ public class AudioLevelEffect extends ControlsAdapter
 	}
 
 	/**
-	 * Sets (or unsets if <tt>listener</tt> is <tt>null</tt>), the listener that is going to be
+	 * Sets (or unsets if <code>listener</code> is <code>null</code>), the listener that is going to be
 	 * notified of audio level changes detected by this effect. Given the semantics of the
 	 * {@link AudioLevelEventDispatcher} this effect would do no real work if no listener is set or
-	 * if it is set to <tt>null</tt>.
+	 * if it is set to <code>null</code>.
 	 *
 	 * @param listener
-	 * 		the <tt>SimpleAudioLevelListener</tt> that we'd like to receive level changes or
-	 * 		<tt>null</tt> if we'd like level measurements to stop.
+	 * 		the <code>SimpleAudioLevelListener</code> that we'd like to receive level changes or
+	 * 		<code>null</code> if we'd like level measurements to stop.
 	 */
 	public void setAudioLevelListener(SimpleAudioLevelListener listener)
 	{
@@ -93,7 +93,7 @@ public class AudioLevelEffect extends ControlsAdapter
 	/**
 	 * Returns the audio level listener.
 	 *
-	 * @return the audio level listener or <tt>null</tt> if it does not exist.
+	 * @return the audio level listener or <code>null</code> if it does not exist.
 	 */
 	public SimpleAudioLevelListener getAudioLevelListener()
 	{
@@ -105,7 +105,7 @@ public class AudioLevelEffect extends ControlsAdapter
 	/**
 	 * Lists all of the input formats that this codec accepts.
 	 *
-	 * @return An array that contains the supported input <tt>Formats</tt>.
+	 * @return An array that contains the supported input <code>Formats</code>.
 	 */
 	public Format[] getSupportedInputFormats()
 	{
@@ -116,8 +116,8 @@ public class AudioLevelEffect extends ControlsAdapter
 	 * Lists the output formats that this codec can generate.
 	 *
 	 * @param input
-	 * 		The <tt>Format</tt> of the data to be used as input to the plug-in.
-	 * @return An array that contains the supported output <tt>Formats</tt>.
+	 * 		The <code>Format</code> of the data to be used as input to the plug-in.
+	 * @return An array that contains the supported output <code>Formats</code>.
 	 */
 	public Format[] getSupportedOutputFormats(Format input)
 	{
@@ -138,8 +138,8 @@ public class AudioLevelEffect extends ControlsAdapter
 	 * Sets the format of the data to be input to this codec.
 	 *
 	 * @param format
-	 * 		The <tt>Format</tt> to be set.
-	 * @return The <tt>Format</tt> that was set.
+	 * 		The <code>Format</code> to be set.
+	 * @return The <code>Format</code> that was set.
 	 */
 	public Format setInputFormat(Format format)
 	{
@@ -150,8 +150,8 @@ public class AudioLevelEffect extends ControlsAdapter
 	 * Sets the format for the data this codec outputs.
 	 *
 	 * @param format
-	 * 		The <tt>Format</tt> to be set.
-	 * @return The <tt>Format</tt> that was set.
+	 * 		The <code>Format</code> to be set.
+	 * @return The <code>Format</code> that was set.
 	 */
 	public Format setOutputFormat(Format format)
 	{
@@ -162,10 +162,10 @@ public class AudioLevelEffect extends ControlsAdapter
 	 * Performs the media processing defined by this codec.
 	 *
 	 * @param inputBuffer
-	 * 		The <tt>Buffer</tt> that contains the media data to be processed.
+	 * 		The <code>Buffer</code> that contains the media data to be processed.
 	 * @param outputBuffer
-	 * 		The <tt>Buffer</tt> in which to store the processed media data.
-	 * @return <tt>BUFFER_PROCESSED_OK</tt> if the processing is successful.
+	 * 		The <code>Buffer</code> in which to store the processed media data.
+	 * @return <code>BUFFER_PROCESSED_OK</code> if the processing is successful.
 	 * @see PlugIn
 	 */
 	public int process(Buffer inputBuffer, Buffer outputBuffer)
@@ -222,7 +222,7 @@ public class AudioLevelEffect extends ControlsAdapter
 	/**
 	 * Gets the name of this plug-in as a human-readable string.
 	 *
-	 * @return A <tt>String</tt> that contains the descriptive name of the plug-in.
+	 * @return A <code>String</code> that contains the descriptive name of the plug-in.
 	 */
 	public String getName()
 	{

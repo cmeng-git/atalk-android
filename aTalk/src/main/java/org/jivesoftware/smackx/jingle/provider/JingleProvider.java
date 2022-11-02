@@ -107,7 +107,7 @@ public class JingleProvider extends IqProvider<Jingle>
                             break;
 
                         default:
-                            // session-info element handlers for <mute/> <active/> and etc
+                            // session-info element handlers for <mute/> <active/> and etc for rtp session
                             if (namespace.equals(SessionInfo.NAMESPACE)) {
                                 LOGGER.info("Handle Jingle Session-Info: <" + tagName + " xml: " + namespace + ">");
                                 SessionInfoType type = SessionInfoType.valueOf(tagName);

@@ -6,7 +6,10 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.content.Context;
-import android.net.*;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -15,7 +18,51 @@ import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractProtocolProviderService;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetAvatar;
+import net.java.sip.communicator.service.protocol.OperationSetBasicAutoAnswer;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetChangePassword;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetConnectionInfo;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetCusaxUtils;
+import net.java.sip.communicator.service.protocol.OperationSetDTMF;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetIncomingDTMF;
+import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransform;
+import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransformImpl;
+import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresencePermissions;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetSecureSDesTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetSecureZrtpTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
+import net.java.sip.communicator.service.protocol.OperationSetTLS;
+import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
+import net.java.sip.communicator.service.protocol.OperationSetThumbnailedFileFactory;
+import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
+import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolIcon;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.TransportProtocol;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
@@ -23,7 +70,9 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.NetworkUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.*;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
@@ -34,16 +83,30 @@ import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.OSUtils;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.SmackException.*;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.ReconnectionManager;
+import org.jivesoftware.smack.Smack;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
+import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.bosh.BOSHConfiguration;
 import org.jivesoftware.smack.bosh.XMPPBOSHConnection;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.proxy.ProxyInfo;
@@ -56,6 +119,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.minidns.MiniDnsDane;
+import org.jivesoftware.smackx.DefaultExtensionElementProvider;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
@@ -76,37 +140,63 @@ import org.jivesoftware.smackx.caps.provider.CapsExtensionProvider;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.provider.CaptchaProvider;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
+import org.jivesoftware.smackx.coin.CoinIQ;
+import org.jivesoftware.smackx.coin.CoinIQProvider;
+import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.colibri.ColibriIQProvider;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
+import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtensionProvider;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscovery;
+import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryManager;
+import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryProvider;
+import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
 import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.httpauthorizationrequest.HTTPAuthorizationRequestListener;
 import org.jivesoftware.smackx.httpauthorizationrequest.HTTPAuthorizationRequestManager;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmExtProvider;
 import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvider;
+import org.jivesoftware.smackx.inputevt.InputEvtIQ;
+import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
 import org.jivesoftware.smackx.iqversion.VersionManager;
+import org.jivesoftware.smackx.jibri.JibriIq;
+import org.jivesoftware.smackx.jibri.JibriIqProvider;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.provider.JingleProvider;
 import org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
-import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
 import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
 import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
+import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
+import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
 import org.jivesoftware.smackx.jinglemessage.JingleMessageManager;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jivesoftware.smackx.jinglenodes.SmackServiceNode;
 import org.jivesoftware.smackx.jinglenodes.TrackerEntry;
 import org.jivesoftware.smackx.jinglenodes.element.JingleChannelIQ;
-import org.jivesoftware.smackx.jitsimeet.*;
+import org.jivesoftware.smackx.jitsimeet.AvatarIdExtension;
+import org.jivesoftware.smackx.jitsimeet.AvatarUrl;
+import org.jivesoftware.smackx.jitsimeet.IdentityExtension;
+import org.jivesoftware.smackx.jitsimeet.JsonMessageExtension;
+import org.jivesoftware.smackx.jitsimeet.StatsId;
+import org.jivesoftware.smackx.jitsimeet.TranscriptionLanguageExtension;
+import org.jivesoftware.smackx.jitsimeet.TranscriptionRequestExtension;
+import org.jivesoftware.smackx.jitsimeet.TranscriptionStatusExtension;
+import org.jivesoftware.smackx.jitsimeet.TranslationLanguageExtension;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
@@ -117,10 +207,15 @@ import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jivesoftware.smackx.thumbnail.Thumbnail;
+import org.jivesoftware.smackx.thumbnail.ThumbnailStreamInitiationProvider;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -130,37 +225,33 @@ import org.minidns.dnssec.DnssecValidationFailedException;
 import org.minidns.record.SRV;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
-import org.jivesoftware.smackx.DefaultExtensionElementProvider;
-import org.jivesoftware.smackx.coin.CoinIQ;
-import org.jivesoftware.smackx.coin.CoinIQProvider;
-import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
-import org.jivesoftware.smackx.colibri.ColibriIQProvider;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtension;
-import org.jivesoftware.smackx.confdesc.ConferenceDescriptionExtensionProvider;
-import org.jivesoftware.smackx.inputevt.InputEvtIQ;
-import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
-import org.jivesoftware.smackx.jibri.JibriIq;
-import org.jivesoftware.smackx.jibri.JibriIqProvider;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.provider.JingleProvider;
-import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQ;
-import org.jivesoftware.smackx.jingleinfo.JingleInfoQueryIQProvider;
-import org.jivesoftware.smackx.thumbnail.Thumbnail;
-import org.jivesoftware.smackx.thumbnail.ThumbnailStreamInitiationProvider;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
 
 import timber.log.Timber;
 
@@ -1149,7 +1240,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             e.printStackTrace();
         }
 
-        // Check if user has cancelled the Trusted Certificate confirmation request
+        // Check if user has canceled the Trusted Certificate confirmation request
         if (abortConnecting) {
             abortConnecting = false;
             disconnectAndCleanConnection();
@@ -1401,6 +1492,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
+
+            /*  Start up External Service Discovery Manager XEP-0215 */
+            ExternalServiceDiscoveryManager.getInstanceFor(connection);
 
             // Start up both instances for incoming JingleMessage events handlers
             JingleMessageManager.getInstanceFor(connection);
@@ -2142,6 +2236,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             ProviderManager.addIQProvider(Registration.ELEMENT, Registration.NAMESPACE, new RegistrationProvider());
 
             ProviderManager.addIQProvider(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE, new ConfirmIQProvider());
+
+            // XEP-0215: External Service Discovery to process IQ
+            ProviderManager.addIQProvider(ExternalServices.ELEMENT, ExternalServices.NAMESPACE,
+                    new ExternalServiceDiscoveryProvider());
 
             ProviderManager.addExtensionProvider(
                     ConferenceDescriptionExtension.ELEMENT, ConferenceDescriptionExtension.NAMESPACE,

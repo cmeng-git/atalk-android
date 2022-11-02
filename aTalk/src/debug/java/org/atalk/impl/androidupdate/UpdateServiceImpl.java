@@ -5,29 +5,42 @@
  */
 package org.atalk.impl.androidupdate;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.*;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import timber.log.Timber;
 
@@ -40,15 +53,16 @@ import timber.log.Timber;
 public class UpdateServiceImpl implements UpdateService
 {
     // Default update link
-    private static final String[] updateLinks = {"https://github.com/cmeng-git/atalk-android", "https://atalk.sytes.net"};
+    // Default update link; path is case-sensitive.
+    private static final String[] updateLinks = {
+            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/versionupdate.properties",
+            "https://atalk.sytes.net/releases/atalk-android/versionupdate.properties"
+    };
 
     /**
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
-
-    // path are case sensitive
-    private static final String filePath = "/releases/atalk-android/versionupdate.properties";
 
     /**
      * Current installed version string / version Code
@@ -134,8 +148,11 @@ public class UpdateServiceImpl implements UpdateService
                         @Override
                         public boolean onConfirmClicked(DialogActivity dialog)
                         {
-                            if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
-                                downloadApk();
+                            if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
+                                    downloadApk();
+                            }
                             return true;
                         }
 
@@ -205,11 +222,12 @@ public class UpdateServiceImpl implements UpdateService
                     {
                         // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
                         Intent intent;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                        else
+                        }
+                        else {
                             intent = new Intent(Intent.ACTION_VIEW);
-
+                        }
                         intent.setDataAndType(fileUri, APK_MIME_TYPE);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -285,6 +303,7 @@ public class UpdateServiceImpl implements UpdateService
                 downloadReceiver = null;
             }
         }
+
     }
 
     private SharedPreferences getStore()
@@ -349,7 +368,7 @@ public class UpdateServiceImpl implements UpdateService
         if (apkFile.exists()) {
             // Get downloaded apk actual versionCode and check its versionCode validity
             PackageManager pm = aTalkApp.getGlobalContext().getPackageManager();
-            PackageInfo pckgInfo = pm.getPackageArchiveInfo(apkFile.getPath(), 0);
+            PackageInfo pckgInfo = pm.getPackageArchiveInfo(apkFile.getAbsolutePath(), 0);
 
             if (pckgInfo != null) {
                 long apkVersionCode;
@@ -424,14 +443,14 @@ public class UpdateServiceImpl implements UpdateService
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
 
+        String aLinkPrefix = updateLinks[0];
         if (updateLinks.length == 0) {
             Timber.d("Updates are disabled, emulates latest version.");
         }
         else {
             for (String aLink : updateLinks) {
-                String urlStr = aLink.trim() + filePath;
                 try {
-                    URL mUrl = new URL(urlStr);
+                    URL mUrl = new URL(aLink);
                     HttpURLConnection httpConnection = (HttpURLConnection) mUrl.openConnection();
                     httpConnection.setRequestMethod("GET");
                     httpConnection.setRequestProperty("Content-length", "0");
@@ -446,6 +465,7 @@ public class UpdateServiceImpl implements UpdateService
                         InputStream in = httpConnection.getInputStream();
                         mProperties = new Properties();
                         mProperties.load(in);
+                        aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
                         break;
                     }
                 } catch (IOException e) {
@@ -461,6 +481,9 @@ public class UpdateServiceImpl implements UpdateService
                 }
                 else {
                     downloadLink = mProperties.getProperty("download_link");
+                }
+                if (!downloadLink.startsWith("https:")) {
+                    downloadLink = aLinkPrefix + downloadLink;
                 }
                 // return true is current running application is already the latest
                 return (currentVersionCode >= latestVersionCode);

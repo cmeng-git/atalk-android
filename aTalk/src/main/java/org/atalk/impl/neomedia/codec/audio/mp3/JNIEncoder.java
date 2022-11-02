@@ -23,7 +23,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
     implements FlushableControl
 {
 	/**
-	 * The list of <tt>Format</tt>s of audio data supported as input by <tt>JNIEncoder</tt>
+	 * The list of <code>Format</code>s of audio data supported as input by <code>JNIEncoder</code>
 	 * instances.
 	 */
 	private static final AudioFormat[] SUPPORTED_INPUT_FORMATS = { new AudioFormat(
@@ -39,7 +39,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
         };
 
 	/**
-	 * The list of <tt>Format</tt>s of audio data supported as output by <tt>JNIEncoder</tt>
+	 * The list of <code>Format</code>s of audio data supported as output by <code>JNIEncoder</code>
 	 * instances.
 	 */
 	private static final AudioFormat[] SUPPORTED_OUTPUT_FORMATS
@@ -51,7 +51,7 @@ public class JNIEncoder extends FFmpegAudioEncoder
     }
 
     /**
-     * Initializes a new <tt>JNIEncoder</tt> instance.
+     * Initializes a new <code>JNIEncoder</code> instance.
      */
     public JNIEncoder()
     {

@@ -12,6 +12,8 @@
         android:id="@+id/exoplayerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:default_artwork="@drawable/bg_image"
+        app:use_artwork="true"
         app:controller_layout_id="@layout/exo_styled_player_control_view"
         app:show_buffering="when_playing"
         app:show_subtitle_button="true"

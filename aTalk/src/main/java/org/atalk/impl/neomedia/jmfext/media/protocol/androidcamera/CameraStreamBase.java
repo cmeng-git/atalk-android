@@ -159,9 +159,9 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
     private int idx = 0;
 
     /**
-     * Create a new instance of <tt>CameraStreamBase</tt>.
+     * Create a new instance of <code>CameraStreamBase</code>.
      *
-     * @param parent parent <tt>DataSource</tt>.
+     * @param parent parent <code>DataSource</code>.
      * @param formatControl format control used by this stream.
      */
     CameraStreamBase(DataSource parent, FormatControl formatControl)

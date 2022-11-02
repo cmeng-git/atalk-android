@@ -20,7 +20,7 @@ import org.atalk.service.neomedia.RawPacket;
 import timber.log.Timber;
 
 /**
- * Extends the FMJ <tt>RTPPacketParser</tt> with additional functionality.
+ * Extends the FMJ <code>RTPPacketParser</code> with additional functionality.
  *
  * @author George Politis
  * @author Eng Chong Meng

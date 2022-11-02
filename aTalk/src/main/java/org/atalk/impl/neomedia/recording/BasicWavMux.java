@@ -14,19 +14,19 @@ import javax.media.format.AudioFormat;
 import javax.media.protocol.*;
 
 /**
- * Implements a multiplexer for WAV files based on FMJ's <tt>BasicMux</tt>.
+ * Implements a multiplexer for WAV files based on FMJ's <code>BasicMux</code>.
  *
  * @author Boris Grozev
  */
 public class BasicWavMux extends BasicMux
 {
 	/**
-	 * The input formats supported by this <tt>BasicWavMux</tt>.
+	 * The input formats supported by this <code>BasicWavMux</code>.
 	 */
 	public static Format SUPPORTED_INPUT_FORMAT = new AudioFormat(AudioFormat.LINEAR);
 
 	/**
-	 * Initializes a <tt>BasicWavMux</tt> instance.
+	 * Initializes a <code>BasicWavMux</code> instance.
 	 */
 	public BasicWavMux()
 	{

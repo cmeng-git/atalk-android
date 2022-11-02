@@ -23,12 +23,12 @@ import javax.media.format.AudioFormat;
 public class SpeexResampler extends AbstractCodec2
 {
     /**
-     * The list of <tt>Format</tt>s of audio data supported as input and output by <tt>SpeexResampler</tt> instances.
+     * The list of <code>Format</code>s of audio data supported as input and output by <code>SpeexResampler</code> instances.
      */
     private static final Format[] SUPPORTED_FORMATS;
 
     /**
-     * The list of sample rates of audio data supported as input and output by <tt>SpeexResampler</tt> instances.
+     * The list of sample rates of audio data supported as input and output by <code>SpeexResampler</code> instances.
      */
     private static final double[] SUPPORTED_SAMPLE_RATES = new double[]{
             8000,
@@ -113,12 +113,12 @@ public class SpeexResampler extends AbstractCodec2
     private int outputSampleRate;
 
     /**
-     * The pointer to the native <tt>SpeexResamplerState</tt> which is represented by this instance.
+     * The pointer to the native <code>SpeexResamplerState</code> which is represented by this instance.
      */
     private long resampler;
 
     /**
-     * Initializes a new <tt>SpeexResampler</tt> instance.
+     * Initializes a new <code>SpeexResampler</code> instance.
      */
     public SpeexResampler()
     {
@@ -140,12 +140,12 @@ public class SpeexResampler extends AbstractCodec2
     }
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
      * @see AbstractCodec2#doOpen()
      */
     @Override
@@ -155,11 +155,11 @@ public class SpeexResampler extends AbstractCodec2
     }
 
     /**
-     * Resamples audio from a specific input <tt>Buffer</tt> into a specific output <tt>Buffer</tt>.
+     * Resamples audio from a specific input <code>Buffer</code> into a specific output <code>Buffer</code>.
      *
-     * @param inBuffer input <tt>Buffer</tt>
-     * @param outBuffer output <tt>Buffer</tt>
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if <tt>inBuffer</tt> has been successfully processed
+     * @param inBuffer input <code>Buffer</code>
+     * @param outBuffer output <code>Buffer</code>
+     * @return <code>BUFFER_PROCESSED_OK</code> if <code>inBuffer</code> has been successfully processed
      * @see AbstractCodec2#doProcess(Buffer, Buffer)
      */
     @Override
@@ -357,11 +357,11 @@ public class SpeexResampler extends AbstractCodec2
     }
 
     /**
-     * Sets the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>.
+     * Sets the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>.
      *
-     * @param format the <tt>Format</tt> of the media data to be input for processing in this <tt>Codec</tt>
-     * @return the <tt>Format</tt> of the media data to be input for processing in this
-     * <tt>Codec</tt> if <tt>format</tt> is compatible with this <tt>Codec</tt>; otherwise, <tt>null</tt>
+     * @param format the <code>Format</code> of the media data to be input for processing in this <code>Codec</code>
+     * @return the <code>Format</code> of the media data to be input for processing in this
+     * <code>Codec</code> if <code>format</code> is compatible with this <code>Codec</code>; otherwise, <code>null</code>
      * @see AbstractCodec2#setInputFormat(Format)
      */
     @Override

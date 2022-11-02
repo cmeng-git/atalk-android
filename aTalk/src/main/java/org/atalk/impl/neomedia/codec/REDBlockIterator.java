@@ -22,7 +22,7 @@ import timber.log.Timber;
 // import java.util.function.Predicate*; => need API-24
 
 /**
- * An <tt>Iterator</tt> that iterates RED blocks (primary and non-primary).
+ * An <code>Iterator</code> that iterates RED blocks (primary and non-primary).
  *
  * @author George Politis
  * @author Eng Chong Meng

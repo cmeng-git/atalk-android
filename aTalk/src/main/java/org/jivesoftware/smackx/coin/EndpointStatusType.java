@@ -63,7 +63,7 @@ public enum EndpointStatusType
     private final String type;
 
     /**
-     * Creates a <tt>EndPointType</tt> instance with the specified name.
+     * Creates a <code>EndPointType</code> instance with the specified name.
      *
      * @param type type name.
      */
@@ -84,11 +84,11 @@ public enum EndpointStatusType
     }
 
     /**
-     * Returns a <tt>EndPointType</tt>.
+     * Returns a <code>EndPointType</code>.
      *
-     * @param typeStr the <tt>String</tt> that we'd like to parse.
+     * @param typeStr the <code>String</code> that we'd like to parse.
      * @return an EndPointType.
-     * @throws IllegalArgumentException in case <tt>typeStr</tt> is not a valid <tt>EndPointType</tt>.
+     * @throws IllegalArgumentException in case <code>typeStr</code> is not a valid <code>EndPointType</code>.
      */
     public static EndpointStatusType fromString(String typeStr)
             throws IllegalArgumentException

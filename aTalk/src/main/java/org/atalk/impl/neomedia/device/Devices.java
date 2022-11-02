@@ -23,8 +23,8 @@ import org.atalk.service.libjitsi.LibJitsi;
 public abstract class Devices
 {
     /**
-     * The name of the <tt>ConfigurationService</tt> <tt>boolean</tt> property which indicates
-     * whether the automatic selection of USB devices must be disabled. The default value is <tt>false</tt>.
+     * The name of the <code>ConfigurationService</code> <code>boolean</code> property which indicates
+     * whether the automatic selection of USB devices must be disabled. The default value is <code>false</code>.
      */
     private static final String PROP_DISABLE_USB_DEVICE_AUTO_SELECTION = "neomedia.device.disableUsbDeviceAutoSelection";
 
@@ -45,7 +45,7 @@ public abstract class Devices
     private final List<String> devicePreferences = new ArrayList<>();
 
     /**
-     * The list of <tt>CaptureDeviceInfo2</tt>s which are active/plugged-in.
+     * The list of <code>CaptureDeviceInfo2</code>s which are active/plugged-in.
      */
     private List<CaptureDeviceInfo2> devices;
 
@@ -82,12 +82,12 @@ public abstract class Devices
     }
 
     /**
-     * Gets a <tt>CapatureDeviceInfo2</tt> which is known to this instance and is identified by a
-     * specific <tt>MediaLocator</tt>.
+     * Gets a <code>CapatureDeviceInfo2</code> which is known to this instance and is identified by a
+     * specific <code>MediaLocator</code>.
      *
-     * @param locator the <tt>MediaLocator</tt> of the <tt>CaptureDeviceInfo2</tt> to be returned
-     * @return a <tt>CaptureDeviceInfo2</tt> which is known to this instance and is identified by
-     * the specified <tt>locator</tt>
+     * @param locator the <code>MediaLocator</code> of the <code>CaptureDeviceInfo2</code> to be returned
+     * @return a <code>CaptureDeviceInfo2</code> which is known to this instance and is identified by
+     * the specified <code>locator</code>
      */
     public CaptureDeviceInfo2 getDevice(MediaLocator locator)
     {
@@ -105,9 +105,9 @@ public abstract class Devices
     }
 
     /**
-     * Returns the list of the <tt>CaptureDeviceInfo2</tt>s which are active/plugged-in.
+     * Returns the list of the <code>CaptureDeviceInfo2</code>s which are active/plugged-in.
      *
-     * @return the list of the <tt>CaptureDeviceInfo2</tt>s which are active/plugged-in
+     * @return the list of the <code>CaptureDeviceInfo2</code>s which are active/plugged-in
      */
     public List<CaptureDeviceInfo2> getDevices()
     {
@@ -194,9 +194,9 @@ public abstract class Devices
     }
 
     /**
-     * Loads device name ordered with user's preference from the <tt>ConfigurationService</tt>.
+     * Loads device name ordered with user's preference from the <code>ConfigurationService</code>.
      *
-     * @param property the name of the <tt>ConfigurationService</tt> property which specifies the user's preference.
+     * @param property the name of the <code>ConfigurationService</code> property which specifies the user's preference.
      */
     private void loadDevicePreferences(String property)
     {
@@ -268,8 +268,8 @@ public abstract class Devices
     /**
      * Saves the new selected device in top of the user preferences.
      *
-     * @param property the name of the <tt>ConfigurationService</tt> property into which the user's
-     * preference with respect to the specified <tt>CaptureDeviceInfo</tt> is to be saved
+     * @param property the name of the <code>ConfigurationService</code> property into which the user's
+     * preference with respect to the specified <code>CaptureDeviceInfo</code> is to be saved
      * @param device The device selected by the user.
      * @param isSelected True if the device is the selected one.
      */
@@ -289,7 +289,7 @@ public abstract class Devices
      * Selects the active device.
      *
      * @param device the selected active device
-     * @param save <tt>true</tt> to save the choice in the configuration; <tt>false</tt>, otherwise
+     * @param save <code>true</code> to save the choice in the configuration; <code>false</code>, otherwise
      */
     public void setDevice(CaptureDeviceInfo2 device, boolean save)
     {
@@ -307,9 +307,9 @@ public abstract class Devices
     }
 
     /**
-     * Sets the list of <tt>CaptureDeviceInfo2</tt>s which are active/plugged-in.
+     * Sets the list of <code>CaptureDeviceInfo2</code>s which are active/plugged-in.
      *
-     * @param devices the list of <tt>CaptureDeviceInfo2</tt>s which are active/plugged-in
+     * @param devices the list of <code>CaptureDeviceInfo2</code>s which are active/plugged-in
      */
     public void setDevices(List<CaptureDeviceInfo2> devices)
     {
@@ -319,7 +319,7 @@ public abstract class Devices
     /**
      * Saves the device preferences and write it to the configuration file.
      *
-     * @param property the name of the <tt>ConfigurationService</tt> property
+     * @param property the name of the <code>ConfigurationService</code> property
      */
     private void writeDevicePreferences(String property)
     {

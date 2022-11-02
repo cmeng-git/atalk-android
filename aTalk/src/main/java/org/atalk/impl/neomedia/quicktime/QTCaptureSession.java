@@ -6,7 +6,7 @@
 package org.atalk.impl.neomedia.quicktime;
 
 /**
- * Represents a QTKit <tt>QTCaptureSession</tt> object.
+ * Represents a QTKit <code>QTCaptureSession</code> object.
  *
  * @author Lyubomir Marinov
  */
@@ -15,8 +15,8 @@ public class QTCaptureSession extends NSObject
 	private boolean closed = false;
 
 	/**
-	 * Initializes a new <tt>QTCaptureSession</tt> instance which represents a new QTKit
-	 * <tt>QTCaptureSession</tt> object.
+	 * Initializes a new <code>QTCaptureSession</code> instance which represents a new QTKit
+	 * <code>QTCaptureSession</code> object.
 	 */
 	public QTCaptureSession()
 	{
@@ -24,11 +24,11 @@ public class QTCaptureSession extends NSObject
 	}
 
 	/**
-	 * Initializes a new <tt>QTCaptureSession</tt> instance which is to represent a specific QTKit
-	 * <tt>QTCaptureSession</tt> object.
+	 * Initializes a new <code>QTCaptureSession</code> instance which is to represent a specific QTKit
+	 * <code>QTCaptureSession</code> object.
 	 *
 	 * @param ptr
-	 * 		the pointer to the QTKit <tt>QTCaptureSession</tt> object to be represented by the new
+	 * 		the pointer to the QTKit <code>QTCaptureSession</code> object to be represented by the new
 	 * 		instance
 	 */
 	public QTCaptureSession(long ptr)

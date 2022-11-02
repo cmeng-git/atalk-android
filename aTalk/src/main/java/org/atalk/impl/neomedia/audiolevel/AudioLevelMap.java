@@ -6,11 +6,11 @@
 package org.atalk.impl.neomedia.audiolevel;
 
 /**
- * The class implements a basic mapping utility that allows binding <tt>long</tt> CSRC ID-s to
- * <tt>int</tt> audio levels. The class does not implement any synchronization for neither read nor
+ * The class implements a basic mapping utility that allows binding <code>long</code> CSRC ID-s to
+ * <code>int</code> audio levels. The class does not implement any synchronization for neither read nor
  * write operations but it is still intended to handle concurrent access in a manner that can be
  * considered graceful for the audio level use case. The class uses a bi-dimensional
- * <tt>long[][]</tt> matrix that is recreated every time a new CSRC is added or an existing one is
+ * <code>long[][]</code> matrix that is recreated every time a new CSRC is added or an existing one is
  * removed. Iterating through the matrix is only possible after obtaining a direct reference to it.
  * It is possible for this reference to become invalid shortly after someone has obtained it (e.g.
  * because someone added a new CSRC) but this should not cause problems for the CSRC audio level
@@ -26,13 +26,13 @@ public class AudioLevelMap
 	private long[][] levels = null;
 
 	/**
-	 * If this map already contains <tt>csrc</tt> this method updates its level, otherwise we add a
-	 * new entry mapping <tt>csrc</tt> to <tt>level</tt>.
+	 * If this map already contains <code>csrc</code> this method updates its level, otherwise we add a
+	 * new entry mapping <code>csrc</code> to <code>level</code>.
 	 *
 	 * @param csrc
 	 * 		the CSRC key that we'd like to add/update.
 	 * @param level
-	 * 		the new audio level for the specified <tt>csrc</tt>.
+	 * 		the new audio level for the specified <code>csrc</code>.
 	 */
 	public void putLevel(long csrc, int level)
 	{
@@ -50,11 +50,11 @@ public class AudioLevelMap
 	}
 
 	/**
-	 * Removes <tt>csrc</tt> and its mapped level from this map.
+	 * Removes <code>csrc</code> and its mapped level from this map.
 	 *
 	 * @param csrc
 	 * 		the CSRC ID that we'd like to remove from this map.
-	 * @return <tt>true</tt> if <tt>csrc</tt> was present in the <tt>Map</tt> and <tt>false</tt>
+	 * @return <code>true</code> if <code>csrc</code> was present in the <code>Map</code> and <code>false</code>
 	 * otherwise.
 	 */
 	public boolean removeLevel(long csrc)
@@ -83,12 +83,12 @@ public class AudioLevelMap
 	}
 
 	/**
-	 * Returns the audio level of the specified <tt>csrc</tt> id or <tt>-1</tt> if <tt>csrc</tt> is
+	 * Returns the audio level of the specified <code>csrc</code> id or <code>-1</code> if <code>csrc</code> is
 	 * not currently registered in this map.
 	 *
 	 * @param csrc
 	 * 		the CSRC ID whose level we'd like to obtain.
-	 * @return the audio level of the specified <tt>csrc</tt> id or <tt>-1</tt> if <tt>csrc</tt> is
+	 * @return the audio level of the specified <code>csrc</code> id or <code>-1</code> if <code>csrc</code> is
 	 * not currently registered in this map.
 	 */
 	public int getLevel(long csrc)
@@ -100,15 +100,15 @@ public class AudioLevelMap
 	}
 
 	/**
-	 * Returns the index of the specified <tt>csrc</tt> level in the <tt>levels</tt> matrix or
-	 * <tt>-1</tt> if <tt>levels</tt> is <tt>null</tt> or does not contain <tt>csrc</tt>.
+	 * Returns the index of the specified <code>csrc</code> level in the <code>levels</code> matrix or
+	 * <code>-1</code> if <code>levels</code> is <code>null</code> or does not contain <code>csrc</code>.
 	 *
 	 * @param levels
-	 * 		the bi-dimensional array that we'd like to search for the specified <tt>csrc</tt>.
+	 * 		the bi-dimensional array that we'd like to search for the specified <code>csrc</code>.
 	 * @param csrc
 	 * 		the CSRC identifier that we are looking for.
-	 * @return the the index of the specified <tt>csrc</tt> level in the <tt>levels</tt> matrix or
-	 * <tt>-1</tt> if <tt>levels</tt> is <tt>null</tt> or does not contain <tt>csrc</tt>.
+	 * @return the the index of the specified <code>csrc</code> level in the <code>levels</code> matrix or
+	 * <code>-1</code> if <code>levels</code> is <code>null</code> or does not contain <code>csrc</code>.
 	 */
 	private int findCSRC(long[][] levels, long csrc)
 	{
@@ -122,17 +122,17 @@ public class AudioLevelMap
 	}
 
 	/**
-	 * Creates a new bi-dimensional array containing all entries (if any) from the <tt>levels</tt>
-	 * matrix and an extra entry for the specified <tt>csrc</tt> and <tt>level</tt>.
+	 * Creates a new bi-dimensional array containing all entries (if any) from the <code>levels</code>
+	 * matrix and an extra entry for the specified <code>csrc</code> and <code>level</code>.
 	 *
 	 * @param levels
 	 * 		the bi-dimensional levels array that we'd like to add a mapping to.
 	 * @param csrc
-	 * 		the CSRC identifier that we'd like to add to the <tt>levels</tt> bi-dimensional array.
+	 * 		the CSRC identifier that we'd like to add to the <code>levels</code> bi-dimensional array.
 	 * @param level
-	 * 		the level corresponding to the <tt>csrc</tt> identifier.
-	 * @return a new matrix containing all entries from levels and a new one mapping <tt>csrc</tt>
-	 * to <tt>level</tt>
+	 * 		the level corresponding to the <code>csrc</code> identifier.
+	 * @return a new matrix containing all entries from levels and a new one mapping <code>csrc</code>
+	 * to <code>level</code>
 	 */
 	private long[][] appendCSRCToMatrix(long[][] levels, long csrc, int level)
 	{

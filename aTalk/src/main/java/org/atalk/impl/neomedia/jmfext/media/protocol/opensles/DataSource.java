@@ -17,7 +17,7 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDe
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferStream;
 
 /**
- * Implements an audio <tt>CaptureDevice</tt> using OpenSL ES.
+ * Implements an audio <code>CaptureDevice</code> using OpenSL ES.
  *
  * @author Lyubomir Marinov
  */
@@ -28,17 +28,17 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 	}
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> instance.
+	 * Initializes a new <code>DataSource</code> instance.
 	 */
 	public DataSource()
 	{
 	}
 
 	/**
-	 * Initializes a new <tt>DataSource</tt> from a specific <tt>MediaLocator</tt>.
+	 * Initializes a new <code>DataSource</code> from a specific <code>MediaLocator</code>.
 	 *
 	 * @param locator
-	 *        the <tt>MediaLocator</tt> to create the new instance from
+	 *        the <code>MediaLocator</code> to create the new instance from
 	 */
 	public DataSource(MediaLocator locator)
 	{
@@ -50,20 +50,20 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		throws IOException;
 
 	/**
-	 * Creates a new <tt>PullBufferStream</tt> which is to be at a specific zero-based index in the
-	 * list of streams of this <tt>PullBufferDataSource</tt>. The <tt>Format</tt>-related
-	 * information of the new instance is to be abstracted by a specific <tt>FormatControl</tt>.
+	 * Creates a new <code>PullBufferStream</code> which is to be at a specific zero-based index in the
+	 * list of streams of this <code>PullBufferDataSource</code>. The <code>Format</code>-related
+	 * information of the new instance is to be abstracted by a specific <code>FormatControl</code>.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PullBufferStream</tt> in the list of streams of this
-	 *        <tt>PullBufferDataSource</tt>
+	 *        the zero-based index of the <code>PullBufferStream</code> in the list of streams of this
+	 *        <code>PullBufferDataSource</code>
 	 * @param formatControl
-	 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+	 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 	 *        information of the new instance
-	 * @return a new <tt>PullBufferStream</tt> which is to be at the specified <tt>streamIndex</tt>
-	 *         in the list of streams of this <tt>PullBufferDataSource</tt> and which has its
-	 *         <tt>Format</tt>-related information abstracted by the specified
-	 *         <tt>formatControl</tt>
+	 * @return a new <code>PullBufferStream</code> which is to be at the specified <code>streamIndex</code>
+	 *         in the list of streams of this <code>PullBufferDataSource</code> and which has its
+	 *         <code>Format</code>-related information abstracted by the specified
+	 *         <code>formatControl</code>
 	 * @see AbstractPullBufferCaptureDevice#createStream(int, FormatControl)
 	 */
 	protected AbstractPullBufferStream createStream(int streamIndex, FormatControl formatControl)
@@ -74,12 +74,12 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 	private static native void disconnect(long ptr);
 
 	/**
-	 * Opens a connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Opens a connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @throws IOException
 	 *         if anything goes wrong while opening the connection to the media source specified by
-	 *         the <tt>MediaLocator</tt> of this <tt>DataSource</tt>
+	 *         the <code>MediaLocator</code> of this <code>DataSource</code>
 	 * @see AbstractPullBufferCaptureDevice#doConnect()
 	 */
 	@Override
@@ -95,8 +95,8 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 	}
 
 	/**
-	 * Closes the connection to the media source specified by the <tt>MediaLocator</tt> of this
-	 * <tt>DataSource</tt>.
+	 * Closes the connection to the media source specified by the <code>MediaLocator</code> of this
+	 * <code>DataSource</code>.
 	 *
 	 * @see AbstractPullBufferCaptureDevice#doDisconnect()
 	 */
@@ -118,27 +118,27 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		throws IOException;
 
 	/**
-	 * Attempts to set the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of a
-	 * <tt>PullBufferStream</tt> at a specific zero-based index in the list of streams of this
-	 * <tt>PullBufferDataSource</tt>. The <tt>PullBufferStream</tt> does not exist at the time of
-	 * the attempt to set its <tt>Format</tt>. Allows extenders to override the default behavior
-	 * which is to not attempt to set the specified <tt>Format</tt> so that they can enable setting
-	 * the <tt>Format</tt> prior to creating the <tt>PullBufferStream</tt>. If setting the
-	 * <tt>Format</tt> of an existing <tt>PullBufferStream</tt> is desired,
-	 * <tt>AbstractPullBufferStream#doSetFormat(Format)</tt> should be overridden instead.
+	 * Attempts to set the <code>Format</code> to be reported by the <code>FormatControl</code> of a
+	 * <code>PullBufferStream</code> at a specific zero-based index in the list of streams of this
+	 * <code>PullBufferDataSource</code>. The <code>PullBufferStream</code> does not exist at the time of
+	 * the attempt to set its <code>Format</code>. Allows extenders to override the default behavior
+	 * which is to not attempt to set the specified <code>Format</code> so that they can enable setting
+	 * the <code>Format</code> prior to creating the <code>PullBufferStream</code>. If setting the
+	 * <code>Format</code> of an existing <code>PullBufferStream</code> is desired,
+	 * <code>AbstractPullBufferStream#doSetFormat(Format)</code> should be overridden instead.
 	 *
 	 * @param streamIndex
-	 *        the zero-based index of the <tt>PullBufferStream</tt> the <tt>Format</tt> of which is
+	 *        the zero-based index of the <code>PullBufferStream</code> the <code>Format</code> of which is
 	 *        to be set
 	 * @param oldValue
-	 *        the last-known <tt>Format</tt> for the <tt>PullBufferStream</tt> at the specified
-	 *        <tt>streamIndex</tt>
+	 *        the last-known <code>Format</code> for the <code>PullBufferStream</code> at the specified
+	 *        <code>streamIndex</code>
 	 * @param newValue
-	 *        the <tt>Format</tt> which is to be set
-	 * @return the <tt>Format</tt> to be reported by the <tt>FormatControl</tt> of the
-	 *         <tt>PullBufferStream</tt> at the specified <tt>streamIndex</tt> in the list of
-	 *         streams of this <tt>PullBufferStream</tt> or <tt>null</tt> if the attempt to set the
-	 *         <tt>Format</tt> did not success and any last-known <tt>Format</tt> is to be left in
+	 *        the <code>Format</code> which is to be set
+	 * @return the <code>Format</code> to be reported by the <code>FormatControl</code> of the
+	 *         <code>PullBufferStream</code> at the specified <code>streamIndex</code> in the list of
+	 *         streams of this <code>PullBufferStream</code> or <code>null</code> if the attempt to set the
+	 *         <code>Format</code> did not success and any last-known <code>Format</code> is to be left in
 	 *         effect
 	 * @see AbstractPullBufferCaptureDevice#setFormat(int, Format, Format)
 	 */
@@ -159,7 +159,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		throws IOException;
 
 	/**
-	 * Implements <tt>PullBufferStream</tt> using OpenSL ES.
+	 * Implements <code>PullBufferStream</code> using OpenSL ES.
 	 */
 	private static class OpenSLESStream extends AbstractPullBufferStream
 	{
@@ -168,27 +168,27 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		private long ptr;
 
 		/**
-		 * The indicator which determines whether this <tt>OpenSLESStream</tt> is to set the
+		 * The indicator which determines whether this <code>OpenSLESStream</code> is to set the
 		 * priority of the thread in which its {@link #read(Buffer)} method is executed.
 		 */
 		private boolean setThreadPriority = true;
 
 		/**
-		 * The indicator which determines whether this <tt>OpenSLESStream</tt> is started i.e.
+		 * The indicator which determines whether this <code>OpenSLESStream</code> is started i.e.
 		 * whether {@link javax.media.protocol.PullBufferStream#read(javax.media.Buffer)} should
 		 * really attempt to read from {@link #ptr}.
 		 */
 		private boolean started;
 
 		/**
-		 * Initializes a new <tt>OpenSLESStream</tt> instance which is to have its <tt>Format</tt>
-		 * -related information abstracted by a specific <tt>FormatControl</tt>.
+		 * Initializes a new <code>OpenSLESStream</code> instance which is to have its <code>Format</code>
+		 * -related information abstracted by a specific <code>FormatControl</code>.
 		 *
 		 * @param dataSource
-		 *        the <tt>DataSource</tt> which is creating the new instance so that it becomes one
-		 *        of its <tt>streams</tt>
+		 *        the <code>DataSource</code> which is creating the new instance so that it becomes one
+		 *        of its <code>streams</code>
 		 * @param formatControl
-		 *        the <tt>FormatControl</tt> which is to abstract the <tt>Format</tt>-related
+		 *        the <code>FormatControl</code> which is to abstract the <code>Format</code>-related
 		 *        information of the new instance
 		 */
 		public OpenSLESStream(DataSource dataSource, FormatControl formatControl)
@@ -197,11 +197,11 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		}
 
 		/**
-		 * Opens a connection to the media source of the associated <tt>DataSource</tt>.
+		 * Opens a connection to the media source of the associated <code>DataSource</code>.
 		 *
 		 * @throws IOException
 		 *         if anything goes wrong while opening a connection to the media source of the
-		 *         associated <tt>DataSource</tt>
+		 *         associated <code>DataSource</code>
 		 */
 		public synchronized void connect()
 			throws IOException
@@ -233,7 +233,7 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		}
 
 		/**
-		 * Closes the connection to the media source of the associated <tt>DataSource</tt>.
+		 * Closes the connection to the media source of the associated <code>DataSource</code>.
 		 */
 		public synchronized void disconnect()
 		{
@@ -245,15 +245,15 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		}
 
 		/**
-		 * Reads media data from this <tt>PullBufferStream</tt> into a specific <tt>Buffer</tt> with
+		 * Reads media data from this <code>PullBufferStream</code> into a specific <code>Buffer</code> with
 		 * blocking.
 		 *
 		 * @param buffer
-		 *        the <tt>Buffer</tt> in which media data is to be read from this
-		 *        <tt>PullBufferStream</tt>
+		 *        the <code>Buffer</code> in which media data is to be read from this
+		 *        <code>PullBufferStream</code>
 		 * @throws IOException
 		 *         if anything goes wrong while reading media data from this
-		 *         <tt>PullBufferStream</tt> into the specified <tt>buffer</tt>
+		 *         <code>PullBufferStream</code> into the specified <code>buffer</code>
 		 * @see javax.media.protocol.PullBufferStream#read(Buffer)
 		 */
 		public void read(Buffer buffer)
@@ -300,11 +300,11 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		}
 
 		/**
-		 * Starts the transfer of media data from this <tt>AbstractBufferStream</tt>.
+		 * Starts the transfer of media data from this <code>AbstractBufferStream</code>.
 		 *
 		 * @throws IOException
 		 *         if anything goes wrong while starting the transfer of media data from this
-		 *         <tt>AbstractBufferStream</tt>
+		 *         <code>AbstractBufferStream</code>
 		 * @see AbstractBufferStream#start()
 		 */
 		@Override
@@ -332,11 +332,11 @@ public class DataSource extends AbstractPullBufferCaptureDevice
 		}
 
 		/**
-		 * Stops the transfer of media data from this <tt>AbstractBufferStream</tt>.
+		 * Stops the transfer of media data from this <code>AbstractBufferStream</code>.
 		 *
 		 * @throws IOException
 		 *         if anything goes wrong while stopping the transfer of media data from this
-		 *         <tt>AbstractBufferStream</tt>
+		 *         <code>AbstractBufferStream</code>
 		 * @see AbstractBufferStream#stop()
 		 */
 		@Override

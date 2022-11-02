@@ -14,7 +14,7 @@ import javax.media.*;
 import javax.media.format.YUVFormat;
 
 /**
- * Extends FMJ's <tt>AbstractCodec</tt> to make it even easier to implement a <tt>Codec</tt>.
+ * Extends FMJ's <code>AbstractCodec</code> to make it even easier to implement a <code>Codec</code>.
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -22,19 +22,19 @@ import javax.media.format.YUVFormat;
 public abstract class AbstractCodec2 extends AbstractCodec
 {
     /**
-     * The <tt>Buffer</tt> flag which indicates that the respective <tt>Buffer</tt> contains audio
+     * The <code>Buffer</code> flag which indicates that the respective <code>Buffer</code> contains audio
      * data which has been decoded as a result of the operation of FEC.
      */
     public static final int BUFFER_FLAG_FEC = (1 << 24);
 
     /**
-     * The <tt>Buffer</tt> flag which indicates that the respective <tt>Buffer</tt> contains audio
+     * The <code>Buffer</code> flag which indicates that the respective <code>Buffer</code> contains audio
      * data which has been decoded as a result of the operation of PLC.
      */
     public static final int BUFFER_FLAG_PLC = (1 << 25);
 
     /**
-     * An empty array of <tt>Format</tt> element type. Explicitly defined to reduce unnecessary allocations.
+     * An empty array of <code>Format</code> element type. Explicitly defined to reduce unnecessary allocations.
      */
     public static final Format[] EMPTY_FORMATS = new Format[0];
 
@@ -59,12 +59,12 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * Calculates the number of sequences which have been lost i.e. which have not been received.
      *
      * @param lastSeqNo the last received sequence number (prior to the current sequence number represented by
-     * <tt>seqNo</tt>.) May be {@link Buffer#SEQUENCE_UNKNOWN}. May be equal to
-     * <tt>seqNo</tt> for the purposes of Codec implementations which repeatedly process one
+     * <code>seqNo</code>.) May be {@link Buffer#SEQUENCE_UNKNOWN}. May be equal to
+     * <code>seqNo</code> for the purposes of Codec implementations which repeatedly process one
      * and the same input Buffer multiple times.
-     * @param seqNo the current sequence number. May be equal to <tt>lastSeqNo</tt> for the purposes of
+     * @param seqNo the current sequence number. May be equal to <code>lastSeqNo</code> for the purposes of
      * Codec implementations which repeatedly process the same input Buffer multiple times.
-     * @return the number of sequences (between <tt>lastSeqNo</tt> and <tt>seqNo</tt>) which have
+     * @return the number of sequences (between <code>lastSeqNo</code> and <code>seqNo</code>) which have
      * been lost i.e. which have not been received
      */
     public static int calculateLostSeqNoCount(long lastSeqNo, long seqNo)
@@ -91,7 +91,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
      * of valid RTP sequence number values.
      *
      * @param seqNo the sequence number to increment
-     * @return a sequence number which represents an increment over the specified <tt>seqNo</tt>
+     * @return a sequence number which represents an increment over the specified <code>seqNo</code>
      * within the range of valid RTP sequence number values.
      */
     public static long incrementSeqNo(long seqNo)
@@ -168,18 +168,18 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     /**
-     * Ensures that the value of the <tt>data</tt> property of a specific <tt>Buffer</tt> is an
-     * array of <tt>byte</tt>s whose length is at least a specific number of bytes.
+     * Ensures that the value of the <code>data</code> property of a specific <code>Buffer</code> is an
+     * array of <code>byte</code>s whose length is at least a specific number of bytes.
      *
-     * @param buffer the <tt>Buffer</tt> whose <tt>data</tt> property value is to be validated
-     * @param newSize the minimum length of the array of <tt>byte</tt> which is to be the value of the
-     * <tt>data</tt> property of <tt>buffer</tt>
-     * @param arraycopy <tt>true</tt> to copy the bytes which are in the value of the <tt>data</tt> property
-     * of <tt>buffer</tt> at the time of the invocation of the method if the value of the
-     * <tt>data</tt> property of <tt>buffer</tt> is an array of <tt>byte</tt> whose length is
-     * less than <tt>newSize</tt>; otherwise, <tt>false</tt>
-     * @return an array of <tt>byte</tt>s which is the value of the <tt>data</tt> property of
-     * <tt>buffer</tt> and whose length is at least <tt>newSize</tt> number of bytes
+     * @param buffer the <code>Buffer</code> whose <code>data</code> property value is to be validated
+     * @param newSize the minimum length of the array of <code>byte</code> which is to be the value of the
+     * <code>data</code> property of <code>buffer</code>
+     * @param arraycopy <code>true</code> to copy the bytes which are in the value of the <code>data</code> property
+     * of <code>buffer</code> at the time of the invocation of the method if the value of the
+     * <code>data</code> property of <code>buffer</code> is an array of <code>byte</code> whose length is
+     * less than <code>newSize</code>; otherwise, <code>false</code>
+     * @return an array of <code>byte</code>s which is the value of the <code>data</code> property of
+     * <code>buffer</code> and whose length is at least <code>newSize</code> number of bytes
      */
     public static byte[] validateByteArraySize(Buffer buffer, int newSize, boolean arraycopy)
     {
@@ -214,7 +214,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     /**
-     * The bitmap/flag mask of optional features supported by this <tt>AbstractCodec2</tt> such as
+     * The bitmap/flag mask of optional features supported by this <code>AbstractCodec2</code> such as
      * {@link #BUFFER_FLAG_FEC} and {@link #BUFFER_FLAG_PLC}.
      */
     protected int features;
@@ -228,7 +228,7 @@ public abstract class AbstractCodec2 extends AbstractCodec
     private long inLenProcessed;
 
     /**
-     * The name of this <tt>PlugIn</tt>.
+     * The name of this <code>PlugIn</code>.
      */
     private final String name;
 
@@ -241,13 +241,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
     private final Format[] supportedOutputFormats;
 
     /**
-     * Initializes a new <tt>AbstractCodec2</tt> instance with a specific <tt>PlugIn</tt> name, a
-     * specific <tt>Class</tt> of input and output <tt>Format</tt>s and a specific list of
-     * <tt>Format</tt>s supported as output.
+     * Initializes a new <code>AbstractCodec2</code> instance with a specific <code>PlugIn</code> name, a
+     * specific <code>Class</code> of input and output <code>Format</code>s and a specific list of
+     * <code>Format</code>s supported as output.
      *
-     * @param name the <tt>PlugIn</tt> name of the new instance
-     * @param formatClass the <tt>Class</tt> of input and output <tt>Format</tt>s supported by the new instance
-     * @param supportedOutputFormats the list of <tt>Format</tt>s supported by the new instance as output
+     * @param name the <code>PlugIn</code> name of the new instance
+     * @param formatClass the <code>Class</code> of input and output <code>Format</code>s supported by the new instance
+     * @param supportedOutputFormats the list of <code>Format</code>s supported by the new instance as output
      */
     protected AbstractCodec2(String name, Class<? extends Format> formatClass, Format[] supportedOutputFormats)
     {
@@ -281,12 +281,12 @@ public abstract class AbstractCodec2 extends AbstractCodec
     protected abstract void doClose();
 
     /**
-     * Opens this <tt>Codec</tt> and acquires the resources that it needs to operate. A call to
-     * {@link PlugIn#open()} on this instance will result in a call to <tt>doOpen</tt> only if
-     * {@link AbstractCodec#opened} is <tt>false</tt>. All required input and/or output formats are
-     * assumed to have been set on this <tt>Codec</tt> before <tt>doOpen</tt> is called.
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>Codec</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
      */
     protected abstract void doOpen()
             throws ResourceUnavailableException;
@@ -294,13 +294,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
     protected abstract int doProcess(Buffer inBuf, Buffer outBuf);
 
     /**
-     * Gets the <tt>Format</tt>s which are supported by this <tt>Codec</tt> as output when the
-     * input is in a specific <tt>Format</tt>.
+     * Gets the <code>Format</code>s which are supported by this <code>Codec</code> as output when the
+     * input is in a specific <code>Format</code>.
      *
-     * @param inputFormat the <tt>Format</tt> of the input for which the supported
-     * output <tt>Format</tt>s are to be returned
-     * @return an array of <tt>Format</tt>s supported by this <tt>Codec</tt> as output when the
-     * input is in the specified <tt>inputFormat</tt>
+     * @param inputFormat the <code>Format</code> of the input for which the supported
+     * output <code>Format</code>s are to be returned
+     * @return an array of <code>Format</code>s supported by this <code>Codec</code> as output when the
+     * input is in the specified <code>inputFormat</code>
      */
     protected Format[] getMatchingOutputFormats(Format inputFormat)
     {
@@ -341,12 +341,12 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     /**
-     * Opens this <tt>PlugIn</tt> software or hardware component and acquires the resources that it
+     * Opens this <code>PlugIn</code> software or hardware component and acquires the resources that it
      * needs to operate. All required input and/or output formats have to be set on this
-     * <tt>PlugIn</tt> before <tt>open</tt> is called. Buffers should not be passed into this
-     * <tt>PlugIn</tt> without first calling <tt>open</tt>.
+     * <code>PlugIn</code> before <code>open</code> is called. Buffers should not be passed into this
+     * <code>PlugIn</code> without first calling <code>open</code>.
      *
-     * @throws ResourceUnavailableException if any of the resources that this <tt>PlugIn</tt> needs to operate cannot be acquired
+     * @throws ResourceUnavailableException if any of the resources that this <code>PlugIn</code> needs to operate cannot be acquired
      * @see AbstractPlugIn#open()
      */
     @Override
@@ -362,12 +362,12 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     /**
-     * Implements <tt>AbstractCodec#process(Buffer, Buffer)</tt>.
+     * Implements <code>AbstractCodec#process(Buffer, Buffer)</code>.
      *
      * @param inBuf input buffer
      * @param outBuf out buffer
-     * @return <tt>BUFFER_PROCESSED_OK</tt> if the specified <tt>inBuff</tt> was successfully
-     * processed or <tt>BUFFER_PROCESSED_FAILED</tt> if the specified was not successfully processed
+     * @return <code>BUFFER_PROCESSED_OK</code> if the specified <code>inBuff</code> was successfully
+     * processed or <code>BUFFER_PROCESSED_FAILED</code> if the specified was not successfully processed
      * @see AbstractCodec#process(Buffer, Buffer)
      */
     @Override
@@ -449,13 +449,13 @@ public abstract class AbstractCodec2 extends AbstractCodec
     }
 
     /**
-     * Updates the <tt>format</tt>, <tt>length</tt> and <tt>offset</tt> of a specific output
-     * <tt>Buffer</tt> to specific values.
+     * Updates the <code>format</code>, <code>length</code> and <code>offset</code> of a specific output
+     * <code>Buffer</code> to specific values.
      *
-     * @param outputBuffer the output <tt>Buffer</tt> to update the properties of
-     * @param format the <tt>Format</tt> to set on <tt>outputBuffer</tt>
-     * @param length the length to set on <tt>outputBuffer</tt>
-     * @param offset the offset to set on <tt>outputBuffer</tt>
+     * @param outputBuffer the output <code>Buffer</code> to update the properties of
+     * @param format the <code>Format</code> to set on <code>outputBuffer</code>
+     * @param length the length to set on <code>outputBuffer</code>
+     * @param offset the offset to set on <code>outputBuffer</code>
      */
     protected void updateOutput(Buffer outputBuffer, Format format, int length, int offset)
     {

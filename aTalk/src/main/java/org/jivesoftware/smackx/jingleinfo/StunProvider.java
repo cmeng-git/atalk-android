@@ -29,7 +29,7 @@ public class StunProvider extends ExtensionElementProvider<StunExtension>
      * element of the packet extension. As required by the smack API, at the end of the method
      * call, the parser will be positioned on the closing element of the packet extension.
      *
-     * @param parser an XML parser positioned at the opening <tt>Server</tt> element.
+     * @param parser an XML parser positioned at the opening <code>Server</code> element.
      * @return a new {@link StunExtension} instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
@@ -48,9 +48,9 @@ public class StunProvider extends ExtensionElementProvider<StunExtension>
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(ServerExtension.ELEMENT)) {
-                    ExtensionElementProvider provider = ProviderManager.getExtensionProvider(
+                    ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(
                             ServerExtension.ELEMENT, ServerExtension.NAMESPACE);
-                    ExtensionElement childExtension = (ExtensionElement) provider.parse(parser);
+                    ExtensionElement childExtension = provider.parse(parser);
                     ext.addChildExtension(childExtension);
                 }
             }

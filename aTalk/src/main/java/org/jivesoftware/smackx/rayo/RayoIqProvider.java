@@ -1,8 +1,7 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client. Implementing: XEP-0327: Rayo
  * 
-pHideExtendedAwayStatus * Licensed under the Apache License, Version 2.0 (the "License"); you may
- not use this file except
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
  * 
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -41,9 +40,9 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
     public final static String NAMESPACE = "urn:xmpp:rayo:1";
 
     /**
-     * Registers this IQ provider into given <tt>ProviderManager</tt>.
+     * Registers this IQ provider into given <code>ProviderManager</code>.
      *
-     * @param providerManager the <tt>ProviderManager</tt> to which this instance wil be bound to.
+     * @param providerManager the <code>ProviderManager</code> to which this instance wil be bound to.
      */
     public void registerRayoIQs(ProviderManager providerManager)
     {
@@ -174,7 +173,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
     public static abstract class RayoIq extends IQ
     {
         /**
-         * Creates new instance of <tt>RayoIq</tt>.
+         * Creates new instance of <code>RayoIq</code>.
          *
          * @param elementName the name of XML element that will be used.
          */
@@ -185,7 +184,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Creates new instance of this class as a copy from <tt>original</tt>.
+         * Creates new instance of this class as a copy from <code>original</code>.
          *
          * @param original the class to copy the data from.
          */
@@ -195,10 +194,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Returns value of the header extension with given <tt>name</tt> (if any).
+         * Returns value of the header extension with given <code>name</code> (if any).
          *
          * @param name the name of header extension which value we want to retrieve.
-         * @return value of header extension with given <tt>name</tt> if it exists or <tt>null</tt> otherwise.
+         * @return value of header extension with given <code>name</code> if it exists or <code>null</code> otherwise.
          */
         public String getHeader(String name)
         {
@@ -271,7 +270,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         private String destination;
 
         /**
-         * Creates new instance of <tt>DialIq</tt>.
+         * Creates new instance of <code>DialIq</code>.
          */
         public DialIq()
         {
@@ -279,7 +278,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Creates a new instance of this class as a copy from <tt>original</tt>.
+         * Creates a new instance of this class as a copy from <code>original</code>.
          * @param original the class to copy the data from.
          */
         public DialIq(DialIq original)
@@ -291,10 +290,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Creates new <tt>DialIq</tt> for given source and destination addresses.
+         * Creates new <code>DialIq</code> for given source and destination addresses.
          * @param to the destination address/call URI to be used.
-         * @param from the source address that will be set on new <tt>DialIq</tt> instance.
-         * @return new <tt>DialIq</tt> parametrized with given source and destination addresses.
+         * @param from the source address that will be set on new <code>DialIq</code> instance.
+         * @return new <code>DialIq</code> parametrized with given source and destination addresses.
          */
         public static DialIq create(String to, String from)
         {
@@ -305,9 +304,9 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Return source address value set on this <tt>DialIq</tt>.
+         * Return source address value set on this <code>DialIq</code>.
          *
-         * @return source address value of this <tt>DialIq</tt>.
+         * @return source address value of this <code>DialIq</code>.
          */
         public String getSource()
         {
@@ -315,7 +314,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Sets new source address value on this <tt>DialIq</tt>.
+         * Sets new source address value on this <code>DialIq</code>.
          *
          * @param source the new source address value to be set.
          */
@@ -335,7 +334,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Sets new destination address/call URI on this <tt>DialIq</tt>.
+         * Sets new destination address/call URI on this <code>DialIq</code>.
          *
          * @param destination the new destination address/call URI to set.
          */
@@ -364,7 +363,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
     public static class RefIq extends RayoIq
     {
         /**
-         * XML element name of <tt>RefIq</tt>.
+         * XML element name of <code>RefIq</code>.
          */
         public static final String ELEMENT = "ref";
 
@@ -379,7 +378,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         private String uri;
 
         /**
-         * Creates new <tt>RefIq</tt>.
+         * Creates new <code>RefIq</code>.
          */
         protected RefIq()
         {
@@ -387,10 +386,10 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Creates new <tt>RefIq</tt> parametrized with given call <tt>uri</tt>.
+         * Creates new <code>RefIq</code> parametrized with given call <code>uri</code>.
          *
-         * @param uri the call URI to be set on newly created <tt>RefIq</tt>.
-         * @return new <tt>RefIq</tt> parametrized with given call <tt>uri</tt>.
+         * @param uri the call URI to be set on newly created <code>RefIq</code>.
+         * @return new <code>RefIq</code> parametrized with given call <code>uri</code>.
          */
         public static RefIq create(String uri)
         {
@@ -400,12 +399,12 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Creates result <tt>RefIq</tt> for given <tt>requestIq</tt> parametrized with given call <tt>uri</tt>.
+         * Creates result <code>RefIq</code> for given <code>requestIq</code> parametrized with given call <code>uri</code>.
          *
          * @param requestIq the request IQ which 'from', 'to' and 'id' attributes will be used for
          * constructing result IQ.
-         * @param uri the call URI that will be included in newly created <tt>RefIq</tt>.
-         * @return result <tt>RefIq</tt> for given <tt>requestIq</tt> parametrized with given call <tt>uri</tt>.
+         * @param uri the call URI that will be included in newly created <code>RefIq</code>.
+         * @return result <code>RefIq</code> for given <code>requestIq</code> parametrized with given call <code>uri</code>.
          */
         public static RefIq createResult(IQ requestIq, String uri)
         {
@@ -429,9 +428,9 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         }
 
         /**
-         * Sets given call <tt>uri</tt> value on this instance.
+         * Sets given call <code>uri</code> value on this instance.
          *
-         * @param uri the call <tt>uri</tt> to be stored in this instance.
+         * @param uri the call <code>uri</code> to be stored in this instance.
          */
         public void setUri(String uri)
         {
@@ -463,7 +462,7 @@ public class RayoIqProvider extends IQProvider<RayoIqProvider.RayoIq>
         public static final String ELEMENT = "hangup";
 
         /**
-         * Creates new instance of <tt>HangUp</tt> IQ.
+         * Creates new instance of <code>HangUp</code> IQ.
          */
         protected HangUp()
         {
