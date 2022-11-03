@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,8 +25,6 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
 
 import java.io.IOException;
-
-import timber.log.Timber;
 
 /**
  * The <code>IQProvider</code> for {@link ExternalServiceDiscovery}.
@@ -59,9 +58,9 @@ public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalService
         if (ExternalServices.ELEMENT.equals(parser.getName()) && ExternalServices.NAMESPACE.equals(parser.getNamespace())) {
             DefaultXmlElementProvider<ExternalServices> servicesProvider = new DefaultXmlElementProvider<>(ExternalServices.class);
             ExternalServices externalServices = servicesProvider.parse(parser);
-            Timber.d("ExternalServices: %s", externalServices.toXML());
             iqESD = new ExternalServiceDiscovery();
             iqESD.setServices(externalServices);
+            // Timber.d("ExternalServices: %s", externalServices.toXML());
         }
         return iqESD;
     }

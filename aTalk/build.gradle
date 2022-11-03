@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 300020
-        versionName "3.0.2"
+        versionCode 300030
+        versionName "3.0.3"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -262,9 +262,12 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+    // Do not update to 1.7.x; has problem
     implementation 'com.google.android.material:material:1.6.1'
+
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
+    // implementation 'org.threeten:threetenbp:1.6.4'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
@@ -325,7 +328,6 @@ dependencies {
 
     implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
-
 
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')

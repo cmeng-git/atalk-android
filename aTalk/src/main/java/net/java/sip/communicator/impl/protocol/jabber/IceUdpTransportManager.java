@@ -332,8 +332,8 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         if (accID.isUPNPEnabled()) {
             agent.addCandidateHarvester(new UPNPHarvester());
         }
-        // For testing only: see ExternalServiceDiscoveryManager#handleServicePush(ExternalServices)
-        IceCandidateHarvester.IqPushRequestESD(connection);
+        // For testing only: see ExternalServiceDiscoveryManager#handleESDServicePush(ServiceElement)
+        // IceCandidateHarvester.IqPushRequestESD(connection);
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;

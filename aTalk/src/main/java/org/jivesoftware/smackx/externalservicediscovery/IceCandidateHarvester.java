@@ -81,28 +81,27 @@ public class IceCandidateHarvester
 
     /**
      * The following routine is call to generate a Services Push IQ
-     * @see ExternalServiceDiscoveryManager#handleServicePush(ExternalServices)
-     * It is solely for testing only; Currently is called/activated from IceUdpTransportManager
-     *
-     * @see <a href="https://xmpp.org/extensions/xep-0215.html#example-5">Example 5. Services Push</a>
      *
      * @param connection XMPP Connection
      * @return IQ result
+     * @see ExternalServiceDiscoveryManager#handleServicePush(ExternalServices)
+     * It is solely for testing only; Currently is called/activated from IceUdpTransportManager
+     * @see <a href="https://xmpp.org/extensions/xep-0215.html#example-5">Example 5. Services Push</a>
      */
     public static IQ IqPushRequestESD(XMPPConnection connection)
     {
+        String[] actions = new String[]{"delete", "add", "modify"};
+
         ExternalServiceDiscoveryManager manager = ExternalServiceDiscoveryManager.getInstanceFor(connection);
         List<ServiceElement> services = manager.getTransportServices(null);
-        
-        String[] actions = new String[]{"delete", "add", "modify"};
-        List<ServiceElement> actionServices = new ArrayList<>();
+        ExternalServices.Builder extEervicesBuilder = ExternalServices.getBuilder();
 
         for (int i = 0; i < 3; i++) {
             ServiceElement service = services.get(i);
             ServiceElement xService = (ServiceElement) service.getBuilder(ExternalServices.NAMESPACE)
                     .addAttribute(ServiceElement.ATTR_ACTION, actions[i])
                     .build();
-            actionServices.add(xService);
+            extEervicesBuilder.addService(xService);
         }
 
         // DomainBareJid serviceName = connection().getXMPPServiceDomain();
@@ -110,13 +109,8 @@ public class IceCandidateHarvester
         EntityFullJid entityFullJid = connection.getUser();
         ExternalServiceDiscovery extServiceDisco = new ExternalServiceDiscovery();
         extServiceDisco.setType(IQ.Type.set);
-        // extServiceDisco.setFrom(serviceName);
         extServiceDisco.setTo(entityFullJid);
-
-        ExternalServices extServices = ExternalServices.getBuilder()
-                .addChildElements(actionServices)
-                .build();
-        extServiceDisco.addExtension(extServices);
+        extServiceDisco.setServices(extEervicesBuilder.build());
 
         try {
             return connection.createStanzaCollectorAndSend(extServiceDisco).nextResultOrThrow();

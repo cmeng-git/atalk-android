@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +15,6 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.externalservicediscovery;
-
-import static net.java.sip.communicator.impl.netaddr.NetworkAddressManagerServiceImpl.TURN_SRV_NAME;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -42,8 +41,6 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import timber.log.Timber;
-
 /**
  * A manager for XEP-0215: External Service Discovery.
  *
@@ -59,6 +56,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
         XMPPConnectionRegistry.addConnectionCreationListener(ExternalServiceDiscoveryManager::getInstanceFor);
     }
 
+    private static final String TURN_SRV_NAME = "turn";
     private static final Map<XMPPConnection, ExternalServiceDiscoveryManager> INSTANCES = new WeakHashMap<>();
 
     private boolean hasExtService = false;
@@ -92,7 +90,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
             public IQ handleIQRequest(IQ iqRequest)
             {
                 if (iqRequest instanceof ExternalServiceDiscovery) {
-                    handleESDServicePush(((ExternalServiceDiscovery) iqRequest).getExternalServices());
+                    handleESDServicePush(((ExternalServiceDiscovery) iqRequest).getServices());
                     return IQ.createResultIQ(iqRequest);
                 }
                 return IQ.createErrorResponse(iqRequest, StanzaError.Condition.feature_not_implemented);
@@ -161,13 +159,11 @@ public final class ExternalServiceDiscoveryManager extends Manager
         return hasExtService;
     }
 
-    private void handleESDServicePush(ExternalServices externalServices)
+    private void handleESDServicePush(List<ServiceElement> services)
     {
-        List<ServiceElement> services = externalServices.getServices();
-        Timber.d("ESD Service Push action services: %s", services);
         if (mExtServices == null || services == null || services.isEmpty()) {
             // Force reload until handleServicePush is fully tested
-            mServiceExpire = null;
+            // mServiceExpire = null;
             return;
         }
 
@@ -214,8 +210,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
             IQ iq = connection().sendIqRequestAndWaitForResponse(extServiceDisco);
             String expireTE = null;
             if (iq instanceof ExternalServiceDiscovery) {
-                ExternalServices externalServices = ((ExternalServiceDiscovery) iq).getExternalServices();
-                List<ServiceElement> services = externalServices.getServices();
+                List<ServiceElement> services = ((ExternalServiceDiscovery) iq).getServices();
                 if (services != null && !services.isEmpty()) {
                     mExtServices = services;
 

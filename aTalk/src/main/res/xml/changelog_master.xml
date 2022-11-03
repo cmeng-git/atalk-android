@@ -6,8 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.0.2 (10/04/2022)" versioncode="300020">
+    <release version="3.0.3 (11/03/2022)" versioncode="300030">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add support for XEP-0215: External Service Discovery</change>
+        <change>Add marker showing user selected location in OSM street map view</change>
+        <change>Disable FollowMe mode only in ZERO_FIX mode, allow tracking even in SINGLE_FIX update request</change>
+        <change>Add copyright overlay to OSM UI</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.0.2 (10/04/2022)" versioncode="300020">
         <change>Enhance share streetMap implementation to support both gms (google playstore) and osm (fdroid) releases</change>
         <change>Improve StreetView &amp; Map UI, including location altitude info and user selectable option for location sharing with buddy</change>
         <change>Rename "send_cont_location_updates" button text to "Follow me"; flash text when active, reminding user to stop on exit if not required</change>

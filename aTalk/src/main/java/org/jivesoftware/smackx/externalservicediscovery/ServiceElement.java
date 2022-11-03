@@ -1,11 +1,12 @@
 /**
+ *
  * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,8 +18,10 @@ package org.jivesoftware.smackx.externalservicediscovery;
 
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
+import javax.xml.namespace.QName;
+
 /**
- * Represents the <code>service</code> elements described in the following XEPs:
+ * Represents the <code>service</code> elements described in the following XEPs.
  * XEP-0215: External Service Discovery 1.0.0 (2022-08-23)
  *
  * @author Eng Chong Meng
@@ -30,6 +33,8 @@ public class ServiceElement extends AbstractXmlElement
      * The name of the ServiceElement.
      */
     public static final String ELEMENT = "service";
+
+    public static final QName QNAME = new QName(ExternalServices.NAMESPACE, ELEMENT);
 
     /**
      * The name of the attribute parameters used in the <code>ServiceElement</code>.
@@ -124,7 +129,7 @@ public class ServiceElement extends AbstractXmlElement
     }
 
     /**
-     * Check if this source matches the given one with regards to matching source identifiers
+     * Check if this service matches the given one with regards to matching service.
      *
      * @param oElement the other ServerElement to compare to
      * @return true if this ServerElement and the one given have relevant matching attributes.
@@ -139,9 +144,9 @@ public class ServiceElement extends AbstractXmlElement
         }
         else {
             return this.getHost().equals(oElement.getHost())
-                    && (this.getPort() == (oElement.getPort())
+                    && this.getPort() == oElement.getPort()
                     && this.getTransport().equals(oElement.getTransport())
-                    && this.getType().equals(oElement.getType()));
+                    && this.getType().equals(oElement.getType());
         }
     }
 
