@@ -1,5 +1,8 @@
 # Built application files
 # *.apk
+aTalk-playstore-debug.apk
+*.apks
+*.aab
 
 # Files for the ART/Dalvik VM
 *.dex
