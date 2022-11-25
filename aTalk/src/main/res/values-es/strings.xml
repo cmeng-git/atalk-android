@@ -808,8 +808,8 @@
     <string name="plugin_update_Download_Ready">La actualización (%1$s) está descargada y lista para ser instalada.</string>
     <string name="plugin_update_InProgress">En progreso</string>
     <string name="plugin_update_Download_InProgress">La descarga de la actualización está en curso.</string>
-    <string name="plugin_update_Update_Available">Una nueva versión (%1$s-%2$s) para %3$s está disponible para su descarga.</string>
-    <string name="plugin_update_UpToDate">Versión instalada actual: (%1$s-%2$s) está actualizada.</string>
+    <string name="plugin_update_Update_Available">Hay disponible una nueva versión (%1$s-%2$s) para %3$s. Versión instalada actual: %4$s.</string>
+    <string name="plugin_update_UpToDate">Versión instalada actual: (%1$s-%2$s) está actualizada. Versión disponible en línea: %3$s.</string>
     <string name="plugin_update_New_Version_None">No hay nueva versión</string>
     <string name="plugin_update_Install_Update">Instalar las actualizaciones</string>
     <string name="plugin_update_Download_failed">¡Error al descargar la nueva actualización!</string>

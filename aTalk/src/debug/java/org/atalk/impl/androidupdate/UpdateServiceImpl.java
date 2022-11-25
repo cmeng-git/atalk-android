@@ -1,7 +1,18 @@
 /*
- * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ * aTalk, android VoIP and Instant Messaging client
+ * Copyright 2014 Eng Chong Meng
  *
- * Distributable under LGPL license. See terms of license at gnu.org.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.atalk.impl.androidupdate;
 
@@ -46,23 +57,28 @@ import timber.log.Timber;
 
 /**
  * aTalk update service implementation. It checks for an update and schedules .apk download using <code>DownloadManager</code>.
+ * It is only activated for the debug version. Android initials the auto-update from PlayStore for release version.
  *
- * @author Pawel Domas
  * @author Eng Chong Meng
  */
 public class UpdateServiceImpl implements UpdateService
 {
-    // Default update link
     // Default update link; path is case-sensitive.
     private static final String[] updateLinks = {
-            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/versionupdate.properties",
-            "https://atalk.sytes.net/releases/atalk-android/versionupdate.properties"
+            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties",
+            "https://atalk.sytes.net/releases/atalk-android/version.properties"
     };
 
     /**
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
+    private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+
+    /**
+     * The download link for the installed application
+     */
+    private String downloadLink = null;
 
     /**
      * Current installed version string / version Code
@@ -80,12 +96,7 @@ public class UpdateServiceImpl implements UpdateService
 
     /* DownloadManager Broadcast Receiver Handler */
     private DownloadReceiver downloadReceiver = null;
-
-    /**
-     * The download link
-     */
-    private String downloadLink;
-    // private String changesLink;
+    private HttpURLConnection mHttpConnection;
 
     /**
      * <code>SharedPreferences</code> used to store download ids.
@@ -99,7 +110,7 @@ public class UpdateServiceImpl implements UpdateService
     private static final String ENTRY_NAME = "apk_ids";
 
     /**
-     * Checks for updates.
+     * Checks for updates and take necessary action.
      *
      * @param notifyAboutNewestVersion <code>true</code> if the user is to be notified if they have the
      * newest version already; otherwise, <code>false</code>
@@ -111,57 +122,60 @@ public class UpdateServiceImpl implements UpdateService
         mIsLatest = isLatestVersion();
         Timber.i("Is latest: %s\nCurrent version: %s\nLatest version: %s\nDownload link: %s",
                 mIsLatest, currentVersion, latestVersion, downloadLink);
-        // Timber.i("Changes link: %s", changesLink);
 
-        if (!mIsLatest && (downloadLink != null)) {
-            if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
-                return;
+        if ((downloadLink != null)) {
+            if (!mIsLatest) {
+                if (checkLastDLFileAction() < DownloadManager.ERROR_UNKNOWN)
+                    return;
 
-            DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
-                    R.string.plugin_update_Install_Update,
-                    R.string.plugin_update_Update_Available,
-                    R.string.plugin_update_Download,
-                    new DialogActivity.DialogListener()
-                    {
-                        @Override
-                        public boolean onConfirmClicked(DialogActivity dialog)
+                DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                        R.string.plugin_update_Install_Update,
+                        R.string.plugin_update_Update_Available,
+                        R.string.plugin_update_Download,
+                        new DialogActivity.DialogListener()
                         {
-                            downloadApk();
-                            return true;
-                        }
-
-                        @Override
-                        public void onDialogCancelled(DialogActivity dialog)
-                        {
-                        }
-                    }, latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME)
-            );
-        }
-        else if (notifyAboutNewestVersion) {
-            // Notify that running version is up to date
-            DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
-                    R.string.plugin_update_New_Version_None,
-                    R.string.plugin_update_UpToDate,
-                    R.string.plugin_update_Download,
-                    new DialogActivity.DialogListener()
-                    {
-                        @Override
-                        public boolean onConfirmClicked(DialogActivity dialog)
-                        {
-                            if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
-                                    downloadApk();
+                            @Override
+                            public boolean onConfirmClicked(DialogActivity dialog)
+                            {
+                                downloadApk();
+                                return true;
                             }
-                            return true;
-                        }
 
-                        @Override
-                        public void onDialogCancelled(DialogActivity dialog)
+                            @Override
+                            public void onDialogCancelled(DialogActivity dialog)
+                            {
+                            }
+                        }, latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME), currentVersion
+                );
+            }
+            else if (notifyAboutNewestVersion) {
+                // Notify that running version is up to date
+                DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                        R.string.plugin_update_New_Version_None,
+                        R.string.plugin_update_UpToDate,
+                        R.string.plugin_update_Download,
+                        new DialogActivity.DialogListener()
                         {
-                        }
-                    }, currentVersion, currentVersionCode
-            );
+                            @Override
+                            public boolean onConfirmClicked(DialogActivity dialog)
+                            {
+                                if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
+                                        downloadApk();
+                                }
+                                return true;
+                            }
+
+                            @Override
+                            public void onDialogCancelled(DialogActivity dialog)
+                            {
+                            }
+                        }, currentVersion, currentVersionCode, latestVersion
+                );
+            }
+        } else {
+            aTalkApp.showToastMessage(R.string.plugin_update_New_Version_None);
         }
     }
 
@@ -303,7 +317,6 @@ public class UpdateServiceImpl implements UpdateService
                 downloadReceiver = null;
             }
         }
-
     }
 
     private SharedPreferences getStore()
@@ -436,62 +449,65 @@ public class UpdateServiceImpl implements UpdateService
     @Override
     public boolean isLatestVersion()
     {
-        Properties mProperties = null;
-        String errMsg = "";
-
         VersionService versionService = getVersionService();
         currentVersion = versionService.getCurrentVersionName();
         currentVersionCode = versionService.getCurrentVersionCode();
 
-        String aLinkPrefix = updateLinks[0];
-        if (updateLinks.length == 0) {
-            Timber.d("Updates are disabled, emulates latest version.");
-        }
-        else {
-            for (String aLink : updateLinks) {
-                try {
-                    URL mUrl = new URL(aLink);
-                    HttpURLConnection httpConnection = (HttpURLConnection) mUrl.openConnection();
-                    httpConnection.setRequestMethod("GET");
-                    httpConnection.setRequestProperty("Content-length", "0");
-                    httpConnection.setUseCaches(false);
-                    httpConnection.setAllowUserInteraction(false);
-                    httpConnection.setConnectTimeout(100000);
-                    httpConnection.setReadTimeout(100000);
+        for (String aLink : updateLinks) {
+            try {
+                if (isValidateLink(aLink)) {
+                    InputStream in = mHttpConnection.getInputStream();
+                    Properties mProperties = new Properties();
+                    mProperties.load(in);
 
-                    httpConnection.connect();
-                    int responseCode = httpConnection.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        InputStream in = httpConnection.getInputStream();
-                        mProperties = new Properties();
-                        mProperties.load(in);
-                        aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
-                        break;
+                    latestVersion = mProperties.getProperty("last_version");
+                    latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
+
+                    String aLinkPrefix = aLink.substring(0, aLink.lastIndexOf("/") + 1);
+                    downloadLink = aLinkPrefix + fileNameApk;
+                    if (isValidateLink(downloadLink)) {
+                        // return true is current running application is already the latest
+                        return (currentVersionCode >= latestVersionCode);
+                    } else {
+                        downloadLink = null;
                     }
-                } catch (IOException e) {
-                    errMsg = e.getMessage();
                 }
-            }
-
-            if (mProperties != null) {
-                latestVersion = mProperties.getProperty("last_version");
-                latestVersionCode = Long.parseLong(mProperties.getProperty("last_version_code"));
-                if (BuildConfig.DEBUG) {
-                    downloadLink = mProperties.getProperty("download_link-debug");
-                }
-                else {
-                    downloadLink = mProperties.getProperty("download_link");
-                }
-                if (!downloadLink.startsWith("https:")) {
-                    downloadLink = aLinkPrefix + downloadLink;
-                }
-                // return true is current running application is already the latest
-                return (currentVersionCode >= latestVersionCode);
-            }
-            else {
-                Timber.w("Could not retrieve version.properties for checking: %s", errMsg);
+            } catch (IOException e) {
+                Timber.w("Could not retrieve version.properties for checking: %s", e.getMessage());
             }
         }
+
+        // return true if all failed.
         return true;
+    }
+
+    /**
+     * Check if the given link is accessible.
+     *
+     * @param link the link to check
+     * @return true if link is accessible
+     */
+    private boolean isValidateLink(String link)
+    {
+        try {
+            URL mUrl = new URL(link);
+            mHttpConnection = (HttpURLConnection) mUrl.openConnection();
+            mHttpConnection.setRequestMethod("GET");
+            mHttpConnection.setRequestProperty("Content-length", "0");
+            mHttpConnection.setUseCaches(false);
+            mHttpConnection.setAllowUserInteraction(false);
+            mHttpConnection.setConnectTimeout(100000);
+            mHttpConnection.setReadTimeout(100000);
+
+            mHttpConnection.connect();
+            int responseCode = mHttpConnection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                return true;
+            }
+        } catch (IOException e) {
+            Timber.d("Invalid url: %s", e.getMessage());
+            return false;
+        }
+        return false;
     }
 }

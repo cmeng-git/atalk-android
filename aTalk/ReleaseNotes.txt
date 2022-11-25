@@ -1,5 +1,28 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.4 (300040)
+Release Date:   11/25/2022
+Author:         cmeng
+- OutgoingFileOfferJingleImpl#hasSecurityError() JET Security Error timer must be stored per contact for reference in future file sharing
+- Extend smack reply timer to 10 second for IBB file transfer; response stanza may take more than 5 seconds when send across servers
+- Use IQ from value as initiator if the jingle session-initiate initiator value is not defined (Conversations), else system crashed.
+- JingleContentImpl: Recipient and initiator wrongly interchanged in Jingle Transport accept, reject and replace stanza sending
+- JingleOutgoingFileOffer: Must close both input and output streams to trigger sending of IBB <close/> element as defined in XEP-0047
+  <close xmlns='http://jabber.org/protocol/ibb' sid='RA88X8VSQG'/>
+- JingleFileTransfer transport-candidate type should set to 'direct' for local host.
+- JingleFileTransfer transportInfo element for proxy protocol should be 'activated'; incorrectly sent as 'candidate-activated'
+- Set jingle transport-candidate priority value as per XEP-0260: Jingle SOCKS5 Bytestreams Transport Method (2.2 Exchanging Candidates).
+- Strip the <zone_id> from Inet6Address in transport-candidates host attribute sending stanza
+- Must perform connectIfReady check upon CANDIDATE_FAILURE on complete checking of all the remote transport-candidates.
+  Else earlier received <candidate-used/> does not trigger network connection for file sending in JingleS5BTransportImpl#connectIfReady().
+- Fix incoming file sharing failure when the chat window is closed, it shows file transfer interrupted error when chat windows is open.
+  ChatPanel#mergeCachedMessage(): Must use cached message for active file transfer during history loading process;
+  incoming file sharing request is saved as FileRecord in history DB.
+- Pop up user error alert dialog when receiving file has errors
+- Enhance update service to auto generate the required apk for all BuildConfig.FLAVOR and .BUILD_TYPE; and check for valid apk downloadable link.
+- Purge unused classes for GeoLocation in service support
+
+=========================================================================
 Version:        3.0.3 (300030)
 Release Date:   11/03/2022
 Author:         cmeng
@@ -231,6 +254,7 @@ Author:         cmeng
   * okhttp 4.x handles redirect and authentication; see https://square.github.io/okhttp/features/calls/#follow-up-requests
   HttpUtils not tested (used by CertificateServiceImpl & ProvisioningServiceImpl);
   Both classes are not active in aTalk; need more work when deploy.
+- aTalk minimum android OS support is API-24 (android 7.0)
 - Clear up smack jingle java document
 
 =========================================================================

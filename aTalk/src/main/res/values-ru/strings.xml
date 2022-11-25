@@ -781,8 +781,8 @@
     <string name="plugin_update_Download_Ready">Обновление (%1$s) загружается и готово к установке.</string>
     <string name="plugin_update_InProgress">Выполняется</string>
     <string name="plugin_update_Download_InProgress">Выполняется обновление загрузки.</string>
-    <string name="plugin_update_Update_Available">Доступна новая версия (%1$s-%2$s) для %3$s.</string>
-    <string name="plugin_update_UpToDate">Текущая установленная версия: (%1$s-%2$s) обновлена.</string>
+    <string name="plugin_update_Update_Available">Доступна новая выпущенная версия (%1$s-%2$s) для %3$s. Текущая установленная версия: %4$s.</string>
+    <string name="plugin_update_UpToDate">Ваша текущая установленная версия: (%1$s-%2$s) обновлена. Доступная онлайн-версия: %3$s.</string>
     <string name="plugin_update_New_Version_None">Нет новой версии</string>
     <string name="plugin_update_Install_Update">Установить обновления</string>
     <string name="plugin_update_Download_failed">Не удалось загрузить новое обновление!</string>

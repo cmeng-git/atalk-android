@@ -25,12 +25,7 @@ import org.ice4j.TransportAddress;
 import org.ice4j.ice.harvest.StunCandidateHarvester;
 import org.ice4j.ice.harvest.TurnCandidateHarvester;
 import org.ice4j.security.LongTermCredential;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.IQ;
-import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.EntityFullJid;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -77,46 +72,5 @@ public class IceCandidateHarvester
             }
         }
         return stunServices;
-    }
-
-    /**
-     * The following routine is call to generate a Services Push IQ
-     *
-     * @param connection XMPP Connection
-     * @return IQ result
-     * @see ExternalServiceDiscoveryManager#handleServicePush(ExternalServices)
-     * It is solely for testing only; Currently is called/activated from IceUdpTransportManager
-     * @see <a href="https://xmpp.org/extensions/xep-0215.html#example-5">Example 5. Services Push</a>
-     */
-    public static IQ IqPushRequestESD(XMPPConnection connection)
-    {
-        String[] actions = new String[]{"delete", "add", "modify"};
-
-        ExternalServiceDiscoveryManager manager = ExternalServiceDiscoveryManager.getInstanceFor(connection);
-        List<ServiceElement> services = manager.getTransportServices(null);
-        ExternalServices.Builder extEervicesBuilder = ExternalServices.getBuilder();
-
-        for (int i = 0; i < 3; i++) {
-            ServiceElement service = services.get(i);
-            ServiceElement xService = (ServiceElement) service.getBuilder(ExternalServices.NAMESPACE)
-                    .addAttribute(ServiceElement.ATTR_ACTION, actions[i])
-                    .build();
-            extEervicesBuilder.addService(xService);
-        }
-
-        // DomainBareJid serviceName = connection().getXMPPServiceDomain();
-        DomainBareJid serviceName = connection.getXMPPServiceDomain();
-        EntityFullJid entityFullJid = connection.getUser();
-        ExternalServiceDiscovery extServiceDisco = new ExternalServiceDiscovery();
-        extServiceDisco.setType(IQ.Type.set);
-        extServiceDisco.setTo(entityFullJid);
-        extServiceDisco.setServices(extEervicesBuilder.build());
-
-        try {
-            return connection.createStanzaCollectorAndSend(extServiceDisco).nextResultOrThrow();
-        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException | SmackException.NotConnectedException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

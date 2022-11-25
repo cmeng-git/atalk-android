@@ -838,7 +838,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
                         Timber.d("Downloading parent certificate for <%s> from <%s>",
                                 current.getSubjectDN(), uri);
                         try {
-                            InputStream is = HttpConnectionManager.open(uri.toString(), false);
+                            InputStream is = HttpConnectionManager.open(uri.getPath(), false);
                             if (is != null) {
                                 cert = (X509Certificate) certFactory.generateCertificate(is);
                             }

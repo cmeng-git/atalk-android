@@ -79,7 +79,8 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
 
     private final XMPPConnection mConnection;
 
-    private JingleFileTransferManager(XMPPConnection connection) {
+    private JingleFileTransferManager(XMPPConnection connection)
+    {
         super(connection);
         mConnection = connection;
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(getNamespace());
@@ -92,7 +93,8 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
         jingleManager.registerDescriptionHandler(getNamespace(), this);
     }
 
-    public static synchronized JingleFileTransferManager getInstanceFor(XMPPConnection connection) {
+    public static synchronized JingleFileTransferManager getInstanceFor(XMPPConnection connection)
+    {
         JingleFileTransferManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleFileTransferManager(connection);
@@ -110,17 +112,26 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
     @Override
     public IQ handleJingleRequest(Jingle jingle)
     {
-        JingleSessionImpl session = new JingleSessionImpl(mConnection, jingle);
+        // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
+        // conversations excludes initiator attribute in session-initiate
+        FullJid initiator = jingle.getInitiator();
+        if (initiator == null) {
+            initiator = jingle.getFrom().asEntityFullJidIfPossible();
+        }
+
+        JingleSessionImpl session = new JingleSessionImpl(mConnection, initiator, jingle);
         return session.handleJingleSessionRequest(jingle);
     }
 
     public OutgoingFileOfferController sendFile(File file, FullJid recipient)
             throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException,
-            SmackException.NoResponseException, SmackException.FeatureNotSupportedException, IOException, NoSuchAlgorithmException {
+            SmackException.NoResponseException, SmackException.FeatureNotSupportedException, IOException, NoSuchAlgorithmException
+    {
         return sendFile(file, JingleFile.fromFile(file, null, null, null), recipient);
     }
 
-    public OutgoingFileOfferController sendFile(File file, JingleFile metadata, FullJid recipient) throws SmackException.FeatureNotSupportedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, FileNotFoundException {
+    public OutgoingFileOfferController sendFile(File file, JingleFile metadata, FullJid recipient) throws SmackException.FeatureNotSupportedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, FileNotFoundException
+    {
         if (file == null || !file.exists()) {
             throw new IllegalArgumentException("File MUST NOT be null and MUST exist.");
         }
@@ -146,7 +157,8 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
 
     public OutgoingFileOfferController sendStream(final InputStream inputStream, JingleFile metadata, FullJid recipient)
             throws XMPPException.XMPPErrorException, SmackException.FeatureNotSupportedException, SmackException.NotConnectedException,
-            InterruptedException, SmackException.NoResponseException {
+            InterruptedException, SmackException.NoResponseException
+    {
 
         throwIfRecipientLacksSupport(recipient);
 
@@ -166,22 +178,26 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
         return outgoingFileOffer;
     }
 
-    public OutgoingFileRequestController requestFile(JingleFile metadata, FullJid from) {
+    public OutgoingFileRequestController requestFile(JingleFile metadata, FullJid from)
+    {
         JingleOutgoingFileRequest request = new JingleOutgoingFileRequest(metadata);
 
         // TODO at some point.
         return request;
     }
 
-    public void addIncomingFileOfferListener(IncomingFileOfferListener listener) {
+    public void addIncomingFileOfferListener(IncomingFileOfferListener listener)
+    {
         offerListeners.add(listener);
     }
 
-    public void removeIncomingFileOfferListener(IncomingFileOfferListener listener) {
+    public void removeIncomingFileOfferListener(IncomingFileOfferListener listener)
+    {
         offerListeners.remove(listener);
     }
 
-    public void notifyIncomingFileOfferListeners(JingleIncomingFileOffer offer) {
+    public void notifyIncomingFileOfferListeners(JingleIncomingFileOffer offer)
+    {
         LOGGER.log(Level.INFO, "Incoming File transfer: [" + offer.getNamespace() + ", "
                 + offer.getParent().getTransport().getNamespace() + ", "
                 + (offer.getParent().getSecurity() != null ? offer.getParent().getSecurity().getNamespace() : "") + "]");
@@ -190,45 +206,54 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
         }
     }
 
-    public void addIncomingFileRequestListener(IncomingFileRequestListener listener) {
+    public void addIncomingFileRequestListener(IncomingFileRequestListener listener)
+    {
         requestListeners.add(listener);
     }
 
-    public void removeIncomingFileRequestListener(IncomingFileRequestListener listener) {
+    public void removeIncomingFileRequestListener(IncomingFileRequestListener listener)
+    {
         requestListeners.remove(listener);
     }
 
-    public void notifyIncomingFileRequestListeners(JingleIncomingFileRequest request) {
+    public void notifyIncomingFileRequestListeners(JingleIncomingFileRequest request)
+    {
         for (IncomingFileRequestListener l : requestListeners) {
             l.onIncomingFileRequest(request);
         }
     }
 
     @Override
-    public String getNamespace() {
+    public String getNamespace()
+    {
         return JingleFileTransferImpl.NAMESPACE;
     }
 
-    private void notifyTransfer(JingleFileTransferImpl transfer) {
+    private void notifyTransfer(JingleFileTransferImpl transfer)
+    {
         if (transfer.isOffer()) {
             notifyIncomingFileOfferListeners((JingleIncomingFileOffer) transfer);
-        } else {
+        }
+        else {
             notifyIncomingFileRequestListeners((JingleIncomingFileRequest) transfer);
         }
     }
 
     @Override
-    public void notifySessionInitiate(JingleSessionImpl session) {
+    public void notifySessionInitiate(JingleSessionImpl session)
+    {
         JingleContentImpl content = session.getSoleContentOrThrow();
         notifyTransfer((JingleFileTransferImpl) content.getDescription());
     }
 
     @Override
-    public void notifyContentAdd(JingleSessionImpl session, JingleContentImpl content) {
+    public void notifyContentAdd(JingleSessionImpl session, JingleContentImpl content)
+    {
         notifyTransfer((JingleFileTransferImpl) content.getDescription());
     }
 
-    private void throwIfRecipientLacksSupport(FullJid recipient) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.FeatureNotSupportedException {
+    private void throwIfRecipientLacksSupport(FullJid recipient) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, SmackException.FeatureNotSupportedException
+    {
         if (!ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(recipient, getNamespace())) {
             throw new SmackException.FeatureNotSupportedException(getNamespace(), recipient);
         }

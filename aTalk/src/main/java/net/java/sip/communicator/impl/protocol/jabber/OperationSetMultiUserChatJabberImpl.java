@@ -184,7 +184,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             chatRoom = createLocalChatRoomInstance(muc);
 
             // some server takes ~8sec to response  due to disco#info request (default timer = 5seconds)
-            mConnection.setReplyTimeout(10000);
+            mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
             MucCreateConfigFormHandle mucFormHandler = null;
             try {
                 // XMPPError not-authorized - if it is an existing server room on third party server

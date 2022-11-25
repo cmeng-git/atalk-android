@@ -324,7 +324,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public void sendMessage(String message, int encType)
     {
-        // Sometimes it seems the chatPanel is not inSync with the chatSession i.e Conference instead of MetaContact
+        // Sometimes it seems the chatPanel is not inSync with the chatSession or initialized,
+        // i.e Conference instead of MetaContact; and may also be null, so check to ensure
+        if (chatPanel == null)
+            chatPanel = chatFragment.getChatPanel();
+
         String correctionUID = chatPanel.getCorrectionUID();
 
         int encryption = IMessage.ENCRYPTION_NONE;

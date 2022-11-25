@@ -44,6 +44,7 @@ import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -62,6 +63,7 @@ import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiFragment;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 
@@ -77,8 +79,10 @@ import java.util.Vector;
 import timber.log.Timber;
 
 /**
- * The <code>FileTransferConversationComponent</code> is the parent of all file conversation
- * components - for incoming, outgoing and history file transfers.
+ * The <code>FileTransferConversationComponent</code> is the parent of all
+ * file conversation components - for incoming, outgoing and history file transfers.
+ *
+ * The smack reply timer is extended to 10 sec in file sharing info exchanges e.g. IBB takes > 5sec
  *
  * @author Eng Chong Meng
  */
@@ -194,6 +198,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     protected ChatFragment mChatFragment;
     protected ChatActivity mChatActivity;
+    protected XMPPConnection mConnection;
 
     protected ChatFragment.MessageViewHolder messageViewHolder;
 
@@ -203,6 +208,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     {
         mChatFragment = cPanel;
         mChatActivity = (ChatActivity) cPanel.getActivity();
+        mConnection = cPanel.getChatPanel().getProtocolProvider().getConnection();
         mDir = dir;
     }
 
@@ -312,6 +318,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 messageViewHolder.cancelButton.setVisibility(View.VISIBLE);
+                mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
@@ -325,6 +332,7 @@ public abstract class FileTransferConversation extends OSGiFragment
                 // set to full for progressBar on file transfer completed
                 long fileSize = mXferFile.length();
                 onUploadProgress(fileSize, fileSize);
+                mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
@@ -336,6 +344,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
             case FileTransferStatusChangeEvent.DECLINED: // user reject the incoming file xfer
                 messageViewHolder.fileStatus.setTextColor(Color.RED);
+                mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
                 break;
         }
 

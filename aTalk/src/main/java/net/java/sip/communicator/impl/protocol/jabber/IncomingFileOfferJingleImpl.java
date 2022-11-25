@@ -26,6 +26,8 @@ import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence
 import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
 
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -208,6 +210,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
 
             mOffer.accept(mConnection, mFile);
         } catch (IOException | SmackException | InterruptedException | XMPPException.XMPPErrorException e) {
+            aTalkApp.showToastMessage(R.string.xFile_FILE_RECEIVE_FAILED, e.getMessage());
             Timber.e("Receiving file failed; %s", e.getMessage());
         }
     }

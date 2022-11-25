@@ -20,7 +20,7 @@ public class AttachOptionDialog extends Dialog
 {
     private AttachOptionModeAdapter mAttachOptionAdapter = null;
     private AttachOptionItem mSelectedItem = null;
-    private ChatActivity mParent;
+    private final ChatActivity mParent;
 
     public AttachOptionDialog(Context context)
     {
