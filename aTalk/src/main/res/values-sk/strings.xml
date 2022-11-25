@@ -798,8 +798,8 @@
     <string name="plugin_update_Download_Ready">Aktualizácia (%1$s) sa stiahne a je pripravená na inštaláciu.</string>
     <string name="plugin_update_InProgress">Prebieha</string>
     <string name="plugin_update_Download_InProgress">Prebieha sťahovanie aktualizácií.</string>
-    <string name="plugin_update_Update_Available">Nová vydaná verzia (%1$s-%2$s) pre %3$s je k dispozícii na stiahnutie.</string>
-    <string name="plugin_update_UpToDate">Vaša aktuálna nainštalovaná verzia: (%1$s-%2$s) je aktuálna.</string>
+    <string name="plugin_update_Update_Available">K dispozícii je nová vydaná verzia (%1$s-%2$s) pre %3$s. Aktuálna nainštalovaná verzia: %4$s.</string>
+    <string name="plugin_update_UpToDate">Vaša aktuálna nainštalovaná verzia: (%1$s-%2$s) je aktuálna. Online dostupná verzia: %3$s.</string>
     <string name="plugin_update_New_Version_None">Žiadna nová verzia</string>
     <string name="plugin_update_Install_Update">Nainštalujte aktualizácie</string>
     <string name="plugin_update_Download_failed">Nepodarilo sa stiahnuť novú aktualizáciu!</string>

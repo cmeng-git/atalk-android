@@ -2,11 +2,20 @@
 
 echo "### Generate single monolithic hymnchtv-debug.apk from ./debug/hymnchtv-debug.aab, for remote installation ###"
 
-java -jar ../bundletool.jar build-apks --bundle=./aTalk/build/outputs/bundle/fdroidDebug/aTalk-fdroid-debug.aab --output=./aTalk/build/outputs/bundle/fdroidDebug/aTalk-fdroid-debug.apks --overwrite --local-testing --mode=universal
+if [[ $# -eq 1 ]]; then
+  fnapk="aTalk-$1-debug"
+  dirapk="$1Debug"
+else
 
-pushd ~/workspace/android/atalk-android/aTalk/build/outputs/bundle/fdroidDebug/ || exit
+  dirapk="fdroidDebug"
+fi
 
-apktool d -f -s aTalk-fdroid-debug.apks -o ./tmp
-mv ./tmp/unknown/universal.apk aTalk-fdroid-debug.apk
+java -jar ../bundletool.jar build-apks --bundle=./aTalk/build/outputs/bundle/$dirapk/$fnapk.aab --output=./aTalk/build/outputs/bundle/$dirapk/$fnapk.apks --overwrite --local-testing --mode=universal
+
+pushd ~/workspace/android/atalk-android/aTalk/build/outputs/bundle/$dirapk/ || exit
+
+apktool d -f -s $fnapk.apks -o ./tmp
+mv ./tmp/unknown/universal.apk ~/workspace/android/atalk-android/aTalk/release/$fnapk.apk
+rm  $fnapk.apks
 
 popd || return

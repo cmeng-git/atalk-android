@@ -57,7 +57,6 @@ import org.jxmpp.jid.Jid;
  */
 public final class JingleS5BTransportManager extends JingleTransportManager<JingleS5BTransport>
 {
-
     private static final Logger LOGGER = Logger.getLogger(JingleS5BTransportManager.class.getName());
     private final Socks5BytestreamManager s5Manager = Socks5BytestreamManager.getBytestreamManager(connection());
 
@@ -124,11 +123,14 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     List<JingleTransportCandidate<?>> collectCandidates()
     {
         List<JingleTransportCandidate<?>> candidates = new ArrayList<>();
+        // per XEP-0260: Jingle SOCKS5 Bytestreams Transport Method (2.2 Exchanging Candidates):
+        // priority = (2^16)*(type preference) + (local preference); (2^16) = 65536
 
         // Local host
+        int priority = 65536 * JingleS5BTransportCandidate.Type.direct.getWeight() + 100;
         if (JingleS5BTransportManager.isUseLocalCandidates()) {
             for (Bytestream.StreamHost host : getLocalStreamHosts()) {
-                candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, 100, JingleS5BTransportCandidate.Type.proxy));
+                candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, priority, JingleS5BTransportCandidate.Type.direct));
             }
         }
 
@@ -141,8 +143,10 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
             }
         }
 
+        // proxy server
+        priority = 65536  * JingleS5BTransportCandidate.Type.proxy.getWeight();
         for (Bytestream.StreamHost host : remoteHosts) {
-            candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, 0, JingleS5BTransportCandidate.Type.proxy));
+            candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, priority, JingleS5BTransportCandidate.Type.proxy));
         }
 
         return candidates;

@@ -151,7 +151,6 @@ import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscovery;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryManager;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServiceDiscoveryProvider;
 import org.jivesoftware.smackx.externalservicediscovery.ExternalServices;
@@ -197,10 +196,12 @@ import org.jivesoftware.smackx.jitsimeet.TranscriptionLanguageExtension;
 import org.jivesoftware.smackx.jitsimeet.TranscriptionRequestExtension;
 import org.jivesoftware.smackx.jitsimeet.TranscriptionStatusExtension;
 import org.jivesoftware.smackx.jitsimeet.TranslationLanguageExtension;
+import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.nick.provider.NickProvider;
+import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.ping.PingFailedListener;
 import org.jivesoftware.smackx.ping.PingManager;
 import org.jivesoftware.smackx.receipts.DeliveryReceipt;
@@ -384,7 +385,11 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     // vCard save takes about 29 seconds on Note 8
     public static final int SMACK_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
 
-    public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;
+    // Some server takes ~8sec to response due to disco#info request (default timer = 5seconds)
+    // File transfer e.g. IBB across server can take more than 5 seconds
+    public static final int SMACK_REPLY_EXTENDED_TIMEOUT_10 = 10000;  // 10 seconds
+
+    public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
 
     /**
      * aTalk Smack packet reply default timeout - use Smack default instead of 10s (starting v2.1.8).
@@ -1496,10 +1501,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*  Start up External Service Discovery Manager XEP-0215 */
             ExternalServiceDiscoveryManager.getInstanceFor(connection);
 
-            // Start up both instances for incoming JingleMessage events handlers
-            JingleMessageManager.getInstanceFor(connection);
-            JingleMessageSessionImpl.getInstanceFor(connection);
-
             /*
              * Broadcast to all others after connection is connected but before actual account registration start.
              * This is required by others to init their states and get ready when the user is authenticated
@@ -1572,6 +1573,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             /*  Start up Jingle File Transfer */
             JingleFileTransferManager.getInstanceFor(mConnection);
 
+            // Start up both instances for incoming JingleMessage events handlers
+            JingleMessageManager.getInstanceFor(connection);
+            JingleMessageSessionImpl.getInstanceFor(connection);
+
             // Fire registration state has changed
             if (resumed) {
                 fireRegistrationStateChanged(RegistrationState.REGISTERING, RegistrationState.REGISTERED,
@@ -1581,6 +1586,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 eventDuringLogin = null;
                 fireRegistrationStateChanged(RegistrationState.REGISTERING, RegistrationState.REGISTERED,
                         RegistrationStateChangeEvent.REASON_USER_REQUEST, msg, true);
+
+                // Seems like must only execute after <Presence/> has been send and roster is handled.
+                // Otherwise own <presence/> status is not received, and status icon stays grey.
+                MamManager mamManager = MamManager.getInstanceFor(connection, null);
+                try {
+                    if (mamManager.isSupported()) {
+                        mamManager.enableMamForAllMessages();
+                    }
+                } catch (NoResponseException | XMPPErrorException | NotConnectedException
+                        | SmackException.NotLoggedInException | InterruptedException e) {
+                    Timber.e("Enable Mam For All Messages: %s", e.getMessage());
+                }
             }
         }
     }

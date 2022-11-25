@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 300030
-        versionName "3.0.3"
+        versionCode 300040
+        versionName "3.0.4"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -261,6 +261,7 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
+    // exoplayer:2.18.1 requires api-33
     implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
     // Do not update to 1.7.x; has problem
     implementation 'com.google.android.material:material:1.6.1'
@@ -513,11 +514,11 @@ task initJniLibs(type: Exec) {
 }
 
 /*
- * Generate the versionupdate.properties file with the actual build versionName and versionCode.
- * The versionupdate.properties is retrieved during app update check to asses if there is a new update
+ * Generate the version.properties file with the actual build versionName and versionCode.
+ * The version.properties is retrieved during app update check to asses if there is a new update
  */
 task updateVersionFile(type: Copy) {
-    description '<!-- Generate versionupdate.properties file -->'
+    description '<!-- Generate version.properties file -->'
 
     def versionName = android.defaultConfig.versionName
     def versionCode = android.defaultConfig.versionCode
@@ -531,11 +532,11 @@ task updateVersionFile(type: Copy) {
     outputs.upToDateWhen {
         false
     }
-    from('lib/versionupdate.properties') {
+    from('lib/version.properties') {
         // Substitute property tokens in files
         expand(DATE: date, BUILD_VERSION: versionName, BUILD_VERSION_CODE: versionCode)
     }
-    into 'build/outputs/apk'
+    into 'release'
 }
 
 // Uncomment below lines if you want to show all deprecated warnings

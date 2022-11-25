@@ -51,6 +51,13 @@ import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileTransferActivator;
 import org.atalk.android.plugin.textspeech.TTSService;
 import org.atalk.persistance.FileBackend;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.mam.MamManager;
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -446,16 +453,19 @@ public class ChatPanel implements Chat, MessageListener
 
         // descriptor can either be metaContact or chatRoomWrapper=>ChatRoom, from whom the history to be loaded
         Object descriptor = mDescriptor;
-        if (descriptor instanceof ChatRoomWrapper)
+        if (descriptor instanceof ChatRoomWrapper) {
             descriptor = ((ChatRoomWrapper) descriptor).getChatRoom();
+
+        }
 
         Collection<Object> history;
         // first time fetch, so read in last HISTORY_CHUNK_SIZE of history messages
         if (msgCache.isEmpty()) {
+            // TODO: mamQuery(descriptor);
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
             historyLoaded = true;
         }
-        // read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date' i.e. top of the msgCache
+        // Read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date' i.e. top of the msgCache
         else {
             Date lastOldestMessageDate;
             synchronized (cacheLock) {
@@ -502,11 +512,61 @@ public class ChatPanel implements Chat, MessageListener
                 msgCache.clear();
                 Timber.d("Number of new cached messages added: %s", msgAdded);
             }
-
             // The final message records are always in msgHistory
             msgCache.addAll(msgHistory);
         }
         return msgCache;
+    }
+
+    /**
+     * TODO
+     * @param descriptor
+     */
+    private void mamQuery(Object descriptor)
+    {
+        MamManager mamManager;
+        XMPPConnection connection = getProtocolProvider().getConnection();
+        OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
+        EntityBareJid jid;
+
+        try {
+            if (descriptor instanceof ChatRoom) {
+                mamManager = MamManager.getInstanceFor(((ChatRoom) descriptor).getMultiUserChat());
+                jid = ((ChatRoom) descriptor).getIdentifier();
+
+            }
+            else {
+                mamManager = MamManager.getInstanceFor(connection, null);
+                jid = ((MetaContact) descriptor).getDefaultContact().getJid().asEntityBareJidIfPossible();
+            }
+            if (mamManager.isSupported()) {
+                MamManager.MamQueryArgs mamQueryArgs = MamManager.MamQueryArgs.builder()
+                        .limitResultsToJid(jid)
+                        // .limitResultsBefore(new Date())
+                        .setResultPageSizeTo(10)
+                        .queryLastPage()
+                        .build();
+
+                // Prevent OmemoManager from automatically decrypting MAM messages.
+                // OmemoManager.getInstanceFor(connection).stopStanzaAndPEPListeners();
+
+                MamManager.MamQuery query = mamManager.queryArchive(mamQueryArgs);
+                List<Message> messages = query.getMessages();
+                for (Message msg : messages) {
+                    Timber.d("Message body: %s", msg.toXML());
+                }
+
+//                if (query.getMessageCount() > 0) {
+//                    List<MessageOrOmemoMessage> decryptedMamQuery = omemoManager.decryptMamQueryResult(query);
+//                    if (!decryptedMamQuery.isEmpty()) {
+//                        decryptedMamQuery.get(decryptedMamQuery.size() - 1).getOmemoMessage().getBody();
+//                    }
+//                }
+            }
+        } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException // | IOException
+                | SmackException.NotConnectedException | InterruptedException | SmackException.NotLoggedInException e) {
+            Timber.e("MAM query: %s", e.getMessage());
+        }
     }
 
     /**
@@ -535,8 +595,10 @@ public class ChatPanel implements Chat, MessageListener
                 count++;
             }
             else {
-                // Skip the current cache record if found in history
+                // Must use the cached message instead of info found in history; the incoming file sharing is saved as
+                // FileRecord only in history DB (chat closed), and does not contains file transfer info for proper file sharing.
                 if (cacheMsg.getDate().equals(mergeDate)) {
+                    history.set((insertIdx - 1), cacheMsg);
                     cacheIdx--;
                 }
 

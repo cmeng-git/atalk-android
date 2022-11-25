@@ -95,7 +95,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * The associated protocol <code>Contact</code>.
      */
-    private final Contact contact;
+    private final Contact mContact;
 
     /**
      * The associated protocol provider service for the <code>Contact</code>.
@@ -109,7 +109,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * The resource associated with this contact.
      */
-    private final ContactResource contactResource;
+    private final ContactResource mContactResource;
 
     /**
      * <code>true</code> when a contact sends a message with XEP-0164 message delivery receipt;
@@ -169,8 +169,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             ContactResource contactResource, boolean isDisplayResourceOnly)
     {
         this.parentChatSession = chatSession;
-        this.contact = contact;
-        this.contactResource = contactResource;
+        this.mContact = contact;
+        this.mContactResource = contactResource;
         this.isDisplayResourceOnly = isDisplayResourceOnly;
         mPPS = contact.getProtocolProvider();
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
@@ -219,7 +219,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if ((connection != null) && connection.isAuthenticated()) {
             DeliveryReceiptManager deliveryReceiptManager = DeliveryReceiptManager.getInstanceFor(connection);
 
-            List<Presence> presences = Roster.getInstanceFor(connection).getPresences(contact.getJid().asBareJid());
+            List<Presence> presences = Roster.getInstanceFor(connection).getPresences(mContact.getJid().asBareJid());
             for (Presence presence : presences) {
                 fullJid = presence.getFrom();
                 try {
@@ -248,7 +248,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
 
             if (imOpSet != null)
-                imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML, contact);
+                imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML, mContact);
         }
     }
 
@@ -259,7 +259,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public Contact getContact()
     {
-        return contact;
+        return mContact;
     }
 
     /**
@@ -269,7 +269,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public String getName()
     {
-        return contact.getAddress();
+        return mContact.getAddress();
     }
 
     /**
@@ -279,7 +279,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public String getDisplayName()
     {
-        return contact.getDisplayName();
+        return mContact.getDisplayName();
     }
 
     /**
@@ -290,7 +290,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public ContactResource getContactResource()
     {
-        return contactResource;
+        return mContactResource;
     }
 
     /**
@@ -301,8 +301,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public String getResourceName()
     {
-        if (contactResource != null)
-            return contactResource.getResourceName();
+        if (mContactResource != null)
+            return mContactResource.getResourceName();
         return null;
     }
 
@@ -319,9 +319,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public PresenceStatus getStatus()
     {
-        PresenceStatus contactStatus = contact.getPresenceStatus();
-        if (contactResource != null) {
-            PresenceStatus resourceStatus = contactResource.getPresenceStatus();
+        PresenceStatus contactStatus = mContact.getPresenceStatus();
+        if (mContactResource != null) {
+            PresenceStatus resourceStatus = mContactResource.getPresenceStatus();
             return (resourceStatus.compareTo(contactStatus) < 0) ? contactStatus : resourceStatus;
         }
         else {
@@ -351,11 +351,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         // First try to ask the capabilities operation set if such is available.
         OperationSetContactCapabilities capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
-            if (contact.getJid().asEntityBareJidIfPossible() == null) {
+            if (mContact.getJid().asEntityBareJidIfPossible() == null) {
                 isChatStateSupported = false;
                 return false;
             }
-            return capOpSet.getOperationSet(contact, OperationSetBasicInstantMessaging.class) != null;
+            return capOpSet.getOperationSet(mContact, OperationSetBasicInstantMessaging.class) != null;
         }
         else
             return mPPS.getOperationSet(OperationSetBasicInstantMessaging.class) != null;
@@ -372,7 +372,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
-            return capOpSet.getOperationSet(contact, OperationSetMessageCorrection.class) != null;
+            return capOpSet.getOperationSet(mContact, OperationSetMessageCorrection.class) != null;
         }
         else {
             return mPPS.getOperationSet(OperationSetMessageCorrection.class) != null;
@@ -392,7 +392,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
-            return capOpSet.getOperationSet(contact, OperationSetSmsMessaging.class) != null;
+            return capOpSet.getOperationSet(mContact, OperationSetSmsMessaging.class) != null;
         }
         else
             return mPPS.getOperationSet(OperationSetSmsMessaging.class) != null;
@@ -465,13 +465,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             encType = encType & IMessage.FLAG_MODE_MASK;
 
         IMessage msg = imOpSet.createMessage(message, encType, "");
-        ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+        ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            imOpSet.sendInstantMessage(contact, toResource, msg, null, omemoManager);
+            imOpSet.sendInstantMessage(mContact, toResource, msg, null, omemoManager);
         }
         else {
-            imOpSet.sendInstantMessage(contact, toResource, msg);
+            imOpSet.sendInstantMessage(mContact, toResource, msg);
         }
     }
 
@@ -494,13 +494,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             encType = encType & IMessage.FLAG_MODE_MASK;
         IMessage msg = mcOpSet.createMessage(message, encType, "");
 
-        ContactResource toResource = (contactResource != null) ? contactResource : ContactResource.BASE_RESOURCE;
+        ContactResource toResource = (mContactResource != null) ? mContactResource : ContactResource.BASE_RESOURCE;
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
-            mcOpSet.sendInstantMessage(contact, toResource, msg, correctedMessageUID, omemoManager);
+            mcOpSet.sendInstantMessage(mContact, toResource, msg, correctedMessageUID, omemoManager);
         }
         else {
-            mcOpSet.correctMessage(contact, toResource, msg, correctedMessageUID);
+            mcOpSet.correctMessage(mContact, toResource, msg, correctedMessageUID);
         }
     }
 
@@ -545,7 +545,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             return false;
 
         OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-        return smsOpSet.askForNumber(contact);
+        return smsOpSet.askForNumber(mContact);
     }
 
     /**
@@ -575,12 +575,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (allowsChatStateNotifications()) {
             // if protocol is not registered or contact is offline don't try to send chat state notifications
             if (mPPS.isRegistered()
-                    && (contact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
+                    && (mContact.getPresenceStatus().getStatus() >= PresenceStatus.ONLINE_THRESHOLD)) {
 
                 OperationSetChatStateNotifications tnOperationSet
                         = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
                 try {
-                    tnOperationSet.sendChatStateNotification(contact, chatState);
+                    tnOperationSet.sendChatStateNotification(mContact, chatState);
                 } catch (Exception ex) {
                     Timber.e(ex, "Failed to send chat state notifications.");
                 }
@@ -615,7 +615,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     return httpFileUpload(file, chatType, xferCon);
                 else {
                     try {
-                        return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
+                        return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
                     } catch (OperationNotSupportedException ex2) {
                         // Fallback to use Http file upload if contact is offline, or contact
                         // does not support legacy FileTransfer in SOCKS5 and IBS
@@ -690,7 +690,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
             if (smsOpSet == null)
                 return null;
-            return smsOpSet.sendMultimediaFile(contact, file);
+            return smsOpSet.sendMultimediaFile(mContact, file);
         }
         else {
             if (getStatus().isOnline()) {
@@ -704,7 +704,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                         return httpFileUpload(file, chatType, xferCon);
                     else {
                         try {
-                            return ftOpSet.sendFile(contact, file, xferCon.getMessageUuid());
+                            return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
                         } catch (OperationNotSupportedException ex2) {
                             // Fallback to use Http file upload if contact is offline, or contact
                             // does not support legacy FileTransfer in SOCKS5 and IBS
@@ -735,16 +735,16 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         // toJid is not null if contact is online and supports the jet/jingle file transfer
         FullJid recipient;
         if (ChatFragment.MSGTYPE_OMEMO == chatType) {
-            recipient = ftOpSet.getFullJid(contact, JetSecurityImpl.NAMESPACE, JingleFileTransferImpl.NAMESPACE);
+            recipient = ftOpSet.getFullJid(mContact, JetSecurityImpl.NAMESPACE, JingleFileTransferImpl.NAMESPACE);
         }
         else {
-            recipient = ftOpSet.getFullJid(contact, JingleFileTransferImpl.NAMESPACE);
+            recipient = ftOpSet.getFullJid(mContact, JingleFileTransferImpl.NAMESPACE);
         }
 
         // Conversations allows Jet FileSent but failed with session-terminate and reason = connectivity-error
         // So retry with HttpFileUpload if previously hasSecurityError
         if ((recipient != null)
-                && (!OutgoingFileOfferJingleImpl.hasSecurityError() || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
+                && (!OutgoingFileOfferJingleImpl.hasSecurityError(mContact) || (ChatFragment.MSGTYPE_OMEMO != chatType))) {
             OutgoingFileOfferController ofoController;
             int encType = IMessage.ENCRYPTION_NONE;
             String msgUuid = xferCon.getMessageUuid();
@@ -763,10 +763,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
                 OutgoingFileOfferJingleImpl outgoingTransfer
-                        = new OutgoingFileOfferJingleImpl(contact, file, msgUuid, ofoController, mPPS.getConnection());
+                        = new OutgoingFileOfferJingleImpl(mContact, file, msgUuid, ofoController, mPPS.getConnection());
 
                 // Notify all interested listeners that a file transfer has been created.
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "Jingle File Transfer");
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "Jingle File Transfer");
                 return outgoingTransfer;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
@@ -850,7 +850,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, contact, encType, "HTTP File Upload");
+                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "HTTP File Upload");
                 return url;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
@@ -911,7 +911,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public void addInstantMessageListener(MessageListener l)
     {
         // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
-        if (!allowsInstantMessage() && !(contact.getJid() instanceof DomainBareJid))
+        if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -941,7 +941,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     public void removeInstantMessageListener(MessageListener l)
     {
         // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
-        if (!allowsInstantMessage() && !(contact.getJid() instanceof DomainBareJid))
+        if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
             return;
 
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -957,7 +957,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     {
         // If the contactResource is set then the status will be updated from the MetaContactChatSession.
         // cmeng: contactResource condition removed to fix contact goes offline<->online // && (contactResource == null)
-        if (evt.getSourceContact().equals(contact)
+        if (evt.getSourceContact().equals(mContact)
                 && !evt.getOldStatus().equals(evt.getNewStatus())) {
             this.updateContactStatus();
         }
@@ -988,7 +988,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public Object getDescriptor()
     {
-        return contact;
+        return mContact;
     }
 
     /**

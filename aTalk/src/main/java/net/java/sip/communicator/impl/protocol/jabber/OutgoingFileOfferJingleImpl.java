@@ -31,6 +31,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferC
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -43,7 +45,6 @@ import timber.log.Timber;
 public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
         implements JingleSessionImpl.JingleSessionListener, ProgressListener
 {
-
     /**
      * Default number of fallback to use HttpFileUpload if previously has securityError
      */
@@ -52,11 +53,11 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     /**
      * Fallback to use HttpFileUpload file transfer if previously has securityError i.e. not zero
      */
-    private static int securityErrorTimber = 0;
+    private static Map<Contact, Integer> mSecurityErrorTimber = new HashMap<>();
 
-    private final String id;
-    private final Contact recipient;
-    private final File file;
+    private final String msgUuid;
+    private final Contact mContact;
+    private final File mFile;
     private int byteWrite;
 
     /**
@@ -74,16 +75,16 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      * @param file the file to send
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
      * @param protocolProvider the parent protocol provider
-     * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
+     * @param mUuid the id that uniquely identifies this file transfer and saved DB record
      */
-    public OutgoingFileOfferJingleImpl(Contact recipient, File file, String msgUuid, OutgoingFileOfferController offer,
+    public OutgoingFileOfferJingleImpl(Contact recipient, File file, String mUuid, OutgoingFileOfferController offer,
             XMPPConnection connection)
     {
-        this.recipient = recipient;
-        this.file = file;
-        this.id = msgUuid;
-        this.mOfoJingle = offer;
-        this.mConnection = connection;
+        mContact = recipient;
+        mFile = file;
+        msgUuid = mUuid;
+        mOfoJingle = offer;
+        mConnection = connection;
         offer.addProgressListener(this);
         JingleSessionImpl.addJingleSessionListener(this);
         // Timber.d("Add Ofo Listener");
@@ -150,7 +151,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      */
     public File getLocalFile()
     {
-        return file;
+        return mFile;
     }
 
     /**
@@ -160,7 +161,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      */
     public Contact getContact()
     {
-        return recipient;
+        return mContact;
     }
 
     /**
@@ -170,7 +171,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      */
     public String getID()
     {
-        return id;
+        return msgUuid;
     }
 
     @Override
@@ -202,7 +203,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     public void onSessionTerminated(JingleReason reason)
     {
         if (JingleReason.Reason.security_error.equals(reason.asEnum())) {
-            securityErrorTimber = defaultErrorTimer;
+            mSecurityErrorTimber.put(mContact, defaultErrorTimer);
         }
         fireStatusChangeEvent(reason);
         removeOfoListener();
@@ -219,7 +220,13 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      *
      * @return true if the timer is not zero.
      */
-    public static boolean hasSecurityError() {
-        return (securityErrorTimber-- > 0);
+    public static boolean hasSecurityError(Contact contact)
+    {
+        Integer errorTimer = mSecurityErrorTimber.get(contact);
+        if ((errorTimer != null) && --errorTimer > 0) {
+            mSecurityErrorTimber.put(contact, errorTimer);
+            return true;
+        }
+        return false;
     }
 }

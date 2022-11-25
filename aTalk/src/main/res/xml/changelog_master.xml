@@ -6,8 +6,24 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.0.3 (11/03/2022)" versioncode="300030">
+    <release version="3.0.4 (11/25/2022)" versioncode="300040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>JET Security Error timer must be stored per contact for reference in future file sharing</change>
+        <change>Extend smack reply timer to 10 seconds for file transfer; IBB response stanza may take more than 5 seconds when send across servers</change>
+        <change>Use IQ 'from' value as initiator if the jingle session-initiate initiator value is not defined (Conversations)</change>
+        <change>Recipient and initiator wrongly interchanged in Jingle Transport accept, reject and replace stanza sending</change>
+        <change>Must close both input and output streams to trigger sending of IBB 'close' element as defined in XEP-0047</change>
+        <change>JingleFileTransfer transport-candidate type should set to 'direct' for local host</change>
+        <change>JingleFileTransfer transportInfo element for proxy protocol should be 'activated'; incorrectly sent as 'candidate-activated'</change>
+        <change>Set jingle transport-candidate priority value as per XEP-0260: Jingle SOCKS5 Bytestreams Transport Method</change>
+        <change>Strip the 'zone_id' from Inet6Address in transport-candidates host attribute sending stanza</change>
+        <change>Use remote offered 'candidate-used' transport candidate when all the remote transport-candidates failed to connect</change>
+        <change>Fix incoming file sharing failure when the chat window is closed, it shows file transfer interrupted error when chat windows is open</change>
+        <change>Pop up user error alert dialog when receiving file has errors</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.0.3 (11/03/2022)" versioncode="300030">
         <change>Add support for XEP-0215: External Service Discovery</change>
         <change>Add marker showing user selected location in OSM street map view</change>
         <change>Disable FollowMe mode only in ZERO_FIX mode, allow tracking even in SINGLE_FIX update request</change>
@@ -109,7 +125,8 @@
     </release>
 
     <release version="2.9.1 (03/16/2022)" versioncode="209010">
-        <change>Upgrade ice4j to use ice4j:3.0-55-g32a8aad with aTalk customization</change>
+        <change>Upgrade ice4j to use ice4j:3.0-55-g32a8aad (requires API-24 min) with aTalk customization</change>
+        <change>aTalk minimum android OS support is API-24 (android 7.0 for media call)</change>
         <change>Fixed unreachable STUN server when android mobile network APN=IPv4/IPv6 or APN=IPv6; No interoperability between IPv6 and IPv4</change>
         <change>Use GoogleMap latest Renderer enforcing by google in June 2022</change>
         <change>Update implementation for deprecated Sensor.TYPE_ORIENTATION with Sensor.TYPE_ACCELEROMETER and Sensor.TYPE_MAGNETIC_FIELD</change>
