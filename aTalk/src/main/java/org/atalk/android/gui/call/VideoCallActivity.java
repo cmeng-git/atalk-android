@@ -81,6 +81,7 @@ import java.util.Collection;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import timber.log.Timber;
 
@@ -607,12 +608,16 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         if (telephony == null)
             return;
 
-        // We support transfer for one-to-one calls only.
-        CallPeer initialPeer = mCall.getCallPeers().next();
-        Collection<CallPeer> transferCalls = getTransferCallPeers();
+        // We support transfer for one-to-one calls only. next() => NoSuchElementException
+        try {
+            CallPeer initialPeer = mCall.getCallPeers().next();
+            Collection<CallPeer> transferCalls = getTransferCallPeers();
 
-        mTransferDialog = new CallTransferDialog(this, initialPeer, transferCalls);
-        mTransferDialog.show();
+            mTransferDialog = new CallTransferDialog(this, initialPeer, transferCalls);
+            mTransferDialog.show();
+        } catch (NoSuchElementException e) {
+            Timber.w("Transferring call: %s", e.getMessage());
+        }
     }
 
     /**

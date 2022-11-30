@@ -11,13 +11,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.Build;
+
+import androidx.core.app.NotificationCompat;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.systray.PopupMessage;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -31,9 +34,10 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.impl.androidnotification.AndroidNotifications;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import androidx.core.app.NotificationCompat;
 import timber.log.Timber;
 
 /**
@@ -390,8 +394,7 @@ public class AndroidPopup
         // Must be unique for each, so use the notification id as the request code
         return (targetIntent == null)
                 ? null : PendingIntent.getActivity(aTalkApp.getGlobalContext(), getId(), targetIntent,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                NotificationPopupHandler.getPendingIntentFlag(false, true));
     }
 
     /**

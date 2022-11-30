@@ -49,14 +49,12 @@ import org.jivesoftware.smackx.jinglemessage.JingleMessageType;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.util.XmppStringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 
 import timber.log.Timber;
 
@@ -140,7 +138,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
                 .addExtension(msgPropose);
 
         try {
-            startJMActivity(sid);
+            startJMCallActivity(sid);
             connection.sendStanza(msgBuilder.build());
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             Timber.e("Error in sending jingle message propose to: %s: %s", mRemote, e.getMessage());
@@ -152,7 +150,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param sid the unique for Jingle Message / Jingle Session sid
      */
-    private static void startJMActivity(String sid)
+    private static void startJMCallActivity(String sid)
     {
         Context context = aTalkApp.getGlobalContext();
         Intent intent = new Intent(context, JingleMessageCallActivity.class);
@@ -212,12 +210,12 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * Prepare Jingle Message Retract and send it to the remote callee if call is retracted by caller.
      *
      * @param remote the remote callee
-     * @param id the intended Jingle Message call id
+     * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleMessageRetract(Jid remote, String id)
+    public static void sendJingleMessageRetract(Jid remote, String sid)
     {
         allowSendRetract = false;
-        JingleMessage msgRetract = new JingleMessage(JingleMessage.ACTION_RETRACT, id);
+        JingleMessage msgRetract = new JingleMessage(JingleMessage.ACTION_RETRACT, sid);
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                 .ofType(Message.Type.chat)
                 .from(remote.asBareJid())
@@ -259,30 +257,25 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         mRemote = message.getFrom();
 
         notifyOnStateChange(connection, JingleMessageType.propose, mRemote, sid);
-        onCallProposed(mRemote, sid, isVideoCall);
+        // v3.0.5: always starts with heads-up notification for JingleMessage call propose
+        AndroidCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
     }
 
     /**
-     * Set up the heads-up notification for user to accept or dismiss the call.
+     * Starts the receive call UI when in legacy jingle call (not use)
+     * v3.0.5: always starts with heads-up notification for JingleMessage call propose
      *
-     * @param caller the caller who sends the Jingle Message Propose
-     * @param id the Jingle Message call id
-     * @param isVideoCall video call if true, audio call otherwise
+     * @param call the <code>Call</code> to be handled
      */
-    private void onCallProposed(Jid caller, final String id, boolean isVideoCall)
+    private void startJingleMessageCallActivity(String sid)
     {
-        Map<String, Object> extras = new HashMap<>();
-        extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, id);
-        extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA,
-                (Callable<Boolean>) () -> (NotificationPopupHandler.getCallNotificationId(id) != null));
-
-        byte[] contactIcon = AvatarManager.getAvatarImageByJid(caller.asBareJid());
-        String message = (isVideoCall ? "(vide): " : "(audio): ") + GuiUtils.formatDateTimeShort(new Date());
-
-        NotificationService notificationService = NotificationWiringActivator.getNotificationService();
-        notificationService.fireNotification(NotificationManager.INCOMING_CALL, SystrayService.JINGLE_MESSAGE_PROPOSE,
-                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING,
-                        XmppStringUtils.parseLocalpart(caller.toString())), message, contactIcon, extras);
+        Context context = aTalkApp.getGlobalContext();
+        Intent intent = new Intent(context, JingleMessageCallActivity.class)
+                .putExtra(CallManager.CALL_SID, sid)
+                .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL)
+                // .putExtra(CallManager.CALL_AUTO_ANSWER, true)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     /**
@@ -292,14 +285,14 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * Note: the attached message is with to/from reversed for sendJingleMessage requirements
      *
-     * @param id the intended Jingle Message call id
+     * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleAccept(String id)
+    public static void sendJingleAccept(String sid)
     {
         Jid local = mConnection.getUser();
-        mSid = id;
+        mSid = sid;
 
-        JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, id);
+        JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, sid);
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                 .ofType(Message.Type.chat)
                 .from(local.asBareJid())   // the actual message send to
@@ -320,11 +313,12 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     @Override
     public void onJingleMessageAccept(XMPPConnection connection, JingleMessage jingleMessage, Message message)
     {
-        String sid = jingleMessage.getId();
-
         // Valid caller found, and we are the sender of the "accept" jingle message, then request sender to proceed
+        Jid callee = message.getFrom();
         if (mRemote != null) {
-            if (connection.getUser().equals(message.getFrom())) {
+            String sid = jingleMessage.getId();
+
+            if (connection.getUser().equals(callee)) {
                 // notify all listeners for session-accept; sid - must use the same;
                 // and to make earlier registerJingleSessionHandler() with JingleManager
                 notifyOnStateChange(connection, JingleMessageType.accept, mRemote, sid);
@@ -333,20 +327,24 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
                 sendJingleMessage(connection, msgProceed, message);
                 aTalkApp.showToastMessage(R.string.service_gui_CONNECTING_ACCOUNT, mRemote);
             }
-            // Display to user who has taken the call
-            endJmCallProcess(R.string.service_gui_CALL_ANSWER, message.getFrom());
+            else {
+                // Dismiss notification if another user instance has accepted the call propose.
+                NotificationPopupHandler.removeCallNotification(sid);
+            }
+            // Display to user who has accepted the call
+            endJmCallProcess(R.string.service_gui_CALL_ANSWER, callee);
         }
     }
 
     /**
      * Local user has rejected the call; prepare Jingle Message reject and send it to the remote.
      *
-     * @param id the intended Jingle Message call id
+     * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleMessageReject(String id)
+    public static void sendJingleMessageReject(String sid)
     {
         if (mRemote != null) {
-            JingleMessage msgReject = new JingleMessage(JingleMessage.ACTION_REJECT, id);
+            JingleMessage msgReject = new JingleMessage(JingleMessage.ACTION_REJECT, sid);
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                     .ofType(Message.Type.chat)
                     .from(mRemote.asBareJid())
@@ -457,7 +455,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     }
 
     /**
-     *  legacy call must check for correct sid before assumes JingleMessage session call
+     * legacy call must check for correct sid before assumes JingleMessage session call
      */
     public static String getSid()
     {
@@ -473,11 +471,11 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      */
     private static void endJmCallProcess(Integer id, Object... arg)
     {
-        if (id != null)
+        if (id != null) {
             aTalkApp.showToastMessage(id, arg);
+        }
 
         new VibrateHandlerImpl().cancel();
-
         if (jmEndListener != null) {
             jmEndListener.onJmEndCallback();
             jmEndListener = null;

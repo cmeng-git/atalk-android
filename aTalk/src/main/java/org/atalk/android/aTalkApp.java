@@ -5,6 +5,8 @@
  */
 package org.atalk.android;
 
+import static org.atalk.impl.androidtray.NotificationPopupHandler.getPendingIntentFlag;
+
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +42,7 @@ import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
 import org.atalk.impl.androidnotification.NotificationHelper;
+import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
@@ -359,15 +362,17 @@ public class aTalkApp extends Application implements LifecycleEventObserver
 
     private static Toast toast = null;
     /**
-     * Toast show message in UI thread
+     * Toast show message in UI thread;
+	 * Cancel current toast view to allow immediate display of new toast message.
      *
      * @param message the string message to display.
      */
     public static void showToastMessage(final String message)
     {
         new Handler(Looper.getMainLooper()).post(() -> {
-            if (toast != null)
+            if (toast != null && toast.getView() != null) {
                 toast.cancel();
+            }
             toast = Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG);
             toast.show();
         });
@@ -441,8 +446,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
             intent = getHomeIntent();
         }
         return PendingIntent.getActivity(getGlobalContext(), 0, intent,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_UPDATE_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                NotificationPopupHandler.getPendingIntentFlag(false, true));
     }
 
     /**

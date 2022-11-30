@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.0.5 (300050)
+Release Date:   12/01/2022
+Author:         cmeng
+- Fix Heads-up notification for incoming chat message for android-12 and above
+  NotificationPopupHandler#createReplyIntent(): PendingIntent chat notification attached to reply action with remote input must be 'mutable'
+- Implement common routine NotificationPopupHandler#getPendingIntentFlag() to take care mutable flag setting for different android API
+- Fix: starting with Android 12 notifications will not work if they do not start activities directly
+  * NotificationService: Indirect notification activity start (trampoline) from org.atalk.android blocked
+    https://proandroiddev.com/notification-trampoline-restrictions-android12-7d2a8b15bbe2
+- JingleMessage propose will always start with heads-up notification independent of aTalk focus state (background/foreground).
+  This process is also applied to normal JingleCall when aTalk is in background/not focus (android constraint).
+- JingleMessage incoming 'propose' heads-up notification is auto accept via JingleMessageCallActivity, and start up aTalk in foreground;
+  Otherwise ActivityTaskManager: Background activity start will failed for android-12 and above.
+- Use received call UI for user choice to proceed with audio or video call. Revert (avoid user confusion) while aTalk not in locked screen;
+  require as android OS does not launch heads-up notification under android locked screen (defeat JingleMessage implementation intend).
+- See OperationSetAutoAnswerJabberImpl#autoAnswer() method. answerOnJingleMessageAccept must set to false if call not via JingleMessage propose.
+- JingleMessageCallActivity UI is used only for JingleMessage outgoing call propose; auto-accept incoming call propose.
+- Dismiss JingleMessage heads-up notification if another user instance has answered the call.
+- Fix incorrect display of the callee who has accepted the JingleMessage propose call.
+- Update ReceivedCallActivity to support handling of JingleMessage propose (revert to use JingleMessageCallActivity instead).
+
+=========================================================================
 Version:        3.0.4 (300040)
 Release Date:   11/25/2022
 Author:         cmeng

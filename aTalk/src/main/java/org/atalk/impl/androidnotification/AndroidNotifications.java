@@ -70,13 +70,13 @@ public class AndroidNotifications implements BundleActivator
             return;
 
         // Incoming call: modified default incoming call notification to be played only on notification stream.
-        SoundNotificationAction inCallSoundHandler = new SoundNotificationAction(SoundProperties.INCOMING_CALL,
-                2000, true, false, false);
+        SoundNotificationAction inCallSoundHandler
+                = new SoundNotificationAction(SoundProperties.INCOMING_CALL, 2000, true, false, false);
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_CALL, inCallSoundHandler);
 
         // Incoming call: Adds basic vibrate notification for incoming call
-        VibrateNotificationAction inCallVibrate = new VibrateNotificationAction(NotificationManager.INCOMING_CALL,
-                new long[]{1800, 1000}, 0);
+        VibrateNotificationAction inCallVibrate
+                = new VibrateNotificationAction(NotificationManager.INCOMING_CALL, new long[]{1800, 1000}, 0);
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_CALL, inCallVibrate);
 
         //  cmeng 20200525: added back for JingleMessage support
@@ -111,8 +111,7 @@ public class AndroidNotifications implements BundleActivator
                 new PopupMessageNotificationAction(null, 7000, SILENT_GROUP));
 
         notificationService.registerDefaultNotificationForEvent(NotificationManager.INCOMING_INVITATION,
-                new SoundNotificationAction(SoundProperties.INCOMING_INVITATION, -1,
-                        true, false, false));
+                new SoundNotificationAction(SoundProperties.INCOMING_INVITATION, -1, true, false, false));
 
         // Remove obsoleted/unused events
         notificationService.removeEventNotification(NotificationManager.CALL_SAVED);

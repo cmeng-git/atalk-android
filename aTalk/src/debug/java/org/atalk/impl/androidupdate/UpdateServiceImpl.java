@@ -160,9 +160,10 @@ public class UpdateServiceImpl implements UpdateService
                             public boolean onConfirmClicked(DialogActivity dialog)
                             {
                                 if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN)
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                    if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN) {
                                         downloadApk();
+                                    }
                                 }
                                 return true;
                             }

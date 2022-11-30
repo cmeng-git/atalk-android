@@ -16,9 +16,13 @@ import android.widget.TextView;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallState;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
+import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
 
 import timber.log.Timber;
@@ -61,9 +65,27 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         );
 
         Bundle extras = getIntent().getExtras();
+        Timber.d("ReceivedCall onCreate!!!");
         if (extras != null) {
             callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+            NotificationPopupHandler.removeCallNotification(callIdentifier);
 
+            /*
+             * JingleMessage propose will only sendJingleAccept(mSid); Then
+             * Bring aTalk to foreground to avoid failure arise from launch ReceivedCallActivity from background
+             *
+             * JingleMessage propose is accept via JingleMessageCallActivity; the following code is not executed
+             * See NotificationPopupHandler#showPopupMessage(); source keep for future use if necessary
+             */
+            String mSid = extras.getString(CallManager.CALL_SID, null);
+            if (mSid != null) {
+                JingleMessageSessionImpl.sendJingleAccept(mSid);
+                finish();
+                startActivity(aTalk.class);
+                return;
+            }
+
+            // Handling the incoming JingleCall
             call = CallManager.getActiveCall(callIdentifier);
             if (call != null) {
                 String Callee = CallUIUtils.getCalleeAddress(call);
@@ -74,7 +96,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
                 byte[] avatar = CallUIUtils.getCalleeAvatar(call);
                 if (avatar != null) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-
                     ImageView avatarView = findViewById(R.id.calleeAvatar);
                     avatarView.setImageBitmap(bitmap);
                 }
@@ -103,11 +124,14 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     protected void onResume()
     {
         super.onResume();
-        if (call.getCallState().equals(CallState.CALL_ENDED)) {
-            finish();
-        }
-        else {
-            call.addCallChangeListener(this);
+        // Call is null for call via JingleMessage <propose/>
+        if (call != null) {
+            if (call.getCallState().equals(CallState.CALL_ENDED)) {
+                finish();
+            }
+            else {
+                call.addCallChangeListener(this);
+            }
         }
     }
 

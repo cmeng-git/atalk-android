@@ -5,9 +5,10 @@
  */
 package org.atalk.impl.androidtray;
 
-import android.content.*;
-
-import net.java.sip.communicator.service.notification.NotificationData;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 
 import org.atalk.android.aTalkApp;
 
@@ -212,14 +213,6 @@ public class PopupClickReceiver extends BroadcastReceiver
     {
         Intent intent = new Intent();
         intent.setAction(ACTION_CALL_DISMISS);
-        intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
-        return intent;
-    }
-
-    public static Intent createCallAnswer(int notificationId)
-    {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_CALL_ANSWER);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
     }

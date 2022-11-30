@@ -27,6 +27,7 @@ import android.widget.TextView;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
@@ -36,12 +37,25 @@ import org.jxmpp.jid.Jid;
 
 /**
  * The process to handle the incoming and outgoing call for <code>Jingle Message</code> states changes.
+ * Note: incoming call is via ReceivedCallActivity instead due to android-12 constraint.
+ *
+ * Implementation for aTalk v3.0.5:
+ * Starting with Android 12 notifications will not work if they do not start activities directly
+ * NotificationService: Indirect notification activity start (trampoline) from org.atalk.android blocked
+ * https://proandroiddev.com/notification-trampoline-restrictions-android12-7d2a8b15bbe2
+ * Heads-up notification launches ReceivedCallActivity directly; failed if launches JingleMessageCallActivity => ReceivedCallActivity;
+ * ActivityTaskManager: Background activity start will failed for android-12 and above.
  *
  * @author Eng Chong Meng
  */
 public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageSessionImpl.JmEndListener
 {
     private ImageView peerAvatar;
+    private ImageButton mCallButton;
+    private String mSid;
+
+    private boolean isIncomingCall = false;
+    private boolean mAutoAccept = false;
 
     /**
      * Create the UI with call hang up button to retract call.
@@ -64,7 +78,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
 
         // Implementation not supported currently
         findViewById(R.id.videoCallButton).setVisibility(View.GONE);
-        ImageButton callButton = findViewById(R.id.callButton);
+        mCallButton = findViewById(R.id.callButton);
         ImageButton hangUpButton = findViewById(R.id.hangupButton);
 
         peerAvatar = findViewById(R.id.calleeAvatar);
@@ -72,41 +86,43 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             // Jingle Message / Session sid
-            String sid = extras.getString(CallManager.CALL_SID);
-            Jid remote = JingleMessageSessionImpl.getRemote();
+            mSid = extras.getString(CallManager.CALL_SID);
+            NotificationPopupHandler.removeCallNotification(mSid);
 
+            String eventType = extras.getString(CallManager.CALL_EVENT);
+            isIncomingCall = NotificationManager.INCOMING_CALL.equals(eventType);
+            mAutoAccept = extras.getBoolean(CallManager.CALL_AUTO_ACCEPT, false);
+            if (mAutoAccept)
+                return;
+
+            Jid remote = JingleMessageSessionImpl.getRemote();
             ((TextView) findViewById(R.id.calleeAddress)).setText(remote);
             setPeerImage(remote);
 
-            String eventType = extras.getString(CallManager.CALL_EVENT);
-            if (NotificationManager.INCOMING_CALL.equals(eventType)) {
+            if (isIncomingCall) {
                 // Call accepted, send Jingle Message <accept/> to inform caller.
-                callButton.setOnClickListener(v -> {
-                            NotificationPopupHandler.removeCallNotification(sid);
-                            JingleMessageSessionImpl.sendJingleAccept(sid);
-                            finish();
+                mCallButton.setOnClickListener(v -> {
+                            JingleMessageSessionImpl.sendJingleAccept(mSid);
                         }
                 );
 
                 // Call rejected, send Jingle Message <reject/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                            NotificationPopupHandler.removeCallNotification(sid);
-                            JingleMessageSessionImpl.sendJingleMessageReject(sid);
-                            finish();
+                            JingleMessageSessionImpl.sendJingleMessageReject(mSid);
                         }
                 );
             }
             else { // NotificationManager.OUTGOING_CALL
                 // Call retract, send Jingle Message <retract/> to inform caller.
                 hangUpButton.setOnClickListener(v -> {
-                    // NPE: Get triggered with remote == null at time???
+                            // NPE: Get triggered with remote == null at time???
                             if (remote != null) {
-                                JingleMessageSessionImpl.sendJingleMessageRetract(remote, sid);
+                                JingleMessageSessionImpl.sendJingleMessageRetract(remote, mSid);
                             }
                             finish();
                         }
                 );
-                callButton.setVisibility(View.GONE);
+                mCallButton.setVisibility(View.GONE);
             }
         }
         JingleMessageSessionImpl.setJmEndListener(this);
@@ -122,6 +138,22 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        /*
+         * JingleMessage propose will only sendJingleAccept(mSid); Then bring aTalk to foreground,
+         * to avoid failure arises on launching ReceivedCallActivity from background
+         */
+        if (isIncomingCall && mAutoAccept) {
+            JingleMessageSessionImpl.sendJingleAccept(mSid);
+            finish();
+            startActivity(aTalk.class);
+        }
     }
 
     /**

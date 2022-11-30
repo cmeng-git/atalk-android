@@ -5,12 +5,13 @@
  */
 package org.atalk.android.gui.call.notification;
 
+import static org.atalk.impl.androidtray.NotificationPopupHandler.getPendingIntentFlag;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
@@ -169,26 +170,22 @@ public class CallNotificationManager
     {
         // Speakerphone button
         PendingIntent pSpeaker = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getToggleSpeakerIntent(mCallId),
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+                getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_speakerphone, pSpeaker);
 
         // Mute button
         PendingIntent pMute = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getToggleMuteIntent(mCallId),
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+                getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_mute, pMute);
 
         // Hold button
         PendingIntent pHold = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getToggleOnHoldIntent(mCallId),
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+                getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_hold, pHold);
 
         // Hangup button
         PendingIntent pHangup = PendingIntent.getBroadcast(ctx, requestCodeBase++, CallControl.getHangupIntent(mCallId),
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+                getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_hangup, pHangup);
 
         // Transfer call via VideoCallActivity, and execute in place to show VideoCallActivity (note-10)
@@ -196,18 +193,14 @@ public class CallNotificationManager
         Intent pTransfer = new Intent(ctx, VideoCallActivity.class);
         pTransfer.putExtra(CallManager.CALL_IDENTIFIER, mCallId);
         pTransfer.putExtra(CallManager.CALL_TRANSFER, true);
-        pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+        pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer, getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_transfer, pVideo);
 
         // Show video call Activity on click; pendingIntent executed in place i.e. no via Broadcast receiver
         Intent videoCall = new Intent(ctx, VideoCallActivity.class);
         videoCall.putExtra(CallManager.CALL_IDENTIFIER, mCallId);
         videoCall.putExtra(CallManager.CALL_TRANSFER, false);
-        pVideo = PendingIntent.getActivity(ctx, requestCodeBase, videoCall,
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M ? PendingIntent.FLAG_CANCEL_CURRENT
-                        : PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+        pVideo = PendingIntent.getActivity(ctx, requestCodeBase, videoCall, getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_back_to_call, pVideo);
 
         // Binds launch VideoCallActivity to the whole area
