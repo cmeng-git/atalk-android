@@ -110,7 +110,7 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Der Gruppenname darf nicht leer sein.</string>
     <string name="service_gui_ADD_GROUP">Gruppe anlegen</string>
     <string name="service_gui_ADD_GROUP_HINT">Gruppenname eingeben</string>
-    <string name="service_gui_ANSWER">Antworten</string>
+    <string name="service_gui_ANSWER">Antworten&#8230;</string>
     <string name="service_gui_APPLY">Übernehmen</string>
     <string name="service_gui_APPLY_CHANGES">Kontoeinstellungen übernehmen (~60S) &#8230;</string>
     <string name="service_gui_AT">at</string>

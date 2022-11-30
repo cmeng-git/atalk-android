@@ -36,6 +36,7 @@ import org.jxmpp.util.XmppStringUtils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import timber.log.Timber;
 
@@ -100,13 +101,16 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     protected void onCallEvent(final CallEvent evt)
     {
         Call call = evt.getSourceCall();
-        Timber.d("Received CallEvent: %s: %s", evt, call.getCallId());
+
+        Timber.d("Received CallEvent: %s: %s", evt.getEventID(), call.getCallId());
         switch (evt.getEventID()) {
             // Triggered by outgoing call after session-initiate
             case CallEvent.CALL_INITIATED:
                 storeSpeakerPhoneStatus();
                 clearVideoCallState();
-                startVideoCallActivity(call);
+
+                String sid = CallManager.addActiveCall(call);
+                startVideoCallActivity(sid);
                 break;
 
             case CallEvent.CALL_RECEIVED:
@@ -121,17 +125,27 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     }
 
                     // cmeng - answer call and on hold current - mic not working
-                    // If incoming call accepted via Jingle Message session, then start the VideoCallActivity UI;
-                    if (call.getCallId().equals(JingleMessageSessionImpl.getSid())) {
-                        startVideoCallActivity(call);
-                    }
                     // Launch UI for user selection of audio or video call
-                    else if (aTalkApp.isForeground) {
-                        startCallActivity(call);
+                    sid = CallManager.addActiveCall(call);
+                    if (aTalkApp.isForeground) {
+                        // For incoming call accepted via Jingle Message propose session.
+                        if (call.getCallId().equals(JingleMessageSessionImpl.getSid())) {
+                            // Accept call via VideoCallActivity UI to allow auto-answer the Jingle Call
+                            startVideoCallActivity(sid);
+
+                            // Accept call via ReceivedCallActivity for user choice to start audio/video call
+                            // This also be executed if android is in locked screen
+                            // startReceivedCallActivity(sid);
+                        }
+                        // For Jingle incoming call session. UI with user choice of audio/video buttons
+                        else {
+                            startReceivedCallActivity(sid);
+                        }
                     }
                     // else launch a heads-up UI for user to accept the call
                     else {
-                        startReceivedCallActivity(evt);
+                        Jid peerJid = call.getCallPeers().next().getContact().getJid();
+                        startIncomingCallNotification(peerJid, sid, SystrayService.JINGLE_INCOMING_CALL, evt.isVideoCall());
                     }
 
                     // merge call - exception; It will end up with a conference call.
@@ -213,10 +227,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param call the <code>Call</code> to be handled
      */
-    private void startVideoCallActivity(Call call)
+    private void startVideoCallActivity(String sid)
     {
-        String callIdentifier = CallManager.addActiveCall(call);
-        Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, callIdentifier);
+        Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, sid);
         videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(videoCall);
     }
@@ -226,36 +239,36 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param call the <code>Call</code> to be handled
      */
-    private void startCallActivity(Call call)
+    private void startReceivedCallActivity(String sid)
     {
-        String callIdentifier = CallManager.addActiveCall(call);
         Intent intent = new Intent(appContext, ReceivedCallActivity.class)
-                .putExtra(CallManager.CALL_IDENTIFIER, callIdentifier)
+                .putExtra(CallManager.CALL_IDENTIFIER, sid)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(intent);
     }
 
     /**
-     * Start the heads-up notifications for incoming (received) call when aTalk is not in focus
+     * Start the heads-up notifications for incoming call when aTalk is not in focus for user to accept or dismiss the call.
      *
-     * @param evt the <code>CallEvent</code>
+     * @param caller the caller who initial the call
+     * @param sid the JingleMessage sid / call id
+     * @param msgType the Message type:  SystrayService.JINGLE_MESSAGE_PROPOSE / JINGLE_INCOMING_CALL
+     * @param isVideoCall video call if true, audio call otherwise
      */
-    private void startReceivedCallActivity(CallEvent evt)
+    public static void startIncomingCallNotification(Jid caller, final String sid, int msgType, boolean isVideoCall)
     {
-        Call call = evt.getSourceCall();
-
-        String identifier = CallManager.addActiveCall(call);
         Map<String, Object> extras = new HashMap<>();
-        extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, identifier);
+        extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, sid);
+        extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA,
+                (Callable<Boolean>) () -> (NotificationPopupHandler.getCallNotificationId(sid) != null));
 
-        Jid peerJid = call.getCallPeers().next().getContact().getJid();
-        byte[] contactIcon = AvatarManager.getAvatarImageByJid(peerJid.asBareJid());
-        String message = (evt.isVideoCall() ? "(vide): " : "(audio): ") + GuiUtils.formatDateTimeShort(new Date());
+        byte[] contactIcon = AvatarManager.getAvatarImageByJid(caller.asBareJid());
+        String message = (isVideoCall ? "(vide): " : "(audio): ") + GuiUtils.formatDateTimeShort(new Date());
 
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
-        notificationService.fireNotification(NotificationManager.INCOMING_CALL, SystrayService.JINGLE_INCOMING_CALL,
-                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING, XmppStringUtils.parseLocalpart(peerJid.toString())),
-                message, contactIcon, extras);
+        notificationService.fireNotification(NotificationManager.INCOMING_CALL, msgType,
+                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING,
+                        XmppStringUtils.parseLocalpart(caller.toString())), message, contactIcon, extras);
     }
 
     /**

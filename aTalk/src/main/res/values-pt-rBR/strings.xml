@@ -110,7 +110,7 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">O nome do grupo não deve estar em branco.</string>
     <string name="service_gui_ADD_GROUP">Criar um grupo</string>
     <string name="service_gui_ADD_GROUP_HINT">Digite nome do grupo</string>
-    <string name="service_gui_ANSWER">Atender </string>
+    <string name="service_gui_ANSWER">Atender&#8230;</string>
     <string name="service_gui_APPLY">Aplicar</string>
     <string name="service_gui_APPLY_CHANGES">Aplicando alterações da conta (~60S) &#8230;</string>
     <string name="service_gui_AT">em</string>

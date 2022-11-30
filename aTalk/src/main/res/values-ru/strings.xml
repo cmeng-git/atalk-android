@@ -110,7 +110,7 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">Имя группы не должно быть пустым.</string>
     <string name="service_gui_ADD_GROUP">Создать группу</string>
     <string name="service_gui_ADD_GROUP_HINT">Введите имя группы</string>
-    <string name="service_gui_ANSWER">Ответ</string>
+    <string name="service_gui_ANSWER">Ответ&#8230;</string>
     <string name="service_gui_APPLY">Применить</string>
     <string name="service_gui_APPLY_CHANGES">Применение изменений учетной записи (~60S) &#8230;</string>
     <string name="service_gui_AT">at</string>

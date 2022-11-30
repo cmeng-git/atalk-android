@@ -85,7 +85,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
         if (volumeControl != null) {
             volumeControl.removeVolumeChangeListener(this);
         }
-        if (toast != null) {
+        if (toast != null && toast.getView() != null) {
             toast.cancel();
             toast = null;
         }

@@ -33,7 +33,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
      */
     private boolean mute;
 
-    private Map<SCAudioClip, NotificationData> playedClips = new WeakHashMap<>();
+    private final Map<SCAudioClip, NotificationData> playedClips = new WeakHashMap<>();
 
     /**
      * Property to disable sound notification during an on-going call.

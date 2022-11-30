@@ -110,7 +110,7 @@
     <string name="service_gui_ADD_GROUP_EMPTY_NAME">The group name must not be empty.</string>
     <string name="service_gui_ADD_GROUP">Create group</string>
     <string name="service_gui_ADD_GROUP_HINT">Enter group name</string>
-    <string name="service_gui_ANSWER">Answer</string>
+    <string name="service_gui_ANSWER">Answer&#8230;</string>
     <string name="service_gui_APPLY">Apply</string>
     <string name="service_gui_APPLY_CHANGES">Applying account changes (~60S) &#8230;</string>
     <string name="service_gui_AT">at</string>

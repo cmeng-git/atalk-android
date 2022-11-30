@@ -7,8 +7,6 @@ package org.atalk.android.gui.call;
 
 import android.text.TextUtils;
 
-import androidx.appcompat.app.AlertDialog;
-
 import net.java.sip.communicator.impl.phonenumbers.PhoneNumberI18nServiceImpl;
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallConference;
@@ -78,6 +76,7 @@ import timber.log.Timber;
 public class CallManager
 {
     // Jingle Message id / Jingle session-initiate sid
+    public static final String CALL_AUTO_ACCEPT = "call_auto_accept";
     public static final String CALL_SID = "call_sid";
     public static final String CALL_EVENT = "call_event";
 
