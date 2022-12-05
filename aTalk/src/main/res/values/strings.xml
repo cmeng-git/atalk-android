@@ -140,10 +140,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirm and \'Select All\' items, before proceed to \'Delete\'</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">None record selected for delete</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
-    <string name="service_gui_CALL_INCOMING">Incoming call received from: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Incoming call: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Incoming call</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Initiating call</string>
     <string name="service_gui_CALL_REJECTED">%1$s has rejected the call.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s has retracted the call.</string>
     <string name="service_gui_CALL_MISSED_CALL">Missed calls from:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">We could not find any active Audio/Video devices hence unable to create the call.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">No audio device configured.</string>

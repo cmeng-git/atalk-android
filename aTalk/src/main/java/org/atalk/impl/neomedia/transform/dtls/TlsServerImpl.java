@@ -7,9 +7,34 @@ package org.atalk.impl.neomedia.transform.dtls;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
-import org.bouncycastle.tls.*;
-import org.bouncycastle.tls.crypto.*;
-import org.bouncycastle.tls.crypto.impl.bc.*;
+import org.bouncycastle.tls.AlertDescription;
+import org.bouncycastle.tls.Certificate;
+import org.bouncycastle.tls.CertificateRequest;
+import org.bouncycastle.tls.CipherSuite;
+import org.bouncycastle.tls.ClientCertificateType;
+import org.bouncycastle.tls.DefaultTlsServer;
+import org.bouncycastle.tls.ECPointFormat;
+import org.bouncycastle.tls.HashAlgorithm;
+import org.bouncycastle.tls.MaxFragmentLength;
+import org.bouncycastle.tls.ProtocolVersion;
+import org.bouncycastle.tls.SignatureAlgorithm;
+import org.bouncycastle.tls.SignatureAndHashAlgorithm;
+import org.bouncycastle.tls.TlsContext;
+import org.bouncycastle.tls.TlsCredentialedDecryptor;
+import org.bouncycastle.tls.TlsCredentialedSigner;
+import org.bouncycastle.tls.TlsECCUtils;
+import org.bouncycastle.tls.TlsExtensionsUtils;
+import org.bouncycastle.tls.TlsFatalAlert;
+import org.bouncycastle.tls.TlsSRTPUtils;
+import org.bouncycastle.tls.TlsServer;
+import org.bouncycastle.tls.TlsServerContext;
+import org.bouncycastle.tls.TlsUtils;
+import org.bouncycastle.tls.UseSRTPData;
+import org.bouncycastle.tls.crypto.TlsCrypto;
+import org.bouncycastle.tls.crypto.TlsCryptoParameters;
+import org.bouncycastle.tls.crypto.impl.bc.BcDefaultTlsCredentialedDecryptor;
+import org.bouncycastle.tls.crypto.impl.bc.BcDefaultTlsCredentialedSigner;
+import org.bouncycastle.tls.crypto.impl.bc.BcTlsCrypto;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -23,6 +48,9 @@ import timber.log.Timber;
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
+ *
+ * @See <a href="https://www.rfc-editor.org/rfc/rfc6347">Datagram Transport Layer Security Version 1.2</a>
+ * @See <a href="https://www.rfc-editor.org/rfc/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>
  */
 public class TlsServerImpl extends DefaultTlsServer
 {
@@ -35,7 +63,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * If DTLSv12 or higher is negotiated, configures the set of supported signature algorithms in the
      * CertificateRequest (if one is sent). If null, uses the default set.
      */
-    private Vector serverCertReqSigAlgs = null;
+    private Vector<?> serverCertReqSigAlgs = null;
 
     /**
      * The <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client.
@@ -58,6 +86,11 @@ public class TlsServerImpl extends DefaultTlsServer
     private TlsCredentialedSigner rsaSignerCredentials;
 
     /**
+     * @see DefaultTlsServer#getECDSASignerCredentials()
+     */
+    private TlsCredentialedSigner ecdsaSignerCredentials;
+
+    /**
      * Initializes a new <code>TlsServerImpl</code> instance.
      *
      * @param packetTransformer the <code>PacketTransformer</code> which is initializing the new instance
@@ -66,44 +99,6 @@ public class TlsServerImpl extends DefaultTlsServer
     {
         super(new BcTlsCrypto(new SecureRandom()));
         this.packetTransformer = packetTransformer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CertificateRequest getCertificateRequest()
-    {
-        if (certificateRequest == null) {
-            short[] certificateTypes = new short[]{ ClientCertificateType.rsa_sign,
-                    ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
-
-
-            Vector serverSigAlgs = null;
-            if (TlsUtils.isSignatureAlgorithmsExtensionAllowed(context.getServerVersion())) {
-                serverSigAlgs = serverCertReqSigAlgs;
-                if (serverSigAlgs == null) {
-                    serverSigAlgs = TlsUtils.getDefaultSupportedSignatureAlgorithms(context);
-                }
-            }
-
-//            Certificate certificate = getDtlsControl().getCertificateInfo().getCertificate();
-//            TlsCertificate[] chain = certificate.getCertificateList();
-//            try {
-//                for (TlsCertificate tlsCertificate : chain) {
-//                    org.bouncycastle.asn1.x509.Certificate entry = org.bouncycastle.asn1.x509.Certificate.getInstance(tlsCertificate.getEncoded());
-//                    certificateAuthorities.addElement(entry.getIssuer());
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-            Vector certificateAuthorities = new Vector();
-            certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
-
-            certificateRequest = new CertificateRequest(certificateTypes, serverSigAlgs, certificateAuthorities);
-        }
-        return certificateRequest;
     }
 
     /**
@@ -118,7 +113,41 @@ public class TlsServerImpl extends DefaultTlsServer
 
     /**
      * {@inheritDoc}
-     * The implementation of <code>TlsClientImpl</code> always returns <code>ProtocolVersion.DTLSv12 & DTLSv10</code>
+     *
+     * Overrides the super implementation to explicitly specify cipher suites
+     * which we know to be supported by Bouncy Castle and provide Perfect Forward Secrecy.
+     * @see org/bouncycastle/crypto/tls/DefaultTlsServer.java
+     */
+    @Override
+    public int[] getSupportedCipherSuites()
+    {
+        int[] suites = new int[]{
+                // Required by Conversations 2.10.10; need work on aTalk getECDSASignerCredentials() to support this
+                // CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+                // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+
+                CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
+                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+        };
+        return TlsUtils.getSupportedCipherSuites(getCrypto(), suites);
+    }
+
+    /**
+     * {@inheritDoc}
+     * The implementation of <code>TlsServerImpl</code> always returns <code>ProtocolVersion.DTLSv12 & DTLSv10</code>
      */
     @Override
     protected ProtocolVersion[] getSupportedVersions()
@@ -149,6 +178,44 @@ public class TlsServerImpl extends DefaultTlsServer
     private Properties getProperties()
     {
         return packetTransformer.getProperties();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CertificateRequest getCertificateRequest()
+    {
+        if (certificateRequest == null) {
+            short[] certificateTypes = new short[]{ClientCertificateType.rsa_sign,
+                    ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
+
+
+            Vector<?> serverSigAlgs = null;
+            if (TlsUtils.isSignatureAlgorithmsExtensionAllowed(context.getServerVersion())) {
+                serverSigAlgs = serverCertReqSigAlgs;
+                if (serverSigAlgs == null) {
+                    serverSigAlgs = TlsUtils.getDefaultSupportedSignatureAlgorithms(context);
+                }
+            }
+
+//            Certificate certificate = getDtlsControl().getCertificateInfo().getCertificate();
+//            TlsCertificate[] chain = certificate.getCertificateList();
+//            try {
+//                for (TlsCertificate tlsCertificate : chain) {
+//                    org.bouncycastle.asn1.x509.Certificate entry = org.bouncycastle.asn1.x509.Certificate.getInstance(tlsCertificate.getEncoded());
+//                    certificateAuthorities.addElement(entry.getIssuer());
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+            Vector<X500Name> certificateAuthorities = new Vector<>();
+            certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
+
+            certificateRequest = new CertificateRequest(certificateTypes, serverSigAlgs, certificateAuthorities);
+        }
+        return certificateRequest;
     }
 
     /**
@@ -203,6 +270,28 @@ public class TlsServerImpl extends DefaultTlsServer
         }
         return rsaSignerCredentials;
     }
+
+//    @Override
+//    protected TlsCredentialedSigner getECDSASignerCredentials()
+//    {
+//        if (ecdsaSignerCredentials == null) {
+//            TlsCrypto crypto = context.getCrypto();
+//            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
+//
+//            // TODO: certInfo must contain ECDSA privateKey (see DtlsControlImpl) else failed
+//            CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+//            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+//            Certificate certificate = certInfo.getCertificate();
+//
+//            // FIXME The signature and hash algorithms should be retrieved from the certificate.
+//            SignatureAndHashAlgorithm signatureAndHashAlgorithm
+//                    = new SignatureAndHashAlgorithm(HashAlgorithm.sha256, SignatureAlgorithm.ecdsa);
+//
+//            ecdsaSignerCredentials = new BcDefaultTlsCredentialedSigner(cryptoParams, (BcTlsCrypto) crypto,
+//                    privateKey, certificate, signatureAndHashAlgorithm);
+//        }
+//        return ecdsaSignerCredentials;
+//    }
 
     /**
      * {@inheritDoc}
@@ -370,7 +459,6 @@ public class TlsServerImpl extends DefaultTlsServer
      * Makes sure that the DTLS extended client hello contains the <code>use_srtp</code> extension.
      */
     @Override
-    @SuppressWarnings("rawtypes")
     public void processClientExtensions(Hashtable clientExtensions)
             throws IOException
     {

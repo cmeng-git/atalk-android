@@ -191,14 +191,14 @@ public class CallNotificationManager
         // Transfer call via VideoCallActivity, and execute in place to show VideoCallActivity (note-10)
         // Call via broadcast receiver has problem of CallTransferDialog keeps popping up
         Intent pTransfer = new Intent(ctx, VideoCallActivity.class);
-        pTransfer.putExtra(CallManager.CALL_IDENTIFIER, mCallId);
+        pTransfer.putExtra(CallManager.CALL_SID, mCallId);
         pTransfer.putExtra(CallManager.CALL_TRANSFER, true);
         pVideo = PendingIntent.getActivity(ctx, requestCodeBase++, pTransfer, getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_transfer, pVideo);
 
         // Show video call Activity on click; pendingIntent executed in place i.e. no via Broadcast receiver
         Intent videoCall = new Intent(ctx, VideoCallActivity.class);
-        videoCall.putExtra(CallManager.CALL_IDENTIFIER, mCallId);
+        videoCall.putExtra(CallManager.CALL_SID, mCallId);
         videoCall.putExtra(CallManager.CALL_TRANSFER, false);
         pVideo = PendingIntent.getActivity(ctx, requestCodeBase, videoCall, getPendingIntentFlag(false, false));
         contentView.setOnClickPendingIntent(R.id.button_back_to_call, pVideo);

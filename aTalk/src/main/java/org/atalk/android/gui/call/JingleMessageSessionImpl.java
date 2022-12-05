@@ -222,10 +222,12 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
                 .to(mConnection.getUser());
 
         sendJingleMessage(mConnection, msgRetract, messageBuilder.build());
+        endJmCallProcess(R.string.service_gui_CALL_RETRACTED, mConnection.getUser());
     }
 
     /**
-     * Send Jingle Message Retract if the peer was the targeted remote
+     * Send Jingle Message Retract if the peer was the targeted remote;
+     * Request from CallManager if Jingle RTP has yet to start.
      *
      * @param peer the remote call peer
      */

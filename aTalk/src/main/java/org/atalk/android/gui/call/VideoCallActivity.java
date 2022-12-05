@@ -61,6 +61,7 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.ClickableToastController;
 import org.atalk.android.gui.widgets.LegacyClickableToastCtrl;
+import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.CameraStreamBase;
 import org.atalk.impl.neomedia.transform.sdes.SDesControlImpl;
@@ -229,7 +230,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mCallIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+            mCallIdentifier = extras.getString(CallManager.CALL_SID);
+            // End all notifications if any; once the call has started.
+            NotificationPopupHandler.removeCallNotification(mCallIdentifier);
+
             mCall = CallManager.getActiveCall(mCallIdentifier);
             if (mCall == null) {
                 Timber.e("There's no call with id: %s", mCallIdentifier);
@@ -305,10 +309,10 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * @param callIdentifier the call ID managed by {@link CallManager}.
      * @return new video call <code>Intent</code> parametrized with given <code>callIdentifier</code>.
      */
-    static public Intent createVideoCallIntent(Context parent, String callIdentifier)
+    public static Intent createVideoCallIntent(Context parent, String callIdentifier)
     {
         Intent videoCallIntent = new Intent(parent, VideoCallActivity.class);
-        videoCallIntent.putExtra(CallManager.CALL_IDENTIFIER, callIdentifier);
+        videoCallIntent.putExtra(CallManager.CALL_SID, callIdentifier);
         return videoCallIntent;
     }
 
@@ -950,7 +954,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private void showCallInfoDialog()
     {
         CallInfoDialogFragment callInfo = CallInfoDialogFragment.newInstance(
-                getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
+                getIntent().getStringExtra(CallManager.CALL_SID));
         callInfo.show(getSupportFragmentManager(), "callinfo");
     }
 
@@ -959,7 +963,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private void showZrtpInfoDialog()
     {
-        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
+        ZrtpInfoDialog zrtpInfo = ZrtpInfoDialog.newInstance(getIntent().getStringExtra(CallManager.CALL_SID));
         zrtpInfo.show(getSupportFragmentManager(), "zrtpinfo");
     }
 

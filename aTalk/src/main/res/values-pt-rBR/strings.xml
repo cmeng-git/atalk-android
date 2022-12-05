@@ -140,10 +140,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme e \'Selecione todos\' itens, antes de avançar para \'Excluir\'</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Nenhum registro selecionado para exclusão</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Tem certeza de que quer excluir todos os registros de ligações selecionadas?</string>
-    <string name="service_gui_CALL_INCOMING">Ligação recebida de: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Ligação: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Ligação recebida</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Iniciando a ligação</string>
     <string name="service_gui_CALL_REJECTED">%1$s recusou a ligação.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s retirou a ligação.</string>
     <string name="service_gui_CALL_MISSED_CALL">Ligações perdidas de:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Não foi possível encontrar nenhum serviço de áudio/vídeo ativo, por causa disso não foi possível efetuar uma ligação.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nenhum serviço de áudio configurado.</string>

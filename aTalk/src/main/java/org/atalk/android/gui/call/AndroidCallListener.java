@@ -31,7 +31,6 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.util.XmppStringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -50,6 +49,9 @@ import timber.log.Timber;
  */
 public class AndroidCallListener implements CallListener, CallChangeListener
 {
+    public static String VIDEO = "(video): ";
+    public static String AUDIO = "(audio): ";
+
     /**
      * The application context.
      */
@@ -127,9 +129,11 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     // cmeng - answer call and on hold current - mic not working
                     // Launch UI for user selection of audio or video call
                     sid = CallManager.addActiveCall(call);
+                    boolean jmCall = call.getCallId().equals(JingleMessageSessionImpl.getSid());
+
                     if (aTalkApp.isForeground) {
                         // For incoming call accepted via Jingle Message propose session.
-                        if (call.getCallId().equals(JingleMessageSessionImpl.getSid())) {
+                        if (jmCall) {
                             // Accept call via VideoCallActivity UI to allow auto-answer the Jingle Call
                             startVideoCallActivity(sid);
 
@@ -242,7 +246,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     private void startReceivedCallActivity(String sid)
     {
         Intent intent = new Intent(appContext, ReceivedCallActivity.class)
-                .putExtra(CallManager.CALL_IDENTIFIER, sid)
+                .putExtra(CallManager.CALL_SID, sid)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(intent);
     }
@@ -263,12 +267,12 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                 (Callable<Boolean>) () -> (NotificationPopupHandler.getCallNotificationId(sid) != null));
 
         byte[] contactIcon = AvatarManager.getAvatarImageByJid(caller.asBareJid());
-        String message = (isVideoCall ? "(vide): " : "(audio): ") + GuiUtils.formatDateTimeShort(new Date());
+        String message = (isVideoCall ? VIDEO : AUDIO) + GuiUtils.formatDateTimeShort(new Date());
 
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         notificationService.fireNotification(NotificationManager.INCOMING_CALL, msgType,
-                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING,
-                        XmppStringUtils.parseLocalpart(caller.toString())), message, contactIcon, extras);
+                aTalkApp.getResString(R.string.service_gui_CALL_INCOMING, caller.asBareJid()),
+                message, contactIcon, extras);
     }
 
     /**

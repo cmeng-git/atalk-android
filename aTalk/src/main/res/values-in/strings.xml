@@ -140,10 +140,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Konfirmasi dan \'Pilih Semua\' item, sebelum melanjutkan ke \'Hapus\'</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Tidak ada catatan yang dipilih untuk dihapus</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
-    <string name="service_gui_CALL_INCOMING">Panggilan masuk diterima dari: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Panggilan masuk: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Panggilan masuk</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Memulai panggilan</string>
     <string name="service_gui_CALL_REJECTED">%1$s telah menolak panggilan.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s telah mencabut panggilan.</string>
 	<string name="service_gui_CALL_MISSED_CALL">Panggilan tidak terjawab dari:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Kami tidak dapat menemukan perangkat Audio/Video yang aktif sehingga tidak dapat membuat panggilan.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Tidak ada perangkat audio yang dikonfigurasi.</string>

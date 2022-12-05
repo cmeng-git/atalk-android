@@ -34,12 +34,12 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     /**
      * Should we unconditionally answer.
      */
-    protected boolean answerUnconditional = false;
+    protected boolean mAnswerUnconditional = false;
 
     /**
      * Should we answer video calls with video.
      */
-    protected boolean answerWithVideo = false;
+    protected boolean mAnswerWithVideo = false;
 
     /**
      * Creates this operation set, loads stored values, populating local variable settings.
@@ -58,8 +58,8 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     {
         AccountID acc = mPPS.getAccountID();
 
-        answerUnconditional = acc.getAccountPropertyBoolean(AUTO_ANSWER_UNCOND_PROP, false);
-        answerWithVideo = acc.getAccountPropertyBoolean(AUTO_ANSWER_WITH_VIDEO_PROP, false);
+        mAnswerUnconditional = acc.getAccountPropertyBoolean(AUTO_ANSWER_UNCOND_PROP, false);
+        mAnswerWithVideo = acc.getAccountPropertyBoolean(AUTO_ANSWER_WITH_VIDEO_PROP, false);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     protected void clearLocal()
     {
-        this.answerUnconditional = false;
+        mAnswerUnconditional = false;
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     public void clear()
     {
         clearLocal();
-        this.answerWithVideo = false;
+        mAnswerWithVideo = false;
         save();
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     public boolean autoAnswer(Call call, boolean isVideoCall)
     {
-        if (answerOnJingleMessageAccept || answerUnconditional || satisfyAutoAnswerConditions(call)) {
+        if (answerOnJingleMessageAccept || mAnswerUnconditional || satisfyAutoAnswerConditions(call)) {
             this.answerCall(call, isVideoCall);
             return true;
         }
@@ -131,7 +131,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
     public void setAutoAnswerUnconditional()
     {
         clearLocal();
-        this.answerUnconditional = true;
+        mAnswerUnconditional = true;
         save();
     }
 
@@ -142,7 +142,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     public boolean isAutoAnswerUnconditionalSet()
     {
-        return answerUnconditional;
+        return mAnswerUnconditional;
     }
 
     /**
@@ -153,7 +153,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     public void setAutoAnswerWithVideo(boolean answerWithVideo)
     {
-        this.answerWithVideo = answerWithVideo;
+        this.mAnswerWithVideo = answerWithVideo;
         this.save();
     }
 
@@ -165,7 +165,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
      */
     public boolean isAutoAnswerWithVideoSet()
     {
-        return this.answerWithVideo;
+        return this.mAnswerWithVideo;
     }
 
     /**
@@ -212,7 +212,7 @@ public abstract class AbstractOperationSetBasicAutoAnswer implements OperationSe
             try {
                 // If user has configured to answer video call with video, then create a video call.
                 // Always answer with video for incoming video call via Jingle Message accept.
-                if (this.isVideoCall && (answerOnJingleMessageAccept || answerWithVideo) && (opSetVideoTelephony != null)) {
+                if (this.isVideoCall && (answerOnJingleMessageAccept || mAnswerWithVideo) && (opSetVideoTelephony != null)) {
                     opSetVideoTelephony.answerVideoCallPeer(peer);
                 }
                 // Else send only audio to the remote peer (remote peer is still able to send us its video stream).

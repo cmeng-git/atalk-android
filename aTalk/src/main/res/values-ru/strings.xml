@@ -140,10 +140,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Подтвердите и выберите пункты «Выбрать все», прежде чем переходить к пункту «Удалить».</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ни одна запись не выбрана для удаления</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
-    <string name="service_gui_CALL_INCOMING">Входящий вызов, полученный от: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Входящий звонок: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Входящий вызов</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Инициирующий вызов</string>
     <string name="service_gui_CALL_REJECTED">%1$s отклонил звонок.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s has retracted the call.</string>
     <string name="service_gui_CALL_MISSED_CALL">Пропущенные вызовы:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Мы не смогли найти никаких активных аудио/видео устройств, следовательно, не смогли создать вызов.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Нет настроенного аудиоустройства.</string>

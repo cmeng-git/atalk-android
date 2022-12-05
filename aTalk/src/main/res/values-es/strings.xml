@@ -143,10 +143,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme y \'Seleccione todos\' los elementos, antes de continuar con \'Eliminar\'</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ningún registro seleccionado para eliminar</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
-    <string name="service_gui_CALL_INCOMING">Llamada recibida desde: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Llamada recibida: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Llamada entrante</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Iniciando la llamada</string>
     <string name="service_gui_CALL_REJECTED">%1$s ha rechazado la llamada.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s ha retirado la llamada.</string>
     <string name="service_gui_CALL_MISSED_CALL">Llamadas perdidas de:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">No se encontró ningún dispositivo de Audio/Vídeo activo, por lo que no se pudo hacer la llamada..</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Ningún dispositivo de audio configurado.</string>

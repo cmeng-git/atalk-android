@@ -139,10 +139,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Potvrďte a \'Vybrať všetky\' položky a potom prejdite na \'Odstrániť\'</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Na odstránenie nebol vybratý žiadny záznam</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Ali ste prepričani, da želite očistiti vse izbrane zapise klicev?</string>
-    <string name="service_gui_CALL_INCOMING">Prichádzajúci hovor prijatý od: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Prichádzajúci hovor: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Prichádzajúci hovor</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Začatie hovoru</string>
     <string name="service_gui_CALL_REJECTED">%1$s Používateľ odmietol hovor.</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s odvolal hovor..</string>
     <string name="service_gui_CALL_MISSED_CALL">Zmeškané hovory od:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Nenašli sme žiadne aktívne audio/video zariadenia, a preto sa nemohol uskutočniť hovor.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Nie je nakonfigurované žiadne zvukové zariadenie.</string>

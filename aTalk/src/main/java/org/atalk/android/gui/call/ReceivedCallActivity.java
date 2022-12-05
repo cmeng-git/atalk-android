@@ -21,7 +21,6 @@ import net.java.sip.communicator.service.protocol.event.CallChangeListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.android.R;
-import org.atalk.android.gui.aTalk;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -39,12 +38,18 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     /**
      * The identifier of the call.
      */
-    private String callIdentifier;
+    private String mSid;
+
+    // Jingle Message incoming call parameters
+    private boolean mAutoAccept;
 
     /**
      * The corresponding call.
      */
     private Call call;
+
+    private ImageView mCallButton;
+    private ImageView mVideoCallButton;
 
     /**
      * Called when the activity is starting. Initializes the call identifier.
@@ -67,29 +72,14 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         Bundle extras = getIntent().getExtras();
         Timber.d("ReceivedCall onCreate!!!");
         if (extras != null) {
-            callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
-            NotificationPopupHandler.removeCallNotification(callIdentifier);
+            mSid = extras.getString(CallManager.CALL_SID);
 
-            /*
-             * JingleMessage propose will only sendJingleAccept(mSid); Then
-             * Bring aTalk to foreground to avoid failure arise from launch ReceivedCallActivity from background
-             *
-             * JingleMessage propose is accept via JingleMessageCallActivity; the following code is not executed
-             * See NotificationPopupHandler#showPopupMessage(); source keep for future use if necessary
-             */
-            String mSid = extras.getString(CallManager.CALL_SID, null);
-            if (mSid != null) {
-                JingleMessageSessionImpl.sendJingleAccept(mSid);
-                finish();
-                startActivity(aTalk.class);
-                return;
-            }
-
-            // Handling the incoming JingleCall
-            call = CallManager.getActiveCall(callIdentifier);
+           // Handling the incoming JingleCall
+            call = CallManager.getActiveCall(mSid);
             if (call != null) {
-                String Callee = CallUIUtils.getCalleeAddress(call);
+                // call.setAutoAnswer(mAutoAccept);
 
+                String Callee = CallUIUtils.getCalleeAddress(call);
                 TextView addressView = findViewById(R.id.calleeAddress);
                 addressView.setText(Callee);
 
@@ -101,7 +91,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
                 }
             }
             else {
-                Timber.e("There is no call with ID: %s", callIdentifier);
+                Timber.e("There is no call with ID: %s", mSid);
                 finish();
                 return;
             }
@@ -110,11 +100,11 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         ImageView hangupView = findViewById(R.id.hangupButton);
         hangupView.setOnClickListener(v -> hangupCall());
 
-        ImageView callButton = findViewById(R.id.callButton);
-        callButton.setOnClickListener(v -> answerCall(call, false));
+        ImageView mCallButton = findViewById(R.id.callButton);
+        mCallButton.setOnClickListener(v -> answerCall(call, false));
 
-        ImageView videoCallButton = findViewById(R.id.videoCallButton);
-        videoCallButton.setOnClickListener(v -> answerCall(call, true));
+        ImageView mVideoCallButton = findViewById(R.id.videoCallButton);
+        mVideoCallButton.setOnClickListener(v -> answerCall(call, true));
     }
 
     /**
@@ -144,6 +134,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
         if (call != null) {
             call.removeCallChangeListener(this);
         }
+        NotificationPopupHandler.removeCallNotification(mSid);
         super.onPause();
     }
 
@@ -157,7 +148,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
     {
         CallManager.answerCall(call, isVideoCall);
         runOnUiThread(() -> {
-            Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, callIdentifier);
+            Intent videoCall = VideoCallActivity.createVideoCallIntent(ReceivedCallActivity.this, mSid);
             startActivity(videoCall);
             finish();
         });

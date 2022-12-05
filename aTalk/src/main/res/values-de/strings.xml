@@ -140,10 +140,11 @@
     <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Bestätigen und \'Alle auswählen\' Elemente, bevor Sie mit \'Löschen\' fortfahren</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Kein Datensatz zum Löschen ausgewählt</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
-    <string name="service_gui_CALL_INCOMING">Eingehender Anruf von: %1$s</string>
+    <string name="service_gui_CALL_INCOMING">Eingehender Anruf: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Eingehender Anruf</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Starte Anruf</string>
     <string name="service_gui_CALL_REJECTED">%1$s hat den Anruf abgelehnt</string>
+    <string name="service_gui_CALL_RETRACTED">%1$s hat den Anruf zurückgenommen.</string>
     <string name="service_gui_CALL_MISSED_CALL">Verpasste Anrufe von:</string>
     <string name="service_gui_CALL_NO_ACTIVE_DEVICE">Es steht kein Audio/Video-Gerät zur Verfügung, kann Anruf nicht ausführen.</string>
     <string name="service_gui_CALL_NO_AUDIO_DEVICE">Kein Audiogerät definiert.</string>

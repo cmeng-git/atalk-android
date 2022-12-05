@@ -137,20 +137,13 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     if (SystrayService.JINGLE_MESSAGE_PROPOSE == popupMessage.getMessageType()) {
                         fullScreenIntent = new Intent(mContext, JingleMessageCallActivity.class)
                                 .putExtra(CallManager.CALL_SID, mSid)
-                                .putExtra(CallManager.CALL_AUTO_ACCEPT, true)
+                                .putExtra(CallManager.JM_AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
                                 .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
                     }
                     else {
                         fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
-                                .putExtra(CallManager.CALL_IDENTIFIER, mSid);
+                                .putExtra(CallManager.CALL_SID, mSid);
                     }
-
-                    // For jingleMessage propose => ReceivedCallActivity;
-//                    Intent fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
-//                            .putExtra(CallManager.CALL_IDENTIFIER, mSid);
-//                    if (SystrayService.JINGLE_MESSAGE_PROPOSE == popupMessage.getMessageType()) {
-//                        fullScreenIntent.putExtra(CallManager.CALL_SID, mSid);
-//                    }
 
                     PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getGlobalContext(),
                             0, fullScreenIntent, getPendingIntentFlag(false, true));

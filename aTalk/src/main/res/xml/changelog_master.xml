@@ -6,8 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.0.4 (11/25/2022)" versioncode="300040">
+    <release version="3.0.5 (12/06/2022)" versioncode="300050">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix Heads-up notification for incoming chat message on android-12 and above</change>
+        <change>Fix incoming call UI not shown when android is in locked screen; notifications on android 12 and above must start activities directly</change>
+        <change>All JingleMessage incoming 'propose' will accept via heads-up notification except in locked screen</change>
+        <change>All Jingle incoming call will accept via ReceivedCall UI when focus/locked screen; else via heads-up notification</change>
+        <change>Implement method to check for android device screen lock condition</change>
+        <change>Fix prematurely termination of incoming call alert; move end notification to activity onPause</change>
+        <change>Fix incorrect display of the callee who has accepted the JingleMessage propose call</change>
+        <change>Media call to Conversations will fail; v2.10.10 supports only CipherSuite.TLS_ECDHE_ECDSA..., whereas aTalk accepts only CipherSuite.TLS_ECDHE_RSA</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.0.4 (11/25/2022)" versioncode="300040">
         <change>JET Security Error timer must be stored per contact for reference in future file sharing</change>
         <change>Extend smack reply timer to 10 seconds for file transfer; IBB response stanza may take more than 5 seconds when send across servers</change>
         <change>Use IQ 'from' value as initiator if the jingle session-initiate initiator value is not defined (Conversations)</change>
