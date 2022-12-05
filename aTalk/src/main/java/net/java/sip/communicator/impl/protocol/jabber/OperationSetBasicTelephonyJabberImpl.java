@@ -908,7 +908,7 @@ public class OperationSetBasicTelephonyJabberImpl
                  * cmeng (20200611): change to new merged trailing transport-info's with the session-initiate
                  * before processing i.e. not using the next synchronous method call to avoid ANR.
                  */
-                this.processSessionInitiate(call, callPeer, jingleIQ);
+                processSessionInitiateInternal(call, callPeer, jingleIQ);
 
                 /*
                  * cmeng: 20220504: replace with the above new method as preference.
@@ -1093,7 +1093,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @see IceUdpTransportManager#startConnectivityEstablishment(Map remote)
      * @see #processTransportInfo(CallPeerJabberImpl, Jingle)
      */
-    private void processSessionInitiate(CallJabberImpl call, CallPeerJabberImpl callPeer, Jingle jingle)
+    private void processSessionInitiateInternal(CallJabberImpl call, CallPeerJabberImpl callPeer, Jingle jingle)
     {
         jingleSI = jingle;
         new Thread()

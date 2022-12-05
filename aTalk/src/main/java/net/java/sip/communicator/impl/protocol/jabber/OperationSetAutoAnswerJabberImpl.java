@@ -10,7 +10,6 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Call;
 
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
@@ -51,10 +50,10 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
         // let's clear anything before saving :)
         accProps.put(AUTO_ANSWER_UNCOND_PROP, null);
 
-        if (answerUnconditional)
+        if (mAnswerUnconditional)
             accProps.put(AUTO_ANSWER_UNCOND_PROP, Boolean.TRUE.toString());
 
-        accProps.put(AUTO_ANSWER_WITH_VIDEO_PROP, Boolean.toString(this.answerWithVideo));
+        accProps.put(AUTO_ANSWER_WITH_VIDEO_PROP, Boolean.toString(this.mAnswerWithVideo));
         acc.setAccountProperties(accProps);
         JabberActivator.getProtocolProviderFactory().storeAccount(acc);
     }
@@ -84,8 +83,8 @@ public class OperationSetAutoAnswerJabberImpl extends AbstractOperationSetBasicA
     public boolean autoAnswer(Call call, Map<MediaType, MediaDirection> directions, Jingle jingleSessionInit)
     {
         // 2022/11/29 (v3.0.5): Allow proceed to auto-answer the call if it is already accepted in JingleMessageSessionImpl
-        // JingleMessage call via ReceivedCallActivity UI when android is in locked screen;
-        // so Check aTalkApp.isForeground for incoming alert to continue.
+        // JingleMessage <propose/> will call via ReceivedCallActivity UI when android is in locked screen;
+        // Check aTalkApp.isForeground for incoming alert to continue.
         answerOnJingleMessageAccept = aTalkApp.isForeground && (jingleSessionInit != null)
                 && JingleMessageSessionImpl.isJingleMessageAccept(jingleSessionInit);
         Timber.d("OnJingleMessageAccept (auto answer): %s", answerOnJingleMessageAccept);

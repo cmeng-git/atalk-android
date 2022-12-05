@@ -5,9 +5,12 @@
  */
 package org.atalk.android;
 
-import static org.atalk.impl.androidtray.NotificationPopupHandler.getPendingIntentFlag;
-
-import android.app.*;
+import android.app.Activity;
+import android.app.Application;
+import android.app.DownloadManager;
+import android.app.KeyguardManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -17,14 +20,20 @@ import android.graphics.Rect;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
-import android.os.*;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.PowerManager;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.*;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleEventObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
@@ -32,8 +41,10 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
-import org.atalk.android.gui.*;
+import org.atalk.android.gui.Splash;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
@@ -203,6 +214,30 @@ public class aTalkApp extends Application implements LifecycleEventObserver
     }
 
     /**
+     * Returns true if the device is locked or screen turned off (in case password not set)
+     */
+    public static boolean isDeviceLocked()
+    {
+        boolean isLocked;
+
+        // First we check the locked state
+        KeyguardManager keyguardManager = (KeyguardManager) mInstance.getSystemService(Context.KEYGUARD_SERVICE);
+        boolean inKeyguardRestrictedInputMode = keyguardManager.inKeyguardRestrictedInputMode();
+
+        if (inKeyguardRestrictedInputMode) {
+            isLocked = true;
+        }
+        else {
+            // If password is not set in the settings, the inKeyguardRestrictedInputMode() returns false,
+            // so we need to check if screen on for this case
+            PowerManager powerManager = (PowerManager) mInstance.getSystemService(Context.POWER_SERVICE);
+            isLocked = !powerManager.isInteractive();
+        }
+        Timber.d("Android device is %s.", isLocked ? "locked" : "unlocked");
+        return isLocked;
+    }
+
+    /**
      * All language setting changes must call via this so aTalkApp contextWrapper is updated
      *
      * @param language locale for the aTalkApp
@@ -361,9 +396,10 @@ public class aTalkApp extends Application implements LifecycleEventObserver
     }
 
     private static Toast toast = null;
+
     /**
      * Toast show message in UI thread;
-	 * Cancel current toast view to allow immediate display of new toast message.
+     * Cancel current toast view to allow immediate display of new toast message.
      *
      * @param message the string message to display.
      */

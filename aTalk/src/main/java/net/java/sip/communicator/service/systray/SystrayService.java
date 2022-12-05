@@ -48,6 +48,11 @@ public interface SystrayService
     int JINGLE_MESSAGE_PROPOSE = 5;
 
     /**
+     * Message type corresponding to JINGLE_INCOMING_CALL arise due to JingleMessage <accept/>
+     */
+    int JINGLE_MESSAGE_INCOMING_CALL = 6;
+
+    /**
      * Message type is not accessible.
      */
     int NONE_MESSAGE_TYPE = -1;

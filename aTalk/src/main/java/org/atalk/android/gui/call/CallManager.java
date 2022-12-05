@@ -76,12 +76,13 @@ import timber.log.Timber;
 public class CallManager
 {
     // Jingle Message id / Jingle session-initiate sid
-    public static final String CALL_AUTO_ACCEPT = "call_auto_accept";
     public static final String CALL_SID = "call_sid";
     public static final String CALL_EVENT = "call_event";
 
+    // True to indicate the jingleMessage <accept/> is auto-send onReceive the <propose/> stanza
+    public static final String JM_AUTO_ACCEPT = "jm_auto_accept";
+
     // android call parameters
-    public static final String CALL_IDENTIFIER = "CallIdentifier";
     public static final String CALL_TRANSFER = "CallTransfer";
 
     /**

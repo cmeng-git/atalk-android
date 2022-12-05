@@ -51,14 +51,11 @@ import org.jxmpp.jid.Jid;
 public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageSessionImpl.JmEndListener
 {
     private ImageView peerAvatar;
-    private ImageButton mCallButton;
     private String mSid;
-
-    private boolean isIncomingCall = false;
-    private boolean mAutoAccept = false;
 
     /**
      * Create the UI with call hang up button to retract call.
+     * Incoming JingleMessage <propose/> will only sendJingleAccept(mSid).
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -78,22 +75,23 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
 
         // Implementation not supported currently
         findViewById(R.id.videoCallButton).setVisibility(View.GONE);
-        mCallButton = findViewById(R.id.callButton);
+        ImageButton callButton = findViewById(R.id.callButton);
         ImageButton hangUpButton = findViewById(R.id.hangupButton);
-
         peerAvatar = findViewById(R.id.calleeAvatar);
 
+        JingleMessageSessionImpl.setJmEndListener(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            // Jingle Message / Session sid
+            // Jingle Message / Jingle Session sid
             mSid = extras.getString(CallManager.CALL_SID);
-            NotificationPopupHandler.removeCallNotification(mSid);
 
             String eventType = extras.getString(CallManager.CALL_EVENT);
-            isIncomingCall = NotificationManager.INCOMING_CALL.equals(eventType);
-            mAutoAccept = extras.getBoolean(CallManager.CALL_AUTO_ACCEPT, false);
-            if (mAutoAccept)
+            boolean isIncomingCall = NotificationManager.INCOMING_CALL.equals(eventType);
+            boolean mAutoAccept = extras.getBoolean(CallManager.JM_AUTO_ACCEPT, false);
+            if (isIncomingCall && mAutoAccept) {
+                JingleMessageSessionImpl.sendJingleAccept(mSid);
                 return;
+            }
 
             Jid remote = JingleMessageSessionImpl.getRemote();
             ((TextView) findViewById(R.id.calleeAddress)).setText(remote);
@@ -101,7 +99,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
 
             if (isIncomingCall) {
                 // Call accepted, send Jingle Message <accept/> to inform caller.
-                mCallButton.setOnClickListener(v -> {
+                callButton.setOnClickListener(v -> {
                             JingleMessageSessionImpl.sendJingleAccept(mSid);
                         }
                 );
@@ -119,13 +117,11 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
                             if (remote != null) {
                                 JingleMessageSessionImpl.sendJingleMessageRetract(remote, mSid);
                             }
-                            finish();
                         }
                 );
-                mCallButton.setVisibility(View.GONE);
+                callButton.setVisibility(View.GONE);
             }
         }
-        JingleMessageSessionImpl.setJmEndListener(this);
     }
 
     @Override
@@ -144,16 +140,6 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     protected void onResume()
     {
         super.onResume();
-
-        /*
-         * JingleMessage propose will only sendJingleAccept(mSid); Then bring aTalk to foreground,
-         * to avoid failure arises on launching ReceivedCallActivity from background
-         */
-        if (isIncomingCall && mAutoAccept) {
-            JingleMessageSessionImpl.sendJingleAccept(mSid);
-            finish();
-            startActivity(aTalk.class);
-        }
     }
 
     /**
@@ -169,10 +155,15 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
         return super.onKeyUp(keyCode, event);
     }
 
+    /**
+     * End activity and bring aTalk foreground to avoid failure arises on launching ...CallActivity from background
+     */
     @Override
     public void onJmEndCallback()
     {
+        NotificationPopupHandler.removeCallNotification(mSid);
         finish();
+        startActivity(aTalk.class);
     }
 
     /**

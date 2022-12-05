@@ -1,25 +1,31 @@
 Project aTalk-Android Release Notes
 =========================================================================
 Version:        3.0.5 (300050)
-Release Date:   12/01/2022
+Release Date:   12/06/2022
 Author:         cmeng
-- Fix Heads-up notification for incoming chat message for android-12 and above
+- Fix Heads-up notification for incoming chat message on android-12 and above
   NotificationPopupHandler#createReplyIntent(): PendingIntent chat notification attached to reply action with remote input must be 'mutable'
 - Implement common routine NotificationPopupHandler#getPendingIntentFlag() to take care mutable flag setting for different android API
 - Fix: starting with Android 12 notifications will not work if they do not start activities directly
   * NotificationService: Indirect notification activity start (trampoline) from org.atalk.android blocked
     https://proandroiddev.com/notification-trampoline-restrictions-android12-7d2a8b15bbe2
 - JingleMessage propose will always start with heads-up notification independent of aTalk focus state (background/foreground).
-  This process is also applied to normal JingleCall when aTalk is in background/not focus (android constraint).
+  This process is also applied to normal JingleCall when aTalk is in background (android OS constraint).
 - JingleMessage incoming 'propose' heads-up notification is auto accept via JingleMessageCallActivity, and start up aTalk in foreground;
   Otherwise ActivityTaskManager: Background activity start will failed for android-12 and above.
-- Use received call UI for user choice to proceed with audio or video call. Revert (avoid user confusion) while aTalk not in locked screen;
-  require as android OS does not launch heads-up notification under android locked screen (defeat JingleMessage implementation intend).
+- Implement method to check for android device screen lock condition.
+- When android is in locked screen, OS blocked all heads-up notifications; it proceeds to launch the pendingIntent directly.
+  * JingleMessageActivity must be launched with auto-accept disabled, to retain its intended implementation function.
+  * Use ReceivedCall UI for user choice to proceed with audio or video call.
+- When android is not in locked screen, auto-answer all JingleMessage/Jingle incoming calls (avoid user confusion).
 - See OperationSetAutoAnswerJabberImpl#autoAnswer() method. answerOnJingleMessageAccept must set to false if call not via JingleMessage propose.
-- JingleMessageCallActivity UI is used only for JingleMessage outgoing call propose; auto-accept incoming call propose.
-- Dismiss JingleMessage heads-up notification if another user instance has answered the call.
+- Dismiss JingleMessage heads-up notification if another user instance has answered the call, or caller retracted the call.
 - Fix incorrect display of the callee who has accepted the JingleMessage propose call.
-- Update ReceivedCallActivity to support handling of JingleMessage propose (revert to use JingleMessageCallActivity instead).
+- Perform NotificationPopupHandler.removeCallNotification(mSid) only on ReceivedCallActivity#onPause() to avoid prematurely turn off the call alert.
+- Merge CallManager.CALL_IDENTIFIER into CallManager.CALL_SID, as both carried the same info (JingleMessage / Jingle call support)
+- Media call to Conversations will fail; v2.10.10 supports only CipherSuite.TLS_ECDHE_ECDSA...,
+  whereas aTalk DTLS server supports only RSA protocol. (TlsServerImpl#getECDSASignerCredentials() not implemented.)
+- Remove some of the old Cipher_Suites support in the TlsServerImpl#getSupportedCipherSuites()
 
 =========================================================================
 Version:        3.0.4 (300040)

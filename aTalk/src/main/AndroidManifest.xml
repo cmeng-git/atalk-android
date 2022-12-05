@@ -49,7 +49,8 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <queries>
         <package android:name="android.content.pm" />
@@ -63,6 +64,8 @@
         android:label="@string/APPLICATION_NAME"
         android:logo="@drawable/ic_notification"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:preserveLegacyExternalStorage="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
         tools:ignore="DataExtractionRules"
         tools:replace="android:allowBackup,android:label"
