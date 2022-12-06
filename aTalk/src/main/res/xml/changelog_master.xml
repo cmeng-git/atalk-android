@@ -11,7 +11,7 @@
         <change>Fix Heads-up notification for incoming chat message on android-12 and above</change>
         <change>Fix incoming call UI not shown when android is in locked screen; notifications on android 12 and above must start activities directly</change>
         <change>All JingleMessage incoming 'propose' will accept via heads-up notification except in locked screen</change>
-        <change>All Jingle incoming call will accept via ReceivedCall UI when focus/locked screen; else via heads-up notification</change>
+        <change>All Jingle incoming call will accept via ReceivedCall UI when in focus/locked screen; else via heads-up notification</change>
         <change>Implement method to check for android device screen lock condition</change>
         <change>Fix prematurely termination of incoming call alert; move end notification to activity onPause</change>
         <change>Fix incorrect display of the callee who has accepted the JingleMessage propose call</change>
