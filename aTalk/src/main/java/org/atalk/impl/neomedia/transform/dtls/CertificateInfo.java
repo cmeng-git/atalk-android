@@ -17,6 +17,11 @@ package org.atalk.impl.neomedia.transform.dtls;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.tls.Certificate;
+import org.bouncycastle.tls.SignatureAlgorithm;
+
+import java.io.IOException;
+
+import timber.log.Timber;
 
 /**
  * Bundles information such as key pair, hash function, fingerprint, etc. about
@@ -33,6 +38,11 @@ class CertificateInfo
      * instance authenticates its ends of DTLS sessions.
      */
     private final Certificate certificate;
+
+    /**
+     * Certificate Signature Algorithm.
+     */
+    private final Short certificateType;
 
     /**
      * The private and public keys of {@link #certificate}.
@@ -70,6 +80,15 @@ class CertificateInfo
     {
         this.keyPair = keyPair;
         this.certificate = certificate;
+
+        short certSA = -1;
+        try {
+            certSA = certificate.getCertificateAt(0).getLegacySignatureAlgorithm();
+        } catch (IOException e) {
+            Timber.e("Certificate SignatureAlgorithm: %s", e.getMessage());
+        }
+        this.certificateType = SignatureAlgorithm.getClientCertificateType(certSA);
+
         this.localFingerprintHashFunction = localFingerprintHashFunction;
         this.localFingerprint = localFingerprint;
         this.timestamp = timestamp;
@@ -85,6 +104,11 @@ class CertificateInfo
     public Certificate getCertificate()
     {
         return certificate;
+    }
+
+    public Short getCertificateType()
+    {
+        return certificateType;
     }
 
     /**

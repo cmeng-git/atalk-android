@@ -29,6 +29,15 @@
         <item>SIP_INFO_DTMF</item>
         <item>INBAND_DTMF</item>
     </string-array>
+    <string-array name="pref_dtls_srtp_cert_sa">
+        <item>SHA256withECDSA</item>
+        <item>SHA384withECDSA</item>
+        <item>SHA512withECDSA</item>
+        <item>SHA256withRSA</item>
+        <item>SHA384withRSA</item>
+        <item>SHA512withRSA</item>
+    </string-array>
+
     <string-array name="pref_savp_option_desc">
         <item>Off (indicate RTP/AVP only)</item>
         <item>Mandatory (offer and accept only RTP/SAVP)</item>

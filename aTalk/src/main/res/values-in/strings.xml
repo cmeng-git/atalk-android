@@ -1130,6 +1130,8 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Nama</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">pensinyalan DTLS_SRTP</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">Algoritma Tanda Tangan Sertifikat TLS</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Aktifkan enkripsi panggilan</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Protokol enkripsi</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">Umum</string>

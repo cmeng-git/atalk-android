@@ -1395,6 +1395,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      */
     public void securityTimeout(CallPeerSecurityTimeoutEvent evt)
     {
+        Timber.w("Notification security timeout: %s", evt.getSessionType());
     }
 
     /**

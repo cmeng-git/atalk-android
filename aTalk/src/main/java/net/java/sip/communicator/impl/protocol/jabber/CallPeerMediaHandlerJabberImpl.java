@@ -6,6 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
 import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -22,6 +23,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.impl.neomedia.format.MediaFormatImpl;
+import org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.DtlsControl;
 import org.atalk.service.neomedia.MediaDirection;
@@ -1816,6 +1818,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         setup = DtlsControl.Setup.ACTPASS;
                     }
                     else { // cmeng: must update transport-info with ufrag and pwd
+                        String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+                        DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
+
                         dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
                         setup = DtlsControl.Setup.ACTIVE;
                     }
@@ -1921,6 +1926,9 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 addFingerprintToLocalTransport = addDtlsSrtpAdvertisedEncryption(false, remoteContent, mediaType, false);
             }
             if (addFingerprintToLocalTransport) {
+                String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+                DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
+
                 DtlsControl dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
                 if (dtlsControl != null) {
                     DtlsControl.Setup setup = (remoteContent == null)

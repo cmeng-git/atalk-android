@@ -1137,6 +1137,8 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Nome de usuário</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">Sinalizador DTLS_SRTP</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">Algoritmo de assinatura de certificado TLS</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Ativar a criptografia em ligações</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Protocolos de criptografia</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">Geral</string>

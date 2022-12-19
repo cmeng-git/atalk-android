@@ -1110,9 +1110,12 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Nutzername</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">DTLS_SRTP Signalisierung</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">TLS-Zertifikatsignaturalgorithmus</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Anrufverschlüsselung einschalten</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Verschlüsselungsprotokolle</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">Allgemein</string>
+
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">RTP/SAVP-Angabe</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">RTP/SAVP-Angabemethode</string>
     <string name="service_gui_PREF_SECURITY_SDES">SDes-Optionen</string>

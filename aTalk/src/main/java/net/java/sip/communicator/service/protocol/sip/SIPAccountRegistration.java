@@ -45,13 +45,12 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
     /**
      * The encodings registration object.
      */
-    private EncodingsRegistrationUtil encodingsRegistration = new EncodingsRegistrationUtil();
+    private final EncodingsRegistrationUtil encodingsRegistration = new EncodingsRegistrationUtil();
 
     /**
      * The security registration object.
      */
-    private SecurityAccountRegistration securityAccountRegistration
-            = new SecurityAccountRegistration()
+    private final SecurityAccountRegistration securityAccountRegistration = new SecurityAccountRegistration()
     {
         /**
          * Sets the method used for RTP/SAVP indication.
@@ -59,8 +58,7 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
         @Override
         public void setSavpOption(int savpOption)
         {
-            putAccountProperty(ProtocolProviderFactory.SAVP_OPTION,
-                    Integer.toString(savpOption));
+            putAccountProperty(ProtocolProviderFactory.SAVP_OPTION, Integer.toString(savpOption));
         }
 
         /**
@@ -71,8 +69,7 @@ public class SIPAccountRegistration extends SipAccountID implements Serializable
         @Override
         public int getSavpOption()
         {
-            String savpOption
-                    = getAccountPropertyString(ProtocolProviderFactory.SAVP_OPTION);
+            String savpOption = getAccountPropertyString(ProtocolProviderFactory.SAVP_OPTION);
             return Integer.parseInt(savpOption);
         }
     };

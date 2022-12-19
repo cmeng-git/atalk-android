@@ -37,18 +37,18 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
      */
    // public static final String[] encryptionProtocols = {"ZRTP", "SDES"};
 
-    public static final String ARG_ENCRYPTIONS = "arg_encryptions";
+    public static final String ARG_ENCRYPTION = "arg_encryption";
 
-    public static final String ARG_STATUS_MAP = "arg_status_map";
+    public static final String ARG_ENCRYPTION_STATUS = "arg_encryption_status";
 
-    public static final String STATE_ENCRYPTIONS = "arg_encryptions";
+    public static final String STATE_ENCRYPTION = "state_encryption";
 
-    public static final String STATE_STATUS_MAP = "arg_status_map";
+    public static final String STATE_ENCRYPTION_STATUS = "state_encryption_status";
 
     /**
      * The list model for the protocols
      */
-    private ProtocolsAdapter protocolsAdapter;
+    private ProtocolsAdapter mProtocolsAdapter;
 
     /**
      * The listener that will be notified when this dialog is closed
@@ -74,12 +74,12 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         if (savedInstanceState == null) {
-            this.protocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTIONS),
-                    (Map<String, Boolean>) getArguments().get(ARG_STATUS_MAP));
+            mProtocolsAdapter = new ProtocolsAdapter((Map<String, Integer>) getArguments().get(ARG_ENCRYPTION),
+                    (Map<String, Boolean>) getArguments().get(ARG_ENCRYPTION_STATUS));
         }
         else {
-            this.protocolsAdapter = new ProtocolsAdapter(savedInstanceState.getStringArray(STATE_ENCRYPTIONS),
-                    (Map<String, Boolean>) savedInstanceState.get(STATE_STATUS_MAP));
+            mProtocolsAdapter = new ProtocolsAdapter(savedInstanceState.getStringArray(STATE_ENCRYPTION),
+                    (Map<String, Boolean>) savedInstanceState.get(STATE_ENCRYPTION_STATUS));
         }
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -97,8 +97,8 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         });
 
         TouchInterceptor lv = contentView.findViewById(android.R.id.list);
-        lv.setAdapter(protocolsAdapter);
-        lv.setDropListener(protocolsAdapter);
+        lv.setAdapter(mProtocolsAdapter);
+        lv.setDropListener(mProtocolsAdapter);
 
         return builder.create();
     }
@@ -108,8 +108,8 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(STATE_ENCRYPTIONS, protocolsAdapter.mEncryptions);
-        outState.putSerializable(STATE_STATUS_MAP, (Serializable) protocolsAdapter.statusMap);
+        outState.putSerializable(STATE_ENCRYPTION, mProtocolsAdapter.mEncryption);
+        outState.putSerializable(STATE_ENCRYPTION_STATUS, (Serializable) mProtocolsAdapter.mEncryptionStatus);
     }
 
     /**
@@ -119,12 +119,12 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
      */
     public void commit(SecurityAccountRegistration securityReg)
     {
-        Map<String, Integer> protocols = new HashMap<>();
-        for (int i = 0; i < protocolsAdapter.mEncryptions.length; i++) {
-            protocols.put(protocolsAdapter.mEncryptions[i], i);
+        Map<String, Integer> protocol = new HashMap<>();
+        for (int i = 0; i < mProtocolsAdapter.mEncryption.length; i++) {
+            protocol.put(mProtocolsAdapter.mEncryption[i], i);
         }
-        securityReg.setEncryptionProtocols(protocols);
-        securityReg.setEncryptionProtocolStatus(protocolsAdapter.statusMap);
+        securityReg.setEncryptionProtocol(protocol);
+        securityReg.setEncryptionProtocolStatus(mProtocolsAdapter.mEncryptionStatus);
     }
 
     /**
@@ -160,51 +160,48 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
     class ProtocolsAdapter extends BaseAdapter implements TouchInterceptor.DropListener
     {
         /**
-         * The array of encryption protocol names
+         * The array of encryption protocol names and their on/off status in mEncryptionStatus
          */
-        protected String[] mEncryptions;
-        /**
-         * Maps the on/off status to every protocol
-         */
-        protected Map<String, Boolean> statusMap = new HashMap<>();
+        protected String[] mEncryption;
+        protected Map<String, Boolean> mEncryptionStatus;
 
         /**
          * Creates a new instance of {@link ProtocolsAdapter}
          *
-         * @param encryptions reference copy
-         * @param statusMap reference copy
+         * @param encryption reference copy
+         * @param encryptionStatus reference copy
          */
-        ProtocolsAdapter(final Map<String, Integer> encryptions, final Map<String, Boolean> statusMap)
+        ProtocolsAdapter(final Map<String, Integer> encryption, final Map<String, Boolean> encryptionStatus)
         {
-            mEncryptions = (String[]) SecurityAccountRegistration.loadEncryptionProtocols(encryptions, statusMap)[0];
-            // Fills missing entries
-            for (String enc : encryptions.keySet()) {
-                if (!statusMap.containsKey(enc))
-                    statusMap.put(enc, false);
+            mEncryption = (String[]) SecurityAccountRegistration.loadEncryptionProtocol(encryption, encryptionStatus)[0];
+            // Fill missing entries
+            for (String enc : encryption.keySet()) {
+                if (!encryptionStatus.containsKey(enc))
+                    encryptionStatus.put(enc, false);
             }
-            this.statusMap = statusMap;
+            this.mEncryptionStatus = encryptionStatus;
         }
 
         /**
          * Creates new instance of {@link ProtocolsAdapter}
          *
-         * @param encryptions reference copy
-         * @param statusMap reference copy
+         * @param encryption reference copy
+         * @param encryptionStatus reference copy
          */
-        ProtocolsAdapter(String[] encryptions, Map<String, Boolean> statusMap)
+        ProtocolsAdapter(String[] encryption, Map<String, Boolean> encryptionStatus)
         {
-            this.mEncryptions = encryptions;
-            this.statusMap = statusMap;
+            this.mEncryption = encryption;
+            this.mEncryptionStatus = encryptionStatus;
         }
 
         public int getCount()
         {
-            return mEncryptions.length;
+            return mEncryption.length;
         }
 
         public Object getItem(int i)
         {
-            return mEncryptions[i];
+            return mEncryption[i];
         }
 
         public long getItemId(int i)
@@ -223,9 +220,9 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
             tv.setText(encryption);
 
             CheckBox cb = v.findViewById(android.R.id.checkbox);
-            cb.setChecked(statusMap.containsKey(encryption) && statusMap.get(encryption));
+            cb.setChecked(mEncryptionStatus.containsKey(encryption) && mEncryptionStatus.get(encryption));
             cb.setOnCheckedChangeListener((cb1, state) -> {
-                statusMap.put(encryption, state);
+                mEncryptionStatus.put(encryption, state);
                 hasChanges = true;
             });
             return v;
@@ -240,9 +237,9 @@ public class SecurityProtocolsDialogFragment extends DialogFragment
         public void drop(int from, int to)
         {
             hasChanges = true;
-            String swap = mEncryptions[to];
-            mEncryptions[to] = mEncryptions[from];
-            mEncryptions[from] = swap;
+            String swap = mEncryption[to];
+            mEncryption[to] = mEncryption[from];
+            mEncryption[from] = swap;
 
             mActivity.runOnUiThread(this::notifyDataSetChanged);
         }

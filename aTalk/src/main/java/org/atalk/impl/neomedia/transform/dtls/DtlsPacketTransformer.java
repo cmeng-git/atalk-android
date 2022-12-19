@@ -136,8 +136,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     public static boolean isDtlsRecord(byte[] buf, int off, int len)
     {
-        boolean b = false;
-
         if (len >= DTLS_RECORD_HEADER_LENGTH) {
             short type = TlsUtils.readUint8(buf, off);
 
@@ -148,22 +146,13 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 case ContentType.handshake:
                     int major = buf[off + 1] & 0xff;
                     int minor = buf[off + 2] & 0xff;
-                    ProtocolVersion version = null;
 
-                    if ((major == ProtocolVersion.DTLSv10.getMajorVersion())
-                            && (minor == ProtocolVersion.DTLSv10.getMinorVersion())) {
-                        version = ProtocolVersion.DTLSv10;
-                    }
-                    if ((version == null)
-                            && (major == ProtocolVersion.DTLSv12.getMajorVersion())
-                            && (minor == ProtocolVersion.DTLSv12.getMinorVersion())) {
-                        version = ProtocolVersion.DTLSv12;
-                    }
-                    if (version != null) {
+                    ProtocolVersion version = ProtocolVersion.get(major, minor);
+                    if (version.isDTLS()) {
                         int length = TlsUtils.readUint16(buf, off + 11);
-
-                        if (DTLS_RECORD_HEADER_LENGTH + length <= len)
-                            b = true;
+                        if (DTLS_RECORD_HEADER_LENGTH + length <= len) {
+                            return true;
+                        }
                     }
                     break;
                 default:
@@ -174,7 +163,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     break;
             }
         }
-        return b;
+        return false;
     }
 
     /**
@@ -185,7 +174,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     /**
      * The <code>RTPConnector</code> which uses this <code>PacketTransformer</code>.
      */
-    private AbstractRTPConnector connector;
+    private AbstractRTPConnector mConnector;
 
     /**
      * The background <code>Thread</code> which initializes {@link #mDtlsTransport}.
@@ -193,7 +182,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private Thread connectThread;
 
     /**
-     * The <code>DatagramTransport</code> implementation which adapts {@link #connector} and this
+     * The <code>DatagramTransport</code> implementation which adapts {@link #mConnector} and this
      * <code>PacketTransformer</code> to the terms of the Bouncy Castle Crypto APIs.
      */
     private DatagramTransportImpl datagramTransport;
@@ -252,7 +241,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     private final DtlsTransformEngine transformEngine;
 
-    private boolean started = false;
+    private boolean mStarted = false;
 
     /**
      * Initializes a new <code>DtlsPacketTransformer</code> instance.
@@ -291,15 +280,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     private void closeDatagramTransport()
     {
         if (datagramTransport != null) {
-            try {
-                datagramTransport.close();
-            } catch (IOException ioe) {
-                /*
-                 * DatagramTransportImpl has no reason to fail because it is merely an adapter of
-                 * #connector and this PacketTransformer to the terms of the Bouncy Castle Crypto API.
-                 */
-                Timber.e(ioe, "Failed to (properly) close %s", datagramTransport.getClass());
-            }
+            datagramTransport.close();
             datagramTransport = null;
         }
     }
@@ -441,7 +422,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             if (alertDescription == AlertDescription.unexpected_message) {
                 msg += " Received fatal unexpected message.";
                 if ((i == 0) || !Thread.currentThread().equals(connectThread)
-                        || (connector == null) || (mediaType == null)) {
+                        || (mConnector == null)
+                        || (mediaType == null)) {
                     msg += " Giving up after " + (CONNECT_TRIES - i) + " retries.";
                 }
                 else {
@@ -704,7 +686,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
 
     private synchronized void maybeStart()
     {
-        if (this.mediaType != null && this.connector != null && !started) {
+        if (this.mediaType != null && mConnector != null && !mStarted) {
             start();
         }
     }
@@ -749,7 +731,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         }
         else if (Properties.RTCPMUX_PNAME.equals(propertyName)) {
             Object newValue = getProperties().get(propertyName);
-            setRtcpmux((newValue == null) ? false : (Boolean) newValue);
+            setRtcpmux((newValue != null) && (Boolean) newValue);
         }
     }
 
@@ -867,8 +849,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     private void runInConnectThread(DTLSProtocol dtlsProtocol, TlsPeer tlsPeer, DatagramTransport datagramTransport)
     {
-        DTLSTransport dtlsTransport = null;
-
         // DTLS client
         if (dtlsProtocol instanceof DTLSClientProtocol) {
             DTLSClientProtocol dtlsClientProtocol = (DTLSClientProtocol) dtlsProtocol;
@@ -878,7 +858,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 if (!enterRunInConnectThreadLoop(i, datagramTransport))
                     break;
                 try {
-                    dtlsTransport = dtlsClientProtocol.connect(tlsClient, datagramTransport);
+                    mDtlsTransport = dtlsClientProtocol.connect(tlsClient, datagramTransport);
                     break;
                 } catch (IOException ioe) {
                     if (handleRunInConnectThreadException(ioe,
@@ -898,7 +878,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 if (!enterRunInConnectThreadLoop(i, datagramTransport))
                     break;
                 try {
-                    dtlsTransport = dtlsServerProtocol.accept(tlsServer, datagramTransport);
+                    mDtlsTransport = dtlsServerProtocol.accept(tlsServer, datagramTransport);
                     break;
                 } catch (IOException ioe) {
                     if (handleRunInConnectThreadException(ioe,
@@ -911,13 +891,6 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
         else {
             // It MUST be either a DTLS client or a DTLS server.
             throw new IllegalStateException("dtlsProtocol");
-        }
-
-        synchronized (this) {
-            if (Thread.currentThread().equals(this.connectThread)
-                    && datagramTransport.equals(this.datagramTransport)) {
-                mDtlsTransport = dtlsTransport;
-            }
         }
     }
 
@@ -964,14 +937,14 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     private synchronized void setConnector(AbstractRTPConnector connector)
     {
-        if (this.connector != connector) {
-            AbstractRTPConnector oldValue = this.connector;
-            this.connector = connector;
+        if (mConnector != connector) {
+            mConnector = connector;
 
             DatagramTransportImpl datagramTransport = this.datagramTransport;
 
             if (datagramTransport != null)
                 datagramTransport.setConnector(connector);
+
             if (connector != null)
                 maybeStart();
         }
@@ -1010,9 +983,14 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      *
      * @param srtpTransformer the {@code SinglePacketTransformer} to set on {@code _srtpTransformer}
      */
-    private synchronized void setSrtpTransformer(SinglePacketTransformer srtpTransformer)
+    public synchronized void setSrtpTransformer(SinglePacketTransformer srtpTransformer)
     {
         if (_srtpTransformer != srtpTransformer) {
+            SinglePacketTransformer oldTransformer = _srtpTransformer;
+            if (oldTransformer != null) {
+                oldTransformer.close();
+            }
+
             _srtpTransformer = srtpTransformer;
             _srtpTransformerLastChanged = System.currentTimeMillis();
 
@@ -1042,9 +1020,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             return;
         }
 
-        AbstractRTPConnector connector = this.connector;
-
-        this.started = true;
+        AbstractRTPConnector connector = mConnector;
+        mStarted = true;
         if (connector == null)
             throw new NullPointerException("connector");
 
@@ -1107,7 +1084,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
      */
     private synchronized void stop()
     {
-        started = false;
+        mStarted = false;
         if (connectThread != null)
             connectThread = null;
         try {
@@ -1238,9 +1215,9 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             if (transform)
                 outPkts = transformNonSrtp(inPkts, outPkts);
         }
-        /* SRTP */
         else {
-            outPkts = transformSrtp(inPkts, transform, outPkts);
+            /* SRTP */
+            transformSrtp(inPkts, transform, outPkts);
         }
         return outPkts;
     }

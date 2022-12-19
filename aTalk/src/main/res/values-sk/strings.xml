@@ -1136,6 +1136,8 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Užívateľské meno</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">Signalizácia DTLS_SRTP</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">Algoritmus podpisu certifikátu TLS</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Povoliť šifrovanie hovorov</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Šifrovacie protokoly</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">všeobecný</string>

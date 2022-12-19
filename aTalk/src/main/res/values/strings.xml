@@ -1140,6 +1140,8 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Username</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">DTLS_SRTP options</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">TLS Certificate Signature Algorithm</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Enable call encryption</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Encryption protocols</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">General</string>

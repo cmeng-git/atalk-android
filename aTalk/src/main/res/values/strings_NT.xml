@@ -196,13 +196,15 @@
     <string name="pref_key_tele_bypass_gtalk_caps">pref_key_tele_bypass_gtalk_caps</string>
     <string name="pref_key_override_phone_suffix">pref_key_override_phone_suffix</string>
 
-    <!-- Security preferences -->
+    <!-- Call Encryption preferences -->
     <string name="pref_key_enable_encryption">pref_key_enable_encryption</string>
     <string name="pref_key_enc_cipher_suites">pref_key_ecn_cipher_suites</string>
     <string name="pref_key_enc_protocols_dialog">pref_key_enc_protos_dialog</string>
+    <string name="pref_key_enc_dtls_cert_sa">pref_key_enc_dtls_cert_signature_algorithm</string>
     <string name="pref_key_enc_savp_option">pref_key_enc_savp_option</string>
     <string name="pref_key_enc_sipzrtp_attr">pref_key_enc_sipzrtp_attr</string>
     <string name="pref_cat_security_general">pref.cat.security.general</string>
+    <string name="pref_cat_security_dtls">pref.cat.security.dtls</string>
     <string name="pref_cat_security_sdes">pref.cat.security.sdes</string>
     <string name="pref_cat_security_zrtp">pref.cat.security.zrtp</string>
 

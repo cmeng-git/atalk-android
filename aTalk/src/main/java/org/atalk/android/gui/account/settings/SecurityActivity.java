@@ -13,7 +13,11 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.*;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.MultiSelectListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
@@ -25,7 +29,12 @@ import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
 
@@ -65,6 +74,8 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
 
     private static final String PREF_KEY_SEC_RESET_ZID = aTalkApp.getResString(R.string.pref_key_zid_reset);
 
+    private static final String PREF_KEY_SEC_DTLS_CERT_SA = aTalkApp.getResString(R.string.pref_key_enc_dtls_cert_sa);
+
     private static final String[] cryptoSuiteEntries = {
             SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80,
             SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_32,
@@ -90,7 +101,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             securityFragment = new SecurityPreferenceFragment();
 
@@ -100,6 +110,11 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         else {
             securityFragment = (SecurityPreferenceFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
         }
+    }
+
+    public void onDialogClosed(SecurityProtocolsDialogFragment dialog)
+    {
+        securityFragment.onDialogClosed(dialog);
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event)
@@ -113,11 +128,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             return true;
         }
         return super.onKeyUp(keyCode, event);
-    }
-
-    public void onDialogClosed(SecurityProtocolsDialogFragment dialog)
-    {
-        securityFragment.onDialogClosed(dialog);
     }
 
     /**
@@ -148,28 +158,72 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                 securityReg = (SecurityAccountRegistration) savedInstanceState.get(STATE_SEC_REG);
             }
 
-            // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.acc_encoding_preferences);
+            // Load the preferences from an XML resource - findPreference() to work properly
+            addPreferencesFromResource(R.xml.acc_call_encryption_preferences);
 
+            CheckBoxPreference encEnable = findPreference(PREF_KEY_SEC_ENABLED);
+            encEnable.setChecked(securityReg.isCallEncryption());
+
+            // ZRTP
             Preference secProtocolsPref = findPreference(PREF_KEY_SEC_PROTO_DIALOG);
             secProtocolsPref.setOnPreferenceClickListener(preference -> {
                 showEditSecurityProtocolsDialog();
                 return true;
             });
 
-            ListPreference savpPreference = findPreference(PREF_KEY_SEC_SAVP_OPTION);
-            savpPreference.setValueIndex(securityReg.getSavpOption());
-
-            summaryMapper.includePreference(savpPreference, "");
-
-            CheckBoxPreference encEnabled = findPreference(PREF_KEY_SEC_ENABLED);
-            encEnabled.setChecked(securityReg.isDefaultEncryption());
-
             CheckBoxPreference zrtpAttr = findPreference(PREF_KEY_SEC_SIPZRTP_ATTR);
             zrtpAttr.setChecked(securityReg.isSipZrtpAttribute());
-
-            loadCipherSuites();
             initResetZID();
+
+            // DTLS_SRTP
+            ListPreference dtlsPreference = findPreference(PREF_KEY_SEC_DTLS_CERT_SA);
+            String tlsCertSA = securityReg.getDtlsCertSa();
+            dtlsPreference.setValue(tlsCertSA);
+            dtlsPreference.setSummary(tlsCertSA);
+
+            // SDES
+            ListPreference savpPreference = findPreference(PREF_KEY_SEC_SAVP_OPTION);
+            savpPreference.setValueIndex(securityReg.getSavpOption());
+            summaryMapper.includePreference(savpPreference, "");
+            loadCipherSuites();
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState)
+        {
+            super.onSaveInstanceState(outState);
+            outState.putSerializable(STATE_SEC_REG, securityReg);
+        }
+
+        @Override
+        public void onResume()
+        {
+            super.onResume();
+            updatePreferences();
+            SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
+            shPrefs.registerOnSharedPreferenceChangeListener(this);
+            shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
+        }
+
+        @Override
+        public void onPause()
+        {
+            SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
+            shPrefs.unregisterOnSharedPreferenceChangeListener(this);
+            shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
+            super.onPause();
+        }
+
+        private void initResetZID()
+        {
+            findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
+                    preference -> {
+                        securityReg.randomZIDSalt();
+                        hasChanges = true;
+                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+            );
         }
 
         /**
@@ -198,25 +252,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             cipherList.setValues(selected);
         }
 
-        private void initResetZID()
-        {
-            findPreference(PREF_KEY_SEC_RESET_ZID).setOnPreferenceClickListener(
-                    preference -> {
-                        securityReg.randomZIDSalt();
-                        hasChanges = true;
-                        Toast.makeText(getActivity(), R.string.ZID_has_been_reset_toast, Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-            );
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState)
-        {
-            super.onSaveInstanceState(outState);
-            outState.putSerializable(STATE_SEC_REG, securityReg);
-        }
-
         /**
          * Shows the dialog that will allow user to edit security protocols settings
          */
@@ -224,11 +259,12 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         {
             SecurityProtocolsDialogFragment securityDialog = new SecurityProtocolsDialogFragment();
 
-            Map<String, Integer> encryptions = securityReg.getEncryptionProtocols();
-            Map<String, Boolean> statusMap = securityReg.getEncryptionProtocolStatus();
+            Map<String, Integer> encryption = securityReg.getEncryptionProtocol();
+            Map<String, Boolean> encryptionStatus = securityReg.getEncryptionProtocolStatus();
+
             Bundle args = new Bundle();
-            args.putSerializable(SecurityProtocolsDialogFragment.ARG_ENCRYPTIONS, (Serializable) encryptions);
-            args.putSerializable(SecurityProtocolsDialogFragment.ARG_STATUS_MAP, (Serializable) statusMap);
+            args.putSerializable(SecurityProtocolsDialogFragment.ARG_ENCRYPTION, (Serializable) encryption);
+            args.putSerializable(SecurityProtocolsDialogFragment.ARG_ENCRYPTION_STATUS, (Serializable) encryptionStatus);
             securityDialog.setArguments(args);
 
             FragmentTransaction ft = getParentFragmentManager().beginTransaction();
@@ -242,25 +278,6 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
                 dialog.commit(securityReg);
             }
             updateUsedProtocolsSummary();
-        }
-
-        @Override
-        public void onResume()
-        {
-            super.onResume();
-            updatePreferences();
-            SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
-            shPrefs.registerOnSharedPreferenceChangeListener(this);
-            shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
-        }
-
-        @Override
-        public void onPause()
-        {
-            SharedPreferences shPrefs = getPreferenceScreen().getSharedPreferences();
-            shPrefs.unregisterOnSharedPreferenceChangeListener(this);
-            shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
-            super.onPause();
         }
 
         /**
@@ -278,9 +295,10 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
          */
         private void updateUsedProtocolsSummary()
         {
-            final Map<String, Integer> encMap = securityReg.getEncryptionProtocols();
+            final Map<String, Integer> encMap = securityReg.getEncryptionProtocol();
             List<String> encryptionsInOrder = new ArrayList<>(encMap.keySet());
 
+            // ComparingInt is only available in API-24
             Collections.sort(encryptionsInOrder, (s, s2) -> encMap.get(s) - encMap.get(s2));
 
             Map<String, Boolean> encStatus = securityReg.getEncryptionProtocolStatus();
@@ -363,11 +381,17 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         {
             hasChanges = true;
             if (key.equals(PREF_KEY_SEC_ENABLED)) {
-                securityReg.setDefaultEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));
+                securityReg.setCallEncryption(shPreferences.getBoolean(PREF_KEY_SEC_ENABLED, true));
             }
             else if (key.equals(PREF_KEY_SEC_SIPZRTP_ATTR)) {
                 updateZRTpOptionSummary();
                 securityReg.setSipZrtpAttribute(shPreferences.getBoolean(key, true));
+            }
+            else if (key.equals(PREF_KEY_SEC_DTLS_CERT_SA)) {
+                ListPreference lp = findPreference(key);
+                String certSA = lp.getValue();
+                lp.setSummary(certSA);
+                securityReg.setDtlsCertSa(certSA);
             }
             else if (key.equals(PREF_KEY_SEC_SAVP_OPTION)) {
                 ListPreference lp = findPreference(key);

@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 300050
-        versionName "3.0.5"
+        versionCode 301000
+        versionName "3.1.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -294,7 +294,7 @@ dependencies {
     //noinspection GradleDependency (define and use in smack)
     // implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
-    // Required for debug and tracing for bouncycastle - do not removed
+    // Required for debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
 //        from('org.bouncycastle:bctls-jdk15on:1.65') {
 //            transitive = false

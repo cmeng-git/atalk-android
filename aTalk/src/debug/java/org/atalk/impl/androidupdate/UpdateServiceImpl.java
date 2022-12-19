@@ -211,7 +211,8 @@ public class UpdateServiceImpl implements UpdateService
                         R.string.plugin_update_Download_InProgress);
             }
             else {
-                // Download is in progress or scheduled for retry
+                // Download id return failed status, remove failed id and retry
+                removeOldDownloads();
                 DialogActivity.showDialog(aTalkApp.getGlobalContext(),
                         R.string.plugin_update_Install_Update, R.string.plugin_update_Download_failed);
             }
