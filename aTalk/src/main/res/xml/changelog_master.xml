@@ -6,6 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
+    <release version="3.1.0 (12/20/2022)" versioncode="301000">
+        <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add ECDSA Authentication/Digital Signature Algorithm support for TLS server i.e. CipherSuite.TLS_ECDHE_ECDSA...</change>
+        <change>Change TLS certification Signature Algorithm to support either RSA or ECDSA CipherSuite. Backward compatible with aTalk v3.0.5</change>
+        <change>Add user selectable option to support TLS certification Signature Algorithm for both ECDSA and RSA, with Hash SHA256, SHA384 and SHA512</change>
+        <change>Add support to determine SignatureAndHashAlgorithm based on the given CertificateInfo</change>
+        <change>Conversations 2.10.10 (webrtc-104.aar) works with aTalk, and TLS certification with RSA Signature Algorithm only</change>
+        <change>Conversations 2.10.10 (webrtc-104.aar) uses CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 is not working with aTalk; seems it cannot support ECDSA signed certificate</change>
+        <change>Enable both ZRTP and DTLS_SRTP call security protocols, and in that order of preference on new account creation</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
     <release version="3.0.5 (12/06/2022)" versioncode="300050">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Fix Heads-up notification for incoming chat message on android-12 and above</change>
@@ -15,7 +27,8 @@
         <change>Implement method to check for android device screen lock condition</change>
         <change>Fix prematurely termination of incoming call alert; move end notification to activity onPause</change>
         <change>Fix incorrect display of the callee who has accepted the JingleMessage propose call</change>
-        <change>Media call to Conversations will fail; v2.10.10 supports only CipherSuite.TLS_ECDHE_ECDSA..., whereas aTalk accepts only CipherSuite.TLS_ECDHE_RSA</change>
+        <change>Conversations (webrtc-104.aar) is compatible and worked with aTalk v3.0.5 using RSA signed certificate.</change>
+        <change>Media call to Conversations will fail; v2.10.10 (webrtc-m99.aar) supports only CipherSuite.TLS_ECDHE_ECDSA..., whereas aTalk accepts only CipherSuite.TLS_ECDHE_RSA</change>
         <change>Bug fixes and enhancements</change>
     </release>
 

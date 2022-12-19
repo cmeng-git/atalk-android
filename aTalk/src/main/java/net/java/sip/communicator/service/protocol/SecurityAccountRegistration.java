@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
+
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.service.neomedia.SDesControl;
@@ -13,7 +15,11 @@ import org.atalk.service.neomedia.SrtpControlType;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>SecurityAccountRegistration</code> is used to determine security options for different
@@ -31,48 +37,53 @@ public abstract class SecurityAccountRegistration implements Serializable
     /**
      * The encryption protocols managed by this SecurityPanel.
      */
-    public static final List<String> ENCRYPTION_PROTOCOLS = Collections.unmodifiableList(Arrays.asList(
+    public static final List<String> ENCRYPTION_PROTOCOL = Collections.unmodifiableList(Arrays.asList(
             SrtpControlType.ZRTP.toString(),
-            SrtpControlType.SDES.toString(),
-            SrtpControlType.DTLS_SRTP.toString()
+            SrtpControlType.DTLS_SRTP.toString(),
+            SrtpControlType.SDES.toString()
     ));
 
     /**
      * Enables support to encrypt calls.
      */
-    private boolean defaultEncryption = true;
+    private boolean mCallEncryptionEnable = true;
 
     /**
-     * Enables ZRTP encryption.
+     * Enables ZRTP encryption advertise in jingle session content.
      */
-    private boolean sipZrtpAttribute = true;
+    private boolean mSipZrtpAttribute = true;
 
     /**
      * Tells if SDES is enabled for this account.
      */
-    private boolean sdesEnabled = false;
+    private boolean mSdesEnable = false;
 
     /**
      * The list of cipher suites enabled for SDES.
      */
-    private String sdesCipherSuites = null;
+    private String mSdesCipherSuites;
+
+    /**
+     * DTLS_SRTP Certificate Signature Algorithm.
+     */
+    private String mTlsCertificateSA;
 
     /**
      * The map between encryption protocols and their priority order.
      */
-    private Map<String, Integer> encryptionProtocols;
+    private Map<String, Integer> mEncryptionProtocol;
 
     /**
      * The map between encryption protocols and their status (enabled or disabled).
      */
-    private Map<String, Boolean> encryptionProtocolStatus;
+    private Map<String, Boolean> mEncryptionProtocolStatus;
 
-    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final SecureRandom mSecureRandom = new SecureRandom();
 
     /**
      * Random salt value used for ZID calculation.
      */
-    private String ZIDSalt;
+    private String mZIDSalt;
 
     /**
      * Initializes the security account registration properties with the default values.
@@ -80,42 +91,51 @@ public abstract class SecurityAccountRegistration implements Serializable
     public SecurityAccountRegistration()
     {
         // Sets the default values.
-        encryptionProtocols = new HashMap<>(1);
-        encryptionProtocols.put("ZRTP", 0);
-        encryptionProtocolStatus = new HashMap<>(1);
-        encryptionProtocolStatus.put("ZRTP", true);
-        sdesCipherSuites = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
+        mEncryptionProtocol = new HashMap<String, Integer>()
+        {{
+            put("ZRTP", 0);
+            put("DTLS_SRTP", 1);
+        }};
+
+        mEncryptionProtocolStatus = new HashMap<String, Boolean>()
+        {{
+            put("ZRTP", true);
+            put("DTLS_SRTP", true);
+        }};
+
         randomZIDSalt();
+        mTlsCertificateSA = DEFAULT_SIGNATURE_ALGORITHM;
+        mSdesCipherSuites = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
     }
 
     /**
-     * If default call encryption is enabled
+     * If call encryption is enabled
      *
-     * @return If default call encryption is enabled
+     * @return If call encryption is enabled
      */
-    public boolean isDefaultEncryption()
+    public boolean isCallEncryption()
     {
-        return defaultEncryption;
+        return mCallEncryptionEnable;
     }
 
     /**
-     * Sets default call encryption
+     * Sets call encryption enable status
      *
-     * @param defaultEncryption if we want to set call encryption on as default
+     * @param callEncryption if we want to set call encryption on as default
      */
-    public void setDefaultEncryption(boolean defaultEncryption)
+    public void setCallEncryption(boolean callEncryption)
     {
-        this.defaultEncryption = defaultEncryption;
+        mCallEncryptionEnable = callEncryption;
     }
 
     /**
-     * Check if to include the ZRTP attribute to SIP/SDP or to Jabber/IQ
+     * Check if to include the ZRTP attribute to SIP/SDP or to Jabber/ Jingle IQ
      *
-     * @return include the ZRTP attribute to SIP/SDP or to Jabber/IQ
+     * @return include the ZRTP attribute to SIP/SDP or to Jabber/ Jingle IQ
      */
     public boolean isSipZrtpAttribute()
     {
-        return sipZrtpAttribute;
+        return mSipZrtpAttribute;
     }
 
     /**
@@ -125,7 +145,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public void setSipZrtpAttribute(boolean sipZrtpAttribute)
     {
-        this.sipZrtpAttribute = sipZrtpAttribute;
+        mSipZrtpAttribute = sipZrtpAttribute;
     }
 
     /**
@@ -133,19 +153,19 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return True if SDES is enabled. False, otherwise.
      */
-    public boolean isSDesEnabled()
+    public boolean isSDesEnable()
     {
-        return sdesEnabled;
+        return mSdesEnable;
     }
 
     /**
      * Enables or disables SDES for this account.
      *
-     * @param sdesEnabled True to enable SDES. False, otherwise.
+     * @param sdesEnable True to enable SDES. False, otherwise.
      */
-    public void setSDesEnabled(boolean sdesEnabled)
+    public void setSDesEnable(boolean sdesEnable)
     {
-        this.sdesEnabled = sdesEnabled;
+        mSdesEnable = sdesEnable;
     }
 
     /**
@@ -155,7 +175,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public String getSDesCipherSuites()
     {
-        return sdesCipherSuites;
+        return mSdesCipherSuites;
     }
 
     /**
@@ -165,7 +185,25 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public void setSDesCipherSuites(String cipherSuites)
     {
-        this.sdesCipherSuites = cipherSuites;
+        mSdesCipherSuites = cipherSuites;
+    }
+
+    /**
+     * Returns the tls certificate signature algorithm.
+     *
+     * @return the tls certificate signature algorithm.
+     */
+    public String getDtlsCertSa()
+    {
+        return mTlsCertificateSA;
+    }
+
+    /**
+     * Set the tls certificate signature algorithm.
+     */
+    public void setDtlsCertSa(String certSA)
+    {
+        mTlsCertificateSA = certSA;
     }
 
     /**
@@ -185,19 +223,19 @@ public abstract class SecurityAccountRegistration implements Serializable
      *
      * @return The map between the encryption protocols and their priority order.
      */
-    public Map<String, Integer> getEncryptionProtocols()
+    public Map<String, Integer> getEncryptionProtocol()
     {
-        return encryptionProtocols;
+        return mEncryptionProtocol;
     }
 
     /**
      * Sets the map between the encryption protocols and their priority order.
      *
-     * @param encryptionProtocols The map between the encryption protocols and their priority order.
+     * @param encryptionProtocol The map between the encryption protocols and their priority order.
      */
-    public void setEncryptionProtocols(Map<String, Integer> encryptionProtocols)
+    public void setEncryptionProtocol(Map<String, Integer> encryptionProtocol)
     {
-        this.encryptionProtocols = encryptionProtocols;
+        mEncryptionProtocol = encryptionProtocol;
     }
 
     /**
@@ -207,7 +245,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public Map<String, Boolean> getEncryptionProtocolStatus()
     {
-        return encryptionProtocolStatus;
+        return mEncryptionProtocolStatus;
     }
 
     /**
@@ -217,7 +255,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public void setEncryptionProtocolStatus(Map<String, Boolean> encryptionProtocolStatus)
     {
-        this.encryptionProtocolStatus = encryptionProtocolStatus;
+        mEncryptionProtocolStatus = encryptionProtocolStatus;
     }
 
     /**
@@ -227,9 +265,8 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     private void addEncryptionProtocolsToProperties(Map<String, String> properties)
     {
-        for (Map.Entry<String, Integer> e : getEncryptionProtocols().entrySet()) {
-            properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + "." + e.getKey(),
-                    e.getValue().toString());
+        for (Map.Entry<String, Integer> e : getEncryptionProtocol().entrySet()) {
+            properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + "." + e.getKey(), e.getValue().toString());
         }
     }
 
@@ -241,8 +278,7 @@ public abstract class SecurityAccountRegistration implements Serializable
     private void addEncryptionProtocolStatusToProperties(Map<String, String> properties)
     {
         for (Map.Entry<String, Boolean> e : getEncryptionProtocolStatus().entrySet()) {
-            properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + "." + e.getKey(),
-                    e.getValue().toString());
+            properties.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + "." + e.getKey(), e.getValue().toString());
         }
     }
 
@@ -253,71 +289,69 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public void storeProperties(Map<String, String> propertiesMap)
     {
-        propertiesMap.put(ProtocolProviderFactory.DEFAULT_ENCRYPTION,
-                Boolean.toString(isDefaultEncryption()));
+        propertiesMap.put(ProtocolProviderFactory.DEFAULT_ENCRYPTION, Boolean.toString(isCallEncryption()));
 
         // Sets the ordered list of encryption protocols.
         addEncryptionProtocolsToProperties(propertiesMap);
         // Sets the list of encryption protocol status.
         addEncryptionProtocolStatusToProperties(propertiesMap);
 
-        propertiesMap.put(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE,
-                Boolean.toString(isSipZrtpAttribute()));
+        propertiesMap.put(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, Boolean.toString(isSipZrtpAttribute()));
+        propertiesMap.put(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
+        propertiesMap.put(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, getDtlsCertSa());
         propertiesMap.put(ProtocolProviderFactory.SAVP_OPTION, Integer.toString(getSavpOption()));
         propertiesMap.put(ProtocolProviderFactory.SDES_CIPHER_SUITES, getSDesCipherSuites());
-        propertiesMap.put(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
     }
 
     /**
-     * Loads security properties from the account with the given identifier.
+     * Loads security properties for the user account with the given identifier.
      *
      * @param accountID the account identifier.
      */
     public void loadAccount(AccountID accountID)
     {
-        setDefaultEncryption(accountID.getAccountPropertyBoolean(
-                ProtocolProviderFactory.DEFAULT_ENCRYPTION, true));
+        // Clear all the default values
+        mEncryptionProtocol = new HashMap<>();
+        mEncryptionProtocolStatus = new HashMap<>();
 
-        encryptionProtocols = new HashMap<String, Integer>();
-        encryptionProtocolStatus = new HashMap<String, Boolean>();
-
-        Map<String, Integer> srcEncryptionProtocols = accountID.getIntegerPropertiesByPrefix(
+        setCallEncryption(accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_ENCRYPTION, true));
+        Map<String, Integer> srcEncryptionProtocol = accountID.getIntegerPropertiesByPrefix(
                 ProtocolProviderFactory.ENCRYPTION_PROTOCOL, true);
         Map<String, Boolean> srcEncryptionProtocolStatus = accountID.getBooleanPropertiesByPrefix(
                 ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS, true, false);
         // Load stored values.
         int prefixeLength = ProtocolProviderFactory.ENCRYPTION_PROTOCOL.length() + 1;
 
-        for (Map.Entry<String, Integer> e : srcEncryptionProtocols.entrySet()) {
+        for (Map.Entry<String, Integer> e : srcEncryptionProtocol.entrySet()) {
             String name = e.getKey().substring(prefixeLength);
             if (isExistingEncryptionProtocol(name)) {
                 // Copy the priority
-                encryptionProtocols.put(name, e.getValue());
+                mEncryptionProtocol.put(name, e.getValue());
 
                 // Extract the status
-                boolean enabled = false;
+                boolean isEnable = false;
                 String mEncryptProtoKey = ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + "." + name;
                 if (srcEncryptionProtocolStatus.containsKey(mEncryptProtoKey)) {
-                    enabled = srcEncryptionProtocolStatus.get(mEncryptProtoKey);
+                    isEnable = Boolean.TRUE.equals(srcEncryptionProtocolStatus.get(mEncryptProtoKey));
                 }
-                encryptionProtocolStatus.put(name, enabled);
+                mEncryptionProtocolStatus.put(name, isEnable);
             }
         }
 
-        setSipZrtpAttribute(accountID.getAccountPropertyBoolean(
-                ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true));
-        setSavpOption(accountID.getAccountPropertyInt(ProtocolProviderFactory.SAVP_OPTION,
-                ProtocolProviderFactory.SAVP_OFF));
-        setSDesCipherSuites(accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
+        // Load ZRTP encryption parameters
+        setSipZrtpAttribute(accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true));
+        mZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
+        if (mZIDSalt == null) {
+            accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, randomZIDSalt());
+        }
 
-        final String storedZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
-        if (storedZIDSalt == null) {
-            randomZIDSalt();
-            accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, getZIDSalt());
-        }
-        else {
-            ZIDSalt = storedZIDSalt;
-        }
+        // Load DTLS_SRTP TlsCertificateSA from DB or use DEFAULT_SIGNATURE_ALGORITHM if none is defined
+        mTlsCertificateSA = accountID.getAccountPropertyString(
+                ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+
+        // Load SDES encryption parameters
+        setSavpOption(accountID.getAccountPropertyInt(ProtocolProviderFactory.SAVP_OPTION, ProtocolProviderFactory.SAVP_OFF));
+        setSDesCipherSuites(accountID.getAccountPropertyString(ProtocolProviderFactory.SDES_CIPHER_SUITES));
     }
 
     /**
@@ -325,53 +359,52 @@ public abstract class SecurityAccountRegistration implements Serializable
      * <code>String</code> and array of <code>Boolean</code>. The protocols are positioned in the array by
      * the priority and the <code>Boolean</code> array holds the enabled flag on the corresponding index.
      *
-     * @param encryptionProtocols The map of encryption protocols with their priority available for this account.
+     * @param encryptionProtocol The map of encryption protocols with their priority available for this account.
      * @param encryptionProtocolStatus The map of encryption protocol statuses.
      * @return <code>Object[]</code> array holding:<br/>
      * - at [0] <code>String[]</code> the list of extracted protocol names<br/>
      * - at [1] <code>boolean[]</code> the list of of protocol status flags
      */
-    public static Object[] loadEncryptionProtocols(Map<String, Integer> encryptionProtocols,
+    public static Object[] loadEncryptionProtocol(Map<String, Integer> encryptionProtocol,
             Map<String, Boolean> encryptionProtocolStatus)
     {
-        int nbEncryptionProtocols = ENCRYPTION_PROTOCOLS.size();
-        String[] encryptions = new String[nbEncryptionProtocols];
-        boolean[] selectedEncryptions = new boolean[nbEncryptionProtocols];
+        int nbEncryptionProtocol = ENCRYPTION_PROTOCOL.size();
+        String[] encryption = new String[nbEncryptionProtocol];
+        boolean[] selectedEncryption = new boolean[nbEncryptionProtocol];
 
         // Load stored values.
-        for (Map.Entry<String, Integer> e : encryptionProtocols.entrySet()) {
-            int index = e.getValue();
+        for (Map.Entry<String, Integer> entry : encryptionProtocol.entrySet()) {
+            int index = entry.getValue();
 
             // If the property is set.
             if (index != -1) {
-                String name = e.getKey();
-
+                String name = entry.getKey();
                 if (isExistingEncryptionProtocol(name)) {
-                    encryptions[index] = name;
-                    selectedEncryptions[index] = encryptionProtocolStatus.get(name);
+                    encryption[index] = name;
+                    selectedEncryption[index] = Boolean.TRUE.equals(encryptionProtocolStatus.get(name));
                 }
             }
         }
 
         // Load default values.
         int j = 0;
-        for (String encryptionProtocol : ENCRYPTION_PROTOCOLS) {
+        for (String encProtocol : ENCRYPTION_PROTOCOL) {
             // Specify a default value only if there is no specific value set.
-            if (!encryptionProtocols.containsKey(encryptionProtocol)) {
+            if (!encryptionProtocol.containsKey(encProtocol)) {
                 boolean set = false;
                 // Search for the first empty element.
-                while (j < encryptions.length && !set) {
-                    if (encryptions[j] == null) {
-                        encryptions[j] = encryptionProtocol;
+                while (j < encryption.length && !set) {
+                    if (encryption[j] == null) {
+                        encryption[j] = encProtocol;
                         // By default only ZRTP is set to true.
-                        selectedEncryptions[j] = encryptionProtocol.equals("ZRTP");
+                        selectedEncryption[j] = encProtocol.equals("ZRTP");
                         set = true;
                     }
                     ++j;
                 }
             }
         }
-        return new Object[]{encryptions, selectedEncryptions};
+        return new Object[]{encryption, selectedEncryption};
     }
 
     /**
@@ -382,7 +415,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     private static boolean isExistingEncryptionProtocol(String protocol)
     {
-        return ENCRYPTION_PROTOCOLS.contains(protocol);
+        return ENCRYPTION_PROTOCOL.contains(protocol);
     }
 
     /**
@@ -392,7 +425,7 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public String getZIDSalt()
     {
-        return ZIDSalt;
+        return mZIDSalt;
     }
 
     /**
@@ -402,14 +435,15 @@ public abstract class SecurityAccountRegistration implements Serializable
      */
     public void setZIDSalt(final String ZIDSalt)
     {
-        this.ZIDSalt = ZIDSalt;
+        mZIDSalt = ZIDSalt;
     }
 
     /**
-     * Generate new random value for the ZID salt.
+     * Generate new random value for the ZID salt and update the ZIDSalt.
      */
-    public void randomZIDSalt()
+    public String randomZIDSalt()
     {
-        ZIDSalt = new BigInteger(256, secureRandom).toString(32);
+        mZIDSalt = new BigInteger(256, mSecureRandom).toString(32);
+        return mZIDSalt;
     }
 }

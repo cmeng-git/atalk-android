@@ -228,13 +228,14 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
                             data.getSerializableExtra(SecurityActivity.EXTR_KEY_SEC_REGISTRATION);
 
                     SecurityAccountRegistration myReg = getSecurityRegistration();
-                    myReg.setDefaultEncryption(secReg.isDefaultEncryption());
-                    myReg.setEncryptionProtocols(secReg.getEncryptionProtocols());
+                    myReg.setCallEncryption(secReg.isCallEncryption());
+                    myReg.setEncryptionProtocol(secReg.getEncryptionProtocol());
                     myReg.setEncryptionProtocolStatus(secReg.getEncryptionProtocolStatus());
                     myReg.setSipZrtpAttribute(secReg.isSipZrtpAttribute());
+                    myReg.setZIDSalt(secReg.getZIDSalt());
+                    myReg.setDtlsCertSa(secReg.getDtlsCertSa());
                     myReg.setSavpOption(secReg.getSavpOption());
                     myReg.setSDesCipherSuites(secReg.getSDesCipherSuites());
-                    myReg.setZIDSalt(secReg.getZIDSalt());
                     uncommittedChanges = true;
                 }
             }

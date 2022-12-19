@@ -124,7 +124,7 @@ public class AccountID
      * property keys and values will get properly stored. If you need something else, please
      * consider converting it through custom accessors (get/set) in your implementation.
      */
-    protected Map<String, String> mAccountProperties = null;
+    protected Map<String, String> mAccountProperties;
 
     /**
      * A String uniquely identifying the user for this particular account with prefix "acc", and
@@ -1225,21 +1225,21 @@ public class AccountID
      */
     public List<SrtpControlType> getSortedEnabledEncryptionProtocolList()
     {
-        Map<String, Integer> encryptionProtocols
+        Map<String, Integer> encryptionProtocol
                 = getIntegerPropertiesByPrefix(ProtocolProviderFactory.ENCRYPTION_PROTOCOL, true);
         Map<String, Boolean> encryptionProtocolStatus
                 = getBooleanPropertiesByPrefix(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS, true, false);
 
         // If the account is not yet configured, then ZRTP is activated by default.
-        if (encryptionProtocols.size() == 0) {
-            encryptionProtocols.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + ".ZRTP", 0);
+        if (encryptionProtocol.size() == 0) {
+            encryptionProtocol.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL + ".ZRTP", 0);
             encryptionProtocolStatus.put(ProtocolProviderFactory.ENCRYPTION_PROTOCOL_STATUS + ".ZRTP", true);
         }
 
-        List<SrtpControlType> sortedEncryptionProtocols = new ArrayList<>(encryptionProtocols.size());
+        List<SrtpControlType> sortedEncryptionProtocols = new ArrayList<>(encryptionProtocol.size());
 
         // First: add all protocol in the right order.
-        for (Map.Entry<String, Integer> e : encryptionProtocols.entrySet()) {
+        for (Map.Entry<String, Integer> e : encryptionProtocol.entrySet()) {
             int index = e.getValue();
             if (index != -1) {
                 // If the key is set. {

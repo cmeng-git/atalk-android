@@ -5,7 +5,16 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
+import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +25,10 @@ import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>JabberAccountRegistration</code> is used to store all user input data through the
@@ -48,22 +60,22 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
     /**
      * The list of additional STUN servers entered by user.
      */
-    private List<StunServerDescriptor> additionalStunServers = new ArrayList<>();
+    private final List<StunServerDescriptor> additionalStunServers = new ArrayList<>();
 
     /**
      * The list of additional JingleNodes (tracker or relay) entered by user.
      */
-    private List<JingleNodeDescriptor> additionalJingleNodes = new ArrayList<>();
+    private final List<JingleNodeDescriptor> additionalJingleNodes = new ArrayList<>();
 
     /**
      * The encodings registration object
      */
-    private EncodingsRegistrationUtil encodingsRegistration = new EncodingsRegistrationUtil();
+    private final EncodingsRegistrationUtil encodingsRegistration = new EncodingsRegistrationUtil();
 
     /**
      * The security registration object
      */
-    private SecurityAccountRegistration securityRegistration = new SecurityAccountRegistration()
+    private final SecurityAccountRegistration securityRegistration = new SecurityAccountRegistration()
     {
         /**
          * Sets the method used for RTP/SAVP indication.
@@ -96,7 +108,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
 
     /**
      * Overrides to return UID loaded from edited AccountID.
-     *      *
+     *
      * @return UID of edited account e.g. jabber:user@example.com.
      */
     public String getAccountUniqueID()
@@ -290,8 +302,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         // cmeng - both same ???
         mergeProperties(account.getAccountProperties(), mAccountProperties);
 
-        String password = ProtocolProviderFactory.getProtocolProviderFactory(bundleContext,
-                ProtocolNames.JABBER).loadPassword(account);
+        String password = ProtocolProviderFactory
+                .getProtocolProviderFactory(bundleContext, ProtocolNames.JABBER).loadPassword(account);
         setUserID(account.getUserID());
         editedAccUID = account.getAccountUniqueID();
         setPassword(password);

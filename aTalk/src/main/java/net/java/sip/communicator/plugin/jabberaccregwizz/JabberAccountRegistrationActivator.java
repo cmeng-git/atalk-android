@@ -47,7 +47,7 @@ public class JabberAccountRegistrationActivator implements BundleActivator
         bundleContext = bc;
         ServiceReference<?> uiServiceRef = bundleContext.getServiceReference(UIService.class.getName());
         jabberRegistration = new AccountRegistrationImpl();
-        Hashtable<String, String> containerFilter = new Hashtable<String, String>();
+        Hashtable<String, String> containerFilter = new Hashtable<>();
         containerFilter.put(ProtocolProviderFactory.PROTOCOL, ProtocolNames.JABBER);
         bundleContext.registerService(AccountRegistrationWizard.class.getName(), jabberRegistration, containerFilter);
     }

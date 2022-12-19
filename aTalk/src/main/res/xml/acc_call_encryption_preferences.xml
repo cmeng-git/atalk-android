@@ -28,6 +28,18 @@
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="@string/pref_cat_security_dtls"
+        android:title="@string/service_gui_PREF_SECURITY_DTLS_SRTP">
+        <ListPreference
+            android:dependency="@string/pref_key_enable_encryption"
+            android:dialogTitle="@string/service_gui_PREF_SECURITY_DTLS_TITLE"
+            android:entries="@array/pref_dtls_srtp_cert_sa"
+            android:entryValues="@array/pref_dtls_srtp_cert_sa"
+            android:key="@string/pref_key_enc_dtls_cert_sa"
+            android:title="@string/service_gui_PREF_SECURITY_DTLS_TITLE" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="@string/pref_cat_security_sdes"
         android:title="@string/service_gui_PREF_SECURITY_SDES">
         <MultiSelectListPreference

@@ -1123,6 +1123,8 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">имя пользователя</string>
 
     <!-- Security preferences -->
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">Передача сигналов DTLS_SRTP</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_TITLE">Алгоритм подписи сертификата TLS</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Включить шифрование вызовов</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Протоколы шифрования</string>
     <string name="service_gui_PREF_SECURITY_GENERAL">Общие</string>

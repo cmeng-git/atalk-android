@@ -10,10 +10,18 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -28,7 +36,7 @@ import timber.log.Timber;
  * @author Emil Ivov
  * @author Lubomir Marinov
  * @author Eng Chong Meng
- * @author MilanKral 
+ * @author MilanKral
  */
 public abstract class ProtocolProviderFactory
 {
@@ -250,6 +258,11 @@ public abstract class ProtocolProviderFactory
      * The name of the property which defines if to include the ZRTP attribute to SIP/SDP
      */
     public static final String DEFAULT_SIPZRTP_ATTRIBUTE = "DEFAULT_SIPZRTP_ATTRIBUTE";
+
+    /*
+     * DTLS-SRTP TLS certificate signature algorithm e.g. SHA256withECDSA, SHA256withRSA
+     */
+    public static final String DTLS_CERT_SIGNATURE_ALGORITHM = "DTLS_CERT_SIGNATURE_ALGORITHM";
 
     /**
      * The name of the property which defines the ID of the client TLS certificate configuration entry.
@@ -703,8 +716,6 @@ public abstract class ProtocolProviderFactory
      */
     public boolean uninstallAccount(AccountID accountID)
     {
-        boolean wasAccountExisting = false;
-
         // If the protocol provider service is registered, first unregister the service.
         ServiceReference<ProtocolProviderService> serRef = getProviderForAccount(accountID);
         if (serRef != null) {
@@ -725,7 +736,7 @@ public abstract class ProtocolProviderFactory
 
         // first remove the stored account so when PP is unregistered we can distinguish between
         // deleted or just disabled account
-        wasAccountExisting = removeStoredAccount(accountID);
+        boolean wasAccountExisting = removeStoredAccount(accountID);
         if (registration != null) {
             // Kill the service.
             registration.unregister();
@@ -958,8 +969,7 @@ public abstract class ProtocolProviderFactory
      * protocol provider, but keeps the account in contrast to the uninstallAccount method.
      *
      * @param accountID the account identifier
-     * @return true if an account with the specified ID existed and was unloaded and false
-     * otherwise.
+     * @return true if an account with the specified ID existed and was unloaded and false otherwise.
      */
     public boolean unloadAccount(AccountID accountID)
     {
@@ -1085,8 +1095,7 @@ public abstract class ProtocolProviderFactory
      * @return a String indicating the ConfigurationService property name prefix under which all
      * account properties are stored or null if no account corresponding to the specified id was found.
      */
-    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String
-            sourcePackageName)
+    public static String findAccountPrefix(BundleContext bundleContext, AccountID accountID, String sourcePackageName)
     {
         ServiceReference<ConfigurationService> confReference = bundleContext.getServiceReference(ConfigurationService.class);
         ConfigurationService configurationService = bundleContext.getService(confReference);
@@ -1170,10 +1179,9 @@ public abstract class ProtocolProviderFactory
      * @return Registered <code>ProtocolProviderFactory</code> for given protocol name or <code>null</code>
      * if no provider was found.
      */
-    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String
-            protocolName)
+    public static ProtocolProviderFactory getProtocolProviderFactory(BundleContext bundleContext, String protocolName)
     {
-        ServiceReference[] serRefs = null;
+        ServiceReference[] serRefs;
         String osgiFilter = "(PROTOCOL_NAME=" + protocolName + ")";
         try {
             serRefs = bundleContext.getServiceReferences(ProtocolProviderFactory.class.getName(), osgiFilter);

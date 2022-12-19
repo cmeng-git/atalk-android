@@ -26,6 +26,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.bc.BcX509v3CertificateBuilder;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
@@ -34,7 +35,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
-import org.bouncycastle.crypto.util.SubjectPublicKeyInfoFactory;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.operator.ContentSigner;
@@ -89,12 +89,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     private static final long ONE_DAY = 1000L * 60L * 60L * 24L;
 
-    /**
-     * The name of the property which specifies the signature algorithm used
-     * during certificate creation. When a certificate is created and this
-     * property is not set, a default value of "SHA256withRSA" will be used.
-     */
-    public static final String PROP_SIGNATURE_ALGORITHM = "neomedia.transform.dtls.SIGNATURE_ALGORITHM";
+    public static final String DEFAULT_SIGNATURE_ALGORITHM = "SHA256withECDSA";
+    // public static final String DEFAULT_SIGNATURE_ALGORITHM = "SHA256withRSA";
 
     /**
      * The name of the property to specify RSA Key length.
@@ -134,6 +130,13 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     public static final int DEFAULT_RSA_KEY_SIZE_CERTAINTY = 80;
 
     /**
+     * The name of the property which specifies the signature algorithm used
+     * during certificate creation. When a certificate is created and this
+     * property is not set, a default value of "SHA256withRSA" will be used.
+     */
+    public static final String CERT_TLS_SIGNATURE_ALGORITHM = "neomedia.transform.dtls.SIGNATURE_ALGORITHM";
+
+    /**
      * The name of the property to specify DTLS certificate cache expiration.
      */
     public static final String CERT_CACHE_EXPIRE_TIME_PNAME = "neomedia.transform.dtls.CERT_CACHE_EXPIRE_TIME";
@@ -159,12 +162,15 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      * The <code>SRTPProtectionProfile</code>s supported by <code>DtlsControlImpl</code>.
      */
     static final int[] SRTP_PROTECTION_PROFILES = {
+            // RFC 5764 4.1.2.
             SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_80,
             SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32,
-//            SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80,
-//            SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32,
-//            SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM,
-//            SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM
+            // SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80,
+            // SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32,
+
+            // RFC 7714 14.2.
+            // SRTPProtectionProfile.SRTP_AEAD_AES_128_GCM,
+            // SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM
     };
 
     /**
@@ -218,6 +224,202 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     private boolean mSecurityState = false;
 
     /**
+     * The certificate with which the local endpoint represented by this instance authenticates its
+     * ends of DTLS sessions.
+     */
+    private final CertificateInfo mCertificateInfo;
+
+    private static String mSignatureAlgorithm;
+
+    /**
+     * The indicator which determines whether this instance has been disposed
+     * i.e. prepared for garbage collection by {@link #doCleanup()}.
+     */
+    private boolean disposed = false;
+
+    /**
+     * The fingerprints presented by the remote endpoint via the signaling path.
+     */
+    private Map<String, String> remoteFingerprints;
+
+    /**
+     * The properties of {@code DtlsControlImpl} and their values which this
+     * instance shares with {@link DtlsTransformEngine} and {@link DtlsPacketTransformer}.
+     */
+    private final Properties mProperties;
+
+    /**
+     * Initializes a new <code>DtlsControlImpl</code> instance.
+     * By default aTalk works in DTLS/SRTP mode.
+     */
+    public DtlsControlImpl()
+    {
+        this(false);
+    }
+
+    /**
+     * Initializes a new <code>DtlsControlImpl</code> instance.
+     *
+     * @param srtpDisabled <code>true</code> if pure DTLS mode without SRTP
+     * extensions is to be used; otherwise, <code>false</code>
+     */
+    public DtlsControlImpl(boolean srtpDisabled)
+    {
+        super(SrtpControlType.DTLS_SRTP);
+        CertificateInfo certificateInfo;
+        // Timber.e(new Exception("TLS Certificate Signature Algorithm: " + mSignatureAlgorithm + "; " + certificateInfoCache));
+
+        // The methods generateKeyPair(), generateX509Certificate(), findHashFunction(), and/or
+        // computeFingerprint() may be too CPU intensive to invoke for each new DtlsControlImpl instance.
+        // That's why we've decided to reuse their return values within a certain time frame (Default 1 day).
+        // Attempt to retrieve from the cache.
+        synchronized (DtlsControlImpl.class) {
+            certificateInfo = certificateInfoCache;
+            // The cache doesn't exist yet or has outlived its lifetime. Rebuild the cache.
+            if (certificateInfo == null
+                    || certificateInfo.timestamp + CERT_CACHE_EXPIRE_TIME < System.currentTimeMillis()) {
+                certificateInfoCache = certificateInfo = generateCertificateInfo();
+            }
+        }
+
+        mCertificateInfo = certificateInfo;
+        mProperties = new Properties(srtpDisabled);
+        Timber.d("getCertificateInfo => DtlsControlImpl' %s", mCertificateInfo.getCertificateType());
+    }
+
+    /**
+     * Generates a new certificate from a new key pair, determines the hash function, and computes the fingerprint.
+     *
+     * @return CertificateInfo a new certificate generated from a new key pair, its hash function, and fingerprint
+     */
+    private static CertificateInfo generateCertificateInfo()
+    {
+        AsymmetricCipherKeyPair keyPair = generateKeyPair();
+        Certificate x509Certificate = generateX509Certificate(generateCN(), keyPair);
+
+        BcTlsCertificate tlsCertificate = new BcTlsCertificate(new BcTlsCrypto(new SecureRandom()), x509Certificate);
+        org.bouncycastle.tls.Certificate certificate
+                = new org.bouncycastle.tls.Certificate(new TlsCertificate[]{tlsCertificate});
+
+        String localFingerprintHashFunction = findHashFunction(x509Certificate);
+        String localFingerprint = computeFingerprint(x509Certificate, localFingerprintHashFunction);
+
+        long timestamp = System.currentTimeMillis();
+        return new CertificateInfo(keyPair, certificate, localFingerprintHashFunction, localFingerprint, timestamp);
+    }
+
+    /**
+     * Return a pair of RSA private and public keys.
+     *
+     * @return a pair of private and public keys
+     */
+    private static AsymmetricCipherKeyPair generateKeyPair()
+    {
+        // The signature algorithm of the generated certificate defaults to SHA256.
+        // However, allow the overriding of the default via the ConfigurationService.
+        if (mSignatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("RSA")) {
+            RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
+
+            generator.init(new RSAKeyGenerationParameters(
+                    RSA_KEY_PUBLIC_EXPONENT, new SecureRandom(), RSA_KEY_SIZE, RSA_KEY_SIZE_CERTAINTY));
+            return generator.generateKeyPair();
+        }
+        else if (mSignatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("ECDSA")) {
+            ECKeyPairGenerator generator = new ECKeyPairGenerator();
+            ECNamedCurveParameterSpec curve = ECNamedCurveTable.getParameterSpec("secp256r1");
+            ECDomainParameters domainParams =
+                    new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH(), curve.getSeed());
+            generator.init(new ECKeyGenerationParameters(domainParams, new SecureRandom()));
+            return generator.generateKeyPair();
+        }
+
+        throw new IllegalArgumentException("Unknown signature algorithm: " + mSignatureAlgorithm);
+    }
+
+    /**
+     * Generates a new subject for a self-signed certificate to be generated by <code>DtlsControlImpl</code>.
+     *
+     * @return an <code>X500Name</code> which is to be used as the subject of a self-signed certificate
+     * to be generated by <code>DtlsControlImpl</code>
+     */
+    private static X500Name generateCN()
+    {
+        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
+
+        final SecureRandom secureRandom = new SecureRandom();
+        final byte[] bytes = new byte[16];
+        secureRandom.nextBytes(bytes);
+
+        final char[] chars = new char[32];
+
+        for (int i = 0; i < 16; i++) {
+            final int b = bytes[i] & 0xff;
+            chars[i * 2] = HEX_ENCODE_TABLE[b >>> 4];
+            chars[i * 2 + 1] = HEX_ENCODE_TABLE[b & 0x0f];
+        }
+        builder.addRDN(BCStyle.CN, (new String(chars)).toLowerCase());
+
+        return builder.build();
+    }
+
+    /**
+     * Generates a new self-signed certificate with a specific subject and a specific pair of
+     * private and public keys.
+     *
+     * @param subject the subject (and issuer) of the new certificate to be generated
+     * @param keyPair the pair of private and public keys of the certificate to be generated
+     * @return a new self-signed certificate with the specified <code>subject</code> and <code>keyPair</code>
+     */
+    private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
+    {
+        Timber.d("Signature algorithm: %s", mSignatureAlgorithm);
+        try {
+            long now = System.currentTimeMillis();
+            Date notBefore = new Date(now - ONE_DAY);
+            Date notAfter = new Date(now + ONE_DAY * 6 + CERT_CACHE_EXPIRE_TIME);
+            X509v3CertificateBuilder builder = new BcX509v3CertificateBuilder(
+                    /* issuer */ subject,
+                    /* serial */ BigInteger.valueOf(now), notBefore, notAfter, subject,
+                    /* publicKey */ keyPair.getPublic());
+
+            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(mSignatureAlgorithm);
+            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+            ContentSigner signer;
+            if (keyPair.getPrivate() instanceof RSAKeyParameters) {
+                signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
+            }
+            else {
+                signer = new BcECContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
+            }
+            return builder.build(signer).toASN1Structure();
+        } catch (Throwable t) {
+            if (t instanceof ThreadDeath)
+                throw (ThreadDeath) t;
+            else {
+                Timber.e(t, "Failed to generate self-signed X.509 certificate");
+                if (t instanceof RuntimeException)
+                    throw (RuntimeException) t;
+                else
+                    throw new RuntimeException(t);
+            }
+        }
+    }
+
+    /**
+     * Set the default TLS certificate signature algorithm; This value must be set prior to DtlsControlImpl().
+     * Init certificateInfoCache if the mSignatureAlgorithm is s new user defined SignatureAlgorithm
+     *
+     * @param tlsCertSA TLS certificate signature algorithm
+     */
+    public static void setTlsCertificateSA(String tlsCertSA)
+    {
+        if (mSignatureAlgorithm != null && !mSignatureAlgorithm.equals(tlsCertSA)) {
+            certificateInfoCache = null;
+        }
+        mSignatureAlgorithm = tlsCertSA;
+    }
+
+    /**
      * Chooses the first from a list of <code>SRTPProtectionProfile</code>s that is supported by <code>DtlsControlImpl</code>.
      *
      * @param theirs the list of <code>SRTPProtectionProfile</code>s to choose from
@@ -228,8 +430,9 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
         if (theirs != null) {
             for (int their : theirs) {
                 for (int our : SRTP_PROTECTION_PROFILES) {
-                    if (their == our)
+                    if (their == our) {
                         return their;
+                    }
                 }
             }
         }
@@ -325,132 +528,6 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     }
 
     /**
-     * Generates a new certificate from a new key pair, determines the hash function, and computes the fingerprint.
-     *
-     * @return CertificateInfo a new certificate generated from a new key pair, its hash function, and fingerprint
-     */
-    private static CertificateInfo generateCertificateInfo()
-    {
-        AsymmetricCipherKeyPair keyPair = generateKeyPair();
-        Certificate x509Certificate = generateX509Certificate(generateCN(), keyPair);
-
-        BcTlsCertificate tlsCertificate = new BcTlsCertificate(new BcTlsCrypto(new SecureRandom()), x509Certificate);
-        org.bouncycastle.tls.Certificate certificate
-                = new org.bouncycastle.tls.Certificate(new TlsCertificate[]{tlsCertificate});
-
-        String localFingerprintHashFunction = findHashFunction(x509Certificate);
-        String localFingerprint = computeFingerprint(x509Certificate, localFingerprintHashFunction);
-
-        long timestamp = System.currentTimeMillis();
-        return new CertificateInfo(keyPair, certificate, localFingerprintHashFunction, localFingerprint, timestamp);
-    }
-
-    /**
-     * Generates a new subject for a self-signed certificate to be generated by <code>DtlsControlImpl</code>.
-     *
-     * @return an <code>X500Name</code> which is to be used as the subject of a self-signed certificate
-     * to be generated by <code>DtlsControlImpl</code>
-     */
-    private static X500Name generateCN()
-    {
-        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-
-        final SecureRandom secureRandom = new SecureRandom();
-        final byte[] bytes = new byte[16];
-        secureRandom.nextBytes(bytes);
-
-        final char[] chars = new char[32];
-
-        for (int i = 0; i < 16; i++) {
-            final int b = bytes[i] & 0xff;
-            chars[i * 2] = HEX_ENCODE_TABLE[b >>> 4];
-            chars[i * 2 + 1] = HEX_ENCODE_TABLE[b & 0x0f];
-        }
-        builder.addRDN(BCStyle.CN, (new String(chars)).toLowerCase());
-
-        return builder.build();
-    }
-
-    /**
-     * Return a pair of RSA private and public keys.
-     *
-     * @return a pair of private and public keys
-     */
-    private static AsymmetricCipherKeyPair generateKeyPair()
-    {
-        // The signature algorithm of the generated certificate defaults to SHA256.
-        // However, allow the overriding of the default via the ConfigurationService.
-        String signatureAlgorithm = ConfigUtils.getString(
-                LibJitsi.getConfigurationService(), PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
-
-        if (signatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("RSA")) {
-            RSAKeyPairGenerator generator = new RSAKeyPairGenerator();
-
-            generator.init(new RSAKeyGenerationParameters(
-                    RSA_KEY_PUBLIC_EXPONENT, new SecureRandom(), RSA_KEY_SIZE, RSA_KEY_SIZE_CERTAINTY));
-            return generator.generateKeyPair();
-        }
-        else if (signatureAlgorithm.toUpperCase(Locale.ROOT).endsWith("ECDSA")) {
-            ECKeyPairGenerator generator = new ECKeyPairGenerator();
-            ECNamedCurveParameterSpec curve = ECNamedCurveTable.getParameterSpec("secp256r1");
-            ECDomainParameters domainParams =
-                    new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN(), curve.getH(), curve.getSeed());
-            generator.init(new ECKeyGenerationParameters(domainParams, new SecureRandom()));
-            return generator.generateKeyPair();
-        }
-
-        throw new IllegalArgumentException("Unknown signature algorithm: " + signatureAlgorithm);
-    }
-
-    /**
-     * Generates a new self-signed certificate with a specific subject and a specific pair of
-     * private and public keys.
-     *
-     * @param subject the subject (and issuer) of the new certificate to be generated
-     * @param keyPair the pair of private and public keys of the certificate to be generated
-     * @return a new self-signed certificate with the specified <code>subject</code> and <code>keyPair</code>
-     */
-    private static Certificate generateX509Certificate(X500Name subject, AsymmetricCipherKeyPair keyPair)
-    {
-        // The signature algorithm of the generated certificate defaults to SHA256.
-        // However, allow the overriding of the default via the ConfigurationService.
-        String signatureAlgorithm = ConfigUtils.getString(
-                LibJitsi.getConfigurationService(), PROP_SIGNATURE_ALGORITHM, "SHA256withRSA");
-
-        Timber.d("Signature algorithm: %s", signatureAlgorithm);
-        try {
-            long now = System.currentTimeMillis();
-            Date notBefore = new Date(now - ONE_DAY);
-            Date notAfter = new Date(now + ONE_DAY * 6 + CERT_CACHE_EXPIRE_TIME);
-            X509v3CertificateBuilder builder = new X509v3CertificateBuilder(
-                    /* issuer */ subject,
-                    /* serial */ BigInteger.valueOf(now), notBefore, notAfter, subject,
-                    /* publicKeyInfo */ SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyPair.getPublic()));
-
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(signatureAlgorithm);
-            AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-            ContentSigner signer;
-            if (keyPair.getPrivate() instanceof RSAKeyParameters) {
-                signer = new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
-            }
-            else {
-                signer = new BcECContentSignerBuilder(sigAlgId, digAlgId).build(keyPair.getPrivate());
-            }
-            return builder.build(signer).toASN1Structure();
-        } catch (Throwable t) {
-            if (t instanceof ThreadDeath)
-                throw (ThreadDeath) t;
-            else {
-                Timber.e(t, "Failed to generate self-signed X.509 certificate");
-                if (t instanceof RuntimeException)
-                    throw (RuntimeException) t;
-                else
-                    throw new RuntimeException(t);
-            }
-        }
-    }
-
-    /**
      * Gets the <code>String</code> representation of a fingerprint specified in the form of an
      * array of <code>byte</code>s in accord with RFC 4572.
      *
@@ -474,66 +551,6 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
                 chars[c++] = ':';
         }
         return new String(chars);
-    }
-
-    /**
-     * The certificate with which the local endpoint represented by this instance authenticates its
-     * ends of DTLS sessions.
-     */
-    private final CertificateInfo certificateInfo;
-
-    /**
-     * The indicator which determines whether this instance has been disposed
-     * i.e. prepared for garbage collection by {@link #doCleanup()}.
-     */
-    private boolean disposed = false;
-
-    /**
-     * The fingerprints presented by the remote endpoint via the signaling path.
-     */
-    private Map<String, String> remoteFingerprints;
-
-    /**
-     * The properties of {@code DtlsControlImpl} and their values which this
-     * instance shares with {@link DtlsTransformEngine} and {@link DtlsPacketTransformer}.
-     */
-    private final Properties properties;
-
-    /**
-     * Initializes a new <code>DtlsControlImpl</code> instance.
-     * By default aTalk works in DTLS/SRTP mode.
-     */
-    public DtlsControlImpl()
-    {
-        this(false);
-    }
-
-    /**
-     * Initializes a new <code>DtlsControlImpl</code> instance.
-     *
-     * @param srtpDisabled <code>true</code> if pure DTLS mode without SRTP
-     * extensions is to be used; otherwise, <code>false</code>
-     */
-    public DtlsControlImpl(boolean srtpDisabled)
-    {
-        super(SrtpControlType.DTLS_SRTP);
-
-        CertificateInfo certificateInfo;
-
-        // The methods generateKeyPair(), generateX509Certificate(), findHashFunction(), and/or
-        // computeFingerprint() may be too CPU intensive to invoke for each new DtlsControlImpl
-        // instance. That's why we've decided to reuse their return values within a certain time
-        // frame. Attempt to retrieve from the cache.
-        synchronized (DtlsControlImpl.class) {
-            certificateInfo = certificateInfoCache;
-            if (certificateInfo == null
-                    || certificateInfo.timestamp + CERT_CACHE_EXPIRE_TIME < System.currentTimeMillis()) {
-                // The cache doesn't exist yet or has outlived its lifetime. Rebuild the cache.
-                certificateInfoCache = certificateInfo = generateCertificateInfo();
-            }
-        }
-        this.certificateInfo = certificateInfo;
-        properties = new Properties(srtpDisabled);
     }
 
     /**
@@ -572,7 +589,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     CertificateInfo getCertificateInfo()
     {
-        return certificateInfo;
+        return mCertificateInfo;
     }
 
     /**
@@ -581,6 +598,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public String getLocalFingerprint()
     {
+        // Timber.d("getCertificateInfo => getLocalFingerprint' %s\n%s",
+        //        mCertificateInfo.getCertificateType(), getCertificateInfo().localFingerprint);
         return getCertificateInfo().localFingerprint;
     }
 
@@ -590,6 +609,8 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public String getLocalFingerprintHashFunction()
     {
+        // Timber.d("getCertificateInfo => getLocalFingerprintHashFunction' %s: %s",
+        //        mCertificateInfo.getCertificateType(), getCertificateInfo().localFingerprintHashFunction);
         return getCertificateInfo().localFingerprintHashFunction;
     }
 
@@ -602,7 +623,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
      */
     Properties getProperties()
     {
-        return properties;
+        return mProperties;
     }
 
     /**
@@ -645,7 +666,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public void setConnector(AbstractRTPConnector connector)
     {
-        properties.put(Properties.CONNECTOR_PNAME, connector);
+        mProperties.put(Properties.CONNECTOR_PNAME, connector);
     }
 
     /**
@@ -688,7 +709,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public void setRtcpmux(boolean rtcpmux)
     {
-        properties.put(Properties.RTCPMUX_PNAME, rtcpmux);
+        mProperties.put(Properties.RTCPMUX_PNAME, rtcpmux);
     }
 
     /**
@@ -697,7 +718,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public void setSetup(Setup setup)
     {
-        properties.put(Properties.SETUP_PNAME, setup);
+        mProperties.put(Properties.SETUP_PNAME, setup);
     }
 
     /**
@@ -706,7 +727,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     @Override
     public void start(MediaType mediaType)
     {
-        properties.put(Properties.MEDIA_TYPE_PNAME, mediaType);
+        mProperties.put(Properties.MEDIA_TYPE_PNAME, mediaType);
     }
 
     /**
@@ -717,7 +738,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
     protected void secureOnOff(boolean securityState)
     {
         SrtpListener srtpListener = getSrtpListener();
-        MediaType mediaType = (MediaType) properties.get(Properties.MEDIA_TYPE_PNAME);
+        MediaType mediaType = (MediaType) mProperties.get(Properties.MEDIA_TYPE_PNAME);
         mSecurityState = securityState;
 
         if (securityState)

@@ -231,7 +231,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mCallIdentifier = extras.getString(CallManager.CALL_SID);
-            // End all notifications if any; once the call has started.
+            // End all notifications if any, once the call has started.
             NotificationPopupHandler.removeCallNotification(mCallIdentifier);
 
             mCall = CallManager.getActiveCall(mCallIdentifier);
@@ -1253,6 +1253,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     public void securityTimeout(CallPeerSecurityTimeoutEvent evt)
     {
+        Timber.e("Security timeout: %s", evt.getSessionType());
     }
 
     /**

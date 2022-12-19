@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -781,9 +783,9 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             return;
         callPeer.setState(CallPeerState.INCOMING_CALL);
 
-        // in case of attended transfer, auto answer the call
+        // in case of attended transfer, auto answer the call.
         if (autoAnswer) {
-            // hang up the call before answer, else may terminate as busy
+            // hang up the call before answer, else may terminate as busy.
             try {
                 basicTelephony.hangupCallPeer(attendant);
             } catch (OperationFailedException e) {
@@ -800,8 +802,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         }
 
         /*
-         * see if offer contains audio and video so that we can propose option to the user (i.e.
-         * answer with video if it is a video call...)
+         * see if offer contains audio and video so that we can propose option to the user
+         * (i.e. answer with video if it is a video call...)
          */
         List<JingleContent> offer = callPeer.getSessionIQ().getContents();
         Map<MediaType, MediaDirection> directions = new HashMap<>();
@@ -829,6 +831,8 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
         OperationSetAutoAnswerJabberImpl autoAnswerOpSet = (OperationSetAutoAnswerJabberImpl)
                 getProtocolProvider().getOperationSet(OperationSetBasicAutoAnswer.class);
 
+        // See AndroidCallListener#onCallEvent(): For auto-answer to work properly for JingleMessage incoming call:
+        // Setting answerOnJingleMessageAccept flag gets trigger only after <ringing/>; as this method is handled via separate thread;
         if (autoAnswerOpSet != null) {
             autoAnswerOpSet.autoAnswer(this, directions, jingle);
         }
@@ -935,6 +939,9 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)
                 && protocolProvider.isFeatureSupported(jvb,
                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
+            String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+            DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
+
             CallPeerMediaHandlerJabberImpl mediaHandler = peer.getMediaHandler();
             DtlsControl dtlsControl
                     = (DtlsControl) mediaHandler.getSrtpControls().getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);

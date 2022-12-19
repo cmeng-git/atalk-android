@@ -5,8 +5,10 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.operator.DefaultAlgorithmNameFinder;
 import org.bouncycastle.tls.AlertDescription;
 import org.bouncycastle.tls.Certificate;
 import org.bouncycastle.tls.CertificateRequest;
@@ -19,7 +21,6 @@ import org.bouncycastle.tls.MaxFragmentLength;
 import org.bouncycastle.tls.ProtocolVersion;
 import org.bouncycastle.tls.SignatureAlgorithm;
 import org.bouncycastle.tls.SignatureAndHashAlgorithm;
-import org.bouncycastle.tls.TlsContext;
 import org.bouncycastle.tls.TlsCredentialedDecryptor;
 import org.bouncycastle.tls.TlsCredentialedSigner;
 import org.bouncycastle.tls.TlsECCUtils;
@@ -48,7 +49,6 @@ import timber.log.Timber;
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
- *
  * @See <a href="https://www.rfc-editor.org/rfc/rfc6347">Datagram Transport Layer Security Version 1.2</a>
  * @See <a href="https://www.rfc-editor.org/rfc/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>
  */
@@ -63,7 +63,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * If DTLSv12 or higher is negotiated, configures the set of supported signature algorithms in the
      * CertificateRequest (if one is sent). If null, uses the default set.
      */
-    private Vector<?> serverCertReqSigAlgs = null;
+    private final Vector<?> serverCertReqSigAlgs = null;
 
     /**
      * The <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client.
@@ -116,16 +116,24 @@ public class TlsServerImpl extends DefaultTlsServer
      *
      * Overrides the super implementation to explicitly specify cipher suites
      * which we know to be supported by Bouncy Castle and provide Perfect Forward Secrecy.
+     *
      * @see org/bouncycastle/crypto/tls/DefaultTlsServer.java
+     * @see https://www.acunetix.com/blog/articles/tls-ssl-cipher-hardening/ Preferred Cipher Suite Order
+     * CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+     * CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+     * CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+     * CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
+     * CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+     * CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
      */
     @Override
     public int[] getSupportedCipherSuites()
     {
         int[] suites = new int[]{
-                // Required by Conversations 2.10.10; need work on aTalk getECDSASignerCredentials() to support this
-                // CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-                // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-                // CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                // Required by Conversations 2.10.10 (webrtc-m104.aar), but it cannot support ECDSA signed certificate
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
 
                 CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
@@ -134,6 +142,7 @@ public class TlsServerImpl extends DefaultTlsServer
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+
                 CipherSuite.TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
@@ -142,6 +151,14 @@ public class TlsServerImpl extends DefaultTlsServer
                 CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA
         };
+
+        // Do not offer CipherSuite.TLS_ECDHE_ECDSA.. if the local certificateType is rsa_sign
+        if (getDtlsControl().getCertificateInfo().getCertificateType() == ClientCertificateType.rsa_sign) {
+            int len = suites.length - 3;
+            int[] cipherSuites = new int[len];
+            System.arraycopy(suites, 3, cipherSuites, 0, len);
+            return TlsUtils.getSupportedCipherSuites(getCrypto(), cipherSuites);
+        }
         return TlsUtils.getSupportedCipherSuites(getCrypto(), suites);
     }
 
@@ -153,16 +170,6 @@ public class TlsServerImpl extends DefaultTlsServer
     protected ProtocolVersion[] getSupportedVersions()
     {
         return ProtocolVersion.DTLSv12.downTo(ProtocolVersion.DTLSv10);
-    }
-
-    /**
-     * Gets the <code>TlsContext</code> with which this <code>TlsServer</code> has been initialized.
-     *
-     * @return the <code>TlsContext</code> with which this <code>TlsServer</code> has been initialized
-     */
-    TlsContext getContext()
-    {
-        return context;
     }
 
     /**
@@ -190,7 +197,6 @@ public class TlsServerImpl extends DefaultTlsServer
             short[] certificateTypes = new short[]{ClientCertificateType.rsa_sign,
                     ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
 
-
             Vector<?> serverSigAlgs = null;
             if (TlsUtils.isSignatureAlgorithmsExtensionAllowed(context.getServerVersion())) {
                 serverSigAlgs = serverCertReqSigAlgs;
@@ -198,6 +204,9 @@ public class TlsServerImpl extends DefaultTlsServer
                     serverSigAlgs = TlsUtils.getDefaultSupportedSignatureAlgorithms(context);
                 }
             }
+
+            Vector<X500Name> certificateAuthorities = new Vector<>();
+            certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
 
 //            Certificate certificate = getDtlsControl().getCertificateInfo().getCertificate();
 //            TlsCertificate[] chain = certificate.getCertificateList();
@@ -210,11 +219,11 @@ public class TlsServerImpl extends DefaultTlsServer
 //                e.printStackTrace();
 //            }
 
-            Vector<X500Name> certificateAuthorities = new Vector<>();
-            certificateAuthorities.addElement(new X500Name("CN=atalk.org TLS CA"));
-
             certificateRequest = new CertificateRequest(certificateTypes, serverSigAlgs, certificateAuthorities);
         }
+
+        // Timber.w("getCertificateRequest = CertificateTypes: %s;\nSupportedSignatureAlgorithms: %s;\nCertificateAuthorities: %s",
+        //        Shorts.asList(certificateRequest.getCertificateTypes()), certificateRequest.getSupportedSignatureAlgorithms(), certificateRequest.getCertificateAuthorities());
         return certificateRequest;
     }
 
@@ -229,14 +238,14 @@ public class TlsServerImpl extends DefaultTlsServer
     protected TlsCredentialedDecryptor getRSAEncryptionCredentials()
     {
         if (rsaEncryptionCredentials == null) {
-            TlsCrypto crypto = context.getCrypto();
-
             CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
             Certificate certificate = certInfo.getCertificate();
+
+            TlsCrypto crypto = context.getCrypto();
             AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
 
-            rsaEncryptionCredentials = new BcDefaultTlsCredentialedDecryptor((BcTlsCrypto) crypto,
-                    certificate, privateKey);
+            rsaEncryptionCredentials
+                    = new BcDefaultTlsCredentialedDecryptor((BcTlsCrypto) crypto, certificate, privateKey);
         }
         return rsaEncryptionCredentials;
     }
@@ -248,50 +257,114 @@ public class TlsServerImpl extends DefaultTlsServer
      * <code>rsaEncryptionCredentials</code> or <code>rsaSignerCredentials</code> neither of which is
      * implemented by <code>DefaultTlsServer</code>.
      *
-     * @return
+     * @return TlsCredentialedSigner: rsaSignerCredentials
      */
     @Override
     protected TlsCredentialedSigner getRSASignerCredentials()
     {
         if (rsaSignerCredentials == null) {
-            TlsCrypto crypto = context.getCrypto();
-            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
-
             CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
-            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
             Certificate certificate = certInfo.getCertificate();
 
-            // FIXME The signature and hash algorithms should be retrieved from the certificate.
-            SignatureAndHashAlgorithm signatureAndHashAlgorithm
-                    = new SignatureAndHashAlgorithm(HashAlgorithm.sha256, SignatureAlgorithm.rsa);
+            SignatureAndHashAlgorithm sigAndHashAlg = getSigAndHashAlg(certificate);
+            if (sigAndHashAlg == null)
+                return null;
 
-            rsaSignerCredentials = new BcDefaultTlsCredentialedSigner(cryptoParams, (BcTlsCrypto) crypto,
-                    privateKey, certificate, signatureAndHashAlgorithm);
+            TlsCrypto crypto = context.getCrypto();
+            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
+            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+
+            rsaSignerCredentials = new BcDefaultTlsCredentialedSigner(
+                    cryptoParams, (BcTlsCrypto) crypto, privateKey, certificate, sigAndHashAlg);
         }
         return rsaSignerCredentials;
     }
 
-//    @Override
-//    protected TlsCredentialedSigner getECDSASignerCredentials()
-//    {
-//        if (ecdsaSignerCredentials == null) {
-//            TlsCrypto crypto = context.getCrypto();
-//            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
-//
-//            // TODO: certInfo must contain ECDSA privateKey (see DtlsControlImpl) else failed
-//            CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
-//            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
-//            Certificate certificate = certInfo.getCertificate();
-//
-//            // FIXME The signature and hash algorithms should be retrieved from the certificate.
-//            SignatureAndHashAlgorithm signatureAndHashAlgorithm
-//                    = new SignatureAndHashAlgorithm(HashAlgorithm.sha256, SignatureAlgorithm.ecdsa);
-//
-//            ecdsaSignerCredentials = new BcDefaultTlsCredentialedSigner(cryptoParams, (BcTlsCrypto) crypto,
-//                    privateKey, certificate, signatureAndHashAlgorithm);
-//        }
-//        return ecdsaSignerCredentials;
-//    }
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Depending on the <code>selectedCipherSuite</code>, <code>DefaultTlsServer</code> will require
+     * <code>ecdsaSignerCredentials</code> which is not implemented by <code>DefaultTlsServer</code>
+     * when cipherSuite is KeyExchangeAlgorithm.ECDHE_ECDSA
+     *
+     * @return TlsCredentialedSigner: ecdsaSignerCredentials
+     */
+    @Override
+    protected TlsCredentialedSigner getECDSASignerCredentials()
+    {
+        if (ecdsaSignerCredentials == null) {
+            CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
+            Certificate certificate = certInfo.getCertificate();
+
+            SignatureAndHashAlgorithm sigAndHashAlg = getSigAndHashAlg(certificate);
+            if (sigAndHashAlg == null)
+                return null;
+
+            TlsCrypto crypto = context.getCrypto();
+            TlsCryptoParameters cryptoParams = new TlsCryptoParameters(context);
+            AsymmetricKeyParameter privateKey = certInfo.getKeyPair().getPrivate();
+
+            ecdsaSignerCredentials = new BcDefaultTlsCredentialedSigner(
+                    cryptoParams, (BcTlsCrypto) crypto, privateKey, certificate, sigAndHashAlg);
+        }
+        Timber.d("ECDSASignerCredentials: %s", ecdsaSignerCredentials.getSignatureAndHashAlgorithm());
+        return ecdsaSignerCredentials;
+    }
+
+
+    /**
+     * Obtain the SignatureAndHashAlgorithm based on the given certificate
+     *
+     * @param certificate containing info for SignatureAndHashAlgorithm
+     * @return SignatureAndHashAlgorithm
+     */
+    public static SignatureAndHashAlgorithm getSigAndHashAlg(Certificate certificate)
+    {
+        // FIXME ed448/ed25519? multiple certificates?
+        String algName = new DefaultAlgorithmNameFinder().getAlgorithmName(
+                new ASN1ObjectIdentifier(certificate.getCertificateAt(0).getSigAlgOID())
+        );
+
+        SignatureAndHashAlgorithm sigAndHashAlg;
+        switch (algName) {
+            case "SHA1WITHRSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha1, SignatureAlgorithm.rsa);
+                break;
+            case "SHA224WITHRSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha224, SignatureAlgorithm.rsa);
+                break;
+            case "SHA256WITHRSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha256, SignatureAlgorithm.rsa);
+                break;
+            case "SHA384WITHRSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha384, SignatureAlgorithm.rsa);
+                break;
+            case "SHA512WITHRSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha512, SignatureAlgorithm.rsa);
+                break;
+            case "SHA1WITHECDSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha1, SignatureAlgorithm.ecdsa);
+                break;
+            case "SHA224WITHECDSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha224, SignatureAlgorithm.ecdsa);
+                break;
+            case "SHA256WITHECDSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha256, SignatureAlgorithm.ecdsa);
+                break;
+            case "SHA384WITHECDSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha384, SignatureAlgorithm.ecdsa);
+                break;
+            case "SHA512WITHECDSA":
+                sigAndHashAlg = SignatureAndHashAlgorithm.getInstance(HashAlgorithm.sha512, SignatureAlgorithm.ecdsa);
+                break;
+            default:
+                Timber.w("Unsupported algOID in certificate: %s", algName);
+                return null;
+        }
+
+        Timber.d("TLS Certificate SignatureAndHashAlgorithm: %s", sigAndHashAlg);
+        return sigAndHashAlg;
+    }
 
     /**
      * {@inheritDoc}
@@ -392,7 +465,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * {@inheritDoc}
      * <p>
      * Overrides the super implementation as a simple means of detecting that the security-related
-     * negotiations between the local and the remote enpoints are starting. The detection carried
+     * negotiations between the local and the remote endpoints are starting. The detection carried
      * out for the purposes of <code>SrtpListener</code>.
      */
     @Override
