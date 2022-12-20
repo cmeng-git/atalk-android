@@ -1154,7 +1154,7 @@
     <string name="service_gui_STUN_EDIT_TURN_USER">Nombre usuario</string>
 
     <!-- Security preferences -->
-    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">Señalización DTLS_SRTP</string>
+    <string name="service_gui_PREF_SECURITY_DTLS_SRTP">Opciones DTLS_SRTP</string>
     <string name="service_gui_PREF_SECURITY_DTLS_TITLE">Algoritmo de firma de certificado TLS</string>
     <string name="service_gui_PREF_SECURITY_ENCRYPTION">Habilitar el cifrado de llamadas</string>
     <string name="service_gui_PREF_SECURITY_ENC_PROTOCOLS">Protocolos de cifrado</string>
