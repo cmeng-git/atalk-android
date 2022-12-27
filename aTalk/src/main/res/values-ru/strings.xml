@@ -909,6 +909,7 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Недоступен сохраненный общий секрет. &lt;br/>&lt;b>Рекомендуется проверка SAS &lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Отсутствует ожидаемый сохраненный общий секрет. &lt;br/>&lt;b>Требуется проверка SAS &lt;/b>&lt;br/>Если коды SAS не совпадают, то зависание и повторите попытку &lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Была обнаружена серьезная проблема ZRTP. &lt;br/>&lt;b>Ваш вызов не является безопасным &lt;/b>&lt;br/>Код ошибки : %1$s &lt;/html></string>
+    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">вызов не является безопасным; Время ожидания рукопожатия RTP: %s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="imp_media_security_ENCRYPTION_ENDED">Шифрование звонка закончилось: %1$s</string>

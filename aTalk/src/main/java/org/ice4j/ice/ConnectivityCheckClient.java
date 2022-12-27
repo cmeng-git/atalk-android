@@ -434,8 +434,7 @@ class ConnectivityCheckClient implements ResponseCollector
                             TimeUnit.MILLISECONDS);
 
                     final ScheduledFuture<?> existingCheckerFuture
-                            = checkListCompletionCheckers
-                            .putIfAbsent(streamName, scheduledCheckerFuture);
+                            = checkListCompletionCheckers.putIfAbsent(streamName, scheduledCheckerFuture);
                     if (existingCheckerFuture != null) {
                         scheduledCheckerFuture.cancel(false);
                     }

@@ -265,8 +265,8 @@ public class SecurityEventManager extends ZrtpUserCallback
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 
-        // aTalkApp.showToastMessage(R.string.impl_media_security_ZRTP_GENERIC_MSG, msgCode);
-        Timber.w(new Exception(), "%s: ZRTP key negotiation failed, sub code: %s", sessionTypeToString(sessionType), msgCode);
+        aTalkApp.showToastMessage(R.string.impl_media_security_ZRTP_HANDSHAKE_TIMEOUT, msgCode);
+        Timber.w(new Exception(), "%s: ZRTP key negotiation failed: %s", sessionTypeToString(sessionType), msgCode);
     }
 
     /**

@@ -909,6 +909,7 @@
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Ein erwartetes gemeinsames Passwort 
     fehlt.&lt;br/>&lt;b>SAS-Verifikation ist erforderlich.&lt;/b>&lt;br/>Wenn SAS-Codes nicht übereinstimmen, dann auflegen und neu versuchen.&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Ein schwerwiegendes ZRTP-Problem wurde erkannt.&lt;br/>&lt;b>Ihr Anruf läuft unverschlüsselt.&lt;br>&lt;br/>Fehlercode: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">Der Anruf ist nicht sicher; RTP-Handshake-Timeout: %s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="imp_media_security_ENCRYPTION_ENDED">Die Anrufverschlüsselung wurde beendet: %1$s</string>

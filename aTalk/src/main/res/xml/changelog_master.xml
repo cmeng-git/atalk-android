@@ -6,8 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.0 (12/20/2022)" versioncode="301000">
+    <release version="3.1.1 (12/28/2022)" versioncode="301010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Update ice4j v3.0 to be compatible with android &lt;= API-26; i.e. media call is now compatible with android-5.0</change>
+        <change>Show user error message when ZRTP handshake protocol timeout (too many retries)</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.0 (12/20/2022)" versioncode="301000">
         <change>Add ECDSA Authentication/Digital Signature Algorithm support for TLS server i.e. CipherSuite.TLS_ECDHE_ECDSA...</change>
         <change>Change TLS certification Signature Algorithm to support either RSA or ECDSA CipherSuite. Backward compatible with aTalk v3.0.5</change>
         <change>Add user selectable option to support TLS certification Signature Algorithm for both ECDSA and RSA, with Hash SHA256, SHA384 and SHA512</change>

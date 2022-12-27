@@ -109,7 +109,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Manages statuses and different user resources.
      */
-    private ContactChangesListener contactChangesListener = null;
+    private ContactChangesListener mContactChangesListener = null;
 
     /**
      * Manages the presence extension to advertise the SHA-1 hash of this account avatar as
@@ -860,8 +860,8 @@ public class OperationSetPersistentPresenceJabberImpl
 
             if (eventNew == RegistrationState.REGISTERING) {
                 // contactChangesListener will be used to store presence events till roster is initialized
-                contactChangesListener = new ContactChangesListener();
-                contactChangesListener.storeEvents();
+                mContactChangesListener = new ContactChangesListener();
+                mContactChangesListener.storeEvents();
             }
             else if (eventNew == RegistrationState.REGISTERED) {
                 /*
@@ -942,7 +942,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     if (mRoster != null) {
                         mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
                         mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
-                        mRoster.removeRosterListener(contactChangesListener);
+                        mRoster.removeRosterListener(mContactChangesListener);
                         mRoster = null;
                         Timber.i("SubscribeListener and PresenceEventListener removed");
                     }
@@ -954,7 +954,7 @@ public class OperationSetPersistentPresenceJabberImpl
                     }
                 }
                 handleSubscribeEvent = false;
-                contactChangesListener = null;
+                mContactChangesListener = null;
                 vCardAvatarManager = null;
                 userAvatarManager = null;
             }
@@ -1099,8 +1099,8 @@ public class OperationSetPersistentPresenceJabberImpl
      */
     void firePresenceStatusChanged(Presence presence)
     {
-        if (contactChangesListener != null)
-            contactChangesListener.firePresenceStatusChanged(presence);
+        if (mContactChangesListener != null)
+            mContactChangesListener.firePresenceStatusChanged(presence);
     }
 
     /**
@@ -1458,8 +1458,8 @@ public class OperationSetPersistentPresenceJabberImpl
     public void presenceAvailable(final FullJid address, final Presence presence)
     {
         // Keep a copy in storedPresences for later processing if isStoringPresenceEvents()
-        if ((contactChangesListener != null) && contactChangesListener.isStoringPresenceEvents()) {
-            contactChangesListener.addPresenceEvent(presence);
+        if ((mContactChangesListener != null) && mContactChangesListener.isStoringPresenceEvents()) {
+            mContactChangesListener.addPresenceEvent(presence);
         }
 
         if (localContact == null)
@@ -1550,8 +1550,8 @@ public class OperationSetPersistentPresenceJabberImpl
             mRoster.removeRosterLoadedListener(this);
 
             // init the presenceChangeLister, RosterChangeLister and update contact list status
-            mRoster.addRosterListener(contactChangesListener);
-            ssContactList.init(contactChangesListener);
+            mRoster.addRosterListener(mContactChangesListener);
+            ssContactList.init(mContactChangesListener);
 
             // as we have dispatched the contact list and Roster is ready lets start the jingle nodes discovery
             mPPS.startJingleNodesDiscovery();
