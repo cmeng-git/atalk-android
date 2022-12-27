@@ -23,10 +23,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
-import net.java.sip.communicator.service.protocol.*;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -34,8 +41,9 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.*;
-import org.atalk.android.gui.*;
+import org.atalk.android.R;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AccountsListActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
@@ -46,17 +54,16 @@ import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
-import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
+import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.*;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
 
 /**
  * The main options menu. Every <code>Activity</code> that desires to have the general options menu
@@ -124,7 +131,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     protected void onPause()
     {
         super.onPause();
-        AndroidGUIActivator.bundleContext.removeServiceListener(this);
+        // FFR v3.0.5: NullPointerException; may have stop() in AndroidGUIActivator
+        if (AndroidGUIActivator.bundleContext != null)
+            AndroidGUIActivator.bundleContext.removeServiceListener(this);
     }
 
     /**

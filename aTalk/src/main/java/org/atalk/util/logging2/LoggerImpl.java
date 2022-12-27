@@ -16,16 +16,19 @@
 
 package org.atalk.util.logging2;
 
+import org.atalk.util.function.Function;
+import org.atalk.util.function.Supplier;
+
 import java.util.*;
-import java.util.function.*;
 import java.util.logging.*;
 
 /**
- * Implements {@link Logger} by delegating to
- * a {@link java.util.logging.Logger}.
+ * Implements {@link Logger} by delegating to a {@link java.util.logging.Logger}.
  */
 public class LoggerImpl implements Logger
 {
+    static Function<String, java.util.logging.Logger> loggerFactory = java.util.logging.Logger::getLogger;
+
     private final java.util.logging.Logger loggerDelegate;
 
     /**
@@ -100,7 +103,7 @@ public class LoggerImpl implements Logger
     {
         loggerDelegate.removeHandler(handler);
     }
-    
+
     private boolean isLoggable(Level level)
     {
         return level.intValue() >= minLogLevel.intValue() && loggerDelegate.isLoggable(level);
@@ -108,8 +111,7 @@ public class LoggerImpl implements Logger
 
     private void log(Level level, Object msg, Throwable thrown)
     {
-        if (!isLoggable(level))
-        {
+        if (!isLoggable(level)) {
             return;
         }
         LogRecord lr = new ContextLogRecord(level, msg.toString(), logContext.formattedContext);
@@ -120,8 +122,7 @@ public class LoggerImpl implements Logger
 
     private void log(Level level, Object msg)
     {
-        if (!isLoggable(level))
-        {
+        if (!isLoggable(level)) {
             return;
         }
         LogRecord lr = new ContextLogRecord(level, msg.toString(), logContext.formattedContext);
@@ -131,8 +132,7 @@ public class LoggerImpl implements Logger
 
     private void log(Level level, Supplier<String> msgSupplier)
     {
-        if (!isLoggable(level))
-        {
+        if (!isLoggable(level)) {
             return;
         }
         LogRecord lr = new ContextLogRecord(level, msgSupplier.get(), logContext.formattedContext);
@@ -221,7 +221,8 @@ public class LoggerImpl implements Logger
     }
 
     @Override
-    public boolean isDebugEnabled() {
+    public boolean isDebugEnabled()
+    {
         return isLoggable(Level.FINE);
     }
 
@@ -252,7 +253,7 @@ public class LoggerImpl implements Logger
     @Override
     public void info(Supplier<String> msgSupplier)
     {
-       log(Level.INFO, msgSupplier);
+        log(Level.INFO, msgSupplier);
     }
 
     @Override
@@ -308,6 +309,4 @@ public class LoggerImpl implements Logger
     {
         logContext.addContext(key, value);
     }
-
-    static Function<String, java.util.logging.Logger> loggerFactory = java.util.logging.Logger::getLogger;
 }

@@ -1,5 +1,14 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.1 (301010)
+Release Date:   12/28/2022
+Author:         cmeng
+- Update ice4j v3.0 to be compatible with android <= API-26; i.e. media call is now compatible with android-5.0
+- Show user error message when ZRTP handshake protocol timeout (too many retries)
+
+- Review and fix if possible FFR from android developer dated 2022/12/24
+
+=========================================================================
 Version:        3.1.0 (301000)
 Release Date:   12/20/2022
 Author:         cmeng

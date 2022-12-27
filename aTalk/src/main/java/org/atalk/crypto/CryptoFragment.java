@@ -949,7 +949,13 @@ public class CryptoFragment extends OSGiFragment
             omemoCapable.put(mDescriptor, false);
             return;
         }
+
+        // Seems like from FFR; OmemoManager can still be null after user is authenticated
         mOmemoManager = OmemoManager.getInstanceFor(mConnection);
+        if (mOmemoManager == null) {
+            omemoCapable.put(mDescriptor, false);
+            return;
+        }
 
         // Execute in a new thread to avoid ANR with black screen when chat window is opened.
         new Thread()

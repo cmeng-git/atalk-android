@@ -928,6 +928,7 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>No retained shared secret available.&lt;br/>&lt;b>SAS verification is recommended&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>An expected retained shared secret is missing.&lt;br/>&lt;b>SAS verification is required&lt;/b>&lt;br/>If SAS codes do not match then hangup and try again&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>A severe ZRTP problem was detected.&lt;br/>&lt;b>Your call is not secure&lt;/b>&lt;br/>Error code: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">The call is not secure; RTP handshake timeout: %s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="imp_media_security_ENCRYPTION_ENDED">The call encryption has ended: %1$s</string>

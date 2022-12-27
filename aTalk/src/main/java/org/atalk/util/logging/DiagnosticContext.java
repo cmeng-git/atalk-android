@@ -39,22 +39,22 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
     /**
      * {@inheritDoc}
      */
-    @SuppressLint("NewApi") // Required API-26
+    // @SuppressLint("NewApi") // Required API-26
     public DiagnosticContext()
     {
         super();
-        this.clock = Clock.systemUTC();
+        // this.clock = Clock.systemUTC();
     }
 
-    /**
-     * Creates a diagnostic context using the specified clock for timestamp values.
-     * @param clock providing access to the current instant, date and time using a time-zone.
-     */
-    public DiagnosticContext(Clock clock)
-    {
-        super();
-        this.clock = clock;
-    }
+//    /**
+//     * Creates a diagnostic context using the specified clock for timestamp values.
+//     * @param clock providing access to the current instant, date and time using a time-zone.
+//     */
+//    public DiagnosticContext(Clock clock)
+//    {
+//        super();
+//        this.clock = clock;
+//    }
 
     /**
      * Makes a new time series point without a timestamp. This is recommended

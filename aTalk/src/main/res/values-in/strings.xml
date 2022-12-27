@@ -918,6 +918,7 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Tidak ada rahasia bersama yang dipertahankan.&lt;br/>&lt;b>Verifikasi SAS direkomendasikan&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Rahasia bersama retensi yang diharapkan tidak ada.&lt;br/>&lt;b>Verifikasi SAS diperlukan&lt;/b>&lt;br/>Jika kode SAS tidak cocok, maka hangup dan coba lagi&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Masalah ZRTP parah terdeteksi.&lt;br/>&lt;b>Panggilan Anda tidak aman&lt;/b>&lt;br/>Kode kesalahan : %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">Panggilan tidak aman; Batas waktu jabat tangan RTP: %s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="imp_media_security_ENCRYPTION_ENDED">Enkripsi panggilan telah berakhir: %1$s</string>

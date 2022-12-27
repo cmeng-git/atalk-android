@@ -16,9 +16,11 @@
 
 package org.atalk.util.logging2;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.logging.*;
+import org.atalk.util.function.Supplier;
+
+import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 
 public interface Logger
 {
@@ -28,13 +30,16 @@ public interface Logger
      * {@link LogContext} (given here) will, in addition to the values
      * it contains, have the parent logger's context merged into it (the child's
      * context values take priority in case of a conflict)
+     *
      * @return the created logger
      */
     Logger createChildLogger(String name, Map<String, String> context);
+
     /**
      * Create a 'child' logger which derives from this one.  The child logger
      * will share the same log level setting as this one and it will inherit
      * this logger's {@link LogContext}
+     *
      * @return the created logger
      */
     Logger createChildLogger(String name);
@@ -58,6 +63,7 @@ public interface Logger
      * Check if a message with a TRACE level would actually be logged by this
      * logger.
      * <p>
+     *
      * @return true if the TRACE level is currently being logged
      */
     boolean isTraceEnabled();
@@ -69,6 +75,7 @@ public interface Logger
      * level then the given message is forwarded to all the
      * registered output Handler objects.
      * <p>
+     *
      * @param msg The message to log
      */
     void trace(Object msg);
@@ -78,7 +85,7 @@ public interface Logger
      * if the TRACE level is currently loggable.
      *
      * @param msgSupplier a {@link Supplier} which will return the
-     *                    log mesage when invoked
+     * log mesage when invoked
      */
     void trace(Supplier<String> msgSupplier);
 
@@ -86,6 +93,7 @@ public interface Logger
      * Check if a message with a DEBUG level would actually be logged by this
      * logger.
      * <p>
+     *
      * @return true if the DEBUG level is currently being logged
      */
     boolean isDebugEnabled();
@@ -97,6 +105,7 @@ public interface Logger
      * level then the given message is forwarded to all the
      * registered output Handler objects.
      * <p>
+     *
      * @param msg The message to log
      */
     void debug(Object msg);
@@ -105,14 +114,12 @@ public interface Logger
      * Log a DEBUG message.  Only invokes the given supplier
      * if the DEBUG level is currently loggable.
      *
-     * @param msgSupplier a {@link Supplier} which will return the
-     *                    log mesage when invoked
+     * @param msgSupplier a {@link Supplier} which will return the log mesage when invoked
      */
     void debug(Supplier<String> msgSupplier);
 
     /**
-     * Check if a message with an INFO level would actually be logged by this
-     * logger.
+     * Check if a message with an INFO level would actually be logged by this logger.
      *
      * @return true if the INFO level is currently being logged
      */
@@ -125,6 +132,7 @@ public interface Logger
      * level then the given message is forwarded to all the
      * registered output Handler objects.
      * <p>
+     *
      * @param msg The message to log
      */
     void info(Object msg);
@@ -133,15 +141,13 @@ public interface Logger
      * Log an INFO message.  Only invokes the given supplier
      * if the INFO level is currently loggable.
      *
-     * @param msgSupplier a {@link Supplier} which will return the
-     *                    log mesage when invoked
+     * @param msgSupplier a {@link Supplier} which will return the log mesage when invoked
      */
     void info(Supplier<String> msgSupplier);
 
     /**
-     * Check if a message with a WARN level would actually be logged by this
-     * logger.
-     * <p>
+     * Check if a message with a WARN level would actually be logged by this logger.
+     *
      * @return true if the WARN level is currently being logged
      */
     boolean isWarnEnabled();
@@ -153,6 +159,7 @@ public interface Logger
      * level then the given message is forwarded to all the
      * registered output Handler objects.
      * <p>
+     *
      * @param msg The message to log
      */
     void warn(Object msg);
@@ -161,16 +168,16 @@ public interface Logger
      * Log a WARN message.  Only invokes the given supplier
      * if the WARN level is currently loggable.
      *
-     * @param msgSupplier a {@link Supplier} which will return the
-     *                    log mesage when invoked
+     * @param msgSupplier a {@link Supplier} which will return the log mesage when invoked
      */
     void warn(Supplier<String> msgSupplier);
 
     /**
      * Log a message, with associated Throwable information.
      * <p>
-     * @param msg   The message to log
-     * @param t  Throwable associated with log message.
+     *
+     * @param msg The message to log
+     * @param t Throwable associated with log message.
      */
     void warn(Object msg, Throwable t);
 
@@ -181,24 +188,24 @@ public interface Logger
      * level then the given message is forwarded to all the
      * registered output Handler objects.
      * <p>
+     *
      * @param msg The message to log
      */
     void error(Object msg);
 
     /**
-     * Log an ERROR message.  Only invokes the given supplier
-     * if the ERROR level is currently loggable.
+     * Log an ERROR message.  Only invokes the given supplier if the ERROR level is currently loggable.
      *
-     * @param msgSupplier a {@link Supplier} which will return the
-     *                    log mesage when invoked
+     * @param msgSupplier a {@link Supplier} which will return the log mesage when invoked
      */
     void error(Supplier<String> msgSupplier);
 
     /**
      * Log a message, with associated Throwable information.
      * <p>
-     * @param msg   The message to log
-     * @param t  Throwable associated with log message.
+     *
+     * @param msg The message to log
+     * @param t Throwable associated with log message.
      */
     void error(Object msg, Throwable t);
 
@@ -251,13 +258,14 @@ public interface Logger
 
     /**
      * Add additional log context to this logger
-     * @param addedContext a map of key, value pairs of the key names
-     *                     and values to add
+     *
+     * @param addedContext a map of key, value pairs of the key names and values to add
      */
     void addContext(Map<String, String> addedContext);
 
     /**
      * Add additional log context to this logger
+     *
      * @param key the context key
      * @param value the context value
      */

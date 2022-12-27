@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 301000
-        versionName "3.1.0"
+        versionCode 301010
+        versionName "3.1.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -401,6 +401,8 @@ dependencies {
 
         // Consumer was introduced in API-24
         classRename 'java.util.function.Consumer', 'org.atalk.util.function.Consumer'
+        classRename 'java.util.function.Function', 'org.atalk.util.function.Function'
+        classRename 'java.util.function.Supplier', 'org.atalk.util.function.Supplier'
 
         // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
         classRename 'java.time.Duration', 'org.threeten.bp.Duration'

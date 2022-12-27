@@ -927,6 +927,7 @@
     <string name="impl_media_security_WARNING_NO_RS_MATCH">&lt;html>Nenhum segredo compartilhado preservado disponível.&lt;br/>&lt;b>Recomenda-se a verificação SAS&lt;/b>&lt;/html></string>
     <string name="impl_media_security_WARNING_NO_EXPECTED_RS_MATCH">&lt;html>Falta um segredo compartilhado retido previsto.&lt;br/>&lt;b>Requerida verificação SAS&lt;/b>&lt;br/>Se os códigos SAS não corresponderem, desligue e tente novamente&lt;/html></string>
     <string name="impl_media_security_ZRTP_GENERIC_MSG">&lt;html>Foi detectado um grave problema com o ZRTP.&lt;br/>&lt;b>Sua ligação não está segura&lt;/b>&lt;br/>Código de erro: %1$s&lt;/html></string>
+    <string name="impl_media_security_ZRTP_HANDSHAKE_TIMEOUT">A chamada não é segura; Tempo limite de handshake RTP: %s</string>
 
     <!-- DTLS-SRTP Securing -->
     <string name="imp_media_security_ENCRYPTION_ENDED">A ligação cryptografada terminou: %1$s</string>
