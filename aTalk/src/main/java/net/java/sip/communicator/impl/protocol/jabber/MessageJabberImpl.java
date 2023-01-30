@@ -23,7 +23,7 @@ public class MessageJabberImpl extends AbstractMessage
      * Creates an instance of this Message with the specified parameters.
      *
      * @param content the text content of the message.
-     * @param encType contains both mime and encryption types @see ChatMessage.ENC_TYPE definition
+     * @param encType contains both mime and encryption types etc @see ChatMessage.ENC_TYPE definition
      * @param subject the subject of the message or null for empty.
      * @param messageUID @see net.java.sip.communicator.service.protocol.IMessage#getMessageUID()
      */

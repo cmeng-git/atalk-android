@@ -18,18 +18,46 @@ package org.atalk.android.gui.chat.chatsession;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.*;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
 import android.util.SparseBooleanArray;
-import android.view.*;
-import android.widget.*;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.muc.MUCService;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -40,7 +68,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
@@ -49,24 +79,31 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.DomainJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 /**
- * The user interface that allows user to have direct access the previous chat sessions.
+ * The user interface that allows user to have direct access to the previous chat sessions.
  *
  * @author Eng Chong Meng
  */
-public class ChatSessionFragment extends OSGiFragment
-        implements View.OnClickListener, ContactPresenceStatusListener, ChatRoomListChangeListener,
-        EntityListHelper.TaskCompleted
-{
+public class ChatSessionFragment extends OSGiFragment implements View.OnClickListener,
+        ContactPresenceStatusListener, ChatRoomListChangeListener, EntityListHelper.TaskCompleted {
     /**
      * bit-7 of the ChatSession#STATUS is to hide session from UI if set
      *
@@ -130,8 +167,7 @@ public class ChatSessionFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
         mMHS = MessageHistoryActivator.getMessageHistoryService();
@@ -145,8 +181,7 @@ public class ChatSessionFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.chat_session, container, false);
         mTitle = contentView.findViewById(R.id.chat_session);
 
@@ -166,13 +201,11 @@ public class ChatSessionFragment extends OSGiFragment
     /**
      * Adapter displaying all the available chat session for user selection.
      */
-    private class ChatSessionAdapter extends BaseAdapter
-    {
+    private class ChatSessionAdapter extends BaseAdapter {
         public LayoutInflater mInflater;
         public int CHAT_SESSION_RECORD = 1;
 
-        private ChatSessionAdapter(LayoutInflater inflater)
-        {
+        private ChatSessionAdapter(LayoutInflater inflater) {
             mInflater = inflater;
 
             new InitChatRoomWrapper().execute();
@@ -180,14 +213,12 @@ public class ChatSessionFragment extends OSGiFragment
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return sessionRecords.size();
         }
 
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return sessionRecords.get(position);
         }
 
@@ -196,8 +227,7 @@ public class ChatSessionFragment extends OSGiFragment
          *
          * @param sessionUuid session Uuid
          */
-        public void removeItem(String sessionUuid)
-        {
+        public void removeItem(String sessionUuid) {
             int index = 0;
             for (ChatSessionRecord cdRecord : sessionRecords) {
                 if (cdRecord.getSessionUuid().equals(sessionUuid))
@@ -216,38 +246,32 @@ public class ChatSessionFragment extends OSGiFragment
          *
          * @param index of the sessionRecord to be deleted
          */
-        public void removeItem(int index)
-        {
+        public void removeItem(int index) {
             sessionRecords.remove(index);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public int getItemViewType(int position)
-        {
+        public int getItemViewType(int position) {
             return CHAT_SESSION_RECORD;
         }
 
         @Override
-        public int getViewTypeCount()
-        {
+        public int getViewTypeCount() {
             return 1;
         }
 
         @Override
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return getCount() == 0;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             ChatRecordViewHolder chatRecordViewHolder;
             ChatSessionRecord chatSessionRecord = sessionRecords.get(position);
 
@@ -272,8 +296,7 @@ public class ChatSessionFragment extends OSGiFragment
                 chatRecordViewHolder.callVideoButton.setTag(chatRecordViewHolder);
 
                 convertView.setTag(chatRecordViewHolder);
-            }
-            else {
+            } else {
                 chatRecordViewHolder = (ChatRecordViewHolder) convertView.getTag();
             }
             chatRecordViewHolder.childPosition = position;
@@ -297,15 +320,13 @@ public class ChatSessionFragment extends OSGiFragment
                 byte[] avatar = AvatarManager.getAvatarImageByJid(bareJid);
                 if (avatar != null) {
                     chatRecordViewHolder.avatar.setImageBitmap(AndroidImageUtil.bitmapFromBytes(avatar));
-                }
-                else {
+                } else {
                     chatRecordViewHolder.avatar.setImageResource(R.drawable.person_photo);
                 }
                 metaContact = mMetaContacts.get(entityId);
                 if (metaContact != null)
                     unreadCount = metaContact.getUnreadCount();
-            }
-            else {
+            } else {
                 chatRecordViewHolder.avatar.setImageResource(R.drawable.ic_chatroom);
                 ChatRoomWrapper crpWrapper = chatRoomWrapperList.get(entityId);
                 if (crpWrapper != null)
@@ -327,12 +348,10 @@ public class ChatSessionFragment extends OSGiFragment
          * Retrieve all the chat sessions saved locally in the database
          * Populate the fragment with the chat session for each getView()
          */
-        private class getChatSessionRecords extends AsyncTask<Void, Void, Void>
-        {
+        private class getChatSessionRecords extends AsyncTask<Void, Void, Void> {
             final Date mEndDate;
 
-            public getChatSessionRecords(Date date)
-            {
+            public getChatSessionRecords(Date date) {
                 mEndDate = date;
                 sessionRecords.clear();
                 mMetaContacts.clear();
@@ -340,8 +359,7 @@ public class ChatSessionFragment extends OSGiFragment
             }
 
             @Override
-            protected Void doInBackground(Void... params)
-            {
+            protected Void doInBackground(Void... params) {
                 initMetaContactList();
                 Collection<ChatSessionRecord> csRecordPPS;
 
@@ -360,8 +378,7 @@ public class ChatSessionFragment extends OSGiFragment
             }
 
             @Override
-            protected void onPostExecute(Void result)
-            {
+            protected void onPostExecute(Void result) {
                 if (sessionRecords.size() > 0) {
                     chatSessionAdapter.notifyDataSetChanged();
                 }
@@ -377,8 +394,7 @@ public class ChatSessionFragment extends OSGiFragment
      * @param entityJid the entity Jid of MetaContact or ChatRoom ID
      * @param count the message unread count
      */
-    public void updateUnreadCount(final String entityJid, final int count)
-    {
+    public void updateUnreadCount(final String entityJid, final int count) {
         if ((StringUtils.isNotEmpty(entityJid) && (chatSessionAdapter != null))) {
             final ChatRecordViewHolder chatRecordViewHolder = crViewHolderMap.get(entityJid);
             if (chatRecordViewHolder == null)
@@ -387,8 +403,7 @@ public class ChatSessionFragment extends OSGiFragment
             runOnUiThread(() -> {
                 if (count == 0) {
                     chatRecordViewHolder.unreadCount.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     chatRecordViewHolder.unreadCount.setVisibility(View.VISIBLE);
                     chatRecordViewHolder.unreadCount.setUnreadCount(count);
                 }
@@ -404,8 +419,7 @@ public class ChatSessionFragment extends OSGiFragment
      *
      * @param pps the <code>ProtocolProviderService</code> for which we add the listener
      */
-    private void addContactStatusListener(ProtocolProviderService pps)
-    {
+    private void addContactStatusListener(ProtocolProviderService pps) {
         OperationSetPresence presenceOpSet = pps.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null) {
             presenceOpSet.removeContactPresenceStatusListener(this);
@@ -419,8 +433,7 @@ public class ChatSessionFragment extends OSGiFragment
      * @param chatTypeView the chat type state image view
      * @param chatType the chat session Type.
      */
-    private void setChatType(ImageView chatTypeView, int chatType)
-    {
+    private void setChatType(ImageView chatTypeView, int chatType) {
         int iconId;
 
         switch (chatType) {
@@ -440,36 +453,31 @@ public class ChatSessionFragment extends OSGiFragment
         chatTypeView.setImageResource(iconId);
     }
 
-    private void setTitle()
-    {
+    private void setTitle() {
         String title = aTalkApp.getResString(R.string.service_gui_RECENT_MESSAGES)
                 + " (" + sessionRecords.size() + ")";
         mTitle.setText(title);
     }
 
     // Handle only if contactImpl instanceof MetaContact;
-    private boolean isShowCallBtn(Object contactImpl)
-    {
+    private boolean isShowCallBtn(Object contactImpl) {
         return (contactImpl instanceof MetaContact)
                 && isShowButton((MetaContact) contactImpl, OperationSetBasicTelephony.class);
     }
 
-    private boolean isShowVideoCallBtn(Object contactImpl)
-    {
+    private boolean isShowVideoCallBtn(Object contactImpl) {
         return (contactImpl instanceof MetaContact)
                 && isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class);
     }
 
-    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
-    {
+    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass) {
         return ((metaContact != null) && metaContact.getOpSetSupportedContact(opSetClass) != null);
     }
 
     /**
      * Initializes the adapter data.
      */
-    public void initMetaContactList()
-    {
+    public void initMetaContactList() {
         MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
@@ -481,8 +489,7 @@ public class ChatSessionFragment extends OSGiFragment
      *
      * @param group the group, which child contacts to add
      */
-    private void addContacts(MetaContactGroup group)
-    {
+    private void addContacts(MetaContactGroup group) {
         if (group.countChildContacts() > 0) {
 
             // Use Iterator to avoid ConcurrentModificationException on addContact()
@@ -501,8 +508,7 @@ public class ChatSessionFragment extends OSGiFragment
     }
 
     @Override
-    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
-    {
+    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
@@ -510,14 +516,12 @@ public class ChatSessionFragment extends OSGiFragment
      * Indicates that a change has occurred in the chatRoom List.
      */
     @Override
-    public void contentChanged(ChatRoomListChangeEvent evt)
-    {
+    public void contentChanged(ChatRoomListChangeEvent evt) {
         uiHandler.post(() -> chatSessionAdapter.notifyDataSetChanged());
     }
 
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
-    {
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
         if (result > 0) {
             chatSessionAdapter.new getChatSessionRecords(new Date()).execute();
         }
@@ -527,11 +531,9 @@ public class ChatSessionFragment extends OSGiFragment
      * Creates the providers comboBox and filling its content with the current available chatRooms.
      * Add all available server's chatRooms to the chatRoomList when providers changed.
      */
-    private class InitChatRoomWrapper extends AsyncTask<Void, Void, Void>
-    {
+    private class InitChatRoomWrapper extends AsyncTask<Void, Void, Void> {
         @Override
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
             chatRoomList.clear();
             chatRoomWrapperList.clear();
 
@@ -568,8 +570,7 @@ public class ChatSessionFragment extends OSGiFragment
             -> onClick(view.findViewById(R.id.chatSessionView));
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         ChatRecordViewHolder viewHolder;
         ChatSessionRecord chatSessionRecord;
         String accountId;
@@ -585,8 +586,7 @@ public class ChatSessionFragment extends OSGiFragment
 
             accountId = chatSessionRecord.getAccountUserId();
             entityJid = chatSessionRecord.getEntityId();
-        }
-        else {
+        } else {
             Timber.w("Clicked item is not a valid MetaContact or chatRoom");
             return;
         }
@@ -625,8 +625,7 @@ public class ChatSessionFragment extends OSGiFragment
                         break;
                 }
             }
-        }
-        else {
+        } else {
             createOrJoinChatRoom(accountId, entityJid);
         }
     }
@@ -635,8 +634,7 @@ public class ChatSessionFragment extends OSGiFragment
      * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
      */
-    public void startChat(MetaContact metaContact)
-    {
+    public void startChat(MetaContact metaContact) {
         if (metaContact.getDefaultContact() == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
             return;
@@ -658,8 +656,7 @@ public class ChatSessionFragment extends OSGiFragment
      *
      * @param descriptor <code>MetaContact</code> for which chat activity will be started.
      */
-    private void startChatActivity(Object descriptor)
-    {
+    private void startChatActivity(Object descriptor) {
         Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
         try {
             startActivity(chatIntent);
@@ -671,8 +668,7 @@ public class ChatSessionFragment extends OSGiFragment
     /**
      * Invites the contacts to the chat conference.
      */
-    private void createOrJoinChatRoom(String userId, String chatRoomID)
-    {
+    private void createOrJoinChatRoom(String userId, String chatRoomID) {
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
@@ -686,8 +682,7 @@ public class ChatSessionFragment extends OSGiFragment
         if (chatRoomWrapper != null) {
             nickName = chatRoomWrapper.getNickName();
             password = chatRoomWrapper.loadPassword();
-        }
-        else {
+        } else {
             // Just create chatRoomWrapper without joining as nick and password options are not available
             chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
                     reason, false, false, true, chatRoomList.contains(chatRoomID));
@@ -725,8 +720,7 @@ public class ChatSessionFragment extends OSGiFragment
     /**
      * ActionMode with multi-selection implementation for chatListView
      */
-    private AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
-    {
+    private AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener() {
         int cPos;
         int headerCount;
         int checkListSize;
@@ -737,8 +731,7 @@ public class ChatSessionFragment extends OSGiFragment
         SparseBooleanArray checkedList;
 
         @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked)
-        {
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
             // Here you can do something when items are selected/de-selected
             checkedList = chatSessionListView.getCheckedItemPositions();
             checkListSize = checkedList.size();
@@ -754,8 +747,7 @@ public class ChatSessionFragment extends OSGiFragment
 
         // Called when the user selects a menu item. On action picked, close the CAB i.e. mode.finish();
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item)
-        {
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int cType;
             ChatSessionRecord sessionRecord;
 
@@ -798,8 +790,7 @@ public class ChatSessionFragment extends OSGiFragment
                                             || chatRoomWrapperList.containsKey(entityJid)) {
                                         mMHS.setSessionChatType(sessionUuid, sessionRecord.getChatType() | SESSION_HIDDEN);
                                         Timber.d("Hide chatSession for entityJid: %s (%s)", entityJid, sessionUuid);
-                                    }
-                                    else {
+                                    } else {
                                         int msgCount = mMHS.getMessageCountForSessionUuid(sessionUuid);
                                         mMHS.purgeLocallyStoredHistory(Collections.singletonList(sessionUuid), true);
                                         Timber.w("Purged (%s) messages for invalid entityJid: %s (%s)",
@@ -830,8 +821,7 @@ public class ChatSessionFragment extends OSGiFragment
 
         // Called when the action mActionMode is created; startActionMode() was called
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu)
-        {
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate the menu for the CAB
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.call_history_menu, menu);
@@ -846,8 +836,7 @@ public class ChatSessionFragment extends OSGiFragment
         // Called each time the action mActionMode is shown. Always called after onCreateActionMode,
         // but may be called multiple times if the mActionMode is invalidated.
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu)
-        {
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             // Here you can perform updates to the CAB due to an invalidate() request
             // Return false if nothing is done.
             return false;
@@ -855,16 +844,14 @@ public class ChatSessionFragment extends OSGiFragment
 
         // Called when the user exits the action mActionMode
         @Override
-        public void onDestroyActionMode(ActionMode mode)
-        {
+        public void onDestroyActionMode(ActionMode mode) {
             // Here you can make any necessary updates to the activity when
             // the CAB is removed. By default, selected items are deselected/unchecked.
             ActionMode mActionMode = null;
         }
     };
 
-    private static class ChatRecordViewHolder
-    {
+    private static class ChatRecordViewHolder {
         ImageView avatar;
         ImageView chatType;
         ImageView callButton;

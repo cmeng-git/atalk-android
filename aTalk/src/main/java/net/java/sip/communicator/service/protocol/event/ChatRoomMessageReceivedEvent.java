@@ -46,24 +46,24 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     /**
      * A timestamp indicating the exact date when the event occurred.
      */
-    private final Date timestamp;
+    private final Date mTimestamp;
 
     /**
      * The received <code>IMessage</code>.
      */
-    private final IMessage message;
+    private final IMessage mMessage;
 
     /**
      * The type of message event that this instance represents.
      */
-    private final int eventType;
+    private final int mEventType;
 
     /**
      * Some services can fill our room with message history.
      */
-    private boolean historyMessage = false;
+    private boolean mHistoryMessage = false;
 
-    private boolean isAutoJoin = false;
+    private final boolean isAutoJoin;
 
     /**
      * Indicates whether the message is important or not.
@@ -71,15 +71,15 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     private boolean isImportantMessage = false;
 
     /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
+     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code>
+     * message received from the specified <code>from</code> contact.
      *
      * @param source the <code>ChatRoom</code> for which the message is received.
      * @param from the <code>ChatRoomMember</code> that has sent this message.
      * @param timestamp the exact date when the event occurred.
      * @param message the received <code>IMessage</code>.
-     * @param eventType the type of message event that this instance represents (one of the
-     * XXX_MESSAGE_RECEIVED static fields).
+     * @param eventType the type of message event that this instance represents
+     * (one of the XXX_MESSAGE_RECEIVED static fields).
      */
     public ChatRoomMessageReceivedEvent(ChatRoom source, ChatRoomMember from, Date timestamp,
             IMessage message, int eventType)
@@ -91,9 +91,9 @@ public class ChatRoomMessageReceivedEvent extends EventObject
         }
 
         this.from = from;
-        this.timestamp = timestamp;
-        this.message = message;
-        this.eventType = eventType;
+        mTimestamp = timestamp;
+        mMessage = message;
+        mEventType = eventType;
 
         MUCServiceImpl mucService = MUCActivator.getMUCService();
         ChatRoomWrapper chatRoomWrapper = mucService.getChatRoomWrapperByChatRoom(source, false);
@@ -101,11 +101,11 @@ public class ChatRoomMessageReceivedEvent extends EventObject
     }
 
     /**
-     * Returns a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code> whose
-     * reception this event represents.
+     * Returns a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code>
+     * whose reception this event represents.
      *
-     * @return a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code> whose
-     * reception this event represents.
+     * @return a reference to the <code>ChatRoomMember</code> that has send the <code>IMessage</code>
+     * whose reception this event represents.
      */
     public ChatRoomMember getSourceChatRoomMember()
     {
@@ -119,7 +119,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      */
     public IMessage getMessage()
     {
-        return message;
+        return mMessage;
     }
 
     /**
@@ -129,7 +129,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      */
     public Date getTimestamp()
     {
-        return timestamp;
+        return mTimestamp;
     }
 
     /**
@@ -150,7 +150,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      */
     public int getEventType()
     {
-        return eventType;
+        return mEventType;
     }
 
     /**
@@ -160,7 +160,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      */
     public boolean isHistoryMessage()
     {
-        return historyMessage;
+        return mHistoryMessage;
     }
 
     /**
@@ -180,7 +180,7 @@ public class ChatRoomMessageReceivedEvent extends EventObject
      */
     public void setHistoryMessage(boolean historyMessage)
     {
-        this.historyMessage = historyMessage;
+        mHistoryMessage = historyMessage;
     }
 
     /**

@@ -137,7 +137,8 @@
     <string name="service_gui_CALL_ERROR">Удаленная сторона возвращает ошибку: %1$s</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Подтвердите и выберите пункты «Выбрать все», прежде чем переходить к пункту «Удалить».</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Нет удаленных записей истории звонков: %1$s</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Вы уверены, что хотите очистить все записи звонков до даты: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ни одна запись не выбрана для удаления</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
     <string name="service_gui_CALL_INCOMING">Входящий звонок: %1$s</string>
@@ -223,7 +224,7 @@
     <string name="service_gui_CLOSE_CHAT">Закрыть текущий сеанс чата</string>
     <string name="service_gui_CONNECTED_STATUS">Подключено</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Соединение %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Подключение *</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Подключение…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Ошибка подключения к учетной записи: Имя пользователя: %1$s\n
         Имя сервера: %2$s\nПожалуйста, проверьте свое сетевое подключение или обратитесь к сетевому администратору за дополнительной информацией.</string>
     <string name="service_gui_CONNECTING_STATUS">Подключение</string>
@@ -387,7 +388,7 @@
 	<string name="service_gui_HISTORY_TOGGLE_ALL">Отключить историю для всех чатов и контактов</string>
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Удалить эту историю контактов</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Удалить все истории чатов контактов</string>
-	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы действительно хотите очистить все сообщения для %1$s?</string>
+	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы уверены, что хотите удалить все выбранные сообщения для %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех юридические лица?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
@@ -1131,7 +1132,7 @@
     <string name="service_gui_PREF_SECURITY_GENERAL">Общие</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">Индикация RTP/SAVP</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Метод индикации RTP/SAVP</string>
-	<string name="service_gui_PREF_SECURITY_SDES">Параметры SDes</string>
+	<string name="service_gui_PREF_SECURITY_SDES">Параметры SDES</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Выберите нужный набор шифров</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Набор шифров SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Параметры ZRTP</string>
@@ -1235,7 +1236,7 @@
     <string name="service_gui_JBR_STUN_LIST">Дополнительные серверы STUN/TURN&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Пользовательские дополнительные серверы STUN/TURN для использования</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Домен телефонии</string>
-    <string name="service_gui_JBR_TELEPHONY">Телефония (экспериментальная)</string>
+    <string name="service_gui_JBR_TELEPHONY">Телефония VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Настроить параметры телефонии&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Использовать сервер Jitsi STUN (резервный)</string>
     <string name="service_gui_JBR_USE_ICE">Использовать ICE</string>

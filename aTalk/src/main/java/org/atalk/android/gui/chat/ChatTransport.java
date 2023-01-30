@@ -11,7 +11,6 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jxmpp.jid.EntityBareJid;
 

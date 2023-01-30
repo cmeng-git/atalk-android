@@ -16,6 +16,8 @@
  */
 package org.atalk.android.gui.call;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.*;
@@ -57,8 +59,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class CallHistoryFragment extends OSGiFragment
-        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleted
-{
+        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleted {
     /**
      * A map of <contact, MetaContact>
      */
@@ -95,8 +96,7 @@ public class CallHistoryFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
     }
@@ -105,8 +105,7 @@ public class CallHistoryFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.call_history, container, false);
         mTitle = contentView.findViewById(R.id.call_history);
 
@@ -124,56 +123,47 @@ public class CallHistoryFragment extends OSGiFragment
     /**
      * Adapter displaying all the available call history records for user selection.
      */
-    private class CallHistoryAdapter extends BaseAdapter
-    {
+    private class CallHistoryAdapter extends BaseAdapter {
         private final LayoutInflater mInflater;
         public int CALL_RECORD = 1;
 
-        private CallHistoryAdapter(LayoutInflater inflater)
-        {
+        private CallHistoryAdapter(LayoutInflater inflater) {
             mInflater = inflater;
             new getCallRecords(new Date()).execute();
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return callRecords.size();
         }
 
         @Override
-        public Object getItem(int position)
-        {
+        public Object getItem(int position) {
             return callRecords.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public int getItemViewType(int position)
-        {
+        public int getItemViewType(int position) {
             return CALL_RECORD;
         }
 
         @Override
-        public int getViewTypeCount()
-        {
+        public int getViewTypeCount() {
             return 1;
         }
 
         @Override
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return getCount() == 0;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             CallRecordViewHolder callRecordViewHolder;
             CallRecord callRecord = callRecords.get(position);
 
@@ -197,8 +187,7 @@ public class CallHistoryFragment extends OSGiFragment
                 callRecordViewHolder.callInfo = convertView.findViewById(R.id.callInfo);
 
                 convertView.setTag(callRecordViewHolder);
-            }
-            else {
+            } else {
                 callRecordViewHolder = (CallRecordViewHolder) convertView.getTag();
             }
 
@@ -233,12 +222,10 @@ public class CallHistoryFragment extends OSGiFragment
          * Retrieve the call history records from locally stored database
          * Populate the fragment with the call record for use in getView()
          */
-        private class getCallRecords extends AsyncTask<Void, Void, Void>
-        {
+        private class getCallRecords extends AsyncTask<Void, Void, Void> {
             final Date mEndDate;
 
-            public getCallRecords(Date date)
-            {
+            public getCallRecords(Date date) {
                 mEndDate = date;
                 callRecords.clear();
                 mMetaContacts.clear();
@@ -246,8 +233,7 @@ public class CallHistoryFragment extends OSGiFragment
             }
 
             @Override
-            protected Void doInBackground(Void... params)
-            {
+            protected Void doInBackground(Void... params) {
                 initMetaContactList();
                 Collection<CallRecord> callRecordPPS;
                 CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
@@ -268,8 +254,7 @@ public class CallHistoryFragment extends OSGiFragment
             }
 
             @Override
-            protected void onPostExecute(Void result)
-            {
+            protected void onPostExecute(Void result) {
                 if (callRecords.size() > 0) {
                     callHistoryAdapter.notifyDataSetChanged();
                 }
@@ -283,8 +268,7 @@ public class CallHistoryFragment extends OSGiFragment
      *
      * @param pps the <code>ProtocolProviderService</code> for which we add the listener.
      */
-    private void addContactStatusListener(ProtocolProviderService pps)
-    {
+    private void addContactStatusListener(ProtocolProviderService pps) {
         OperationSetPresence presenceOpSet = pps.getOperationSet(OperationSetPresence.class);
         if (presenceOpSet != null) {
             presenceOpSet.removeContactPresenceStatusListener(this);
@@ -296,10 +280,9 @@ public class CallHistoryFragment extends OSGiFragment
      * Sets the call state.
      *
      * @param callStateView the call state image view
-     * @param callRecord the call record.
+     * @param callRecord    the call record.
      */
-    private void setCallState(ImageView callStateView, CallRecord callRecord)
-    {
+    private void setCallState(ImageView callStateView, CallRecord callRecord) {
         CallPeerRecord peerRecord = callRecord.getPeerRecords().get(0);
         CallPeerState callState = peerRecord.getState();
         int resId;
@@ -309,23 +292,20 @@ public class CallHistoryFragment extends OSGiFragment
                 resId = R.drawable.call_incoming;
             else
                 resId = R.drawable.call_incoming_missed;
-        }
-        else {
+        } else {
             resId = R.drawable.call_outgoing;
         }
         callStateView.setImageResource(resId);
     }
 
-    private void setTitle()
-    {
+    private void setTitle() {
         String title = aTalkApp.getResString(R.string.service_gui_CALL_HISTORY_GROUP_NAME)
                 + " (" + callRecords.size() + ")";
         mTitle.setText(title);
     }
 
     // Handle only if contactImpl instanceof MetaContact;
-    private boolean isShowCallBtn(Object contactImpl)
-    {
+    private boolean isShowCallBtn(Object contactImpl) {
         if (contactImpl instanceof MetaContact) {
             MetaContact metaContact = (MetaContact) contactImpl;
 
@@ -338,22 +318,19 @@ public class CallHistoryFragment extends OSGiFragment
         return false;
     }
 
-    public boolean isShowVideoCallBtn(Object contactImpl)
-    {
+    public boolean isShowVideoCallBtn(Object contactImpl) {
         return (contactImpl instanceof MetaContact)
                 && isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class);
     }
 
-    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass)
-    {
+    private boolean isShowButton(MetaContact metaContact, Class<? extends OperationSet> opSetClass) {
         return ((metaContact != null) && metaContact.getOpSetSupportedContact(opSetClass) != null);
     }
 
     /**
      * Initializes the adapter data.
      */
-    public void initMetaContactList()
-    {
+    public void initMetaContactList() {
         MetaContactListService contactListService = AndroidGUIActivator.getContactListService();
         if (contactListService != null) {
             addContacts(contactListService.getRoot());
@@ -365,8 +342,7 @@ public class CallHistoryFragment extends OSGiFragment
      *
      * @param group the group, which child contacts to add
      */
-    private void addContacts(MetaContactGroup group)
-    {
+    private void addContacts(MetaContactGroup group) {
         if (group.countChildContacts() > 0) {
 
             // Use Iterator to avoid ConcurrentModificationException on addContact()
@@ -385,22 +361,20 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     @Override
-    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
-    {
+    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         uiHandler.post(() -> callHistoryAdapter.notifyDataSetChanged());
     }
 
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
-    {
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_COUNT, result);
         if (result > 0) {
             callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     }
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         CallRecordViewHolder viewHolder = null;
 
         Object object = view.getTag();
@@ -438,8 +412,7 @@ public class CallHistoryFragment extends OSGiFragment
                         break;
                 }
             }
-        }
-        else {
+        } else {
             Timber.w("Clicked item is not a valid MetaContact");
         }
     }
@@ -447,17 +420,17 @@ public class CallHistoryFragment extends OSGiFragment
     /**
      * ActionMode with multi-selection implementation for chatListView
      */
-    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener()
-    {
+    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener() {
         int cPos;
         int headerCount;
         int checkListSize;
+        private int mYear, mMonth, mDay, mHour, mMinute;
 
-        SparseBooleanArray checkedList;
+        SparseBooleanArray checkedList = new SparseBooleanArray();
+        ;
 
         @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked)
-        {
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
             // Here you can do something when items are selected/de-selected
             checkedList = callListView.getCheckedItemPositions();
             checkListSize = checkedList.size();
@@ -473,24 +446,44 @@ public class CallHistoryFragment extends OSGiFragment
 
         // Called when the user selects a menu item. On action picked, close the CAB i.e. mode.finish();
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item)
-        {
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int cType;
             CallRecord callRecord;
 
             switch (item.getItemId()) {
                 case R.id.cr_delete_older:
-                    if (checkedList.size() > 0 &&  checkedList.valueAt(0)) {
+                    if (checkedList.size() > 0 && checkedList.valueAt(0)) {
                         cPos = checkedList.keyAt(0) - headerCount;
                         cType = callHistoryAdapter.getItemViewType(cPos);
                         if (cType == callHistoryAdapter.CALL_RECORD) {
                             callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
                             if (callRecord != null) {
-                                Date startDate = callRecord.getStartTime();
-                                callHistoryAdapter.new getCallRecords(startDate).execute();
-                                checkedList.clear();
-                                mode.setTitle("0");
-                                aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_HINT);
+                                Date sDate = callRecord.getStartTime();
+                                final Calendar c = Calendar.getInstance();
+                                c.setTime(sDate);
+                                mYear = c.get(Calendar.YEAR);
+                                mMonth = c.get(Calendar.MONTH);
+                                mDay = c.get(Calendar.DAY_OF_MONTH);
+                                mHour = c.get(Calendar.HOUR_OF_DAY);
+                                mMinute = c.get(Calendar.MINUTE);
+
+                                // Show DateTime picker for user to change the endDate
+                                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
+                                        (view, year, monthOfYear, dayOfMonth) -> {
+                                            mYear = year;
+                                            mMonth = monthOfYear;
+                                            mDay = dayOfMonth;
+
+                                            // Launch Time Picker Dialog
+                                            TimePickerDialog timePickerDialog = new TimePickerDialog(mContext,
+                                                    (view1, hourOfDay, minute) -> {
+                                                        c.set(mYear, mMonth, mDay, hourOfDay, minute);
+                                                        EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, c.getTime());
+                                                        mode.finish();
+                                                    }, mHour, mMinute, false);
+                                            timePickerDialog.show();
+                                        }, mYear, mMonth, mDay);
+                                datePickerDialog.show();
                             }
                         }
                     }
@@ -530,7 +523,6 @@ public class CallHistoryFragment extends OSGiFragment
                             }
                         }
                     }
-
                     EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, callUuidDel);
                     mode.finish();
                     return true;
@@ -542,8 +534,7 @@ public class CallHistoryFragment extends OSGiFragment
 
         // Called when the action ActionMode is created; startActionMode() was called
         @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu)
-        {
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate the menu for the CAB
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.call_history_menu, menu);
@@ -554,8 +545,7 @@ public class CallHistoryFragment extends OSGiFragment
         // Called each time the action ActionMode is shown. Always called after onCreateActionMode,
         // but may be called multiple times if the ActionMode is invalidated.
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu)
-        {
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
             // Here you can perform updates to the CAB due to an invalidate() request
             // Return false if nothing is done
             return false;
@@ -563,16 +553,14 @@ public class CallHistoryFragment extends OSGiFragment
 
         // Called when the user exits the action ActionMode
         @Override
-        public void onDestroyActionMode(ActionMode mode)
-        {
+        public void onDestroyActionMode(ActionMode mode) {
             // Here you can make any necessary updates to the activity when
             // the CAB is removed. By default, selected items are deselected/unchecked.
             callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     };
 
-    private static class CallRecordViewHolder
-    {
+    private static class CallRecordViewHolder {
         ImageView avatar;
         ImageView callType;
         ImageView callButton;

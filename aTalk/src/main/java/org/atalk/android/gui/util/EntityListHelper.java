@@ -26,7 +26,9 @@ import android.widget.CheckBox;
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
-import net.java.sip.communicator.service.contactlist.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -36,7 +38,9 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.call.CallHistoryFragment;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
@@ -44,6 +48,7 @@ import org.jxmpp.util.XmppStringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import timber.log.Timber;
@@ -54,8 +59,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class EntityListHelper
-{
+public class EntityListHelper {
     // History erase return result ZERO_ENTITY => error
     public static final int ZERO_ENTITY = 0;
     public static final int CURRENT_ENTITY = 1;
@@ -70,8 +74,7 @@ public class EntityListHelper
      *
      * @param metaContact the contact to be removed from the list.
      */
-    public static void removeEntity(Context context, final MetaContact metaContact, final ChatPanel chatPanel)
-    {
+    public static void removeEntity(Context context, final MetaContact metaContact, final ChatPanel chatPanel) {
         String message;
         String title;
 
@@ -81,18 +84,15 @@ public class EntityListHelper
         if (!(contactJid instanceof DomainBareJid)) {
             Jid userJid = contact.getProtocolProvider().getAccountID().getBareJid();
             message = context.getString(R.string.service_gui_REMOVE_CONTACT_TEXT, userJid, contactJid);
-        }
-        else {
+        } else {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, contactJid);
             return;
         }
 
         DialogActivity.showConfirmDialog(context, title, message,
-                context.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener()
-                {
+                context.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener() {
                     @Override
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         doRemoveContact(context, metaContact);
                         if (chatPanel != null) {
                             ChatSessionManager.removeActiveChat(chatPanel);
@@ -101,8 +101,7 @@ public class EntityListHelper
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 });
     }
@@ -112,8 +111,7 @@ public class EntityListHelper
      *
      * @param metaContact the metaContact to be removed
      */
-    private static void doRemoveContact(final Context ctx, final MetaContact metaContact)
-    {
+    private static void doRemoveContact(final Context ctx, final MetaContact metaContact) {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
             MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
@@ -131,24 +129,20 @@ public class EntityListHelper
      *
      * @param group the <code>MetaContactGroup</code> to remove
      */
-    public static void removeMetaContactGroup(final MetaContactGroup group)
-    {
+    public static void removeMetaContactGroup(final MetaContactGroup group) {
         Context ctx = aTalkApp.getGlobalContext();
         String message = ctx.getString(R.string.service_gui_REMOVE_GROUP_TEXT, group.getGroupName());
 
         DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_REMOVE), message, ctx.getString(R.string.service_gui_REMOVE_GROUP),
-                new DialogActivity.DialogListener()
-                {
+                new DialogActivity.DialogListener() {
                     @Override
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         doRemoveGroup(group);
                         return true;
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 });
     }
@@ -158,8 +152,7 @@ public class EntityListHelper
      *
      * @param group the group to remove from the contact list.
      */
-    private static void doRemoveGroup(final MetaContactGroup group)
-    {
+    private static void doRemoveGroup(final MetaContactGroup group) {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
             Context ctx = aTalkApp.getGlobalContext();
@@ -181,8 +174,7 @@ public class EntityListHelper
      * @param msgUUIDs list of message UID to be deleted. null to delete all for the specified desc
      */
     public static void eraseEntityChatHistory(final Context caller, final Object desc, final List<String> msgUUIDs,
-            final List<File> msgFiles)
-    {
+            final List<File> msgFiles) {
         String entityJid;
         if (desc instanceof MetaContact)
             entityJid = ((MetaContact) desc).getDisplayName();
@@ -198,10 +190,8 @@ public class EntityListHelper
 
         // Displays the history delete dialog and waits for user confirmation
         DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title, ChatMessageDeleteFragment.class.getName(),
-                args, aTalkApp.getResString(R.string.service_gui_PURGE), new DialogActivity.DialogListener()
-                {
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                args, aTalkApp.getResString(R.string.service_gui_PURGE), new DialogActivity.DialogListener() {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         CheckBox cbMediaDelete = dialog.findViewById(R.id.cb_media_delete);
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
@@ -211,8 +201,7 @@ public class EntityListHelper
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 }, null);
     }
@@ -223,15 +212,13 @@ public class EntityListHelper
      *
      * Note: if the sender deletes the media content immediately after sending, only the tmp copy is deleted
      */
-    private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer>
-    {
+    private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer> {
         private final TaskCompleted mCallback;
         private final boolean isPurgeMediaFile;
         private final List<String> msgUUIDs;
         private List<File> msgFiles;
 
-        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia)
-        {
+        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia) {
             this.mCallback = (TaskCompleted) context;
             this.msgUUIDs = msgUUIDs;
             this.msgFiles = msgFiles;
@@ -239,13 +226,11 @@ public class EntityListHelper
         }
 
         @Override
-        public void onPreExecute()
-        {
+        public void onPreExecute() {
         }
 
         @Override
-        protected Integer doInBackground(Object... mDescriptor)
-        {
+        protected Integer doInBackground(Object... mDescriptor) {
             Object desc = mDescriptor[0];
             if ((desc instanceof MetaContact) || (desc instanceof ChatRoomWrapper)) {
                 MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
@@ -269,28 +254,24 @@ public class EntityListHelper
                 if (desc instanceof MetaContact) {
                     MetaContact metaContact = (MetaContact) desc;
                     mhs.eraseLocallyStoredChatHistory(metaContact, msgUUIDs);
-                }
-                else {
+                } else {
                     ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
                     mhs.eraseLocallyStoredChatHistory(chatRoom, msgUUIDs);
                 }
-            }
-            else {
+            } else {
                 return ZERO_ENTITY;
             }
             return CURRENT_ENTITY;
         }
 
         @Override
-        protected void onPostExecute(Integer result)
-        {
+        protected void onPostExecute(Integer result) {
             // Return result and deleted msgUuUIDs to caller
             mCallback.onTaskComplete(result, msgUUIDs);
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
         }
     }
 
@@ -301,18 +282,15 @@ public class EntityListHelper
      *
      * @param callback the callback.
      */
-    public static void eraseAllEntityHistory(final Context callback)
-    {
+    public static void eraseAllEntityHistory(final Context callback) {
         Context ctx = aTalkApp.getGlobalContext();
         String title = ctx.getString(R.string.service_gui_HISTORY);
         String message = ctx.getString(R.string.service_gui_HISTORY_REMOVE_ALL_WARNING);
 
         DialogActivity.showConfirmDialog(ctx, title, message, ctx.getString(R.string.service_gui_PURGE),
-                new DialogActivity.DialogListener()
-                {
+                new DialogActivity.DialogListener() {
                     @Override
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
+                    public boolean onConfirmClicked(DialogActivity dialog) {
                         CheckBox cbMediaDelete = dialog.findViewById(cb_media_delete);
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
@@ -322,32 +300,27 @@ public class EntityListHelper
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 }
         );
     }
 
-    private static class doEraseAllEntityHistory extends AsyncTask<Void, Void, Integer>
-    {
+    private static class doEraseAllEntityHistory extends AsyncTask<Void, Void, Integer> {
         private final boolean isPurgeMediaFile;
         private final TaskCompleted mCallback;
 
-        private doEraseAllEntityHistory(Context context, boolean purgeMedia)
-        {
+        private doEraseAllEntityHistory(Context context, boolean purgeMedia) {
             this.mCallback = (TaskCompleted) context;
             this.isPurgeMediaFile = purgeMedia;
         }
 
         @Override
-        public void onPreExecute()
-        {
+        public void onPreExecute() {
         }
 
         @Override
-        protected Integer doInBackground(Void... none)
-        {
+        protected Integer doInBackground(Void... none) {
             MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
             if (isPurgeMediaFile) {
                 // purge all the files of the deleted messages
@@ -364,15 +337,13 @@ public class EntityListHelper
         }
 
         @Override
-        protected void onPostExecute(Integer result)
-        {
+        protected void onPostExecute(Integer result) {
             // Return result to caller
             mCallback.onTaskComplete(result, null);
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
         }
     }
 
@@ -384,25 +355,39 @@ public class EntityListHelper
      * @param caller the context
      * @param callUUIDs list of call record UID to be deleted. null to delete all for the specified desc
      */
-    public static void eraseEntityCallHistory(final CallHistoryFragment caller, final List<String> callUUIDs)
-    {
+    public static void eraseEntityCallHistory(final CallHistoryFragment caller, final List<String> callUUIDs) {
         // Displays the call history delete dialog and waits for user
         DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
                 R.string.service_gui_CALL_HISTORY_REMOVE_WARNING, R.string.service_gui_PURGE,
-                new DialogActivity.DialogListener()
-                {
+                new DialogActivity.DialogListener() {
 
-                    public boolean onConfirmClicked(DialogActivity dialog)
-                    {
-                        new doEraseEntityCallHistory(caller, callUUIDs).execute();
+                    public boolean onConfirmClicked(DialogActivity dialog) {
+                        new doEraseEntityCallHistory(caller, callUUIDs, null).execute();
                         return true;
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
-                    {
+                    public void onDialogCancelled(DialogActivity dialog) {
                     }
                 }
+        );
+    }
+
+    public static void eraseEntityCallHistory(final CallHistoryFragment caller, final Date endDate) {
+        // Displays the call history delete dialog and waits for user
+        DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
+                R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, R.string.service_gui_PURGE,
+                new DialogActivity.DialogListener() {
+
+                    public boolean onConfirmClicked(DialogActivity dialog) {
+                        new doEraseEntityCallHistory(caller, null, endDate).execute();
+                        return true;
+                    }
+
+                    @Override
+                    public void onDialogCancelled(DialogActivity dialog) {
+                    }
+                }, endDate
         );
     }
 
@@ -410,47 +395,53 @@ public class EntityListHelper
      * Perform history message delete in background.
      * Purge all history messages for the descriptor if messageUUIDs is null
      */
-    private static class doEraseEntityCallHistory extends AsyncTask<Void, Void, Integer>
-    {
+    private static class doEraseEntityCallHistory extends AsyncTask<Void, Void, Integer> {
         private final TaskCompleted mCallback;
         private final List<String> callUUIDs;
+        private final Date mEndDate;
 
-        private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs)
-        {
+        /**
+         * To delete call history based on given parameters either callUUIDs or endDate
+         *
+         * @param caller the caller i.e. CallHistoryFragment.this
+         * @param callUUIDs list of callUuids to be deleted OR;
+         * @param endDate records on and before the given endDate toe be deleted
+         */
+        private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs, Date endDate) {
             this.mCallback = (TaskCompleted) caller;
             this.callUUIDs = callUUIDs;
+            this.mEndDate = endDate;
         }
 
         @Override
-        public void onPreExecute()
-        {
+        public void onPreExecute() {
         }
 
         @Override
-        protected Integer doInBackground(Void... none)
-        {
+        protected Integer doInBackground(Void... none) {
             CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
-            CHS.eraseLocallyStoredHistory(callUUIDs);
 
-            return callUUIDs.size();
+            if (mEndDate == null) {
+                CHS.eraseLocallyStoredHistory(callUUIDs);
+                return callUUIDs.size();
+            } else {
+                return CHS.eraseLocallyStoredHistoryBefore(mEndDate);
+            }
         }
 
         @Override
-        protected void onPostExecute(Integer result)
-        {
+        protected void onPostExecute(Integer result) {
             // Return result to caller
             if (mCallback != null)
                 mCallback.onTaskComplete(result, callUUIDs);
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
         }
     }
 
-    public interface TaskCompleted
-    {
+    public interface TaskCompleted {
         // Define data you like to return from AsyncTask
         void onTaskComplete(Integer result, List<String> deletedUUIDs);
     }

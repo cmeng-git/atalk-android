@@ -377,10 +377,10 @@ public class OperationSetPersistentPresenceJabberImpl
             rs.put(ourJID, createResource(currentPresence, ourJID, localContact));
 
         List<Presence> presenceList = ssContactList.getPresences(ourJID.asBareJid());
-        for (Presence p : presenceList) {
-            FullJid fullJid = p.getFrom().asFullJidIfPossible();
+        for (Presence presence : presenceList) {
+            FullJid fullJid = presence.getFrom().asFullJidIfPossible();
             if (fullJid != null) // NPE from field
-                rs.put(fullJid, createResource(p, fullJid, localContact));
+                rs.put(fullJid, createResource(presence, fullJid, localContact));
         }
         return localContact;
     }

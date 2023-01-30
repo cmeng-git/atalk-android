@@ -225,7 +225,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
         try {
             String fileName = fileTransfer.getLocalFile().getCanonicalPath();
-            Timber.d("File Transfer created: %s: %s", fileTransfer.getDirection(), fileName);
+            Timber.d("File Transfer record created in DB: %s: %s", fileTransfer.getDirection(), fileName);
 
             if (fileTransfer.getDirection() == FileTransfer.IN) {
                 String[] args = {fileTransfer.getID()};

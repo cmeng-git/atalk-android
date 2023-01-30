@@ -31,15 +31,13 @@ import java.util.Map;
  * @see <a href="https://xmpp.org/extensions/xep-0166.html#def-reason">XEP-0166 § 7.4</a>
  *
  */
-public class JingleReason implements FullyQualifiedElement
-{
+public class JingleReason implements FullyQualifiedElement {
 
     public static final String ELEMENT = "reason";
     public static final String NAMESPACE = Jingle.NAMESPACE;
     public static final String TEXT_ELEMENT = "text";
 
-    public static AlternativeSession AlternativeSession(String sessionId)
-    {
+    public static AlternativeSession AlternativeSession(String sessionId) {
         return new AlternativeSession(sessionId);
     }
 
@@ -60,8 +58,7 @@ public class JingleReason implements FullyQualifiedElement
     public static final JingleReason UnsupportedApplications = new JingleReason(Reason.unsupported_applications);
     public static final JingleReason UnsupportedTransports = new JingleReason(Reason.unsupported_transports);
 
-    public enum Reason
-    {
+    public enum Reason {
         alternative_session,
         busy,
         cancel,
@@ -91,19 +88,16 @@ public class JingleReason implements FullyQualifiedElement
 
         protected final String asString;
 
-        Reason()
-        {
+        Reason() {
             asString = name().replace('_', '-');
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return asString;
         }
 
-        public static Reason fromString(String string)
-        {
+        public static Reason fromString(String string) {
             Reason reason = LUT.get(string);
             if (reason == null) {
                 throw new IllegalArgumentException("Unknown reason: " + string);
@@ -125,8 +119,7 @@ public class JingleReason implements FullyQualifiedElement
      */
     private final ExtensionElement element;
 
-    public JingleReason(Reason reason)
-    {
+    public JingleReason(Reason reason) {
         this(reason, null, null);
     }
 
@@ -140,22 +133,19 @@ public class JingleReason implements FullyQualifiedElement
      * @param element any other element that MAY be providing further information or <code>null</code> if no
      * such element has been specified.
      */
-    public JingleReason(Reason reason, String text, ExtensionElement element)
-    {
+    public JingleReason(Reason reason, String text, ExtensionElement element) {
         this.reason = reason;
         this.text = text;
         this.element = element;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
@@ -165,8 +155,7 @@ public class JingleReason implements FullyQualifiedElement
      * @return a human-readable text with information regarding this reason or <code>null</code>.
      * @since 4.4.5
      */
-    public String getText()
-    {
+    public String getText() {
         return text;
     }
 
@@ -176,14 +165,12 @@ public class JingleReason implements FullyQualifiedElement
      * @return an element with machine-readable information about this reason or <code>null</code>.
      * @since 4.4.5
      */
-    public ExtensionElement getElement()
-    {
+    public ExtensionElement getElement() {
         return element;
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
         xml.rightAngleBracket();
 
@@ -195,23 +182,19 @@ public class JingleReason implements FullyQualifiedElement
         return xml;
     }
 
-    public Reason asEnum()
-    {
+    public Reason asEnum() {
         return reason;
     }
 
-    public static class AlternativeSession extends JingleReason
-    {
+    public static class AlternativeSession extends JingleReason {
         public static final String SID = "sid";
         private final String sessionId;
 
-        public AlternativeSession(String sessionId)
-        {
+        public AlternativeSession(String sessionId) {
             this(sessionId, null, null);
         }
 
-        public AlternativeSession(String sessionId, String text, ExtensionElement element)
-        {
+        public AlternativeSession(String sessionId, String text, ExtensionElement element) {
             super(Reason.alternative_session, text, element);
             if (StringUtils.isNullOrEmpty(sessionId)) {
                 throw new NullPointerException("SessionID must not be null or empty.");
@@ -220,8 +203,7 @@ public class JingleReason implements FullyQualifiedElement
         }
 
         @Override
-        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
-        {
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.rightAngleBracket();
 
@@ -235,8 +217,7 @@ public class JingleReason implements FullyQualifiedElement
             return xml;
         }
 
-        public String getAlternativeSessionId()
-        {
+        public String getAlternativeSessionId() {
             return sessionId;
         }
     }

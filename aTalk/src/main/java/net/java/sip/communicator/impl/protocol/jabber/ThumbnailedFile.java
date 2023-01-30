@@ -41,7 +41,6 @@ public class ThumbnailedFile extends File
     public ThumbnailedFile(File file, int thumbnailWidth, int thumbnailHeight, String thumbnailMimeType, byte[] thumbnail)
     {
         super(file.getPath());
-
         this.thumbnailWidth = thumbnailWidth;
         this.thumbnailHeight = thumbnailHeight;
         this.thumbnailMimeType = thumbnailMimeType;

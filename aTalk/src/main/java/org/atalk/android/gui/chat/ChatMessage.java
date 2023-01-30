@@ -26,9 +26,9 @@ public interface ChatMessage
     String TABLE_NAME = "messages";
     String UUID = "uuid";   // msg Unique identification in database (deletion Id)
     String SESSION_UUID = "chatSessionUuid"; // chatSession Uuid
-    String TIME_STAMP = "timeStamp"; // TimeStamp
-    String ENTITY_JID = "entityJid"; // nick (muc); contact BareJid (others)
-    String JID = "Jid";              // chatRoom member: contact FullJid (msg out); user BareJid (msg in)
+    String TIME_STAMP = "timeStamp"; // message sent or received timestamp
+    String ENTITY_JID = "entityJid"; // to BareJid: nick (muc) or contact (others)
+    String JID = "Jid";              // from/sender FullJid if available: chatRoom member etc
     String MSG_BODY = "msgBody";     // message content
     String ENC_TYPE = "encType";     // see IMessage for the ENCRYPTION_xxx & MASK definitions
     String MSG_TYPE = "msgType";     // as defined in below * message type *

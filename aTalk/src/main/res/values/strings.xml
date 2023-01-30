@@ -137,7 +137,8 @@
     <string name="service_gui_CALL_ERROR">Remote party returns an error: %1$s</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirm and \'Select All\' items, before proceed to \'Delete\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">No of call history records deleted: %1$s</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Are you sure you want to purge all call records before the date: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">None record selected for delete</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
     <string name="service_gui_CALL_INCOMING">Incoming call: %1$s</string>
@@ -223,7 +224,7 @@
     <string name="service_gui_CLOSE_CHAT">Close current chat session</string>
     <string name="service_gui_CONNECTED_STATUS">Connected</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Connecting %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connecting*</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Connecting…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Account connection login failed: User name: %1$s\n
         Server name: %2$s\nPlease check your network connection OR contact your network administrator for more information.</string>
     <string name="service_gui_CONNECTING_STATUS">Connecting</string>
@@ -388,7 +389,7 @@
     <string name="service_gui_HISTORY_TOGGLE_ALL">Turn off history for all chats and contacts</string>
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Erase this contact history</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Erase all contacts chat history</string>
-    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all messages for %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all selected messages for %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all the entities?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Delete media from my phone</string>
@@ -1252,7 +1253,7 @@
     <string name="service_gui_JBR_STUN_LIST">Additional STUN/TURN servers&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">User defined additional STUN/TURN servers for use</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Telephony domain</string>
-    <string name="service_gui_JBR_TELEPHONY">Telephony (experimental)</string>
+    <string name="service_gui_JBR_TELEPHONY">Telephony VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Configure telephony options&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Use Jitsi STUN server (fallback)</string>
     <string name="service_gui_JBR_USE_ICE">Use ICE</string>

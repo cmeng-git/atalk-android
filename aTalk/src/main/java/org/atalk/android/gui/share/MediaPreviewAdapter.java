@@ -87,7 +87,7 @@ public class MediaPreviewAdapter extends RecyclerView.Adapter<MediaPreviewAdapte
 
     public void addMediaPreviews(List<Attachment> attachments)
     {
-        // mediaPreviews.clear();
+        // mediaPreviews.clear(); // Do not remove any existing attachments in the mediaPreviews
         mediaPreviews.addAll(attachments);
         notifyDataSetChanged();
     }

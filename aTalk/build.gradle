@@ -232,7 +232,7 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Upgrade android libraries to 1.5.x create problem.
+    // Upgrade android libraries to 1.5.x create problem. Required API-33
     // See https://issuetracker.google.com/issues/240473335
     implementation 'androidx.activity:activity:1.4.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
@@ -273,6 +273,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     implementation 'de.cketti.library.changelog:ckchangelog:1.2.2'
+    // implementation 'com.github.cketti:ckchangelog-core:2.0.0-beta02'
 
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'org.apache.commons:commons-text:1.9'

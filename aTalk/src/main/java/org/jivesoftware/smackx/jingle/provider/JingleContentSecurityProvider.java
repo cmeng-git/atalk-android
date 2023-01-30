@@ -31,8 +31,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleContentSecurityProvider<T extends JingleContentSecurity> extends ExtensionElementProvider<T>
-{
+public abstract class JingleContentSecurityProvider<T extends JingleContentSecurity> extends ExtensionElementProvider<T> {
 
     @Override
     public abstract T parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)

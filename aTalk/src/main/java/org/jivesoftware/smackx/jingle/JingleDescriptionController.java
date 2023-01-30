@@ -24,11 +24,9 @@ package org.jivesoftware.smackx.jingle;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public interface JingleDescriptionController
-{
+public interface JingleDescriptionController {
 
-    enum State
-    {
+    enum State {
         pending,            // Not yet accepted by us/peer
         negotiating,        // Accepted, but still negotiating transports etc.
         active,             // Bytestream initialized and active

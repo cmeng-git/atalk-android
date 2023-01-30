@@ -116,7 +116,6 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                         }
                         else
                             LOGGER.log(Level.INFO, "Invalid Abstract Element: " + childExtension.getQName());
-
                     }
                     break;
 

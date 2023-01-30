@@ -16,6 +16,12 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
+import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,45 +31,34 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
-import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
-
 /**
  * Behind the scenes logic of an outgoing Jingle file offer.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements OutgoingFileOfferController
-{
+public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements OutgoingFileOfferController {
     private static final Logger LOGGER = Logger.getLogger(JingleOutgoingFileOffer.class.getName());
     private final InputStream mSource;
 
-    public JingleOutgoingFileOffer(File file, JingleFile metadata) throws FileNotFoundException
-    {
+    public JingleOutgoingFileOffer(File file, JingleFile metadata) throws FileNotFoundException {
         super(metadata);
         mSource = new FileInputStream(file);
         mState = State.pending;
     }
 
-    public JingleOutgoingFileOffer(InputStream inputStream, JingleFile metadata)
-    {
+    public JingleOutgoingFileOffer(InputStream inputStream, JingleFile metadata) {
         super(metadata);
         mSource = inputStream;
     }
 
     @Override
-    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info)
-    {
+    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info) {
         return null;
     }
 
     @Override
-    public void onBytestreamReady(BytestreamSession bytestreamSession)
-    {
+    public void onBytestreamReady(BytestreamSession bytestreamSession) {
         if (mSource == null) {
             throw new IllegalStateException("Source InputStream is null!");
         }
@@ -94,9 +89,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             }
 
             outputStream.flush();
-            // Must close both input and output streams to trigger sending of IBB <close/> element as defined in XEP-0047
-            // <close xmlns='http://jabber.org/protocol/ibb' sid='RA88X8VSQG'/>; required by Conversations to work
-            bytestreamSession.close();
+            outputStream.close();
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
@@ -113,14 +106,12 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
     }
 
     @Override
-    public boolean isOffer()
-    {
+    public boolean isOffer() {
         return true;
     }
 
     @Override
-    public boolean isRequest()
-    {
+    public boolean isRequest() {
         return false;
     }
 }

@@ -5,13 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.FileTransferProgressEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferProgressListener;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -24,8 +29,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public abstract class AbstractFileTransfer implements FileTransfer
-{
+public abstract class AbstractFileTransfer implements FileTransfer {
     /**
      * A list of listeners registered for file transfer status events.
      */
@@ -37,9 +41,10 @@ public abstract class AbstractFileTransfer implements FileTransfer
     final private Vector<FileTransferProgressListener> progressListeners = new Vector<>();
 
     /*
-     * current file transfer Status for keeping track if there is changes
+     * current file transfer Status for keeping track if there is changes;
+     * Default to WAITING for contact to accept on start up.
      */
-    protected int mStatus;
+    protected int mStatus = FileTransferStatusChangeEvent.WAITING;
 
     /*
      * current progress of byte transferred for keeping track if there is changes
@@ -63,8 +68,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      *
      * @param listener the listener to add
      */
-    public void addProgressListener(FileTransferProgressListener listener)
-    {
+    public void addProgressListener(FileTransferProgressListener listener) {
         synchronized (progressListeners) {
             if (!progressListeners.contains(listener)) {
                 this.progressListeners.add(listener);
@@ -77,8 +81,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      *
      * @param listener the listener to add
      */
-    public void addStatusListener(FileTransferStatusListener listener)
-    {
+    public void addStatusListener(FileTransferStatusListener listener) {
         synchronized (statusListeners) {
             if (!statusListeners.contains(listener)) {
                 this.statusListeners.add(listener);
@@ -91,8 +94,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      *
      * @param listener the listener to remove
      */
-    public void removeProgressListener(FileTransferProgressListener listener)
-    {
+    public void removeProgressListener(FileTransferProgressListener listener) {
         synchronized (progressListeners) {
             this.progressListeners.remove(listener);
         }
@@ -103,8 +105,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      *
      * @param listener the listener to remove
      */
-    public void removeStatusListener(FileTransferStatusListener listener)
-    {
+    public void removeStatusListener(FileTransferStatusListener listener) {
         synchronized (statusListeners) {
             this.statusListeners.remove(listener);
         }
@@ -114,13 +115,11 @@ public abstract class AbstractFileTransfer implements FileTransfer
      * Returns the current status of the transfer. This information could be used from the user
      * interface to show a progress bar indicating the file transfer status.
      *
+     * @return the current status of the transfer
      * @see FileTransferStatusChangeEvent (Active xfer status)
      * @see net.java.sip.communicator.service.filehistory.FileRecord (End of xfer status)
-     *
-     * @return the current status of the transfer
      */
-    public int getStatus()
-    {
+    public int getStatus() {
         return mStatus;
     }
 
@@ -131,6 +130,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      */
     public void fireStatusChangeEvent(JingleReason reason) {
         String reasonText = (reason.getText() != null) ? reason.getText() : reason.asEnum().toString();
+        // Timber.d("SetStatus# jingle reason: %s", reason.asEnum());
         switch (reason.asEnum()) {
             case decline:
                 fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, reasonText);
@@ -154,22 +154,23 @@ public abstract class AbstractFileTransfer implements FileTransfer
      * @param newStatus the new status
      * @param reason the reason of the status change
      */
-    public void fireStatusChangeEvent(int newStatus, String reason)
-    {
-        // ignore if status is the same
+    public void fireStatusChangeEvent(int newStatus, String reason) {
+        // Just ignore if status is the same
         if (mStatus == newStatus)
             return;
 
-        // Updates the status.
-        mStatus = newStatus;
         Collection<FileTransferStatusListener> listeners;
         synchronized (statusListeners) {
             listeners = new ArrayList<>(statusListeners);
         }
-        Timber.d("Dispatching a FileTransfer Event to %d listeners. Status = %s", listeners.size(), newStatus);
-        FileTransferStatusChangeEvent statusEvent = new FileTransferStatusChangeEvent(this, mStatus,
-                newStatus, reason);
+        Timber.d("Dispatching FileTransfer status change: %s => %s to %d listeners.",
+                mStatus, newStatus, listeners.size());
 
+        FileTransferStatusChangeEvent statusEvent
+                = new FileTransferStatusChangeEvent(this, mStatus, newStatus, reason);
+
+        // Updates the mStatus only after statusEvent is created.
+        mStatus = newStatus;
         for (FileTransferStatusListener statusListener : listeners) {
             statusListener.statusChanged(statusEvent);
         }
@@ -181,8 +182,7 @@ public abstract class AbstractFileTransfer implements FileTransfer
      * @param timestamp the date on which the event occurred
      * @param progress the bytes representing the progress of the transfer
      */
-    public void fireProgressChangeEvent(long timestamp, long progress)
-    {
+    public void fireProgressChangeEvent(long timestamp, long progress) {
         // ignore if there is no change since the last progress check
         if (mProgress == progress)
             return;

@@ -22,8 +22,7 @@ package org.jivesoftware.smackx.jingle;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public interface JingleSecurityManager
-{
+public interface JingleSecurityManager {
 
     String getNamespace();
 }

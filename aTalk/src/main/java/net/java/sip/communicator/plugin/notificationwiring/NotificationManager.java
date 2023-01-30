@@ -40,24 +40,23 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 import androidx.fragment.app.Fragment;
+
 import timber.log.Timber;
 
 /**
  * Listens to various events which are related to the display and/or playback of notifications
  * and shows/starts or hides/stops the notifications in question.
  *
- * @see #registerDefaultNotifications
- * This is where all the events actions e.g. notification popup, vibrate and alert are defined for each notification
- *
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
+ * @see #registerDefaultNotifications
+ * This is where all the events actions e.g. notification popup, vibrate and alert are defined for each notification
  */
 public class NotificationManager implements CallChangeListener, CallListener, CallPeerConferenceListener,
         CallPeerListener, CallPeerSecurityListener, ChatRoomMessageListener, LocalUserChatRoomPresenceListener,
         AdHocChatRoomMessageListener, LocalUserAdHocChatRoomPresenceListener,
-        ScFileTransferListener, MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener
-{
+        ScFileTransferListener, MessageListener, Recorder.Listener, ServiceListener, ChatStateNotificationsListener {
     /**
      * Default event type for a busy call.
      */
@@ -146,8 +145,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @param messageUID the message UID
      */
     public static void fireChatNotification(Object chatDescriptor, String eventType, String messageTitle,
-            String message, String messageUID)
-    {
+            String message, String messageUID) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService == null)
             return;
@@ -167,8 +165,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             if (contactIcon == null) {
                 contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.person_photo);
             }
-        }
-        else if (chatDescriptor instanceof ChatRoom) {
+        } else if (chatDescriptor instanceof ChatRoom) {
             ChatRoom chatRoom = (ChatRoom) chatDescriptor;
 
             // For system rooms we don't want to send notification events.
@@ -209,8 +206,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param eventType the event type for which we want to fire a notification
      */
-    public static void fireNotification(String eventType)
-    {
+    public static void fireNotification(String eventType) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null)
             notificationService.fireNotification(eventType);
@@ -223,10 +219,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * @param eventType the event type for which we want to fire a notification
      * @param loopCondition the method which will determine whether any sounds played as part of the specified
      * notification will continue looping
+     *
      * @return a reference to the fired notification to stop it.
      */
-    private static NotificationData fireNotification(String eventType, Callable<Boolean> loopCondition)
-    {
+    private static NotificationData fireNotification(String eventType, Callable<Boolean> loopCondition) {
         return fireNotification(eventType, null, null, null, loopCondition);
     }
 
@@ -245,8 +241,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * display is supported
      * @param message the message to be displayed by the notification to be fired if such a display is supported
      */
-    private static void fireNotification(String eventType, int msgType, String messageTitle, String message)
-    {
+    private static void fireNotification(String eventType, int msgType, String messageTitle, String message) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService != null) {
             notificationService.fireNotification(eventType, msgType, messageTitle, message, null);
@@ -263,11 +258,11 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * {@link CommandNotificationHandler#execute(CommandNotificationAction, Map)} as the <code>cmdargs</code> argument
      * @param loopCondition the method which will determine whether any sounds played as part of the specified
      * notification will continue looping
+     *
      * @return a reference to the fired notification to stop it.
      */
     private static NotificationData fireNotification(String eventType, String messageTitle,
-            String message, Map<String, String> cmdargs, Callable<Boolean> loopCondition)
-    {
+            String message, Map<String, String> cmdargs, Callable<Boolean> loopCondition) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
         if (notificationService == null)
             return null;
@@ -289,8 +284,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @return all <code>ProtocolProviderFactory</code>s obtained from the bundle context
      */
-    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories()
-    {
+    public static Map<Object, ProtocolProviderFactory> getProtocolProviderFactories() {
         ServiceReference[] serRefs = null;
         try {
             // get all registered provider factories
@@ -316,8 +310,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @return all protocol providers currently registered.
      */
-    public static List<ProtocolProviderService> getProtocolProviders()
-    {
+    public static List<ProtocolProviderService> getProtocolProviders() {
         ServiceReference[] serRefs = null;
         try {
             // get all registered provider factories
@@ -346,10 +339,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * if it has only one {@code ChatRoomMember} who is not the local user.
      *
      * @param chatRoom the {@code ChatRoom} to be determined as private or not
+     *
      * @return <code>true</code> if the specified {@code ChatRoom} is private; otherwise, <code>false</code>
      */
-    private static boolean isPrivate(ChatRoom chatRoom)
-    {
+    private static boolean isPrivate(ChatRoom chatRoom) {
         if (!chatRoom.isSystem() && chatRoom.isJoined() && (chatRoom.getMembersCount() == 1)) {
             String nickname = chatRoom.getUserNickname().toString();
 
@@ -367,11 +360,11 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param weakPeer the <code>CallPeer</code> for which it is to be determined whether the <code>DIALING</code>
      * sound notification is to be played
+     *
      * @return <code>true</code> if the <code>DIALING</code> sound notification should be played for the
      * specified <code>callPeer</code>; otherwise, code>false</code>
      */
-    private static boolean shouldPlayDialingSound(WeakReference<CallPeer> weakPeer)
-    {
+    private static boolean shouldPlayDialingSound(WeakReference<CallPeer> weakPeer) {
         CallPeer peer = weakPeer.get();
         if (peer == null)
             return false;
@@ -401,8 +394,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     // The DIALING sound should be played for the first CallPeer only.
                     if (peer != aPeer)
                         return false;
-                }
-                else {
+                } else {
                     /*
                      * The DIALING sound should not be played if there is a CallPeer which does
                      * not require the DIALING sound to be played.
@@ -419,8 +411,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>CallEvent</code>
      */
-    public void callEnded(CallEvent evt)
-    {
+    public void callEnded(CallEvent evt) {
         try {
             // Stop all telephony related sounds.
             // stopAllTelephonySounds();
@@ -444,8 +435,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>CallPeerEvent</code> that notifies us for the change
      */
-    public void callPeerAdded(CallPeerEvent evt)
-    {
+    public void callPeerAdded(CallPeerEvent evt) {
         CallPeer peer = evt.getSourceCallPeer();
         if (peer == null)
             return;
@@ -460,8 +450,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>CallPeerEvent</code> that has been triggered
      */
-    public void callPeerRemoved(CallPeerEvent evt)
-    {
+    public void callPeerRemoved(CallPeerEvent evt) {
         CallPeer peer = evt.getSourceCallPeer();
         if (peer == null)
             return;
@@ -476,8 +465,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void callStateChanged(CallChangeEvent evt)
-    {
+    public void callStateChanged(CallChangeEvent evt) {
     }
 
     /**
@@ -485,8 +473,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void conferenceFocusChanged(CallPeerConferenceEvent evt)
-    {
+    public void conferenceFocusChanged(CallPeerConferenceEvent evt) {
     }
 
     /**
@@ -494,8 +481,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param conferenceEvent the event
      */
-    public void conferenceMemberAdded(CallPeerConferenceEvent conferenceEvent)
-    {
+    public void conferenceMemberAdded(CallPeerConferenceEvent conferenceEvent) {
         try {
             CallPeer peer = conferenceEvent.getConferenceMember().getConferenceFocusCallPeer();
             if (peer.getConferenceMemberCount() > 0) {
@@ -516,8 +502,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void conferenceMemberErrorReceived(CallPeerConferenceEvent evt)
-    {
+    public void conferenceMemberErrorReceived(CallPeerConferenceEvent evt) {
     }
 
     /**
@@ -525,8 +510,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void conferenceMemberRemoved(CallPeerConferenceEvent evt)
-    {
+    public void conferenceMemberRemoved(CallPeerConferenceEvent evt) {
     }
 
     /**
@@ -534,8 +518,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void fileTransferCreated(FileTransferCreatedEvent evt)
-    {
+    public void fileTransferCreated(FileTransferCreatedEvent evt) {
     }
 
     /**
@@ -543,18 +526,17 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent evt)
-    {
+    public void fileTransferRequestCanceled(FileTransferRequestEvent evt) {
     }
 
     /**
      * When a request has been received we show a notification.
      *
      * @param event <code>FileTransferRequestEvent</code>
+     *
      * @see ScFileTransferListener#fileTransferRequestReceived(FileTransferRequestEvent)
      */
-    public void fileTransferRequestReceived(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestReceived(FileTransferRequestEvent event) {
         try {
             IncomingFileTransferRequest request = event.getRequest();
             String message = request.getFileName() + "  (size: " + request.getFileSize() + ")";
@@ -574,8 +556,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void fileTransferRequestRejected(FileTransferRequestEvent evt)
-    {
+    public void fileTransferRequestRejected(FileTransferRequestEvent evt) {
     }
 
     /**
@@ -583,8 +564,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param protocolProvider the <code>ProtocolProviderService</code>
      */
-    private void handleProviderAdded(ProtocolProviderService protocolProvider)
-    {
+    private void handleProviderAdded(ProtocolProviderService protocolProvider) {
         if (!protocolProvider.getAccountID().isEnabled())
             return;
 
@@ -659,8 +639,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param protocolProvider the <code>ProtocolProviderService</code>
      */
-    private void handleProviderRemoved(ProtocolProviderService protocolProvider)
-    {
+    private void handleProviderRemoved(ProtocolProviderService protocolProvider) {
         Map<String, OperationSet> supportedOperationSets = protocolProvider.getSupportedOperationSets();
 
         // Obtain the basic instant messaging operation set.
@@ -725,8 +704,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>CallEvent</code>
      */
-    public void incomingCallReceived(CallEvent evt)
-    {
+    public void incomingCallReceived(CallEvent evt) {
         try {
             Map<String, String> peerInfo = new HashMap<>();
 
@@ -788,8 +766,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Initialize, register default notifications and start listening for new protocols or removed
      * one and find any that are already registered.
      */
-    void init()
-    {
+    void init() {
         registerDefaultNotifications();
         // listens for new protocols
         NotificationWiringActivator.bundleContext.addServiceListener(this);
@@ -802,8 +779,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
         MediaService mediaServiceImpl = NotificationWiringActivator.getMediaService();
         if (mediaServiceImpl == null) {
             Timber.w("Media Service record listener init failed - jnlibffmpeg failed to load?");
-        }
-        else
+        } else
             mediaServiceImpl.addRecorderListener(this);
     }
 
@@ -811,10 +787,10 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Checks if the contained call is a conference call.
      *
      * @param call the call to check
+     *
      * @return {@code true} if the contained <code>Call</code> is a conference call, otherwise returns {@code false}.
      */
-    public boolean isConference(Call call)
-    {
+    public boolean isConference(Call call) {
         // If we're the focus of the conference.
         if (call.isConferenceFocus())
             return true;
@@ -841,13 +817,11 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>LocalUserAdHocChatRoomPresenceChangeEvent</code> that notified us of a presence change
      */
-    public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt) {
         String eventType = evt.getEventType();
         if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             evt.getAdHocChatRoom().addMessageListener(this);
-        }
-        else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
+        } else if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             evt.getAdHocChatRoom().removeMessageListener(this);
         }
@@ -859,15 +833,13 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> that notified us
      */
-    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt) {
         ChatRoom sourceChatRoom = evt.getChatRoom();
         String eventType = evt.getEventType();
 
         if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(eventType)) {
             sourceChatRoom.addMessageListener(this);
-        }
-        else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
+        } else if (LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_LEFT.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED.equals(eventType)
                 || LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED.equals(eventType)) {
             sourceChatRoom.removeMessageListener(this);
@@ -879,8 +851,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt) {
     }
 
     /**
@@ -888,8 +859,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(ChatRoomMessageDeliveredEvent evt) {
     }
 
     /**
@@ -897,8 +867,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used
      */
-    public void messageDelivered(MessageDeliveredEvent evt)
-    {
+    public void messageDelivered(MessageDeliveredEvent evt) {
     }
 
     /**
@@ -906,8 +875,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt) {
     }
 
     /**
@@ -915,8 +883,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt) {
     }
 
     /**
@@ -924,8 +891,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(MessageDeliveryFailedEvent evt) {
     }
 
     /**
@@ -933,8 +899,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>AdHocChatRoomMessageReceivedEvent</code> that notified us
      */
-    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt) {
         // Fire notification as INCOMING_FILE is found
         AdHocChatRoom chatRoom = evt.getSourceChatRoom();
         String sourceParticipant = evt.getSourceChatRoomParticipant().getDisplayName();
@@ -948,8 +913,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, sourceParticipant);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
-        }
-        else {
+        } else {
             boolean fireChatNotification;
             String nickname = chatRoom.getName();
 
@@ -970,8 +934,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>ChatRoomMessageReceivedEvent</code> that notified us that a message has been received
      */
-    public void messageReceived(ChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(ChatRoomMessageReceivedEvent evt) {
         // Fire notification as INCOMING_FILE is found
         ChatRoom chatRoom = evt.getSourceChatRoom();
         String nickName = evt.getSourceChatRoomMember().getNickName();  // sender
@@ -985,8 +948,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, nickName);
             fireChatNotification(chatRoom, INCOMING_FILE, title, fileName, msgUid);
-        }
-        else {
+        } else {
             boolean fireChatNotification;
 
             /*
@@ -1032,8 +994,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the <code>MessageReceivedEvent</code> containing details on the received message
      */
-    public void messageReceived(MessageReceivedEvent evt)
-    {
+    public void messageReceived(MessageReceivedEvent evt) {
         // Fire notification as INCOMING_FILE is found
         Contact contact = evt.getSourceContact();
         final IMessage message = evt.getSourceMessage();
@@ -1046,8 +1007,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             String title = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, contact.getAddress());
             fireChatNotification(contact, INCOMING_FILE, title, fileName, msgUid);
-        }
-        else {
+        } else {
             // Fire as message notification
             String title = aTalkApp.getResString(R.string.service_gui_MSG_RECEIVED, contact.getAddress());
 
@@ -1058,16 +1018,26 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             fireChatNotification(contact, INCOMING_MESSAGE, title, msgBody, msgUid);
 
             // update unread count for fired notification.
-            // Must pre-stored in metaContact attribute as clf is null when aTalk is closed
-            MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
-            if (metaContact != null) {
-                int unreadCount = metaContact.getUnreadCount() + 1;
-                metaContact.setUnreadCount(unreadCount);
+            updateMessageCount(contact);
+        }
+    }
 
-                Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
-                if (clf instanceof ContactListFragment) {
-                    ((ContactListFragment) clf).updateUnreadCount(metaContact);
-                }
+    /**
+     * Update message unread count for the actual recipient (contact). The value must only
+     * pre-store in metaContact unreadCount attribute, as clf is null when aTalk is closed
+     * Note: Carbon copy message does not trigger messageReceived().
+     *
+     * @param contact the message recipient to which the unread count is to be updated
+     */
+    public static void updateMessageCount(Contact contact) {
+        MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+        if (metaContact != null) {
+            int unreadCount = metaContact.getUnreadCount() + 1;
+            metaContact.setUnreadCount(unreadCount);
+
+            Fragment clf = aTalk.getFragment(aTalk.CL_FRAGMENT);
+            if (clf instanceof ContactListFragment) {
+                ((ContactListFragment) clf).updateUnreadCount(metaContact);
             }
         }
     }
@@ -1077,8 +1047,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param event the <code>CallEvent</code>
      */
-    public void outgoingCallCreated(CallEvent event)
-    {
+    public void outgoingCallCreated(CallEvent event) {
         Call call = event.getSourceCall();
         call.addCallChangeListener(this);
 
@@ -1095,8 +1064,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void peerAddressChanged(CallPeerChangeEvent evt)
-    {
+    public void peerAddressChanged(CallPeerChangeEvent evt) {
     }
 
     /**
@@ -1104,8 +1072,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void peerDisplayNameChanged(CallPeerChangeEvent evt)
-    {
+    public void peerDisplayNameChanged(CallPeerChangeEvent evt) {
     }
 
     /**
@@ -1113,8 +1080,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void peerImageChanged(CallPeerChangeEvent evt)
-    {
+    public void peerImageChanged(CallPeerChangeEvent evt) {
     }
 
     /**
@@ -1122,8 +1088,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt fired CallPeerEvent
      */
-    public void peerStateChanged(CallPeerChangeEvent evt)
-    {
+    public void peerStateChanged(CallPeerChangeEvent evt) {
         try {
             CallPeer peer = evt.getSourceCallPeer();
             Call call = peer.getCall();
@@ -1150,8 +1115,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     if (notification != null)
                         callNotifications.put(call, notification);
                 }
-            }
-            else {
+            } else {
                 NotificationData notification = callNotifications.get(call);
                 if (notification != null)
                     stopSound(notification);
@@ -1169,8 +1133,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
                 if (notification != null)
                     callNotifications.put(call, notification);
-            }
-            else if (newState == CallPeerState.BUSY) {
+            } else if (newState == CallPeerState.BUSY) {
                 // We start the busy sound only if we're in a simple call.
                 if (!isConference(call)) {
                     final WeakReference<CallPeer> weakPeer = new WeakReference<>(peer);
@@ -1181,8 +1144,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
                     if (notification != null)
                         callNotifications.put(call, notification);
                 }
-            }
-            else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
+            } else if ((newState == CallPeerState.DISCONNECTED) || (newState == CallPeerState.FAILED)) {
                 fireNotification(HANG_UP);
             }
         } catch (Throwable t) {
@@ -1199,8 +1161,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void peerTransportAddressChanged(CallPeerChangeEvent evt)
-    {
+    public void peerTransportAddressChanged(CallPeerChangeEvent evt) {
     }
 
     /**
@@ -1209,8 +1170,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param recorder the <code>Recorder</code> which has stopped recording its associated media
      */
-    public void recorderStopped(Recorder recorder)
-    {
+    public void recorderStopped(Recorder recorder) {
         try {
             ResourceManagementService resources = NotificationWiringActivator.getResources();
             fireNotification(CALL_SAVED, SystrayService.NONE_MESSAGE_TYPE,
@@ -1228,8 +1188,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Register all default notifications.
      */
-    private void registerDefaultNotifications()
-    {
+    private void registerDefaultNotifications() {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
 
         if (notificationService == null)
@@ -1302,8 +1261,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the event we received
      */
-    public void securityMessageReceived(CallPeerSecurityMessageEvent evt)
-    {
+    public void securityMessageReceived(CallPeerSecurityMessageEvent evt) {
         try {
             String messageTitleKey;
             // Android notification cannot support html tags
@@ -1351,8 +1309,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent evt)
-    {
+    public void securityNegotiationStarted(CallPeerSecurityNegotiationStartedEvent evt) {
     }
 
     /**
@@ -1360,8 +1317,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void securityOff(CallPeerSecurityOffEvent evt)
-    {
+    public void securityOff(CallPeerSecurityOffEvent evt) {
     }
 
     /**
@@ -1369,8 +1325,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the event we received
      */
-    public void securityOn(CallPeerSecurityOnEvent evt)
-    {
+    public void securityOn(CallPeerSecurityOnEvent evt) {
         try {
             SrtpControl securityController = evt.getSecurityController();
             CallPeer peer = (CallPeer) evt.getSource();
@@ -1393,8 +1348,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void securityTimeout(CallPeerSecurityTimeoutEvent evt)
-    {
+    public void securityTimeout(CallPeerSecurityTimeoutEvent evt) {
         Timber.w("Notification security timeout: %s", evt.getSessionType());
     }
 
@@ -1404,8 +1358,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param event The <code>ServiceEvent</code> object.
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         ServiceReference serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to know
@@ -1432,8 +1385,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param data the event type for which we should stop sounds. One of the static event types defined in this class.
      */
-    private void stopSound(NotificationData data)
-    {
+    private void stopSound(NotificationData data) {
         if (data == null)
             return;
 
@@ -1461,8 +1413,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * Not used.
      */
-    public void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent evt)
-    {
+    public void chatStateNotificationDeliveryFailed(ChatStateNotificationEvent evt) {
     }
 
     /**
@@ -1470,8 +1421,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      *
      * @param evt the event containing details on the chat state notification
      */
-    public void chatStateNotificationReceived(ChatStateNotificationEvent evt)
-    {
+    public void chatStateNotificationReceived(ChatStateNotificationEvent evt) {
         try {
             // we don't care for proactive notifications, different than chat state sometimes after
             // closing chat we can see someone is composing, usually it's just server sanding that the

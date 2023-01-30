@@ -24,7 +24,6 @@ import org.jivesoftware.smack.packet.NamedElement;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleContentDescriptionInfo implements NamedElement
-{
+public abstract class JingleContentDescriptionInfo implements NamedElement {
 
 }

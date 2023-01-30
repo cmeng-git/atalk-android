@@ -320,7 +320,7 @@ public class CryptoFragment extends OSGiFragment
         isOmemoMode = enable;
         ProtocolProviderService pps = activeChat.getProtocolProvider();
 
-        if (!enable || (mDescriptor == null) || !pps.isRegistered())
+        if (!enable || mOmemoManager == null || (mDescriptor == null) || !pps.isRegistered())
             return;
 
         // Linked map between OmemoDevice and its fingerprint.
@@ -481,7 +481,8 @@ public class CryptoFragment extends OSGiFragment
     @Override
     public void memberPresenceChanged(ChatRoomMemberPresenceChangeEvent evt)
     {
-        if ((activeChat.isOmemoChat()) && ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED.equals(evt.getEventType())) {
+        if (mOmemoManager != null && (activeChat.isOmemoChat())
+                && ChatRoomMemberPresenceChangeEvent.MEMBER_JOINED.equals(evt.getEventType())) {
             try {
                 mOmemoManager.encrypt(mMultiUserChat, "Hi everybody!");
             } catch (UndecidedOmemoIdentityException e) {

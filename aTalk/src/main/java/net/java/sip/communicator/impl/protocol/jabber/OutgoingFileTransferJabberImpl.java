@@ -9,8 +9,8 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -22,6 +22,7 @@ import org.jivesoftware.smackx.bob.BoBInfo;
 import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
+import org.jivesoftware.smackx.filetransfer.FileTransfer;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.thumbnail.Thumbnail;
@@ -37,7 +38,6 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-
 public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer implements StanzaListener
 {
     // must include this attribute in bobData; else smack 4.4.0 throws NPE
@@ -46,7 +46,6 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     private final String id;
     private final Contact recipient;
     private final File file;
-    private Thumbnail thumbnail;
 
     /**
      * The jabber outgoing file transfer.
@@ -83,7 +82,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             return;
 
         // Add this outgoing transfer as a packet interceptor in order to manage thumbnails.
-        if (file instanceof ThumbnailedFile
+        if (ConfigurationUtils.isSendThumbnail() && (file instanceof ThumbnailedFile)
                 && (((ThumbnailedFile) file).getThumbnailData() != null)
                 && ((ThumbnailedFile) file).getThumbnailData().length > 0) {
             if (protocolProvider.isFeatureListSupported(protocolProvider.getFullJidIfPossible(recipient),
@@ -101,6 +100,15 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     public void cancel()
     {
         this.jabberTransfer.cancel();
+    }
+
+    /**
+     * Get the transfer error
+     * @return FileTransfer.Error
+     */
+    public FileTransfer.Error getTransferError()
+    {
+        return jabberTransfer.getError();
     }
 
     /**
@@ -170,14 +178,14 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     }
 
     /**
-     * Listens for all <code>Si</code> stanzas and adds a thumbnail element to it if a thumbnail preview is enabled.
+     * Listen for all <code>Si</code> stanzas and adds a thumbnail element to it if a thumbnail preview is enabled.
      *
      * @see StanzaListener#processStanza(Stanza)
      */
     @Override
     public void processStanza(Stanza stanza)
     {
-        if (!FileTransferConversation.FT_THUMBNAIL_ENABLE || !(stanza instanceof StreamInitiation))
+        if (!ConfigurationUtils.isSendThumbnail() || !(stanza instanceof StreamInitiation))
             return;
 
         // If our file is not a thumbnail file we have nothing to do here.
@@ -198,7 +206,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
 
             BoBManager bobManager = BoBManager.getInstanceFor(connection);
             bobInfo = bobManager.addBoB(bobData);
-            thumbnail = new Thumbnail(
+            Thumbnail thumbnail = new Thumbnail(
                     thumbnailedFile.getThumbnailData(),
                     thumbnailedFile.getThumbnailMimeType(),
                     thumbnailedFile.getThumbnailWidth(),

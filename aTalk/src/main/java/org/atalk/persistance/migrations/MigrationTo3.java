@@ -16,7 +16,7 @@ public class MigrationTo3
 {
     public static void updateSQLDatabase(SQLiteDatabase db) {
         updateOmemoIdentitiesTable(db);
-        clearUnsedTableEntries(db);
+        clearUnUsedTableEntries(db);
         deleteOldDatabase();
     }
 
@@ -27,7 +27,7 @@ public class MigrationTo3
                 + " ADD " + SQLiteOmemoStore.LAST_MESSAGE_RX + " NUMBER");
     }
 
-    private static void clearUnsedTableEntries(SQLiteDatabase db) {
+    private static void clearUnUsedTableEntries(SQLiteDatabase db) {
         // remove old property name
         String[] args = {"replacement.%"};
         db.delete(SQLiteConfigurationStore.TABLE_NAME, SQLiteConfigurationStore.COLUMN_NAME + " LIKE ?", args);

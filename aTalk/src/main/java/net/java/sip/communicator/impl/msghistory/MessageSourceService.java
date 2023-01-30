@@ -329,18 +329,18 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     private List<ComparableEvtObj> getCachedRecentMessages(ProtocolProviderService provider, boolean isStatusChanged)
     {
         Collection<EventObject> res;
-        String providerID = provider.getAccountID().getAccountUniqueID();
-        List<String> recentMessagesContactIDs = getRecentContactIDs(providerID,
+        String accountId = provider.getAccountID().getAccountUniqueID();
+        List<String> recentMessagesContactIDs = getRecentContactIDs(accountId,
                 (recentMessages.size() < numberOfMessages) ? null : oldestRecentMessage);
 
         List<ComparableEvtObj> cachedRecentMessages = new ArrayList<>();
-        for (String contactID : recentMessagesContactIDs) {
+        for (String contactId : recentMessagesContactIDs) {
             try {
                 res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
-                        providerID, contactID, isSMSEnabled);
+                        accountId, contactId, isSMSEnabled);
                 processEventObjects(res, cachedRecentMessages, isStatusChanged);
             } catch (Exception e) { // IndexOutOfBound
-                Timber.w("Get cache recent message exception for: %s => %s", contactID, e.getMessage());
+                Timber.w("Get cache recent message exception for: %s => %s", contactId, e.getMessage());
             }
         }
         return cachedRecentMessages;
@@ -466,18 +466,18 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     /**
      * Searches for contact ids in history of recent messages on and after the startDate
      *
-     * @param provider Account Uid
+     * @param accountUid Account Uid
      * @param startDate start date to search; can be null if not applicable
      * @return List of found entityJid
      */
-    private List<String> getRecentContactIDs(String provider, Date startDate)
+    private List<String> getRecentContactIDs(String accountUid, Date startDate)
     {
         List<String> contacts = new ArrayList<>();
         List<String> argList = new ArrayList<>();
 
         String[] columns = {ENTITY_JID};
         String whereCondition = ACCOUNT_UID + "=?";
-        argList.add(provider);
+        argList.add(accountUid);
 
         // add startDate if not null as additional search condition
         if (startDate != null) {
@@ -486,7 +486,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         }
         String[] args = argList.toArray(new String[0]);
 
-        // Retrieve all the entityJid for the given provider and startDate
+        // Retrieve all the entityJid for the given accountUid and startDate
         Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, columns,
                 whereCondition, args, null, null, null);
 
@@ -562,7 +562,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         if (isSMSEnabled && !evt.isSmsMessage())
             return;
 
-        handle(evt, evt.getDestinationContact().getProtocolProvider(), evt.getDestinationContact().getAddress());
+        handle(evt, evt.getContact().getProtocolProvider(), evt.getContact().getAddress());
     }
 
     /**
@@ -782,7 +782,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         ChatRoom chatRoom = null;
 
         if (obj instanceof MessageDeliveredEvent) {
-            contact = ((MessageDeliveredEvent) obj).getDestinationContact();
+            contact = ((MessageDeliveredEvent) obj).getContact();
         }
         else if (obj instanceof MessageReceivedEvent) {
             contact = ((MessageReceivedEvent) obj).getSourceContact();
@@ -934,7 +934,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             if (source instanceof MessageDeliveredEvent) {
                 MessageDeliveredEvent evt = (MessageDeliveredEvent) source;
 
-                this.contact = evt.getDestinationContact();
+                this.contact = evt.getContact();
                 this.address = contact.getAddress();
                 this.ppService = contact.getProtocolProvider();
                 this.timestamp = evt.getTimestamp();

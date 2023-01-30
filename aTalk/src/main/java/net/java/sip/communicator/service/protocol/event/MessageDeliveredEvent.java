@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 
@@ -16,9 +18,9 @@ import java.util.EventObject;
  * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message.
  *
  * @author Emil Ivov
+ * @author Eng Chong Meng
  */
-public class MessageDeliveredEvent extends EventObject
-{
+public class MessageDeliveredEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -27,21 +29,25 @@ public class MessageDeliveredEvent extends EventObject
     /**
      * The contact that has sent this message.
      */
-    private Contact to = null;
+    private final Contact mContact;
 
     /**
-     * The <code>ContactResource</code>, to which the message was sent.
+     * The <code>ContactResource</code>, from which the message was sent.
      */
-    private ContactResource toResource = null;
+    private final ContactResource mContactResource;
+
+    /**
+     * Message sender full jid
+     */
+    private final String mSender;
 
     /**
      * A timestamp indicating the exact date when the event occurred.
      */
-    private final Date timestamp;
+    private final Date mTimestamp;
 
     /**
-     * The ID of the message being corrected, or null if this was a new message and not a message
-     * correction.
+     * The ID of the message being corrected, or null if this was a new message and not a message correction.
      */
     private String correctedMessageUID;
 
@@ -56,84 +62,65 @@ public class MessageDeliveredEvent extends EventObject
     private boolean isMessageEncrypted = false;
 
     /**
-     * Constructor.
-     *
-     * @param source message source
-     * @param to the "to" contact
-     */
-    public MessageDeliveredEvent(IMessage source, Contact to)
-    {
-        this(source, to, new Date());
-    }
-
-    /**
-     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
-     * to the specified <code>to</code> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code>
+     * message to the specified <code>to</code> contact.
      *
      * @param source the <code>IMessage</code> whose delivery this event represents.
-     * @param to the <code>Contact</code> that this message was sent to.
+     * @param contact the <code>Contact</code> that this message was sent to.
      * @param correctedMessageUID The ID of the message being corrected.
      */
-    public MessageDeliveredEvent(IMessage source, Contact to, String correctedMessageUID)
-    {
-        this(source, to, new Date());
+    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource,
+            String sender, String correctedMessageUID) {
+        this(source, contact, contactResource, sender, new Date());
         this.correctedMessageUID = correctedMessageUID;
     }
 
     /**
-     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
-     * to the specified <code>to</code> contact.
+     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code>
+     * message to the specified <code>to</code> contact.
      *
      * @param source the <code>IMessage</code> whose delivery this event represents.
-     * @param to the <code>Contact</code> that this message was sent to.
+     * @param contact the <code>Contact</code> that this message was sent to.
+     * @param contactResource the <code>Contact</code> resource that this message was sent to
+     * @param sender the fullJid from which this message was sent
      * @param timestamp a date indicating the exact moment when the event occurred
      */
-    public MessageDeliveredEvent(IMessage source, Contact to, Date timestamp)
-    {
+    public MessageDeliveredEvent(IMessage source, Contact contact, ContactResource contactResource, String sender, Date timestamp) {
         super(source);
-        this.to = to;
-        this.timestamp = timestamp;
-    }
-
-    /**
-     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
-     * to the specified <code>to</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose delivery this event represents.
-     * @param to the <code>Contact</code> that this message was sent to.
-     * @param timestamp a date indicating the exact moment when the event occurred
-     */
-    public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource, Date timestamp)
-    {
-        super(source);
-        this.to = to;
-        this.toResource = toResource;
-        this.timestamp = timestamp;
-    }
-
-    /**
-     * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
-     * to the specified <code>to</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose delivery this event represents.
-     * @param to the <code>Contact</code> that this message was sent to.
-     * @param toResource the <code>Contact</code> resource that this message was sent to
-     */
-    public MessageDeliveredEvent(IMessage source, Contact to, ContactResource toResource)
-    {
-        this(source, to, new Date());
-        this.toResource = toResource;
+        mContact = contact;
+        mContactResource = contactResource;
+        mSender = sender;
+        mTimestamp = timestamp;
     }
 
     /**
      * Returns a reference to the <code>Contact</code> that <code>IMessage</code> was sent to.
      *
-     * @return a reference to the <code>Contact</code> that has send the <code>IMessage</code> whose
-     * reception this event represents.
+     * @return a reference to the <code>Contact</code> that has send the <code>IMessage</code>
+     * whose reception this event represents.
      */
-    public Contact getDestinationContact()
-    {
-        return to;
+    public Contact getContact() {
+        return mContact;
+    }
+
+    /**
+     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code>
+     * whose reception this event represents.
+     *
+     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code>
+     * whose reception this event represents.
+     */
+    public ContactResource getContactResource() {
+        return mContactResource;
+    }
+
+    /**
+     * Get the message sender fullJid
+     *
+     * @return sender fullJid
+     */
+    public String getSender() {
+        return mSender;
     }
 
     /**
@@ -141,8 +128,7 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getSourceMessage()
-    {
+    public IMessage getSourceMessage() {
         return (IMessage) getSource();
     }
 
@@ -151,19 +137,16 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @return a Date indicating when the event occurred.
      */
-    public Date getTimestamp()
-    {
-        return timestamp;
+    public Date getTimestamp() {
+        return mTimestamp;
     }
 
     /**
      * Returns the type of message event represented by this event instance.
      *
-     * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this
-     * event.
+     * @return one of the XXX_MESSAGE_DELIVERED fields of this class indicating the type of this event.
      */
-    public int getEventType()
-    {
+    public int getEventType() {
         return isSmsMessage() ? ChatMessage.MESSAGE_SMS_OUT : ChatMessage.MESSAGE_OUT;
     }
 
@@ -174,8 +157,7 @@ public class MessageDeliveredEvent extends EventObject
      * @return the ID of the message being corrected, or null if this was a new message and not a
      * message correction.
      */
-    public String getCorrectedMessageUID()
-    {
+    public String getCorrectedMessageUID() {
         return correctedMessageUID;
     }
 
@@ -184,8 +166,7 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @param correctedMessageUID The ID of the message being corrected.
      */
-    public void setCorrectedMessageUID(String correctedMessageUID)
-    {
+    public void setCorrectedMessageUID(String correctedMessageUID) {
         this.correctedMessageUID = correctedMessageUID;
     }
 
@@ -194,8 +175,7 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @param smsMessage whether it is a sms one.
      */
-    public void setSmsMessage(boolean smsMessage)
-    {
+    public void setSmsMessage(boolean smsMessage) {
         this.smsMessage = smsMessage;
     }
 
@@ -204,21 +184,8 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @return whether the delivered message is a sms one.
      */
-    public boolean isSmsMessage()
-    {
+    public boolean isSmsMessage() {
         return smsMessage;
-    }
-
-    /**
-     * Returns a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
-     * reception this event represents.
-     *
-     * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
-     * reception this event represents.
-     */
-    public ContactResource getContactResource()
-    {
-        return toResource;
     }
 
     /**
@@ -226,8 +193,7 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @return <code>true</code> if the message is encrypted and <code>false</code> if not.
      */
-    public boolean isMessageEncrypted()
-    {
+    public boolean isMessageEncrypted() {
         return isMessageEncrypted;
     }
 
@@ -236,8 +202,7 @@ public class MessageDeliveredEvent extends EventObject
      *
      * @param isMessageEncrypted the value to be set.
      */
-    public void setMessageEncrypted(boolean isMessageEncrypted)
-    {
+    public void setMessageEncrypted(boolean isMessageEncrypted) {
         this.isMessageEncrypted = isMessageEncrypted;
     }
 }

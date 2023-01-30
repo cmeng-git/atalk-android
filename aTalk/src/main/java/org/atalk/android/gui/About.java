@@ -140,6 +140,7 @@ public class About extends FragmentActivity implements View.OnClickListener
             new String[]{"XEP-0294: Jingle RTP Header Extensions Negotiation 1.1.1", "https://xmpp.org/extensions/xep-0294.html"},
             new String[]{"XEP-0298: Delivering Conference Information to Jingle Participants (Coin) 0.2", "https://xmpp.org/extensions/xep-0298.html"},
             new String[]{"XEP-0308: Last Message Correction 1.2.0", "https://xmpp.org/extensions/xep-0308.html"},
+            new String[]{"XEP-0313: Message Archive Management 1.0.1", "https://xmpp.org/extensions/xep-0313.html"},
             new String[]{"XEP-0319: Last User Interaction in Presence 1.0.2", "https://xmpp.org/extensions/xep-0319.html"},
             new String[]{"XEP-0320: Use of DTLS-SRTP in Jingle Sessions 1.0.0", "https://xmpp.org/extensions/xep-0320.html"},
             new String[]{"XEP-0338: Jingle Grouping Framework 1.0.0", "https://xmpp.org/extensions/xep-0338.html"},
@@ -153,6 +154,7 @@ public class About extends FragmentActivity implements View.OnClickListener
             // new String[]{"XEP-0368: SRV records for XMPP over TLS", "https://xmpp.org/extensions/xep-0368.html"},
             new String[]{"XEP-0384: OMEMO Encryption 0.8.3", "https://xmpp.org/extensions/xep-0384.html"},
             new String[]{"XEP-0391: Jingle Encrypted Transports 0.1.2", "https://xmpp.org/extensions/xep-0391.html"},
+            new String[]{"XEP-0441: Message Archive Management Preferences 0.2.0", "https://xmpp.org/extensions/xep-0441.htmll"},
             new String[]{"XEP-xxxx: OMEMO Media sharing 0.0.2", "https://xmpp.org/extensions/inbox/omemo-media-sharing.html"},
             // new String[]{"", ""},
     };

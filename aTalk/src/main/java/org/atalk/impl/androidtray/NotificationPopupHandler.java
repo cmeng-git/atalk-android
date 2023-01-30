@@ -131,7 +131,8 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     String mSid = (String) tag;
                     callNotificationMap.put(mSid, nId);
 
-                    // Note: Heads-up prompt is not shown under android locked screen, the first launch activity must have fullScreen.
+                    // Note: Heads-up prompt is not shown under android locked screen, it auto launches activity.
+                    // So disable auto-answer (JMC) in this case; hence allow user choice to cancel/accept incoming call
                     // For jingleMessage propose => JingleMessageCallActivity;
                     Intent fullScreenIntent;
                     if (SystrayService.JINGLE_MESSAGE_PROPOSE == popupMessage.getMessageType()) {

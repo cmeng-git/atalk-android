@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.view.*;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
@@ -57,6 +58,9 @@ public class FileHistoryConversation extends FileTransferConversation
             ViewGroup container, boolean init)
     {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
+        // Assume history file transfer is completed with all button hidden
+        updateXferFileViewState(FileTransferStatusChangeEvent.COMPLETED, null);
+
         if (fileRecord == null) {
             if (chatMessage != null) {
                 String date = GuiUtils.formatDateTime(chatMessage.getDate());
@@ -83,8 +87,8 @@ public class FileHistoryConversation extends FileTransferConversation
 
         String date = GuiUtils.formatDateTime(fileRecord.getDate());
         messageViewHolder.timeView.setText(date);
-        String titleString = getStatusMessage(entityJid, dir, status);
-        messageViewHolder.fileStatus.setText(titleString);
+        String statusMessage = getStatusMessage(entityJid, dir, status);
+        messageViewHolder.fileStatus.setText(statusMessage);
 
         if (bgAlert) {
             messageViewHolder.fileStatus.setTextColor(Color.RED);
@@ -167,5 +171,10 @@ public class FileHistoryConversation extends FileTransferConversation
     protected String getProgressLabel(long bytesString)
     {
         return "";
+    }
+
+    @Override
+    protected void updateView(int status, String reason) {
+        // No view update process is called for file history
     }
 }

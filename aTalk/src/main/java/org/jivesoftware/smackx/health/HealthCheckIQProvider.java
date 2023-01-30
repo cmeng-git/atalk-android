@@ -56,12 +56,10 @@ public class HealthCheckIQProvider extends IQProvider<HealthCheckIQ>
 
 			iq = new HealthCheckIQ();
 			boolean done = false;
-
 			while (!done) {
 				switch (parser.next()) {
 					case END_ELEMENT: {
 						String name = parser.getName();
-
 						if (rootElement.equals(name)) {
 							done = true;
 						}

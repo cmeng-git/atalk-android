@@ -1145,8 +1145,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             // Delivered message for own outgoing message view display
             message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
-            ChatRoomMessageDeliveredEvent msgDeliveredEvt = new ChatRoomMessageDeliveredEvent(ChatRoomJabberImpl.this,
-                    new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
+            ChatRoomMessageDeliveredEvent msgDeliveredEvt
+                    = new ChatRoomMessageDeliveredEvent(this, new Date(), message, ChatMessage.MESSAGE_MUC_OUT);
             fireMessageEvent(msgDeliveredEvt);
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, omemoManager);

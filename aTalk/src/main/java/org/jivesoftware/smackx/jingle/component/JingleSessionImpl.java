@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle.component;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,8 +51,7 @@ import org.jxmpp.jid.FullJid;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class JingleSessionImpl extends JingleSession
-{
+public class JingleSessionImpl extends JingleSession {
     private static final Logger LOGGER = Logger.getLogger(JingleSessionImpl.class.getName());
 
     private final ConcurrentHashMap<String, JingleContentImpl> contentImpls = new ConcurrentHashMap<>();
@@ -63,13 +64,24 @@ public class JingleSessionImpl extends JingleSession
     private final JingleUtil jutil;
     private SessionState mSessionState;
 
-    public enum SessionState
-    {
-        fresh,      // pre-session-initiate
-        pending,    // pre-session-accept
-        active,     // post-session-accept
-        canceled,   // cancel after accept
-        ended       // post-session-terminate with JingleReason.Success
+    public enum SessionState {
+        fresh("Prior to session-initiate"),
+        pending("Prior to session-accept"),
+        active("Post session-accept"),
+        cancelled("Session cancel after accept"),
+        ended("Session terminated with JingleReason.Success");
+
+        private final String state;
+
+        SessionState(String state) {
+            this.state = state;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return state;
+        }
     }
 
     /**
@@ -78,8 +90,7 @@ public class JingleSessionImpl extends JingleSession
      * @param connection XMPPConnection
      * @param recipient The remote file-recipient
      */
-    public JingleSessionImpl(XMPPConnection connection, FullJid recipient)
-    {
+    public JingleSessionImpl(XMPPConnection connection, FullJid recipient) {
         this(connection, connection.getUser(), recipient, Role.initiator, JingleManager.randomId(), null);
     }
 
@@ -90,13 +101,12 @@ public class JingleSessionImpl extends JingleSession
      * @param initiator JingleSI initiator; conversations excludes initiator attribute in session-initiate
      * @param jingleSI The received JingleIQ for session-initiate
      */
-    public JingleSessionImpl(XMPPConnection connection, FullJid initiator,  Jingle jingleSI)
-    {
+    public JingleSessionImpl(XMPPConnection connection, FullJid initiator, Jingle jingleSI) {
         this(connection, initiator, connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents());
         for (JingleContent content : getContents()) {
             this.addContent(content);
         }
-        mSessionState = SessionState.pending;
+        updateSessionState(SessionState.pending);
     }
 
     /**
@@ -109,10 +119,9 @@ public class JingleSessionImpl extends JingleSession
      * @param sid Jingle session Id
      * @param contents Jingle contents
      */
-    public JingleSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents)
-    {
+    public JingleSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents) {
         super(initiator, responder, role, sid, contents);
-        mSessionState = SessionState.fresh;
+        updateSessionState(SessionState.fresh);
 
         mConnection = connection;
         jutil = new JingleUtil(connection);
@@ -120,18 +129,16 @@ public class JingleSessionImpl extends JingleSession
         mManager.registerJingleSessionHandler(getRemote(), sid, this);
     }
 
-    public void sendInitiate(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException
-    {
+    public void sendInitiate(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         if (mSessionState != SessionState.fresh) {
             throw new IllegalStateException("Session is not in fresh state.");
         }
 
         connection.createStanzaCollectorAndSend(createSessionInitiate()).nextResultOrThrow();
-        mSessionState = SessionState.pending;
+        updateSessionState(SessionState.pending);
     }
 
-    public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException
-    {
+    public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         LOGGER.log(Level.INFO, "Accepted session.");
         if (mSessionState != SessionState.pending) {
             throw new IllegalStateException("Session is not in pending state.");
@@ -146,11 +153,10 @@ public class JingleSessionImpl extends JingleSession
         }
 
         connection.createStanzaCollectorAndSend(createSessionAccept()).nextResultOrThrow();
-        mSessionState = SessionState.active;
+        updateSessionState(SessionState.active);
     }
 
-    public Jingle createSessionInitiate()
-    {
+    public Jingle createSessionInitiate() {
         if (role != Role.initiator) {
             throw new IllegalStateException("Sessions role is not initiator.");
         }
@@ -171,8 +177,7 @@ public class JingleSessionImpl extends JingleSession
         return jingleSI;
     }
 
-    public Jingle createSessionAccept()
-    {
+    public Jingle createSessionAccept() {
         if (role != Role.responder) {
             throw new IllegalStateException("Sessions role is not responder.");
         }
@@ -193,8 +198,7 @@ public class JingleSessionImpl extends JingleSession
         return jingleSA;
     }
 
-    void onContentFinished(JingleContentImpl jingleContent)
-    {
+    void onContentFinished(JingleContentImpl jingleContent) {
         if (contentImpls.get(jingleContent.getName()) == null) {
             LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore contentFinished.");
             return;
@@ -218,8 +222,7 @@ public class JingleSessionImpl extends JingleSession
         */
     }
 
-    void onContentCancel(JingleContentImpl jingleContent)
-    {
+    void onContentCancel(JingleContentImpl jingleContent) {
         if (contentImpls.get(jingleContent.getName()) == null) {
             LOGGER.log(Level.WARNING, "Session does not contain content " + jingleContent.getName() + ". Ignore onContentCancel.");
             return;
@@ -245,8 +248,7 @@ public class JingleSessionImpl extends JingleSession
      *
      * @param jingleReason reason for session-terminate
      */
-    public void terminateSession(JingleReason jingleReason)
-    {
+    public void terminateSession(JingleReason jingleReason) {
         notifySessionTerminated(jingleReason);
         try {
             mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
@@ -257,8 +259,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    public IQ handleJingleSessionRequest(Jingle request)
-    {
+    public IQ handleJingleSessionRequest(Jingle request) {
         switch (request.getAction()) {
 
             case content_modify:
@@ -300,9 +301,8 @@ public class JingleSessionImpl extends JingleSession
      * @return IQResult.
      */
     @Override
-    protected IQ handleSessionAccept(final Jingle sessionAccept)
-    {
-        mSessionState = SessionState.active;
+    protected IQ handleSessionAccept(final Jingle sessionAccept) {
+        updateSessionState(SessionState.active);
 
         for (final JingleContentImpl content : contentImpls.values()) {
             JingleSecurity<?> security = content.getSecurity();
@@ -320,8 +320,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleSessionInitiate(Jingle sessionInitiate)
-    {
+    protected IQ handleSessionInitiate(Jingle sessionInitiate) {
         LOGGER.log(Level.INFO, "Create new session with '" + remote + "': " + sid);
         final JingleDescription<?> description = getSoleContentOrThrow().getDescription();
         final JingleDescriptionManager descriptionManager
@@ -345,8 +344,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleSessionTerminate(Jingle sessionTerminate)
-    {
+    protected IQ handleSessionTerminate(Jingle sessionTerminate) {
         JingleReason reason = sessionTerminate.getReason();
         if (reason == null) {
             throw new AssertionError("Reason MUST not be null! (I guess)...");
@@ -355,11 +353,11 @@ public class JingleSessionImpl extends JingleSession
         // the resultant state is currently not used by JingleSessionImpl
         switch (reason.asEnum()) {
             case cancel:
-                mSessionState = SessionState.canceled;
+                updateSessionState(SessionState.cancelled);
                 break;
 
             case success:
-                mSessionState = SessionState.ended;
+                updateSessionState(SessionState.ended);
                 break;
 
             default:
@@ -374,8 +372,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleContentAccept(final Jingle contentAccept)
-    {
+    protected IQ handleContentAccept(final Jingle contentAccept) {
         for (JingleContent a : contentAccept.getContents()) {
             final JingleContentImpl accepted = proposedContentImpls.get(a.getName());
 
@@ -392,8 +389,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleContentAdd(Jingle contentAdd)
-    {
+    protected IQ handleContentAdd(Jingle contentAdd) {
         final JingleContentImpl proposed = getSoleProposedContentOrThrow(contentAdd);
 
         final JingleDescriptionManager descriptionManager
@@ -408,8 +404,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleContentReject(Jingle contentReject)
-    {
+    protected IQ handleContentReject(Jingle contentReject) {
         for (JingleContent r : contentReject.getContents()) {
             final JingleContentImpl rejected = proposedContentImpls.get(r.getName());
 
@@ -424,8 +419,7 @@ public class JingleSessionImpl extends JingleSession
     }
 
     @Override
-    protected IQ handleContentRemove(final Jingle contentRemove)
-    {
+    protected IQ handleContentRemove(final Jingle contentRemove) {
         return IQ.createErrorResponse(contentRemove, StanzaError.Condition.feature_not_implemented);
         /*
         for (JingleContentImpl r : request.getContents()) {
@@ -442,8 +436,7 @@ public class JingleSessionImpl extends JingleSession
         */
     }
 
-    protected HashMap<JingleContent, JingleContentImpl> getAffectedContents(Jingle request)
-    {
+    protected HashMap<JingleContent, JingleContentImpl> getAffectedContents(Jingle request) {
         HashMap<JingleContent, JingleContentImpl> map = new HashMap<>();
         for (org.jivesoftware.smackx.jingle.element.JingleContent e : request.getContents()) {
             JingleContentImpl c = contentImpls.get(e.getName());
@@ -455,8 +448,7 @@ public class JingleSessionImpl extends JingleSession
         return map;
     }
 
-    protected JingleContentImpl getSoleAffectedContentOrThrow(Jingle request)
-    {
+    protected JingleContentImpl getSoleAffectedContentOrThrow(Jingle request) {
         if (request.getContents().size() != 1) {
             throw new AssertionError("More/less than 1 content in request!");
         }
@@ -468,8 +460,7 @@ public class JingleSessionImpl extends JingleSession
         return content;
     }
 
-    protected JingleContentImpl getSoleProposedContentOrThrow(Jingle request)
-    {
+    protected JingleContentImpl getSoleProposedContentOrThrow(Jingle request) {
         if (request.getContents().size() != 1) {
             throw new AssertionError("More/less than 1 content in request!");
         }
@@ -477,8 +468,7 @@ public class JingleSessionImpl extends JingleSession
         return JingleContentImpl.fromElement(mConnection, request.getContents().get(0));
     }
 
-    public void addContentImpl(JingleContentImpl content)
-    {
+    public void addContentImpl(JingleContentImpl content) {
         if (contentImpls.get(content.getName()) != null) {
             throw new IllegalArgumentException("Session already contains a content with the name " + content.getName());
         }
@@ -486,18 +476,15 @@ public class JingleSessionImpl extends JingleSession
         content.setParent(this);
     }
 
-    public void addContent(JingleContent content)
-    {
+    public void addContent(JingleContent content) {
         addContentImpl(JingleContentImpl.fromElement(mConnection, content));
     }
 
-    public ConcurrentHashMap<String, JingleContentImpl> getContentImpls()
-    {
+    public ConcurrentHashMap<String, JingleContentImpl> getContentImpls() {
         return contentImpls;
     }
 
-    public JingleContentImpl getContentImpl(String name)
-    {
+    public JingleContentImpl getContentImpl(String name) {
         return contentImpls.get(name);
     }
 
@@ -508,8 +495,7 @@ public class JingleSessionImpl extends JingleSession
      * @return a JingleContent instance or <code>null</code>.
      * @throws IllegalStateException if there is more than one jingle content.
      */
-    public JingleContentImpl getSoleContentOrThrow()
-    {
+    public JingleContentImpl getSoleContentOrThrow() {
         if (contentImpls.isEmpty()) {
             return null;
         }
@@ -520,20 +506,27 @@ public class JingleSessionImpl extends JingleSession
         return contentImpls.values().iterator().next();
     }
 
-    public SessionState getSessionState()
-    {
+    public SessionState getSessionState() {
         return mSessionState;
     }
 
+    public void updateSessionState(SessionState newState) {
+        if (mSessionState != newState) {
+            List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+            for (JingleSessionListener sl : copySl) {
+                sl.sessionStateUpdated(mSessionState, newState);
+            }
+            mSessionState = newState;
+        }
+    }
+
     @Override
-    public XMPPConnection getConnection()
-    {
+    public XMPPConnection getConnection() {
         return mConnection;
     }
 
     @Override
-    public void onTransportMethodFailed(String namespace)
-    {
+    public void onTransportMethodFailed(String namespace) {
     }
 
     /**
@@ -541,8 +534,7 @@ public class JingleSessionImpl extends JingleSession
      *
      * @param sl JingleSessionListener
      */
-    public static void addJingleSessionListener(JingleSessionListener sl)
-    {
+    public static void addJingleSessionListener(JingleSessionListener sl) {
         jingleSessionListeners.add(sl);
     }
 
@@ -551,9 +543,15 @@ public class JingleSessionImpl extends JingleSession
      *
      * @param sl JingleSessionListener
      */
-    public static void removeJingleSessionListener(JingleSessionListener sl)
-    {
+    public static void removeJingleSessionListener(JingleSessionListener sl) {
         jingleSessionListeners.remove(sl);
+    }
+
+    public void notifySessionAccepted() {
+        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+        for (JingleSessionListener sl : copySl) {
+            sl.onSessionAccepted();
+        }
     }
 
     /**
@@ -563,26 +561,32 @@ public class JingleSessionImpl extends JingleSession
      *
      * @param reason JingleReason for the session termination
      */
-    public void notifySessionTerminated(JingleReason reason)
-    {
+    public void notifySessionTerminated(JingleReason reason) {
         List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
         for (JingleSessionListener sl : copySl) {
             sl.onSessionTerminated(reason);
         }
     }
 
-    public void notifySessionAccepted()
-    {
-        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
-        for (JingleSessionListener sl : copySl) {
-            sl.onSessionAccepted();
-        }
-    }
+    public interface JingleSessionListener {
+        /**
+         * Called when the session status changes.
+         *
+         * @param oldState the previous session state.
+         * @param newState the new session state.
+         */
+        void sessionStateUpdated(SessionState oldState, SessionState newState);
 
-    public interface JingleSessionListener
-    {
-        void onSessionTerminated(JingleReason reason);
-
+        /**
+         * Once the session is accepted by peer.
+         */
         void onSessionAccepted();
+
+        /**
+         * Called when an session is terminated for the given reason.
+         *
+         * @param reason the jingleReason to terminate the session.
+         */
+        void onSessionTerminated(JingleReason reason);
     }
 }

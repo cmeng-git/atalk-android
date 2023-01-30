@@ -7,11 +7,26 @@ package org.atalk.android.gui.chat;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
-import net.java.sip.communicator.service.contactlist.event.*;
+import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactGroupEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactListListener;
+import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactMovedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
+import net.java.sip.communicator.service.contactlist.event.ProtoContactEvent;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
+import net.java.sip.communicator.service.protocol.event.ContactResourceListener;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +36,11 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * An implementation of the <code>ChatSession</code> interface that represents a user-to-user chat session.
@@ -31,8 +50,7 @@ import java.util.*;
  * @author Eng Chong Meng
  */
 public class MetaContactChatSession extends ChatSession
-        implements MetaContactListListener, ContactResourceListener
-{
+        implements MetaContactListListener, ContactResourceListener {
 
     private final MetaContact metaContact;
     private final MetaContactListService metaContactListService;
@@ -58,8 +76,7 @@ public class MetaContactChatSession extends ChatSession
      * @param contactResource the specific resource to be used as transport
      */
     public MetaContactChatSession(ChatPanel chatPanel, MetaContact metaContact,
-            Contact protocolContact, ContactResource contactResource)
-    {
+            Contact protocolContact, ContactResource contactResource) {
         this.sessionRenderer = chatPanel;
         this.metaContact = metaContact;
         persistableAddress = protocolContact.getPersistableAddress();
@@ -82,8 +99,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the entityBareJid of this chat
      */
     @Override
-    public String getChatEntity()
-    {
+    public String getChatEntity() {
         String entityJid = metaContact.getDefaultContact().getAddress();
         if (StringUtils.isEmpty(entityJid))
             entityJid = aTalkApp.getResString(R.string.service_gui_UNKNOWN);
@@ -94,11 +110,11 @@ public class MetaContactChatSession extends ChatSession
      * Returns a collection of the last N number of messages given by count.
      *
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistory(int count)
-    {
+    public Collection<Object> getHistory(int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -114,11 +130,11 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param date The date up to which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryBeforeDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryBeforeDate(Date date, int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -135,11 +151,11 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param date The date from which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     @Override
-    public Collection<Object> getHistoryAfterDate(Date date, int count)
-    {
+    public Collection<Object> getHistoryAfterDate(Date date, int count) {
         final MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
         // If the MetaHistoryService is not registered we have nothing to do here. The history
@@ -157,8 +173,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the start date of the history of this chat session.
      */
     @Override
-    public Date getHistoryStartDate()
-    {
+    public Date getHistoryStartDate() {
         Date startHistoryDate = new Date(0);
         MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
@@ -176,12 +191,10 @@ public class MetaContactChatSession extends ChatSession
             if (o instanceof MessageDeliveredEvent) {
                 MessageDeliveredEvent evt = (MessageDeliveredEvent) o;
                 startHistoryDate = evt.getTimestamp();
-            }
-            else if (o instanceof MessageReceivedEvent) {
+            } else if (o instanceof MessageReceivedEvent) {
                 MessageReceivedEvent evt = (MessageReceivedEvent) o;
                 startHistoryDate = evt.getTimestamp();
-            }
-            else if (o instanceof FileRecord) {
+            } else if (o instanceof FileRecord) {
                 FileRecord fileRecord = (FileRecord) o;
                 startHistoryDate = fileRecord.getDate();
             }
@@ -195,8 +208,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the end date of the history of this chat session.
      */
     @Override
-    public Date getHistoryEndDate()
-    {
+    public Date getHistoryEndDate() {
         Date endHistoryDate = new Date(0);
         MetaHistoryService metaHistory = AndroidGUIActivator.getMetaHistoryService();
 
@@ -214,12 +226,10 @@ public class MetaContactChatSession extends ChatSession
             if (o1 instanceof MessageDeliveredEvent) {
                 MessageDeliveredEvent evt = (MessageDeliveredEvent) o1;
                 endHistoryDate = evt.getTimestamp();
-            }
-            else if (o1 instanceof MessageReceivedEvent) {
+            } else if (o1 instanceof MessageReceivedEvent) {
                 MessageReceivedEvent evt = (MessageReceivedEvent) o1;
                 endHistoryDate = evt.getTimestamp();
-            }
-            else if (o1 instanceof FileRecord) {
+            } else if (o1 instanceof FileRecord) {
                 FileRecord fileRecord = (FileRecord) o1;
                 endHistoryDate = fileRecord.getDate();
             }
@@ -233,8 +243,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the default mobile number used to send sms-es in this session.
      */
     @Override
-    public String getDefaultSmsNumber()
-    {
+    public String getDefaultSmsNumber() {
         String smsNumber;
         JSONArray jsonArray = metaContact.getDetails("mobile");
         if (jsonArray != null && jsonArray.length() > 0) {
@@ -254,8 +263,7 @@ public class MetaContactChatSession extends ChatSession
      * @param smsPhoneNumber The default mobile number used to send sms-es in this session.
      */
     @Override
-    public void setDefaultSmsNumber(String smsPhoneNumber)
-    {
+    public void setDefaultSmsNumber(String smsPhoneNumber) {
         metaContact.addDetail("mobile", smsPhoneNumber);
     }
 
@@ -267,8 +275,7 @@ public class MetaContactChatSession extends ChatSession
      * @param contactResource the <code>ContactResource</code>, which is to be selected into this instance
      * as the current <code>ChatTransport</code> if indicated
      */
-    private void initChatTransports(Contact protocolContact, ContactResource contactResource)
-    {
+    private void initChatTransports(Contact protocolContact, ContactResource contactResource) {
         Iterator<Contact> protocolContacts = metaContact.getContacts();
         while (protocolContacts.hasNext()) {
             Contact contact = protocolContacts.next();
@@ -286,8 +293,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the currently used transport for all operation within this chat session.
      */
     @Override
-    public ChatTransport getCurrentChatTransport()
-    {
+    public ChatTransport getCurrentChatTransport() {
         return currentChatTransport;
     }
 
@@ -297,46 +303,36 @@ public class MetaContactChatSession extends ChatSession
      * @param chatTransport The transport to set as a default transport for this session.
      */
     @Override
-    public void setCurrentChatTransport(ChatTransport chatTransport)
-    {
+    public void setCurrentChatTransport(ChatTransport chatTransport) {
         this.currentChatTransport = chatTransport;
         fireCurrentChatTransportChange();
     }
 
-    public void childContactsReordered(MetaContactGroupEvent evt)
-    {
+    public void childContactsReordered(MetaContactGroupEvent evt) {
     }
 
-    public void metaContactAdded(MetaContactEvent evt)
-    {
+    public void metaContactAdded(MetaContactEvent evt) {
     }
 
-    public void metaContactGroupAdded(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupAdded(MetaContactGroupEvent evt) {
     }
 
-    public void metaContactGroupModified(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupModified(MetaContactGroupEvent evt) {
     }
 
-    public void metaContactGroupRemoved(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupRemoved(MetaContactGroupEvent evt) {
     }
 
-    public void metaContactModified(MetaContactModifiedEvent evt)
-    {
+    public void metaContactModified(MetaContactModifiedEvent evt) {
     }
 
-    public void metaContactMoved(MetaContactMovedEvent evt)
-    {
+    public void metaContactMoved(MetaContactMovedEvent evt) {
     }
 
-    public void metaContactRemoved(MetaContactEvent evt)
-    {
+    public void metaContactRemoved(MetaContactEvent evt) {
     }
 
-    public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt)
-    {
+    public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt) {
     }
 
     /**
@@ -346,8 +342,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param evt the <code>MetaContactRenamedEvent</code> that notified us
      */
-    public void metaContactRenamed(MetaContactRenamedEvent evt)
-    {
+    public void metaContactRenamed(MetaContactRenamedEvent evt) {
         String newName = evt.getNewDisplayName();
 
         if (evt.getSourceMetaContact().equals(metaContact)) {
@@ -360,8 +355,7 @@ public class MetaContactChatSession extends ChatSession
      * Implements <code>MetaContactListListener.protoContactAdded</code> method.
      * When a proto contact is added, updates the "send via" selector box.
      */
-    public void protoContactAdded(ProtoContactEvent evt)
-    {
+    public void protoContactAdded(ProtoContactEvent evt) {
         if (evt.getNewParent().equals(metaContact)) {
             addChatTransports(evt.getProtoContact(), null, false);
         }
@@ -374,12 +368,10 @@ public class MetaContactChatSession extends ChatSession
      * @param evt the <code>ProtoContactEvent</code> that contains information about
      * the old and the new parent of the contact
      */
-    public void protoContactMoved(ProtoContactEvent evt)
-    {
+    public void protoContactMoved(ProtoContactEvent evt) {
         if (evt.getOldParent().equals(metaContact)) {
             protoContactRemoved(evt);
-        }
-        else if (evt.getNewParent().equals(metaContact)) {
+        } else if (evt.getNewParent().equals(metaContact)) {
             protoContactAdded(evt);
         }
     }
@@ -388,8 +380,7 @@ public class MetaContactChatSession extends ChatSession
      * Implements <code>MetaContactListListener.protoContactRemoved</code> method.
      * When a proto contact is removed, updates the "send via" selector box.
      */
-    public void protoContactRemoved(ProtoContactEvent evt)
-    {
+    public void protoContactRemoved(ProtoContactEvent evt) {
         if (evt.getOldParent().equals(metaContact)) {
             Contact protoContact = evt.getProtoContact();
 
@@ -410,18 +401,17 @@ public class MetaContactChatSession extends ChatSession
      * Returns the <code>ChatContact</code> corresponding to the given <code>MetaContact</code>.
      *
      * @param metaContact the <code>MetaContact</code> to search for
+     *
      * @return the <code>ChatContact</code> corresponding to the given <code>MetaContact</code>.
      */
-    private ChatContact<?> findChatContactByMetaContact(MetaContact metaContact)
-    {
+    private ChatContact<?> findChatContactByMetaContact(MetaContact metaContact) {
         for (ChatContact<?> chatContact : chatParticipants) {
             Object chatSourceContact = chatContact.getDescriptor();
             if (chatSourceContact instanceof MetaContact) {
                 MetaContact metaChatContact = (MetaContact) chatSourceContact;
                 if (metaChatContact.equals(metaContact))
                     return chatContact;
-            }
-            else {
+            } else {
                 ChatRoomMember metaChatContact = (ChatRoomMember) chatSourceContact;
                 Contact contact = metaChatContact.getContact();
                 MetaContact parentMetaContact
@@ -437,8 +427,7 @@ public class MetaContactChatSession extends ChatSession
      * Disposes this chat session.
      */
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         if (metaContactListService != null)
             metaContactListService.removeMetaContactListListener(this);
 
@@ -455,8 +444,7 @@ public class MetaContactChatSession extends ChatSession
      * @return The <code>ChatSessionRenderer</code>.
      */
     @Override
-    public ChatPanel getChatSessionRenderer()
-    {
+    public ChatPanel getChatSessionRenderer() {
         return sessionRenderer;
     }
 
@@ -466,8 +454,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the descriptor i.e. MetaContact of this chat session.
      */
     @Override
-    public Object getDescriptor()
-    {
+    public Object getDescriptor() {
         return metaContact;
     }
 
@@ -476,8 +463,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @return the chat identifier
      */
-    public String getChatId()
-    {
+    public String getChatId() {
         return metaContact.getMetaUID();
     }
 
@@ -487,8 +473,7 @@ public class MetaContactChatSession extends ChatSession
      * @return {@code true} if this contact is persistent, otherwise returns {@code false}.
      */
     @Override
-    public boolean isDescriptorPersistent()
-    {
+    public boolean isDescriptorPersistent() {
         if (metaContact == null)
             return false;
 
@@ -517,8 +502,7 @@ public class MetaContactChatSession extends ChatSession
      * @return the status icon corresponding to this chat room
      */
     @Override
-    public byte[] getChatStatusIcon()
-    {
+    public byte[] getChatStatusIcon() {
         if (this.metaContact == null) {
             return null;
         }
@@ -541,25 +525,21 @@ public class MetaContactChatSession extends ChatSession
      * @return the avatar icon of this chat session.
      */
     @Override
-    public byte[] getChatAvatar()
-    {
+    public byte[] getChatAvatar() {
         return metaContact.getAvatar();
     }
 
-    public void protoContactModified(ProtoContactEvent evt)
-    {
+    public void protoContactModified(ProtoContactEvent evt) {
     }
 
-    public void protoContactRenamed(ProtoContactEvent evt)
-    {
+    public void protoContactRenamed(ProtoContactEvent evt) {
     }
 
     /**
      * Implements ChatSession#isContactListSupported().
      */
     @Override
-    public boolean isContactListSupported()
-    {
+    public boolean isContactListSupported() {
         return false;
     }
 
@@ -569,8 +549,7 @@ public class MetaContactChatSession extends ChatSession
      * @param contact the <code>Contact</code>, which transports to add
      * @param resourceName the resource to be pre-selected
      */
-    private void addChatTransports(Contact contact, String resourceName, boolean isSelectedContact)
-    {
+    private void addChatTransports(Contact contact, String resourceName, boolean isSelectedContact) {
         MetaContactChatTransport chatTransport = null;
         Collection<ContactResource> contactResources = contact.getResources();
 
@@ -590,8 +569,7 @@ public class MetaContactChatSession extends ChatSession
                     chatTransport = resourceTransport;
                 }
             }
-        }
-        else {
+        } else {
             chatTransport = new MetaContactChatTransport(this, contact);
             addChatTransport(chatTransport);
         }
@@ -622,8 +600,7 @@ public class MetaContactChatSession extends ChatSession
         }
     }
 
-    private void addChatTransport(ChatTransport chatTransport)
-    {
+    private void addChatTransport(ChatTransport chatTransport) {
         synchronized (chatTransports) {
             chatTransports.add(chatTransport);
         }
@@ -635,8 +612,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param chatTransport the <code>ChatTransport</code>.
      */
-    private void removeChatTransport(ChatTransport chatTransport)
-    {
+    private void removeChatTransport(ChatTransport chatTransport) {
         synchronized (chatTransports) {
             chatTransports.remove(chatTransport);
         }
@@ -651,8 +627,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param contact the <code>ChatTransport</code>.
      */
-    private void removeChatTransports(Contact contact)
-    {
+    private void removeChatTransports(Contact contact) {
         List<ChatTransport> transports;
         synchronized (chatTransports) {
             transports = new ArrayList<>(chatTransports);
@@ -672,8 +647,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param contact the contact, which related transports to update
      */
-    private void updateChatTransports(Contact contact)
-    {
+    private void updateChatTransports(Contact contact) {
         if (currentChatTransport != null) {
             boolean isSelectedContact = ((MetaContactChatTransport) currentChatTransport).getContact().equals(contact);
             String resourceName = currentChatTransport.getResourceName();
@@ -692,8 +666,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param event the <code>ContactResourceEvent</code> that notified us
      */
-    public void contactResourceAdded(ContactResourceEvent event)
-    {
+    public void contactResourceAdded(ContactResourceEvent event) {
         Contact contact = event.getContact();
         if (metaContact.containsContact(contact)) {
             updateChatTransports(contact);
@@ -705,8 +678,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param event the <code>ContactResourceEvent</code> that notified us
      */
-    public void contactResourceRemoved(ContactResourceEvent event)
-    {
+    public void contactResourceRemoved(ContactResourceEvent event) {
         Contact contact = event.getContact();
         if (metaContact.containsContact(contact)) {
             updateChatTransports(contact);
@@ -718,8 +690,7 @@ public class MetaContactChatSession extends ChatSession
      *
      * @param event the <code>ContactResourceEvent</code> that notified us
      */
-    public void contactResourceModified(ContactResourceEvent event)
-    {
+    public void contactResourceModified(ContactResourceEvent event) {
         Contact contact = event.getContact();
         if (metaContact.containsContact(contact)) {
             ChatTransport transport = findChatTransportForResource(event.getContactResource());
@@ -734,10 +705,10 @@ public class MetaContactChatSession extends ChatSession
      * Finds the <code>ChatTransport</code> corresponding to the given contact <code>resource</code>.
      *
      * @param resource the <code>ContactResource</code>, which corresponding transport we're looking for
+     *
      * @return the <code>ChatTransport</code> corresponding to the given contact <code>resource</code>
      */
-    private ChatTransport findChatTransportForResource(ContactResource resource)
-    {
+    private ChatTransport findChatTransportForResource(ContactResource resource) {
         List<ChatTransport> transports;
         synchronized (chatTransports) {
             transports = new ArrayList<>(chatTransports);

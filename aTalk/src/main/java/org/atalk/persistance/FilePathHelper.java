@@ -49,9 +49,11 @@ public class FilePathHelper
     public static String getFilePath(Context ctx, Attachment attachment)
     {
         Uri uri = attachment.getUri();
+
         String filePath = getFilePath(ctx, uri);
-        if (filePath == null)
+        if (filePath == null) {
             filePath = getFilePathWithCreate(ctx, uri);
+        }
         return filePath;
     }
 

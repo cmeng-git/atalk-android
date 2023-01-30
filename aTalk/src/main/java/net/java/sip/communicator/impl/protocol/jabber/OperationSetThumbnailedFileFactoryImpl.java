@@ -15,6 +15,7 @@ import java.io.File;
  * with thumbnails through the <code>OperationSetFileTransfer</code>.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class OperationSetThumbnailedFileFactoryImpl implements OperationSetThumbnailedFileFactory
 {
@@ -25,13 +26,12 @@ public class OperationSetThumbnailedFileFactoryImpl implements OperationSetThumb
      * @param thumbnailWidth the width of the thumbnail
      * @param thumbnailHeight the height of the thumbnail
      * @param thumbnailMimeType the mime type of the thumbnail
-     * @param thumbnail the thumbnail data
+     * @param thumbnail the thumbnail data, must not be null
      * @return a file with a thumbnail
      */
     public File createFileWithThumbnail(File file, int thumbnailWidth, int thumbnailHeight,
             String thumbnailMimeType, byte[] thumbnail)
     {
-        return new ThumbnailedFile(file, thumbnailWidth, thumbnailHeight, thumbnailMimeType,
-                thumbnail);
+        return new ThumbnailedFile(file, thumbnailWidth, thumbnailHeight, thumbnailMimeType, thumbnail);
     }
 }

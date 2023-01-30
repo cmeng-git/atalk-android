@@ -36,24 +36,6 @@ public interface OperationSetFileTransfer extends OperationSet
             throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException;
 
     /**
-     * Sends a file transfer request to the given <code>toContact</code> by specifying the local and
-     * remote file path and the <code>fromContact</code>, sending the file.
-     *
-     * @param toContact the contact that should receive the file
-     * @param fromContact the contact sending the file
-     * @param remotePath the remote file path
-     * @param localPath the local file path
-     * @param uuid the uuid of the message that trigger the send file request
-     *
-     * @return the transfer object
-     * @throws IllegalStateException if the protocol provider is not registered or connected
-     * @throws IllegalArgumentException if some of the arguments doesn't fit the protocol requirements
-     * @throws OperationNotSupportedException if the given contact client or server does not support file transfers.
-     */
-    FileTransfer sendFile(Contact toContact, Contact fromContact, String remotePath, String localPath, String uuid)
-            throws IllegalStateException, IllegalArgumentException, OperationNotSupportedException;
-
-    /**
      * Adds the given <code>ScFileTransferListener</code> that would listen for file transfer requests and
      * created file transfers.
      *

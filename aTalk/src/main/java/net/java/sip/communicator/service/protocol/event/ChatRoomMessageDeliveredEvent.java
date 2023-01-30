@@ -24,6 +24,7 @@ import java.util.EventObject;
  *
  * @author Emil Ivov
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
 public class ChatRoomMessageDeliveredEvent extends EventObject
 {
@@ -35,22 +36,22 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
     /**
      * A timestamp indicating the exact date when the event occurred.
      */
-    private final Date timestamp;
+    private final Date mTimestamp;
 
     /**
      * The received <code>IMessage</code>.
      */
-    private IMessage message = null;
+    private final IMessage mMessage;
 
     /**
      * The type of message event that this instance represents.
      */
-    private int eventType = -1;
+    private final int mEventType;
 
     /**
      * Some services can fill our room with message history.
      */
-    private boolean historyMessage = false;
+    private boolean mHistoryMessage = false;
 
     /**
      * Creates a <code>MessageDeliveredEvent</code> representing delivery of the <code>source</code> message
@@ -59,15 +60,15 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      * @param source the <code>ChatRoom</code> which triggered this event.
      * @param timestamp a date indicating the exact moment when the event occurred
      * @param message the message that triggered this event.
-     * @param eventType indicating the type of the delivered event. It's either an ACTION_MESSAGE_DELIVERED or
-     * a CONVERSATION_MESSAGE_DELIVERED.
+     * @param eventType indicating the type of the delivered event.
+     * It is either an ACTION_MESSAGE_DELIVERED or a CONVERSATION_MESSAGE_DELIVERED.
      */
     public ChatRoomMessageDeliveredEvent(ChatRoom source, Date timestamp, IMessage message, int eventType)
     {
         super(source);
-        this.timestamp = timestamp;
-        this.message = message;
-        this.eventType = eventType;
+        mTimestamp = timestamp;
+        mMessage = message;
+        mEventType = eventType;
     }
 
     /**
@@ -77,7 +78,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     public IMessage getMessage()
     {
-        return message;
+        return mMessage;
     }
 
     /**
@@ -87,7 +88,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     public Date getTimestamp()
     {
-        return timestamp;
+        return mTimestamp;
     }
 
     /**
@@ -108,7 +109,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     public int getEventType()
     {
-        return eventType;
+        return mEventType;
     }
 
     /**
@@ -118,7 +119,7 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     public boolean isHistoryMessage()
     {
-        return historyMessage;
+        return mHistoryMessage;
     }
 
     /**
@@ -128,6 +129,6 @@ public class ChatRoomMessageDeliveredEvent extends EventObject
      */
     public void setHistoryMessage(boolean historyMessage)
     {
-        this.historyMessage = historyMessage;
+        mHistoryMessage = historyMessage;
     }
 }

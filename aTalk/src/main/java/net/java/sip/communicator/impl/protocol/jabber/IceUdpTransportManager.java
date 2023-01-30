@@ -247,7 +247,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     password.getBytes(StandardCharsets.UTF_8));
 
             Timber.i("Auto discovered STUN/TURN-server harvester: %s", autoHarvester);
-
             if (autoHarvester != null) {
                 atLeastOneStunServer = true;
                 agent.addCandidateHarvester(autoHarvester);
@@ -332,8 +331,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
         if (accID.isUPNPEnabled()) {
             agent.addCandidateHarvester(new UPNPHarvester());
         }
-        // For testing only: see ExternalServiceDiscoveryManager#handleESDServicePush(ServiceElement)
-        // IceCandidateHarvester.IqPushRequestESD(connection);
 
         long stopGatheringHarvesterTime = System.currentTimeMillis();
         long gatheringHarvesterTime = stopGatheringHarvesterTime - startGatheringHarvesterTime;

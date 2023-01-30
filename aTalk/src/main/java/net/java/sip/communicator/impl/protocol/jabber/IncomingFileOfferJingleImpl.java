@@ -19,6 +19,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
@@ -33,12 +34,15 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.hashes.element.HashElement;
+import org.jivesoftware.smackx.jet.component.JetSecurityImpl;
+import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFile;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
 import org.jxmpp.jid.BareJid;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 
 import timber.log.Timber;
@@ -48,20 +52,23 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-
-public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
-{
+public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest {
     private final OperationSetFileTransferJabberImpl fileTransferOpSet;
 
-    public final IncomingFileOfferController mOffer;
+    private final IncomingFileOfferController mOffer;
     private final JingleFile mJingleFile;
     private IncomingFileTransferJingleImpl mFileTransfer = null;
     private File mFile;
 
     private final XMPPConnection mConnection;
 
-    private Contact sender;
-    private final String id;
+    private Contact mSender;
+    private final String mId;
+
+    /*
+     * Transfer file encryption type based on incoming encryption detection.
+     */
+    protected int mEncryption;
 
     /**
      * Creates an <code>IncomingFileOfferJingleImpl</code> based on the given
@@ -72,22 +79,31 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * @param fileTransferRequest the request coming from the Jabber protocol
      */
     public IncomingFileOfferJingleImpl(ProtocolProviderServiceJabberImpl pps,
-            OperationSetFileTransferJabberImpl fileTransferOpSet, IncomingFileOfferController offer)
-    {
+            OperationSetFileTransferJabberImpl fileTransferOpSet, IncomingFileOfferController offer) {
         this.fileTransferOpSet = fileTransferOpSet;
         mConnection = pps.getConnection();
 
         mOffer = offer;
         mJingleFile = mOffer.getMetadata();
         HashElement hashElement = mJingleFile.getHashElement();
-        this.id = (hashElement != null) ? hashElement.getHashB64()
+        mId = (hashElement != null) ? hashElement.getHashB64()
                 : String.valueOf(System.currentTimeMillis()) + hashCode();
+
+        // Determine the incoming content encryption type.
+        mEncryption = IMessage.ENCRYPTION_NONE;
+        Collection<JingleContentImpl> contentImpls = mOffer.getJingleSession().getContentImpls().values();
+        for (JingleContentImpl jingleContent : contentImpls) {
+            if (jingleContent.getSecurity() instanceof JetSecurityImpl) {
+                mEncryption = IMessage.ENCRYPTION_OMEMO;
+                break;
+            };
+        }
 
         BareJid remoteJid = mOffer.getJingleSession().getRemote().asBareJid();
         OperationSetPersistentPresenceJabberImpl opSetPersPresence
                 = (OperationSetPersistentPresenceJabberImpl) pps.getOperationSet(OperationSetPersistentPresence.class);
-        sender = opSetPersPresence.findContactByJid(remoteJid);
-        if (sender == null) {
+        mSender = opSetPersPresence.findContactByJid(remoteJid);
+        if (mSender == null) {
             ChatRoom privateContactRoom = null;
             OperationSetMultiUserChatJabberImpl mucOpSet
                     = (OperationSetMultiUserChatJabberImpl) pps.getOperationSet(OperationSetMultiUserChat.class);
@@ -96,12 +112,12 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
                 privateContactRoom = mucOpSet.getChatRoom(remoteJid);
 
             if (privateContactRoom != null) {
-                sender = opSetPersPresence.createVolatileContact(remoteJid, true);
-                privateContactRoom.updatePrivateContactPresenceStatus(sender);
+                mSender = opSetPersPresence.createVolatileContact(remoteJid, true);
+                privateContactRoom.updatePrivateContactPresenceStatus(mSender);
             }
             else {
                 // just create a volatile contact for new sender
-                sender = opSetPersPresence.createVolatileContact(remoteJid);
+                mSender = opSetPersPresence.createVolatileContact(remoteJid);
             }
         }
     }
@@ -110,15 +126,13 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * JingleSessionImpl.addJingleSessionListener(this);
      */
     @Override
-    public FileTransfer onPrepare(File file)
-    {
+    public FileTransfer onPrepare(File file) {
         mFile = file;
         mFileTransfer = new IncomingFileTransferJingleImpl(this, file);
         return mFileTransfer;
     }
 
-    public IncomingFileOfferController getController()
-    {
+    public IncomingFileOfferController getController() {
         return mOffer;
     }
 
@@ -128,9 +142,8 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * @return the <code>Contact</code> making this request
      */
     @Override
-    public Contact getSender()
-    {
-        return sender;
+    public Contact getSender() {
+        return mSender;
     }
 
     /**
@@ -139,13 +152,11 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * @return the description of the file corresponding to this request
      */
     @Override
-    public String getFileDescription()
-    {
+    public String getFileDescription() {
         return mJingleFile.getDescription();
     }
 
-    public String getMimeType()
-    {
+    public String getMimeType() {
         return mJingleFile.getMediaType();
     }
 
@@ -155,8 +166,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * @return the name of the file corresponding to this request
      */
     @Override
-    public String getFileName()
-    {
+    public String getFileName() {
         return mJingleFile.getName();
     }
 
@@ -166,30 +176,36 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      * @return the size of the file corresponding to this request
      */
     @Override
-    public long getFileSize()
-    {
+    public long getFileSize() {
         return mJingleFile.getSize();
     }
 
     /**
-     * The unique id.
+     * The file transfer unique id.
      *
      * @return the id.
      */
     @Override
-    public String getID()
-    {
-        return id;
+    public String getID() {
+        return mId;
     }
 
     /**
-     * Returns the thumbnail contained in this request.
+     * Return the encryption of the incoming file corresponding to this FileTransfer.
+     *
+     * @return the encryption of the file corresponding to this request
+     */
+    public int getEncryptionType() {
+        return mEncryption;
+    }
+
+    /**
+     * Returns the thumbnail contained in this request. Jingle file transfer does not support thumbnail.
      *
      * @return the thumbnail contained in this request
      */
     @Override
-    public byte[] getThumbnail()
-    {
+    public byte[] getThumbnail() {
         return null;
     }
 
@@ -198,12 +214,9 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      *
      * Note: If user cancels while in protocol negotiation; the accept() will return an error:
      * XMPPError: item-not-found - cancel
-     *
-     * @return a boolean : <code>false</code> if the transfer fails, <code>true</code> otherwise
      */
     @Override
-    public void acceptFile()
-    {
+    public void acceptFile() {
         try {
             FileTransferCreatedEvent event = new FileTransferCreatedEvent(mFileTransfer, new Date());
             fileTransferOpSet.fireFileTransferCreated(event);
@@ -220,8 +233,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest
      */
     @Override
     public void declineFile()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             mOffer.cancel(mConnection);
             mFileTransfer.removeIfoListener();

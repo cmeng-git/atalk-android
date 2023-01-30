@@ -253,9 +253,9 @@ public final class JingleCallManager extends Manager implements JingleHandler
     public IQ handleJingleRequest(Jingle jingle)
     {
         // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
+        // conversations excludes initiator attribute in session-initiate
         FullJid initiator = jingle.getInitiator();
         if (initiator == null) {
-            // conversations excludes initiator attribute in session-initiate
             initiator = jingle.getFrom().asEntityFullJidIfPossible();
         }
         final JingleCallSessionImpl session = new JingleCallSessionImpl(connection(), initiator, jingle.getSid(),

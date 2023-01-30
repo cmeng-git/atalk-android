@@ -10,12 +10,17 @@ import net.java.otr4j.io.SerializationConstants;
 import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.TransformLayer;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
 import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+
+import org.jxmpp.jid.Jid;
+
+import java.util.Date;
 
 /**
  * The Off-the-Record {@link TransformLayer} implementation.
@@ -47,7 +52,7 @@ public class OtrTransformLayer implements TransformLayer {
 	 * Implements TransformLayer#messageDeliveryPending(MessageDeliveredEvent).
 	 */
 	public MessageDeliveredEvent[] messageDeliveryPending(MessageDeliveredEvent evt) {
-		Contact contact = evt.getDestinationContact();
+		Contact contact = evt.getContact();
 		OtrContact otrContact = OtrContactManager.getOtrContact(contact, evt.getContactResource());
 
 		// If this is a message otr4j injected earlier, return the event as is.
@@ -68,16 +73,20 @@ public class OtrTransformLayer implements TransformLayer {
 			return new MessageDeliveredEvent[]{evt};
 
 		final MessageDeliveredEvent[] processedEvents = new MessageDeliveredEvent[processedMessageContent.length];
+		OperationSetBasicInstantMessaging imOpSet
+				= contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
+		int encType = evt.getSourceMessage().getEncType();
+		String subject = evt.getSourceMessage().getSubject();
+		ContactResource contactResource = evt.getContactResource();
+		String sender = evt.getSender();
+		Date timeStamp = evt.getTimestamp();
+
 		for (int i = 0; i < processedMessageContent.length; i++) {
 			final String fragmentContent = processedMessageContent[i];
 			// Forge a new message based on the new contents.
-			OperationSetBasicInstantMessaging imOpSet
-                    = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
-			IMessage processedMessage = imOpSet.createMessage(fragmentContent,
-                    ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getSubject());
-
-			// Create a new event and return.
-			final MessageDeliveredEvent processedEvent = new MessageDeliveredEvent(processedMessage, contact, evt.getTimestamp());
+			IMessage processedMessage = imOpSet.createMessage(fragmentContent, encType, subject);
+			// Create a new processedEvent.
+			final MessageDeliveredEvent processedEvent = new MessageDeliveredEvent(processedMessage, contact, contactResource, sender, timeStamp);
 
 			if (processedMessage.getContent().contains(SerializationConstants.HEAD)) {
 				processedEvent.setMessageEncrypted(true);
@@ -108,11 +117,11 @@ public class OtrTransformLayer implements TransformLayer {
 		OperationSetBasicInstantMessaging imOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetBasicInstantMessaging.class);
 		IMessage processedMessage = imOpSet.createMessageWithUID(processedMessageContent,
-                ((MessageJabberImpl) evt.getSourceMessage()).getEncType(), evt.getSourceMessage().getMessageUID());
+                evt.getSourceMessage().getEncType(), evt.getSourceMessage().getMessageUID());
 
 		// Create a new event and return.
 		MessageReceivedEvent processedEvent = new MessageReceivedEvent(processedMessage, contact,
-				evt.getContactResource(), evt.getTimestamp(), evt.getCorrectedMessageUID());
+				evt.getContactResource(), evt.getSender(), evt.getTimestamp(), evt.getCorrectedMessageUID());
 		return processedEvent;
 	}
 }

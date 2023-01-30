@@ -35,16 +35,16 @@ import java.util.List;
  * @author Lubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class ChatSession
-{
+public abstract class ChatSession {
     public static final String TABLE_NAME = "chatSessions"; // chat session
-    public static final String SESSION_UUID = "sessionUuid";
+    public static final String SESSION_UUID = "sessionUuid";// ChatSession Unique Id
     public static final String ACCOUNT_UUID = "accountUuid";
     public static final String ACCOUNT_UID = "accountUid";  // AccountUID
     public static final String ENTITY_JID = "entityJid";    // entityJid for contact or chatRoom
     public static final String CREATED = "created";         // time stamp
-    public static final String STATUS = "status";           // see ChatFragment#chatType (persistent)
+    public static final String STATUS = "status";           // see ChatFragment#chatType (MSGTYPE_)
     public static final String MODE = "mode";               // muc = 1
+    public static final String MAM_DATE = "mamDate";        // mam last access date
     public static final String ATTRIBUTES = "attributes";   // see below ATTR_*
 
     public static final String ATTR_NEXT_ENCRYPTION = "next_encryption";
@@ -67,7 +67,8 @@ public abstract class ChatSession
     public static final int MODE_MULTI = 1;
     public static final int MODE_NPE = 2;    // non-persistent entity
 
-    private String sessionUuid;
+    // The last access date to the server mam records
+    private Date mamDate;
     private JSONObject attributes = new JSONObject();
 
     private static ChatSession chatSession;
@@ -111,24 +112,19 @@ public abstract class ChatSession
     public abstract Object getDescriptor();
 
     /**
-     * Returns the chat identifier i.e. sessionUuid.
+     * Returns the chat identifier i.e. SessionUuid in DB; uniquely identify this chat session.
+     * The mSessionUuid is linked to all the chatMessages of this chatSession in the database
      *
-     * @return the chat identifier
+     * @return the chat identifier i.e. SessionUuid of the chat
      */
-    public String getChatId()
-    {
-        return sessionUuid;
+    public abstract String getChatId();
+
+    public Date getMamDate() {
+        return mamDate;
     }
 
-    /**
-     * Returns the sessionUuid, uniquely identify this chat session. The sessionUuid is also use
-     * as a link to retrieve all the chatMessages of this chatSession in the database
-     *
-     * @return the sessionUuid of the chat
-     */
-    public String getSessionUuid()
-    {
-        return this.sessionUuid;
+    public void setMamDate(Date date) {
+        mamDate = date;
     }
 
     /**
@@ -136,8 +132,7 @@ public abstract class ChatSession
      *
      * @return the persistable address.
      */
-    public String getPersistableAddress()
-    {
+    public String getPersistableAddress() {
         return persistableAddress;
     }
 
@@ -153,8 +148,7 @@ public abstract class ChatSession
      *
      * @return an iterator to the list of all participants contained in this chat session.
      */
-    public Iterator<ChatContact<?>> getParticipants()
-    {
+    public Iterator<ChatContact<?>> getParticipants() {
         return chatParticipants.iterator();
     }
 
@@ -164,8 +158,7 @@ public abstract class ChatSession
      *
      * @return all available chat transports for this chat session.
      */
-    public Iterator<ChatTransport> getChatTransports()
-    {
+    public Iterator<ChatTransport> getChatTransports() {
         return chatTransports.iterator();
     }
 
@@ -183,8 +176,7 @@ public abstract class ChatSession
      * @return a list of all <code>ChatTransport</code>s contained in this session supporting the given <code>opSetClass</code>
      */
     public List<ChatTransport> getTransportsForOperationSet(
-            Class<? extends OperationSet> opSetClass)
-    {
+            Class<? extends OperationSet> opSetClass) {
         LinkedList<ChatTransport> opSetTransports = new LinkedList<>();
 
         for (ChatTransport transport : chatTransports) {
@@ -283,8 +275,7 @@ public abstract class ChatSession
      * @param resourceName The entityBareJid of the resource if any, null otherwise
      * @return The ChatTransport corresponding to the given descriptor.
      */
-    public ChatTransport findChatTransportForDescriptor(Object descriptor, String resourceName)
-    {
+    public ChatTransport findChatTransportForDescriptor(Object descriptor, String resourceName) {
         for (ChatTransport chatTransport : chatTransports) {
             String transportResName = chatTransport.getResourceName();
 
@@ -327,8 +318,7 @@ public abstract class ChatSession
      *
      * @param l the <code>ChatSessionChangeListener</code> to add
      */
-    public void addChatTransportChangeListener(ChatSessionChangeListener l)
-    {
+    public void addChatTransportChangeListener(ChatSessionChangeListener l) {
         synchronized (chatTransportChangeListeners) {
             if (!chatTransportChangeListeners.contains(l))
                 chatTransportChangeListeners.add(l);
@@ -340,8 +330,7 @@ public abstract class ChatSession
      *
      * @param l the <code>ChatSessionChangeListener</code> to add
      */
-    public void removeChatTransportChangeListener(ChatSessionChangeListener l)
-    {
+    public void removeChatTransportChangeListener(ChatSessionChangeListener l) {
         synchronized (chatTransportChangeListeners) {
             chatTransportChangeListeners.remove(l);
         }
@@ -350,8 +339,7 @@ public abstract class ChatSession
     /**
      * Fires a event that current ChatTransport has changed.
      */
-    public void fireCurrentChatTransportChange()
-    {
+    public void fireCurrentChatTransportChange() {
         List<ChatSessionChangeListener> listeners;
         synchronized (chatTransportChangeListeners) {
             listeners = new ArrayList<>(chatTransportChangeListeners);
@@ -364,8 +352,7 @@ public abstract class ChatSession
     /**
      * Fires a event that current ChatTransport has been updated.
      */
-    public void fireCurrentChatTransportUpdated(int eventID)
-    {
+    public void fireCurrentChatTransportUpdated(int eventID) {
         List<ChatSessionChangeListener> listeners;
         synchronized (chatTransportChangeListeners) {
             listeners = new ArrayList<>(chatTransportChangeListeners);

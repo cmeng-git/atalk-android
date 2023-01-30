@@ -73,6 +73,13 @@ public interface IncomingFileTransferRequest
     Contact getSender();
 
     /**
+     * Returns the encryption of the incoming file corresponding to this FileTransfer.
+     *
+     * @return the encryption of the file corresponding to this request
+     */
+    int getEncryptionType();
+
+    /**
      * Function called to accept and receive the file.
      *
      * @param file the file to accept

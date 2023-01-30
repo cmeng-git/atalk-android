@@ -29,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
@@ -37,12 +38,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.target.CustomViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -87,14 +96,8 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class FileTransferConversation extends OSGiFragment
-        implements OnClickListener, OnLongClickListener, FileTransferProgressListener, UploadProgressListener,
-        SeekBar.OnSeekBarChangeListener
-{
-    /**
-     * XEP-0264: File Transfer Thumbnails option
-     */
-    public static boolean FT_THUMBNAIL_ENABLE = true;
-
+        implements OnClickListener, OnLongClickListener, FileTransferProgressListener,
+        UploadProgressListener, SeekBar.OnSeekBarChangeListener {
     /**
      * Image default width / height.
      */
@@ -118,7 +121,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * The size of the file to be transferred.
      */
-    private long mTransferFileSize = 0;
+    protected long mTransferFileSize = 0;
 
     /**
      * The time of the last fileTransfer update.
@@ -204,8 +207,7 @@ public abstract class FileTransferConversation extends OSGiFragment
 
     private final Vector<UploadProgressListener> uploadProgressListeners = new Vector<>();
 
-    protected FileTransferConversation(ChatFragment cPanel, String dir)
-    {
+    protected FileTransferConversation(ChatFragment cPanel, String dir) {
         mChatFragment = cPanel;
         mChatActivity = (ChatActivity) cPanel.getActivity();
         mConnection = cPanel.getChatPanel().getProtocolProvider().getConnection();
@@ -213,8 +215,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     protected View inflateViewForFileTransfer(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
-            ViewGroup container, boolean init)
-    {
+            ViewGroup container, boolean init) {
         this.messageViewHolder = msgViewHolder;
         View convertView = null;
 
@@ -250,12 +251,10 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.declineButton = convertView.findViewById(R.id.button_decline);
         }
 
-        // Assume history file transfer and completed with all button hidden
-        updateXferFileViewState(FileTransferStatusChangeEvent.COMPLETED, null);
         hideProgressRelatedComponents();
 
-        // Note-5: seek progressBar is not visible and thumb partially clipped with xml default settings.
-        // So increase the seekBar height to 16dp i.e. progressBar = 6dp
+        // Note-5: playbackSeekBar is not visible and thumb partially clipped with xml default settings.
+        // So increase the playbackSeekBar height to 16dp
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             final float scale = mChatActivity.getResources().getDisplayMetrics().density;
             int dp_padding = (int) (16 * scale + 0.5f);
@@ -288,10 +287,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param status FileTransferStatusChangeEvent status
      * @param statusText the status text for update
      */
-    protected void updateXferFileViewState(int status, String statusText)
-    {
-        // Timber.w(new Exception(), "Update file transfer button state: %s => %s", status, statusText);
-
+    protected void updateXferFileViewState(int status, final String statusText) {
         messageViewHolder.acceptButton.setVisibility(View.GONE);
         messageViewHolder.declineButton.setVisibility(View.GONE);
         messageViewHolder.cancelButton.setVisibility(View.GONE);
@@ -313,7 +309,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             // support transfer cancel during protocol negotiation.
             case FileTransferStatusChangeEvent.PREPARING:
                 // Preserve the cancel button view height, avoid being partially hidden by android when it is enabled
-                messageViewHolder.cancelButton.setVisibility(View.INVISIBLE);
+                messageViewHolder.cancelButton.setVisibility(View.GONE);
                 break;
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
@@ -331,6 +327,10 @@ public abstract class FileTransferConversation extends OSGiFragment
                 }
                 // set to full for progressBar on file transfer completed
                 long fileSize = mXferFile.length();
+                // found http file download fileSize == 0; so fake to 100.
+                if (fileSize == 0) {
+                    fileSize = 100;
+                }
                 onUploadProgress(fileSize, fileSize);
                 mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
                 break;
@@ -352,6 +352,11 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.fileStatus.setText(statusText);
         }
         messageViewHolder.timeView.setText(mDate);
+
+        // Do not scroll for FileHistoryConversation as this will interfere with user scrolling
+        // if (!(this instanceof FileHistoryConversation)) {
+        //     mChatFragment.scrollToBottom();
+        // }
     }
 
     /**
@@ -359,24 +364,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param resId the message to show
      */
-    protected void showErrorMessage(int resId)
-    {
+    protected void showErrorMessage(int resId) {
         String message = getResources().getString(resId);
         messageViewHolder.fileXferError.setText(message);
         messageViewHolder.fileXferError.setVisibility(TextView.VISIBLE);
-    }
-
-    /**
-     * Set the file encryption status icon.
-     *
-     * @param encType the encryption
-     */
-    protected void setEncState(int encType)
-    {
-        if (IMessage.ENCRYPTION_OMEMO == encType)
-            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
-        else
-            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);
     }
 
     /**
@@ -384,8 +375,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param thumbnail the thumbnail to show
      */
-    protected void showThumbnail(byte[] thumbnail)
-    {
+    protected void showThumbnail(byte[] thumbnail) {
         if (thumbnail != null && thumbnail.length > 0) {
             Bitmap thumbnailIcon = BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length);
             int mWidth = thumbnailIcon.getWidth();
@@ -398,7 +388,9 @@ public abstract class FileTransferConversation extends OSGiFragment
                 messageViewHolder.fileIcon.setScaleType(ScaleType.CENTER);
             }
             messageViewHolder.fileIcon.setImageBitmap(thumbnailIcon);
-            // messageViewHolder.stickerView.setImageBitmap(thumbnailIcon);
+
+            messageViewHolder.stickerView.setVisibility(View.VISIBLE);
+            messageViewHolder.stickerView.setImageBitmap(thumbnailIcon);
         }
     }
 
@@ -409,8 +401,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param file the file that has been downloaded/received or sent
      * @param isHistory true if the view file is history, so show small image size
      */
-    protected void updateFileViewInfo(File file, boolean isHistory)
-    {
+    protected void updateFileViewInfo(File file, boolean isHistory) {
         // File length = 0 will cause Glade to throw errors
         if ((file == null) || !file.exists() || file.length() == 0)
             return;
@@ -431,7 +422,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.playerView.setVisibility(View.GONE);
             messageViewHolder.stickerView.setVisibility(View.VISIBLE);
             messageViewHolder.fileLabel.setVisibility(View.VISIBLE);
-            MyGlideApp.loadImage(messageViewHolder.stickerView, file, isHistory);
+            updateImageView(isHistory);
         }
 
         final String toolTip = aTalkApp.getResString(R.string.service_gui_OPEN_FILE_FROM_IMAGE);
@@ -445,13 +436,51 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Sets the file transfer.
+     * Load the received media file image into the stickerView.
+     * Ensure the loaded image view is fully visible after resource is ready.
+     */
+    protected void updateImageView(boolean isHistory) {
+        if (isHistory || FileRecord.OUT.equals(mDir)) {
+            MyGlideApp.loadImage(messageViewHolder.stickerView, mXferFile, isHistory);
+            return;
+        }
+
+        Glide.with(aTalkApp.getGlobalContext())
+                .asDrawable()
+                .load(Uri.fromFile(mXferFile))
+                .override(1280, 608)
+                .into(new CustomViewTarget<ImageView, Drawable>(messageViewHolder.stickerView) {
+                          @Override
+                          public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                              messageViewHolder.stickerView.setImageDrawable(resource);
+                              if (resource instanceof GifDrawable) {
+                                  ((GifDrawable) resource).start();
+                              }
+                              mChatFragment.scrollToBottom();
+                          }
+
+                          @Override
+                          protected void onResourceCleared(@Nullable Drawable placeholder) {
+                              Timber.d("Glide onResourceCleared received!!!");
+                          }
+
+                          @Override
+                          public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                              messageViewHolder.stickerView.setImageResource(R.drawable.ic_file_open);
+                              mChatFragment.scrollToBottom();
+                          }
+                      }
+                );
+    }
+
+    /**
+     * Sets the file transfer and addProgressListener().
+     * Note: HttpFileUpload adds ProgressListener in httpFileUploadManager.uploadFile()
      *
      * @param fileTransfer the file transfer
      * @param transferFileSize the size of the transferred file Running in thread, not UI here
      */
-    protected void setFileTransfer(FileTransfer fileTransfer, long transferFileSize)
-    {
+    protected void setFileTransfer(FileTransfer fileTransfer, long transferFileSize) {
         mFileTransfer = fileTransfer;
         mTransferFileSize = transferFileSize;
         fileTransfer.addProgressListener(this);
@@ -460,8 +489,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * Hides all progress related components.
      */
-    protected void hideProgressRelatedComponents()
-    {
+    protected void hideProgressRelatedComponents() {
         messageViewHolder.progressBar.setVisibility(View.GONE);
         messageViewHolder.fileXferSpeed.setVisibility(View.GONE);
         messageViewHolder.estTimeRemain.setVisibility(View.GONE);
@@ -470,8 +498,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * Remove file transfer progress listener
      */
-    protected void removeProgressListener()
-    {
+    protected void removeProgressListener() {
         mFileTransfer.removeProgressListener(this);
     }
 
@@ -481,8 +508,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param event the <code>FileTransferProgressEvent</code> that notifies us
      */
-    public void progressChanged(final FileTransferProgressEvent event)
-    {
+    public void progressChanged(final FileTransferProgressEvent event) {
         long transferredBytes = event.getFileTransfer().getTransferredBytes();
         long progressTimestamp = event.getTimestamp();
 
@@ -490,19 +516,17 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Callback for displaying http file upload progress.
+     * Callback for displaying http file upload/download, and file transfer progress status.
      *
      * @param uploadedBytes the number of bytes uploaded at the moment
      * @param totalBytes the total number of bytes to be uploaded
      */
     @Override
-    public void onUploadProgress(long uploadedBytes, long totalBytes)
-    {
+    public void onUploadProgress(long uploadedBytes, long totalBytes) {
         updateProgress(uploadedBytes, System.currentTimeMillis());
     }
 
-    private void updateProgress(long transferredBytes, long progressTimestamp)
-    {
+    private void updateProgress(long transferredBytes, long progressTimestamp) {
         long SMOOTHING_FACTOR = 100;
 
         // before file transfer start is -1
@@ -538,8 +562,8 @@ public abstract class FileTransferConversation extends OSGiFragment
             // Need to do it here as it was found that Http File Upload completed before the progress Bar is even visible
             if (!messageViewHolder.progressBar.isShown()) {
                 messageViewHolder.progressBar.setVisibility(View.VISIBLE);
-                if (mXferFile != null)
-                    messageViewHolder.progressBar.setMax((int) mXferFile.length());
+                messageViewHolder.progressBar.setMax((int) mTransferFileSize);
+                mChatFragment.scrollToBottom();
             }
             // Note: progress bar can only handle int size (4-bytes: 2,147,483, 647);
             messageViewHolder.progressBar.setProgress((int) transferredBytes);
@@ -565,10 +589,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Returns a string showing information for the given file.
      *
      * @param file the file
+     *
      * @return the name and size of the given file
      */
-    protected String getFileLabel(File file)
-    {
+    protected String getFileLabel(File file) {
         if ((file != null) && file.exists()) {
             String fileName = file.getName();
             long fileSize = file.length();
@@ -582,10 +606,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param fileName the name of the file
      * @param fileSize the size of the file
+     *
      * @return the name of the given file
      */
-    protected String getFileLabel(String fileName, long fileSize)
-    {
+    protected String getFileLabel(String fileName, long fileSize) {
         String text = ByteFormat.format(fileSize);
         return fileName + " (" + text + ")";
     }
@@ -594,28 +618,44 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Returns the label to show on the progress bar.
      *
      * @param bytesString the bytes that have been transferred
+     *
      * @return the label to show on the progress bar
      */
     protected abstract String getProgressLabel(long bytesString);
 
-    // dummy updateView for implementation
-    protected void updateView(final int status, final String reason)
-    {
+    // abstract updateView for class extension implementation
+    protected abstract void updateView(final int status, final String reason);
+
+    /**
+     * Init some of the file transfer parameters. Mainly call by sendFile and File History.
+     *
+     * @param status File transfer send status
+     * @param jid Contact or ChatRoom for Http file upload service
+     * @param encType File encryption type
+     * @param reason Contact or ChatRoom for Http file upload service
+     */
+    public void setStatus(final int status, Object jid, int encType, String reason) {
+        mEntityJid = jid;
+        mUpdateDB = (jid != null);
+        mEncryption = encType;
+        // Must execute in UiThread to Update UI information
+        runOnUiThread(() -> {
+            setEncState(mEncryption);
+            updateView(status, reason);
+        });
     }
 
     /**
-     * @param status File transfer send status
-     * @param jid Contact or ChatRoom for Http file upload service
+     * Set the file encryption status icon.
+     * Access directly by file receive constructor; sendFile via setStatus().
+     *
+     * @param encType the encryption
      */
-    public void setStatus(final int status, Object jid, int encType, String reason)
-    {
-        mEntityJid = jid;
-        mEncryption = encType;
-        mUpdateDB = (jid != null);
-
-        setXferStatus(status);
-        // Must execute in UiThread to Update UI information
-        runOnUiThread(() -> updateView(status, reason));
+    protected void setEncState(int encType) {
+        if (IMessage.ENCRYPTION_OMEMO == encType)
+            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
+        else
+            messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);
     }
 
     /**
@@ -624,8 +664,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param status the file transfer new status
      */
-    public void setXferStatus(int status)
-    {
+    public void setXferStatus(int status) {
         if (mChatFragment.getChatListAdapter() != null)
             mChatFragment.getChatListAdapter().setXferStatus(msgViewId, status);
     }
@@ -635,16 +674,14 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @return the current status of the file transfer
      */
-    protected int getXferStatus()
-    {
+    protected int getXferStatus() {
         return mChatFragment.getChatListAdapter().getXferStatus(msgViewId);
     }
 
     /**
      * @return the fileTransfer file
      */
-    public File getXferFile()
-    {
+    public File getXferFile() {
         return mXferFile;
     }
 
@@ -653,8 +690,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @return the uid for the requested message to send file
      */
-    public String getMessageUuid()
-    {
+    public String getMessageUuid() {
         return msgUuid;
     }
 
@@ -662,8 +698,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Handles buttons click action events.
      */
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_file:
             case R.id.sticker:
@@ -679,6 +714,7 @@ public abstract class FileTransferConversation extends OSGiFragment
                 messageViewHolder.retryButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
                 setXferStatus(FileTransferStatusChangeEvent.CANCELED);
+                updateView(FileTransferStatusChangeEvent.CANCELED, null);
                 if (mFileTransfer != null)
                     mFileTransfer.cancel();
                 break;
@@ -690,8 +726,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * mainly use to stop and release player
      */
     @Override
-    public boolean onLongClick(View v)
-    {
+    public boolean onLongClick(View v) {
         if (v.getId() == R.id.playback_play) {
             playerStop();
             return true;
@@ -704,10 +739,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Keep the active bc receiver instance in bcRegisters list to ensure only one bc is registered
      *
      * @param file the media file
+     *
      * @return true if init is successful
      */
-    private boolean bcReceiverInit(File file)
-    {
+    private boolean bcReceiverInit(File file) {
         String mimeType = checkMimeType(file);
         if ((mimeType != null) && (mimeType.contains("audio") || mimeType.contains("3gp"))) {
             if (playerState == STATE_STOP) {
@@ -731,8 +766,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Get the active media player status or just media info for the view display;
      * update the view holder content via Broadcast receiver
      */
-    private boolean playerInit()
-    {
+    private boolean playerInit() {
         if (isMediaAudio) {
             if (playerState == STATE_STOP) {
 
@@ -753,8 +787,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * Stop the current active media player playback
      */
-    private void playerStop()
-    {
+    private void playerStop() {
         if (isMediaAudio) {
             if ((playerState == STATE_PAUSE) || (playerState == STATE_PLAY)) {
 
@@ -774,8 +807,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * Proceed to open the file for VIEW if this is not an audio file
      */
-    private void playStart()
-    {
+    private void playStart() {
         Intent intent = new Intent(mChatActivity, AudioBgService.class);
         if (isMediaAudio) {
             if (playerState == STATE_PLAY) {
@@ -817,8 +849,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param position seek time position
      */
-    private void playerSeek(int position)
-    {
+    private void playerSeek(int position) {
         if (isMediaAudio) {
             if (!bcReceiverInit(mXferFile))
                 return;
@@ -835,11 +866,9 @@ public abstract class FileTransferConversation extends OSGiFragment
     /**
      * Media player BroadcastReceiver to animate and update player view holder info
      */
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             // proceed only if it is the playback of the current mUri
             if (!mUri.equals(intent.getParcelableExtra(AudioBgService.PLAYBACK_URI)))
                 return;
@@ -904,7 +933,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     };
 
     /**
-     * OnSeekBarChangeListener callback interface
+     * OnSeekBarChangeListener callback interface during multimedia playback
      *
      * A SeekBar callback that notifies clients when the progress level has been
      * changed. This includes changes that were initiated by the user through a
@@ -912,8 +941,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * programmatically.
      */
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-    {
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser && (messageViewHolder.playbackSeekBar == seekBar)) {
             positionSeek = progress;
             messageViewHolder.playbackPosition.setText(formatTime(progress));
@@ -921,8 +949,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar)
-    {
+    public void onStartTrackingTouch(SeekBar seekBar) {
         if (messageViewHolder.playbackSeekBar == seekBar) {
             isSeeking = true;
         }
@@ -930,8 +957,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar)
-    {
+    public void onStopTrackingTouch(SeekBar seekBar) {
         if (messageViewHolder.playbackSeekBar == seekBar) {
             playerSeek(positionSeek);
             isSeeking = false;
@@ -942,10 +968,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Format the given time to mm:ss
      *
      * @param time time is ms
+     *
      * @return the formatted time string in mm:ss
      */
-    private String formatTime(int time)
-    {
+    private String formatTime(int time) {
         // int ms = (time % 1000) / 10;
         int seconds = time / 1000;
         int minutes = seconds / 60;
@@ -957,10 +983,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Determine the mimeType of the given file
      *
      * @param file the media file to check
+     *
      * @return mimeType or null if undetermined
      */
-    private String checkMimeType(File file)
-    {
+    private String checkMimeType(File file) {
         if (!file.exists()) {
             // aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
             return null;
@@ -987,8 +1013,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param fileName the incoming xfer fileName
      * @param mimeType the incoming file mimeType
      */
-    protected void setTransferFilePath(String fileName, String mimeType)
-    {
+    protected void setTransferFilePath(String fileName, String mimeType) {
         String downloadPath = FileBackend.MEDIA_DOCUMENT;
         if (fileName.contains("voice-"))
             downloadPath = FileBackend.MEDIA_VOICE_RECEIVE;
@@ -1018,8 +1043,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param listener the <code>ScFileTransferListener</code> to add
      */
-    public void addUploadListener(UploadProgressListener listener)
-    {
+    public void addUploadListener(UploadProgressListener listener) {
         synchronized (uploadProgressListeners) {
             if (!uploadProgressListeners.contains(listener)) {
                 this.uploadProgressListeners.add(listener);
@@ -1033,8 +1057,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      *
      * @param listener the <code>ScFileTransferListener</code> to remove
      */
-    public void removeUploadListener(UploadProgressListener listener)
-    {
+    public void removeUploadListener(UploadProgressListener listener) {
         synchronized (uploadProgressListeners) {
             this.uploadProgressListeners.remove(listener);
         }
@@ -1047,8 +1070,7 @@ public abstract class FileTransferConversation extends OSGiFragment
      * @param totalBytes the total number of bytes to be uploaded
      */
     // @Override
-    public void onUploadStatus(long uploadedBytes, long totalBytes)
-    {
+    public void onUploadStatus(long uploadedBytes, long totalBytes) {
         Iterator<UploadProgressListener> listeners;
         synchronized (uploadProgressListeners) {
             listeners = new ArrayList<>(uploadProgressListeners).iterator();
@@ -1064,10 +1086,10 @@ public abstract class FileTransferConversation extends OSGiFragment
      * Maps only valid FileTransferStatusChangeEvent status, otherwise returns STATUS_UNKNOWN.
      *
      * @param status the status as receive from FileTransfer
+     *
      * @return the corresponding status of FileRecord.
      */
-    public static int getStatus(int status)
-    {
+    public static int getStatus(int status) {
         switch (status) {
             case FileTransferStatusChangeEvent.COMPLETED:
                 return FileRecord.STATUS_COMPLETED;

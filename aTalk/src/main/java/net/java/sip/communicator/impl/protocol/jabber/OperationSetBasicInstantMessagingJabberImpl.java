@@ -11,6 +11,10 @@ import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 
+import androidx.fragment.app.Fragment;
+
+import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
@@ -31,7 +35,10 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -109,11 +116,9 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-
 public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperationSetBasicInstantMessaging
         implements RegistrationStateChangeListener, OperationSetMessageCorrection, IncomingChatMessageListener,
-        StanzaListener, CarbonCopyReceivedListener, OmemoMessageListener
-{
+        StanzaListener, CarbonCopyReceivedListener, OmemoMessageListener {
     /**
      * A table mapping contact addresses to message threads that can be used to target a specific
      * resource (rather than sending a message to all logged instances of a user).
@@ -140,8 +145,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Contains the complete jid of a specific user and the time that it was last used so that we
      * could remove it after a certain point.
      */
-    public static class StoredThreadID
-    {
+    public static class StoredThreadID {
         /**
          * The time that we last sent or received a message from this jid
          */
@@ -173,6 +177,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private final ProtocolProviderServiceJabberImpl mPPS;
 
+    private String mUserJid;
+
     private OmemoManager mOmemoManager;
 
     private final OmemoVAxolotlProvider omemoVAxolotlProvider = new OmemoVAxolotlProvider();
@@ -187,6 +193,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Whether carbon is enabled or not.
      */
     private boolean isCarbonEnabled = false;
+
+    // Indicate if the received message is carbon copy
+    private boolean isCarbon = false;
 
     /**
      * Message filter to listen for message sent from DomianJid i.e. server with normal or
@@ -205,8 +214,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param provider a reference to the <code>ProtocolProviderServiceImpl</code> that created us and that we'll
      * use for retrieving the underlying aim connection.
      */
-    OperationSetBasicInstantMessagingJabberImpl(ProtocolProviderServiceJabberImpl provider)
-    {
+    OperationSetBasicInstantMessagingJabberImpl(ProtocolProviderServiceJabberImpl provider) {
         mPPS = provider;
         mPPS.addRegistrationStateChangeListener(this);
     }
@@ -219,10 +227,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param messageText the string content of the message.
      * @param encType the encryption type for the <code>content</code>
      * @param messageUID the unique identifier of this message.
+     *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUID(String messageText, int encType, String messageUID)
-    {
+    public IMessage createMessageWithUID(String messageText, int encType, String messageUID) {
         return new MessageJabberImpl(messageText, encType, null, messageUID);
     }
 
@@ -231,10 +239,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param content content value
      * @param encType the encryption type for the <code>content</code>
+     *
      * @return the newly created message.
      */
-    public IMessage createMessage(String content, int encType)
-    {
+    public IMessage createMessage(String content, int encType) {
         return createMessage(content, encType, null);
     }
 
@@ -244,11 +252,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param content content value
      * @param encType the encryption type for the <code>content</code>
      * @param subject the Subject of the message that we'd like to create.
+     *
      * @return the newly created message.
      */
     @Override
-    public IMessage createMessage(String content, int encType, String subject)
-    {
+    public IMessage createMessage(String content, int encType, String subject) {
         return new MessageJabberImpl(content, encType, subject, null);
     }
 
@@ -263,8 +271,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return <code>true</code> if the protocol supports offline messages and <code>false</code> otherwise.
      */
-    public boolean isOfflineMessagingSupported()
-    {
+    public boolean isOfflineMessagingSupported() {
         return true;
     }
 
@@ -272,10 +279,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Determines whether the protocol supports the supplied content type
      *
      * @param mimeType the encryption type we want to check
+     *
      * @return <code>true</code> if the protocol supports it and <code>false</code> otherwise.
      */
-    public boolean isContentTypeSupported(int mimeType)
-    {
+    public boolean isContentTypeSupported(int mimeType) {
         return ((IMessage.ENCODE_PLAIN == mimeType) || (IMessage.ENCODE_HTML == mimeType));
     }
 
@@ -284,16 +291,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param mimeType the encryption type we want to check
      * @param contact contact which is checked for supported encType
+     *
      * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
     @Override
-    public boolean isContentTypeSupported(int mimeType, Contact contact)
-    {
+    public boolean isContentTypeSupported(int mimeType, Contact contact) {
         // by default we support default mime type, for other mime types method must be overridden
         if (IMessage.ENCODE_PLAIN == mimeType) {
             return true;
-        }
-        else if (IMessage.ENCODE_HTML == mimeType) {
+        } else if (IMessage.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
             return mPPS.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
         }
@@ -306,8 +312,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Note that this method is not synchronous and that it is only meant for use by the
      * {@link #getThreadIDForAddress(BareJid, boolean)} and {@link #putJidForAddress(Jid, String)}
      */
-    private void purgeOldJidThreads()
-    {
+    private void purgeOldJidThreads() {
         long currentTime = System.currentTimeMillis();
         Iterator<Map.Entry<BareJid, StoredThreadID>> entries = jidThreads.entrySet().iterator();
 
@@ -325,8 +330,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param bareJid the <code>address</code> that we'd like to remove a threadID for.
      */
-    public void purgeGoneJidThreads(BareJid bareJid)
-    {
+    public void purgeGoneJidThreads(BareJid bareJid) {
         jidThreads.remove(bareJid);
     }
 
@@ -340,12 +344,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param bareJid the <code>Jid</code> that we'd like to obtain a threadID for.
      * @param generateNewIfNoExist if <code>true</code> generates new threadID if null is found.
+     *
      * @return new or last threadID that the party with the specified <code>address</code> contacted
      * us from OR <code>null</code> if we don't have a jid for the specified <code>address</code> and
      * <code>generateNewIfNoExist</code> is false.
      */
-    public String getThreadIDForAddress(BareJid bareJid, boolean generateNewIfNoExist)
-    {
+    public String getThreadIDForAddress(BareJid bareJid, boolean generateNewIfNoExist) {
         synchronized (jidThreads) {
             purgeOldJidThreads();
             StoredThreadID ta = jidThreads.get(bareJid);
@@ -356,8 +360,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     ta = new StoredThreadID();
                     ta.threadID = nextThreadID();
                     putJidForAddress(bareJid, ta.threadID);
-                }
-                else {
+                } else {
                     return null;
                 }
             }
@@ -376,8 +379,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param jid the jid (i.e. address/resource) that the contact with the specified <code>address</code>
      * last contacted us from.
      */
-    private void putJidForAddress(Jid jid, String threadID)
-    {
+    private void putJidForAddress(Jid jid, String threadID) {
         synchronized (jidThreads) {
             purgeOldJidThreads();
             StoredThreadID ta = jidThreads.get(jid.asBareJid());
@@ -399,12 +401,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param toResource The resource to send the message to or null if no resource has been specified
      * @param message The message to send.
      * @param extElements The XMPP extensions that should be attached to the message before sending.
+     *
      * @return The MessageDeliveryEvent that resulted after attempting to send this message, so the
      * calling function can modify it if needed.
      */
     private MessageDeliveredEvent sendMessage(Contact to, ContactResource toResource,
-            IMessage message, Collection<ExtensionElement> extElements)
-    {
+            IMessage message, Collection<ExtensionElement> extElements) {
         if (!(to instanceof ContactJabberImpl))
             throw new IllegalArgumentException("The specified contact is not a Jabber contact: " + to);
         try {
@@ -420,6 +422,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         EntityBareJid toJid = to.getJid().asEntityBareJidIfPossible();
         mChat = mChatManager.chatWith(toJid);
         String threadID = getThreadIDForAddress(toJid, true);
+        Date timeStamp = new Date();
 
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID())
                 .ofType(Message.Type.chat)
@@ -431,7 +434,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Timber.log(TimberLog.FINER, "MessageDeliveredEvent - Sending a message to: %s", toJid);
 
         message.setServerMsgId(messageBuilder.getStanzaId());
-        MessageDeliveredEvent msgDeliveryPendingEvt = new MessageDeliveredEvent(message, to, toResource);
+        MessageDeliveredEvent msgDeliveryPendingEvt = new MessageDeliveredEvent(message, to, toResource, mUserJid, timeStamp);
         MessageDeliveredEvent[] transformedEvents = messageDeliveryPendingTransform(msgDeliveryPendingEvt);
 
         if (transformedEvents == null || transformedEvents.length == 0) {
@@ -462,8 +465,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 XHTMLExtension xhtmlExtension = new XHTMLExtension();
                 xhtmlExtension.addBody(htmlText.toXML());
                 messageBuilder.addExtension(xhtmlExtension);
-            }
-            else {
+            } else {
                 // this is plain text so keep it as it is.
                 messageBuilder.addBody(null, content);
             }
@@ -487,7 +489,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             }
             putJidForAddress(toJid, threadID);
         }
-        return new MessageDeliveredEvent(message, to, toResource);
+        return new MessageDeliveredEvent(message, to, toResource, mUserJid, timeStamp);
     }
 
     /**
@@ -495,11 +497,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param to the <code>Contact</code> to send <code>message</code> to
      * @param message the <code>IMessage</code> to send.
-     * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
+     *
+     * @throws java.lang.IllegalStateException    if the underlying stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance of ContactImpl.
      */
-    public void sendInstantMessage(Contact to, IMessage message)
-    {
+    public void sendInstantMessage(Contact to, IMessage message) {
         sendInstantMessage(to, null, message);
     }
 
@@ -510,12 +512,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param to the <code>Contact</code> to send <code>message</code> to
      * @param resource the resource to which the message should be send
      * @param message the <code>IMessage</code> to send.
-     * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
+     *
+     * @throws java.lang.IllegalStateException    if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance belonging to the underlying implementation.
      */
     @Override
-    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message)
-    {
+    public void sendInstantMessage(Contact to, ContactResource resource, IMessage message) {
         MessageDeliveredEvent msgDelivered = sendMessage(to, resource, message, Collections.emptyList());
         if (msgDelivered != null) {
             fireMessageEvent(msgDelivered);
@@ -530,8 +532,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param message The new message.
      * @param correctedMessageUID The ID of the message being replaced.
      */
-    public void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID)
-    {
+    public void correctMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID) {
         Collection<ExtensionElement> extElements
                 = Collections.singletonList(new MessageCorrectExtension(correctedMessageUID));
 
@@ -543,8 +544,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     }
 
     public void sendInstantMessage(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
-            final OmemoManager omemoManager)
-    {
+            final OmemoManager omemoManager) {
         BareJid bareJid = to.getJid().asBareJid();
         String msgContent = message.getContent();
         String errMessage = null;
@@ -552,7 +552,9 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         try {
             OmemoMessage.Sent encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
-            MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID());
+            if (correctedMessageUID != null)
+                messageBuilder.addExtension(new MessageCorrectExtension(correctedMessageUID));
             Message sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
 
             if (IMessage.ENCODE_HTML == message.getMimeType()) {
@@ -566,26 +568,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 msgContent = Html.fromHtml(msgContent).toString();
                 encryptedMessage = omemoManager.encrypt(bareJid, msgContent);
 
-                messageBuilder = StanzaBuilder.buildMessage();
+                messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID());
+                if (correctedMessageUID != null)
+                    messageBuilder.addExtension(new MessageCorrectExtension(correctedMessageUID));
+
                 // Add the XHTML text to the message builder
                 XHTMLManager.addBody(messageBuilder, xhtmlText);
                 sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
             }
 
             // proceed to send the message if there is no exception.
-            if (correctedMessageUID != null)
-                sendMessage.addExtension(new MessageCorrectExtension(correctedMessageUID));
-            sendMessage.setStanzaId(message.getMessageUID());
             mChat = mChatManager.chatWith(bareJid.asEntityBareJidIfPossible());
             mChat.send(sendMessage);
 
             message.setServerMsgId(sendMessage.getStanzaId());
             message.setReceiptStatus(ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
             MessageDeliveredEvent msgDelivered;
-            if (correctedMessageUID == null)
-                msgDelivered = new MessageDeliveredEvent(message, to, resource);
-            else
-                msgDelivered = new MessageDeliveredEvent(message, to, correctedMessageUID);
+            msgDelivered = new MessageDeliveredEvent(message, to, resource, mUserJid, correctedMessageUID);
+
             fireMessageEvent(msgDelivered);
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener
@@ -610,8 +610,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
-    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
-    {
+    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
         Contact to;
         ContactResource resource;
         IMessage message;
@@ -619,8 +618,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         OmemoManager omemoManager;
 
         OmemoAuthenticateListener(Contact to, ContactResource resource, IMessage message, String correctedMessageUID,
-                OmemoManager omemoManager)
-        {
+                OmemoManager omemoManager) {
             this.to = to;
             this.resource = resource;
             this.message = message;
@@ -629,12 +627,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
 
         @Override
-        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
-        {
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (allTrusted) {
                 sendInstantMessage(to, resource, message, correctedMessageUID, omemoManager);
-            }
-            else {
+            } else {
                 String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
                         "Undecided Omemo Identity: " + omemoDevices.toString());
                 Timber.w("%s", errMessage);
@@ -651,12 +647,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
      */
     private void assertConnected()
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         if (opSetPersPresence == null) {
             throw new IllegalStateException("The provider must be sign in before able to communicate.");
-        }
-        else
+        } else
             opSetPersPresence.assertConnected();
     }
 
@@ -666,8 +660,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param evt ProviderStatusChangeEvent the event describing the status change.
      */
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         XMPPConnection connection = mPPS.getConnection();
 
         if (evt.getNewState() == RegistrationState.REGISTERING) {
@@ -685,14 +678,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             mChatManager = ChatManager.getInstanceFor(connection);
             mChatManager.addIncomingListener(this);
 
-        }
-        else if (evt.getNewState() == RegistrationState.REGISTERED) {
+        } else if (evt.getNewState() == RegistrationState.REGISTERED) {
+            EntityFullJid userJid = connection.getUser();
+            mUserJid = userJid.toString();
+
             // make sure this listener is not already registered in this connection
             connection.removeAsyncStanzaListener(OperationSetBasicInstantMessagingJabberImpl.this);
             connection.addAsyncStanzaListener(this, INCOMING_SVR_MESSAGE_FILTER);
-            enableDisableCarbon();
-        }
-        else if (evt.getNewState() == RegistrationState.UNREGISTERED
+            enableDisableCarbon(userJid);
+        } else if (evt.getNewState() == RegistrationState.UNREGISTERED
                 || evt.getNewState() == RegistrationState.CONNECTION_FAILED
                 || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED) {
             if (connection != null) {  // must not assume - may call after log off
@@ -719,14 +713,14 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * The listener that we use in order to handle incoming server messages currently not supported by smack
      *
      * @param stanza the packet that we need to handle (if it is a message).
+     *
      * @see #INCOMING_SVR_MESSAGE_FILTER filter settings
      *
      * Handles incoming messages and dispatches whatever events that are necessary.
      */
     @Override
     public void processStanza(Stanza stanza)
-            throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException
-    {
+            throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException {
         final Message message = (Message) stanza;
         if (message.getBodies().isEmpty())
             return;
@@ -743,17 +737,17 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
         // createVolatileContact will check before create
         Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());
-        MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact, getTimeStamp(message));
+        String sender = message.getFrom().toString();
+        MessageReceivedEvent msgEvt = new MessageReceivedEvent(newMessage, sourceContact,
+                null, sender, getTimeStamp(message), null);
         fireMessageEvent(msgEvt);
     }
 
     /**
      * Enable carbon feature if supported by server.
      */
-    private void enableDisableCarbon()
-    {
+    private void enableDisableCarbon(EntityFullJid userJid) {
         boolean enableCarbon = false;
-        EntityFullJid userJid = mPPS.getOurJID();
         mCarbonManager = CarbonManager.getInstanceFor(mPPS.getConnection());
         try {
             enableCarbon = mCarbonManager.isSupportedByServer()
@@ -764,8 +758,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 mCarbonManager.setCarbonsEnabled(true);
                 mCarbonManager.addCarbonCopyReceivedListener(this);
                 isCarbonEnabled = true;
-            }
-            else {
+            } else {
                 isCarbonEnabled = false;
                 mCarbonManager = null;
             }
@@ -783,10 +776,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     @Override
     public void onCarbonCopyReceived(CarbonExtension.Direction direction,
-            Message carbonCopy, Message wrappingMessage)
-    {
+            Message carbonCopy, Message wrappingMessage) {
         isForwardedSentMessage = CarbonExtension.Direction.sent.equals(direction);
         Jid userJId = isForwardedSentMessage ? carbonCopy.getTo() : carbonCopy.getFrom();
+        isCarbon = wrappingMessage.hasExtension(CarbonExtension.NAMESPACE);
         newIncomingMessage(userJId.asEntityBareJidIfPossible(), carbonCopy, null);
         isForwardedSentMessage = false;
     }
@@ -796,8 +789,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param message the message that we need to handle.
      */
-    public void newIncomingMessage(EntityBareJid from, Message message, Chat chat)
-    {
+    public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
         // Leave handling of omemo messages to onOmemoMessageReceived()
         if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL))
             return;
@@ -836,9 +828,13 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // if msgBody contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType = encryption | IMessage.ENCODE_HTML;
-        }
-        else {
+        } else {
             encType = encryption | IMessage.ENCODE_PLAIN;
+        }
+
+        // isCarbon only valid if from onCarbonCopyReceived i.e. chat == null;
+        if (chat == null && isCarbon) {
+            encType |= IMessage.FLAG_IS_CARBON;
         }
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
 
@@ -903,11 +899,16 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         ContactResource resource = ((ContactJabberImpl) sourceContact).getResourceFromJid(userFullJId.asFullJidIfPossible());
 
         EventObject msgEvt;
-        if (isForwardedSentMessage)
-            msgEvt = new MessageDeliveredEvent(newMessage, sourceContact, timestamp);
-        else
-            msgEvt = new MessageReceivedEvent(newMessage, sourceContact, resource, timestamp,
+        String sender = message.getFrom().toString();
+        if (isForwardedSentMessage) {
+            msgEvt = new MessageDeliveredEvent(newMessage, sourceContact, null, sender, timestamp);
+            // Update message unread count for carbon message for the actual recipient.
+            NotificationManager.updateMessageCount(sourceContact);
+        }
+        else {
+            msgEvt = new MessageReceivedEvent(newMessage, sourceContact, resource, sender, timestamp,
                     correctedMessageUID, isPrivateMessaging, privateContactRoom);
+        }
 
         fireMessageEvent(msgEvt);
     }
@@ -915,17 +916,16 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
     /**
      * A filter that prevents this operation set from handling multi user chat messages.
      */
-    private static class GroupMessagePacketFilter implements StanzaFilter
-    {
+    private static class GroupMessagePacketFilter implements StanzaFilter {
         /**
          * Returns <code>true</code> if <code>packet</code> is a <code>Message</code> and false otherwise.
          *
          * @param packet the packet that we need to check.
+         *
          * @return <code>true</code> if <code>packet</code> is a <code>Message</code> and false otherwise.
          */
         @Override
-        public boolean accept(Stanza packet)
-        {
+        public boolean accept(Stanza packet) {
             if (!(packet instanceof Message))
                 return false;
 
@@ -934,8 +934,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         }
     }
 
-    public Jid getRecentFullJidForContactIfPossible(Contact contact)
-    {
+    public Jid getRecentFullJidForContactIfPossible(Contact contact) {
         Jid contactJid = contact.getJid();
         Jid jid = recentJidForContact.get(contactJid.asBareJid());
         if (jid == null)
@@ -948,8 +947,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return The inactivity timeout in milliseconds. Or -1 if undefined
      */
-    public long getInactivityTimeout()
-    {
+    public long getInactivityTimeout() {
         return JID_INACTIVITY_TIMEOUT;
     }
 
@@ -959,8 +957,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @return the next thread id.
      */
-    private static synchronized String nextThreadID()
-    {
+    private static synchronized String nextThreadID() {
         return prefix + id++;
     }
 
@@ -968,16 +965,15 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Return XEP-0203 time-stamp of the message if present or current time;
      *
      * @param msg Message
+     *
      * @return the correct message timeStamp
      */
-    private Date getTimeStamp(Message msg)
-    {
+    private Date getTimeStamp(Message msg) {
         Date timeStamp;
         DelayInformation delayInfo = msg.getExtension(DelayInformation.class);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
-        }
-        else {
+        } else {
             timeStamp = new Date();
         }
         return timeStamp;
@@ -987,10 +983,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Get messageCorrectionID if presence
      *
      * @param message Message
+     *
      * @return messageCorrectionID if presence or null
      */
-    private String getCorrectionMessageId(Message message)
-    {
+    private String getCorrectionMessageId(Message message) {
         MessageCorrectExtension correctionExtension = MessageCorrectExtension.from(message);
         if (correctionExtension != null) {
             return correctionExtension.getIdInitialMessage();
@@ -1000,14 +996,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
 
     // =============== OMEMO message received =============== //
 
-    public void registerOmemoListener(OmemoManager omemoManager)
-    {
+    public void registerOmemoListener(OmemoManager omemoManager) {
         mOmemoManager = omemoManager;
         omemoManager.addOmemoMessageListener(this);
     }
 
-    private void unRegisterOmemoListener(OmemoManager omemoManager)
-    {
+    private void unRegisterOmemoListener(OmemoManager omemoManager) {
         omemoManager.removeOmemoMessageListener(this);
         mOmemoManager = null;
     }
@@ -1021,8 +1015,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param decryptedMessage decrypted OmemoMessage.
      */
     @Override
-    public void onOmemoMessageReceived(Stanza stanza, OmemoMessage.Received decryptedMessage)
-    {
+    public void onOmemoMessageReceived(Stanza stanza, OmemoMessage.Received decryptedMessage) {
         // Do not process if decryptedMessage isKeyTransportMessage i.e. msgBody == null
         if (decryptedMessage.isKeyTransportMessage())
             return;
@@ -1033,10 +1026,10 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Jid userFullJid = isForwardedSentOmemoMessage ? message.getTo() : message.getFrom();
         BareJid userBareJid = userFullJid.asBareJid();
         putJidForAddress(userBareJid, message.getThread());
-        Contact sourceContact = opSetPersPresence.findContactByJid(userBareJid);
-        if (sourceContact == null) {
+        Contact contact = opSetPersPresence.findContactByJid(userBareJid);
+        if (contact == null) {
             // create new volatile contact
-            sourceContact = opSetPersPresence.createVolatileContact(userBareJid);
+            contact = opSetPersPresence.createVolatileContact(userBareJid);
         }
 
         String msgID = message.getStanzaId();
@@ -1052,8 +1045,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
-        }
-        else {
+        } else {
             encType |= IMessage.ENCODE_PLAIN;
         }
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
@@ -1076,21 +1068,24 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         newMessage.setRemoteMsgId(msgID);
 
         EventObject msgEvt;
-        if (isForwardedSentOmemoMessage)
-            msgEvt = new MessageDeliveredEvent(newMessage, sourceContact, timeStamp);
-        else
-            msgEvt = new MessageReceivedEvent(newMessage, sourceContact, timeStamp, correctedMsgID);
+        String sender = message.getFrom().toString();
+        if (isForwardedSentOmemoMessage) {
+            msgEvt = new MessageDeliveredEvent(newMessage, contact, null, sender, timeStamp);
+            // Update message unread count for carbon message for the actual recipient.
+            NotificationManager.updateMessageCount(contact);
+        } else {
+            msgEvt = new MessageReceivedEvent(newMessage, contact, null, sender, timeStamp, correctedMsgID);
+        }
 
         fireMessageEvent(msgEvt);
     }
 
     public void onOmemoCarbonCopyReceived(CarbonExtension.Direction direction,
-            Message carbonCopy,
-            Message wrappingMessage,
-            OmemoMessage.Received decryptedCarbonCopy)
-    {
+            Message carbonCopy, Message wrappingMessage, OmemoMessage.Received decryptedCarbonCopy) {
         isForwardedSentOmemoMessage = CarbonExtension.Direction.sent.equals(direction);
         onOmemoMessageReceived(carbonCopy, decryptedCarbonCopy);
+
+        // Need to reset isForwardedSentOmemoMessage to receive normal Omemo message
         isForwardedSentOmemoMessage = false;
     }
 }

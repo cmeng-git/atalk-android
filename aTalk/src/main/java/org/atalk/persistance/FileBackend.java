@@ -357,7 +357,7 @@ public class FileBackend
             mimeType = cr.getType(uri);
         }
         else {
-            String fileExtension = "";
+            String fileExtension;
             try {
                 // Need to encode unicode uri before proceed; revert all "%3A", "%2F" and "+" to ":", "/" and "%20"
                 String uriEncoded = URLEncoder.encode(uri.toString(), "UTF-8")
@@ -385,11 +385,22 @@ public class FileBackend
                     mimeType = "audio/*";
             }
         }
+
+        // Make a last ditch to guess ContentType From FileInputStream
+        if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
+            try {
+                InputStream is = new FileInputStream(uri.getPath());
+                String tmp = guessContentTypeFromStream(is);
+                if (tmp != null)
+                    mimeType = tmp;
+            } catch (IOException ignore) {
+            }
+        }
         return mimeType;
     }
 
     /**
-     * Check if the file has media content
+     * Check if the file has video or image media content
      *
      * @param file File to be check
      * @return true if the given file has media content
@@ -400,24 +411,12 @@ public class FileBackend
         Uri uri = getUriForFile(ctx, file);
         String mimeType = getMimeType(ctx, uri);
 
-        // Make a last ditch to guess ContentType From FileInputStream
-        if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
-            try {
-                InputStream is = new FileInputStream(file);
-                String tmp = guessContentTypeFromStream(is);
-                if (tmp != null)
-                    mimeType = tmp;
-            } catch (IOException ignore) {
-            }
-        }
-
         // mimeType is null if file contains no ext on old android or else "application/octet-stream"
         if (TextUtils.isEmpty(mimeType)) {
             Timber.e("File mimeType is null: %s", file.getPath());
             return false;
         }
-
-        // Android returns 3gp and vidoe/3gp
+        // Android returns 3gp and video/3gp
         return !mimeType.contains("3gp") && (mimeType.contains("image") || mimeType.contains("video"));
     }
 

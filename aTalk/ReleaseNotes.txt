@@ -1,11 +1,67 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.2 (301020)
+Release Date:   01/31/2023
+Author:         cmeng
+- Add support for XEP-0313: Message Archive Management; Disable when Chat history logging is disabled.
+  Changes made to MessageHistoryServiceImpl to support this.
+- Enable/disable XEP-0441: Message Archive Management Preferences setting per user 'Chat history logging' setting.
+- Fix 'XEP-0308 Last Message Correction' implementation error in OMEMO message sending.
+  Must include the MessageCorrectExtension element during the MessageBuilder creation, and not in Message stage.
+- Enhance call history UI when cleaning old records; allow user to specify the end date/time records for deletion.
+- Enhance the implementation of both the MessageReceivedEvent and MessageDeliveredEvent class and to include sender fullJid in chat session.
+  * Add support to update message#Jid with sender EntityFullJid; use as chat message sender.
+  * Remove unused methods in MessageReceivedEvent and MessageDeliveredEvent.
+- Update the unread message count for contact in contactList UI even for carbon message received.
+- Optimize and enhance the file transfer process flow; synchronise file transfer status UI display with the actual file transfer protocol state.
+- In legacy file transfer protocol, fallback to IBB on SOCK5 negotiation failure or invalid transport candidates provided.
+- Fix InBandBytestreamSession handshake protocol error; do not send <close/> on an already closed InBandBytestream session.
+- Closing both the input/output streams must apply to 'InBand Bytestream Session' only; improper implementation fix for Conversions in V3.0.4 causes problem in 'SOCK5 Bytestream Session' in both Jingle and Legacy file transfer.
+  * Fix: setCloseBothStreamsEnabled(true) in InBytestreamSession#establishOutgoingBytestreamSession()
+  * Fix for Conversions i.e. close input/output streams to trigger sending of IBB <close/> element
+    causing problem @ JingleIncomingFileOffer.onBytestreamReady(JingleIncomingFileOffer.java:98).
+    JingleIncomingFileOffer.onBytestreamReady() Cannot get InputStream from BytestreamSession: java.io.IOException: javax.crypto.AEADBadTagException: mac check in GCM failed
+- Change OperationSetFileTransferJabberImpl outgoing file transfer to use smack OutgoingFileTransfer.NegotiationProgress for status change callback.
+- Redefined OperationSetFileTransferJabberImpl#parseJabberStatus() for all smack FileTransfer status.
+- Show and ensure incoming file transfer progress status on UI is being updated during JingleFile Transfer process.
+  * OperationSetFileTransferJabberImp#FileTransferProgressThread is not enabled for JingleFile Transfer;
+  * So fireProgressChangeEvent on progress callback in IncomingFileTransferJingleImpl for JingleFile Transfer.
+- Ensure file transfer encryption icon indicator reflects the actual file encryption type.
+  * add getEncryptionType() support in IncomingFileTransferRequest; subclass to ensure its mEncryption is updated.
+- Fix AbstractFileTransfer#fireStatusChangeEvent has incorrect FileTransferStatusChangeEvent creation for old and new status.
+- FileTransferConversation: Must use mTransferFileSize to set progressBar max value; mXferFile is incoming receive file content.
+- Implement sessionStateUpdated call back in JingleSessionImpl for file transfer UI enhancement.
+- Ensure the file transfer UI is always fully visible to user on status change; android does not realign the focus on view holder size change; mChatFragment.scrollToBottom();
+- Support thumbnail sending for all the media types i.e. image and video files.
+  * Use glide to generate thumbnail in FileSendConversation, and change the send file process flow.
+- Change SMACK_REPLY_DEFAULT_TIMEOUT to 10s response time when requesting for thumbnail; else received thumbnail (8S) is discarded on timeout.
+- Must init FileReceiveConversation#fileIcon/FileHttpFileDownloadConversation image; else reused view may contain an old thumbnail image.
+- Need to update view to WAITING in FileSendConversation#sendFileTransferRequest after sendFile() step;
+   setTransportFileTransfer#fileTransfer.addStatusListener() setup is only call after the file offer initiated event.
+- Move all http file download protocol process from FileHttpDownloadConversation to HttpFileDownloadJabberImpl;
+  to have similar structure to other file transfer transports implementations.
+- Optimize ChatPanel#getHistory() implementation in handling merging msgHistory to msgCache to avoid ANR in FFR.
+  * Do not update display msgCache from history DB records if present; deleted file records being displayed in chat after refresh.
+- Fix deleted messages / file records being displayed in chat after refresh.
+  * Disallow history message fetch when MultiChoiceMode session is active: else new reused views may get highlighted and destroy current selected items
+  * Incorrectly using the the msgCache top stack date to fetch/update displayed messages from DB.
+- Change FileBackEnd#getMimeType() to include the guessContentTypeFromStream() if normal check failed.
+- Add new Chinese Simplify language UI support for user selection
+- Only setLocale(language) in aTalk activity using aTalkApp Application instance on startup; else some resources are not being updated.
+- Allow keyboard 'ENTER' button to send chat message.
+- Include function to update the message#carbon column for messages in SQL DB.
+- MessageHistoryServiceImpl#isHistoryLoggingEnabled(String id) is used, but without the actual UI to set value'
+  * change to AND with global isHistoryLoggingEnabled();
+- Fix unimportant error in MessageHistoryServiceImpl#EventObject convertHistoryRecordToMessageEvent(Cursor cursor, Contact contact)
+  where msgType is being treated as correctedMessageUID in MessageReceivedEvent creation.
+- Review and fix if possible FFR from android developer dated 2023/01/28
+
+=========================================================================
 Version:        3.1.1 (301010)
 Release Date:   12/28/2022
 Author:         cmeng
 - Update ice4j v3.0 to be compatible with android <= API-26; i.e. media call is now compatible with android-5.0
 - Show user error message when ZRTP handshake protocol timeout (too many retries)
-
 - Review and fix if possible FFR from android developer dated 2022/12/24
 
 =========================================================================
@@ -918,6 +974,7 @@ Version:        2.3.2 (1132)
 Release Date:	07/24/2020
 Author:         cmeng
 - Login failed when server override option is enabled; must include config.setCustomX509TrustManager(sslTrustManager) for smack-4.4.0-alpha5;
+- Add a new pager for recent chat sessions; i.e. implement ChatSessionFragment and ChatSessionRecord
 - CallHisotry isShowVideoCallBtn() must check for valid MetaContact
 - Fix android device without the TextToSpeech engine implementation, catch ActivityNotFoundException
   i.e. No Activity found to handle Intent { act=android.speech.tts.engine.CHECK_TTS_DATA }

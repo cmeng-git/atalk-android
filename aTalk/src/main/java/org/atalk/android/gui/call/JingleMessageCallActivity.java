@@ -54,8 +54,10 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     private String mSid;
 
     /**
-     * Create the UI with call hang up button to retract call.
-     * Incoming JingleMessage <propose/> will only sendJingleAccept(mSid).
+     * Create the UI with call hang up button to retract call for outgoing call.
+     * Incoming JingleMessage <propose/> will only sendJingleAccept(mSid), automatically only
+     * if aTalk is not in locked screen; else show UI for user choice to accept or reject call.
+     * Note: hedds-up notification is not shown when device is in locked screen.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down then this
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
@@ -156,7 +158,9 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     }
 
     /**
-     * End activity and bring aTalk foreground to avoid failure arises on launching ...CallActivity from background
+     * End activity and bring aTalk foreground; else user is prompted with heads-up notification
+     * and ReceivedCallActivitry UI to take action, and confuse user;
+     * Also to avoid failure arises on launching ...CallActivity from background;
      */
     @Override
     public void onJmEndCallback()

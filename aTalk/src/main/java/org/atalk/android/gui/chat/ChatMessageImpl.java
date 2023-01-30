@@ -34,7 +34,6 @@ import timber.log.Timber;
  */
 public class ChatMessageImpl implements ChatMessage
 {
-
     public static String HTTP_FT_MSG = "(?s)^aesgcm:.*|^http[s].*";
     /**
      * The string Id of the message sender. The value is used in quoted messages.
@@ -398,7 +397,7 @@ public class ChatMessageImpl implements ChatMessage
 
                 fileRecord = new FileRecord(msgUuid, entityJid, dir, date, new File(fileName), encType, mXferStatus);
             }
-            Timber.d("Updated ChatMessage Uid: %s (%s); status: %s => FR: %s", msgUuid, dir, status, fileRecord);
+            // Timber.d("Updated ChatMessage Uid: %s (%s); status: %s => FR: %s", msgUuid, dir, status, fileRecord);
             return true;
         }
         return false;
@@ -600,10 +599,11 @@ public class ChatMessageImpl implements ChatMessage
 
     static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
     {
-        final String sender = evt.getDestinationContact().getProtocolProvider().getAccountID().getAccountJid();
         final IMessage imessage = evt.getSourceMessage();
+        final String sender = evt.getContact().getProtocolProvider().getAccountID().getAccountJid();
+        final String senderName = evt.getSender().isEmpty() ? sender : evt.getSender();
 
-        return new ChatMessageImpl(sender, sender, evt.getTimestamp(),
+        return new ChatMessageImpl(sender, senderName, evt.getTimestamp(),
                 ChatMessage.MESSAGE_OUT, imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_OUT);
     }
 
@@ -611,9 +611,10 @@ public class ChatMessageImpl implements ChatMessage
     {
         final IMessage imessage = evt.getSourceMessage();
         final Contact contact = evt.getSourceContact();
-        final MetaContact metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+        final String sender = !evt.getSender().isEmpty() ? evt.getSender()
+                : AndroidGUIActivator.getContactListService().findMetaContactByContact(contact).getDisplayName();
 
-        return new ChatMessageImpl(contact.getAddress(), metaContact.getDisplayName(),
+        return new ChatMessageImpl(contact.getAddress(), sender,
                 evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_IN);
     }
 
@@ -630,10 +631,10 @@ public class ChatMessageImpl implements ChatMessage
     {
         final IMessage imessage = evt.getMessage();
         String nickName = evt.getSourceChatRoomMember().getNickName();
-        // Extract the contact with the resource part
-        String contact = evt.getSourceChatRoomMember().getContactAddress(); //.split("/")[0];
+        String contact = evt.getSourceChatRoomMember().getContactAddress();
 
-        return new ChatMessageImpl(nickName, nickName, evt.getTimestamp(), evt.getEventType(), imessage, null, ChatMessage.DIR_IN);
+        return new ChatMessageImpl(nickName, contact, evt.getTimestamp(),
+                evt.getEventType(), imessage, null, ChatMessage.DIR_IN);
     }
 
     static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)

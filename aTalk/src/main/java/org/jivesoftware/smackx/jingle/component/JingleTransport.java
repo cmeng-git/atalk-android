@@ -34,18 +34,16 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleTransport<D extends JingleContentTransport>
-{
+public abstract class JingleTransport<D extends JingleContentTransport> {
     private JingleContentImpl parent;
     private final ArrayList<JingleTransportCandidate<?>> ourCandidates = new ArrayList<>();
     private final ArrayList<JingleTransportCandidate<?>> theirCandidates = new ArrayList<>();
 
-    protected BytestreamSession bytestreamSession;
+    protected BytestreamSession mBytestreamSession;
 
     public abstract D getElement();
 
-    public void addOurCandidate(JingleTransportCandidate<?> candidate)
-    {
+    public void addOurCandidate(JingleTransportCandidate<?> candidate) {
         // Insert sorted by descending priority
         int i;
         // Find appropriate index
@@ -66,8 +64,7 @@ public abstract class JingleTransport<D extends JingleContentTransport>
         candidate.setParent(this);
     }
 
-    public void addTheirCandidate(JingleTransportCandidate<?> candidate)
-    {
+    public void addTheirCandidate(JingleTransportCandidate<?> candidate) {
         // Insert sorted by descending priority
         int i;
         // Find appropriate index
@@ -90,13 +87,11 @@ public abstract class JingleTransport<D extends JingleContentTransport>
 
     public abstract void prepare(XMPPConnection connection);
 
-    public List<JingleTransportCandidate<?>> getOurCandidates()
-    {
+    public List<JingleTransportCandidate<?>> getOurCandidates() {
         return ourCandidates;
     }
 
-    public List<JingleTransportCandidate<?>> getTheirCandidates()
-    {
+    public List<JingleTransportCandidate<?>> getTheirCandidates() {
         return theirCandidates;
     }
 
@@ -110,13 +105,11 @@ public abstract class JingleTransport<D extends JingleContentTransport>
 
     public abstract IQ handleTransportInfo(JingleContentTransportInfo info, Jingle wrapping);
 
-    public void setParent(JingleContentImpl parent)
-    {
+    public void setParent(JingleContentImpl parent) {
         this.parent = parent;
     }
 
-    public JingleContentImpl getParent()
-    {
+    public JingleContentImpl getParent() {
         return parent;
     }
 

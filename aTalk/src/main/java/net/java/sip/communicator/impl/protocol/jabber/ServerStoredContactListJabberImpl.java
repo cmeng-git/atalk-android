@@ -809,6 +809,8 @@ public class ServerStoredContactListJabberImpl
 
         // now send initial presence status that was on hold earlier
         sendInitialStatus();
+        // FFR: v3.0.5 Huawei HWELE android-10, presenceChangeListener == null ???
+        // presenceChangeListener was init in registering and this method is called at registered????
         presenceChangeListener.processStoredEvents();
 
         rosterChangeListener = new ChangeListener();
