@@ -35,23 +35,23 @@ public class ContactPresenceStatusChangeEvent extends PropertyChangeEvent
     /**
      * The contact's FullJid that trigger the event.
      */
-    private Jid contactJid = null;
+    private final Jid contactJid;
 
     /**
      * The contact's <code>ProtocolProviderService</code>.
      */
-    private ProtocolProviderService sourceProvider = null;
+    private final ProtocolProviderService sourceProvider;
 
     /**
      * The parent group of the contact.
      */
-    private ContactGroup parentGroup = null;
+    private final ContactGroup parentGroup;
 
     /**
      * When not the status but just the resource of the contact has changed, for those protocols
      * that support resources.
      */
-    private boolean resourceChanged = false;
+    private final boolean resourceChanged;
 
     /**
      * Creates an event instance indicating that the specified source contact has changed status

@@ -8,6 +8,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
@@ -17,6 +18,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bob.BoBManager;
 import org.jivesoftware.smackx.bob.ContentId;
@@ -63,6 +65,11 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     private Contact sender;
     private byte[] thumbnail;
 
+    /*
+     * Transfer file encryption type.
+     */
+    protected int mEncryption;
+
     /**
      * Creates an <code>IncomingFileTransferRequestJabberImpl</code> based on the given
      * <code>fileTransferRequest</code>, coming from the Jabber protocol.
@@ -77,6 +84,9 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         this.jabberProvider = pps;
         this.fileTransferOpSet = fileTransferOpSet;
         this.fileTransferRequest = fileTransferRequest;
+
+        // Legacy ByteStream transfer supports only ENCRYPTION_NONE
+        mEncryption = IMessage.ENCRYPTION_NONE;
 
         remoteJid = fileTransferRequest.getRequestor();
         OperationSetPersistentPresenceJabberImpl opSetPersPresence
@@ -173,6 +183,15 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     }
 
     /**
+     * Return the encryption of the incoming file corresponding to this FileTransfer.
+     *
+     * @return the encryption of the file corresponding to this request
+     */
+    public int getEncryptionType() {
+        return mEncryption;
+    }
+
+    /**
      * Returns the thumbnail contained in this request.
      *
      * @return the thumbnail contained in this request
@@ -220,24 +239,28 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
     }
 
     /**
-     * Requests the thumbnail from the peer and fire the incoming transfer request event.
+     * Request the thumbnail from the peer, allow extended smack timeout on thumbnail request.
+     * Then fire the incoming transfer request event to start the actual incoming file transfer.
      *
-     * @param cid the thumbnail content-ID
+     * @param cid the thumbnail content-Id
      */
     public void fetchThumbnailAndNotify(final ContentId cid)
     {
-        final BoBManager bobManager = BoBManager.getInstanceFor(jabberProvider.getConnection());
+        XMPPConnection connection = jabberProvider.getConnection();
+
+        final BoBManager bobManager = BoBManager.getInstanceFor(connection);
         thumbnailCollector.submit(() -> {
-            Timber.d("Sending thumbnail request");
             try {
+                connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
                 thumbnail = bobManager.requestBoB(remoteJid, cid).getContent();
             } catch (SmackException.NotLoggedInException
                     | SmackException.NoResponseException
                     | XMPPException.XMPPErrorException
                     | NotConnectedException
                     | InterruptedException e) {
-                Timber.e(e, "Could not get thumbnail");
+                Timber.e("Error in requesting for thumbnail: %s", e.getMessage());
             } finally {
+                connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
                 // Notify the global listener that a request has arrived.
                 fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);
             }

@@ -24,30 +24,25 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public abstract class JingleContentSecurity implements ExtensionElement
-{
+public abstract class JingleContentSecurity implements ExtensionElement {
 
     public static final String ELEMENT = "security";
     private JingleContentSecurityInfo securityInfo;
 
-    public JingleContentSecurity()
-    {
+    public JingleContentSecurity() {
 
     }
 
-    public JingleContentSecurity(JingleContentSecurityInfo info)
-    {
+    public JingleContentSecurity(JingleContentSecurityInfo info) {
         this.securityInfo = info;
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
-    public JingleContentSecurityInfo getSecurityInfo()
-    {
+    public JingleContentSecurityInfo getSecurityInfo() {
         return securityInfo;
     }
 }

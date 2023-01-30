@@ -11,6 +11,9 @@ import org.atalk.service.libjitsi.LibJitsi;
 import gnu.java.zrtp.ZrtpConfigure;
 import gnu.java.zrtp.ZrtpConstants;
 
+/**
+ * <a herf="https://xmpp.org/extensions/xep-0262.html"></a>XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0 (2011-06-15)</a>
+ */
 public class ZrtpConfigureUtils
 {
     public static <T extends Enum<T>> String getPropertyID(T algo)
@@ -30,7 +33,6 @@ public class ZrtpConfigureUtils
      * Daniel J. Bernstein. "Understanding brute force."
      * ECRYPT STVL Workshop on Symmetric Key Encryption.
      * {@see} https://cr.yp.to/snuffle/bruteforce-20050425.pdf
-     *
      *
      *
      * Enable elliptic curve crypto using Curve 25519.

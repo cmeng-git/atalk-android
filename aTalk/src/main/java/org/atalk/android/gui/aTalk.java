@@ -28,6 +28,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -41,6 +42,7 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.util.EntityListHelper;
+import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.impl.neomedia.device.AndroidCameraSystem;
 import org.atalk.persistance.migrations.MigrateDir;
@@ -76,8 +78,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * The action that will show contacts.
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
-
-    private static Boolean mPrefChange = false;
 
     /**
      * The main pager view fragment containing the contact List
@@ -196,13 +196,12 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     protected void onResume()
     {
         super.onResume();
-
-        // Re-init aTalk to refresh the newly user selected language and theme
-        if (mPrefChange) {
-            mPrefChange = false;
-            finish();
-            startActivity(aTalk.class);
-        }
+        /*
+         * Must perform Locale change here instead of in aTalkApp (but must make reference to aTalkApp context);
+         * else selected locale resources are only partially being updated.
+         */
+        String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
+        LocaleHelper.setLocale(language);
     }
 
     /*
@@ -241,11 +240,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                 }
             }
         }
-    }
-
-    public static void setPrefChange(boolean state)
-    {
-        mPrefChange = state;
     }
 
     /**

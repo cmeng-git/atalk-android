@@ -30,6 +30,8 @@ public class Migrations {
                 MigrationTo4.updateOmemoIdentitiesTable(db);
             case 4:
                 MigrationTo5.updateOmemoDevicesTable(db);
+            case 5:
+                MigrationTo6.updateChatSessionTable(db);
         }
     }
 }

@@ -7,6 +7,7 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 
@@ -20,14 +21,14 @@ import java.io.File;
  */
 public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
 {
-    private final String id;
-    private final Contact sender;
-    private final File file;
+    private final String mId;
+    private final Contact mSender;
+    private final File mFile;
 
     /**
      * The Jabber incoming file transfer.
      */
-    private final IncomingFileTransfer jabberTransfer;
+    private final IncomingFileTransfer mJabberTransfer;
 
     /**
      * Creates an <code>IncomingFileTransferJabberImpl</code>.
@@ -39,10 +40,10 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
      */
     public IncomingFileTransferJabberImpl(String id, Contact sender, File file, IncomingFileTransfer jabberTransfer)
     {
-        this.id = id;
-        this.sender = sender;
-        this.file = file;
-        this.jabberTransfer = jabberTransfer;
+        mId = id;
+        mSender = sender;
+        mFile = file;
+        mJabberTransfer = jabberTransfer;
     }
 
     /**
@@ -51,7 +52,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     @Override
     public void cancel()
     {
-        jabberTransfer.cancel();
+        mJabberTransfer.cancel();
     }
 
     /**
@@ -62,7 +63,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
     @Override
     public long getTransferredBytes()
     {
-        return jabberTransfer.getAmountWritten();
+        return mJabberTransfer.getAmountWritten();
     }
 
     /**
@@ -82,7 +83,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
      */
     public Contact getContact()
     {
-        return sender;
+        return mSender;
     }
 
     /**
@@ -92,7 +93,7 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
      */
     public String getID()
     {
-        return id;
+        return mId;
     }
 
     /**
@@ -102,6 +103,6 @@ public class IncomingFileTransferJabberImpl extends AbstractFileTransfer
      */
     public File getLocalFile()
     {
-        return file;
+        return mFile;
     }
 }

@@ -48,14 +48,16 @@ public class FileTransferStatusChangeEvent extends EventObject
     public static final int IN_PROGRESS = 4;
 
     /**
-     * Indicates that the file transfer waits for the user/recipient to accept the file.
+     * Indicates that the file transfer waits for the user/recipient decision e.g. accept/decline.
      */
     public static final int WAITING = 5;
 
     /**
-     * Indicates that the file transfer is in protocol negotiation phase.
+     * Indicates that the file transfer is at the start of protocol initial state.
      */
     public static final int PREPARING = 6;
+
+    public static final int UNKNOWN = -1;
 
     /**
      * The state of the file transfer before this event occurred.

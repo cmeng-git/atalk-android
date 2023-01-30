@@ -38,7 +38,6 @@ public class InputEvtIQProvider extends IQProvider<InputEvtIQ>
         inputEvtIQ.setAction(action);
 
         boolean done = false;
-
         while (!done) {
             switch (parser.next()) {
                 case START_ELEMENT:

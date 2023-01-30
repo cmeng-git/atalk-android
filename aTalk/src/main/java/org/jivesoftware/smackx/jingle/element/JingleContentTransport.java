@@ -27,16 +27,14 @@ import java.util.List;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public class JingleContentTransport extends AbstractXmlElement
-{
+public class JingleContentTransport extends AbstractXmlElement {
     public static final String ELEMENT = "transport";
     private static Builder mBuilder;
 
     protected List<JingleContentTransportCandidate> candidates;
     protected JingleContentTransportInfo info;
 
-    public JingleContentTransport()
-    {
+    public JingleContentTransport() {
         this(getBuilder());
     }
 
@@ -45,18 +43,15 @@ public class JingleContentTransport extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public JingleContentTransport(Builder builder)
-    {
+    public JingleContentTransport(Builder builder) {
         super(builder);
     }
 
-    protected JingleContentTransport(List<JingleContentTransportCandidate> candidates)
-    {
+    protected JingleContentTransport(List<JingleContentTransportCandidate> candidates) {
         this(candidates, null);
     }
 
-    protected JingleContentTransport(List<JingleContentTransportCandidate> candidates, JingleContentTransportInfo info)
-    {
+    protected JingleContentTransport(List<JingleContentTransportCandidate> candidates, JingleContentTransportInfo info) {
         super(mBuilder = getBuilder());
         if (candidates != null) {
             this.candidates = Collections.unmodifiableList(candidates);
@@ -72,23 +67,19 @@ public class JingleContentTransport extends AbstractXmlElement
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
-    public List<JingleContentTransportCandidate> getCandidates()
-    {
+    public List<JingleContentTransportCandidate> getCandidates() {
         return candidates;
     }
 
-    public JingleContentTransportInfo getInfo()
-    {
+    public JingleContentTransportInfo getInfo() {
         return info;
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, null);
     }
 
@@ -96,32 +87,26 @@ public class JingleContentTransport extends AbstractXmlElement
      * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RtpDescription.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, JingleContentTransport>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, JingleContentTransport> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
-        public Builder addTransportInfo(JingleContentTransportInfo info)
-        {
+        public Builder addTransportInfo(JingleContentTransportInfo info) {
             return (info == null) ? this : addChildElement(info);
         }
 
-        public Builder addTransportCandidate(List<JingleContentTransportCandidate> xElements)
-        {
+        public Builder addTransportCandidate(List<JingleContentTransportCandidate> xElements) {
             return addChildElements(xElements);
         }
 
         @Override
-        public JingleContentTransport build()
-        {
+        public JingleContentTransport build() {
             return new JingleContentTransport(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

@@ -6,8 +6,40 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.1 (12/28/2022)" versioncode="301010">
+    <release version="3.1.2 (01/31/2023)" versioncode="301020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add support for XEP-0313: Message Archive Management; MAM is disabled when Chat history logging is disabled</change>
+        <change>Enable/disable XEP-0441: Message Archive Management Preferences setting per user 'Chat history logging' setting</change>
+        <change>Fix 'XEP-0308 Last Message Correction' implementation error in OMEMO message sending</change>
+        <change>Enhance call history UI when cleaning old records; allow user to specify the end date/time for records deletion</change>
+        <change>Change chat session UI to display full Jid for the message sender</change>
+        <change>Update the unread message count for contact in contactList UI even for carbon message received</change>
+        <change>Optimize and enhance the file transfer process flow; synchronise file transfer status UI display with the actual file transfer protocol state</change>
+        <change>In legacy file transfer protocol, fallback to IBB on SOCK5 negotiation failure or invalid transport candidates provided</change>
+        <change>Fix InBandBytestreamSession handshake protocol error; do not send 'close' element on an already closed InBandBytestream session</change>
+        <change>Closing both the input/output streams must apply to 'InBand Bytestream Session' only; improper implementation fix for Conversions in V3.0.4 causes problem in 'SOCK5 Bytestream Session' in both Jingle and Legacy file transfer</change>
+        <change>Change byteStream outgoing file transfer to use smack NegotiationProgress callback for all smack defined status change events</change>
+        <change>Show and ensure incoming file transfer progress status on UI is being updated during JingleFile Transfer process</change>
+        <change>Ensure file transfer encryption icon indicator reflects the actual file encryption type</change>
+        <change>Fix error in FileTransferStatusChangeEvent creation, mixing both the old and new status</change>
+        <change>Must use the send or received file size when set progressBar max value; currently receiving bytes count was incorrectly used</change>
+        <change>Enhance JingleSessionImpl class to report back to the caller on all the session change events</change>
+        <change>Ensure the file transfer UI is always fully visible to user on status change; android does not realign the focus on view holder size change</change>
+        <change>Support thumbnail sending for all the media types i.e. image and video files using glide for thumbnail creation</change>
+        <change>Change SMACK_REPLY_DEFAULT_TIMEOUT to 10s response time when requesting for thumbnail; else received thumbnail is discarded on timeout</change>
+        <change>Must clear fileIcon image in receive file UI; else reused view may contain an old thumbnail image</change>
+        <change>Enhance the implementation for HTTPFileDownload class; move all http file download protocol process from FileHttpDownloadConversation to HttpFileDownloadJabberImpl to have same structure to other file transfer transports implementations</change>
+        <change>Change getHistory records implementation in handling the merging msgHistory to msgCache process to avoid ANR</change>
+        <change>Fix to avoid the deleted messages/file records being displayed again in chat UI after refresh</change>
+        <change>Disallow history message fetch when MultiChoiceMode session is active: else new reused views may get highlighted and destroy current selected items</change>
+        <change>Improve FileBackEnd#getMimeType method to include the guessContentTypeFromStream function if normal check failed to obtain the mimeType</change>
+        <change>Must setLocale(language) in aTalk activity using aTalkApp Application instance on startup; else some resources are not being updated</change>
+        <change>Add new Chinese Simplify language UI support for user selection</change>
+        <change>Allow 'ENTER' button to send chat message when using hardware keyboard</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.1 (12/28/2022)" versioncode="301010">
         <change>Update ice4j v3.0 to be compatible with android &lt;= API-26; i.e. media call is now compatible with android-5.0</change>
         <change>Show user error message when ZRTP handshake protocol timeout (too many retries)</change>
         <change>Bug fixes and enhancements</change>

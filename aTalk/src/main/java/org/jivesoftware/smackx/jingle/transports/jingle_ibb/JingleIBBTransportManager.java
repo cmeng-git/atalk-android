@@ -36,19 +36,16 @@ import org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider.JingleIBBTr
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public final class JingleIBBTransportManager extends JingleTransportManager<JingleIBBTransport>
-{
+public final class JingleIBBTransportManager extends JingleTransportManager<JingleIBBTransport> {
     private static final WeakHashMap<XMPPConnection, JingleIBBTransportManager> INSTANCES = new WeakHashMap<>();
 
-    private JingleIBBTransportManager(XMPPConnection connection)
-    {
+    private JingleIBBTransportManager(XMPPConnection connection) {
         super(connection);
         JingleContentProviderManager.addJingleContentTransportProvider(getNamespace(), new JingleIBBTransportProvider());
         JingleContentProviderManager.addJingleTransportAdapter(new JingleIBBTransportAdapter());
     }
 
-    public static synchronized JingleIBBTransportManager getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized JingleIBBTransportManager getInstanceFor(XMPPConnection connection) {
         JingleIBBTransportManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new JingleIBBTransportManager(connection);
@@ -58,8 +55,7 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return JingleIBBTransport.NAMESPACE_V1;
     }
 
@@ -76,17 +72,15 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     @Override
     public int getPriority() {
         return -1;
-    };
+    }
 
     @Override
-    public JingleTransport<?> createTransportForInitiator(JingleContentImpl content)
-    {
+    public JingleTransport<?> createTransportForInitiator(JingleContentImpl content) {
         return new JingleIBBTransportImpl();
     }
 
     @Override
-    public JingleTransport<?> createTransportForResponder(JingleContentImpl content, JingleContentTransport peersTransportElement)
-    {
+    public JingleTransport<?> createTransportForResponder(JingleContentImpl content, JingleContentTransport peersTransportElement) {
         JingleIBBTransportImpl other = new JingleIBBTransportAdapter().transportFromElement(peersTransportElement);
         return new JingleIBBTransportImpl((short) Math.min(other.getBlockSize(), JingleIBBTransportImpl.MAX_BLOCKSIZE), other.getStreamId());
     }

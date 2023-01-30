@@ -25,8 +25,7 @@ import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public interface JingleDescriptionManager
-{
+public interface JingleDescriptionManager {
 
     String getNamespace();
 

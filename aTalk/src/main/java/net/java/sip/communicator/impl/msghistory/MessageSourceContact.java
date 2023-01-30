@@ -156,7 +156,7 @@ public class MessageSourceContact extends DataObject
         if (source instanceof MessageDeliveredEvent) {
             MessageDeliveredEvent e = (MessageDeliveredEvent) source;
 
-            this.contact = e.getDestinationContact();
+            this.contact = e.getContact();
             this.address = contact.getAddress();
             this.updateDisplayName();
             this.ppService = contact.getProtocolProvider();
@@ -225,7 +225,7 @@ public class MessageSourceContact extends DataObject
     void initDetails(EventObject source)
     {
         if (source instanceof MessageDeliveredEvent) {
-            initDetails(false, ((MessageDeliveredEvent) source).getDestinationContact());
+            initDetails(false, ((MessageDeliveredEvent) source).getContact());
         }
         else if (source instanceof MessageReceivedEvent) {
             initDetails(false, ((MessageReceivedEvent) source).getSourceContact());

@@ -6,9 +6,6 @@
 package org.atalk.android.gui.chat;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
@@ -63,10 +60,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -83,8 +77,7 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class MetaContactChatTransport implements ChatTransport, ContactPresenceStatusListener
-{
+public class MetaContactChatTransport implements ChatTransport, ContactPresenceStatusListener {
     /**
      * The parent <code>ChatSession</code>, where this transport is available.
      */
@@ -150,8 +143,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param chatSession the parent <code>ChatSession</code>
      * @param contact the <code>Contact</code> associated with this transport
      */
-    public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact)
-    {
+    public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact) {
         this(chatSession, contact, null, false);
     }
 
@@ -166,8 +158,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param isDisplayResourceOnly indicates if only the resource name should be displayed
      */
     public MetaContactChatTransport(MetaContactChatSession chatSession, Contact contact,
-            ContactResource contactResource, boolean isDisplayResourceOnly)
-    {
+            ContactResource contactResource, boolean isDisplayResourceOnly) {
         this.parentChatSession = chatSession;
         this.mContact = contact;
         this.mContactResource = contactResource;
@@ -182,11 +173,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking these can be slow so make sure they are run in new thread
-        new Thread()
-        {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 XMPPConnection connection = mPPS.getConnection();
                 if ((connection != null)) {
                     // For unencrypted file transfer
@@ -210,8 +199,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Check for Delivery Receipt support for all registered contacts (ANR from field - so run in thread)
      * Currently isDeliveryReceiptSupported is not used - Smack autoAddDeliveryReceiptRequests support is global
      */
-    private boolean checkDeliveryReceiptSupport(XMPPConnection connection)
-    {
+    private boolean checkDeliveryReceiptSupport(XMPPConnection connection) {
         boolean isSupported = false;
         Jid fullJid = null;
 
@@ -241,8 +229,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * If sending im is supported check it for supporting html messages if a font is set.
      * As it can be slow make sure its not on our way
      */
-    private void checkImCaps()
-    {
+    private void checkImCaps() {
         if ((ConfigurationUtils.getChatDefaultFontFamily() != null)
                 && (ConfigurationUtils.getChatDefaultFontSize() > 0)) {
             OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
@@ -257,8 +244,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the contact associated with this transport
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return mContact;
     }
 
@@ -267,8 +253,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The contact address corresponding to this chat transport.
      */
-    public String getName()
-    {
+    public String getName() {
         return mContact.getAddress();
     }
 
@@ -277,8 +262,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The display name corresponding to this chat transport.
      */
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return mContact.getDisplayName();
     }
 
@@ -288,8 +272,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The display name of this chat transport resource.
      */
-    public ContactResource getContactResource()
-    {
+    public ContactResource getContactResource() {
         return mContactResource;
     }
 
@@ -299,15 +282,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return The display name of this chat transport resource.
      */
-    public String getResourceName()
-    {
+    public String getResourceName() {
         if (mContactResource != null)
             return mContactResource.getResourceName();
         return null;
     }
 
-    public boolean isDisplayResourceOnly()
-    {
+    public boolean isDisplayResourceOnly() {
         return isDisplayResourceOnly;
     }
 
@@ -317,14 +298,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the presence status of this transport.
      */
-    public PresenceStatus getStatus()
-    {
+    public PresenceStatus getStatus() {
         PresenceStatus contactStatus = mContact.getPresenceStatus();
         if (mContactResource != null) {
             PresenceStatus resourceStatus = mContactResource.getPresenceStatus();
             return (resourceStatus.compareTo(contactStatus) < 0) ? contactStatus : resourceStatus;
-        }
-        else {
+        } else {
             return contactStatus;
         }
     }
@@ -334,8 +313,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the <code>ProtocolProviderService</code>, corresponding to this chat transport.
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return mPPS;
     }
 
@@ -346,8 +324,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports instant
      * messaging, otherwise returns {@code false}.
      */
-    public boolean allowsInstantMessage()
-    {
+    public boolean allowsInstantMessage() {
         // First try to ask the capabilities operation set if such is available.
         OperationSetContactCapabilities capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
@@ -356,8 +333,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 return false;
             }
             return capOpSet.getOperationSet(mContact, OperationSetBasicInstantMessaging.class) != null;
-        }
-        else
+        } else
             return mPPS.getOperationSet(OperationSetBasicInstantMessaging.class) != null;
 
     }
@@ -367,14 +343,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports message corrections and false otherwise.
      */
-    public boolean allowsMessageCorrections()
-    {
+    public boolean allowsMessageCorrections() {
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
             return capOpSet.getOperationSet(mContact, OperationSetMessageCorrection.class) != null;
-        }
-        else {
+        } else {
             return mPPS.getOperationSet(OperationSetMessageCorrection.class) != null;
         }
     }
@@ -386,15 +360,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports sms
      * messaging, otherwise returns {@code false}.
      */
-    public boolean allowsSmsMessage()
-    {
+    public boolean allowsSmsMessage() {
         // First try to ask the capabilities operation set if such is available.
         OperationSetContactCapabilities capOpSet
                 = getProtocolProvider().getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
             return capOpSet.getOperationSet(mContact, OperationSetSmsMessaging.class) != null;
-        }
-        else
+        } else
             return mPPS.getOperationSet(OperationSetSmsMessaging.class) != null;
     }
 
@@ -407,8 +379,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports message delivery receipts,
      * otherwise returns {@code false}
      */
-    public boolean allowsMessageDeliveryReceipt()
-    {
+    public boolean allowsMessageDeliveryReceipt() {
         return isDeliveryReceiptSupported;
     }
 
@@ -420,16 +391,14 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return {@code true} if this chat transport supports chat state
      * notifications, otherwise returns {@code false}.
      */
-    public boolean allowsChatStateNotifications()
-    {
+    public boolean allowsChatStateNotifications() {
         // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
         // return ((tnOpSet != null) && isChatStateSupported);
         return isChatStateSupported;
 
     }
 
-    public static void setChatStateSupport(boolean isEnable)
-    {
+    public static void setChatStateSupport(boolean isEnable) {
         isChatStateSupported = isEnable;
     }
 
@@ -438,8 +407,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      */
-    public boolean allowsFileTransfer()
-    {
+    public boolean allowsFileTransfer() {
         return (ftOpSet != null)
                 || ((httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered());
     }
@@ -451,8 +419,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
-    public void sendInstantMessage(String message, int encType)
-    {
+    public void sendInstantMessage(String message, int encType) {
         // If this chat transport does not support instant messaging we do nothing here.
         if (!allowsInstantMessage()) {
             aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, getName());
@@ -469,8 +436,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             imOpSet.sendInstantMessage(mContact, toResource, msg, null, omemoManager);
-        }
-        else {
+        } else {
             imOpSet.sendInstantMessage(mContact, toResource, msg);
         }
     }
@@ -483,8 +449,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param correctedMessageUID The ID of the message being corrected by this message.
      */
-    public void sendInstantMessage(String message, int encType, String correctedMessageUID)
-    {
+    public void sendInstantMessage(String message, int encType, String correctedMessageUID) {
         if (!allowsMessageCorrections()) {
             return;
         }
@@ -498,8 +463,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_MASK)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             mcOpSet.sendInstantMessage(mContact, toResource, msg, correctedMessageUID, omemoManager);
-        }
-        else {
+        } else {
             mcOpSet.correctMessage(mContact, toResource, msg, correctedMessageUID);
         }
     }
@@ -508,10 +472,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Determines whether this chat transport supports the supplied content type
      *
      * @param mimeType the mime type we want to check
+     *
      * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
-    public boolean isContentTypeSupported(int mimeType)
-    {
+    public boolean isContentTypeSupported(int mimeType) {
         OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         return (imOpSet != null) && imOpSet.isContentTypeSupported(mimeType);
     }
@@ -521,11 +485,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param phoneNumber phone number of the destination
      * @param messageText The message to send.
+     *
      * @throws Exception if the send operation is interrupted
      */
     public void sendSmsMessage(String phoneNumber, String messageText)
-            throws Exception
-    {
+            throws Exception {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
             Timber.w("Method not implemented");
@@ -538,8 +502,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return <code>true</code> if dialog needs to be open.
      */
-    public boolean askForSMSNumber()
-    {
+    public boolean askForSMSNumber() {
         // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return false;
@@ -552,11 +515,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Sends the given sms message through this chat transport.
      *
      * @param message the message to send
+     *
      * @throws Exception if the send operation is interrupted
      */
     public void sendSmsMessage(String message)
-            throws Exception
-    {
+            throws Exception {
         // If this chat transport does not support sms messaging we do nothing here.
         if (allowsSmsMessage()) {
             Timber.w("Method not implemented");
@@ -569,8 +532,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param chatState the chat state notification to send
      */
-    public void sendChatStateNotification(ChatState chatState)
-    {
+    public void sendChatStateNotification(ChatState chatState) {
         // If this chat transport does not allow chat state notification then just return
         if (allowsChatStateNotifications()) {
             // if protocol is not registered or contact is offline don't try to send chat state notifications
@@ -594,40 +556,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
+     *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
-            throws Exception
-    {
+            throws Exception {
         // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
-        if (getStatus().isOnline()) {
-            try {
-                // Try jingle file protocol as first try if supported by buddy
-                return jingleFileSend(file, chatType, xferCon);
-            } catch (OperationNotSupportedException ex) {
-                // Retry with legacy if jingle file transfer protocols is not supported by buddy;
-                // but use http file upload for OMEMO media file sharing
-                if (ChatFragment.MSGTYPE_OMEMO == chatType)
-                    return httpFileUpload(file, chatType, xferCon);
-                else {
-                    try {
-                        return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
-                    } catch (OperationNotSupportedException ex2) {
-                        // Fallback to use Http file upload if contact is offline, or contact
-                        // does not support legacy FileTransfer in SOCKS5 and IBS
-                        return httpFileUpload(file, chatType, xferCon);
-                    }
-                }
-            }
-        }
-        else {
-            // Use http file upload for all media file sharing for offline user
-            return httpFileUpload(file, chatType, xferCon);
-        }
+        return getFileTransferTransport(file, chatType, xferCon);
     }
 
     /**
@@ -635,11 +574,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * transport to choose the destination.
      *
      * @param file the file to send
+     *
      * @throws Exception if the send file is unsuccessful
      */
     public Object sendMultimediaFile(File file)
-            throws Exception
-    {
+            throws Exception {
         return sendFile(file, true, ChatFragment.MSGTYPE_NORMAL, null);
     }
 
@@ -649,12 +588,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
+     *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
-            throws Exception
-    {
+            throws Exception {
         return sendFile(file, false, chatType, xferCon);
     }
 
@@ -664,25 +603,22 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
+     *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileSendConversation xferCon)
-            throws Exception
-    {
+            throws Exception {
         // If this chat transport does not support file transfer we do nothing and just return.
         if (!allowsFileTransfer())
             return null;
 
-        // Create a thumbNailed file if possible. Skip for OMEMO message
-        if (FileBackend.isMediaFile(file) && (ChatFragment.MSGTYPE_OMEMO != chatType)) {
-            OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
-            if (tfOpSet != null) {
-                byte[] thumbnail = getFileThumbnail(file);
-                if (thumbnail != null && thumbnail.length > 0) {
-                    file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
-                            "image/png", thumbnail);
-                }
+        OperationSetThumbnailedFileFactory tfOpSet = mPPS.getOperationSet(OperationSetThumbnailedFileFactory.class);
+        if (tfOpSet != null) {
+            byte[] thumbnail = xferCon.getFileThumbnail();
+            if (thumbnail != null && thumbnail.length > 0) {
+                file = tfOpSet.createFileWithThumbnail(file, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT,
+                        "image/png", thumbnail);
             }
         }
 
@@ -691,32 +627,54 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             if (smsOpSet == null)
                 return null;
             return smsOpSet.sendMultimediaFile(mContact, file);
+        } else {
+            return getFileTransferTransport(file, chatType, xferCon);
         }
-        else {
-            if (getStatus().isOnline()) {
+    }
+
+    /**
+     * Process to determine the appropriate file transfer transport based on:
+     * a. contact online status
+     * b. file transfer protocol supported by the recipient contact,
+     * c. current active session i.e. chatType,
+     * d. server httpFileUpload service support
+     * e. fallback on failure for legacy byteStream transfer protocol.
+     *
+     * The file transport is selected with the following priority order if contact is online:
+     * a. jingleFileSend (Secure JET or Plain)
+     * b. httpFileUpload (for OMEMO and plain chat session: chatType)
+     * c. Legacy byteStream transfer protocol for SOCK5 with fallback on IBB on user retry
+     * #see <a href="https://xmpp.org/extensions/xep-0096.html"></a>XEP-0096: SI File Transfer 1.3.1 (2022-03-22)</a>
+     *
+     * @param file the file to send
+     * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
+     * @param xferCon an instance of FileSendConversation
+     *
+     * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     * @throws Exception if anything goes wrong
+     */
+    private Object getFileTransferTransport(File file, int chatType, FileSendConversation xferCon)
+            throws Exception {
+        if (getStatus().isOnline()) {
+            try {
+                // Try jingle file transfer protocol as first attempt if supported by buddy
+                return jingleFileSend(file, chatType, xferCon);
+
+                /* ==== For testing Bytestream or httpFileUpload only ==== */
+                // return httpFileUpload(file, chatType, xferCon);
+                // return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
+            } catch (OperationNotSupportedException ex) {
+                // Use http file upload if available.
                 try {
-                    // Try jingle file transfer protocol as first attempt if supported by buddy
-                    return jingleFileSend(file, chatType, xferCon);
-                } catch (OperationNotSupportedException ex) {
-                    // Use http file upload for OMEMO media file sharing;
-                    // else use legacy if jingle file transfer protocols is not supported by buddy;
-                    if (ChatFragment.MSGTYPE_OMEMO == chatType)
-                        return httpFileUpload(file, chatType, xferCon);
-                    else {
-                        try {
-                            return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
-                        } catch (OperationNotSupportedException ex2) {
-                            // Fallback to use Http file upload if contact is offline, or contact
-                            // does not support legacy FileTransfer in SOCKS5 and IBS
-                            return httpFileUpload(file, chatType, xferCon);
-                        }
-                    }
+                    return httpFileUpload(file, chatType, xferCon);
+                } catch (OperationNotSupportedException ex2) {
+                    // Use legacy FileTransfer starting with SOCKS5, fallback to IBB ByteStream transfer.
+                    return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
                 }
             }
-            else {
-                // Use http file upload for all media file sharing for offline user
-                return httpFileUpload(file, chatType, xferCon);
-            }
+        } else {
+            // Use http file upload for all media file sharing for offline user
+            return httpFileUpload(file, chatType, xferCon);
         }
     }
 
@@ -726,18 +684,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
+     *
      * @return <code>OutgoingFileOfferController</code> or HTTPFileUpload object to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     private OutgoingFileOfferJingleImpl jingleFileSend(File file, int chatType, FileSendConversation xferCon)
-            throws Exception
-    {
+            throws Exception {
         // toJid is not null if contact is online and supports the jet/jingle file transfer
         FullJid recipient;
         if (ChatFragment.MSGTYPE_OMEMO == chatType) {
             recipient = ftOpSet.getFullJid(mContact, JetSecurityImpl.NAMESPACE, JingleFileTransferImpl.NAMESPACE);
-        }
-        else {
+        } else {
             recipient = ftOpSet.getFullJid(mContact, JingleFileTransferImpl.NAMESPACE);
         }
 
@@ -756,17 +713,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
                     encType = IMessage.ENCRYPTION_OMEMO;
                     ofoController = jetManager.sendEncryptedFile(file, jingleFile, recipient, omemoManager);
-                }
-                else {
-                    // For testing only: forced to use legacy file transfer for unencrypted content
-                    // throw new OperationNotSupportedException("Use legacy File Transfer");
+                } else {
+                    // For testing only: forced to use next in priority file transfer
+                    // throw new OperationNotSupportedException("Use next available File Transfer");
                     ofoController = jingleFTManager.sendFile(file, jingleFile, recipient);
                 }
                 OutgoingFileOfferJingleImpl outgoingTransfer
                         = new OutgoingFileOfferJingleImpl(mContact, file, msgUuid, ofoController, mPPS.getConnection());
-
-                // Notify all interested listeners that a file transfer has been created.
-                xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "Jingle File Transfer");
                 return outgoingTransfer;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
@@ -778,8 +731,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
-        }
-        else {
+        } else {
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
         }
     }
@@ -788,10 +740,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * Create JingleFile from the given file
      *
      * @param file sending file
+     *
      * @return JingleFile metaData
      */
-    private JingleFile createJingleFile(Context ctx, File file)
-    {
+    private JingleFile createJingleFile(Context ctx, File file) {
         JingleFile jingleFile = null;
         String mimeType = FileBackend.getMimeType(ctx, Uri.fromFile(file));
         try {
@@ -805,20 +757,17 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
-    private static class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
-    {
+    private static class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
         FullJid recipient;
         OmemoManager omemoManager;
 
-        OmemoAuthenticateListener(FullJid recipient, OmemoManager omemoManager)
-        {
+        OmemoAuthenticateListener(FullJid recipient, OmemoManager omemoManager) {
             this.recipient = recipient;
             this.omemoManager = omemoManager;
         }
 
         @Override
-        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
-        {
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (!allTrusted) {
                 aTalkApp.showToastMessage(R.string.omemo_send_error,
                         "Undecided Omemo Identity: " + omemoDevices.toString());
@@ -832,12 +781,12 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param file the file to send
      * @param chatType ChatFragment.MSGTYPE_OMEMO or MSGTYPE_NORMAL
      * @param xferCon an instance of FileSendConversation
+     *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
      * @throws Exception if anything goes wrong
      */
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
-            throws Exception
-    {
+            throws Exception {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
         if (httpFileUploadManager.isUploadServiceDiscovered()) {
             int encType = IMessage.ENCRYPTION_NONE;
@@ -846,19 +795,19 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
                     encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
-                }
-                else {
+                } else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "HTTP File Upload");
                 return url;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
-            } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
+            }
+            // uploadFile exception; uploadFileEncrypted will throw Exception
+            catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
-        }
-        else
+        } else
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
     }
 
@@ -867,13 +816,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the file length that is supported.
      */
-    public long getMaximumFileLength()
-    {
+    public long getMaximumFileLength() {
         return ftOpSet.getMaximumFileLength();
     }
 
-    public void inviteChatContact(EntityBareJid contactAddress, String reason)
-    {
+    public void inviteChatContact(EntityBareJid contactAddress, String reason) {
     }
 
     /**
@@ -882,8 +829,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the parent session of this chat transport
      */
-    public ChatSession getParentChatSession()
-    {
+    public ChatSession getParentChatSession() {
         return parentChatSession;
     }
 
@@ -892,8 +838,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param l The message listener to add.
      */
-    public void addSmsMessageListener(MessageListener l)
-    {
+    public void addSmsMessageListener(MessageListener l) {
         // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
@@ -908,8 +853,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param l The message listener to add.
      */
-    public void addInstantMessageListener(MessageListener l)
-    {
+    public void addInstantMessageListener(MessageListener l) {
         // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
         if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
             return;
@@ -923,8 +867,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param l The message listener to remove.
      */
-    public void removeSmsMessageListener(MessageListener l)
-    {
+    public void removeSmsMessageListener(MessageListener l) {
         // If this chat transport does not support sms messaging we do nothing here.
         if (!allowsSmsMessage())
             return;
@@ -938,8 +881,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param l The message listener to remove.
      */
-    public void removeInstantMessageListener(MessageListener l)
-    {
+    public void removeInstantMessageListener(MessageListener l) {
         // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
         if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
             return;
@@ -953,8 +895,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @param evt The presence event containing information about the contact status change.
      */
-    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
-    {
+    public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         // If the contactResource is set then the status will be updated from the MetaContactChatSession.
         // cmeng: contactResource condition removed to fix contact goes offline<->online // && (contactResource == null)
         if (evt.getSourceContact().equals(mContact)
@@ -966,8 +907,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Updates the status of this contact with the new given status.
      */
-    private void updateContactStatus()
-    {
+    private void updateContactStatus() {
         // Update the status of the given contact in the "send via" selector box.
         parentChatSession.getChatSessionRenderer().updateChatTransportStatus(this);
     }
@@ -975,8 +915,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     /**
      * Removes all previously added listeners.
      */
-    public void dispose()
-    {
+    public void dispose() {
         if (presenceOpSet != null)
             presenceOpSet.removeContactPresenceStatusListener(this);
     }
@@ -986,46 +925,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return the descriptor of this chat transport
      */
-    public Object getDescriptor()
-    {
+    public Object getDescriptor() {
         return mContact;
-    }
-
-    /**
-     * Sets the icon for the given file.
-     *
-     * @param file the file to set an icon for
-     * @return the byte array containing the thumbnail
-     */
-    public static byte[] getFileThumbnail(File file)
-    {
-        byte[] imageData = null;
-
-        if (FileBackend.isMediaFile(file)) {
-            String imagePath = file.toString();
-            try {
-                FileInputStream fis = new FileInputStream(imagePath);
-                Bitmap imageBitmap = BitmapFactory.decodeStream(fis);
-
-                // check to ensure BitmapFactory can handle the MIME type
-                if (imageBitmap != null) {
-                    int width = imageBitmap.getWidth();
-                    int height = imageBitmap.getHeight();
-
-                    if (width > THUMBNAIL_WIDTH)
-                        width = THUMBNAIL_WIDTH;
-                    if (height > THUMBNAIL_HEIGHT)
-                        height = THUMBNAIL_HEIGHT;
-
-                    imageBitmap = ThumbnailUtils.extractThumbnail(imageBitmap, width, height);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    imageData = baos.toByteArray();
-                }
-            } catch (FileNotFoundException e) {
-                Timber.d("Could not locate image file. %s", e.getMessage());
-            }
-        }
-        return imageData;
     }
 }

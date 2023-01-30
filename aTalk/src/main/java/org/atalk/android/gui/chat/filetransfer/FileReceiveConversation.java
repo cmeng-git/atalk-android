@@ -50,19 +50,18 @@ import timber.log.Timber;
 /**
  * The <code>ReceiveFileConversationComponent</code> is the component shown in the conversation area
  * of the chat window to display a incoming file transfer.
+ * This UI is used by both the JingleFile and Legacy ByteStream incoming file.
  *
  * @author Eng Chong Meng
  */
 public class FileReceiveConversation extends FileTransferConversation
-        implements ScFileTransferListener, FileTransferStatusListener
-{
+        implements ScFileTransferListener, FileTransferStatusListener {
     private IncomingFileTransferRequest fileTransferRequest;
     private OperationSetFileTransfer fileTransferOpSet;
     private FileHistoryServiceImpl mFHS;
     private String mSendTo;
 
-    private FileReceiveConversation(ChatFragment cPanel, String dir)
-    {
+    private FileReceiveConversation(ChatFragment cPanel, String dir) {
         super(cPanel, dir);
     }
 
@@ -76,8 +75,7 @@ public class FileReceiveConversation extends FileTransferConversation
      */
     // Constructor used by ChatFragment to start handle ReceiveFileTransferRequest
     public static FileReceiveConversation newInstance(ChatFragment cPanel, String sendTo,
-            OperationSetFileTransfer opSet, IncomingFileTransferRequest request, final Date date)
-    {
+            OperationSetFileTransfer opSet, IncomingFileTransferRequest request, final Date date) {
         FileReceiveConversation fragmentRFC = new FileReceiveConversation(cPanel, FileRecord.IN);
         fragmentRFC.mSendTo = sendTo;
         fragmentRFC.fileTransferOpSet = opSet;
@@ -92,15 +90,16 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     public View ReceiveFileConversionForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
-            ViewGroup container, int id, boolean init)
-    {
+            ViewGroup container, int id, boolean init) {
         msgViewId = id;
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
         messageViewHolder.stickerView.setImageDrawable(null);
 
         mXferFile = createOutFile(fileTransferRequest);
         mFileTransfer = fileTransferRequest.onPrepare(mXferFile);
-        mFileTransfer.addStatusListener(FileReceiveConversation.this);
+        mFileTransfer.addStatusListener(this);
+        mEncryption =  fileTransferRequest.getEncryptionType();
+        setEncState(mEncryption);
 
         long downloadFileSize = fileTransferRequest.getFileSize();
         String fileLabel = getFileLabel(mXferFile.getName(), downloadFileSize);
@@ -110,7 +109,9 @@ public class FileReceiveConversation extends FileTransferConversation
 		listView scrolling, new message send or received */
         int status = getXferStatus();
         if (status == -1) {
-            if (FileTransferConversation.FT_THUMBNAIL_ENABLE) {
+            // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
+            messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
+            if (ConfigurationUtils.isSendThumbnail()) {
                 byte[] thumbnail = fileTransferRequest.getThumbnail();
                 showThumbnail(thumbnail);
             }
@@ -158,9 +159,8 @@ public class FileReceiveConversation extends FileTransferConversation
      * i.e. mEncryption = IMessage.ENCRYPTION_NONE
      */
     @Override
-    protected void updateView(final int status, final String reason)
-    {
-        setEncState(mEncryption);
+    protected void updateView(final int status, final String reason) {
+        setXferStatus(status);
         String statusText = null;
 
         switch (status) {
@@ -200,6 +200,7 @@ public class FileReceiveConversation extends FileTransferConversation
                 break;
         }
         updateXferFileViewState(status, statusText);
+        mChatFragment.scrollToBottom();
     }
 
     /**
@@ -207,8 +208,7 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @return the local created file to download.
      */
-    private File createOutFile(IncomingFileTransferRequest fileTransferRequest)
-    {
+    private File createOutFile(IncomingFileTransferRequest fileTransferRequest) {
         String fileName = fileTransferRequest.getFileName();
         String mimeType = fileTransferRequest.getMimeType();
         setTransferFilePath(fileName, mimeType);
@@ -225,16 +225,13 @@ public class FileReceiveConversation extends FileTransferConversation
     /**
      * Accepts the file in a new thread.
      */
-    private class AcceptFile extends AsyncTask<Void, Void, Boolean>
-    {
+    private class AcceptFile extends AsyncTask<Void, Void, Boolean> {
         @Override
-        public void onPreExecute()
-        {
+        public void onPreExecute() {
         }
 
         @Override
-        protected Boolean doInBackground(Void... params)
-        {
+        protected Boolean doInBackground(Void... params) {
             fileTransferRequest.acceptFile();
             // Remove previously added listener (no further required), that notify for request cancellations if any.
             fileTransferOpSet.removeFileTransferListener(FileReceiveConversation.this);
@@ -245,8 +242,7 @@ public class FileReceiveConversation extends FileTransferConversation
         }
 
         @Override
-        protected void onPostExecute(Boolean result)
-        {
+        protected void onPostExecute(Boolean result) {
             if (mFileTransfer != null) {
                 setFileTransfer(mFileTransfer, fileTransferRequest.getFileSize());
             }
@@ -254,19 +250,18 @@ public class FileReceiveConversation extends FileTransferConversation
     }
 
     /**
-     * Update the file transfer status into the DB, also the msgCache to ensure the file send request will not
-     * get trigger again. The msgCache record will be used for view display on chat session resume.
+     * Update the file transfer status into the DB, also the msgCache to ensure the file send request
+     * will not get trigger again. The msgCache record will be used for view display on chat session resume.
      * Delete file with zero length; not to cluster directory with invalid files
      *
      * @param msgUuid The message UUID
      * @param status File transfer status
      */
-    private void updateFTStatus(String msgUuid, int status)
-    {
+    private void updateFTStatus(String msgUuid, int status) {
         String fileName = (mXferFile == null) ? "" : mXferFile.toString();
         if (status == FileRecord.STATUS_CANCELED || status == FileRecord.STATUS_DECLINED) {
-            if (mXferFile != null && mXferFile.exists() && mXferFile.length() == 0) {
-                mXferFile.delete();
+            if (mXferFile != null && mXferFile.exists() && mXferFile.length() == 0 && mXferFile.delete()) {
+                Timber.d("Deleted file with zero length: %s", mXferFile);
             }
         }
         mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
@@ -278,15 +273,12 @@ public class FileReceiveConversation extends FileTransferConversation
      * Listens for changes in file transfers and update the DB record status if known.
      * Translate FileTransfer status to FileRecord status before updateFTStatus()
      *
-     * @param event FileTransferStatusChangeEvent
+     * @param event the event containing information about the change
      */
-    public void statusChanged(FileTransferStatusChangeEvent event)
-    {
+    public void statusChanged(FileTransferStatusChangeEvent event) {
         final FileTransfer fileTransfer = event.getFileTransfer();
         final int status = event.getNewStatus();
         final String reason = event.getReason();
-
-        setXferStatus(status);
 
         int fStatus = getStatus(status);
         if (fStatus != FileRecord.STATUS_UNKNOWN)
@@ -301,7 +293,7 @@ public class FileReceiveConversation extends FileTransferConversation
                     || status == FileTransferStatusChangeEvent.FAILED
                     || status == FileTransferStatusChangeEvent.DECLINED) {
                 // must update this in UI, otherwise the status is not being updated to FileRecord
-                fileTransfer.removeStatusListener(FileReceiveConversation.this);
+                fileTransfer.removeStatusListener(this);
             }
         });
     }
@@ -312,11 +304,11 @@ public class FileReceiveConversation extends FileTransferConversation
      * Called when a new <code>IncomingFileTransferRequest</code> has been received. Too late to handle here.
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the newly received request and other details.
+     *
      * @see FileTransferActivator#fileTransferRequestReceived(FileTransferRequestEvent)
      * @see FileHistoryServiceImpl#fileTransferRequestReceived(FileTransferRequestEvent)
      */
-    public void fileTransferRequestReceived(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestReceived(FileTransferRequestEvent event) {
         // Event is being handled by FileTransferActivator and FileHistoryServiceImpl
         // ScFileTransferListener is only being added after this event - nothing can do here.
     }
@@ -326,10 +318,10 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @param event the <code>FileTransferCreatedEvent</code> containing the newly received
      * file transfer and other details.
+     *
      * @see FileHistoryServiceImpl#fileTransferCreated(FileTransferCreatedEvent)
      */
-    public void fileTransferCreated(FileTransferCreatedEvent event)
-    {
+    public void fileTransferCreated(FileTransferCreatedEvent event) {
         // Event is being handled by FileHistoryServiceImpl for both incoming, outgoing and
         // used by FileSendConversion#createHttpFileUploadRecord - so not doing anything here
     }
@@ -339,8 +331,7 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
      */
-    public void fileTransferRequestRejected(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestRejected(FileTransferRequestEvent event) {
         final IncomingFileTransferRequest request = event.getRequest();
         updateFTStatus(request.getID(), FileRecord.STATUS_DECLINED);
 
@@ -361,8 +352,7 @@ public class FileReceiveConversation extends FileTransferConversation
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the request which was canceled.
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event) {
         final IncomingFileTransferRequest request = event.getRequest();
         updateFTStatus(request.getID(), FileRecord.STATUS_CANCELED);
 
@@ -380,11 +370,11 @@ public class FileReceiveConversation extends FileTransferConversation
      * Returns the label to show on the progress bar.
      *
      * @param bytesString the bytes that have been transferred
+     *
      * @return the label to show on the progress bar
      */
     @Override
-    protected String getProgressLabel(long bytesString)
-    {
+    protected String getProgressLabel(long bytesString) {
         return aTalkApp.getResString(R.string.service_gui_RECEIVED, bytesString);
     }
 }

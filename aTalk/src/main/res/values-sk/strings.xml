@@ -135,8 +135,9 @@
     <string name="service_gui_CALL_END">Diaľkový volajúci hovor ukončil: %1$s</string>
     <string name="service_gui_CALL_ERROR">Vzdialená strana vracia chybu: %1$s</string>
     <string name="service_gui_CALL_FAILED">Hovor zlyhal</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Naozaj chcete vymazať všetky záznamy hovorov pred dátumom?: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">História hovorov</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Potvrďte a \'Vybrať všetky\' položky a potom prejdite na \'Odstrániť\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">počet vymazaných záznamov histórie hovorov: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Na odstránenie nebol vybratý žiadny záznam</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Ali ste prepričani, da želite očistiti vse izbrane zapise klicev?</string>
     <string name="service_gui_CALL_INCOMING">Prichádzajúci hovor: %1$s</string>
@@ -222,7 +223,7 @@
     <string name="service_gui_CLOSE_CHAT">Zatvorte aktuálnu reláciu rozhovoru</string>
     <string name="service_gui_CONNECTED_STATUS">Spojený</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Pripája sa %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Pripojenie*</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Pripojenie…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Prihlásenie k účtu zlyhalo: Meno používateľa: %1$s\n
         Názov servera: %2$s\nProsím skontrolujte sieťové pripojenie ALEBO sa obráťte na správcu siete, ktorý vám poskytne ďalšie informácie.</string>
     <string name="service_gui_CONNECTING_STATUS">Pripájanie</string>
@@ -386,7 +387,7 @@
     <string name="service_gui_HISTORY_TOGGLE_ALL">Vypnite históriu pre všetky diskusie a kontakty</string>
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Vymazať históriu pre tento kontakt</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Vymazať históriu rozhovorov všetkých kontaktov</string>
-    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Naozaj chcete vymazať všetky správy pre %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Naozaj chcete vymazať všetky vybraté správy pre %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých entity?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Odstrániť médiá z môjho telefónu</string>
@@ -1144,7 +1145,7 @@
     <string name="service_gui_PREF_SECURITY_GENERAL">všeobecný</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">Indikácia RTP / SAVP</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Metóda indikácie RTP / SAVP</string>
-    <string name="service_gui_PREF_SECURITY_SDES">Možnosti SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES">Možnosti SDES</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Vyberte požadované sady šifry</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Šifrovacie sady SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Možnosti ZRTP</string>
@@ -1248,7 +1249,7 @@
     <string name="service_gui_JBR_STUN_LIST">Ďalšie servery STUN / TURN&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Užívateľ definoval ďalšie servery STUN / TURN na použitie</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Telefónna doména</string>
-    <string name="service_gui_JBR_TELEPHONY">Telefonovanie (experimentálne)</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonovanie VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Nakonfigurujte možnosti telefonovania&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Použite server Jitsi STUN (záložný server)</string>
     <string name="service_gui_JBR_USE_ICE">Použite ICE</string>

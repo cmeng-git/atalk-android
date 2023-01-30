@@ -24,6 +24,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.SessionState;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
@@ -36,13 +37,17 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
-        implements JingleSessionImpl.JingleSessionListener, ProgressListener
-{
-    private final String id;
-    private final Contact sender;
+public class IncomingFileTransferJingleImpl extends AbstractFileTransfer {
+    // progress update event is triggered every UPDATE_INTERVAL (ms).
+    private final static int UPDATE_INTERVAL = 10;
+
+    private final String mId;
+    private final Contact mSender;
     private final File mFile;
-    private int byteRead;
+    private int mByteRead;
+
+    // progress last update time.
+    private long mLastUpdateTime = System.currentTimeMillis();
 
     /**
      * The Jingle incoming file offer.
@@ -55,24 +60,21 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      * @param inFileOffer the Jingle incoming file offer
      * @param file the file
      */
-    public IncomingFileTransferJingleImpl(IncomingFileOfferJingleImpl inFileOffer, File file)
-    {
-        this.id = inFileOffer.getID();
-        this.sender = inFileOffer.getSender();
-        this.mFile = file;
-        this.mIfoJingle = inFileOffer;
-        this.byteRead = 0;
-        inFileOffer.mOffer.addProgressListener(this);
-        JingleSessionImpl.addJingleSessionListener(this);
-        // Timber.d("Add Ifo Listener");
+    public IncomingFileTransferJingleImpl(IncomingFileOfferJingleImpl inFileOffer, File file) {
+        mId = inFileOffer.getID();
+        mSender = inFileOffer.getSender();
+        mFile = file;
+        mIfoJingle = inFileOffer;
+        mByteRead = 0;
+        mIfoJingle.getController().addProgressListener(outFileProgressListener);
+        JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
     }
 
     /**
      * User declines or cancels an incoming file transfer request during initial or during the active state.
      */
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         try {
             onCanceled();
             mIfoJingle.declineFile();
@@ -81,8 +83,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
         }
     }
 
-    private void onCanceled()
-    {
+    private void onCanceled() {
         String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
         fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
     }
@@ -92,11 +93,10 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      * a. Own IncomingFileOfferJingleImpl#declineFile(); nothing returns from remote
      * b. onSessionTerminated() received from remote; user cancels prior to accept or while in active transfer
      */
-    public void removeIfoListener()
-    {
+    public void removeIfoListener() {
         // Timber.d("Remove Ifo Listener");
-        mIfoJingle.mOffer.removeProgressListener(this);
-        JingleSessionImpl.removeJingleSessionListener(this);
+        mIfoJingle.getController().removeProgressListener(outFileProgressListener);
+        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
     }
 
     /**
@@ -105,10 +105,8 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      * @return the number of bytes already received from the recipient
      */
     @Override
-    public long getTransferredBytes()
-    {
-        // Timber.d("getTransferredBytes received: %s", byteRead);
-        return byteRead;
+    public long getTransferredBytes() {
+        return mByteRead;
     }
 
     /**
@@ -116,8 +114,7 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      *
      * @return IN
      */
-    public int getDirection()
-    {
+    public int getDirection() {
         return IN;
     }
 
@@ -126,9 +123,8 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      *
      * @return the sender of the file
      */
-    public Contact getContact()
-    {
-        return sender;
+    public Contact getContact() {
+        return mSender;
     }
 
     /**
@@ -136,9 +132,8 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      *
      * @return the identifier of this file transfer
      */
-    public String getID()
-    {
-        return id;
+    public String getID() {
+        return mId;
     }
 
     /**
@@ -146,45 +141,83 @@ public class IncomingFileTransferJingleImpl extends AbstractFileTransfer
      *
      * @return the file
      */
-    public File getLocalFile()
-    {
+    public File getLocalFile() {
         return mFile;
     }
 
-    @Override
-    public void onStarted()
-    {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "InProgress");
-    }
+    ProgressListener outFileProgressListener = new ProgressListener() {
+        @Override
+        public void onStarted() {
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "Byte sending started");
+        }
 
-    @Override
-    public void progress(int rwBytes)
-    {
-        byteRead = rwBytes;
-    }
+        /**
+         * OperationSetFileTransferJabberImp#FileTransferProgressThread is not enabled for JingleFile
+         * Transfer; so fireProgressChangeEvent to update display incoming file progressBar in UI
+         *
+         * @param rwBytes progressive byte count for byte-stream sent/received
+         */
+        @Override
+        public void progress(int rwBytes) {
+            mByteRead = rwBytes;
+            long cTime = System.currentTimeMillis();
+            if (cTime - mLastUpdateTime > UPDATE_INTERVAL) {
+                mLastUpdateTime = cTime;
+                fireProgressChangeEvent(cTime, rwBytes);
+            }
+        }
 
-    @Override
-    public void onFinished()
-    {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "Completed");
-    }
+        @Override
+        public void onFinished() {
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "File received completed");
+        }
 
-    @Override
-    public void onError(JingleReason reason)
-    {
-        onSessionTerminated(reason);
-    }
+        @Override
+        public void onError(JingleReason reason) {
+            jingleSessionListener.onSessionTerminated(reason);
+        }
+    };
 
-    @Override
-    public void onSessionTerminated(JingleReason reason)
-    {
-        fireStatusChangeEvent(reason);
-        removeIfoListener();
-    }
+    JingleSessionImpl.JingleSessionListener jingleSessionListener = new JingleSessionImpl.JingleSessionListener() {
+        @Override
+        public void sessionStateUpdated(SessionState oldState, SessionState newState) {
+            String sessionState = newState.toString();
+            Timber.d("Jingle session state: %s => %s", oldState, newState);
+            switch (newState) {
+                case fresh:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.PREPARING, sessionState);
+                    break;
 
-    @Override
-    public void onSessionAccepted()
-    {
-        // Nothing to do here: both accept and decline actions are handled in IncomingFileOfferJingleImpl
-    }
+                case pending:
+                    // Currently not use in FileReceiveConversation
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.WAITING, sessionState);
+                    break;
+
+                case active:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, sessionState);
+                    break;
+
+                case cancelled:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, sessionState);
+                    break;
+
+                case ended:
+                    // Valid for sender only. Rely onFinished() instead.
+                    // fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, sessionState);
+                    break;
+            }
+        }
+
+        @Override
+        public void onSessionAccepted() {
+            // For sender only, nothing to do here for jingle responder;
+            // both accept and decline actions are handled in IncomingFileOfferJingleImpl
+        }
+
+        @Override
+        public void onSessionTerminated(JingleReason reason) {
+            fireStatusChangeEvent(reason);
+            removeIfoListener();
+        }
+    };
 }

@@ -210,6 +210,7 @@ public interface MediaService
      * Initializes a new <code>SrtpControl</code> instance with a specific <code>SrtpControlType</code>.
      *
      * @param srtpControlType the <code>SrtpControlType</code> of the new instance
+     * @param myZid ZRTP seed value
      * @return a new <code>SrtpControl</code> instance with the specified <code>srtpControlType</code>
      */
     SrtpControl createSrtpControl(SrtpControlType srtpControlType, final byte[] myZid);

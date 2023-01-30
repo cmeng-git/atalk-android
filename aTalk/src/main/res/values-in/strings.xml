@@ -137,9 +137,10 @@
     <string name="service_gui_CALL_ERROR">Pesta jarak jauh mengembalikan kesalahan: %1$s</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Konfirmasi dan \'Pilih Semua\' item, sebelum melanjutkan ke \'Hapus\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Jumlah catatan riwayat panggilan dihapus: %1$s</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Anda yakin ingin menghapus semua catatan panggilan sebelum tanggal tersebut: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Tidak ada catatan yang dipilih untuk dihapus</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin membersihkan semua catatan panggilan yang dipilih?</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin menghapus semua catatan panggilan yang dipilih?</string>
     <string name="service_gui_CALL_INCOMING">Panggilan masuk: %1$s</string>
     <string name="service_gui_CALL_INCOMING_STATUS">Panggilan masuk</string>
     <string name="service_gui_CALL_INITIATING_STATUS">Memulai panggilan</string>
@@ -223,7 +224,7 @@
     <string name="service_gui_CLOSE_CHAT">Tutup sesi obrolan saat ini</string>
     <string name="service_gui_CONNECTED_STATUS">Terhubung</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Menghubungkan %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Menghubungkan *</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Menghubungkan…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Gagal login koneksi akun: Nama pengguna: %1$s\n
         Nama server: %2$s\nSilakan periksa koneksi jaringan Anda ATAU hubungi administrator jaringan Anda untuk informasi lebih lanjut.</string>
     <string name="service_gui_CONNECTING_STATUS">Menghubungkan</string>
@@ -387,7 +388,7 @@
     <string name="service_gui_HISTORY_TOGGLE_ALL">Matikan riwayat untuk semua obrolan dan kontak</string>
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Hapus riwayat kontak ini</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Hapus semua riwayat obrolan kontak</string>
-    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan untuk %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan yang dipilih selama %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
@@ -1138,7 +1139,7 @@
     <string name="service_gui_PREF_SECURITY_GENERAL">Umum</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">Indikasi RTP/SAVP</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Metode indikasi RTP/SAVP</string>
-    <string name="service_gui_PREF_SECURITY_SDES">Opsi SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES">Opsi SDES</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Pilih cipher suite yang diinginkan</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">cipher suite SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Opsi ZRTP</string>
@@ -1242,7 +1243,7 @@
     <string name="service_gui_JBR_STUN_LIST">Server STUN/TURN tambahan&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Server STUN/TURN tambahan yang ditetapkan pengguna untuk digunakan</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Domain telepon</string>
-    <string name="service_gui_JBR_TELEPHONY">Telephony (percobaan)</string>
+    <string name="service_gui_JBR_TELEPHONY">Telephony VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Konfigurasikan opsi telephony&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Gunakan server Jitsi STUN (fallback)</string>
     <string name="service_gui_JBR_USE_ICE">Gunakan ICE</string>

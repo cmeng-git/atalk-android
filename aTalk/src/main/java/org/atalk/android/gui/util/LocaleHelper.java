@@ -21,6 +21,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
+import org.atalk.android.aTalkApp;
+
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -46,15 +48,15 @@ public class LocaleHelper
     }
 
     /**
-     * Set the locale as per specified language
+     * Set the locale as per specified language; must use Application instance
      *
      * @param ctx context
      * @param language the new UI language
      */
-    public static void setLocale(Context ctx, String language)
+    public static void setLocale(String language)
     {
         setLanguage(language);
-        updateResources(ctx, language);
+        updateResources(aTalkApp.getInstance(), language);
     }
 
     public static String getLanguage()

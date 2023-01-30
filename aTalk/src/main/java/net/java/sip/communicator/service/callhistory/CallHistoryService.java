@@ -173,4 +173,9 @@ public interface CallHistoryService
      * Permanently removes all locally stored call history.
      */
     void eraseLocallyStoredHistory(List<String> callUUIDs);
+
+    /**
+     * Permanently removes all locally stored call history before and on the given date
+     */
+    int eraseLocallyStoredHistoryBefore(Date endDate);
 }

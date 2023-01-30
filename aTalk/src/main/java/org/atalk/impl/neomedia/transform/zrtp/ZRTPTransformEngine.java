@@ -932,6 +932,8 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
      */
     public void handleTimeout()
     {
+        // processTimeout will wait for ~10 below events before failing
+        // sendInfo(ZrtpCodes.MessageSeverity.Severe, EnumSet.of(ZrtpCodes.SevereCodes.SevereTooMuchRetries));
         if (zrtpEngine != null)
             zrtpEngine.processTimeout();
     }

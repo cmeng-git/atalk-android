@@ -19,7 +19,6 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 
 import java.util.Date;
-import java.util.EventObject;
 
 /**
  * The <code>HttpFileTransferEvent</code> indicates the creation of a file transfer.

@@ -22,7 +22,6 @@ import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEv
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.DataObject;
 
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.avatar.AvatarManager;
@@ -112,7 +111,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     /**
      * JSONObject containing the contact details i.e. Name -> JSONArray.
      */
-    private JSONObject details;
+    private final JSONObject details;
 
     /**
      * Whether user has renamed this meta contact.
@@ -125,7 +124,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
     MetaContactImpl()
     {
         // create the uid
-        this.uid = String.valueOf(System.currentTimeMillis()) + String.valueOf(hashCode());
+        this.uid = String.valueOf(System.currentTimeMillis()) + hashCode();
         this.details = new JSONObject();
     }
 
@@ -520,6 +519,7 @@ public class MetaContactImpl extends DataObject implements MetaContact
      *
      * @return a string representation of this contact.
      */
+    @NonNull
     @Override
     public String toString()
     {

@@ -26,6 +26,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.JingleSessionListener;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.SessionState;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
@@ -42,9 +44,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 
-public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
-        implements JingleSessionImpl.JingleSessionListener, ProgressListener
-{
+public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
     /**
      * Default number of fallback to use HttpFileUpload if previously has securityError
      */
@@ -53,7 +53,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
     /**
      * Fallback to use HttpFileUpload file transfer if previously has securityError i.e. not zero
      */
-    private static Map<Contact, Integer> mSecurityErrorTimber = new HashMap<>();
+    private static final Map<Contact, Integer> mSecurityErrorTimer = new HashMap<>();
 
     private final String msgUuid;
     private final Contact mContact;
@@ -77,39 +77,29 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      * @param protocolProvider the parent protocol provider
      * @param mUuid the id that uniquely identifies this file transfer and saved DB record
      */
-    public OutgoingFileOfferJingleImpl(Contact recipient, File file, String mUuid, OutgoingFileOfferController offer,
-            XMPPConnection connection)
-    {
+    public OutgoingFileOfferJingleImpl(Contact recipient, File file, String mUuid,
+            OutgoingFileOfferController offer, XMPPConnection connection) {
         mContact = recipient;
         mFile = file;
         msgUuid = mUuid;
         mOfoJingle = offer;
         mConnection = connection;
-        offer.addProgressListener(this);
-        JingleSessionImpl.addJingleSessionListener(this);
-        // Timber.d("Add Ofo Listener");
+        offer.addProgressListener(inFileProgressListener);
+        JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
     }
 
     /**
      * Cancel the file transfer.
      */
     @Override
-    public void cancel()
-    {
+    public void cancel() {
         try {
-            onCanceled();
             mOfoJingle.cancel(mConnection);
             removeOfoListener();
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());
         }
-    }
-
-    private void onCanceled()
-    {
-        String reason = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, reason);
     }
 
     /**
@@ -119,8 +109,8 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      */
     private void removeOfoListener() {
         // Timber.d("Remove Ofo Listener");
-        mOfoJingle.removeProgressListener(this);
-        JingleSessionImpl.removeJingleSessionListener(this);
+        mOfoJingle.removeProgressListener(inFileProgressListener);
+        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
     }
 
     /**
@@ -129,8 +119,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      * @return the number of bytes already sent to the recipient.
      */
     @Override
-    public long getTransferredBytes()
-    {
+    public long getTransferredBytes() {
         return byteWrite;
     }
 
@@ -139,8 +128,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      *
      * @return OUT.
      */
-    public int getDirection()
-    {
+    public int getDirection() {
         return OUT;
     }
 
@@ -149,8 +137,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      *
      * @return the file
      */
-    public File getLocalFile()
-    {
+    public File getLocalFile() {
         return mFile;
     }
 
@@ -159,8 +146,7 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      *
      * @return the receiver.
      */
-    public Contact getContact()
-    {
+    public Contact getContact() {
         return mContact;
     }
 
@@ -169,62 +155,94 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer
      *
      * @return the id.
      */
-    public String getID()
-    {
+    public String getID() {
         return msgUuid;
     }
 
-    @Override
-    public void onStarted()
-    {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "InProgress");
-    }
-
-    @Override
-    public void progress(int rwBytes)
-    {
-        byteWrite = rwBytes;
-        // Timber.d("get TransferredBytes send: %s", byteWrite);
-    }
-
-    @Override
-    public void onFinished()
-    {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "Byte sent completed");
-    }
-
-    @Override
-    public void onError(JingleReason reason)
-    {
-        onSessionTerminated(reason);
-    }
-
-    @Override
-    public void onSessionTerminated(JingleReason reason)
-    {
-        if (JingleReason.Reason.security_error.equals(reason.asEnum())) {
-            mSecurityErrorTimber.put(mContact, defaultErrorTimer);
+    ProgressListener inFileProgressListener = new ProgressListener() {
+        @Override
+        public void onStarted() {
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "Byte sending started");
         }
-        fireStatusChangeEvent(reason);
-        removeOfoListener();
-    }
 
-    @Override
-    public void onSessionAccepted()
-    {
-        fireStatusChangeEvent(FileTransferStatusChangeEvent.PREPARING, "negotiating");
-    }
+        @Override
+        public void progress(int rwBytes) {
+            byteWrite = rwBytes;
+            fireProgressChangeEvent(System.currentTimeMillis(), rwBytes);
+        }
+
+        @Override
+        public void onFinished() {
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, "Byte sent completed");
+        }
+
+        @Override
+        public void onError(JingleReason reason) {
+            jingleSessionListener.onSessionTerminated(reason);
+        }
+    };
+
+    JingleSessionListener jingleSessionListener = new JingleSessionListener() {
+        @Override
+        public void sessionStateUpdated(SessionState oldState, SessionState newState) {
+            String sessionState = newState.toString();
+            Timber.d("Jingle session state: %s => %s", oldState, newState);
+            switch (newState) {
+                case fresh:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.PREPARING, sessionState);
+                    break;
+
+                case pending:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.WAITING, sessionState);
+                    break;
+
+                case active:
+                    // Rely onSessionAccepted() to report the new status
+                    // fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, sessionState);
+                    break;
+
+                case cancelled:
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.DECLINED, sessionState);
+                    break;
+
+                case ended:
+                    // This is triggered only on session terminate; while onFinished() is triggered
+                    // upon end of stream sending. hence superseded the formal event.
+                    // So "ended" event is not triggered, rely onFinished() instead.
+                    fireStatusChangeEvent(FileTransferStatusChangeEvent.COMPLETED, sessionState);
+                    break;
+            }
+        }
+
+        public void onSessionInit() {
+            // Waiting for remote to accept
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.WAITING, "In waiting");
+        }
+
+        @Override
+        public void onSessionAccepted() {
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.IN_PROGRESS, "Session accepted");
+        }
+
+        @Override
+        public void onSessionTerminated(JingleReason reason) {
+            if (JingleReason.Reason.security_error.equals(reason.asEnum())) {
+                mSecurityErrorTimer.put(mContact, defaultErrorTimer);
+            }
+            fireStatusChangeEvent(reason);
+            removeOfoListener();
+        }
+    };
 
     /**
      * Avoid use of Jet for file transfer if it is still within the securityErrorTimber count.
      *
      * @return true if the timer is not zero.
      */
-    public static boolean hasSecurityError(Contact contact)
-    {
-        Integer errorTimer = mSecurityErrorTimber.get(contact);
+    public static boolean hasSecurityError(Contact contact) {
+        Integer errorTimer = mSecurityErrorTimer.get(contact);
         if ((errorTimer != null) && --errorTimer > 0) {
-            mSecurityErrorTimber.put(contact, errorTimer);
+            mSecurityErrorTimer.put(contact, errorTimer);
             return true;
         }
         return false;

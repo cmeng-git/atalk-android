@@ -53,12 +53,13 @@ public class CaptchaProvider extends ExtensionElementProvider<CaptchaExtension>
         String data = "";
         String elementName;
         String namespace;
-
         boolean done = false;
+
         while (!done) {
             XmlPullParser.Event eventType = parser.next();
             elementName = parser.getName();
             namespace = parser.getNamespace();
+
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals(DataForm.ELEMENT) && namespace.equals(DataForm.NAMESPACE)) {
                     form = dataFormProvider.parse(parser);

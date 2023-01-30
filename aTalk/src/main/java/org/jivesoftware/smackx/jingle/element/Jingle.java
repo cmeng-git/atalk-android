@@ -38,8 +38,7 @@ import java.util.List;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public final class Jingle extends IQ
-{
+public final class Jingle extends IQ {
     public static final String ELEMENT = "jingle";
 
     public static final String NAMESPACE = "urn:xmpp:jingle:1";
@@ -86,8 +85,7 @@ public final class Jingle extends IQ
     private final SessionInfo sessionInfo;
 
     private Jingle(Builder builder, String sessionId, JingleAction action, FullJid initiator, FullJid responder,
-            JingleReason reason, SessionInfo sessionInfo, List<JingleContent> contents)
-    {
+            JingleReason reason, SessionInfo sessionInfo, List<JingleContent> contents) {
         super(builder, ELEMENT, NAMESPACE);
         this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");
@@ -100,8 +98,7 @@ public final class Jingle extends IQ
             // aTalk needs a modifiableList contents
             // this.contents = Collections.unmodifiableList(contents);
             this.contents = contents;
-        }
-        else {
+        } else {
             this.contents = Collections.emptyList();
         }
         setType(Type.set);
@@ -113,8 +110,7 @@ public final class Jingle extends IQ
      *
      * @return the initiator
      */
-    public FullJid getInitiator()
-    {
+    public FullJid getInitiator() {
         return initiator;
     }
 
@@ -124,8 +120,7 @@ public final class Jingle extends IQ
      *
      * @return the responder
      */
-    public FullJid getResponder()
-    {
+    public FullJid getResponder() {
         return responder;
     }
 
@@ -136,8 +131,7 @@ public final class Jingle extends IQ
      *
      * @return Returns the session ID related to the session.
      */
-    public String getSid()
-    {
+    public String getSid() {
         return sessionId;
     }
 
@@ -146,13 +140,11 @@ public final class Jingle extends IQ
      *
      * @return the action.
      */
-    public JingleAction getAction()
-    {
+    public JingleAction getAction() {
         return action;
     }
 
-    public JingleReason getReason()
-    {
+    public JingleReason getReason() {
         return reason;
     }
 
@@ -161,8 +153,7 @@ public final class Jingle extends IQ
      *
      * @return a {@link SessionInfo} if this <code>Jingle</code> contains one and <code>null</code> otherwise.
      */
-    public SessionInfo getSessionInfo()
-    {
+    public SessionInfo getSessionInfo() {
         return this.sessionInfo;
     }
 
@@ -171,8 +162,7 @@ public final class Jingle extends IQ
      *
      * @return the contents.
      */
-    public List<JingleContent> getContents()
-    {
+    public List<JingleContent> getContents() {
         return contents;
     }
 
@@ -183,8 +173,7 @@ public final class Jingle extends IQ
      * @return a JingleContent instance or <code>null</code>.
      * @throws IllegalStateException if there is more than one jingle content.
      */
-    public JingleContent getSoleContentOrThrow()
-    {
+    public JingleContent getSoleContentOrThrow() {
         if (contents.isEmpty()) {
             return null;
         }
@@ -204,8 +193,7 @@ public final class Jingle extends IQ
      * @return the child element section of the IQ XML.
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optAttribute(ATTR_INITIATOR, getInitiator());
         xml.optAttribute(ATTR_RESPONDER, getResponder());
         xml.optAttribute(ATTR_ACTION, getAction());
@@ -225,8 +213,7 @@ public final class Jingle extends IQ
      *
      * @param initiator the full JID of the initiator.
      */
-    public void setInitiator(FullJid initiator)
-    {
+    public void setInitiator(FullJid initiator) {
         this.initiator = initiator;
     }
 
@@ -237,8 +224,7 @@ public final class Jingle extends IQ
      *
      * @param content the content packet extension we'd like to add to this element's content list.
      */
-    public void addJingleContent(JingleContent content)
-    {
+    public void addJingleContent(JingleContent content) {
         if (contents == null) {
             contents = new ArrayList<>(1);
         }
@@ -255,28 +241,23 @@ public final class Jingle extends IQ
      */
     @Deprecated
     // TODO: Remove in Smack 4.6.
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return builder(StandardStanzaIdSource.DEFAULT.getNewStanzaId());
     }
 
-    public static Builder builder(XMPPConnection connection)
-    {
+    public static Builder builder(XMPPConnection connection) {
         return new Builder(connection);
     }
 
-    public static Builder builder(IqData iqData)
-    {
+    public static Builder builder(IqData iqData) {
         return new Builder(iqData);
     }
 
-    public static Builder builder(String stanzaId)
-    {
+    public static Builder builder(String stanzaId) {
         return new Builder(stanzaId);
     }
 
-    public static final class Builder extends IqBuilder<Builder, Jingle>
-    {
+    public static final class Builder extends IqBuilder<Builder, Jingle> {
         private String sid;
 
         private JingleAction action;
@@ -291,30 +272,25 @@ public final class Jingle extends IQ
 
         private List<JingleContent> contents;
 
-        Builder(IqData iqCommon)
-        {
+        Builder(IqData iqCommon) {
             super(iqCommon);
         }
 
-        Builder(XMPPConnection connection)
-        {
+        Builder(XMPPConnection connection) {
             super(connection);
         }
 
-        Builder(String stanzaId)
-        {
+        Builder(String stanzaId) {
             super(stanzaId);
         }
 
-        public Builder setSessionId(String sessionId)
-        {
+        public Builder setSessionId(String sessionId) {
             StringUtils.requireNotNullNorEmpty(sessionId, "Session ID must not be null nor empty");
             this.sid = sessionId;
             return this;
         }
 
-        public Builder setAction(JingleAction action)
-        {
+        public Builder setAction(JingleAction action) {
             this.action = action;
             return this;
         }
@@ -326,14 +302,12 @@ public final class Jingle extends IQ
          * @param initiator the full JID of the initiator.
          * @return builder instance
          */
-        public Builder setInitiator(FullJid initiator)
-        {
+        public Builder setInitiator(FullJid initiator) {
             this.initiator = initiator;
             return this;
         }
 
-        public Builder setResponder(FullJid responder)
-        {
+        public Builder setResponder(FullJid responder) {
             this.responder = responder;
             return this;
         }
@@ -344,8 +318,7 @@ public final class Jingle extends IQ
          * @param content the content packet extension we'd like to add to this element's content list.
          * @return builder instance
          */
-        public Builder addJingleContent(JingleContent content)
-        {
+        public Builder addJingleContent(JingleContent content) {
             if (contents == null) {
                 contents = new ArrayList<>(1);
             }
@@ -360,8 +333,7 @@ public final class Jingle extends IQ
          * @param reason this IQ's <code>reason</code> extension.
          * @return builder instance
          */
-        public Builder setReason(JingleReason.Reason reason)
-        {
+        public Builder setReason(JingleReason.Reason reason) {
             this.reason = new JingleReason(reason);
             return this;
         }
@@ -373,8 +345,7 @@ public final class Jingle extends IQ
          * @param reason this IQ's <code>JingleReason</code> extension.
          * @return builder instance
          */
-        public Builder setReason(JingleReason reason)
-        {
+        public Builder setReason(JingleReason reason) {
             this.reason = reason;
             return this;
         }
@@ -385,21 +356,18 @@ public final class Jingle extends IQ
          * @param si a {@link SessionInfo} that we'd like to add here.
          * @return builder instance
          */
-        public Builder setSessionInfo(SessionInfo si)
-        {
+        public Builder setSessionInfo(SessionInfo si) {
             this.sessionInfo = si;
             return this;
         }
 
         @Override
-        public Jingle build()
-        {
+        public Jingle build() {
             return new Jingle(this, sid, action, initiator, responder, reason, sessionInfo, contents);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

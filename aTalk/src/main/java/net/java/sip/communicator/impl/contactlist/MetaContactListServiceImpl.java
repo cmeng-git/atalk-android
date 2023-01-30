@@ -76,7 +76,6 @@ import timber.log.Timber;
  * An implementation of the MetaContactListService that would connect to protocol service
  * providers and build its contact list accordingly basing itself on the contact list stored by
  * the various protocol provider services and the contact list instance saved in persistent store.
- * <p>
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -2253,7 +2252,6 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
     /**
      * Upon each status notification this method finds the corresponding meta contact and updates
      * the ordering in its parent group.
-     * <p>
      *
      * @param evt the ContactPresenceStatusChangeEvent describing the status change.
      */

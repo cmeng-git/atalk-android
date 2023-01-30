@@ -25,8 +25,9 @@ public abstract class AbstractMessage implements IMessage
     private final int mEncryption;
     private final int mMimeType;
     private final boolean mRemoteOnly;
+    private final boolean isCarbon;
 
-    private int mXferStatus;
+    private final int mXferStatus;
     private int mReceiptStatus;
     private String mMessageUID;
     private String mServerMessageId;
@@ -62,7 +63,8 @@ public abstract class AbstractMessage implements IMessage
         mEncType = encType;
         mMimeType = encType & ENCODE_MIME_MASK;
         mEncryption = encType & ENCRYPTION_MASK;
-        mRemoteOnly = (encType & FLAG_MODE_MASK) != 0;
+        mRemoteOnly = IMessage.FLAG_REMOTE_ONLY == (encType & FLAG_MODE_MASK);
+        isCarbon = IMessage.FLAG_IS_CARBON == (encType & FLAG_IS_CARBON);
         mSubject = subject;
 
         setContent(content);
@@ -169,6 +171,11 @@ public abstract class AbstractMessage implements IMessage
     public boolean isRemoteOnly() {
         return mRemoteOnly;
     }
+
+    public boolean isCarbon() {
+        return isCarbon;
+    }
+
     /*
      * (non-Javadoc)
      *

@@ -301,7 +301,7 @@ public class AndroidPopup
     NotificationCompat.Builder buildNotification(int nId)
     {
         NotificationCompat.Builder builder;
-        // Do not show head-up notification when user has put the id notification in snooze
+        // Do not show heads-up notification when user has put the id notification in snooze
         if (isSnooze(nId) || !ConfigurationUtils.isHeadsUpEnable()) {
             builder = new NotificationCompat.Builder(mContext, AndroidNotifications.SILENT_GROUP);
         }
@@ -451,7 +451,7 @@ public class AndroidPopup
     }
 
     /**
-     * Check if the android head-up notification allowed
+     * Check if the android heads-up notification allowed
      *
      * @return true if the group is MESSAGE_GROUP
      */

@@ -24,7 +24,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public interface JingleContentTransportInfo extends ExtensionElement
-{
+public interface JingleContentTransportInfo extends ExtensionElement {
 
 }

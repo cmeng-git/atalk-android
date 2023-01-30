@@ -25,8 +25,7 @@ import java.util.Date;
  *
  * @author Eng Chong Meng
  */
-public class ChatSessionRecord
-{
+public class ChatSessionRecord {
     /**
      * The id that uniquely identifies the chat session record.
      */
@@ -61,6 +60,8 @@ public class ChatSessionRecord
      */
     protected Date dateCreate;
 
+    protected Date mamDate;
+
     /**
      * Creates Call Record
      *
@@ -68,14 +69,14 @@ public class ChatSessionRecord
      * @param startTime Date
      * @param endTime Date
      */
-    public ChatSessionRecord(String sessionUuid, String accountUid, EntityBareJid entityBareJid, int chatMode, int chatType, Date createTime)
-    {
+    public ChatSessionRecord(String sessionUuid, String accountUid, EntityBareJid entityBareJid, int chatMode, int chatType, Date createTime, Date mamDate) {
         this.sessionUuid = sessionUuid;
         this.accountUid = accountUid;
         this.entityBareJid = entityBareJid;
         this.chatMode = chatMode;
         this.chatType = chatType;
         this.dateCreate = createTime;
+        this.mamDate = mamDate;
     }
 
     /**
@@ -83,43 +84,39 @@ public class ChatSessionRecord
      *
      * @return sessionUuid
      */
-    public String getSessionUuid()
-    {
+    public String getSessionUuid() {
         return sessionUuid;
     }
 
-    public String getAccountUid()
-    {
+    public String getAccountUid() {
         return accountUid;
     }
 
-    public String getAccountUserId()
-    {
+    public String getAccountUserId() {
         return accountUid.split(":")[1];
     }
 
-    public String getEntityId()
-    {
+    public String getEntityId() {
         return entityBareJid.toString();
     }
 
-    public EntityBareJid getEntityBareJid()
-    {
+    public EntityBareJid getEntityBareJid() {
         return entityBareJid;
     }
 
-    public int getChatMode()
-    {
+    public int getChatMode() {
         return chatMode;
     }
 
-    public int getChatType()
-    {
+    public int getChatType() {
         return chatType;
     }
 
-    public Date getDateCreate()
-    {
+    public Date getDateCreate() {
         return dateCreate;
+    }
+
+    public Date getMamDate() {
+        return mamDate;
     }
 }

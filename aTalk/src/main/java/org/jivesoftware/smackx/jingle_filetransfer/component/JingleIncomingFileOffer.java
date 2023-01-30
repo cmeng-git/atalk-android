@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,27 +46,23 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements IncomingFileOfferController
-{
+public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements IncomingFileOfferController {
 
     private static final Logger LOGGER = Logger.getLogger(JingleIncomingFileOffer.class.getName());
     private OutputStream target;
 
-    public JingleIncomingFileOffer(JingleFileTransferChild offer)
-    {
+    public JingleIncomingFileOffer(JingleFileTransferChild offer) {
         super(new JingleFile(offer));
         mState = State.pending;
     }
 
     @Override
-    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info)
-    {
+    public Jingle handleDescriptionInfo(JingleContentDescriptionInfo info) {
         return null;
     }
 
     @Override
-    public void onBytestreamReady(BytestreamSession bytestreamSession)
-    {
+    public void onBytestreamReady(BytestreamSession bytestreamSession) {
         if (target == null) {
             throw new IllegalStateException("Target OutputStream is null");
         }
@@ -120,12 +115,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 try {
                     inputStream.close();
                     LOGGER.log(Level.INFO, "CipherInputStream closed.");
-                }
-                catch (IOException e) {
-                    // When closing omemo encrypted stream: CipherInputStream#close() throws AEADBadTagException (just ignored)
-                    if (!Objects.requireNonNull(e.getMessage()).contains("AEADBadTagException")) {
-                        LOGGER.log(Level.WARNING, "Could not close InputStream: " + e, e);
-                    }
+                } catch (IOException e) {
+                    LOGGER.log(Level.WARNING, "Could not close InputStream: " + e, e);
                 }
             }
 
@@ -143,8 +134,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             byte[] mDigest = ((DigestInputStream) inputStream).getMessageDigest().digest();
             if (!Arrays.equals(hashElement.getHash(), mDigest)) {
                 LOGGER.log(Level.WARNING, "CHECKSUM MISMATCH!");
-            }
-            else {
+            } else {
                 LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
             }
         }
@@ -154,22 +144,19 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     }
 
     @Override
-    public boolean isOffer()
-    {
+    public boolean isOffer() {
         return true;
     }
 
     @Override
-    public boolean isRequest()
-    {
+    public boolean isRequest() {
         return false;
     }
 
     @Override
     public void accept(XMPPConnection connection, File target)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException, IOException
-    {
+            SmackException.NoResponseException, IOException {
         mState = State.negotiating;
 
         if (!target.exists()) {
@@ -187,8 +174,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     @Override
     public void accept(XMPPConnection connection, OutputStream stream)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException
-    {
+            SmackException.NoResponseException {
         mState = State.negotiating;
         target = stream;
 

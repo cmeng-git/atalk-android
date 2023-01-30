@@ -296,10 +296,12 @@ public class ZrtpInfoDialog extends OSGiDialogFragment implements CallPeerSecuri
             return;
 
         String videoText = isSecure ? getString(R.string.service_gui_security_SECURE_VIDEO) : getString(R.string.service_gui_security_VIDEO_NOT_SECURED);
-        ViewUtil.setTextViewValue(viewContainer, R.id.secure_video_text, videoText);
+        runOnUiThread(() -> {
+            ViewUtil.setTextViewValue(viewContainer, R.id.secure_video_text, videoText);
 
-        ViewUtil.setImageViewIcon(viewContainer, R.id.secure_video_icon, isSecure
-                ? R.drawable.secure_video_on_light : R.drawable.secure_video_off_light);
+            ViewUtil.setImageViewIcon(viewContainer, R.id.secure_video_icon, isSecure
+                    ? R.drawable.secure_video_on_light : R.drawable.secure_video_off_light);
+        });
     }
 
     /**

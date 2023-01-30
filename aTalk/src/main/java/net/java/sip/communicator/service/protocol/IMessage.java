@@ -43,6 +43,11 @@ public interface IMessage
      */
     int FLAG_REMOTE_ONLY = 0x08;
 
+    /*
+     * The flag signifies that message is a carbon copy.
+     */
+    int FLAG_IS_CARBON = 0x04;
+
     int ENCODE_HTML = 0x01;  // text/html
     int ENCODE_PLAIN = 0x00; // text/plain (UTF-8)
 
@@ -118,6 +123,13 @@ public interface IMessage
      * @return the remoteOnly flag status.
      */
     boolean isRemoteOnly();
+
+    /**
+     * Returns true if the message is carbon message.
+     *
+     * @return the carbon status.
+     */
+    boolean isCarbon();
 
     /**
      * Get the raw/binary content of an instant message.

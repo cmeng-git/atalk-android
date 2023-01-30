@@ -13,7 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;
@@ -27,8 +30,7 @@ import java.util.EventObject;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class MessageReceivedEvent extends EventObject
-{
+public class MessageReceivedEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -37,22 +39,27 @@ public class MessageReceivedEvent extends EventObject
     /**
      * The contact that has sent this message.
      */
-    private Contact from = null;
+    private final Contact mContact;
 
     /**
      * The <code>ContactResource</code>, from which the message was sent.
      */
-    private ContactResource fromResource = null;
+    private final ContactResource mContactResource;
+
+    /**
+     * Message sender full jid
+     */
+    private final String mSender;
 
     /**
      * A timestamp indicating the exact date when the event occurred.
      */
-    private final Date timestamp;
+    private final Date mTimestamp;
 
     /**
      * The type of message event that this instance represents.
      */
-    private int eventType = -1;
+    private final int mEventType;
 
     /**
      * The ID of the message being corrected, or null if this is a new message and not a correction.
@@ -62,38 +69,28 @@ public class MessageReceivedEvent extends EventObject
     /**
      * Indicates whether this is private messaging event or not.
      */
-    private boolean isPrivateMessaging = false;
+    private final boolean isPrivateMessaging;
 
     /**
      * The room associated with the contact which sent the message.
      */
-    private ChatRoom privateMessagingContactRoom = null;
+    private final ChatRoom privateMessagingContactRoom;
 
     /**
      * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
      * received from the specified <code>from</code> contact.
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
+     * @param contact the <code>Contact</code> that has sent this message.
+     * @param contactResource the <code>ContactResource</code>, from which this message was sent.
+     * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
+     * @param correctedMessageUID The ID of the message being corrected, or null if this
+     * is a new message and not a correction.
      */
-    public MessageReceivedEvent(IMessage source, Contact from, Date timestamp)
-    {
-        this(source, from, timestamp, ChatMessage.MESSAGE_IN);
-    }
-
-    /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
-     * correction.
-     */
-    public MessageReceivedEvent(IMessage source, Contact from, String correctedMessageUID)
-    {
-        this(source, from, new Date(), ChatMessage.MESSAGE_IN);
+    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
+            String sender, Date timestamp, String correctedMessageUID) {
+        this(source, contact, contactResource, sender, timestamp, false, null);
         this.correctedMessageUID = correctedMessageUID;
     }
 
@@ -102,52 +99,19 @@ public class MessageReceivedEvent extends EventObject
      * received from the specified <code>from</code> contact.
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param timestamp the exact date when the event occurred.
-     * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
-     * correction.
-     */
-    public MessageReceivedEvent(IMessage source, Contact from, Date timestamp, String correctedMessageUID)
-    {
-        this(source, from, null, timestamp, correctedMessageUID);
-    }
-
-    /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param fromResource the <code>ContactResource</code>, from which this message was sent.
-     * @param timestamp the exact date when the event occurred.
-     * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
-     * correction.
-     */
-    public MessageReceivedEvent(IMessage source, Contact from, ContactResource fromResource, Date timestamp,
-            String correctedMessageUID)
-    {
-        this(source, from, fromResource, timestamp, ChatMessage.MESSAGE_IN);
-        this.correctedMessageUID = correctedMessageUID;
-    }
-
-    /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param fromResource the <code>ContactResource</code>, from which this message was sent
+     * @param contact the <code>Contact</code> that has sent this message.
+     * @param contactResource the <code>ContactResource</code>, from which this message was sent
+     * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param correctedMessageUID The ID of the message being corrected, or null if this is a new message and not a
      * correction.
      * @param isPrivateMessaging indicates whether the this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */
-    public MessageReceivedEvent(IMessage source, Contact from, ContactResource fromResource,
-            Date timestamp, String correctedMessageUID, boolean isPrivateMessaging,
-            ChatRoom privateContactRoom)
-    {
-        this(source, from, fromResource, timestamp, ChatMessage.MESSAGE_IN, isPrivateMessaging, privateContactRoom);
+    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
+            String sender, Date timestamp, String correctedMessageUID, boolean isPrivateMessaging,
+            ChatRoom privateContactRoom) {
+        this(source, contact, contactResource, sender, timestamp, isPrivateMessaging, privateContactRoom);
         this.correctedMessageUID = correctedMessageUID;
     }
 
@@ -156,60 +120,28 @@ public class MessageReceivedEvent extends EventObject
      * received from the specified <code>from</code> contact.
      *
      * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param timestamp the exact date when the event occurred.
-     * @param eventType the type of message event that this instance represents (one of the
-     * XXX_MESSAGE_RECEIVED static fields).
-     */
-    public MessageReceivedEvent(IMessage source, Contact from, Date timestamp, int eventType)
-    {
-        this(source, from, null, timestamp, eventType);
-    }
-
-    /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param fromResource the <code>ContactResource</code>, from which this message was sent
-     * @param timestamp the exact date when the event occurred.
-     * @param eventType the type of message event that this instance represents (one of the
-     * XXX_MESSAGE_RECEIVED static fields).
-     */
-    public MessageReceivedEvent(IMessage source, Contact from, ContactResource fromResource, Date timestamp, int eventType)
-    {
-        this(source, from, fromResource, timestamp, eventType, false, null);
-    }
-
-    /**
-     * Creates a <code>MessageReceivedEvent</code> representing reception of the <code>source</code> message
-     * received from the specified <code>from</code> contact.
-     *
-     * @param source the <code>IMessage</code> whose reception this event represents.
-     * @param from the <code>Contact</code> that has sent this message.
-     * @param fromResource the <code>ContactResource</code>, from which this message was sent
+     * @param contact the <code>Contact</code> that has sent this message.
+     * @param contactResource the <code>ContactResource</code>, from which this message was sent
+     * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
      * @param eventType the type of message event that this instance represents (one of the
      * XXX_MESSAGE_RECEIVED static fields).
      * @param isPrivateMessaging indicates whether the this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */
-    public MessageReceivedEvent(IMessage source, Contact from, ContactResource fromResource,
-            Date timestamp, int eventType, boolean isPrivateMessaging, ChatRoom privateContactRoom)
-    {
+    public MessageReceivedEvent(IMessage source, Contact contact, ContactResource contactResource,
+            String sender, Date timestamp, boolean isPrivateMessaging, ChatRoom privateContactRoom) {
         super(source);
 
-        // Convert to MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
+        // Use MESSAGE_HTTP_FILE_DOWNLOAD if it is http download link
         // source.getContent() may be null (Omemo key message contains no body content)
-        if (FileBackend.isHttpFileDnLink(source.getContent())) {
-                eventType = ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD;
-        }
+        mEventType = FileBackend.isHttpFileDnLink(source.getContent())
+                ? ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD : ChatMessage.MESSAGE_IN;
 
-        this.from = from;
-        this.fromResource = fromResource;
-        this.timestamp = timestamp;
-        this.eventType = eventType;
+        mContact = contact;
+        mContactResource = contactResource;
+        mSender = sender;
+        mTimestamp = timestamp;
         this.isPrivateMessaging = isPrivateMessaging;
         this.privateMessagingContactRoom = privateContactRoom;
     }
@@ -221,9 +153,8 @@ public class MessageReceivedEvent extends EventObject
      * @return a reference to the <code>Contact</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      */
-    public Contact getSourceContact()
-    {
-        return from;
+    public Contact getSourceContact() {
+        return mContact;
     }
 
     /**
@@ -233,9 +164,17 @@ public class MessageReceivedEvent extends EventObject
      * @return a reference to the <code>ContactResource</code> that has sent the <code>IMessage</code> whose
      * reception this event represents.
      */
-    public ContactResource getContactResource()
-    {
-        return fromResource;
+    public ContactResource getContactResource() {
+        return mContactResource;
+    }
+
+    /**
+     * Get the message sender fullJid
+     *
+     * @return sender fullJid
+     */
+    public String getSender() {
+        return mSender;
     }
 
     /**
@@ -243,8 +182,7 @@ public class MessageReceivedEvent extends EventObject
      *
      * @return the <code>IMessage</code> that triggered this event.
      */
-    public IMessage getSourceMessage()
-    {
+    public IMessage getSourceMessage() {
         return (IMessage) getSource();
     }
 
@@ -253,21 +191,18 @@ public class MessageReceivedEvent extends EventObject
      *
      * @return a Date indicating when the event occurred.
      */
-    public Date getTimestamp()
-    {
-        return timestamp;
+    public Date getTimestamp() {
+        return mTimestamp;
     }
 
     /**
      * Returns the type of message event represented by this event instance. IMessage event type is
      * one of the XXX_MESSAGE_RECEIVED fields of this class.
      *
-     * @return one of the XXX_MESSAGE_RECEIVED fields of this class indicating the type of this
-     * event.
+     * @return one of the XXX_MESSAGE_RECEIVED fields of this class indicating the type of this event.
      */
-    public int getEventType()
-    {
-        return eventType;
+    public int getEventType() {
+        return mEventType;
     }
 
     /**
@@ -277,8 +212,7 @@ public class MessageReceivedEvent extends EventObject
      * @return the correctedMessageUID The ID of the message being corrected, or null if this is a
      * new message and not a correction.
      */
-    public String getCorrectedMessageUID()
-    {
+    public String getCorrectedMessageUID() {
         return correctedMessageUID;
     }
 
@@ -289,20 +223,16 @@ public class MessageReceivedEvent extends EventObject
      * @return the chat room associated with the contact or null if no chat room is associated with
      * the contact.
      */
-    public ChatRoom getPrivateMessagingContactRoom()
-    {
+    public ChatRoom getPrivateMessagingContactRoom() {
         return privateMessagingContactRoom;
     }
 
     /**
-     * Returns <code>true</true> if this is private messaging event and
-     * <code>false</code> if not.
+     * Returns <code>true</true> if this is private messaging event and <code>false</code> if not.
      *
-     * @return <code>true</true> if this is private messaging event and
-     * <code>false</code> if not.
+     * @return <code>true</true> if this is private messaging event and <code>false</code> if not.
      */
-    public boolean isPrivateMessaging()
-    {
+    public boolean isPrivateMessaging() {
         return isPrivateMessaging;
     }
 

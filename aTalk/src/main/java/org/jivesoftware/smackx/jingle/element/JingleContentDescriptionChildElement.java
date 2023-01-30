@@ -24,7 +24,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public interface JingleContentDescriptionChildElement extends ExtensionElement
-{
+public interface JingleContentDescriptionChildElement extends ExtensionElement {
 
 }

@@ -5,6 +5,8 @@
  */
 package org.atalk.android.gui.settings;
 
+import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredProviders;
+
 import android.content.*;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.*;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.systray.PopupMessageHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.*;
@@ -26,7 +30,9 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.*;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
+
 import java.awt.Dimension;
+
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.*;
@@ -34,6 +40,8 @@ import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.impl.neomedia.device.util.CameraUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -51,8 +59,7 @@ import timber.log.Timber;
  * @author MilanKral
  */
 public class SettingsFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     // PreferenceScreen and PreferenceCategories
     private static final String P_KEY_MEDIA_CALL = aTalkApp.getResString(R.string.pref_cat_settings_media_call);
     private static final String P_KEY_CALL = aTalkApp.getResString(R.string.pref_cat_settings_call);
@@ -110,15 +117,13 @@ public class SettingsFragment extends OSGiPreferenceFragment
     private final SummaryMapper summaryMapper = new SummaryMapper();
 
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mActivity = (AppCompatActivity) context;
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
         super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -128,8 +133,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         // FFR: v2.1.5 NPE; use UtilActivator instead of AndroidGUIActivator which was initialized much later
@@ -155,8 +159,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
             MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
             if (mediaServiceImpl != null) {
                 mDeviceConfig = mediaServiceImpl.getDeviceConfiguration();
-            }
-            else {
+            } else {
                 // Do not proceed if mediaServiceImpl == null; else system crashes on NPE
                 disableMediaOptions();
                 return;
@@ -167,8 +170,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
 
             // Video section
             initVideoPreferences();
-        }
-        else {
+        } else {
             disableMediaOptions();
         }
     }
@@ -177,8 +179,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
         super.onStop();
@@ -196,16 +197,14 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initialize web default access page
      */
-    private void initWebPagePreference()
-    {
+    private void initWebPagePreference() {
         // Updates displayed history size summary.
         EditTextPreference webPagePref = findPreference(P_KEY_WEB_PAGE);
         webPagePref.setText(ConfigurationUtils.getWebPage());
         updateWebPageSummary();
     }
 
-    private void updateWebPageSummary()
-    {
+    private void updateWebPageSummary() {
         EditTextPreference webPagePref = findPreference(P_KEY_WEB_PAGE);
         webPagePref.setSummary(ConfigurationUtils.getWebPage());
     }
@@ -213,8 +212,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initialize interface Locale
      */
-    protected void initLocale()
-    {
+    protected void initLocale() {
         // Immutable empty {@link CharSequence} array
         CharSequence[] EMPTY_CHAR_SEQUENCE_ARRAY = new CharSequence[0];
         final ListPreference pLocale = findPreference(P_KEY_LOCALE);
@@ -251,11 +249,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
             // Need to destroy and restart to set new language if there is a change
             if (!language.equals(value) && (mActivity != null)) {
                 // All language setting changes must call via aTalkApp so its contextWrapper is updated
-                aTalkApp.setLocale(language1);
-
-                // must get aTalk to restart onResume to show correct UI for preference menu
-                aTalk.setPrefChange(true);
-
+                LocaleHelper.setLocale(language1);
                 // do destroy activity last
                 mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
                 mActivity.finish();
@@ -267,8 +261,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initialize interface Theme
      */
-    protected void initTheme()
-    {
+    protected void initTheme() {
         final ListPreference pTheme = findPreference(P_KEY_THEME);
         String nTheme = ThemeHelper.isAppTheme(Theme.LIGHT) ? "light" : "dark";
         pTheme.setValue(nTheme);
@@ -286,10 +279,6 @@ public class SettingsFragment extends OSGiPreferenceFragment
             // Need to destroy and restart to set new Theme if there is a change
             if (!nTheme.equals(value) && (mActivity != null)) {
                 ThemeHelper.setTheme(mActivity, vTheme);
-
-                // must get aTalk to restart onResume to show new Theme
-                aTalk.setPrefChange(true);
-
                 mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
                 mActivity.finish();
             }
@@ -300,8 +289,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes messages section
      */
-    private void initMessagesPreferences()
-    {
+    private void initMessagesPreferences() {
         // mhs may be null if user access settings before the mhs service is properly setup
         MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
         boolean isHistoryLoggingEnabled = (mhs != null) && mhs.isHistoryLoggingEnabled();
@@ -333,8 +321,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Updates displayed history size summary.
      */
-    private void updateHistorySizeSummary()
-    {
+    private void updateHistorySizeSummary() {
         EditTextPreference historySizePref = findPreference(P_KEY_HISTORY_SIZE);
         historySizePref.setSummary(getString(R.string.service_gui_settings_CHAT_HISTORY_SUMMARY,
                 ConfigurationUtils.getChatHistorySize()));
@@ -343,8 +330,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initialize auto accept file size
      */
-    protected void initAutoAcceptFileSize()
-    {
+    protected void initAutoAcceptFileSize() {
         final ListPreference fileSizeList = findPreference(P_KEY_AUTO_ACCEPT_FILE);
         fileSizeList.setEntries(R.array.filesizes);
         fileSizeList.setEntryValues(R.array.filesizes_values);
@@ -366,8 +352,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes notifications section
      */
-    private void initNotificationPreferences()
-    {
+    private void initNotificationPreferences() {
         // Remove for android play store release
         // GeoPreferenceUtil.setCheckboxVal(preferenceScreen, P_KEY_AUTO_UPDATE_CHECK_ENABLE,
         //		cfg.getBoolean(AUTO_UPDATE_CHECK_ENABLE, true));
@@ -410,8 +395,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     }
 
     // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
-    private void disableMediaOptions()
-    {
+    private void disableMediaOptions() {
         PreferenceCategory myPrefCat = findPreference(P_KEY_MEDIA_CALL);
         if (myPrefCat != null)
             mPreferenceScreen.removePreference(myPrefCat);
@@ -430,8 +414,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes call section
      */
-    private void initCallPreferences()
-    {
+    private void initCallPreferences() {
         PreferenceUtil.setCheckboxVal(mPreferenceScreen, P_KEY_NORMALIZE_PNUMBER,
                 ConfigurationUtils.isNormalizePhoneNumber());
         PreferenceUtil.setCheckboxVal(mPreferenceScreen, P_KEY_ACCEPT_ALPHA_PNUMBERS,
@@ -441,8 +424,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes video preferences part.
      */
-    private void initVideoPreferences()
-    {
+    private void initVideoPreferences() {
         AndroidCamera[] cameras = AndroidCamera.getCameras();
         String[] names = new String[cameras.length];
         String[] values = new String[cameras.length];
@@ -483,10 +465,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * Converts resolution to string.
      *
      * @param d resolution as <code>Dimension</code>
+     *
      * @return resolution string.
      */
-    private static String resToStr(Dimension d)
-    {
+    private static String resToStr(Dimension d) {
         return ((int) d.getWidth()) + "x" + ((int) d.getHeight());
     }
 
@@ -494,11 +476,11 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * Selects resolution from supported resolutions list for given string.
      *
      * @param resStr resolution string created with method {@link #resToStr(Dimension)}.
+     *
      * @return resolution <code>Dimension</code> for given string representation created with method
      * {@link #resToStr(Dimension)}
      */
-    private static Dimension resolutionForStr(String resStr)
-    {
+    private static Dimension resolutionForStr(String resStr) {
         Dimension[] resolutions = AndroidCameraSystem.SUPPORTED_SIZES;
         for (Dimension resolution : resolutions) {
             if (resToStr(resolution).equals(resStr))
@@ -512,10 +494,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * Retrieves currently registered <code>PopupMessageHandler</code> for given <code>clazz</code> name.
      *
      * @param clazz the class name of <code>PopupMessageHandler</code> implementation.
+     *
      * @return implementation of <code>PopupMessageHandler</code> for given class name registered in OSGI context.
      */
-    private PopupMessageHandler getHandlerForClassName(String clazz)
-    {
+    private PopupMessageHandler getHandlerForClassName(String clazz) {
         BundleContext bc = AndroidGUIActivator.bundleContext;
         ServiceReference[] handlerRefs = ServiceUtils.getServiceReferences(bc, PopupMessageHandler.class);
 
@@ -530,46 +512,39 @@ public class SettingsFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         if (key.equals(P_KEY_LOG_CHAT_HISTORY)) {
             MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
-            mhs.setHistoryLoggingEnabled(shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY,
-                    mhs.isHistoryLoggingEnabled()));
-        }
-        else if (key.equals(P_KEY_SHOW_HISTORY)) {
+            boolean enable = shPreferences.getBoolean(P_KEY_LOG_CHAT_HISTORY,
+                    mhs.isHistoryLoggingEnabled());
+            mhs.setHistoryLoggingEnabled(enable);
+            enableMam(enable);
+        } else if (key.equals(P_KEY_SHOW_HISTORY)) {
             ConfigurationUtils.setHistoryShown(shPreferences.getBoolean(P_KEY_SHOW_HISTORY,
                     ConfigurationUtils.isHistoryShown()));
-        }
-        else if (key.equals(P_KEY_HISTORY_SIZE)) {
+        } else if (key.equals(P_KEY_HISTORY_SIZE)) {
             String intStr = shPreferences.getString(P_KEY_HISTORY_SIZE,
                     Integer.toString(ConfigurationUtils.getChatHistorySize()));
             assert intStr != null;
             ConfigurationUtils.setChatHistorySize(Integer.parseInt(intStr));
             updateHistorySizeSummary();
-        }
-        else if (key.equals(P_KEY_WEB_PAGE)) {
+        } else if (key.equals(P_KEY_WEB_PAGE)) {
             String wpStr = shPreferences.getString(P_KEY_WEB_PAGE, ConfigurationUtils.getWebPage());
             ConfigurationUtils.setWebPage(wpStr);
             updateWebPageSummary();
-        }
-        else if (key.equals(P_KEY_AUTO_START)) {
+        } else if (key.equals(P_KEY_AUTO_START)) {
             ConfigurationUtils.setAutoStart(shPreferences.getBoolean(
                     P_KEY_AUTO_START, ConfigurationUtils.isAutoStartEnable()));
-        }
-        else if (key.equals(P_KEY_MESSAGE_DELIVERY_RECEIPT)) {
+        } else if (key.equals(P_KEY_MESSAGE_DELIVERY_RECEIPT)) {
             ConfigurationUtils.setSendMessageDeliveryReceipt(shPreferences.getBoolean(
                     P_KEY_MESSAGE_DELIVERY_RECEIPT, ConfigurationUtils.isSendMessageDeliveryReceipt()));
-        }
-        else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
+        } else if (key.equals(P_KEY_CHAT_STATE_NOTIFICATIONS)) {
             ConfigurationUtils.setSendChatStateNotifications(shPreferences.getBoolean(
                     P_KEY_CHAT_STATE_NOTIFICATIONS, ConfigurationUtils.isSendChatStateNotifications()));
-        }
-        else if (key.equals(P_KEY_XFER_THUMBNAIL_PREVIEW)) {
+        } else if (key.equals(P_KEY_XFER_THUMBNAIL_PREVIEW)) {
             ConfigurationUtils.setSendThumbnail(shPreferences.getBoolean(
                     P_KEY_XFER_THUMBNAIL_PREVIEW, ConfigurationUtils.isSendThumbnail()));
-        }
-        else if (key.equals(P_KEY_PRESENCE_SUBSCRIBE_MODE)) {
+        } else if (key.equals(P_KEY_PRESENCE_SUBSCRIBE_MODE)) {
             ConfigurationUtils.setPresenceSubscribeAuto(shPreferences.getBoolean(
                     P_KEY_PRESENCE_SUBSCRIBE_MODE, ConfigurationUtils.isPresenceSubscribeAuto()));
         }
@@ -602,19 +577,16 @@ public class SettingsFragment extends OSGiPreferenceFragment
                 // "Auto" selected. Delete the user's preference and select the best available handler.
                 ConfigurationUtils.setPopupHandlerConfig(null);
                 systray.selectBestPopupMessageHandler();
-            }
-            else {
+            } else {
                 ConfigurationUtils.setPopupHandlerConfig(handler);
                 PopupMessageHandler handlerInstance = getHandlerForClassName(handler);
                 if (handlerInstance == null) {
                     Timber.w("No handler found for name: %s", handler);
-                }
-                else {
+                } else {
                     systray.setActivePopupMessageHandler(handlerInstance);
                 }
             }
-        }
-        else if (key.equals(P_KEY_HEADS_UP_ENABLE)) {
+        } else if (key.equals(P_KEY_HEADS_UP_ENABLE)) {
             ConfigurationUtils.setHeadsUp(shPreferences.getBoolean(P_KEY_HEADS_UP_ENABLE, true));
         }
         // Normalize phone number
@@ -631,6 +603,20 @@ public class SettingsFragment extends OSGiPreferenceFragment
             String resStr = shPreferences.getString(P_KEY_VIDEO_RES, null);
             Dimension videoRes = resolutionForStr(resStr);
             mDeviceConfig.setVideoSize(videoRes);
+        }
+    }
+
+    /**
+     * Enable or disable MAM service according per the P_KEY_LOG_CHAT_HISTORY new setting.
+     *
+     * @param enable mam state to be updated with.
+     */
+    private void enableMam(boolean enable) {
+        Collection<ProtocolProviderService> providers = getRegisteredProviders();
+        for (ProtocolProviderService pps : providers) {
+            if (pps.isRegistered()) {
+                ProtocolProviderServiceJabberImpl.enableMam(pps.getConnection(), enable);
+            }
         }
     }
 }

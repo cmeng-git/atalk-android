@@ -568,7 +568,6 @@ public class ConfigurationUtils
         String sendThumbNail = mConfigService.getString(pSendThumbnail);
         if (StringUtils.isNotEmpty(sendThumbNail)) {
             isSendThumbnail = Boolean.parseBoolean(sendThumbNail);
-            FileTransferConversation.FT_THUMBNAIL_ENABLE = isSendThumbnail;
         }
 
         // Load the "isPresenceSubscribeMode" property.
@@ -1056,7 +1055,6 @@ public class ConfigurationUtils
     {
         isSendThumbnail = sendThumbnail;
         mConfigService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
-        FileTransferConversation.FT_THUMBNAIL_ENABLE = sendThumbnail;
     }
 
     /**

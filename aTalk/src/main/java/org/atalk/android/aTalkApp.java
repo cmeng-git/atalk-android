@@ -70,8 +70,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class aTalkApp extends Application implements LifecycleEventObserver
-{
+public class aTalkApp extends Application implements LifecycleEventObserver {
     /**
      * Name of config property that indicates whether foreground icon should be displayed.
      */
@@ -121,8 +120,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      * {@inheritDoc}
      */
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         TimberLogImpl.init();
 
         // This helps to prevent WebView resets UI back to system default.
@@ -144,13 +142,10 @@ public class aTalkApp extends Application implements LifecycleEventObserver
 
         // Trigger the aTalk database upgrade or creation if none exist
         DatabaseBackend.getInstance(this);
-        // MigrationTo5.updateOmemoDevicesTable(DatabaseBackend.getInstance(this).getWritableDatabase());
+        // MigrationTo6.updateChatSessionTable(DatabaseBackend.getInstance(this).getWritableDatabase());
 
         // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
         mInstance = this;
-        String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
-        LocaleHelper.setLocale(mInstance, language);
-
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         AndroidThreeTen.init(this);
@@ -165,8 +160,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return the size of the main application display window.
      */
-    public static Dimension getDisplaySize()
-    {
+    public static Dimension getDisplaySize() {
         // Get android device screen display size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             Point size = new Point();
@@ -181,8 +175,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         isPortrait = (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT);
     }
@@ -193,16 +186,14 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      * is executed when doing so.
      */
     @Override
-    public void onTerminate()
-    {
+    public void onTerminate() {
         mInstance = null;
         super.onTerminate();
     }
 
     // ========= LifecycleEventObserver implementations ======= //
     @Override
-    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event)
-    {
+    public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         if (Lifecycle.Event.ON_START == event) {
             isForeground = true;
             Timber.d("APP FOREGROUNDED");
@@ -216,8 +207,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
     /**
      * Returns true if the device is locked or screen turned off (in case password not set)
      */
-    public static boolean isDeviceLocked()
-    {
+    public static boolean isDeviceLocked() {
         boolean isLocked;
 
         // First we check the locked state
@@ -238,28 +228,16 @@ public class aTalkApp extends Application implements LifecycleEventObserver
     }
 
     /**
-     * All language setting changes must call via this so aTalkApp contextWrapper is updated
-     *
-     * @param language locale for the aTalkApp
-     */
-    public static void setLocale(String language)
-    {
-        LocaleHelper.setLocale(mInstance, language);
-    }
-
-    /**
      * Shutdowns the app by stopping <code>OSGiService</code> and broadcasting {@link #ACTION_EXIT}.
      */
-    public static void shutdownApplication()
-    {
+    public static void shutdownApplication() {
         mInstance.doShutdownApplication();
     }
 
     /**
      * Shutdowns the OSGI service and sends the EXIT action broadcast.
      */
-    private void doShutdownApplication()
-    {
+    private void doShutdownApplication() {
         // Shutdown the OSGi service
         stopService(new Intent(this, OSGiService.class));
         // Broadcast the exit action
@@ -273,8 +251,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return global bitmap cache of the application.
      */
-    public static DrawableCache getImageCache()
-    {
+    public static DrawableCache getImageCache() {
         return mInstance.drawableCache;
     }
 
@@ -283,8 +260,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>AudioManager</code> service instance.
      */
-    public static AudioManager getAudioManager()
-    {
+    public static AudioManager getAudioManager() {
         return (AudioManager) getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
     }
 
@@ -293,8 +269,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>CameraManager</code> service instance.
      */
-    public static CameraManager getCameraManager()
-    {
+    public static CameraManager getCameraManager() {
         return (CameraManager) getGlobalContext().getSystemService(Context.CAMERA_SERVICE);
     }
 
@@ -303,8 +278,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>PowerManager</code> service instance.
      */
-    public static PowerManager getPowerManager()
-    {
+    public static PowerManager getPowerManager() {
         return (PowerManager) getGlobalContext().getSystemService(Context.POWER_SERVICE);
     }
 
@@ -313,8 +287,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>SensorManager</code> service instance.
      */
-    public static SensorManager getSensorManager()
-    {
+    public static SensorManager getSensorManager() {
         return (SensorManager) getGlobalContext().getSystemService(Context.SENSOR_SERVICE);
     }
 
@@ -323,8 +296,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>NotificationManager</code> service instance.
      */
-    public static NotificationManager getNotificationManager()
-    {
+    public static NotificationManager getNotificationManager() {
         return (NotificationManager) getGlobalContext().getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -333,8 +305,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>DownloadManager</code> service instance.
      */
-    public static DownloadManager getDownloadManager()
-    {
+    public static DownloadManager getDownloadManager() {
         return (DownloadManager) getGlobalContext().getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
@@ -343,8 +314,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return aTalkApp mInstance
      */
-    public static aTalkApp getInstance()
-    {
+    public static aTalkApp getInstance() {
         return mInstance;
     }
 
@@ -353,8 +323,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return Returns global application <code>Context</code>.
      */
-    public static Context getGlobalContext()
-    {
+    public static Context getGlobalContext() {
         return mInstance.getApplicationContext();
     }
 
@@ -363,8 +332,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return application <code>Resources</code> object.
      */
-    public static Resources getAppResources()
-    {
+    public static Resources getAppResources() {
         return mInstance.getResources();
     }
 
@@ -374,10 +342,10 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @param id the string identifier.
      * @param arg the format arguments that will be used for substitution.
+     *
      * @return Android string resource for given <code>id</code> and format arguments.
      */
-    public static String getResString(int id, Object... arg)
-    {
+    public static String getResString(int id, Object... arg) {
         return mInstance.getString(id, arg);
     }
 
@@ -385,10 +353,10 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      * Returns Android string resource for given <code>id</code> and format arguments that will be used for substitution.
      *
      * @param aString the string identifier.
+     *
      * @return Android string resource for given <code>id</code> and format arguments.
      */
-    public static String getResStringByName(String aString)
-    {
+    public static String getResStringByName(String aString) {
         String packageName = mInstance.getPackageName();
         int resId = mInstance.getResources().getIdentifier(aString, "string", packageName);
 
@@ -403,8 +371,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @param message the string message to display.
      */
-    public static void showToastMessage(final String message)
-    {
+    public static void showToastMessage(final String message) {
         new Handler(Looper.getMainLooper()).post(() -> {
             if (toast != null && toast.getView() != null) {
                 toast.cancel();
@@ -414,13 +381,11 @@ public class aTalkApp extends Application implements LifecycleEventObserver
         });
     }
 
-    public static void showToastMessage(int id, Object... arg)
-    {
+    public static void showToastMessage(int id, Object... arg) {
         showToastMessage(mInstance.getString(id, arg));
     }
 
-    public static void showGenericError(final int id, final Object... arg)
-    {
+    public static void showGenericError(final int id, final Object... arg) {
         new Handler(Looper.getMainLooper()).post(() -> {
             String msg = mInstance.getString(id, arg);
             DialogActivity.showDialog(mInstance, mInstance.getString(R.string.service_gui_ERROR), msg);
@@ -432,8 +397,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return Returns home <code>Activity</code> class.
      */
-    public static Class<?> getHomeScreenActivityClass()
-    {
+    public static Class<?> getHomeScreenActivityClass() {
         BundleContext osgiContext = AndroidGUIActivator.bundleContext;
         if (osgiContext == null) {
             // If OSGI has not started show splash screen as home
@@ -462,8 +426,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return the home <code>Activity</code> <code>Intent</code>.
      */
-    public static Intent getHomeIntent()
-    {
+    public static Intent getHomeIntent() {
         // Home is singleTask anyway, but this way it can be started from non Activity context.
         Intent homeIntent = new Intent(mInstance, getHomeScreenActivityClass());
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -475,8 +438,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return new pending <code>Intent</code> to be started, when aTalk icon is clicked.
      */
-    public static PendingIntent getaTalkIconIntent()
-    {
+    public static PendingIntent getaTalkIconIntent() {
         Intent intent = ChatSessionManager.getLastChatIntent();
         if (intent == null) {
             intent = getHomeIntent();
@@ -490,8 +452,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>ConfigurationService</code> instance.
      */
-    public static ConfigurationService getConfig()
-    {
+    public static ConfigurationService getConfig() {
         return ServiceUtils.getService(AndroidGUIActivator.bundleContext, ConfigurationService.class);
     }
 
@@ -500,8 +461,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>true</code> if aTalk notification icon should be displayed.
      */
-    public static boolean isIconEnabled()
-    {
+    public static boolean isIconEnabled() {
         return (getConfig() == null) || getConfig().getBoolean(SHOW_ICON_PROPERTY_NAME, false);
     }
 
@@ -510,8 +470,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @param a the current activity to set
      */
-    public static void setCurrentActivity(AppCompatActivity a)
-    {
+    public static void setCurrentActivity(AppCompatActivity a) {
         synchronized (currentActivityMonitor) {
             // Timber.i("Current activity set to %s", a);
             currentActivity = a;
@@ -532,8 +491,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return monitor object that will be notified each time current <code>Activity</code> changes.
      */
-    static public Object getCurrentActivityMonitor()
-    {
+    static public Object getCurrentActivityMonitor() {
         return currentActivityMonitor;
     }
 
@@ -542,8 +500,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return the current activity
      */
-    public static AppCompatActivity getCurrentActivity()
-    {
+    public static AppCompatActivity getCurrentActivity() {
         return currentActivity;
     }
 
@@ -552,8 +509,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return the time elapsed since last atalk <code>Activity</code> was open in milliseconds.
      */
-    public static long getLastGuiActivityInterval()
-    {
+    public static long getLastGuiActivityInterval() {
         // GUI is currently active
         if (lastGuiActivity == -1) {
             return 0;
@@ -566,16 +522,14 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      *
      * @return <code>true</code> if the home <code>Activity</code> is currently active.
      */
-    public static boolean isHomeActivityActive()
-    {
+    public static boolean isHomeActivityActive() {
         return currentActivity != null && currentActivity.getClass().equals(getHomeScreenActivityClass());
     }
 
     /**
      * Displays the send logs dialog.
      */
-    public static void showSendLogsDialog()
-    {
+    public static void showSendLogsDialog() {
         LogUploadService logUpload = ServiceUtils.getService(AndroidGUIActivator.bundleContext, LogUploadService.class);
         String defaultEmail = getConfig().getString("org.atalk.android.LOG_REPORT_EMAIL");
 
@@ -591,8 +545,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver
      * showing any dialog. Dialog should only be shown while <code>NOT in LaunchActivity</code> etc
      * Otherwise the dialog will be obscured by these activities; max wait = 5 waits of 1000ms each
      */
-    public static Activity waitForFocus()
-    {
+    public static Activity waitForFocus() {
         // if (AndroidGUIActivator.bundleContext == null) { #false on first application installation
         synchronized (currentActivityMonitor) {
             int wait = 6; // 5 waits each lasting max of 1000ms

@@ -137,7 +137,8 @@
     <string name="service_gui_CALL_ERROR">A parte remota retorna um erro: %1$s</string>
     <string name="service_gui_CALL_FAILED">Ligação falhou</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de ligações</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Confirme e \'Selecione todos\' itens, antes de avançar para \'Excluir\'</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Número de registros do histórico de chamadas excluídos: %1$s</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Tem certeza de que deseja limpar todos os registros de chamadas antes da data: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Nenhum registro selecionado para exclusão</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Tem certeza de que quer excluir todos os registros de ligações selecionadas?</string>
     <string name="service_gui_CALL_INCOMING">Ligação: %1$s</string>
@@ -223,7 +224,7 @@
     <string name="service_gui_CLOSE_CHAT">Fechar sessão actual de conversa</string>
     <string name="service_gui_CONNECTED_STATUS">Conectado</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Conectando %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Conectando*</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Conectando…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Falha ao fazer login na conta: Nome de usuário: %1$s\n
         Nome do servidor: %2$s\nPor favor, verifique a sua conexão de internet OU contacte administrador da sua rede para mais informações.</string>
     <string name="service_gui_CONNECTING_STATUS">Conectando</string>
@@ -387,7 +388,7 @@
     <string name="service_gui_HISTORY_TOGGLE_ALL">Desative o histórico de todos as conversas e contatos</string>
     <string name="service_gui_HISTORY_ERASE_PER_CONTACT">Excluir este histórico de contatos</string>
     <string name="service_gui_HISTORY_ERASE_ALL">Excluir histórico de conversa para todos os contatos</string>
-    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Tem certeza de que quer excluir todas as mensagens para %1$s?</string>
+    <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Tem certeza de que deseja limpar todas as mensagens selecionadas para %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Tem certeza de que quer excluir todas as mensagens de todos?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Falha ao excluir mensagens armazenadas localmente para %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Excluir mídia do meu aparelho</string>
@@ -1145,7 +1146,7 @@
     <string name="service_gui_PREF_SECURITY_GENERAL">Geral</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">Indicação RTP/SAVP</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">Método de indicação RTP/SAVP</string>
-    <string name="service_gui_PREF_SECURITY_SDES">Opções SDes</string>
+    <string name="service_gui_PREF_SECURITY_SDES">Opções SDES</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Selecione desejado conjunto de codificação</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Conjunto de codificação de SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Opções ZRTP</string>
@@ -1249,7 +1250,7 @@
     <string name="service_gui_JBR_STUN_LIST">Servidores adicionais de STUN/TURN&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Servidores adicionais de STUN/TURN definidos pelo usuário para usar</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Domínio da telefonia</string>
-    <string name="service_gui_JBR_TELEPHONY">Telefonia (experimental)</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonia VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Configurar as opções de telefonia&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Usar servidor Jitsi STUN (recurso alternativo)</string>
     <string name="service_gui_JBR_USE_ICE">Usar ICE</string>

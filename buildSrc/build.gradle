@@ -101,6 +101,9 @@ jarJarDeps.dependsOn(
             destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-extensions-jarjar/${smackVersion}")
             destinationName "smack-extensions-jarjar-${smackVersion}.jar"
 
+            // Do not send <close/> on an already closed InBandBytestream session
+            classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
+
             // To take care of the Inet6Address <zone_id> problem
             classDelete 'org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream**'
 

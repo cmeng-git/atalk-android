@@ -191,13 +191,13 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
         ProtocolProviderService protocolProvider;
         switch (eventType) {
             case MessageDelivered:
-                protocolProvider = ((MessageDeliveredEvent) evt).getDestinationContact().getProtocolProvider();
+                protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
                 break;
             case MessageDeliveryFailed:
                 protocolProvider = ((MessageDeliveryFailedEvent) evt).getDestinationContact().getProtocolProvider();
                 break;
             case MessageDeliveryPending:
-                protocolProvider = ((MessageDeliveredEvent) evt).getDestinationContact().getProtocolProvider();
+                protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
                 break;
             case MessageReceived:
                 protocolProvider = ((MessageReceivedEvent) evt).getSourceContact().getProtocolProvider();

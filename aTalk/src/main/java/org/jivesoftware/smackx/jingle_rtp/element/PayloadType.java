@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
+import javax.xml.namespace.QName;
+
 /**
  * Represents the <code>payload-type</code> elements described.
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
@@ -32,6 +34,8 @@ public class PayloadType extends AbstractXmlElement
      * The name of the "payload-type" element.
      */
     public static final String ELEMENT = "payload-type";
+
+    public static final QName QNAME = new QName(RtpDescription.NAMESPACE, ELEMENT);
 
     /**
      * The name of the <code>channels</code> <code>payload-type</code> argument.

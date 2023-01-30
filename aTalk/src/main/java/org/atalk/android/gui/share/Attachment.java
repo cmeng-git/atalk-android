@@ -43,7 +43,6 @@ import timber.log.Timber;
 
 public class Attachment implements Parcelable
 {
-
     Attachment(Parcel in)
     {
         uri = in.readParcelable(Uri.class.getClassLoader());

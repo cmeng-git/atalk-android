@@ -27,8 +27,8 @@ import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
 import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 
-public class JingleContentProviderManager
-{
+public class JingleContentProviderManager {
+
     private static final Map<String, JingleContentDescriptionProvider<?>> jingleContentDescriptionProviders = new ConcurrentHashMap<>();
 
     private static final Map<String, JingleContentTransportProvider<?>> jingleContentTransportProviders = new ConcurrentHashMap<>();
@@ -44,95 +44,77 @@ public class JingleContentProviderManager
     private static final Map<String, JingleSecurityManager> securityManagers = new WeakHashMap<>();
 
     public static JingleContentDescriptionProvider<?> addJingleContentDescriptionProvider(String namespace,
-            JingleContentDescriptionProvider<?> provider)
-    {
+                    JingleContentDescriptionProvider<?> provider) {
         return jingleContentDescriptionProviders.put(namespace, provider);
     }
 
-    public static JingleContentDescriptionProvider<?> getJingleContentDescriptionProvider(String namespace)
-    {
+    public static JingleContentDescriptionProvider<?> getJingleContentDescriptionProvider(String namespace) {
         return jingleContentDescriptionProviders.get(namespace);
     }
 
     public static JingleContentTransportProvider<?> addJingleContentTransportProvider(String namespace,
-            JingleContentTransportProvider<?> provider)
-    {
+                    JingleContentTransportProvider<?> provider) {
         return jingleContentTransportProviders.put(namespace, provider);
     }
 
-    public static JingleContentTransportProvider<?> getJingleContentTransportProvider(String namespace)
-    {
+    public static JingleContentTransportProvider<?> getJingleContentTransportProvider(String namespace) {
         return jingleContentTransportProviders.get(namespace);
     }
 
     public static JingleContentSecurityProvider<?> addJingleContentSecurityProvider(String namespace,
-            JingleContentSecurityProvider<?> provider)
-    {
+            JingleContentSecurityProvider<?> provider) {
         return jingleContentSecurityProviders.put(namespace, provider);
     }
 
-    public static JingleContentSecurityProvider<?> getJingleContentSecurityProvider(String namespace)
-    {
+    public static JingleContentSecurityProvider<?> getJingleContentSecurityProvider(String namespace) {
         return jingleContentSecurityProviders.get(namespace);
     }
 
-    public static void addJingleDescriptionAdapter(JingleDescriptionAdapter<?> adapter)
-    {
+    public static void addJingleDescriptionAdapter(JingleDescriptionAdapter<?> adapter) {
         descriptionAdapters.put(adapter.getNamespace(), adapter);
     }
 
-    public static JingleDescriptionAdapter<?> getJingleDescriptionAdapter(String namespace)
-    {
+    public static JingleDescriptionAdapter<?> getJingleDescriptionAdapter(String namespace) {
         return descriptionAdapters.get(namespace);
     }
 
-    public static void addJingleTransportAdapter(JingleTransportAdapter<?> adapter)
-    {
+    public static void addJingleTransportAdapter(JingleTransportAdapter<?> adapter) {
         transportAdapters.put(adapter.getNamespace(), adapter);
     }
 
-    public static JingleTransportAdapter<?> getJingleTransportAdapter(String namespace)
-    {
+    public static JingleTransportAdapter<?> getJingleTransportAdapter(String namespace) {
         return transportAdapters.get(namespace);
     }
 
-    public static void addJingleSecurityAdapter(JingleSecurityAdapter<?> adapter)
-    {
+    public static void addJingleSecurityAdapter(JingleSecurityAdapter<?> adapter) {
         securityAdapters.put(adapter.getNamespace(), adapter);
     }
 
-    public static JingleSecurityAdapter<?> getJingleSecurityAdapter(String namespace)
-    {
+    public static JingleSecurityAdapter<?> getJingleSecurityAdapter(String namespace) {
         return securityAdapters.get(namespace);
     }
 
-    public static void addJingleDescriptionManager(JingleDescriptionManager manager)
-    {
+    public static void addJingleDescriptionManager(JingleDescriptionManager manager) {
         descriptionManagers.put(manager.getNamespace(), manager);
     }
 
-    public static JingleDescriptionManager getDescriptionManager(String namespace)
-    {
+    public static JingleDescriptionManager getDescriptionManager(String namespace) {
         return descriptionManagers.get(namespace);
     }
 
-    public static void addJingleTransportManager(JingleTransportManager<?> manager)
-    {
+    public static void addJingleTransportManager(JingleTransportManager<?> manager) {
         transportManagers.put(manager.getNamespace(), manager);
     }
 
-    public static JingleTransportManager<?> getTransportManager(String namespace)
-    {
+    public static JingleTransportManager<?> getTransportManager(String namespace) {
         return transportManagers.get(namespace);
     }
 
-    public static void addJingleSecurityManager(JingleSecurityManager manager)
-    {
+    public static void addJingleSecurityManager(JingleSecurityManager manager) {
         securityManagers.put(manager.getNamespace(), manager);
     }
 
-    public static JingleSecurityManager getSecurityManager(String namespace)
-    {
+    public static JingleSecurityManager getSecurityManager(String namespace) {
         return securityManagers.get(namespace);
     }
 }

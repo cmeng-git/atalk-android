@@ -22,8 +22,7 @@ import androidx.viewpager.widget.PagerAdapter;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatListener
-{
+public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatListener {
     /**
      * The list of contained chat session ids.
      */
@@ -45,8 +44,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      *
      * @param fm the parent <code>FragmentManager</code>
      */
-    public ChatPagerAdapter(FragmentManager fm, ChatActivity parent)
-    {
+    public ChatPagerAdapter(FragmentManager fm, ChatActivity parent) {
         super(fm);
         this.chats = ChatSessionManager.getActiveChatsIDs();
         this.parent = parent;
@@ -56,13 +54,11 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     /**
      * Releases resources used by this instance. Once called this instance is considered invalid.
      */
-    public void dispose()
-    {
+    public void dispose() {
         ChatSessionManager.removeChatListener(this);
     }
 
-    public ChatFragment getCurrentChatFragment()
-    {
+    public ChatFragment getCurrentChatFragment() {
         return mPrimaryItem;
     }
 
@@ -70,10 +66,10 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * Returns chat id corresponding to the given position.
      *
      * @param pos the position of the chat we're looking for
+     *
      * @return chat id corresponding to the given position
      */
-    public String getChatId(int pos)
-    {
+    public String getChatId(int pos) {
         synchronized (chats) {
             if (chats.size() <= pos)
                 return null;
@@ -86,11 +82,11 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * <code>sessionId</code>.
      *
      * @param sessionId chat session identifier.
+     *
      * @return index of the <code>ChatPanel</code> in this adapter identified by given
      * <code>sessionId</code>.
      */
-    public int getChatIdx(String sessionId)
-    {
+    public int getChatIdx(String sessionId) {
         if (sessionId == null)
             return -1;
 
@@ -102,23 +98,22 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Removes the given chat session id from this pager.
+     * Removes the given chat session id from this pager if exist.
      *
      * @param chatId the chat id to remove from this pager
      */
-    public void removeChatSession(String chatId)
-    {
+    public void removeChatSession(String chatId) {
         synchronized (chats) {
-            chats.remove(chatId);
+            if (chats.remove(chatId)) {
+                notifyDataSetChanged();
+            }
         }
-        notifyDataSetChanged();
     }
 
     /**
      * Removes all <code>ChatFragment</code>s from this pager.
      */
-    public void removeAllChatSessions()
-    {
+    public void removeAllChatSessions() {
         synchronized (chats) {
             chats.clear();
         }
@@ -132,8 +127,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * @return the position of the given <code>object</code> in this pager
      */
     @Override
-    public int getItemPosition(Object object)
-    {
+    public int getItemPosition(Object object) {
         String id = ((ChatFragment) object).getChatPanel().getChatSession().getChatId();
         synchronized (chats) {
             if (chats.contains(id))
@@ -148,8 +142,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * @return the <code>Fragment</code> at the given position in this pager
      */
     @Override
-    public Fragment getItem(int pos)
-    {
+    public Fragment getItem(int pos) {
         return ChatFragment.newInstance(chats.get(pos));
     }
 
@@ -158,11 +151,11 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      *
      * @param container the parent <code>ViewGroup</code>
      * @param position the position in the <code>ViewGroup</code>
+     *
      * @return the created <code>ChatFragment</code>
      */
     @Override
-    public Object instantiateItem(ViewGroup container, final int position)
-    {
+    public Object instantiateItem(ViewGroup container, final int position) {
         return super.instantiateItem(container, position);
     }
 
@@ -172,8 +165,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * @return the count of contained <code>ChatFragment</code>s
      */
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         synchronized (chats) {
             return chats.size();
         }
@@ -183,8 +175,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
      * {@inheritDoc}
      */
     @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object)
-    {
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
 
         /*
@@ -205,14 +196,12 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     @Override
-    public void chatClosed(final Chat chat)
-    {
+    public void chatClosed(final Chat chat) {
         parent.runOnUiThread(() -> removeChatSession(((ChatPanel) chat).getChatSession().getChatId()));
     }
 
     @Override
-    public void chatCreated(final Chat chat)
-    {
+    public void chatCreated(final Chat chat) {
         parent.runOnUiThread(() -> {
             synchronized (chats) {
                 chats.add(((ChatPanel) chat).getChatSession().getChatId());

@@ -137,7 +137,8 @@
     <string name="service_gui_CALL_ERROR">Der entfernte Teilnehmer gibt einen Fehler zurück: %1$s</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_HINT">Bestätigen und \'Alle auswählen\' Elemente, bevor Sie mit \'Löschen\' fortfahren</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Anzahl der gelöschten Anrufverlaufsdatensätze: %1$s</string>
+    <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Möchten Sie wirklich alle Anrufdatensätze vor dem Datum löschen?: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Kein Datensatz zum Löschen ausgewählt</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
     <string name="service_gui_CALL_INCOMING">Eingehender Anruf: %1$s</string>
@@ -221,7 +222,7 @@
     <string name="service_gui_CLOSE_CHAT">Aktuellen Chat schließen</string>
     <string name="service_gui_CONNECTED_STATUS">Verbunden</string>
     <string name="service_gui_CONNECTING_ACCOUNT">Verbinde mit %1$s</string>
-    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Verbinde*</string>
+    <string name="service_gui_CONNECTING_EARLY_MEDIA_STATUS">Verbinde…</string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Verbindung über dieses Konto fehlgeschlagen, Benutzername: %1$s\n
       Servername: %2$s\nBitte überprüfen die Netzwerkverbindung.</string>
     <string name="service_gui_CONNECTING_STATUS">Verbinde</string>
@@ -385,7 +386,7 @@
 	<string name="service_gui_HISTORY_TOGGLE_ALL">Den Chatverlauf für alle Kontakte und Chats ausschalten.</string>
 	<string name="service_gui_HISTORY_ERASE_PER_CONTACT">Den Chatverlauf löschen</string>
 	<string name="service_gui_HISTORY_ERASE_ALL">Alle Chatverlaufe löschen</string>
-	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Willst du wirklich alle Nachrichten von %1$s löschen?</string>
+	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Möchten Sie wirklich alle ausgewählten Nachrichten für %1$s löschen?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten Entitäten?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Fehler beim Löschen der Nachrichten von %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Löschen Sie Medien von meinem Telefon</string>
@@ -1119,7 +1120,7 @@
 
     <string name="service_gui_PREF_SECURITY_RTP_SAVP">RTP/SAVP-Angabe</string>
     <string name="service_gui_PREF_SECURITY_RTP_SAVP_TITLE">RTP/SAVP-Angabemethode</string>
-    <string name="service_gui_PREF_SECURITY_SDES">SDes-Optionen</string>
+    <string name="service_gui_PREF_SECURITY_SDES">SDES-Optionen</string>
     <string name="service_gui_PREF_SECURITY_SDES_DLG_TITLE">Gewünschte Cipher-Suites auswählen</string>
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">SDES Cipher-Suites</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">ZRTP-Optionen</string>
@@ -1223,7 +1224,7 @@
     <string name="service_gui_JBR_STUN_LIST">Zusätzliche STUN/TURN-Server&#8230;</string>
     <string name="service_gui_JBR_STUN_LIST_SUMMARY">Benutzerdefinierte zusätzliche STUN/TURN-Server</string>
     <string name="service_gui_JBR_TELE_DOMAIN">Telefon-Domain</string>
-    <string name="service_gui_JBR_TELEPHONY">Telefonie (experimentell)</string>
+    <string name="service_gui_JBR_TELEPHONY">Telefonie VoIP-PBX</string>
     <string name="service_gui_JBR_TELEPHONY_SUMMARY">Telefonie-Optionen einstellen&#8230;</string>
     <string name="service_gui_JBR_USE_DEFAULT_STUN">Jitsi STUN-Server verwenden (Fallback)</string>
     <string name="service_gui_JBR_USE_ICE">ICE verwenden</string>

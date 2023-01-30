@@ -82,7 +82,6 @@ public class MuteIqProvider extends IQProvider<MuteIq>
             switch (parser.next()) {
                 case END_ELEMENT: {
                     String name = parser.getName();
-
                     if (rootElement.equals(name)) {
                         done = true;
                     }

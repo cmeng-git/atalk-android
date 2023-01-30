@@ -376,7 +376,7 @@ public interface MessageHistoryService
      *
      * @param isEnabled indicates if the history logging is enabled for the contact.
      */
-    void setHistoryLoggingEnabled(boolean isEnabled, String id);
+    void setHistoryLoggingEnabled(String id, boolean isEnabled);
 
     /**
      * Returns the sessionUuid by specified Object

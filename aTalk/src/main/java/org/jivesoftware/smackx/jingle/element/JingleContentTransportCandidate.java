@@ -24,13 +24,11 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public abstract class JingleContentTransportCandidate implements ExtensionElement
-{
+public abstract class JingleContentTransportCandidate implements ExtensionElement {
     public static final String ELEMENT = "candidate";
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 }

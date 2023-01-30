@@ -16,16 +16,31 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileUploadJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileTransferJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
+import net.java.sip.communicator.service.protocol.event.HttpFileTransferEvent;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
@@ -33,7 +48,9 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.persistance.FileBackend;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Date;
 
@@ -45,15 +62,25 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class FileSendConversation extends FileTransferConversation implements FileTransferStatusListener
-{
+public class FileSendConversation extends FileTransferConversation implements FileTransferStatusListener {
+    /**
+     * The thumbnail default width.
+     */
+    private static final int THUMBNAIL_WIDTH = 64;
+
+    /**
+     * The thumbnail default height.
+     */
+    private static final int THUMBNAIL_HEIGHT = 64;
+
     private String mSendTo;
     private boolean mStickerMode;
-    private boolean legacyFileXfer = true;
     private FileHistoryServiceImpl mFHS;
 
-    private FileSendConversation(ChatFragment cPanel, String dir)
-    {
+    private int mChatType;
+    private byte[] mThumbnail = null;
+
+    private FileSendConversation(ChatFragment cPanel, String dir) {
         super(cPanel, dir);
     }
 
@@ -67,13 +94,14 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      */
 
     public static FileSendConversation newInstance(ChatFragment cPanel, String msgUuid, String sendTo,
-            final String fileName, boolean stickerMode)
-    {
+            final String fileName, int chatType, boolean stickerMode) {
         FileSendConversation fragmentSFC = new FileSendConversation(cPanel, FileRecord.OUT);
         fragmentSFC.msgUuid = msgUuid;
         fragmentSFC.mSendTo = sendTo;
         fragmentSFC.mXferFile = new File(fileName);
+        fragmentSFC.mTransferFileSize = fragmentSFC.mXferFile.length();
         fragmentSFC.mDate = GuiUtils.formatDateTime(null);
+        fragmentSFC.mChatType = chatType;
 
         fragmentSFC.mStickerMode = stickerMode;
         fragmentSFC.mFHS = (FileHistoryServiceImpl) AndroidGUIActivator.getFileHistoryService();
@@ -81,24 +109,23 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     public View SendFileConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
-            ViewGroup container, int id, boolean init)
-    {
-        msgViewId = id;
+            ViewGroup container, int id, boolean init) {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);
 
+        msgViewId = id;
         updateFileViewInfo(mXferFile, false);
         messageViewHolder.retryButton.setOnClickListener(v -> {
             messageViewHolder.retryButton.setVisibility(View.GONE);
-            messageViewHolder.cancelButton.setVisibility(View.INVISIBLE);
-            mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
+            messageViewHolder.cancelButton.setVisibility(View.GONE);
+            sendFileTransferRequest(mThumbnail);
         });
 
-		/* Must track file transfer status as Android will redraw on listView scrolling, new message send or received */
+        /* Must track file transfer status as Android will redraw on listView scrolling, new message send or received */
         int status = getXferStatus();
         if (status == -1) {
-            updateXferFileViewState(FileTransferStatusChangeEvent.WAITING,
-                    aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mSendTo));
-            mChatFragment.new SendFile(FileSendConversation.this, msgViewId).execute();
+            updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
+                    aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo));
+            sendFileWithThumbnail();
         }
         else {
             updateView(status, null);
@@ -110,10 +137,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      * Handles file transfer status changes. Updates the interface to reflect the changes.
      */
     @Override
-    protected void updateView(final int status, final String reason)
-    {
+    protected void updateView(final int status, final String reason) {
         setXferStatus(status);
-        setEncState(mEncryption);
         String statusText = null;
 
         switch (status) {
@@ -121,10 +146,13 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo);
                 break;
 
+            case FileTransferStatusChangeEvent.WAITING:
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_WAITING_TO_ACCEPT, mSendTo);
+                break;
+
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_SENDING_TO, mSendTo);
                 if (mUpdateDB) {
-                    setEncState(mEncryption);
                     createHttpFileUploadRecord();
                 }
                 break;
@@ -134,6 +162,10 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 if (mUpdateDB) {
                     updateFTStatus(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString());
                 }
+                break;
+
+            case FileTransferStatusChangeEvent.DECLINED:
+                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, mSendTo);
                 break;
 
             // not offer to retry - smack replied as failed when recipient rejects on some devices
@@ -152,17 +184,17 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
                 // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-                if (legacyFileXfer) {
+                if (!TextUtils.isEmpty(reason)) {
+                    statusText += "\n" + reason;
+                }
+                if (mFileTransfer instanceof OutgoingFileTransferJabberImpl) {
                     mChatFragment.getChatPanel().sendMessage(statusText,
                             IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
                 }
                 break;
-
-            case FileTransferStatusChangeEvent.DECLINED:
-                statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, mSendTo);
-                break;
         }
         updateXferFileViewState(status, statusText);
+        mChatFragment.scrollToBottom();
     }
 
     /**
@@ -173,8 +205,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      * @param status File transfer status
      * @param fileName the downloaded fileName
      */
-    private void updateFTStatus(String msgUuid, int status, String fileName)
-    {
+    private void updateFTStatus(String msgUuid, int status, String fileName) {
         mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
         mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
@@ -186,27 +217,22 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      *
      * @param event FileTransferStatusChangeEvent
      */
-    public void statusChanged(final FileTransferStatusChangeEvent event)
-    {
+    public void statusChanged(final FileTransferStatusChangeEvent event) {
         final FileTransfer fileTransfer = event.getFileTransfer();
         if (fileTransfer == null)
             return;
 
-        int fStatus = getStatus(fileTransfer.getStatus());
-        // Presently statusChanged event is only trigger by non-encrypted file transfer protocol; except jet
-        mEncryption = IMessage.ENCRYPTION_NONE;
-
         // ignore events if status is unknown
+        int fStatus = getStatus(fileTransfer.getStatus());
         if (fStatus != FileRecord.STATUS_UNKNOWN)
             updateFTStatus(fileTransfer.getID(), fStatus, mXferFile.toString());
 
         final int status = event.getNewStatus();
         final String reason = event.getReason();
-        Timber.d("File send status change: %s", status);
+        // Timber.e(new Exception(), "StatusChanged: %s => %s", status, reason);
 
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
-            legacyFileXfer = !(fileTransfer instanceof OutgoingFileOfferJingleImpl);
             updateView(status, reason);
             if (status == FileTransferStatusChangeEvent.COMPLETED
                     || status == FileTransferStatusChangeEvent.CANCELED
@@ -219,35 +245,35 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Sets the <code>FileTransfer</code> object received from the protocol and corresponding to the
-     * file transfer process associated with this panel.
+     * Sets the <code>FileTransfer</code> object received, associated with the file transfer
+     * process in this panel. Registered callback to receive all file transfer events.
+     * Note: HttpFileUpload adds ProgressListener in httpFileUploadManager.uploadFile()
      *
      * @param fileTransfer the <code>FileTransfer</code> object associated with this panel
      */
-    public void setProtocolFileTransfer(FileTransfer fileTransfer)
-    {
+    public void setTransportFileTransfer(FileTransfer fileTransfer) {
         // activate File History service to keep track of the progress - need more work if want to keep sending history.
         // fileTransfer.addStatusListener(new FileHistoryServiceImpl());
 
-        this.mFileTransfer = fileTransfer;
+        mFileTransfer = fileTransfer;
         fileTransfer.addStatusListener(this);
-        this.setFileTransfer(fileTransfer, mXferFile.length());
+        setFileTransfer(fileTransfer, mXferFile.length());
+        runOnUiThread(() -> updateView(FileTransferStatusChangeEvent.WAITING, null));
     }
 
     /**
      * Returns the label to show on the progress bar.
      *
      * @param bytesString the bytes that have been transferred
+     *
      * @return the label to show on the progress bar
      */
     @Override
-    protected String getProgressLabel(long bytesString)
-    {
+    protected String getProgressLabel(long bytesString) {
         return aTalkApp.getResString(R.string.xFile_FILE_BYTE_SENT, bytesString);
     }
 
-    private void createHttpFileUploadRecord()
-    {
+    private void createHttpFileUploadRecord() {
         HttpFileUploadJabberImpl fileTransfer = new HttpFileUploadJabberImpl(mEntityJid, msgUuid, mXferFile.getPath());
         HttpFileTransferEvent event = new HttpFileTransferEvent(fileTransfer, new Date());
         mFHS.fileTransferCreated(event);
@@ -258,8 +284,65 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      *
      * @return true if sending sticker
      */
-    public boolean isStickerMode()
-    {
+    public boolean isStickerMode() {
         return mStickerMode;
+    }
+
+    public byte[] getFileThumbnail() {
+        return mThumbnail;
+    }
+
+    /**
+     * Get the file thumbnail if applicable and start the file transfer process.
+     * use sBitmap() to retrieve the thumbnail for smallest size;
+     * The .as(byte[].class) returns a scale of the gif animation file (large size)
+     */
+    public void sendFileWithThumbnail() {
+        if (ConfigurationUtils.isSendThumbnail()
+                && (ChatFragment.MSGTYPE_OMEMO != mChatType)
+                && !mStickerMode && FileBackend.isMediaFile(mXferFile)) {
+            Glide.with(aTalkApp.getGlobalContext())
+                    .asBitmap()
+                    .load(Uri.fromFile(mXferFile))
+                    .into(new CustomTarget<Bitmap>(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT) {
+                              @Override
+                              public void onResourceReady(@NonNull Bitmap bitmap,
+                                      @Nullable Transition<? super Bitmap> transition) {
+                                  ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                  bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                                  byte[] byteData = stream.toByteArray();
+
+                                  Timber.d("ByteData Glide byteData: %s", byteData.length);
+                                  sendFileTransferRequest(byteData);
+                              }
+
+                              @Override
+                              public void onLoadCleared(@Nullable Drawable placeholder) {
+                                  Timber.d("Glide onLoadCleared received!!!");
+                              }
+
+                              @Override
+                              public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                  // load failed due to some reason, notify callers here about the same
+                                  sendFileTransferRequest(null);
+                              }
+                          }
+                    );
+        }
+        else {
+            sendFileTransferRequest(null);
+        }
+    }
+
+    /**
+     * Send the file transfer offer to remote. Need to update view to WAITING here after
+     * sendFile() step; setTransportFileTransfer#fileTransfer.addStatusListener()
+     * setup is only call after the file offer initiated event.
+     *
+     * @param thumbnail file thumbnail or null (not video media file)
+     */
+    public void sendFileTransferRequest(byte[] thumbnail) {
+        mThumbnail = thumbnail;
+        mChatFragment.new SendFile(this, msgViewId).execute();
     }
 }

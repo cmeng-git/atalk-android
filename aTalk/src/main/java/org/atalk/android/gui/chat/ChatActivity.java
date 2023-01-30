@@ -485,7 +485,7 @@ public class ChatActivity extends OSGiActivity
                 mSendLocation.setVisible(!isDomainJid);
 
                 mTtsEnable.setVisible(!isDomainJid);
-                mTtsEnable.setTitle(mRecipient.isTtsEnable()
+                mTtsEnable.setTitle((mRecipient != null) && mRecipient.isTtsEnable()
                         ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
 
                 mStatusEnable.setVisible(false);
@@ -514,6 +514,9 @@ public class ChatActivity extends OSGiActivity
     {
         if ((mMenu != null) && (selectedChatPanel != null)) {
             ChatSession chatSession = selectedChatPanel.getChatSession();
+            // Proceed only if it is an instance of ConferenceChatSession
+            if (!(chatSession instanceof ConferenceChatSession))
+                return;
 
             boolean hasUploadService = false;
             XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
