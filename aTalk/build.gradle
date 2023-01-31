@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 301010
-        versionName "3.1.1"
+        versionCode 301020
+        versionName "3.1.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
