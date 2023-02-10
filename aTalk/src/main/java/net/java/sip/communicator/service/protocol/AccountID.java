@@ -9,6 +9,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -521,6 +523,7 @@ public class AccountID
      *
      * @return a string representation of this account id.
      */
+    @NonNull
     @Override
     public String toString()
     {

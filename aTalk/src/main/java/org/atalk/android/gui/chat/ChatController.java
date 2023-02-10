@@ -334,7 +334,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             try {
                 mChatTransport.sendInstantMessage(message, encryption | encType);
             } catch (Exception ex) {
-                Timber.w("Send instant message exception: %s", ex.getMessage());
+                Timber.e("Send instant message exception: %s", ex.getMessage());
                 aTalkApp.showToastMessage(ex.getMessage());
             }
         }

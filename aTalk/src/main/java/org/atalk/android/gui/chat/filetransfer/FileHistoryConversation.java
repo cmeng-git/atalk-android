@@ -114,16 +114,16 @@ public class FileHistoryConversation extends FileTransferConversation
                 case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, entityJid);
                     break;
-                case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-                    break;
                 case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_FAILED, entityJid);
+                    break;
+                case FileRecord.STATUS_CANCELED:
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                     break;
                 case FileRecord.STATUS_DECLINED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
                     break;
-                case FileRecord.STATUS_ACTIVE:
+                case FileRecord.STATUS_WAITING:
                 case FileRecord.STATUS_PREPARING:
                 case FileRecord.STATUS_IN_PROGRESS:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);
@@ -140,16 +140,16 @@ public class FileHistoryConversation extends FileTransferConversation
                 case FileRecord.STATUS_COMPLETED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, entityJid);
                     break;
-                case FileRecord.STATUS_CANCELED:
-                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-                    break;
                 case FileRecord.STATUS_FAILED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_UNABLE_TO_SEND, entityJid);
+                    break;
+                case FileRecord.STATUS_CANCELED:
+                    statusMsg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                     break;
                 case FileRecord.STATUS_DECLINED:
                     statusMsg = aTalkApp.getResString(R.string.xFile_FILE_SEND_DECLINED, entityJid);
                     break;
-                case FileRecord.STATUS_ACTIVE:
+                case FileRecord.STATUS_WAITING:
                 case FileRecord.STATUS_PREPARING:
                 case FileRecord.STATUS_IN_PROGRESS:
                     statusMsg = aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_ACTIVE, statusText);

@@ -110,7 +110,7 @@
     <string name="service_gui_ADD_GROUP">创建群组</string>
     <string name="service_gui_ADD_GROUP_HINT">输入组名</string>
     <string name="service_gui_ANSWER">接听来电&#8230;</string>
-    <string name="service_gui_APPLY">应用</string>
+    <string name="service_gui_APPLY">更改</string>
     <string name="service_gui_APPLY_CHANGES">应用帐户更改（~60S）&#8230;</string>
     <string name="service_gui_AT">在</string>
     <string name="service_gui_AUTHORIZE">授权</string>
@@ -178,12 +178,12 @@
 
     <!-- Conference Chat -->
     <string name="service_gui_AUTOJOIN">自动加入</string>
-    <string name="service_gui_CHANGE_NICK">更改绰号</string>
-    <string name="service_gui_CHANGE_NICKNAME">更改绰号&#8230;</string>
-    <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">绰号已经存在</string>
-    <string name="service_gui_CHANGE_NICKNAME_ERROR">更改 %1$s 的绰号时出错：%2$s</string>
-    <string name="service_gui_CHANGE_NICKNAME_LABEL">在下面的字段中，您可以输入您的新绰号。</string>
-    <string name="service_gui_CHANGE_NICKNAME_NULL">绰号字段内容不能为空</string>
+    <string name="service_gui_CHANGE_NICK">更改昵称</string>
+    <string name="service_gui_CHANGE_NICKNAME">更改昵称&#8230;</string>
+    <string name="service_gui_CHANGE_NICKNAME_CONFLICT_ERROR">昵称已经存在</string>
+    <string name="service_gui_CHANGE_NICKNAME_ERROR">更改 %1$s 的昵称时出错：%2$s</string>
+    <string name="service_gui_CHANGE_NICKNAME_LABEL">在下面的字段中，您可以输入您的新昵称。</string>
+    <string name="service_gui_CHANGE_NICKNAME_NULL">昵称字段内容不能为空</string>
     <string name="service_gui_CHANGE_ROOM_INFO">聊天室信息更改</string>
     <string name="service_gui_CHANGE_ROOM_SUBJECT_LABEL">在下面的字段中，您可以输入该房间的新主题。</string>
     <string name="service_gui_CHANGE_VIDEO_QUALITY">更改远程视频质量</string>
@@ -392,6 +392,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">您确定要删除所有实体的所有短信吗？</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">删除 %1$s 的本地存储短信时出错。</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">从我的手机中删除媒体</string>
+    <string name="service_gui_HISTORY_WARNING">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">备用地点：</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">您可以在以下聊天室继续对话：%1$s</string>
@@ -446,6 +447,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">验证码挑战</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">聊天室受验证码挑战保护</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">验证码输入不能为空</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">验证码有效</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">验证码验证失败</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s 聊天室验证码挑战超时；\n请重新加入聊天室并重试。</string>
@@ -530,7 +532,7 @@
     <string name="service_gui_NAME">名称</string>
     <string name="service_gui_NEW_ACCOUNT">添加新账户</string>
     <string name="service_gui_NETOWRK_ASSERTION_ERROR">Jabber 提供网络服务必须先登录才能进行通信。</string>
-    <string name="service_gui_NICKNAME">绰号</string>
+    <string name="service_gui_NICKNAME">昵称</string>
     <string name="service_gui_NO">否</string>
     <string name="service_gui_NO_ONLINE_TELEPHONY_ACCOUNT">至少需要一个在线电话帐户才能拨打电话。请登录您的其中一个电话帐户，然后重试。</string>
     <string name="service_gui_NOT_AUTHORIZED">未授权</string>
@@ -637,7 +639,7 @@
     <string name="service_gui_NETWORK_FAILURE">网络故障</string>
     <string name="service_gui_SELECT_AVATAR">选择新头像</string>
     <string name="service_gui_SET_STATUS">更改状态</string>
-    <string name="service_gui_SIGN_IN">登录</string>
+    <string name="service_gui_SIGN_IN">登录服务器</string>
     <string name="service_gui_SIGN_OUT">登出服务器</string>
     <string name="service_gui_SPECIFY_SERVER">请填写您帐户的服务器部分。</string>
     <string name="service_gui_SPEED">速度：%1$s/秒 (%2$s)</string>
@@ -1291,8 +1293,9 @@
 
     <!-- Log chat history -->
     <string name="service_gui_settings_HISTORY_LOG_OFF">禁用聊天记录</string>
-    <string name="service_gui_settings_HISTORY_LOG_ON">记录聊天记录</string>
-    <string name="service_gui_settings_HISTORY_LOGGING">聊天记录记录</string>
+    <string name="service_gui_settings_HISTORY_LOG_ON">启用聊天记录</string>
+    <string name="service_gui_settings_HISTORY_LOGGING">永久保存聊天记录</string>
+    <string name="service_gui_settings_HISTORY_WARNING">为离线用户设置 MAM 选项时出错：%1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">应显示多少条最近的短信？</string>

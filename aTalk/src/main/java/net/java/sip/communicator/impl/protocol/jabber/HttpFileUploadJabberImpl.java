@@ -28,7 +28,7 @@ import java.io.File;
 public class HttpFileUploadJabberImpl extends AbstractFileTransfer
 {
     private final String msgUuid;
-    private Object mSendTo;
+    private final Object mSendTo;
 
     private final File mFile;
     private final String mFileName;

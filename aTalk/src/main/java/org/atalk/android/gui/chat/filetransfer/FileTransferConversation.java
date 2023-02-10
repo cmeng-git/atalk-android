@@ -194,11 +194,6 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     protected int mEncryption = IMessage.ENCRYPTION_NONE;
 
-    /**
-     * For Http file Upload and Download must set to true to update the message in the DB
-     */
-    protected boolean mUpdateDB = false;
-
     protected ChatFragment mChatFragment;
     protected ChatActivity mChatActivity;
     protected XMPPConnection mConnection;
@@ -352,12 +347,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.fileStatus.setText(statusText);
         }
         messageViewHolder.timeView.setText(mDate);
-
-        // Do not scroll for FileHistoryConversation as this will interfere with user scrolling
-        // if (!(this instanceof FileHistoryConversation)) {
-        //     mChatFragment.scrollToBottom();
-        // }
-    }
+   }
 
     /**
      * Shows the given error message in the error area of this component.
@@ -636,7 +626,6 @@ public abstract class FileTransferConversation extends OSGiFragment
      */
     public void setStatus(final int status, Object jid, int encType, String reason) {
         mEntityJid = jid;
-        mUpdateDB = (jid != null);
         mEncryption = encType;
         // Must execute in UiThread to Update UI information
         runOnUiThread(() -> {
@@ -656,17 +645,6 @@ public abstract class FileTransferConversation extends OSGiFragment
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_omemo);
         else
             messageViewHolder.encStateView.setImageResource(R.drawable.encryption_none);
-    }
-
-    /**
-     * Must update chatListAdapter file transfer status to actual for refresh when user scroll.
-     * Only if the chatListAdapter is not destroyed
-     *
-     * @param status the file transfer new status
-     */
-    public void setXferStatus(int status) {
-        if (mChatFragment.getChatListAdapter() != null)
-            mChatFragment.getChatListAdapter().setXferStatus(msgViewId, status);
     }
 
     /**
@@ -713,8 +691,8 @@ public abstract class FileTransferConversation extends OSGiFragment
             case R.id.buttonCancel:
                 messageViewHolder.retryButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-                setXferStatus(FileTransferStatusChangeEvent.CANCELED);
-                updateView(FileTransferStatusChangeEvent.CANCELED, null);
+                // Let transport event call back to handle
+                // updateView(FileTransferStatusChangeEvent.CANCELED, null);
                 if (mFileTransfer != null)
                     mFileTransfer.cancel();
                 break;
@@ -1079,32 +1057,6 @@ public abstract class FileTransferConversation extends OSGiFragment
         while (listeners.hasNext()) {
             UploadProgressListener listener = listeners.next();
             listener.onUploadProgress(uploadedBytes, totalBytes);
-        }
-    }
-
-    /**
-     * Maps only valid FileTransferStatusChangeEvent status, otherwise returns STATUS_UNKNOWN.
-     *
-     * @param status the status as receive from FileTransfer
-     *
-     * @return the corresponding status of FileRecord.
-     */
-    public static int getStatus(int status) {
-        switch (status) {
-            case FileTransferStatusChangeEvent.COMPLETED:
-                return FileRecord.STATUS_COMPLETED;
-            case FileTransferStatusChangeEvent.DECLINED:
-                return FileRecord.STATUS_DECLINED;
-            case FileTransferStatusChangeEvent.CANCELED:
-                return FileRecord.STATUS_CANCELED;
-            case FileTransferStatusChangeEvent.FAILED:
-                return FileRecord.STATUS_FAILED;
-            case FileTransferStatusChangeEvent.PREPARING:
-                return FileRecord.STATUS_PREPARING;
-            case FileTransferStatusChangeEvent.IN_PROGRESS:
-                return FileRecord.STATUS_IN_PROGRESS;
-            default:
-                return FileRecord.STATUS_UNKNOWN;
         }
     }
 }

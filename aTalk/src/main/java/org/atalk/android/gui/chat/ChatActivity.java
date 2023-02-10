@@ -24,6 +24,7 @@ import android.widget.*;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -425,7 +426,7 @@ public class ChatActivity extends OSGiActivity
      * @param menu the options menu
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
+    public boolean onCreateOptionsMenu(@NonNull Menu menu)
     {
         this.mMenu = menu;
         MenuInflater inflater = getMenuInflater();

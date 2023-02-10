@@ -96,6 +96,8 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
         try {
             mOfoJingle.cancel(mConnection);
             removeOfoListener();
+            SessionState oldState = mOfoJingle.getJingleSession().getSessionState();
+            fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, oldState.toString());
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());

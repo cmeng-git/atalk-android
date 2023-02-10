@@ -5,8 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import android.text.TextUtils;
-
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -43,7 +41,8 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     // must include this attribute in bobData; else smack 4.4.0 throws NPE
     private static final int maxAge = 86400;
 
-    private final String id;
+    // Message Uuid also used as file transfer id.
+    private final String msgUuid;
     private final Contact recipient;
     private final File file;
 
@@ -63,10 +62,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      * @param file the file to send
      * @param jabberTransfer the Jabber transfer object, containing all transfer information
      * @param protocolProvider the parent protocol provider
-     * @param msgUuid the id that uniquely identifies this file transfer and saved DB record
+     * @param id the id that uniquely identifies this file transfer and saved DB record
      */
     public OutgoingFileTransferJabberImpl(Contact recipient, File file, OutgoingFileTransfer jabberTransfer,
-            ProtocolProviderServiceJabberImpl protocolProvider, String msgUuid)
+            ProtocolProviderServiceJabberImpl protocolProvider, String id)
     {
         this.recipient = recipient;
         this.file = file;
@@ -74,8 +73,10 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
         this.protocolProvider = protocolProvider;
 
         // Create the identifier of this file transfer that is used from the history and the user
-        // interface to track this transfer. Use pass in value if available
-        this.id = (TextUtils.isEmpty(msgUuid)) ? String.valueOf(System.currentTimeMillis()) + hashCode() : msgUuid;
+        // interface to track this transfer. Use pass in value if available (cmeng 20220206: true always)
+        // this.id = (TextUtils.isEmpty(msgUuid)) ? String.valueOf(System.currentTimeMillis()) + hashCode() : msgUuid;
+        // Timber.e("OutgoingFileTransferJabberImpl msgUid: %s", id);
+        this.msgUuid = id;
 
         // jabberTransfer is null for http file upload
         if (jabberTransfer == null)
@@ -159,7 +160,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      */
     public String getID()
     {
-        return id;
+        return msgUuid;
     }
 
     /**

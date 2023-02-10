@@ -395,6 +395,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los entidades?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente de %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
+    <string name="service_gui_HISTORY_WARNING">Cierre y abra esta sesión de chat para ver mensajes MAM y sin conexión cuando esté en línea</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Lugar alternativo:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Se puede continuar la conversación en la siguiente sala: %1$s</string>
@@ -449,6 +450,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">La sala de chat está protegida con captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">La entrada de texto captcha no puede estar vacía</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">La verificación de CAPTCHA es válida</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s timeout de CAPTCHA de sala;\npor favor, vuelva a unirse a sala y vuelva a intentarlo.</string>
@@ -1308,6 +1310,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Historial de chat desactivado</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Registro del historial de chat</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Registrando historial de chat</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Error al configurar la opción MAM para el usuario sin conexión: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">¿Cuántos mensajes recientes se deben mostrar?</string>

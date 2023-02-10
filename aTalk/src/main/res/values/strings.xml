@@ -393,6 +393,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all the entities?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Delete media from my phone</string>
+    <string name="service_gui_HISTORY_WARNING">Close and open this chat session to view MAM and Offline messages when online</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Alternate Venue:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>
@@ -447,6 +448,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha challenge</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">The chat room is protected with captcha challenge</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">Captcha text entry cannot be empty</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">The CAPTCHA verification is valid</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
@@ -1294,6 +1296,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Chat history disabled</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Log chat history</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Chat history logging</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Error in setting MAM option for offline user: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">How many recent messages should be displayed?</string>

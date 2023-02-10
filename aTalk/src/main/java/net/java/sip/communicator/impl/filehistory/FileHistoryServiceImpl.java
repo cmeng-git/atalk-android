@@ -65,7 +65,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      */
     private HistoryService historyService = null;
 
-    private final ContentValues contentValues = new ContentValues();
+    private final ContentValues mContentValues = new ContentValues();
     private SQLiteDatabase mDB;
     private MessageHistoryService mhs;
 
@@ -222,14 +222,13 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     public void fileTransferCreated(FileTransferCreatedEvent event)
     {
         FileTransfer fileTransfer = event.getFileTransfer();
-
+        ContentValues contentValues = new ContentValues();
         try {
             String fileName = fileTransfer.getLocalFile().getCanonicalPath();
             Timber.d("File Transfer record created in DB: %s: %s", fileTransfer.getDirection(), fileName);
 
             if (fileTransfer.getDirection() == FileTransfer.IN) {
                 String[] args = {fileTransfer.getID()};
-                contentValues.clear();
                 contentValues.put(ChatMessage.FILE_PATH, fileName);
                 mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
             }
@@ -278,7 +277,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         String direction = FileRecord.OUT;
         Object entityJid = null;
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_SEND;
-        contentValues.clear();
+        ContentValues contentValues = new ContentValues();
 
         if (evt instanceof FileTransferRequestEvent) {
             FileTransferRequestEvent event = (FileTransferRequestEvent) evt;
@@ -326,25 +325,12 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
         contentValues.put(ChatMessage.ENC_TYPE, IMessage.ENCODE_PLAIN);
         contentValues.put(ChatMessage.MSG_TYPE, msgType);
         contentValues.put(ChatMessage.DIRECTION, direction);
-        contentValues.put(ChatMessage.STATUS, FileRecord.STATUS_ACTIVE);
+        contentValues.put(ChatMessage.STATUS, FileRecord.STATUS_WAITING);
         contentValues.put(ChatMessage.FILE_PATH, fileName);
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
 
     /* ============= File Transfer Handlers - Update file transfer status =============
-    /**
-     * Update new status and fileName and convert to FileTransfer History Record in dataBase
-     *
-     * @param msgUuid message UUID
-     * @param status New status for update
-     * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
-     * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
-     */
-    public void updateFTStatusToDB(String msgUuid, int status, String fileName, int encType)
-    {
-        updateFTStatusToDB(msgUuid, status, fileName, encType, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
-    }
-
     /**
      * Update new status and fileName to the fileTransfer record in dataBase
      * Keep file uri; for retry if not converted to MESSAGE_FILE_TRANSFER_HISTORY
@@ -353,22 +339,22 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param status New status for update
      * @param fileName local fileName path for http downloaded file; null => no change and keep the link in MSG_BODY
      * @param encType IMessage.ENCRYPTION_NONE, ENCRYPTION_OMEMO, ENCRYPTION_OTR
-     * @param recordType File Transfer record type
+     * @param msgType File Transfer message type
      *
      * @return the number of records being updated; zero means there is no record to update historyLog disabled
      */
-    public int updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int recordType)
+    public int updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int msgType)
     {
         // Timber.w(new Exception("### File in/out transfer status changes to: " + status));
         String[] args = {msgUuid};
+        ContentValues contentValues = new ContentValues();
 
-        contentValues.clear();
         contentValues.put(ChatMessage.STATUS, status);
         if (StringUtils.isNotEmpty(fileName)) {
             contentValues.put(ChatMessage.FILE_PATH, fileName);
         }
         contentValues.put(ChatMessage.ENC_TYPE, encType);
-        contentValues.put(ChatMessage.MSG_TYPE, recordType);
+        contentValues.put(ChatMessage.MSG_TYPE, msgType);
         return mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
     }
 

@@ -720,6 +720,8 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
                 }
                 OutgoingFileOfferJingleImpl outgoingTransfer
                         = new OutgoingFileOfferJingleImpl(mContact, file, msgUuid, ofoController, mPPS.getConnection());
+                // Let OutgoingFileOfferJingleImpl handle status changes
+                // xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, mContact, encType, "JingleFile Sending");
                 return outgoingTransfer;
             } catch (SSLHandshakeException ex) {
                 throw new OperationNotSupportedException(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());

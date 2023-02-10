@@ -392,6 +392,7 @@
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех юридические лица?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
+    <string name="service_gui_HISTORY_WARNING">Закройте и откройте этот сеанс чата, чтобы просмотреть сообщения MAM и Offline в онлайн-режиме.</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Альтернативное место:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Вы можете продолжить разговор в следующем чате: %1$s</string>
@@ -432,6 +433,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha вызов</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Чат-чат защищен вызовом captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">Текст капчи не может быть пустым</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Проверка CAPTCHA действительна</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
@@ -1277,6 +1279,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Отключена история чата</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Журнал журнала чата</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Журнал регистрации чатов</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Ошибка при настройке параметра MAM для автономного пользователя: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Сколько последних сообщений должно отображаться?</string>

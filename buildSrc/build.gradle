@@ -137,6 +137,9 @@ jarJarDeps.dependsOn(
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport$**'
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo**'
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate**'
+
+            // Must do local compilation as case CandidateActivated.ELEMENT (candidate-activated): has changed to case 'activated'
+            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.provider.JingleS5BTransportProvider**'
         },
 
         // smack-omemo
