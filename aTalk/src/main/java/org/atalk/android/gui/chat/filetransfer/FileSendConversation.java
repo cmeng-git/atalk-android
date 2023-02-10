@@ -37,6 +37,7 @@ import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileTransferJabber
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
 import net.java.sip.communicator.service.protocol.event.HttpFileTransferEvent;
@@ -80,6 +81,12 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     private int mChatType;
     private byte[] mThumbnail = null;
 
+    /**
+     * For Http file Upload must set to true to update the message in the DB
+     */
+    protected boolean mUpdateDB = false;
+
+
     private FileSendConversation(ChatFragment cPanel, String dir) {
         super(cPanel, dir);
     }
@@ -122,7 +129,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
         /* Must track file transfer status as Android will redraw on listView scrolling, new message send or received */
         int status = getXferStatus();
-        if (status == -1) {
+        if (status != FileTransferStatusChangeEvent.CANCELED
+                && status != FileTransferStatusChangeEvent.COMPLETED) {
             updateXferFileViewState(FileTransferStatusChangeEvent.PREPARING,
                     aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_PREPARING, mSendTo));
             sendFileWithThumbnail();
@@ -138,8 +146,8 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      */
     @Override
     protected void updateView(final int status, final String reason) {
-        setXferStatus(status);
         String statusText = null;
+        updateFTStatus(status);
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
@@ -152,16 +160,16 @@ public class FileSendConversation extends FileTransferConversation implements Fi
 
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_SENDING_TO, mSendTo);
-                if (mUpdateDB) {
-                    createHttpFileUploadRecord();
+                // Transfer file record creation only after mEntityJid is known.
+                if (mEntityJid != null && !mUpdateDB) {
+                    createFileSendRecord();
+                    mUpdateDB = true;
+                    updateFTStatus(status);
                 }
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_SEND_COMPLETED, mSendTo);
-                if (mUpdateDB) {
-                    updateFTStatus(msgUuid, FileRecord.STATUS_COMPLETED, mXferFile.toString());
-                }
                 break;
 
             case FileTransferStatusChangeEvent.DECLINED:
@@ -174,19 +182,15 @@ public class FileSendConversation extends FileTransferConversation implements Fi
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
-                if (mUpdateDB)
-                    updateFTStatus(msgUuid, FileRecord.STATUS_FAILED, mXferFile.toString());
                 break;
 
             case FileTransferStatusChangeEvent.CANCELED:
-                if (mUpdateDB)
-                    updateFTStatus(msgUuid, FileRecord.STATUS_CANCELED, mXferFile.toString());
-
                 // Inform remote user if sender canceled; not in standard legacy file xfer protocol event
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
+
                 if (mFileTransfer instanceof OutgoingFileTransferJabberImpl) {
                     mChatFragment.getChatPanel().sendMessage(statusText,
                             IMessage.FLAG_REMOTE_ONLY | IMessage.ENCODE_PLAIN);
@@ -198,16 +202,30 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Update the file transfer status into the DB, and also the msgCache to ensure the file send request will not
+     * Create a new File send message/record for file transfer status tracking;
+     * Use HttpFileUploadJabberImpl class, as Object mEntityJid can either be contact or chatRoom
+     */
+    private void createFileSendRecord() {
+        HttpFileUploadJabberImpl fileTransfer = new HttpFileUploadJabberImpl(mEntityJid, msgUuid, mXferFile.getPath());
+        HttpFileTransferEvent event = new HttpFileTransferEvent(fileTransfer, new Date());
+        mFHS.fileTransferCreated(event);
+    }
+
+    /**
+     * Update the file transfer status into the DB if the file record has been created i.e. mUpdateDB
+     * is true; update also the msgCache (and ChatSession UI) to ensure the file send request will not
      * get trigger again. The msgCache record will be used for view display on chat session resume.
      *
      * @param msgUuid The message UUID
      * @param status File transfer status
-     * @param fileName the downloaded fileName
      */
-    private void updateFTStatus(String msgUuid, int status, String fileName) {
-        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
-        mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+    private void updateFTStatus(int status) {
+        String fileName = mXferFile.getPath();
+        if (mUpdateDB) {
+            Timber.e("updateFTStatusToDB on status: %s; row count: %s", status,
+                    mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY));
+        }
+        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
 
     /**
@@ -221,11 +239,6 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         final FileTransfer fileTransfer = event.getFileTransfer();
         if (fileTransfer == null)
             return;
-
-        // ignore events if status is unknown
-        int fStatus = getStatus(fileTransfer.getStatus());
-        if (fStatus != FileRecord.STATUS_UNKNOWN)
-            updateFTStatus(fileTransfer.getID(), fStatus, mXferFile.toString());
 
         final int status = event.getNewStatus();
         final String reason = event.getReason();
@@ -271,12 +284,6 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     @Override
     protected String getProgressLabel(long bytesString) {
         return aTalkApp.getResString(R.string.xFile_FILE_BYTE_SENT, bytesString);
-    }
-
-    private void createHttpFileUploadRecord() {
-        HttpFileUploadJabberImpl fileTransfer = new HttpFileUploadJabberImpl(mEntityJid, msgUuid, mXferFile.getPath());
-        HttpFileTransferEvent event = new HttpFileTransferEvent(fileTransfer, new Date());
-        mFHS.fileTransferCreated(event);
     }
 
     /**

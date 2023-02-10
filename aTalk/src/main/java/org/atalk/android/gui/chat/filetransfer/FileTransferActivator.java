@@ -171,8 +171,9 @@ public class FileTransferActivator implements BundleActivator, ServiceListener, 
         Contact sender = request.getSender();
         Date date = event.getTimestamp();
         ChatPanel chatPanel = ChatSessionManager.createChatForContact(sender);
-        if (chatPanel != null)
+        if (chatPanel != null) {
             chatPanel.addFTReceiveRequest(opSet, request, date);
+        }
     }
 
     /**

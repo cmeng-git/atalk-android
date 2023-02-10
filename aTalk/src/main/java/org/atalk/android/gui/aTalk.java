@@ -59,8 +59,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted
-{
+public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted {
     /**
      * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
      */
@@ -78,6 +77,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * The action that will show contacts.
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
+
+    private static Boolean mPrefChange = false;
 
     /**
      * The main pager view fragment containing the contact List
@@ -110,8 +111,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Checks if OSGi has been started and if not starts LauncherActivity which will restore this Activity from its Intent.
@@ -157,8 +157,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * @param intent new <code>Intent</code> data.
      */
     @Override
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent, mInstanceState);
     }
@@ -169,8 +168,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * @param intent <code>Activity</code> <code>Intent</code>.
      * @param instanceState <code>Activity</code> instance state.
      */
-    private void handleIntent(Intent intent, Bundle instanceState)
-    {
+    private void handleIntent(Intent intent, Bundle instanceState) {
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -179,29 +177,34 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mInstanceState = savedInstanceState;
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         mInstanceState = null;
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
-        /*
-         * Must perform Locale change here instead of in aTalkApp (but must make reference to aTalkApp context);
-         * else selected locale resources are only partially being updated.
-         */
-        String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
-        LocaleHelper.setLocale(language);
+        // Re-init aTalk to refresh the newly user selected language and theme;
+        // else the main option menu is not updated
+        if (mPrefChange) {
+            mPrefChange = false;
+            finish();
+            startActivity(aTalk.class);
+        } else {
+            /*
+             * Must perform Locale change here instead of in aTalkApp (and must make reference to aTalkApp context);
+             * else selected locale resources are only partially being updated.
+             */
+            String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
+            LocaleHelper.setLocale(language);
+        }
     }
 
     /*
@@ -209,8 +212,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Back button. This call finish() on this activity and pops the back stack.
      */
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
             super.onBackPressed();
         }
@@ -224,8 +226,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Called when an activity is destroyed.
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
 
         synchronized (this) {
@@ -242,6 +243,10 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
     }
 
+    public static void setPrefChange(boolean state) {
+        mPrefChange = state;
+    }
+
     /**
      * Handler for contactListFragment chatSessions on completed execution of
      *
@@ -249,8 +254,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * @see EntityListHelper#eraseAllEntityHistory(Context)
      */
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
-    {
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
         if (result == EntityListHelper.CURRENT_ENTITY) {
             MetaContact clickedContact = contactListFragment.getClickedContact();
             ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
@@ -271,10 +275,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     /**
      * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
      */
-    private class MainPagerAdapter extends FragmentPagerAdapter
-    {
-        private MainPagerAdapter(FragmentManager fm)
-        {
+    private class MainPagerAdapter extends FragmentPagerAdapter {
+        private MainPagerAdapter(FragmentManager fm) {
             // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
             // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -282,8 +284,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
         @NotNull
         @Override
-        public Fragment getItem(int position)
-        {
+        public Fragment getItem(int position) {
             switch (position) {
                 case CL_FRAGMENT:
                     contactListFragment = new ContactListFragment();
@@ -308,12 +309,12 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
          *
          * @param container The viewGroup
          * @param position The pager position
+         *
          * @return Fragment object at the specific location
          */
         @NotNull
         @Override
-        public Object instantiateItem(@NotNull ViewGroup container, int position)
-        {
+        public Object instantiateItem(@NotNull ViewGroup container, int position) {
             Object obj = super.instantiateItem(container, position);
             if (obj instanceof Fragment) {
                 Fragment f = (Fragment) obj;
@@ -324,8 +325,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return NUM_PAGES;
         }
     }
@@ -334,10 +334,10 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * Get the fragment reference for the given position in pager
      *
      * @param position position in the mFragmentTags
+     *
      * @return the requested fragment for the specified postion or null
      */
-    public static Fragment getFragment(int position)
-    {
+    public static Fragment getFragment(int position) {
         String tag = mFragmentTags.get(position);
         return (mFragmentManager != null) ? mFragmentManager.findFragmentByTag(tag) : null;
     }

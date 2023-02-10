@@ -108,7 +108,8 @@ public class FileHttpDownloadConversation extends FileTransferConversation
 		/* Must keep track of file transfer status as Android always request view redraw on
 		listView scrolling, new message send or received */
         int status = getXferStatus();
-        if (status == -1) {
+        if (status != FileTransferStatusChangeEvent.DECLINED
+                && status != FileTransferStatusChangeEvent.COMPLETED) {
             // Must reset button image to fileIcon on new(); else reused view may contain an old thumbnail image
             messageViewHolder.fileIcon.setImageResource(R.drawable.file_icon);
 
@@ -139,8 +140,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      */
     @Override
     protected void updateView(final int status, final String reason) {
-        setXferStatus(status);
+        // setXferStatus(status);
         String statusText = null;
+        if (FileTransferStatusChangeEvent.COMPLETED != status) {
+            updateFTStatus(status, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
+        }
 
         switch (status) {
             case FileTransferStatusChangeEvent.PREPARING:
@@ -150,18 +154,15 @@ public class FileHttpDownloadConversation extends FileTransferConversation
             case FileTransferStatusChangeEvent.IN_PROGRESS:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVING_FROM, mSender);
                 mChatFragment.addActiveFileTransfer(httpFileTransferJabber.getID(), httpFileTransferJabber, msgViewId);
-
-                updateFTStatus(FileRecord.STATUS_IN_PROGRESS, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             case FileTransferStatusChangeEvent.COMPLETED:
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_RECEIVE_COMPLETED, mSender);
-
                 if (mXferFile == null) { // Android view redraw happen?
                     mXferFile = mChatFragment.getChatListAdapter().getFileName(msgViewId);
                 }
                 // Update the DB record status
-                updateFTStatus(FileRecord.STATUS_COMPLETED, mXferFile.toString(), ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
+                updateFTStatus(status, mXferFile.toString(), ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
                 break;
 
             case FileTransferStatusChangeEvent.FAILED:
@@ -169,7 +170,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
-                updateFTStatus(FileRecord.STATUS_FAILED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             // local cancel the file download process
@@ -178,7 +178,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 if (!TextUtils.isEmpty(reason)) {
                     statusText += "\n" + reason;
                 }
-                updateFTStatus(FileRecord.STATUS_CANCELED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
 
             // user reject the incoming http download
@@ -186,7 +185,6 @@ public class FileHttpDownloadConversation extends FileTransferConversation
                 statusText = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_DECLINED);
                 // need to update status here as chatFragment statusListener is enabled for
                 // fileTransfer and only after accept
-                updateFTStatus(FileRecord.STATUS_DECLINED, null, ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD);
                 break;
         }
         updateXferFileViewState(status, statusText);
@@ -199,11 +197,11 @@ public class FileHttpDownloadConversation extends FileTransferConversation
      *
      * @param status File transfer status
      * @param fileName the downloaded fileName
-     * @param recordType File record type see ChatMessage MESSAGE_FILE_
+     * @param msgType File transfer type see ChatMessage MESSAGE_FILE_
      */
-    private void updateFTStatus(int status, String fileName, int recordType) {
-        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, recordType);
-        mChatFragment.getChatPanel().updateCacheFTRecord(msgUuid, status, fileName, mEncryption, recordType);
+    private void updateFTStatus(int status, String fileName, int msgType) {
+        mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, msgType);
+        mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, msgType);
     }
 
     /**

@@ -325,10 +325,11 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             convertView.setBackgroundResource(R.drawable.list_selector_state);
         }
         // Update display information.
-        String roomName = renderer.getDisplayName(child);
         String roomStatus = renderer.getStatusMessage(child);
-        chatRoomViewHolder.roomName.setText(roomName);
         chatRoomViewHolder.statusMessage.setText(roomStatus);
+
+        String roomName = renderer.getDisplayName(child);
+        chatRoomViewHolder.roomName.setText(roomName);
 
         chatRoomViewHolder.autojoin.setChecked(renderer.isAutoJoin(child));
         chatRoomViewHolder.bookmark.setChecked(renderer.isBookmark(child));

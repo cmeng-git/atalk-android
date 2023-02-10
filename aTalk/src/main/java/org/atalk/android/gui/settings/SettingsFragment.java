@@ -250,6 +250,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
             if (!language.equals(value) && (mActivity != null)) {
                 // All language setting changes must call via aTalkApp so its contextWrapper is updated
                 LocaleHelper.setLocale(language1);
+
+                // must get aTalk to restart onResume to show correct UI for preference menu
+                aTalk.setPrefChange(true);
+
                 // do destroy activity last
                 mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
                 mActivity.finish();
@@ -279,6 +283,10 @@ public class SettingsFragment extends OSGiPreferenceFragment
             // Need to destroy and restart to set new Theme if there is a change
             if (!nTheme.equals(value) && (mActivity != null)) {
                 ThemeHelper.setTheme(mActivity, vTheme);
+
+                // must get aTalk to restart onResume to show new Theme
+                aTalk.setPrefChange(true);
+
                 mActivity.startActivity(new Intent(mActivity, SettingsActivity.class));
                 mActivity.finish();
             }
@@ -616,6 +624,8 @@ public class SettingsFragment extends OSGiPreferenceFragment
         for (ProtocolProviderService pps : providers) {
             if (pps.isRegistered()) {
                 ProtocolProviderServiceJabberImpl.enableMam(pps.getConnection(), enable);
+            } else {
+                aTalkApp.showToastMessage(R.string.service_gui_settings_HISTORY_WARNING, pps.getAccountID().getBareJid());
             }
         }
     }

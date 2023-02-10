@@ -22,17 +22,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.*;
 
+import androidx.appcompat.widget.ViewUtils;
+
 import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.util.ViewUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
@@ -52,8 +58,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class CaptchaDialog extends Dialog
-{
+public class CaptchaDialog extends Dialog {
     /* Captcha response state */
     public static final int unknown = -1;
     public static final int validated = 0;
@@ -79,15 +84,13 @@ public class CaptchaDialog extends Dialog
     private final Context mContext;
     private final CaptchaDialogListener callBack;
 
-    public interface CaptchaDialogListener
-    {
+    public interface CaptchaDialogListener {
         void onResult(int state);
 
         void addMessage(String msg, int msgType);
     }
 
-    public CaptchaDialog(Context context, MultiUserChat multiUserChat, Message message, CaptchaDialogListener listener)
-    {
+    public CaptchaDialog(Context context, MultiUserChat multiUserChat, Message message, CaptchaDialogListener listener) {
         super(context);
         mContext = context;
         mConnection = multiUserChat.getXmppConnection();
@@ -96,8 +99,7 @@ public class CaptchaDialog extends Dialog
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.captcha_challenge);
         setTitle(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE);
@@ -118,16 +120,14 @@ public class CaptchaDialog extends Dialog
         setCancelable(false);
     }
 
-    private void closeDialog()
-    {
+    private void closeDialog() {
         this.cancel();
     }
 
     /*
      * Update dialog content with the received captcha information for form presentation.
      */
-    private void showCaptchaContent()
-    {
+    private void showCaptchaContent() {
         // Scale the captcha to the display resolution
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         Bitmap captcha = Bitmap.createScaledBitmap(mCaptcha,
@@ -148,11 +148,16 @@ public class CaptchaDialog extends Dialog
     /**
      * Setup all the dialog buttons. listeners for the required actions on user click
      */
-    private void initializeViewListeners()
-    {
+    private void initializeViewListeners() {
         mImageView.setOnClickListener(v -> mCaptchaText.requestFocus());
 
-        mAcceptButton.setOnClickListener(v -> showResult(onAcceptClicked(false)));
+        mAcceptButton.setOnClickListener(v -> {
+            if (TextUtils.isEmpty(ViewUtil.toString(mCaptchaText))) {
+                aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY);
+            } else {
+                showResult(onAcceptClicked(false));
+            }
+        });
 
         // force terminate smack wait loop early by sending empty reply
         mCancelButton.setOnClickListener(v -> showResult(onAcceptClicked(true)));
@@ -176,10 +181,10 @@ public class CaptchaDialog extends Dialog
      * </iq>
      *
      * @param isCancel true is user cancel; send empty reply and callback with cancel
+     *
      * @return the captcha reply result success or failure
      */
-    private boolean onAcceptClicked(boolean isCancel)
-    {
+    private boolean onAcceptClicked(boolean isCancel) {
         formBuilder = DataForm.builder(DataForm.Type.submit)
                 .addField(mDataForm.getField(FormField.FORM_TYPE))
                 .addField(mDataForm.getField(CaptchaExtension.FROM))
@@ -240,8 +245,7 @@ public class CaptchaDialog extends Dialog
      * @param name the FormField variable
      * @param value the FormField value
      */
-    private void addFormField(String name, String value)
-    {
+    private void addFormField(String name, String value) {
         TextSingleFormField.Builder field = FormField.builder(name);
         field.setValue(value);
         formBuilder.addField(field.build());
@@ -251,8 +255,7 @@ public class CaptchaDialog extends Dialog
      * set Captcha IQ and receive reply
      */
     private StanzaCollector createStanzaCollectorAndSend(IQ req)
-            throws SmackException.NotConnectedException, InterruptedException
-    {
+            throws SmackException.NotConnectedException, InterruptedException {
         return mConnection.createStanzaCollectorAndSend(new StanzaIdFilter(req.getStanzaId()), req);
     }
 
@@ -263,8 +266,7 @@ public class CaptchaDialog extends Dialog
      * - With captcha protection using form with embedded captcha image if available, else the
      * image is retrieved from the given url in the form.
      */
-    private boolean initCaptchaData()
-    {
+    private boolean initCaptchaData() {
         try {
             // do not proceed if dataForm is null
             CaptchaExtension captchaExt = mMessage.getExtension(CaptchaExtension.class);
@@ -324,8 +326,7 @@ public class CaptchaDialog extends Dialog
      *
      * @param success Captcha reply return result
      */
-    private void showResult(boolean success)
-    {
+    private void showResult(boolean success) {
         if (success) {
             mReason.setText(mReasonText);
             mCaptchaText.setEnabled(false);

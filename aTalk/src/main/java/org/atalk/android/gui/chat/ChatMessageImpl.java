@@ -32,8 +32,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatMessageImpl implements ChatMessage
-{
+public class ChatMessageImpl implements ChatMessage {
     public static String HTTP_FT_MSG = "(?s)^aesgcm:.*|^http[s].*";
     /**
      * The string Id of the message sender. The value is used in quoted messages.
@@ -76,7 +75,7 @@ public class ChatMessageImpl implements ChatMessage
     /**
      * The direction of the message.
      */
-    private String mDirection = ChatMessage.DIR_OUT;
+    private final String mDirection;
 
     /**
      * The HTTP file download file transfer status
@@ -140,8 +139,7 @@ public class ChatMessageImpl implements ChatMessage
     /*
      * ChatMessageImpl with enclosed IMessage as content
      */
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUID, String direction)
-    {
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, IMessage msg, String correctedMessageUID, String direction) {
         this(sender, senderName, date, messageType, msg.getMimeType(), msg.getContent(),
                 msg.getEncryptionType(), msg.getMessageUID(), correctedMessageUID, direction,
                 msg.getXferStatus(), msg.getReceiptStatus(), msg.getServerMsgId(), msg.getRemoteMsgId(), null, null, null);
@@ -150,15 +148,13 @@ public class ChatMessageImpl implements ChatMessage
     /*
      * Default direction ot DIR_OUT, not actually being use in message except in file transfer
      */
-    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType, String content, String messageUID, String direction)
-    {
+    public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType, String content, String messageUID, String direction) {
         this(sender, senderName, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null, direction,
                 FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, "", "", null, null, null);
     }
 
     public ChatMessageImpl(String sender, Date date, int messageType, int mimeType, String content, String messageUID,
-                           String direction, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
-    {
+            String direction, OperationSetFileTransfer opSet, Object request, FileRecord fileRecord) {
         this(sender, sender, date, messageType, mimeType, content, IMessage.ENCRYPTION_NONE, messageUID, null, direction,
                 FileRecord.STATUS_UNKNOWN, ChatMessage.MESSAGE_DELIVERY_NONE, null, null, opSet, request, fileRecord);
     }
@@ -184,10 +180,9 @@ public class ChatMessageImpl implements ChatMessage
      * @param fileRecord The history file record.
      */
     public ChatMessageImpl(String sender, String senderName, Date date, int messageType, int mimeType,
-                           String content, int encryptionType, String messageUID, String correctedMessageUID,
-                           String direction, int xferStatus, int receiptStatus, String serverMsgId, String remoteMsgId,
-                           OperationSetFileTransfer opSet, Object request, FileRecord fileRecord)
-    {
+            String content, int encryptionType, String messageUID, String correctedMessageUID,
+            String direction, int xferStatus, int receiptStatus, String serverMsgId, String remoteMsgId,
+            OperationSetFileTransfer opSet, Object request, FileRecord fileRecord) {
         this.mSender = sender;
         this.mSenderName = senderName;
         this.date = date;
@@ -217,8 +212,7 @@ public class ChatMessageImpl implements ChatMessage
         }
     }
 
-    public void updateCachedOutput(String msg)
-    {
+    public void updateCachedOutput(String msg) {
         this.cachedOutput = msg;
     }
 
@@ -228,8 +222,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the name of the entity sending the message.
      */
     @Override
-    public String getSender()
-    {
+    public String getSender() {
         return mSender;
     }
 
@@ -239,8 +232,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the display name of the entity sending the message
      */
     @Override
-    public String getSenderName()
-    {
+    public String getSenderName() {
         return mSenderName;
     }
 
@@ -250,8 +242,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the date and time of the message.
      */
     @Override
-    public Date getDate()
-    {
+    public Date getDate() {
         return date;
     }
 
@@ -261,16 +252,14 @@ public class ChatMessageImpl implements ChatMessage
      * @return the type of the message.
      */
     @Override
-    public int getMessageType()
-    {
+    public int getMessageType() {
         return messageType;
     }
 
     /**
      * Set the type of the message.
      */
-    public void setMessageType(int messageType)
-    {
+    public void setMessageType(int messageType) {
         this.messageType = messageType;
     }
 
@@ -280,8 +269,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the mimeType
      */
     @Override
-    public int getMimeType()
-    {
+    public int getMimeType() {
         return mimeType;
     }
 
@@ -291,8 +279,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the content of the message.
      */
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         if (cachedOutput != null)
             return cachedOutput;
 
@@ -322,14 +309,12 @@ public class ChatMessageImpl implements ChatMessage
      * @return the encryption type
      */
     @Override
-    public int getEncryptionType()
-    {
+    public int getEncryptionType() {
         return encryptionType;
     }
 
     @Override
-    public int getXferStatus()
-    {
+    public int getXferStatus() {
         return mXferStatus;
     }
 
@@ -338,13 +323,11 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @return the receipt status
      */
-    public int getReceiptStatus()
-    {
+    public int getReceiptStatus() {
         return receiptStatus;
     }
 
-    public void setReceiptStatus(int status)
-    {
+    public void setReceiptStatus(int status) {
         receiptStatus = status;
     }
 
@@ -354,8 +337,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the server message Id of the message sent.
      */
     @Override
-    public String getServerMsgId()
-    {
+    public String getServerMsgId() {
         return mServerMsgId;
     }
 
@@ -364,8 +346,7 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @return the remote message Id of the message received.
      */
-    public String getRemoteMsgId()
-    {
+    public String getRemoteMsgId() {
         return mRemoteMsgId;
     }
 
@@ -373,16 +354,39 @@ public class ChatMessageImpl implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public ChatMessage mergeMessage(ChatMessage consecutiveMessage)
-    {
+    public ChatMessage mergeMessage(ChatMessage consecutiveMessage) {
         if (messageUID != null && messageUID.equals(consecutiveMessage.getCorrectedMessageUID())) {
             return consecutiveMessage;
         }
         return new MergedMessage(this).mergeMessage(consecutiveMessage);
     }
 
-    public boolean updateFTStatus(Object descriptor, String msgUuid, int status, String fileName, int encType, int recordType, String dir)
-    {
+    /**
+     * Update file transfer status for the message with the specified msgUuid.
+     *
+     * @param msgUuid Message uuid
+     * @param status Status of the fileTransfer
+     */
+    public void updateFTStatus(String msgUuid, int status) {
+        if (messageUID.equals(msgUuid)) {
+            mXferStatus = status;
+        }
+    }
+
+    /**
+     * Update file transfer status and FileRecord for the message with the specified msgUuid.
+     *
+     * @param descriptor The recipient
+     * @param msgUuid Message uuid also use as FileRecord id
+     * @param status Status of the fileTransfer
+     * @param fileName FileName
+     * @param encType Message encode Type
+     * @param recordType ChatMessage#Type
+     * @param direction File received or send
+     *
+     * @return True if found the a matching msgUuid for update
+     */
+    public boolean updateFTStatus(Object descriptor, String msgUuid, int status, String fileName, int encType, int recordType, String dir) {
         if (messageUID.equals(msgUuid)) {
             mXferStatus = status;
             messageType = recordType;
@@ -403,19 +407,11 @@ public class ChatMessageImpl implements ChatMessage
         return false;
     }
 
-    public boolean updateChatMessage(String msgUuid, String content)
-    {
-        if (messageUID.equals(msgUuid)) {
-        }
-        return false;
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getUidForCorrection()
-    {
+    public String getUidForCorrection() {
         return messageUID;
     }
 
@@ -423,8 +419,7 @@ public class ChatMessageImpl implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public String getContentForCorrection()
-    {
+    public String getContentForCorrection() {
         return message;
     }
 
@@ -432,8 +427,7 @@ public class ChatMessageImpl implements ChatMessage
      * {@inheritDoc}
      */
     @Override
-    public String getContentForClipboard()
-    {
+    public String getContentForClipboard() {
         return message;
     }
 
@@ -443,8 +437,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the OperationSetFileTransfer of this message.
      */
     @Override
-    public OperationSetFileTransfer getOpSet()
-    {
+    public OperationSetFileTransfer getOpSet() {
         return this.opSet;
     }
 
@@ -454,8 +447,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the IncomingFileTransferRequest of this message.
      */
     @Override
-    public IncomingFileTransferRequest getFTRequest()
-    {
+    public IncomingFileTransferRequest getFTRequest() {
         return this.request;
     }
 
@@ -465,13 +457,11 @@ public class ChatMessageImpl implements ChatMessage
      * @return the HttpFileDownloadJabberImpl of this message.
      */
     @Override
-    public HttpFileDownloadJabberImpl getHttpFileTransfer()
-    {
+    public HttpFileDownloadJabberImpl getHttpFileTransfer() {
         return httpFileTransfer;
     }
 
-    public void setHttpFileTransfer(HttpFileDownloadJabberImpl httpFileTransfer)
-    {
+    public void setHttpFileTransfer(HttpFileDownloadJabberImpl httpFileTransfer) {
         this.httpFileTransfer = httpFileTransfer;
     }
 
@@ -481,8 +471,7 @@ public class ChatMessageImpl implements ChatMessage
      * @return the fileRecord of this message.
      */
     @Override
-    public FileRecord getFileRecord()
-    {
+    public FileRecord getFileRecord() {
         return fileRecord;
     }
 
@@ -491,8 +480,7 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @return the UID of this message.
      */
-    public String getMessageUID()
-    {
+    public String getMessageUID() {
         return messageUID;
     }
 
@@ -501,8 +489,7 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @return the direction of this message.
      */
-    public String getMessageDir()
-    {
+    public String getMessageDir() {
         return mDirection;
     }
 
@@ -511,8 +498,7 @@ public class ChatMessageImpl implements ChatMessage
      *
      * @return the UID of the message that this message replaces, or <code>null</code> if this is a new message.
      */
-    public String getCorrectedMessageUID()
-    {
+    public String getCorrectedMessageUID() {
         return correctedMessageUID;
     }
 
@@ -521,10 +507,10 @@ public class ChatMessageImpl implements ChatMessage
      * Must check against the current message and the next message i.e isNonMerge(nextMsg).
      *
      * @param nextMsg the next message to check
+     *
      * @return <code>true</code> if the given message is a consecutive message, <code>false</code> - otherwise
      */
-    public boolean isConsecutiveMessage(ChatMessage nextMsg)
-    {
+    public boolean isConsecutiveMessage(ChatMessage nextMsg) {
         if (nextMsg == null)
             return false;
 
@@ -569,10 +555,10 @@ public class ChatMessageImpl implements ChatMessage
      * Check the next ChatMessage to ascertain if this.message should be treated as non-consecutiveMessage
      *
      * @param nextMessage ChatMessage to check
+     *
      * @return true if non-consecutiveMessage
      */
-    private boolean isNonMerge(ChatMessage nextMessage)
-    {
+    private boolean isNonMerge(ChatMessage nextMessage) {
         int msgType = nextMessage.getMessageType();
         String bodyText = nextMessage.getMessage();
         boolean isNonEmpty = !TextUtils.isEmpty(bodyText);
@@ -597,8 +583,7 @@ public class ChatMessageImpl implements ChatMessage
         return (isFTMsg || isHttpFTMsg || isMarkUpText || isLatLng || isSystemMsg);
     }
 
-    static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt)
-    {
+    static public ChatMessageImpl getMsgForEvent(MessageDeliveredEvent evt) {
         final IMessage imessage = evt.getSourceMessage();
         final String sender = evt.getContact().getProtocolProvider().getAccountID().getAccountJid();
         final String senderName = evt.getSender().isEmpty() ? sender : evt.getSender();
@@ -607,8 +592,7 @@ public class ChatMessageImpl implements ChatMessage
                 ChatMessage.MESSAGE_OUT, imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_OUT);
     }
 
-    static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt)
-    {
+    static public ChatMessageImpl getMsgForEvent(final MessageReceivedEvent evt) {
         final IMessage imessage = evt.getSourceMessage();
         final Contact contact = evt.getSourceContact();
         final String sender = !evt.getSender().isEmpty() ? evt.getSender()
@@ -618,8 +602,7 @@ public class ChatMessageImpl implements ChatMessage
                 evt.getTimestamp(), evt.getEventType(), imessage, evt.getCorrectedMessageUID(), ChatMessage.DIR_IN);
     }
 
-    static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt)
-    {
+    static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageDeliveredEvent evt) {
         final IMessage imessage = evt.getMessage();
         String chatRoom = evt.getSourceChatRoom().getName();
 
@@ -627,8 +610,7 @@ public class ChatMessageImpl implements ChatMessage
                 ChatMessage.MESSAGE_MUC_OUT, imessage, null, ChatMessage.DIR_OUT);
     }
 
-    static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageReceivedEvent evt)
-    {
+    static public ChatMessageImpl getMsgForEvent(final ChatRoomMessageReceivedEvent evt) {
         final IMessage imessage = evt.getMessage();
         String nickName = evt.getSourceChatRoomMember().getNickName();
         String contact = evt.getSourceChatRoomMember().getContactAddress();
@@ -637,8 +619,7 @@ public class ChatMessageImpl implements ChatMessage
                 evt.getEventType(), imessage, null, ChatMessage.DIR_IN);
     }
 
-    static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord)
-    {
+    static public ChatMessageImpl getMsgForEvent(final FileRecord fileRecord) {
         return new ChatMessageImpl(fileRecord.getJidAddress(), fileRecord.getDate(),
                 ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY, IMessage.ENCODE_PLAIN, null,
                 fileRecord.getID(), fileRecord.getDirection(), null, null, fileRecord);
@@ -648,10 +629,10 @@ public class ChatMessageImpl implements ChatMessage
      * Returns the account user display name for the given protocol provider.
      *
      * @param protocolProvider the protocol provider corresponding to the account to add
+     *
      * @return The account user display name for the given protocol provider.
      */
-    private static String getAccountDisplayName(ProtocolProviderService protocolProvider)
-    {
+    private static String getAccountDisplayName(ProtocolProviderService protocolProvider) {
         // Get displayName from OperationSetServerStoredAccountInfo need account to be login in
         if (((protocolProvider == null) || !protocolProvider.isRegistered())) {
             return protocolProvider.getAccountID().getDisplayName();

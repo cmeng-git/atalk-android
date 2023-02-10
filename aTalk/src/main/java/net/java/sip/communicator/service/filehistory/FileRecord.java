@@ -50,7 +50,7 @@ public class FileRecord extends EventObject
     /**
      * Status indicating that the file transfer was in active state.
      */
-    public static final int STATUS_ACTIVE = 14;
+    public static final int STATUS_WAITING = 14;
     /**
      * Status indicating that the file transfer is preparing state.
      */
@@ -84,8 +84,8 @@ public class FileRecord extends EventObject
         put(STATUS_FAILED, "failed");
         put(STATUS_CANCELED, "canceled");
         put(STATUS_DECLINED, "declined");
-        put(STATUS_ACTIVE, "active");
         put(STATUS_PREPARING, "preparing");
+        put(STATUS_WAITING, "waiting");
         put(STATUS_IN_PROGRESS, "in_progress");
     }};
 
@@ -97,6 +97,7 @@ public class FileRecord extends EventObject
      * @param direction File received or send
      * @param date the timeStamp
      * @param file the file name
+     * @param encType the file encryption (plain or OMEMO)
      * @param status Status of the fileTransfer
      */
     public FileRecord(String id, Object entityJid, String direction, Date date, File file, int encType, int status)

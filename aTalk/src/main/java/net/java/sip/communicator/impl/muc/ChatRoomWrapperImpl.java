@@ -395,13 +395,14 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * Returns the bookmark name; empty string if null.
+     * Return the bookmark name; default to conference local part if null.
      *
      * @return the bookmark name
      */
     public String getBookmarkName()
     {
-        return StringUtils.isEmpty(bookmarkName) ? "" : bookmarkName;
+        return StringUtils.isEmpty(bookmarkName)
+                ? chatRoomID.split("@")[0] : bookmarkName;
     }
 
     /**

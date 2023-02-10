@@ -86,17 +86,17 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
     /**
      * A map of <account Jid, List<BookmarkConference>>
      */
-    private Map<String, List<BookmarkConference>> mAccountBookmarkConferencesList = new LinkedHashMap<>();
+    private final Map<String, List<BookmarkConference>> mAccountBookmarkConferencesList = new LinkedHashMap<>();
 
     /**
      * A map of <RoomJid, BookmarkConference> retrieved from mAccountBookmarkConferencesList
      */
-    private Map<String, BookmarkConference> mBookmarkConferenceList = new LinkedHashMap<>();
+    private final Map<String, BookmarkConference> mBookmarkConferenceList = new LinkedHashMap<>();
 
     /**
      * A map of <JID, ChatRoomProviderWrapper>
      */
-    private Map<String, ChatRoomProviderWrapper> mucRoomWrapperList = new LinkedHashMap<>();
+    private final Map<String, ChatRoomProviderWrapper> mucRoomWrapperList = new LinkedHashMap<>();
 
     private List<String> mChatRoomList;
 
@@ -125,7 +125,6 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
         initAccountSpinner();
 
         mucNameField = this.findViewById(R.id.mucName_Edit);
-        mucNameField.setText("");
         nicknameField = this.findViewById(R.id.nickName_Edit);
         mAutoJoin = this.findViewById(R.id.cb_autojoin);
         mBookmark = this.findViewById(R.id.cb_bookmark);
@@ -277,7 +276,7 @@ public class ChatRoomBookmarksDialog extends Dialog implements OnItemSelectedLis
             if ((mAccountBookmarkConferencesList != null) && (mAccountBookmarkConferencesList.size() > 0)) {
                 Object[] keySet = mAccountBookmarkConferencesList.keySet().toArray();
 
-                if ((keySet != null) && (keySet.length > 0)) {
+                if (keySet.length > 0) {
                     String accountId = (String) keySet[0];
                     if (StringUtils.isNotEmpty(accountId))
                         initChatRoomSpinner(accountId);

@@ -71,7 +71,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
@@ -122,8 +121,12 @@ public class ChatPanel implements Chat, MessageListener {
     private final String[] chatHistoryFilter = ChatSession.chatHistoryFilter;
 
     /**
-     * Messages cache used by this session; to cache any received message when the session
-     * chatFragment has not yet opened (not in active state).
+     * msgCache: Messages cache used by this session; to cache any received message when the session
+     * chatFragment has not yet opened once. msgCache is the mirror image of the DisplayMessages show
+     * in ChatSession UI, and get updated with history messages retrieved by user. This msgCache is
+     * always return when user resume the chatSession (chatListAdapter is empty). There the contents
+     * must kept up to date with the ChatSession UI messages.
+     *
      * Important: when historyLog is disabled i.e. all messages exchanges are only saved in msgCache.
      *
      * Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
@@ -154,10 +157,18 @@ public class ChatPanel implements Chat, MessageListener {
     private boolean historyLoaded = false;
 
     /**
+     * Flag indicates that mam access has been attempted when chat session if first launched.
+     * Flag is set to true when user is registered and mam retrieval is attempted.
+     */
+    private boolean mamChecked = false;
+
+    /**
      * Blocked caching of the next new message if sent via normal sendMessage().
      * Otherwise there will have duplicated display messages
      */
     private boolean cacheBlocked = false;
+
+    private Boolean cacheUpdated = null;
 
     /**
      * Registered chatFragment to be informed of any messageReceived event
@@ -249,6 +260,10 @@ public class ChatPanel implements Chat, MessageListener {
      */
     public MetaContact getMetaContact() {
         return mMetaContact;
+    }
+
+    public Object getDescriptor() {
+        return mDescriptor;
     }
 
     /**
@@ -452,11 +467,17 @@ public class ChatPanel implements Chat, MessageListener {
         // First time access: mamQuery the server mam records and save them into sql database;
         // only then read in last HISTORY_CHUNK_SIZE of history messages from database
         if (msgCache.isEmpty()) {
-            mamQuery(descriptor);
+            mamChecked = mamQuery(descriptor);
             history = metaHistory.findLast(chatHistoryFilter, descriptor, HISTORY_CHUNK_SIZE);
         }
         // Read in HISTORY_CHUNK_SIZE records earlier than the 'last fetch date' i.e. top of the msgCache
         else {
+            // Update Message History database if mamRetrieved is fase and user is now registered
+            // Note: this only update the DB but not the chat session UI.
+            if (!mamChecked) {
+                mamChecked = mamQuery(descriptor);
+            }
+
             if (mLastMsgFetchDate == null) {
                 mLastMsgFetchDate = msgCache.get(0).getDate();
             }
@@ -569,7 +590,12 @@ public class ChatPanel implements Chat, MessageListener {
      *
      * @param descriptor can either be metaContact or chatRoomWrapper=>ChatRoom, from whom the mam are to be loaded
      */
-    private void mamQuery(Object descriptor) {
+    private boolean mamQuery(Object descriptor) {
+        if (!getProtocolProvider().isRegistered()) {
+            aTalkApp.showToastMessage(R.string.service_gui_HISTORY_WARNING);
+            return false;
+        }
+
         MamManager mamManager;
         XMPPConnection connection = getProtocolProvider().getConnection();
 
@@ -584,18 +610,20 @@ public class ChatPanel implements Chat, MessageListener {
             mamManager = MamManager.getInstanceFor(connection, null);
         }
 
+        MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
+        Date mamDate = mMHS.getLastMessageDateForSessionUuid(mChatId);
+
         try {
             if (mamManager.isSupported()) {
                 // Prevent omemoManager from automatically decrypting MAM messages.
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                 omemoManager.stopStanzaAndPEPListeners();
 
-                MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
-                Date mamDate = mMHS.getMamDate(mChatId);
+                mamDate = mMHS.getMamDate(mChatId);
 
-                // for testing only; Local time
-                Calendar c = Calendar.getInstance(TimeZone.getDefault());
-                c.set(2023, 0, 3, 0, 0, 0);
+                // for testing only using the specified Local time
+                // Calendar c = Calendar.getInstance(TimeZone.getDefault());
+                // c.set(2023, 1, 1, 0, 0, 0);
                 // mamDate = c.getTime();
 
                 MamManager.MamQueryArgs mamQueryArgs = MamManager.MamQueryArgs.builder()
@@ -610,11 +638,14 @@ public class ChatPanel implements Chat, MessageListener {
                     mMHS.saveMamIfNotExit(omemoManager, this, forwardedList);
                 }
                 omemoManager.resumeStanzaAndPEPListeners();
+            } else {
+                mMHS.setMamDate(mChatId, mamDate);
             }
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException // | IOException
                 | SmackException.NotConnectedException | InterruptedException | SmackException.NotLoggedInException e) {
             Timber.e("MAM query: %s", e.getMessage());
         }
+        return true;
     }
 
     /**
@@ -633,6 +664,7 @@ public class ChatPanel implements Chat, MessageListener {
             // 20220709: cacheMsg.getMessageUID() can be null
             if (msgUuid.equals(cacheMsg.getMessageUID())) {
                 cacheMsg.updateFTStatus(mDescriptor, msgUuid, status, fileName, encType, recordType, cacheMsg.getMessageDir());
+                // Timber.d("updateCacheFTRecord msgUid: %s => %s (%s)", msgUuid, status, recordType );
                 break;
             }
             cacheIdx--;
@@ -640,7 +672,8 @@ public class ChatPanel implements Chat, MessageListener {
     }
 
     /**
-     * Remove user deleted messages from msgCache; or update receiptStatus cached message of the given msgUuid
+     * Remove user deleted messages from msgCache if receiptStatus is null;
+     * or update receiptStatus cached message of the given msgUuid
      *
      * @param msgUuid ChatMessage uuid
      * @param receiptStatus message receipt status to update; null is to delete message
@@ -650,10 +683,13 @@ public class ChatPanel implements Chat, MessageListener {
         while (cacheIdx >= 0) {
             ChatMessageImpl cacheMsg = (ChatMessageImpl) msgCache.get(cacheIdx);
             if (msgUuid.equals(cacheMsg.getMessageUID())) {
-                if (receiptStatus == null)
+                // Timber.d("updateCacheMessage msgUid: %s => %s", msgUuid, receiptStatus);
+                if (receiptStatus == null) {
                     msgCache.remove(cacheIdx);
-                else
+                }
+                else {
                     cacheMsg.setReceiptStatus(receiptStatus);
+                }
                 break;
             }
             cacheIdx--;
@@ -723,6 +759,7 @@ public class ChatPanel implements Chat, MessageListener {
             mCurrentChatTransport.sendInstantMessage(message, encryption | encType);
         } catch (Exception ex) {
             aTalkApp.showToastMessage(ex.getMessage());
+            cacheBlocked = false;
         }
     }
 
@@ -762,7 +799,9 @@ public class ChatPanel implements Chat, MessageListener {
     public void addMessage(ChatMessageImpl chatMessage) {
         // Must always cache the chatMsg as chatFragment has not registered to handle incoming
         // message on first onAttach or when it is not in focus.
-        cacheNextMsg(chatMessage);
+        if (!(cacheNextMsg(chatMessage))) {
+            Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
+        }
         messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
 
         for (ChatSessionListener l : msgListeners) {
@@ -775,16 +814,20 @@ public class ChatPanel implements Chat, MessageListener {
      * Otherwise duplicated messages when share link
      *
      * @param newMsg the next message to cache.
+     * @return true if newMsg added successfully to the msgCache
      */
-    public void cacheNextMsg(ChatMessageImpl newMsg) {
+    public boolean cacheNextMsg(ChatMessageImpl newMsg) {
         // Timber.d("Cache blocked is %s for: %s", cacheBlocked, newMsg.getMessage());
         if (!cacheBlocked) {
             // FFR: ANR synchronized (cacheLock); fixed with new msgCache merging optimization (20221229)
             synchronized (cacheLock) {
-                msgCache.add(newMsg);
+                return (cacheUpdated = msgCache.add(newMsg));
             }
+        } else {
+            cacheBlocked = false;
+            cacheUpdated = null;
         }
-        cacheBlocked = false;
+        return false;
     }
 
     public boolean isChatTtsEnable() {
@@ -861,8 +904,11 @@ public class ChatPanel implements Chat, MessageListener {
         }
 
         // Do not use addMessage to avoid TTS activation for outgoing file message
-        ChatMessageImpl chatMsg = new ChatMessageImpl(sendTo, sendTo, date, messageType, IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT);
-        cacheNextMsg(chatMsg);
+        ChatMessageImpl chatMsg = new ChatMessageImpl(sendTo, sendTo, date, messageType,
+                IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT);
+        if (!cacheNextMsg(chatMsg) ) {
+            Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUuid);
+        }
         for (ChatSessionListener l : msgListeners) {
             l.messageAdded(chatMsg);
         }
@@ -883,15 +929,18 @@ public class ChatPanel implements Chat, MessageListener {
     public void addFTReceiveRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date) {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
+        String msgUuid =  request.getID();
         String msgContent = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
         int encType = IMessage.ENCODE_PLAIN;
         ChatMessageImpl chatMsg = new ChatMessageImpl(senderName, date, msgType, encType,
-                msgContent, request.getID(), ChatMessage.DIR_IN, opSet, request, null);
+                msgContent, msgUuid, ChatMessage.DIR_IN, opSet, request, null);
 
         // Do not use addMessage to avoid TTS activation for incoming file message
-        cacheNextMsg(chatMsg);
+        if (!cacheNextMsg(chatMsg) ) {
+            Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUuid);
+        }
         for (ChatSessionListener l : msgListeners) {
             l.messageAdded(chatMsg);
         }
@@ -921,7 +970,9 @@ public class ChatPanel implements Chat, MessageListener {
             // message on first onAttach or not in focus
 
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
-            cacheNextMsg(chatMessage);
+            if (!cacheNextMsg(chatMessage) ) {
+                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
+            }
             for (MessageListener l : msgListeners) {
                 l.messageReceived(messageReceivedEvent);
             }
@@ -941,7 +992,10 @@ public class ChatPanel implements Chat, MessageListener {
             if (messageDeliveredEvent.getSourceMessage().isRemoteOnly())
                 return;
 
-            cacheNextMsg(ChatMessageImpl.getMsgForEvent(messageDeliveredEvent));
+            ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageDeliveredEvent);
+            if (!cacheNextMsg(chatMessage) ) {
+                Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
+            }
             for (MessageListener l : msgListeners) {
                 l.messageDelivered(messageDeliveredEvent);
             }

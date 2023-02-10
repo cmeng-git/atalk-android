@@ -392,6 +392,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
+    <string name="service_gui_HISTORY_WARNING">Tutup dan buka sesi obrolan ini untuk melihat pesan MAM dan Offline saat online</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Bilik Alternatif:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Anda dapat melanjutkan percakapan di ruang obrolan berikut: %1$s</string>
@@ -432,6 +433,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Tantangan Captcha</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Ruang obrolan dilindungi dengan tantangan captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">Entri teks captcha tidak boleh kosong</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Verifikasi CAPTCHA betul</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
@@ -1284,6 +1286,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Riwayat obrolan dinonaktifkan</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Log riwayat obrolan</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Pencatatan log riwayat obrolan</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Kesalahan dimenyetel opsi MAM untuk pengguna luring: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Berapa banyak pesan terbaru yang harus ditampilkan?</string>

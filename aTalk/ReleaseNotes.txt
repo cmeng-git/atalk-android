@@ -1,5 +1,31 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.3 (301030)
+Release Date:   02/11/2023
+Author:         cmeng
+- Do not proceed with MAM query if user is offline and not registered with the network.
+- Alert user to close and open chat session to view MAM when online, if user access chat session while offline.
+- Change MAM implementation so the MAM messages are always available for aTalk retrieval.
+- Show error message (MAM access denied) when user toggle 'Chat history logging' option while user is offline.
+- Do not proceed with conference access if required captcha challenge text entry is empty.
+- Fix main menu not updated after user change theme or locale.
+  * Must restart aTalk class to get user newly selected theme and locale to be reflected on main option menu.
+  * onResume invalidateOptionsMenu() is not working.
+- Always use local newly created contentValues for file record DB update to avoid ConcurrentModificationException.
+- Add ChatFragment#updateMessageFTStatus(), replacing the setXferStatus(); so msgCache and ChatPanel
+  file transfer status update are sync in implementation.
+- Sync FileTransferStatusChangeEvent status to be same as FileRecord assigned value, and rename
+  FileRecord#ACTIVE to #WAITING; improve file transfer handling with status interchangeable.
+- Fix Bookmark dialog crash when 'Apply' with 'Name' field left empty.
+  * Default to use conference room local part.
+- Fix deleted messages / file records being displayed in chat after refreshed.
+  * mdIdx2msgUid (=> msgUuid2Idx): A map reference of msgUuid to the DisplayMessage position;
+  * The msg position must get updated when messages are deleted; do it in ChatListAdapter#getView().
+- Fixed failure in jingle file transfer when candidate-type proxy is used due to CandidateActivated.ELEMENT changed.
+  Must perform local compilation of JingleS5BTransportProvider as case CandidateActivated.ELEMENT (i.e. candidate-activated') has changed to case 'activated'
+- Review and fix if possible FFR from android developer dated 2023/02/10
+
+=========================================================================
 Version:        3.1.2 (301020)
 Release Date:   01/31/2023
 Author:         cmeng
@@ -42,8 +68,7 @@ Author:         cmeng
   to have similar structure to other file transfer transports implementations.
 - Optimize ChatPanel#getHistory() implementation in handling merging msgHistory to msgCache to avoid ANR in FFR.
   * Do not update display msgCache from history DB records if present; deleted file records being displayed in chat after refresh.
-- Fix deleted messages / file records being displayed in chat after refresh.
-  * Disallow history message fetch when MultiChoiceMode session is active: else new reused views may get highlighted and destroy current selected items
+- Disallow history message fetch when MultiChoiceMode session is active: else new reused views may get highlighted and destroy current selected items
   * Incorrectly using the the msgCache top stack date to fetch/update displayed messages from DB.
 - Change FileBackEnd#getMimeType() to include the guessContentTypeFromStream() if normal check failed.
 - Add new Chinese Simplify language UI support for user selection

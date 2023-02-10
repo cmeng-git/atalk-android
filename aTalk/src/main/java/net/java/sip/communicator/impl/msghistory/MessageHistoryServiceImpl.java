@@ -23,7 +23,6 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.ContactResourceJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -44,7 +43,6 @@ import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ChatRoomMember;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
@@ -247,7 +245,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
             Timber.d("Handling registration of a new Protocol Provider.");
             this.handleProviderAdded((ProtocolProviderService) sService);
-        } else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
+        }
+        else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
             this.handleProviderRemoved((ProtocolProviderService) sService);
         }
     }
@@ -268,7 +267,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             if (this.messageSourceService != null)
                 opSetIm.addMessageListener(messageSourceService);
-        } else {
+        }
+        else {
             Timber.log(TimberLog.FINER, "Service did not have OperationSet BasicInstantMessaging.");
         }
 
@@ -278,7 +278,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             if (this.messageSourceService != null)
                 opSetSMS.addMessageListener(messageSourceService);
-        } else {
+        }
+        else {
             Timber.log(TimberLog.FINER, "Service did not have OperationSet SmsMessaging.");
         }
 
@@ -290,7 +291,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             opSetMultiUChat.addPresenceListener(this);
             if (messageSourceService != null)
                 opSetMultiUChat.addPresenceListener(messageSourceService);
-        } else {
+        }
+        else {
             Timber.log(TimberLog.FINER, "Service did not have OperationSet MultiUserChat.");
         }
 
@@ -383,6 +385,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param metaContact MetaContact
      * @param startDate Date the start date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByStartDate(MetaContact metaContact, Date startDate) {
@@ -409,6 +412,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param metaContact MetaContact
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByEndDate(MetaContact metaContact, Date endDate) {
@@ -436,6 +440,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param metaContact MetaContact
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate, Date endDate) {
@@ -465,6 +470,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate, Date endDate, String[] keywords) {
@@ -477,6 +483,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param metaContact MetaContact
      * @param keyword keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeyword(MetaContact metaContact, String keyword) {
@@ -489,6 +496,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param metaContact MetaContact
      * @param keywords keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeywords(MetaContact metaContact, String[] keywords) {
@@ -501,6 +509,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param metaContact MetaContact
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findLast(MetaContact metaContact, int count) {
@@ -529,6 +538,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param metaContact MetaContact
      * @param startDate messages after date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findFirstMessagesAfter(MetaContact metaContact, Date startDate, int count) {
@@ -560,6 +570,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param metaContact MetaContact
      * @param endDate messages before date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findLastMessagesBefore(MetaContact metaContact, Date endDate, int count) {
@@ -587,11 +598,13 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     // ============== ChatSessionFragment utilities ======================
+
     /**
      * Returns all the chat session record created by the supplied accountUid before the given date
      *
      * @param accountUid Account Uid
      * @param endDate end date for the session creation
+     *
      * @return Collection of ChatSessionRecord
      */
     public Collection<ChatSessionRecord> findSessionByEndDate(String accountUid, Date endDate) {
@@ -617,6 +630,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * bit-7 of ChatSession.STATUS if set, then remove the record from UI; i.e. just return null
      *
      * @param cursor HistoryRecord in cursor
+     *
      * @return Object ChatSessionRecord
      */
     private ChatSessionRecord convertToSessionRecord(Cursor cursor) {
@@ -648,6 +662,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Get and return the last message for the specified sessionUuid
      *
      * @param sessionUuid the chatSessionUuid in ChatMessage.TABLE_NAME
+     *
      * @return last message for the specified sessionUuid
      */
     public String getLastMessageForSessionUuid(String sessionUuid) {
@@ -669,9 +684,33 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
+     * Get and return the last message Timestamp for the specified sessionUuid
+     *
+     * @param sessionUuid the chatSessionUuid in ChatMessage.TABLE_NAME
+     *
+     * @return last message Date (TimeStamp) for the specified sessionUuid
+     */
+    public Date getLastMessageDateForSessionUuid(String sessionUuid) {
+        String endTimeStamp = String.valueOf(new Date().getTime());
+
+        String[] columns = {ChatMessage.TIME_STAMP};
+        String[] args = {sessionUuid, endTimeStamp};
+        Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.SESSION_UUID + "=? AND "
+                + ChatMessage.TIME_STAMP + "<?", args, null, null, ORDER_DESC, "1");
+
+        String mamDate = "-1";
+        while (cursor.moveToNext()) {
+            mamDate = cursor.getString(0);
+        }
+        cursor.close();
+        return new Date(Long.parseLong(mamDate));
+    }
+
+    /**
      * Set the chatSession chatType mainly used to set session hidden bit
      *
      * @param sessionUuid the chatSession Uuid
+     *
      * @return the chatSession chatType
      */
     public int setSessionChatType(String sessionUuid, int chatType) {
@@ -693,10 +732,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     // ============== End ChatSessionFragment utilities ======================
 
     // ============== Start mam Message utilities ======================
+
     /**
      * Get the last server mam record access date
      *
      * @param sessionUuid Chat session Uuid
+     *
      * @return the last mamDate updated
      */
     public Date getMamDate(String sessionUuid) {
@@ -714,8 +755,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Update the last mam/normal sent/received message timeStamp for the specified sessionUuid.
-     * Always advance 10ms to avoid last message being included in future mam fetching.
+     * Update the last mam retrieval message timeStamp for the specified sessionUuid.
+     * Always advance timeStamp by 10ms to avoid last message being included in future mam fetching.
      *
      * @param sessionUuid the chat sessions record id to which to save the timestamp
      * @param date last mam message timestamp
@@ -744,7 +785,6 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (userJid.equals(sender)) {
                 continue;
             }
-
             timeStamp = forwarded.getDelayInformation().getStamp();
 
             String[] args = {chatId};
@@ -767,7 +807,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                             | CryptoFailedException | IOException e) {
                         Timber.e("Omemo decrypt message (%s): %s", msgId, e.getMessage());
                     }
-                } else {
+                }
+                else {
                     iMessage = new MessageJabberImpl(msg.getBody(), iMessage.ENCRYPTION_NONE, null, msgId);
                 }
 
@@ -776,7 +817,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                     int msgType = (Message.Type.groupchat == msg.getType()) ? ChatMessage.MESSAGE_ACTION : ChatMessage.MESSAGE_IN;
                     if (isHistoryLoggingEnabled()) {
                         writeMessage(chatId, direction, sender, iMessage, timeStamp, msgType);
-                    } else {
+                    }
+                    else {
                         String fromJid = sender.toString();
                         chatPanel.cacheNextMsg(new ChatMessageImpl(fromJid, fromJid, timeStamp,
                                 msgType, iMessage, null, direction));
@@ -785,7 +827,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 }
             }
         }
-        // Add 10ms advance to the last timeStamp so only new mam messages are being fetched on new mamQuery
+        // Save the last mam retrieval timeStamp
         setMamDate(chatId, timeStamp);
     }
 
@@ -799,6 +841,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * or <code>null</code> to search for all providers
      * @param contactToFilter can be filtered by contact e.g. xyx123@atalk.org, or <code>null</code>
      * to search for all contacts
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findRecentMessagesPerContact(int count, String providerToFilter,
@@ -885,6 +928,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Get and return the count of messages for the specified accountUuid
      *
      * @param editedAccUID the current edited account
+     *
      * @return count of messages for the specified accountUuid
      */
     public int getMessageCountForAccountUuid(String editedAccUID) {
@@ -915,6 +959,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Get and return the count of messages for the specified sessionUuid
      *
      * @param sessionUuid the chatSessionUuid in ChatMessage.TABLE_NAME
+     *
      * @return count of messages for the specified sessionUuid
      */
     public int getMessageCountForSessionUuid(String sessionUuid) {
@@ -936,6 +981,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param accountUuid the account Uuid.
      * @param contactId the entityBareJid for Contact or ChatRoom in String.
      * @param isSMSEnabled get contact from SmsMessage if true
+     *
      * @return Contact or ChatRoom object.
      */
     private Object getContactOrRoomByID(String accountUuid, String contactId, boolean isSMSEnabled) {
@@ -996,6 +1042,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Non-Persistent Entity will use ChatSession.Mode_MULTI to generate sessionUuid
      *
      * @param contact The chat Contact
+     *
      * @return sessionUuid - created if not exist
      */
     public String getSessionUuidByJid(Contact contact) {
@@ -1012,6 +1059,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Returns the sessionUuid by specified ChatRoom
      *
      * @param room The chatRoom
+     *
      * @return sessionUuid - created if not exist
      */
     public String getSessionUuidByJid(ChatRoom room) {
@@ -1026,6 +1074,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param accountID The AccountID
      * @param entityJid The chatRoomID
+     *
      * @return sessionUuid - created if not exist
      */
     public String getSessionUuidByJid(AccountID accountID, String entityJid) {
@@ -1036,6 +1085,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Returns the sessionUuid by the given AdHocChatRoom
      *
      * @param room The adHocChatRoom
+     *
      * @return sessionUuid - created if not exist
      */
     private String getSessionUuidByJid(AdHocChatRoom room) {
@@ -1052,6 +1102,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param entityJid Contact or ChatRoom
      * @param mode indicate if it is ChatSession.MODE_SINGLE or ChatSession.MODE_MUC, dictate the method
      * use to generate new sessionUid
+     *
      * @return sessionUuid - created if not exist
      */
     private String getSessionUuid(AccountID accountID, String entityJid, int mode) {
@@ -1107,6 +1158,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Get the chatSession chatType
      *
      * @param chatSession the chatSession for single or multi-chat
+     *
      * @return the chatSession chatType
      */
     public int getSessionChatType(ChatSession chatSession) {
@@ -1144,6 +1196,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Set the chatSession chatType
      *
      * @param chatSession the chatSession for single or multi-chat
+     *
      * @return the chatSession chatType
      */
     public int setSessionChatType(ChatSession chatSession, int chatType) {
@@ -1177,6 +1230,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param cursor HistoryRecord in cursor
      * @param contact always the metaContact.getDefaultContact().
+     *
      * @return Object
      */
     private EventObject convertHistoryRecordToMessageEvent(Cursor cursor, Contact contact) {
@@ -1207,7 +1261,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 evt.setSmsMessage(true);
             }
             return evt;
-        } else {
+        }
+        else {
             // ContactResource has no meaning for the given contact, so set it to null
             return new MessageReceivedEvent(msg, contact, null, sender, timestamp, null);
         }
@@ -1219,6 +1274,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param cursor HistoryRecord in cursor
      * @param chatRoom the chat room
+     *
      * @return EventObject
      */
     private EventObject convertHistoryRecordToMessageEvent(Cursor cursor, ChatRoom chatRoom) {
@@ -1245,7 +1301,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
             if (contact != null) {
                 return createFileRecordFromProperties(mProperties, contact);
-            } else // send from me
+            }
+            else // send from me
                 return createFileRecordFromProperties(mProperties, chatRoom);
         }
 
@@ -1254,7 +1311,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
 
         if (msg.isOutgoing) {
             return new ChatRoomMessageDeliveredEvent(chatRoom, timestamp, msg, ChatMessage.MESSAGE_MUC_OUT);
-        } else {
+        }
+        else {
             // muc incoming message can be MESSAGE_HTTP_FILE_LINK
             // Incoming muc message contact should not be null unless the sender is not one of user's contacts
             Jid userJid = (contact == null) ? null : contact.getJid();
@@ -1277,6 +1335,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Create from the retrieved database mProperties to chatMessages
      *
      * @param mProperties message properties converted from cursor
+     *
      * @return MessageImpl
      */
     private MessageImpl createMessageFromProperties(Map<String, String> mProperties) {
@@ -1305,6 +1364,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param mProperties message properties converted from cursor
      * @param entityJid an instance of Contact or ChatRoom of the history message
+     *
      * @return FileRecord
      */
     private FileRecord createFileRecordFromProperties(Map<String, String> mProperties, Object entityJid) {
@@ -1351,7 +1411,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         Contact contact = evt.getSourceContact();
         MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(contact);
 
-        // return if logging is switched off for this particular contact or not a Http File Transfer message
+        // return if logging is switched off for this particular contact OR not a Http File Transfer message
         int msgType = evt.getEventType();
         if ((metaContact != null) && !isHistoryLoggingEnabled(metaContact.getMetaUID())
                 && (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD != msgType)) {
@@ -1515,11 +1575,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return;
         }
 
-        Contact contact = evt.getSourceChatRoomParticipant();
-        ContactResource resource = contact.getResources().iterator().next();
-        String sender = contact.getAddress() + "/" + resource.getResourceName();
         String sessionUuid = getSessionUuidByJid(evt.getSourceChatRoom());
-
         writeMessage(sessionUuid, ChatMessage.DIR_IN, room, evt.getMessage(), evt.getTimestamp(), msgType);
     }
 
@@ -1541,14 +1597,16 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     // ============== Store message to database ======================
+
     /**
-     * Writes message to the history (ChatRoom out, AdHocChatRoom out)
+     * Writes message to the history for MAM, ChatRoom out and AdHocChatRoom in/out
      *
-     * @param sessionUuid The entry with sessionUuid to which it will store the message
+     * @param chatId The entry with sessionUuid to which it will store the message
      * @param direction ChatMessage.DIR_IN or DIR_OUT
      * @param sender can either be EntityBareJid, ChatRoom or AdHocChatRoom (icq implementation)
      * @param message IMessage
      * @param msgTimestamp the timestamp when was message received that came from the protocol provider
+     * @param msgType ChatMessage#Type
      */
     private void writeMessage(String chatId, String direction, Object sender,
             IMessage message, Date msgTimestamp, int msgType) {
@@ -1562,14 +1620,16 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             entityJid = chatRoom.getUserNickname().toString();
             // entityJid = chatRoom.getName() + "/" + nick;
 
-        } else if (sender instanceof AdHocChatRoom) {
+        }
+        else if (sender instanceof AdHocChatRoom) {
             AdHocChatRoom chatRoom = (AdHocChatRoom) sender;
             AccountID accountId = chatRoom.getParentProvider().getAccountID();
             jid = accountId.getAccountJid();
             // nick = parentProvider().getInfoRetriever().getNickName(accountId); // for icq
             entityJid = jid.split("@")[0];
             // entityJid = chatRoom.getName() + "/" + nick;
-        } else if (sender instanceof Jid) {
+        }
+        else if (sender instanceof Jid) {
             entityJid = ((Jid) sender).asBareJid().toString();
             jid = sender.toString();
         }
@@ -1579,20 +1639,19 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.TIME_STAMP, msgTimestamp.getTime());
         contentValues.put(ChatMessage.ENTITY_JID, entityJid);
         contentValues.put(ChatMessage.JID, jid);
-        contentValues.put(ChatMessage.MSG_TYPE, msgType);
 
-        writeMessageToDB(message, direction);
-        setMamDate(chatId, msgTimestamp);
+        writeMessageToDB(message, direction, msgType);
     }
 
     /**
-     * Writes message to the history for ChatRoom in
+     * Writes the message to the history for ChatRoom incoming message
      *
      * @param chatId The entry with chatSessionUuid to which it will store the message
      * @param direction the direction of the message.
      * @param from coming from
      * @param message IMessage
      * @param msgTimestamp the timestamp when was message received that came from the protocol provider
+     * @param msgType ChatMessage#Type
      */
     private void writeMessage(String chatId, String direction, ChatRoomMember from,
             IMessage message, Date msgTimestamp, int msgType) {
@@ -1602,7 +1661,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             return;
 
         String nick = from.getNickName();
-        //		String entityJid = from.getChatRoom().getName() + "/" + nick;
+        // String entityJid = from.getChatRoom().getName() + "/" + nick;
         String jid = from.getContactAddress();  // contact entityFullJid
 
         contentValues.clear();
@@ -1610,20 +1669,20 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.TIME_STAMP, msgTimestamp.getTime());
         contentValues.put(ChatMessage.ENTITY_JID, nick);
         contentValues.put(ChatMessage.JID, jid);
-        contentValues.put(ChatMessage.MSG_TYPE, msgType);
 
-        writeMessageToDB(message, direction);
-        setMamDate(chatId, msgTimestamp);
+        writeMessageToDB(message, direction, msgType);
     }
 
     /**
-     * Writes a message to the history for chatMessage in/out and AdHocChatRoom in.
+     * Writes a message to the history for chatMessage in/out.
      *
      * @param chatId The entry with chatSessionUuid to which it will store the message
      * @param direction the direction of the message.
      * @param contact the communicator contact for this chat
+     * @param sender message sender
      * @param message IMessage
      * @param msgTimestamp the timestamp when was message received that came from the protocol provider
+     * @param msgType ChatMessage#Type
      */
     private void writeMessage(String chatId, String direction, Contact contact, String sender,
             IMessage message, Date msgTimestamp, int msgType) {
@@ -1633,10 +1692,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.ENTITY_JID, contact.getAddress());
         // JID is not stored for chatMessage or incoming message
         contentValues.put(ChatMessage.JID, sender);
-        contentValues.put(ChatMessage.MSG_TYPE, msgType);
 
-        writeMessageToDB(message, direction);
-        setMamDate(chatId, msgTimestamp);
+        writeMessageToDB(message, direction, msgType);
     }
 
     /**
@@ -1666,43 +1723,38 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.put(ChatMessage.TIME_STAMP, msgTimestamp.getTime());
         contentValues.put(ChatMessage.ENTITY_JID, source.getAddress());
         contentValues.put(ChatMessage.JID, destination.getAddress());
-        contentValues.put(ChatMessage.MSG_TYPE, msgType);
 
-        writeMessageToDB(message, direction);
-        setMamDate(sessionUuid, msgTimestamp);
+        writeMessageToDB(message, direction, msgType);
     }
 
     /**
      * Update the reset of the message content and write to the dataBase
      *
      * @param message IMessage message to be written
+     * @param direction ChatMessage.DIR_IN or DIR_OUT
+     * @param msgType ChatMessage#Type
      */
-    private void writeMessageToDB(IMessage message, String direction) {
+    private void writeMessageToDB(IMessage message, String direction, int msgType) {
         contentValues.put(ChatMessage.UUID, message.getMessageUID());
         contentValues.put(ChatMessage.MSG_BODY, message.getContent());
         contentValues.put(ChatMessage.ENC_TYPE, message.getEncType());
         contentValues.put(ChatMessage.CARBON, message.isCarbon() ? 1 : 0);
         contentValues.put(ChatMessage.DIRECTION, direction);
+        contentValues.put(ChatMessage.MSG_TYPE, msgType);
 
         if (ChatMessage.DIR_OUT.equals(direction)) {
-            contentValues.put(ChatMessage.STATUS, 0);
+            contentValues.put(ChatMessage.STATUS, ChatMessage.MESSAGE_OUT);
             contentValues.put(ChatMessage.SERVER_MSG_ID, message.getServerMsgId());
             contentValues.put(ChatMessage.REMOTE_MSG_ID, message.getRemoteMsgId());
             contentValues.put(ChatMessage.READ, ChatMessage.MESSAGE_DELIVERY_CLIENT_SENT);
-        } else {
-            contentValues.put(ChatMessage.STATUS, 1);
+        }
+        else {
+            contentValues.put(ChatMessage.STATUS, (ChatMessage.MESSAGE_HTTP_FILE_DOWNLOAD == msgType)
+                    ? FileRecord.STATUS_UNKNOWN : ChatMessage.MESSAGE_IN);
             contentValues.put(ChatMessage.REMOTE_MSG_ID, message.getMessageUID());
         }
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
-
-//    public void convertToMessageType(String msgUuid, int msgType) {
-//        String[] args = {msgUuid};
-//
-//        contentValues.clear();
-//        contentValues.put(ChatMessage.MSG_TYPE, msgType);
-//        mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
-//    }
 
     //============ service change events handler ================//
 
@@ -1735,7 +1787,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 if (this.messageSourceService != null)
                     evt.getChatRoom().addMessageListener(messageSourceService);
             }
-        } else {
+        }
+        else {
             evt.getChatRoom().removeMessageListener(this);
             if (this.messageSourceService != null)
                 evt.getChatRoom().removeMessageListener(messageSourceService);
@@ -1776,6 +1829,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(MetaContact metaContact, Date startDate,
@@ -1783,11 +1837,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         HashSet<EventObject> result = new HashSet<>();
         String startTimeStamp = String.valueOf(startDate.getTime());
         String endTimeStamp = String.valueOf(endDate.getTime());
-        String filterLike = "( ";
+        StringBuilder filterLike = new StringBuilder("( ");
         for (String word : keywords) {
-            filterLike += ChatMessage.MSG_BODY + " LIKE '%" + word + "%' OR ";
+            filterLike.append(ChatMessage.MSG_BODY + " LIKE '%").append(word).append("%' OR ");
         }
-        filterLike = filterLike.substring(0, filterLike.length() - 4) + " )";
+        filterLike = new StringBuilder(filterLike.substring(0, filterLike.length() - 4) + " )");
 
         Iterator<Contact> contacts = metaContact.getContacts();
         while (contacts.hasNext()) {
@@ -1813,6 +1867,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param metaContact MetaContact
      * @param keyword keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeyword(MetaContact metaContact, String keyword,
@@ -1843,16 +1898,17 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param metaContact MetaContact
      * @param keywords keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeywords(MetaContact metaContact,
             String[] keywords, boolean caseSensitive) {
         HashSet<EventObject> result = new HashSet<>();
-        String filterLike = "( ";
+        StringBuilder filterLike = new StringBuilder("( ");
         for (String word : keywords) {
-            filterLike += ChatMessage.MSG_BODY + " LIKE '%" + word + "%' OR ";
+            filterLike.append(ChatMessage.MSG_BODY + " LIKE '%").append(word).append("%' OR ");
         }
-        filterLike = filterLike.substring(0, filterLike.length() - 4) + " )";
+        filterLike = new StringBuilder(filterLike.substring(0, filterLike.length() - 4) + " )");
 
         Iterator<Contact> contacts = metaContact.getContacts();
         while (contacts.hasNext()) {
@@ -1875,6 +1931,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param room The chat room
      * @param startDate Date the start date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByStartDate(ChatRoom room, Date startDate) {
@@ -1898,6 +1955,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param room The chat room
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByEndDate(ChatRoom room, Date endDate) {
@@ -1922,6 +1980,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param room The chat room
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date endDate) {
@@ -1949,6 +2008,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param startDate Date the start date of the conversations
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date endDate,
@@ -1965,6 +2025,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param endDate Date the end date of the conversations
      * @param keywords array of keywords
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByPeriod(ChatRoom room, Date startDate, Date
@@ -1974,11 +2035,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         String endTimeStamp = String.valueOf(endDate.getTime());
         String sessionUuid = getSessionUuidByJid(room);
         String[] args = {sessionUuid, startTimeStamp, endTimeStamp};
-        String filterLike = "( ";
+        StringBuilder filterLike = new StringBuilder("( ");
         for (String word : keywords) {
-            filterLike += ChatMessage.MSG_BODY + " LIKE '%" + word + "%' OR ";
+            filterLike.append(ChatMessage.MSG_BODY + " LIKE '%").append(word).append("%' OR ");
         }
-        filterLike = filterLike.substring(0, filterLike.length() - 4) + " )";
+        filterLike = new StringBuilder(filterLike.substring(0, filterLike.length() - 4) + " )");
 
         Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
                 ChatMessage.SESSION_UUID + "=? AND " + ChatMessage.TIME_STAMP + ">=? AND "
@@ -1995,6 +2056,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param room The Chat room
      * @param keyword keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeyword(ChatRoom room, String keyword) {
@@ -2008,6 +2070,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param room The chat room
      * @param keyword keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeyword(ChatRoom room, String keyword,
@@ -2032,6 +2095,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param room The chat room
      * @param keywords keyword
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeywords(ChatRoom room, String[] keywords) {
@@ -2045,6 +2109,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param room The chat room
      * @param keywords keyword
      * @param caseSensitive is keywords search case sensitive
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findByKeywords(ChatRoom room, String[] keywords,
@@ -2052,11 +2117,11 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         HashSet<EventObject> result = new HashSet<>();
         String sessionUuid = getSessionUuidByJid(room);
         String[] args = {sessionUuid};
-        String filterLike = "( ";
+        StringBuilder filterLike = new StringBuilder("( ");
         for (String word : keywords) {
-            filterLike += ChatMessage.MSG_BODY + " LIKE '%" + word + "%' OR ";
+            filterLike.append(ChatMessage.MSG_BODY + " LIKE '%").append(word).append("%' OR ");
         }
-        filterLike = filterLike.substring(0, filterLike.length() - 4) + " )";
+        filterLike = new StringBuilder(filterLike.substring(0, filterLike.length() - 4) + " )");
 
         Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null,
                 ChatMessage.SESSION_UUID + "=? AND " + filterLike, args, null, null, ORDER_ASC);
@@ -2072,6 +2137,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param room The chat room
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findLast(ChatRoom room, int count) {
@@ -2097,6 +2163,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param room The chat room
      * @param startDate messages on and after date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findFirstMessagesAfter(ChatRoom room, Date startDate,
@@ -2125,6 +2192,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * @param room The chat room
      * @param endDate messages before date
      * @param count messages count
+     *
      * @return Collection of MessageReceivedEvents or MessageDeliveredEvents
      */
     public Collection<EventObject> findLastMessagesBefore(ChatRoom room, Date endDate, int count) {
@@ -2231,7 +2299,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt) {
         if (LocalUserAdHocChatRoomPresenceChangeEvent.LOCAL_USER_JOINED.equals(evt.getEventType())) {
             evt.getAdHocChatRoom().addMessageListener(this);
-        } else {
+        }
+        else {
             evt.getAdHocChatRoom().removeMessageListener(this);
         }
     }
@@ -2271,7 +2340,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 Contact contact = contacts.next();
                 purgeLocallyStoredHistory(Collections.singletonList(getSessionUuidByJid(contact)), false);
             }
-        } else {
+        }
+        else {
             purgeLocallyStoredHistory(msgUUIDs);
         }
     }
@@ -2286,7 +2356,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     public void eraseLocallyStoredChatHistory(ChatRoom room, List<String> msgUUIDs) {
         if (msgUUIDs == null) {
             purgeLocallyStoredHistory(Collections.singletonList(getSessionUuidByJid(room)), true);
-        } else {
+        }
+        else {
             purgeLocallyStoredHistory(msgUUIDs);
         }
     }
@@ -2330,6 +2401,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      * Retrieve all locally stored media file paths for the specified descriptor
      *
      * @param descriptor MetaContact or ChatRoomWrapper
+     *
      * @return List of media file Paths
      */
     public List<String> getLocallyStoredFilePath(Object descriptor) {
@@ -2342,7 +2414,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             Contact contact = contacts.next();
             if (contact != null)
                 sessionUuid = getSessionUuidByJid(contact);
-        } else {
+        }
+        else {
             ChatRoom chatRoom = ((ChatRoomWrapper) descriptor).getChatRoom();
             if (chatRoom != null)
                 sessionUuid = getSessionUuidByJid(chatRoom);
@@ -2573,6 +2646,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
          * Calculates the progress according the count of the records we will search
          *
          * @param evt the progress event
+         *
          * @return int
          */
         private int getProgressMapping(ProgressEvent evt) {
@@ -2586,7 +2660,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 // currentProgress due to the deviation
                 if ((int) accumulatedRatio == raiser)
                     currentProgress = raiser * MessageHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE;
-            } else
+            }
+            else
                 lastHistoryProgress = tmpHistoryProgress;
 
             return (int) currentProgress;
@@ -2615,13 +2690,15 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                     loadMessageHistoryService();
                 else
                     stop(bundleContext);
-            } else if (evt.getPropertyName().equals(MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED)) {
+            }
+            else if (evt.getPropertyName().equals(MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED)) {
                 String newPropertyValue = (String) evt.getNewValue();
                 boolean isDisabled = Boolean.parseBoolean(newPropertyValue);
 
                 if (isDisabled) {
                     stopRecentMessages();
-                } else if (isHistoryLoggingEnabled) {
+                }
+                else if (isHistoryLoggingEnabled) {
                     loadRecentMessages();
                 }
             }

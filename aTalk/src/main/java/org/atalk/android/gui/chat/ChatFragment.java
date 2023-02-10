@@ -577,10 +577,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         // check to ensure chatListAdapter has not been destroyed before proceed (NPE from field)
         if (chatListAdapter != null) {
-            chatListAdapter.clearMessage(deletedUUIDs);
+            chatListAdapter.onClearMessage(deletedUUIDs);
         }
 
-        // scroll to the top of last deleted message group; post delayed 300ms after android auto onScroll()
+        // scroll to the top of last deleted message group; post delayed 500ms after android
+        // has refreshed the listView and auto onScroll(); Too earlier access cause deleted
+        // viewHolders still appear in chat view.
         if (lastDeletedMessageDate != null) {
             new Handler().postDelayed(() -> {
                 int deletedTop = chatListAdapter.getMessagePosFromDate(lastDeletedMessageDate);
@@ -588,7 +590,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 lastDeletedMessageDate = null;
                 if (deletedTop >= 0)
                     chatListView.setSelection(deletedTop);
-            }, 300);
+            }, 500);
+        }
+    }
+
+    public void updateFTStatus(String msgUuid, int status, String fileName, int encType, int msgType) {
+        if (chatListAdapter != null) {
+            chatListAdapter.updateMessageFTStatus(msgUuid, status, fileName, encType, msgType);
         }
     }
 
@@ -955,8 +963,9 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         // A mop reference of DisplayMessage position (index) to the viewHolder
         private final Hashtable<Integer, MessageViewHolder> viewHolders = new Hashtable<>();
 
-        // A map reference of msgUuid to the DisplayMessage pos
-        private final Hashtable<String, Integer> mdIdx2msgUid = new Hashtable<>();
+        // A map reference of msgUuid to the DisplayMessage position.
+        // Continue get updated when messages are deleted/refresh in getView().
+        private final Hashtable<String, Integer> msgUuid2Idx = new Hashtable<>();
 
         /**
          * The type of the incoming message view.
@@ -1010,8 +1019,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
         /**
          * Note: addMessageImpl method must only be processed on UI thread.
-         * Pass the message to the <code>ChatListAdapter</code> for processing; appends it at the
-         * end or merge it with the last consecutive message.
+         * Pass the message to the <code>ChatListAdapter</code> for processing;
+         * appends it at the end or merge it with the last consecutive message.
          *
          * It creates a new message view holder if this is first message or if this is a new
          * message sent/received i.e. non-consecutive.
@@ -1038,7 +1047,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     messages.add(msgDisplay);
                     lastMsgIdx++;
 
-                    // Update street view map location if the view is infocus.
+                    // Update street view map location if the view is in focus.
                     if (mSVP_Started && msgDisplay.hasLatLng) {
                         mSVP = svpApi.svpHandler(mSVP, msgDisplay.mLocation);
                     }
@@ -1125,31 +1134,40 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Purge all the selected messages, in reverse order to retain the row index for subsequence reference.
+         * Call after the user selected messages are deleted from the DB. Both the ChatFragment UI
+         * and the ChatPanel#msgCache are updated So they are all in sync. Remove the deleted
+         * messages in reverse order to retain the list index for subsequence reference.
          *
          * @param deletedUUIDs List of message UUID to be deleted.
          */
 
-        private void clearMessage(List<String> deletedUUIDs) {
+        private void onClearMessage(List<String> deletedUUIDs) {
+            // Null signify doEraseAllEntityHistory has been performed i.e. erase all history messages
             if (deletedUUIDs == null) {
                 messages.clear();
-                mdIdx2msgUid.clear();
+                msgUuid2Idx.clear();
             }
             else {
+                // int msgSize = messages.size();
                 for (int idx = deletedUUIDs.size(); idx-- > 0; ) {
                     String msgUuid = deletedUUIDs.get(idx);
                     // Remove deleted message from ChatPanel#msgCache
                     chatPanel.updateCacheMessage(msgUuid, null);
 
-                    // Remove deleted message from display messages; merged messages may return null
-                    Integer row = mdIdx2msgUid.get(msgUuid);
+                    // Remove deleted message from display messages; merged messages may return null.
+                    // Merged messages view is deleted using the root msgUuid.
+                    Integer row = msgUuid2Idx.get(msgUuid);
                     if (row != null) {
                         messages.remove(getMessageDisplay(row));
-                        mdIdx2msgUid.remove(msgUuid);
+                        msgUuid2Idx.remove(msgUuid);
+                    }
+                    else {
+                        Timber.e("undelete message: %s => %s", idx, msgUuid);
                     }
                 }
+                // Timber.d("Clear Message: %s => %s (%s)", msgSize, messages.size(), deletedUUIDs.size());
             }
-            runOnUiThread(this::notifyDataSetChanged);
+            notifyDataSetChanged();
         }
 
         /**
@@ -1206,10 +1224,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
-         * Must update both the DisplayMessage and ChatPanel#cacheMessage delivery status;
-         * to ensure onResume the cacheMessages have the latest delivery status
+         * Must update both the DisplayMessage and ChatPanel#msgCache delivery status;
+         * to ensure onResume the cacheMessages have the latest delivery status.
          *
-         * @param msgId the associated chat message
+         * @param msgId the associated chat message UUid
          * @param receiptStatus Delivery status to be updated
          *
          * @return the viewHolder of which the content being affected (not use currently).
@@ -1226,7 +1244,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     ChatMessage chatMessage = message.updateDeliveryStatus(msgId, receiptStatus);
 
                     // Update ChatMessage in msgCache as well
-                    chatPanel.updateCacheMessage(message.getChatMessage().getMessageUID(), receiptStatus);
+                    chatPanel.updateCacheMessage(msgId, receiptStatus);
 
                     MessageViewHolder viewHolder = viewHolders.get(index);
                     if (viewHolder != null) {
@@ -1242,16 +1260,46 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             return null;
         }
 
-        public void setXferStatus(int pos, int status) {
-            if (pos < messages.size()) {
-                messages.get(pos).status = status;
+        /**
+         * Update the file transfer status in the msgCache; must do this else file transfer will be
+         * reactivated onResume chat. Also important if historyLog is disabled.
+         *
+         * @param msgUuid ChatMessage uuid
+         * @param status File transfer status
+         * @param fileName the downloaded fileName
+         * @param msgType File transfer type see ChatMessage MESSAGE_FILE_
+         */
+        public void updateMessageFTStatus(String msgUuid, int status, String fileName, int encType, int msgType) {
+            // Remove deleted message from display messages; merged messages may return null
+            Integer row = msgUuid2Idx.get(msgUuid);
+            if (row != null) {
+                ChatMessageImpl chatMessage = (ChatMessageImpl) messages.get(row).getChatMessage();
+                chatMessage.updateFTStatus(chatPanel.getDescriptor(), msgUuid, status, fileName,
+                        encType, msgType, chatMessage.getMessageDir());
+                // Timber.e("File record updated for %s => %s", msgUuid, status);
+
+                // Update FT Record in ChatPanel#msgCache as well
+                chatPanel.updateCacheFTRecord(msgUuid, status, fileName, encType, msgType);
+            }
+            else {
+                Timber.e("File record not found: %s", msgUuid);
+            }
+        }
+
+        // Not use currently
+        public void updateMessageFTStatus(String msgUuid, int status) {
+            // Remove deleted message from display messages; merged messages may return null
+            Integer row = msgUuid2Idx.get(msgUuid);
+            if (row != null) {
+                ChatMessageImpl chatMessage = (ChatMessageImpl) messages.get(row).getChatMessage();
+                chatMessage.updateFTStatus(msgUuid, status);
             }
         }
 
         public int getXferStatus(int pos) {
-            // IndexOutOfBound from field
-            if (pos < messages.size())
-                return messages.get(pos).status;
+            if (pos < messages.size()) {
+                return messages.get(pos).getChatMessage().getXferStatus();
+            }
 
             // assuming CANCELED if not found
             return FileTransferStatusChangeEvent.CANCELED;
@@ -1383,6 +1431,10 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             MessageDisplay msgDisplay = getMessageDisplay(position);
             ChatMessage chatMessage = msgDisplay.getChatMessage();
             String msgUuid = chatMessage.getMessageUID();
+            // Update pos changed due to deletions; must not have any new entry added here => error
+            if ((msgUuid != null) && msgUuid2Idx.put(msgUuid, position) == null) {
+                Timber.e("Failed updating msgUuid2Idx with msgUuid: %s = %s", position, msgUuid);
+            }
 
             // File Transfer convertView creation
             if ((viewType == FILE_TRANSFER_IN_MESSAGE_VIEW)
@@ -1739,11 +1791,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             private final int id;
 
             /**
-             * File Transfer Status.
-             */
-            private int status;
-
-            /**
              * Message Receipt Status.
              */
             private int receiptStatus;
@@ -1802,14 +1849,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 this.id = idGenerator++;
                 this.msg = msg;
                 this.msgBody = null;
-                this.status = -1;
                 this.fileXfer = null;
                 this.receiptStatus = msg.getReceiptStatus();
                 this.encryption = msg.getEncryptionType();
                 this.serverMsgId = msg.getServerMsgId();
                 // All system messages do not have UUID i.e. null
                 if (msg.getMessageUID() != null)
-                    mdIdx2msgUid.put(msg.getMessageUID(), id);
+                    msgUuid2Idx.put(msg.getMessageUID(), id);
                 checkLatLng();
             }
 
@@ -2219,6 +2265,14 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             statusView.setImageDrawable(statusDrawable);
     }
 
+    /**
+     * Callback invoked when a new receipt got received. receiptId correspondents to the message ID
+     *
+     * @param fromJid – the jid that send this receipt
+     * @param toJid – the jid which received this receipt
+     * @param receiptId – the message ID of the stanza which has been received and this receipt is for. This might be null.
+     * @param receipt – the receipt stanza
+     */
     @Override
     public void onReceiptReceived(Jid fromJid, Jid toJid, final String receiptId, Stanza receipt) {
         runOnUiThread(() -> {
@@ -2427,7 +2481,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if ((newStatus == FileTransferStatusChangeEvent.CANCELED)
                     && (chatListAdapter.getXferStatus(msgPos) == FileTransferStatusChangeEvent.PREPARING)) {
                 String msg = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_CANCELED);
-                // chatPanel.sendMessage(msg);
                 try {
                     chatPanel.getChatSession().getCurrentChatTransport().sendInstantMessage(msg,
                             IMessage.ENCRYPTION_NONE | IMessage.ENCODE_PLAIN);
@@ -2483,13 +2536,13 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
 
                 // stop background task to proceed and update status
                 chkMaxSizeOK = false;
-                chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.CANCELED);
+                // chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.CANCELED);
                 sendFTConversion.setStatus(FileTransferStatusChangeEvent.FAILED, entityJid, mEncryption, reason);
             }
             else {
                 // must reset status here as background task cannot catch up with Android redraw
                 // request? causing double send requests in slow Android devices.
-                chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.PREPARING);
+                // chatListAdapter.setXferStatus(msgViewId, FileTransferStatusChangeEvent.PREPARING);
                 sendFTConversion.setStatus(FileTransferStatusChangeEvent.PREPARING, entityJid, mEncryption, null);
             }
         }

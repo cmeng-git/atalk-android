@@ -391,6 +391,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých entity?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Odstrániť médiá z môjho telefónu</string>
+    <string name="service_gui_HISTORY_WARNING">Zatvorte a otvorte túto reláciu rozhovoru, aby ste si mohli prezerať správy MAM a offline, keď ste online</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Miesto konania:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">V konverzácii môžete pokračovať v nasledujúcej miestnosti: %1$s</string>
@@ -445,6 +446,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha výzva</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Diskusnej miestnosť je chránená výzvou captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">Text captcha nemôže byť prázdny</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Overenie CAPTCHA je platné</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Overenie CAPTCHA zlyhalo</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s CAPTCHA vypršal časový limit výzvy;\nProsim znovu sa pripojte k diskusnej miestnosti a skúste to znova.</string>
@@ -1290,6 +1292,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">História rozhovoru je zakázaná</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Zaznamenávať históriu rozhovorov</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Protokolovanie histórie rozhovorov</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Chyba pri nastavovaní možnosti MAM pre offline používateľa: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Koľko posledných správ by sa malo zobraziť?</string>

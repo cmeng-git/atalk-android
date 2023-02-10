@@ -163,8 +163,8 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         FileTransferNegotiator.IBB_ONLY = byteStreamError;
         try {
             // Start smack handle everything and start status and progress thread.
-            transfer.sendFile(file, "Sending file");
             transfer.setCallback(negotiationProgress);
+            transfer.sendFile(file, "Sending file");
             new FileTransferProgressThread(transfer, mOGFileTransfer).start();
         } catch (SmackException e) {
             Timber.e("Failed to send file: %s", e.getMessage());
@@ -466,8 +466,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
      */
     void fireFileTransferRequest(IncomingFileTransferRequest request) {
         // Create an event associated to this global request.
-        FileTransferRequestEvent event = new FileTransferRequestEvent(
-                OperationSetFileTransferJabberImpl.this, request, new Date());
+        FileTransferRequestEvent event = new FileTransferRequestEvent(this, request, new Date());
 
         Iterator<ScFileTransferListener> listeners;
         synchronized (fileTransferListeners) {

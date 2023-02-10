@@ -390,6 +390,7 @@
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten Entitäten?</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Fehler beim Löschen der Nachrichten von %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Löschen Sie Medien von meinem Telefon</string>
+    <string name="service_gui_HISTORY_WARNING">Schließen und öffnen Sie diese Chatsitzung, um MAM- und Offline-Nachrichten anzuzeigen, wenn Sie online sind</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Alternativer Veranstaltungsort:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Du kannst dein Gespräch in folgendem Chatraum fortsetzen: %1$s</string>
@@ -430,6 +431,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">Captcha Herausforderung</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">Der Chatraum ist mit einer Captcha-Challenge geschützt</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">Der Captcha-Texteintrag darf nicht leer sein</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">Die CAPTCHA-Überprüfung war efolgreich</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s Zeitlimit für die ChatRoom-CAPTCHA-Herausforderung;\nTreten Sie dem ChatRoom erneut bei und versuchen Sie es erneut.</string>
@@ -1265,6 +1267,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Chatverlauf deaktivieren</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Chatverlauf protokollieren</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Chatverlauf-Aufzeichnung</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Fehler beim Festlegen der MAM-Option für Offline-Benutzer: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Wie viele der letzten Nachrichten sollen angezeigt werden?</string>

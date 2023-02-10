@@ -392,6 +392,7 @@
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Tem certeza de que quer excluir todas as mensagens de todos?</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Falha ao excluir mensagens armazenadas localmente para %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Excluir mídia do meu aparelho</string>
+    <string name="service_gui_HISTORY_WARNING">Feche e abra esta sessão de bate-papo para visualizar MAM e mensagens off-line quando estiver on-line</string>
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Lugar alternativo:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">Você pode continuar a conversa na seguinte sala: %1$s</string>
@@ -446,6 +447,7 @@
 
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_CHALLENGE">O desafio do captcha</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_PROTECTED">A sala é protegida com o desafio captcha</string>
+    <string name="service_gui_CHATROOM_JOIN_CAPTCHA_TEXT_EMPTY">A entrada de texto captcha não pode estar vazia</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_VALID">A verificação captcha é válida</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">A verificação do captcha falhou</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">O tempo %1$s do desafio captcha da sala expirou;\npor favor, volte para a sala e tente novamente.</string>
@@ -1291,6 +1293,7 @@
     <string name="service_gui_settings_HISTORY_LOG_OFF">Histórico da conversa desativado</string>
     <string name="service_gui_settings_HISTORY_LOG_ON">Registrar o histórico de conversa</string>
     <string name="service_gui_settings_HISTORY_LOGGING">Registro de histórico de conversa</string>
+    <string name="service_gui_settings_HISTORY_WARNING">Erro ao configurar a opção MAM para usuário offline: %1$s</string>
 
     <!-- Show x recent messages in new chats -->
     <string name="service_gui_settings_CHAT_HISTORY_DLG_TITLE">Quantas mensagens recentes deveriam ser exibidas?</string>

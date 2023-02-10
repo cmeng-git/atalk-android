@@ -18,6 +18,8 @@ package org.atalk.android.gui.chatroomslist.model;
 
 import android.graphics.drawable.Drawable;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 
 import org.atalk.android.R;
@@ -75,7 +77,7 @@ public class ChatRoomRenderer implements UIChatRoomRenderer
     @Override
     public Drawable getChatRoomIcon(Object chatRoomWrapper)
     {
-        return aTalkApp.getAppResources().getDrawable(R.drawable.ic_chatroom);
+        return ResourcesCompat.getDrawable(aTalkApp.getAppResources(), R.drawable.ic_chatroom, null);
     }
 
     @Override
