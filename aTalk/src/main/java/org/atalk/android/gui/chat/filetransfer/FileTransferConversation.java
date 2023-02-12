@@ -691,7 +691,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             case R.id.buttonCancel:
                 messageViewHolder.retryButton.setVisibility(View.GONE);
                 messageViewHolder.cancelButton.setVisibility(View.GONE);
-                // Let transport event call back to handle
+                // Let file transport event call back to handle
                 // updateView(FileTransferStatusChangeEvent.CANCELED, null);
                 if (mFileTransfer != null)
                     mFileTransfer.cancel();

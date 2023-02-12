@@ -786,15 +786,15 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                 continue;
             }
             timeStamp = forwarded.getDelayInformation().getStamp();
+            String msgId = msg.getStanzaId();
 
-            String[] args = {chatId};
+            String[] args = {msgId, chatId};
             Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.UUID
                     + "=? AND " + ChatMessage.SESSION_UUID + "=?", args, null, null, null);
             int msgCount = cursor.getCount();
             cursor.close();
 
             if (msgCount == 0) {
-                String msgId = msg.getStanzaId();
                 IMessage iMessage = null;
 
                 if (msg.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL)) {
