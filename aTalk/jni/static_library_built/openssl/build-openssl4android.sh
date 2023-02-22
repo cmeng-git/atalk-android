@@ -19,7 +19,7 @@ set -u
 . _settings.sh
 
 LIB_OPENSSL="openssl"
-LIB_OPENSSL_GIT="openssl-1.1.1q"
+LIB_OPENSSL_GIT="openssl-1.1.1t"
 
 # Auto fetch and unarchive libopenssl from online repository with the given version i.e. LIB_OPENSSL_GIT
 ./init_libopenssl.sh ${LIB_OPENSSL_GIT}

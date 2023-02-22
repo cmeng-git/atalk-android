@@ -20,7 +20,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.impl.protocol.jabber.HttpFileUploadJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileSendEntityImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.filehistory.FileRecord;
@@ -53,17 +53,11 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener, ScFileTransferListener
-{
+public class FileHistoryServiceImpl implements FileHistoryService, ServiceListener, ScFileTransferListener {
     /**
      * The BundleContext that we got from the OSGI bus.
      */
     private BundleContext bundleContext = null;
-
-    /**
-     * The <code>HistoryService</code> reference.
-     */
-    private HistoryService historyService = null;
 
     private final ContentValues mContentValues = new ContentValues();
     private SQLiteDatabase mDB;
@@ -75,8 +69,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param bc BundleContext
      */
-    public void start(BundleContext bc)
-    {
+    public void start(BundleContext bc) {
         Timber.d("Starting the file history implementation.");
         this.bundleContext = bc;
 
@@ -105,8 +98,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param bc BundleContext
      */
-    public void stop(BundleContext bc)
-    {
+    public void stop(BundleContext bc) {
         bc.removeServiceListener(this);
         ServiceReference[] ppsRefs = null;
         try {
@@ -129,8 +121,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param serviceEvent ServiceEvent
      */
-    public void serviceChanged(ServiceEvent serviceEvent)
-    {
+    public void serviceChanged(ServiceEvent serviceEvent) {
         Object sService = bundleContext.getService(serviceEvent.getServiceReference());
         Timber.log(TimberLog.FINER, "Received a service event for: %s", sService.getClass().getName());
 
@@ -156,8 +147,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param provider ProtocolProviderService
      */
-    private void handleProviderAdded(ProtocolProviderService provider)
-    {
+    private void handleProviderAdded(ProtocolProviderService provider) {
         Timber.d("Adding protocol provider %s", provider.getProtocolName());
 
         // check whether the provider has a file transfer operation set
@@ -175,8 +165,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param provider the ProtocolProviderService that has been unregistered.
      */
-    private void handleProviderRemoved(ProtocolProviderService provider)
-    {
+    private void handleProviderRemoved(ProtocolProviderService provider) {
         OperationSetFileTransfer opSetFileTransfer = provider.getOperationSet(OperationSetFileTransfer.class);
         if (opSetFileTransfer != null) {
             opSetFileTransfer.removeFileTransferListener(this);
@@ -188,26 +177,23 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @param historyService HistoryService
      */
-    public void setHistoryService(HistoryService historyService)
-    {
-        this.historyService = historyService;
+    public void setHistoryService(HistoryService historyService) {
     }
 
-    private MessageHistoryService getMHS()
-    {
+    private MessageHistoryService getMHS() {
         if (mhs == null)
             mhs = ServiceUtils.getService(bundleContext, MessageHistoryService.class);
         return mhs;
     }
 
     /* ============= File Transfer Handlers - ScFileTransferListener callbacks implementations ============= */
+
     /**
      * Receive fileTransfer requests.
      *
      * @param event FileTransferRequestEvent
      */
-    public void fileTransferRequestReceived(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestReceived(FileTransferRequestEvent event) {
         IncomingFileTransferRequest req = event.getRequest();
         String fileName = req.getFileName();
         insertRecordToDB(event, fileName);
@@ -215,12 +201,12 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
 
     /**
      * New file transfer was created; callback from both IncomingFileTransfer, OutgoingFileTransfer and
-     * @see FileSendConversation#createHttpFileUploadRecord()
      *
      * @param event FileTransferCreatedEvent for all FileTransfers
+     *
+     * @see FileSendConversation#createHttpFileUploadRecord()
      */
-    public void fileTransferCreated(FileTransferCreatedEvent event)
-    {
+    public void fileTransferCreated(FileTransferCreatedEvent event) {
         FileTransfer fileTransfer = event.getFileTransfer();
         ContentValues contentValues = new ContentValues();
         try {
@@ -244,10 +230,10 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * Called when a new <code>IncomingFileTransferRequest</code> has been rejected.
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
+     *
      * @see FileReceiveConversation#fileTransferRequestRejected(FileTransferRequestEvent)
      */
-    public void fileTransferRequestRejected(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestRejected(FileTransferRequestEvent event) {
         // Event is being handled by FileReceiveConversation; need to update both the DB and msgCache
     }
 
@@ -255,10 +241,10 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * Called when a new <code>IncomingFileTransferRequest</code> has been cancel by the sender.
      *
      * @param event the <code>FileTransferRequestEvent</code> containing the received request which was rejected.
+     *
      * @see FileReceiveConversation#fileTransferRequestCanceled(FileTransferRequestEvent)
      */
-    public void fileTransferRequestCanceled(FileTransferRequestEvent event)
-    {
+    public void fileTransferRequestCanceled(FileTransferRequestEvent event) {
         // Event is being handled by FileReceiveConversation; need to update both the DB and msgCache
     }
 
@@ -269,8 +255,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * @param evt FileTransferRequestEvent or FileTransferCreatedEvent
      * @param fileName Name of the file to received or send
      */
-    private void insertRecordToDB(EventObject evt, String fileName)
-    {
+    private void insertRecordToDB(EventObject evt, String fileName) {
         long timeStamp = 0L;
         String uuid = null;
         String mJid, mEntityJid;
@@ -289,19 +274,18 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
             msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
             contentValues.put(ChatMessage.MSG_BODY, fileName);
         }
-        else if (evt instanceof HttpFileTransferEvent) {
-            HttpFileTransferEvent event = (HttpFileTransferEvent) evt;
-            FileTransfer fileTransfer = event.getFileTransfer();
-            uuid = fileTransfer.getID();
-            entityJid = ((HttpFileUploadJabberImpl) fileTransfer).getEntityJid();
-            timeStamp = event.getTimestamp().getTime();
-        }
         else if (evt instanceof FileTransferCreatedEvent) {
             FileTransferCreatedEvent event = (FileTransferCreatedEvent) evt;
+            timeStamp = event.getTimestamp().getTime();
             FileTransfer fileTransfer = event.getFileTransfer();
             uuid = fileTransfer.getID();
-            entityJid = fileTransfer.getContact();
-            timeStamp = event.getTimestamp().getTime();
+
+            if (fileTransfer instanceof OutgoingFileSendEntityImpl) {
+                entityJid = ((OutgoingFileSendEntityImpl) fileTransfer).getEntityJid();
+            }
+            else {
+                entityJid = fileTransfer.getContact();
+            }
         }
 
         String sessionUuid;
@@ -343,8 +327,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      *
      * @return the number of records being updated; zero means there is no record to update historyLog disabled
      */
-    public int updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int msgType)
-    {
+    public int updateFTStatusToDB(String msgUuid, int status, String fileName, int encType, int msgType) {
         // Timber.w(new Exception("### File in/out transfer status changes to: " + status));
         String[] args = {msgUuid};
         ContentValues contentValues = new ContentValues();
@@ -361,8 +344,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     /**
      * Permanently removes locally stored chatRoom message messages (need cleanup - not used)
      */
-    public void eraseLocallyStoredHistory()
-    {
+    public void eraseLocallyStoredHistory() {
         String[] args = {String.valueOf(ChatSession.MODE_MULTI)};
         String[] columns = {ChatSession.SESSION_UUID};
 
@@ -381,8 +363,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * - Remove only chatMessages for metaContacts
      * - Remove both chatSessions and chatMessages for muc
      */
-    public void eraseLocallyStoredHistory(MetaContact metaContact)
-    {
+    public void eraseLocallyStoredHistory(MetaContact metaContact) {
         getMHS();
         Iterator<Contact> contacts = metaContact.getContacts();
         while (contacts.hasNext()) {
@@ -398,8 +379,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
      * - Remove only chatMessages for metaContacts
      * - Remove both chatSessions and chatMessages for muc
      */
-    private void purgeLocallyStoredHistory(Contact contact, String sessionUuid)
-    {
+    private void purgeLocallyStoredHistory(Contact contact, String sessionUuid) {
         String[] args = {sessionUuid};
         if (contact != null) {
             mDB.delete(ChatMessage.TABLE_NAME, ChatMessage.SESSION_UUID + "=?", args);
@@ -412,10 +392,8 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     /**
      * Used to compare FileRecords and to be ordered in TreeSet according their timestamp
      */
-    private static class FileRecordComparator implements Comparator<FileRecord>
-    {
-        public int compare(FileRecord o1, FileRecord o2)
-        {
+    private static class FileRecordComparator implements Comparator<FileRecord> {
+        public int compare(FileRecord o1, FileRecord o2) {
             Date date1 = o1.getDate();
             Date date2 = o2.getDate();
             return date1.compareTo(date2);

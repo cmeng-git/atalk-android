@@ -63,6 +63,7 @@ import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
 import org.jivesoftware.smackx.chatstates.ChatState;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -463,8 +464,13 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                             if (!mediaPreviews.isEmpty()) {
                                 for (Attachment attachment : mediaPreviews) {
                                     String filePath = FilePathHelper.getFilePath(parent, attachment);
-                                    if (StringUtils.isNotEmpty(filePath))
-                                        chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
+                                    if (StringUtils.isNotEmpty(filePath)) {
+                                        if (new File(filePath).exists()) {
+                                            chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
+                                        } else {
+                                            aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
+                                        }
+                                    }
                                 }
                                 mpAdapter.clearPreviews();
                             }

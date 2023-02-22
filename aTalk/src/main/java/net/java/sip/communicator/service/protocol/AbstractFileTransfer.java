@@ -58,10 +58,14 @@ public abstract class AbstractFileTransfer implements FileTransfer {
 
     /**
      * Returns the number of bytes already transferred through this file transfer.
+     * Note Some file transfer progress is handled via event trigger.
      *
      * @return the number of bytes already transferred through this file transfer
      */
-    abstract public long getTransferredBytes();
+    @Override
+    public long getTransferredBytes() {
+        return -1;
+    }
 
     /**
      * Adds the given <code>FileTransferProgressListener</code> to listen for status changes on this file transfer.
@@ -71,7 +75,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
     public void addProgressListener(FileTransferProgressListener listener) {
         synchronized (progressListeners) {
             if (!progressListeners.contains(listener)) {
-                this.progressListeners.add(listener);
+                progressListeners.add(listener);
             }
         }
     }
@@ -84,7 +88,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
     public void addStatusListener(FileTransferStatusListener listener) {
         synchronized (statusListeners) {
             if (!statusListeners.contains(listener)) {
-                this.statusListeners.add(listener);
+                statusListeners.add(listener);
             }
         }
     }
@@ -96,7 +100,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
      */
     public void removeProgressListener(FileTransferProgressListener listener) {
         synchronized (progressListeners) {
-            this.progressListeners.remove(listener);
+            progressListeners.remove(listener);
         }
     }
 
@@ -107,7 +111,7 @@ public abstract class AbstractFileTransfer implements FileTransfer {
      */
     public void removeStatusListener(FileTransferStatusListener listener) {
         synchronized (statusListeners) {
-            this.statusListeners.remove(listener);
+            statusListeners.remove(listener);
         }
     }
 
@@ -166,11 +170,11 @@ public abstract class AbstractFileTransfer implements FileTransfer {
         Timber.d("Dispatching FileTransfer status change: %s => %s to %d listeners.",
                 mStatus, newStatus, listeners.size());
 
+        // Updates the mStatus only after statusEvent is created.
         FileTransferStatusChangeEvent statusEvent
                 = new FileTransferStatusChangeEvent(this, mStatus, newStatus, reason);
-
-        // Updates the mStatus only after statusEvent is created.
         mStatus = newStatus;
+
         for (FileTransferStatusListener statusListener : listeners) {
             statusListener.statusChanged(statusEvent);
         }

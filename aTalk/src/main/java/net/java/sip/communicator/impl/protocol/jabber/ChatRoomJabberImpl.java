@@ -3009,18 +3009,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 }
                 ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(ChatRoomJabberImpl.this, nick, invitee);
 
-//                OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
-//                        mPPS.getOperationSet(OperationSetPersistentPresence.class);
-//                if (presenceOpSet != null) {
-//                    Contact contact = presenceOpSet.findContactByJid(invitee);
-//                    if (contact != null) {
-//                        if (invitee.isParentOf(contact.getJid())){
-//                            // if (!from.contains(contact.getDisplayName())) {
-//                            String from = contact.getDisplayName() + " (" + invitee + ")";
-//                        }
-//                    }
-//                }
-
                 String msgBody = aTalkApp.getResString(R.string.service_gui_INVITATION_REJECTED, invitee, reason);
                 ChatRoomMessageReceivedEvent msgReceivedEvt = new ChatRoomMessageReceivedEvent(
                         ChatRoomJabberImpl.this, member, new Date(), createMessage(msgBody), ChatMessage.MESSAGE_SYSTEM);

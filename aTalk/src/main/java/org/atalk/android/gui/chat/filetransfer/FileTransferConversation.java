@@ -77,13 +77,10 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.httpfileupload.UploadProgressListener;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -199,8 +196,6 @@ public abstract class FileTransferConversation extends OSGiFragment
     protected XMPPConnection mConnection;
 
     protected ChatFragment.MessageViewHolder messageViewHolder;
-
-    private final Vector<UploadProgressListener> uploadProgressListeners = new Vector<>();
 
     protected FileTransferConversation(ChatFragment cPanel, String dir) {
         mChatFragment = cPanel;
@@ -506,7 +501,7 @@ public abstract class FileTransferConversation extends OSGiFragment
     }
 
     /**
-     * Callback for displaying http file upload/download, and file transfer progress status.
+     * Callback for displaying http file upload, and file transfer progress status.
      *
      * @param uploadedBytes the number of bytes uploaded at the moment
      * @param totalBytes the total number of bytes to be uploaded
@@ -1012,51 +1007,6 @@ public abstract class FileTransferConversation extends OSGiFragment
             String newFileName = fileName.substring(0, filenameLength) + "-"
                     + ++index + fileName.substring(filenameLength);
             mXferFile = new File(downloadDir, newFileName);
-        }
-    }
-
-    /**
-     * Adds the given <code>ScFileTransferListener</code> that would listen for file transfer requests
-     * created file transfers.
-     *
-     * @param listener the <code>ScFileTransferListener</code> to add
-     */
-    public void addUploadListener(UploadProgressListener listener) {
-        synchronized (uploadProgressListeners) {
-            if (!uploadProgressListeners.contains(listener)) {
-                this.uploadProgressListeners.add(listener);
-            }
-        }
-    }
-
-    /**
-     * Removes the given <code>ScFileTransferListener</code> that listens for file transfer requests and
-     * created file transfers.
-     *
-     * @param listener the <code>ScFileTransferListener</code> to remove
-     */
-    public void removeUploadListener(UploadProgressListener listener) {
-        synchronized (uploadProgressListeners) {
-            this.uploadProgressListeners.remove(listener);
-        }
-    }
-
-    /**
-     * Callback for displaying upload progress.
-     *
-     * @param uploadedBytes the number of bytes uploaded at the moment
-     * @param totalBytes the total number of bytes to be uploaded
-     */
-    // @Override
-    public void onUploadStatus(long uploadedBytes, long totalBytes) {
-        Iterator<UploadProgressListener> listeners;
-        synchronized (uploadProgressListeners) {
-            listeners = new ArrayList<>(uploadProgressListeners).iterator();
-        }
-
-        while (listeners.hasNext()) {
-            UploadProgressListener listener = listeners.next();
-            listener.onUploadProgress(uploadedBytes, totalBytes);
         }
     }
 }

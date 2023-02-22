@@ -265,20 +265,6 @@ public class AndroidUIServiceImpl implements UIService
     }
 
     /**
-     * Returns the <code>Chat</code> corresponding to the given <code>Contact</code>.
-     *
-     * @param contact the <code>Contact</code> for which the searched chat is about.
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat
-     * @return the <code>Chat</code> corresponding to the given <code>Contact</code>.
-     */
-    @Override
-    public Chat getChat(Contact contact, String escapedMessageID)
-    {
-        return getChat(contact);
-    }
-
-    /**
      * Returns the <code>Chat</code> corresponding to the given <code>ChatRoom</code>.
      *
      * @param chatRoom the <code>ChatRoom</code> for which the searched chat is about.

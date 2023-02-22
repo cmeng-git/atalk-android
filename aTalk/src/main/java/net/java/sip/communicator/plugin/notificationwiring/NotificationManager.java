@@ -159,7 +159,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             Contact contact = (Contact) chatDescriptor;
 
             if (uiService != null)
-                chatPanel = uiService.getChat(contact, messageUID);
+                chatPanel = uiService.getChat(contact);
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {

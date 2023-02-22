@@ -25,7 +25,7 @@ $(LOCAL_PATH)/libogg/include
 
 LOCAL_LDLIBS := -llog
 
-# source files include both speex-1.2beta3 and speex-1.2.0
+# source files include both speex-1.2beta3 and speex-1.2.1 for the built
 LOCAL_SRC_FILES :=  \
 libspeex/bits.c \
 libspeex/buffer.c \

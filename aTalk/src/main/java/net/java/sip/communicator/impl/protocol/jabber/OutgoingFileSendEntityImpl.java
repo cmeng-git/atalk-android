@@ -21,67 +21,54 @@ import net.java.sip.communicator.service.protocol.*;
 import java.io.File;
 
 /**
- * The Jabber protocol HttpFileDownloadJabberImpl extension of the <code>AbstractFileTransfer</code>.
+ * The Jabber protocol OutgoingFileSendEntityImpl extension of the <code>AbstractFileTransfer</code>.
+ * This class is used when sending file to a single recipient or multiple as in conference room
  *
  * @author Eng Chong Meng
  */
-public class HttpFileUploadJabberImpl extends AbstractFileTransfer
-{
+public class OutgoingFileSendEntityImpl extends AbstractFileTransfer {
     private final String msgUuid;
-    private final Object mSendTo;
+
+    /**
+     * The file recipient i.e. Contact or ChatRoom
+     */
+    private final Object mRecipient;
 
     private final File mFile;
     private final String mFileName;
-    private long fileSize = -1;
+    private final long mFileSize;
 
     /**
-     * Creates an <code>IncomingFileTransferJabberImpl</code>.
+     * Creates an <code>OutgoingFileSendEntityImpl</code>.
      *
      * @param sendTo the recipient of the file
      * @param id the message Uuid uniquely identify  record in DB
      * @param file the download link may contains other options e.g. file.length()
      */
-    public HttpFileUploadJabberImpl(Object sendTo, String id, String file)
-    {
+    public OutgoingFileSendEntityImpl(Object sendTo, String id, String file) {
         // Create a new msg Uuid if none provided
         msgUuid = (id == null) ? String.valueOf(System.currentTimeMillis()) + hashCode() : id;
 
-        mSendTo = sendTo;
+        mRecipient = sendTo;
         mFileName = file;
         mFile = new File(file);
-        fileSize = mFile.length();
+        mFileSize = mFile.length();
     }
 
     /**
      * Cancels the file transfer.
      */
     @Override
-    public void cancel()
-    {
-//            jabberTransfer.cancel();
+    public void cancel() {
+        // jabberTransfer.cancel();
     }
 
     /**
-     * Returns the number of bytes already received from the recipient.
+     * The direction is outgoing.
      *
-     * @return the number of bytes already received from the recipient
+     * @return OUT
      */
-    @Override
-    public long getTransferredBytes()
-    {
-//        if (jabberTransfer != null)
-//            return jabberTransfer.getAmountWritten();
-//        else
-        return -1;
-    }
-
-    /**
-     * The direction is incoming.
-     *
-     * @return IN
-     */
-    public int getDirection()
-    {
+    public int getDirection() {
         return OUT;
     }
 
@@ -90,15 +77,18 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
      *
      * @return the sender of the file
      */
-    public Contact getContact()
-    {
-        return (mSendTo instanceof Contact) ? (Contact) mSendTo : null;
+    public Contact getContact() {
+        return (mRecipient instanceof Contact) ? (Contact) mRecipient : null;
 
     }
 
-    public Object getEntityJid()
-    {
-        return mSendTo;
+    /**
+     * Get the recipient of the file
+     *
+     * @return Contact or ChatRoom
+     */
+    public Object getEntityJid() {
+        return mRecipient;
     }
 
     /**
@@ -106,8 +96,7 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
      *
      * @return the identifier of this file transfer
      */
-    public String getID()
-    {
+    public String getID() {
         return msgUuid;
     }
 
@@ -116,8 +105,7 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
      *
      * @return the file
      */
-    public File getLocalFile()
-    {
+    public File getLocalFile() {
         return mFile;
     }
 
@@ -126,8 +114,7 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
      *
      * @return the name of the file corresponding to this request
      */
-    public String getFileName()
-    {
+    public String getFileName() {
         return mFileName;
     }
 
@@ -136,8 +123,7 @@ public class HttpFileUploadJabberImpl extends AbstractFileTransfer
      *
      * @return the size of the file corresponding to this request
      */
-    public long getFileSize()
-    {
-        return fileSize;
+    public long getFileSize() {
+        return mFileSize;
     }
 }

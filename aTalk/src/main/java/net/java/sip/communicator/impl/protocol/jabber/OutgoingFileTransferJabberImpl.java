@@ -43,14 +43,14 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
 
     // Message Uuid also used as file transfer id.
     private final String msgUuid;
-    private final Contact recipient;
-    private final File file;
+    private final Contact mContact;
+    private final File mFile;
 
     /**
      * The jabber outgoing file transfer.
      */
-    private final OutgoingFileTransfer jabberTransfer;
-    private final ProtocolProviderServiceJabberImpl protocolProvider;
+    private final OutgoingFileTransfer mJabberFileTransfer;
+    private final ProtocolProviderServiceJabberImpl mPPS;
     private BoBInfo bobInfo;
 
     /**
@@ -67,16 +67,16 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     public OutgoingFileTransferJabberImpl(Contact recipient, File file, OutgoingFileTransfer jabberTransfer,
             ProtocolProviderServiceJabberImpl protocolProvider, String id)
     {
-        this.recipient = recipient;
-        this.file = file;
-        this.jabberTransfer = jabberTransfer;
-        this.protocolProvider = protocolProvider;
+        mContact = recipient;
+        mFile = file;
+        mJabberFileTransfer = jabberTransfer;
+        mPPS = protocolProvider;
 
         // Create the identifier of this file transfer that is used from the history and the user
         // interface to track this transfer. Use pass in value if available (cmeng 20220206: true always)
         // this.id = (TextUtils.isEmpty(msgUuid)) ? String.valueOf(System.currentTimeMillis()) + hashCode() : msgUuid;
         // Timber.e("OutgoingFileTransferJabberImpl msgUid: %s", id);
-        this.msgUuid = id;
+        msgUuid = id;
 
         // jabberTransfer is null for http file upload
         if (jabberTransfer == null)
@@ -100,7 +100,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     @Override
     public void cancel()
     {
-        this.jabberTransfer.cancel();
+        mJabberFileTransfer.cancel();
     }
 
     /**
@@ -109,7 +109,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      */
     public FileTransfer.Error getTransferError()
     {
-        return jabberTransfer.getError();
+        return mJabberFileTransfer.getError();
     }
 
     /**
@@ -120,7 +120,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
     @Override
     public long getTransferredBytes()
     {
-        return jabberTransfer.getBytesSent();
+        return mJabberFileTransfer.getBytesSent();
     }
 
     /**
@@ -140,7 +140,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      */
     public File getLocalFile()
     {
-        return file;
+        return mFile;
     }
 
     /**
@@ -150,7 +150,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
      */
     public Contact getContact()
     {
-        return recipient;
+        return mContact;
     }
 
     /**
@@ -172,7 +172,7 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             return;
         }
 
-        BoBManager bobManager = BoBManager.getInstanceFor(protocolProvider.getConnection());
+        BoBManager bobManager = BoBManager.getInstanceFor(mPPS.getConnection());
         for (ContentId hash : bobInfo.getHashes()) {
             bobManager.removeBoB(hash);
         }
@@ -190,14 +190,14 @@ public class OutgoingFileTransferJabberImpl extends AbstractFileTransfer impleme
             return;
 
         // If our file is not a thumbnail file we have nothing to do here.
-        if (!(file instanceof ThumbnailedFile))
+        if (!(mFile instanceof ThumbnailedFile))
             return;
 
-        XMPPConnection connection = protocolProvider.getConnection();
+        XMPPConnection connection = mPPS.getConnection();
         StreamInitiation fileTransferPacket = (StreamInitiation) stanza;
-        ThumbnailedFile thumbnailedFile = (ThumbnailedFile) file;
+        ThumbnailedFile thumbnailedFile = (ThumbnailedFile) mFile;
 
-        if (jabberTransfer.getStreamID().equals(fileTransferPacket.getSessionID())) {
+        if (mJabberFileTransfer.getStreamID().equals(fileTransferPacket.getSessionID())) {
             StreamInitiation.File file = fileTransferPacket.getFile();
 
             BoBData bobData = new BoBData(

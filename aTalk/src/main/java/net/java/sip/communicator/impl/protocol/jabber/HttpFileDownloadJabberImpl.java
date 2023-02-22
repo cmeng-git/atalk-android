@@ -133,17 +133,6 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     }
 
     /**
-     * Returns the number of bytes already received from the recipient.
-     * Actual file progress is handled in FileHttpDownloadConversation. So return -1.
-     *
-     * @return the number of bytes already received from the recipient
-     */
-    @Override
-    public long getTransferredBytes() {
-        return -1;
-    }
-
-    /**
      * The direction is incoming.
      *
      * @return IN

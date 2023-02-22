@@ -1263,8 +1263,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     try {
                         // Server sends stream disconnect on "not-authorized". So perform manual connect again before
                         // server closes the stream. Some Server does otherwise, so check before making connection.
-                        if (!mConnection.isConnected())
+                        if (!mConnection.isConnected()) {
                             mConnection.connect();
+                        }
                         // stop pps connectionListener from disturbing IBR registration process
                         mConnection.removeConnectionListener(xmppConnectionListener);
                         xmppConnectionListener = null;

@@ -376,6 +376,7 @@ public class FileBackend
         // Make a guess base on filePath
         if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
             String fileName = uri.getPath();
+
             if (fileName != null) {
                 if (fileName.contains("image"))
                     mimeType = "image/*";
@@ -383,17 +384,17 @@ public class FileBackend
                     mimeType = "video/*";
                 else if (fileName.contains("audio"))
                     mimeType = "audio/*";
-            }
-        }
 
-        // Make a last ditch to guess ContentType From FileInputStream
-        if ((mimeType == null) || mimeType.equals(("application/octet-stream"))) {
-            try {
-                InputStream is = new FileInputStream(uri.getPath());
-                String tmp = guessContentTypeFromStream(is);
-                if (tmp != null)
-                    mimeType = tmp;
-            } catch (IOException ignore) {
+                // Make a last ditch to guess ContentType From FileInputStream
+                if (mimeType == null) {
+                    try {
+                        InputStream is = new FileInputStream(fileName);
+                        String tmp = guessContentTypeFromStream(is);
+                        if (tmp != null)
+                            mimeType = tmp;
+                    } catch (IOException ignore) {
+                    }
+                }
             }
         }
         return mimeType;
