@@ -33,7 +33,7 @@ public class ProvisioningDiscoveryDHCPActivator implements BundleActivator
     /**
      * DHCP provisioning service.
      */
-    private static ProvisioningDiscoveryServiceDHCPImpl provisioningService = new ProvisioningDiscoveryServiceDHCPImpl();
+    private static final ProvisioningDiscoveryServiceDHCPImpl provisioningService = new ProvisioningDiscoveryServiceDHCPImpl();
 
     /**
      * A reference to the currently valid {@link NetworkAddressManagerService}.

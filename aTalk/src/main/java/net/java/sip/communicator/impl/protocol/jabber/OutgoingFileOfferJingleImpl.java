@@ -20,8 +20,6 @@ import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -95,13 +93,15 @@ public class OutgoingFileOfferJingleImpl extends AbstractFileTransfer {
     public void cancel() {
         try {
             mOfoJingle.cancel(mConnection);
-            removeOfoListener();
-            SessionState oldState = mOfoJingle.getJingleSession().getSessionState();
-            fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, oldState.toString());
         } catch (SmackException.NotConnectedException | InterruptedException | XMPPException.XMPPErrorException
                 | SmackException.NoResponseException e) {
             Timber.e("File send cancel exception: %s", e.getMessage());
         }
+
+        // Must perform the following even if cancel failed due to remote: XMPPError: item-not-found - cancel
+        removeOfoListener();
+        SessionState oldState = mOfoJingle.getJingleSession().getSessionState();
+        fireStatusChangeEvent(FileTransferStatusChangeEvent.CANCELED, oldState.toString());
     }
 
     /**

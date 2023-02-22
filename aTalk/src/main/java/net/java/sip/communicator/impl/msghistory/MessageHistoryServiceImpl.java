@@ -746,12 +746,12 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns,
                 ChatSession.SESSION_UUID + "=?", args, null, null, null, null);
 
-        String mamDate = "-1";
+        Date mamDate = null;
         while (cursor.moveToNext()) {
-            mamDate = cursor.getString(0);
+            mamDate = new Date(Long.parseLong(cursor.getString(0)));
         }
         cursor.close();
-        return new Date(Long.parseLong(mamDate));
+        return mamDate;
     }
 
     /**

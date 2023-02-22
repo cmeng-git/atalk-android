@@ -11,10 +11,9 @@ import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 
-import androidx.fragment.app.Fragment;
-
+import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
-import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.msghistory.MessageHistoryService;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
@@ -35,10 +34,8 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.chat.ChatMessage;
-import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.XhtmlUtil;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
@@ -135,6 +132,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      */
     private CarbonManager mCarbonManager = null;
     private ChatManager mChatManager = null;
+    private final MessageHistoryService mhs = MUCActivator.getMessageHistoryService();
 
     /**
      * Current active chat
@@ -299,7 +297,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // by default we support default mime type, for other mime types method must be overridden
         if (IMessage.ENCODE_PLAIN == mimeType) {
             return true;
-        } else if (IMessage.ENCODE_HTML == mimeType) {
+        }
+        else if (IMessage.ENCODE_HTML == mimeType) {
             Jid toJid = getRecentFullJidForContactIfPossible(contact);
             return mPPS.isFeatureListSupported(toJid, XHTMLExtension.NAMESPACE);
         }
@@ -360,7 +359,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     ta = new StoredThreadID();
                     ta.threadID = nextThreadID();
                     putJidForAddress(bareJid, ta.threadID);
-                } else {
+                }
+                else {
                     return null;
                 }
             }
@@ -465,7 +465,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 XHTMLExtension xhtmlExtension = new XHTMLExtension();
                 xhtmlExtension.addBody(htmlText.toXML());
                 messageBuilder.addExtension(xhtmlExtension);
-            } else {
+            }
+            else {
                 // this is plain text so keep it as it is.
                 messageBuilder.addBody(null, content);
             }
@@ -630,7 +631,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (allTrusted) {
                 sendInstantMessage(to, resource, message, correctedMessageUID, omemoManager);
-            } else {
+            }
+            else {
                 String errMessage = aTalkApp.getResString(R.string.omemo_send_error,
                         "Undecided Omemo Identity: " + omemoDevices.toString());
                 Timber.w("%s", errMessage);
@@ -650,7 +652,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             throws IllegalStateException {
         if (opSetPersPresence == null) {
             throw new IllegalStateException("The provider must be sign in before able to communicate.");
-        } else
+        }
+        else
             opSetPersPresence.assertConnected();
     }
 
@@ -678,7 +681,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             mChatManager = ChatManager.getInstanceFor(connection);
             mChatManager.addIncomingListener(this);
 
-        } else if (evt.getNewState() == RegistrationState.REGISTERED) {
+        }
+        else if (evt.getNewState() == RegistrationState.REGISTERED) {
             EntityFullJid userJid = connection.getUser();
             mUserJid = userJid.toString();
 
@@ -686,7 +690,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             connection.removeAsyncStanzaListener(OperationSetBasicInstantMessagingJabberImpl.this);
             connection.addAsyncStanzaListener(this, INCOMING_SVR_MESSAGE_FILTER);
             enableDisableCarbon(userJid);
-        } else if (evt.getNewState() == RegistrationState.UNREGISTERED
+        }
+        else if (evt.getNewState() == RegistrationState.UNREGISTERED
                 || evt.getNewState() == RegistrationState.CONNECTION_FAILED
                 || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED) {
             if (connection != null) {  // must not assume - may call after log off
@@ -758,7 +763,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 mCarbonManager.setCarbonsEnabled(true);
                 mCarbonManager.addCarbonCopyReceivedListener(this);
                 isCarbonEnabled = true;
-            } else {
+            }
+            else {
                 isCarbonEnabled = false;
                 mCarbonManager = null;
             }
@@ -828,7 +834,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // if msgBody contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType = encryption | IMessage.ENCODE_HTML;
-        } else {
+        }
+        else {
             encType = encryption | IMessage.ENCODE_PLAIN;
         }
 
@@ -910,6 +917,11 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                     correctedMessageUID, isPrivateMessaging, privateContactRoom);
         }
 
+        // Start up Chat session if no exist, for offline message when history log is disabled;
+        // Else first offline message is not shown
+        if (!mhs.isHistoryLoggingEnabled() && message.hasExtension(DelayInformation.QNAME)) {
+            ChatSessionManager.createChatForContact(sourceContact);
+        }
         fireMessageEvent(msgEvt);
     }
 
@@ -973,7 +985,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         DelayInformation delayInfo = msg.getExtension(DelayInformation.class);
         if (delayInfo != null) {
             timeStamp = delayInfo.getStamp();
-        } else {
+        }
+        else {
             timeStamp = new Date();
         }
         return timeStamp;
@@ -1045,7 +1058,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // aTalk OMEMO msgBody may contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
-        } else {
+        }
+        else {
             encType |= IMessage.ENCODE_PLAIN;
         }
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
@@ -1073,10 +1087,16 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             msgEvt = new MessageDeliveredEvent(newMessage, contact, null, sender, timeStamp);
             // Update message unread count for carbon message for the actual recipient.
             NotificationManager.updateMessageCount(contact);
-        } else {
+        }
+        else {
             msgEvt = new MessageReceivedEvent(newMessage, contact, null, sender, timeStamp, correctedMsgID);
         }
 
+        // Start up Chat session if no exist, for offline message when history log is disabled;
+        // Else first offline message is not shown
+        if (!mhs.isHistoryLoggingEnabled() && message.hasExtension(DelayInformation.QNAME)) {
+            ChatSessionManager.createChatForContact(contact);
+        }
         fireMessageEvent(msgEvt);
     }
 

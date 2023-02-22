@@ -2574,7 +2574,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Will be removed on file transfer completion
                     addActiveFileTransfer(fileTransfer.getID(), fileTransfer, msgViewId);
                 }
-                // HttpFileUpload for file transfer of Secure (AesgcmUrl) or Plain text
+                // HttpFileUpload for file transfer of Secure (AesgcmUrl:) or Plain text (Https:)
                 else {
                     if (fileXfer instanceof AesgcmUrl) {
                         urlLink = ((AesgcmUrl) fileXfer).getAesgcmUrl();

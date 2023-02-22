@@ -20,7 +20,7 @@
 if [[ $# -ge 1 ]]; then
   LIB_SPEEX_GIT=$1
 else
-  LIB_SPEEX_GIT="speex-1.2.0"
+  LIB_SPEEX_GIT="speex-1.2.1"
 fi
 
 # LIB_SPEEX_VERSION="1.2beta3"

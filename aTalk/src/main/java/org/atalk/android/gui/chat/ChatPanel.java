@@ -71,6 +71,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
@@ -610,6 +611,7 @@ public class ChatPanel implements Chat, MessageListener {
             mamManager = MamManager.getInstanceFor(connection, null);
         }
 
+        // Retrieve the mamData from the last message sent/received in this chatSession
         MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
         Date mamDate = mMHS.getLastMessageDateForSessionUuid(mChatId);
 
@@ -619,12 +621,13 @@ public class ChatPanel implements Chat, MessageListener {
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                 omemoManager.stopStanzaAndPEPListeners();
 
+                // Must always use a valid mamDate in memQuery
                 mamDate = mMHS.getMamDate(mChatId);
-
-                // for testing only using the specified Local time
-                // Calendar c = Calendar.getInstance(TimeZone.getDefault());
-                // c.set(2023, 1, 1, 0, 0, 0);
-                // mamDate = c.getTime();
+                if (mamDate == null) {
+                    Calendar c = Calendar.getInstance(TimeZone.getDefault());
+                    c.set(Calendar.DAY_OF_MONTH, -30);
+                    mamDate = c.getTime();
+                }
 
                 MamManager.MamQueryArgs mamQueryArgs = MamManager.MamQueryArgs.builder()
                         .limitResultsToJid(jid)

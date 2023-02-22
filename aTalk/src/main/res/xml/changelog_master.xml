@@ -6,8 +6,19 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.3 (02/11/2023)" versioncode="301031">
+    <release version="3.1.4 (02/23/2023)" versioncode="301040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Port aTalk BOSH implementation to be compatible with smack v4.4.6</change>
+        <change>Fix first offline message not shown when HistoryLog is disabled and ChatSession has not been launched before</change>
+        <change>Use valid date in mamQuery for new muc creation on invitation; default to 30 days ago if none found</change>
+        <change>Must proceed to local clean up and sync state even if jingle file send remote cancel failed</change>
+        <change>Check for local file existence before proceed to send the file; android tmp directory may return non-existence file path</change>
+        <change>Must ensure user selected file exist before proceed with extended mime type check</change>
+        <change>Upgrade native jni libraries sources: ffmpeg 5.1.2; libvpx 1.13.0; openssl-1.1.1t; speex-1.2.1</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.3 (02/11/2023)" versioncode="301031">
         <change>Do not proceed with MAM query if user is offline and not registered with the network, else aTalk crash</change>
         <change>Alert user to close and open chat session to view MAM when online, if user access chat session while offline</change>
         <change>Change MAM implementation so the MAM messages are always available for aTalk retrieval</change>

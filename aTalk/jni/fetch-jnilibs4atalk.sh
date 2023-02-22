@@ -8,6 +8,6 @@ pushd opus || exit
 popd || return
 
 pushd speex || exit
-  echo "### Fetching speex (v1.2.0) and ogg (1.3.5) libraries source ###"
+  echo "### Fetching speex (speex-1.2rc1 & v1.2.1) and ogg (1.3.5) libraries source ###"
   ./init_libSpeexOgg.sh
 popd || return

@@ -32,7 +32,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import net.java.sip.communicator.impl.filehistory.FileHistoryServiceImpl;
-import net.java.sip.communicator.impl.protocol.jabber.HttpFileUploadJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileSendEntityImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileTransferJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.FileTransfer;
@@ -40,7 +40,6 @@ import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusListener;
-import net.java.sip.communicator.service.protocol.event.HttpFileTransferEvent;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.GuiUtils;
 
@@ -202,12 +201,12 @@ public class FileSendConversation extends FileTransferConversation implements Fi
     }
 
     /**
-     * Create a new File send message/record for file transfer status tracking;
-     * Use HttpFileUploadJabberImpl class, as Object mEntityJid can either be contact or chatRoom
+     * Create a new File send message/record for file transfer status tracking; File transport used is undefined.
+     * Use OutgoingFileSendEntityImpl class, as recipient entityJid can either be contact or chatRoom
      */
     private void createFileSendRecord() {
-        HttpFileUploadJabberImpl fileTransfer = new HttpFileUploadJabberImpl(mEntityJid, msgUuid, mXferFile.getPath());
-        HttpFileTransferEvent event = new HttpFileTransferEvent(fileTransfer, new Date());
+        OutgoingFileSendEntityImpl fileTransfer = new OutgoingFileSendEntityImpl(mEntityJid, msgUuid, mXferFile.getPath());
+        FileTransferCreatedEvent event = new FileTransferCreatedEvent(fileTransfer, new Date());
         mFHS.fileTransferCreated(event);
     }
 

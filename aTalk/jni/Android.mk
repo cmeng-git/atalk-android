@@ -68,7 +68,7 @@ include $(OPUS_DIR)/Android.mk
 # include $(BUILD_SHARED_LIBRARY)
 
 # ================================= Speex =============================================
-### Speex shared library build - using source (speex: v1.2.0rc1 (last to support resampler.c)  and libogg: v1.3.5)
+### Speex shared library build - with speex: v1.2.0rc1 (last to support resampler.c) + v1.2.1 (update) and libogg: v1.3.5
 LOCAL_PATH := $(ROOT)
 SPEEX_DIR  := speex
 include ./speex/Android.mk
@@ -84,7 +84,7 @@ include ./speex/Android.mk
 # include $(PREBUILT_SHARED_LIBRARY)
 
 # ================================= OpenSSL ===========================================
-### OpenSSL shared library build (version 1.1.1q)
+### OpenSSL shared library build (version 1.1.1t)
 LOCAL_PATH  := $(ROOT)
 include $(CLEAR_VARS)
 

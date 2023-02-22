@@ -123,7 +123,7 @@ public class LoginByPasswordStrategy implements JabberLoginStrategy
         aTalkApp.waitForFocus();
         new Handler(Looper.getMainLooper()).post(() -> {
             Context context = aTalkApp.getCurrentActivity();
-            if (context != null) {
+            if ((context != null) && (pps.getConnection() != null)) {
                 IBRCaptchaProcessDialog mCaptchaDialog = new IBRCaptchaProcessDialog(context, pps, accountId, password);
                 mCaptchaDialog.show();
             }
