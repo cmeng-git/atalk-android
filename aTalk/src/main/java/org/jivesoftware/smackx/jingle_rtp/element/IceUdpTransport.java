@@ -16,22 +16,22 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.colibri.WebSocketExtension;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 /**
  * IceUdpTransport element.
  *
  * @see <a href="https://xmpp.org/extensions/xep-0176.html">XEP-0176: Jingle ICE-UDP Transport Method 1.1.1 (2021-03-04)</a>
  */
-public class IceUdpTransport extends JingleContentTransport
-{
+public class IceUdpTransport extends JingleContentTransport {
+
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:ice-udp:1";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
@@ -58,13 +58,11 @@ public class IceUdpTransport extends JingleContentTransport
      * signalling channel by sending a transport-info message that contains a "remote-candidate" element.
      */
     // private RemoteCandidateExtension remoteCandidate;
-    public IceUdpTransport()
-    {
+    public IceUdpTransport() {
         super(getBuilder());
     }
 
-    public IceUdpTransport(Builder builder)
-    {
+    public IceUdpTransport(Builder builder) {
         super(builder);
     }
 
@@ -73,8 +71,7 @@ public class IceUdpTransport extends JingleContentTransport
      *
      * @return a password <code>String</code> as defined in RFC 5245
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return getAttributeValue(ATTR_PWD);
     }
 
@@ -83,8 +80,7 @@ public class IceUdpTransport extends JingleContentTransport
      *
      * @return a user fragment <code>String</code> as defined in RFC 5245
      */
-    public String getUfrag()
-    {
+    public String getUfrag() {
         return getAttributeValue(ATTR_UFRAG);
     }
 
@@ -93,8 +89,7 @@ public class IceUdpTransport extends JingleContentTransport
      *
      * @return <code>true</code> if this <code>IceUdpTransport</code> has a child with the 'rtcp-mux' name.
      */
-    public boolean isRtcpMux()
-    {
+    public boolean isRtcpMux() {
         for (ExtensionElement packetExtension : getChildElements()) {
             if (RtcpMux.ELEMENT.equals(packetExtension.getElementName()))
                 return true;
@@ -102,8 +97,7 @@ public class IceUdpTransport extends JingleContentTransport
         return false;
     }
 
-    public IceUdpTransportCandidate getCandidate(String candidateId)
-    {
+    public IceUdpTransportCandidate getCandidate(String candidateId) {
         for (IceUdpTransportCandidate candidate : getChildElements(IceUdpTransportCandidate.class)) {
             if (candidate.getID().equals(candidateId)) {
                 return candidate;
@@ -117,8 +111,7 @@ public class IceUdpTransport extends JingleContentTransport
      *
      * @return the list of {@link IceUdpTransportCandidate}s currently registered with this transport.
      */
-    public List<IceUdpTransportCandidate> getCandidateList()
-    {
+    public List<IceUdpTransportCandidate> getCandidateList() {
         if (candidateList == null) {
             candidateList = getChildElements(IceUdpTransportCandidate.class);
         }
@@ -132,8 +125,7 @@ public class IceUdpTransport extends JingleContentTransport
      * @return <code>true</code> if the list of <code>CandidateExtensionElement</code>s registered with this
      * transport contains the specified <code>candidate</code>
      */
-    public boolean removeCandidate(IceUdpTransportCandidate candidate)
-    {
+    public boolean removeCandidate(IceUdpTransportCandidate candidate) {
         if (removeChildElement(candidate)) {
             candidateList = getChildElements(IceUdpTransportCandidate.class);
             return true;
@@ -149,8 +141,7 @@ public class IceUdpTransport extends JingleContentTransport
      * @return a new <code>IceUdpTransport</code> instance which has the same run-time
      * type, attributes, namespace, text and candidates as the specified <code>src</code>
      */
-    public static IceUdpTransport cloneTransportAndCandidates(final IceUdpTransport src, boolean copyDtls)
-    {
+    public static IceUdpTransport cloneTransportAndCandidates(final IceUdpTransport src, boolean copyDtls) {
         IceUdpTransport dst = null;
         if (src != null) {
             dst = clone(src);
@@ -188,8 +179,7 @@ public class IceUdpTransport extends JingleContentTransport
         return dst;
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -197,21 +187,17 @@ public class IceUdpTransport extends JingleContentTransport
      * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the JingleContentTransport.
      */
-    public static class Builder extends JingleContentTransport.Builder
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends JingleContentTransport.Builder {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
-        public Builder setPassword(String pwd)
-        {
+        public Builder setPassword(String pwd) {
             addAttribute(ATTR_PWD, pwd);
             return this;
         }
 
-        public Builder setUfrag(String ufrag)
-        {
+        public Builder setUfrag(String ufrag) {
             addAttribute(ATTR_UFRAG, ufrag);
             return this;
         }
@@ -240,14 +226,12 @@ public class IceUdpTransport extends JingleContentTransport
 //        }
 
         @Override
-        public IceUdpTransport build()
-        {
+        public IceUdpTransport build() {
             return new IceUdpTransport(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

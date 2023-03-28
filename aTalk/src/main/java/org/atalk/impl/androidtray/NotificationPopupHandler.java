@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 import androidx.fragment.app.Fragment;
@@ -65,7 +66,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
 {
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    private static final Context mContext = aTalkApp.getGlobalContext();
+    private final Context mContext = aTalkApp.getGlobalContext();
 
     /**
      * Map of currently displayed <code>AndroidPopup</code>s. Value is removed when
@@ -117,7 +118,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         mBuilder.setWhen(0);
 
         // Must setFullScreenIntent to wake android from sleep and for heads-up to stay on
-        // heads-up notification is for both the Jingle Message propose and Jingle call
+        // heads-up notification is for both the Jingle Message propose and Jingle incoming call
         // Do no tie this to Note-10 Edge-light, else call UI is not shown
         String notificationGroup = popupMessage.getGroup();
         switch (notificationGroup) {
@@ -135,15 +136,20 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     // So disable auto-answer (JMC) in this case; hence allow user choice to cancel/accept incoming call
                     // For jingleMessage propose => JingleMessageCallActivity;
                     Intent fullScreenIntent;
-                    if (SystrayService.JINGLE_MESSAGE_PROPOSE == popupMessage.getMessageType()) {
+                    int msgType = popupMessage.getMessageType();
+                    Timber.d("Pop up message type: %s; mSid: %s; nId: %s", msgType, mSid, nId);
+                    if (SystrayService.JINGLE_MESSAGE_PROPOSE == msgType) {
                         fullScreenIntent = new Intent(mContext, JingleMessageCallActivity.class)
                                 .putExtra(CallManager.CALL_SID, mSid)
-                                .putExtra(CallManager.JM_AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
+                                .putExtra(CallManager.AUTO_ACCEPT, !aTalkApp.isDeviceLocked())
                                 .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL);
                     }
+                    // Take the call via ReceivedCallActivity inorder to end call alert properly; auto-answer once
+                    // the call has been accepted via the headsup notification.
                     else {
                         fullScreenIntent = new Intent(mContext, ReceivedCallActivity.class)
-                                .putExtra(CallManager.CALL_SID, mSid);
+                                .putExtra(CallManager.CALL_SID, mSid)
+                                .putExtra(CallManager.AUTO_ACCEPT, SystrayService.HEADS_UP_INCOMING_CALL == msgType);
                     }
 
                     PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getGlobalContext(),
@@ -155,19 +161,19 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                             .setOngoing(true)
                             .setAutoCancel(false);  // must not allow user to cancel, else no UI to take call
 
-                    // Build end call action
-                    NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_call_end_light,
-                            aTalkApp.getResString(R.string.service_gui_DISMISS),
-                            createDismissIntent(nId)).build();
-                    mBuilder.addAction(dismissAction);
-
                     // Build answer call action
                     NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_call_light,
                             aTalkApp.getResString(R.string.service_gui_ANSWER),
                             fullScreenPendingIntent).build();
                     mBuilder.addAction(answerAction);
+
+                    // Build end call action
+                    NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
+                            R.drawable.ic_call_end_light,
+                            aTalkApp.getResString(R.string.service_gui_DISMISS),
+                            createDismissIntent(nId)).build();
+                    mBuilder.addAction(dismissAction);
                 }
                 break;
 
@@ -217,12 +223,12 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                 break;
         }
 
+        // caches the notification until clicked or cleared
+        notificationMap.put(nId, newPopup);
+
         // post the notification
         aTalkApp.getNotificationManager().notify(nId, mBuilder.build());
         newPopup.onPost();
-
-        // caches the notification until clicked or cleared
-        notificationMap.put(nId, newPopup);
     }
 
     /**
@@ -286,7 +292,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     }
 
     /**
-     * https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability
+     * <a href="https://developer.android.com/about/versions/12/behavior-changes-12#pending-intent-mutability">Behavior changes: Apps targeting Android 12</a>
      * Android 12 must specify the mutability of each PendingIntent object that your app creates.
      *
      * @return Pending Intent Flag based on API
@@ -376,7 +382,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     chatPanel = ChatSessionManager.getActiveChat(chatRoomWrapper.getChatRoomID());
                 }
             }
-            if ((chatPanel != null) && (replyText != null)) {
+            if (chatPanel != null) {
                 Timber.d("Popup action reply message to: %s %s", tag, replyText);
                 chatPanel.sendMessage(replyText.toString(), IMessage.ENCODE_PLAIN);
             }
@@ -476,7 +482,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     private static void removeNotification(int notificationId)
     {
         if (notificationId == OSGiService.getGeneralNotificationId()) {
-            AndroidUtils.clearGeneralNotification(mContext);
+            AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
         }
         AndroidPopup popup = notificationMap.get(notificationId);
         if (popup == null) {
@@ -484,7 +490,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
             return;
         }
 
-        Timber.d("Removing notification: %s", notificationId);
+        Timber.d("Removing notification popup: %s", notificationId);
         popup.removeNotification(notificationId);
         notificationMap.remove(notificationId);
     }
@@ -500,6 +506,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
     public static void removeCallNotification(String callId)
     {
         Integer notificationId = callNotificationMap.get(callId);
+        Timber.d("Removing notification for callId: %s => %s", callId, notificationId);
         if (notificationId != null) {
             removeNotification(notificationId);
             callNotificationMap.remove(callId);
@@ -543,6 +550,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         return 3;
     }
 
+    @NonNull
     @Override
     public String toString()
     {

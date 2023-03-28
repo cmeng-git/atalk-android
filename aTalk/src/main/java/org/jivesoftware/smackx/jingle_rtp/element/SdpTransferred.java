@@ -16,23 +16,22 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Implements <code>ExtensionElement</code> for the "transferred" element defined below.
  * XEP-0251: Jingle Session Transfer 0.2 (2009-10-05)
  * @see <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
- * @see <a href="https://xmpp.org/extensions/xep-0251.html#attended ">XEP-0251 § 3. Attended Transfer</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0251.html#attended">XEP-0251 § 3. Attended Transfer</a>
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5359#page-50">RFC5359 § 2.4. Transfer - Unattended /Attended</a>
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SdpTransferred extends AbstractXmlElement
-{
+public class SdpTransferred extends AbstractXmlElement {
     /**
      * The name of the "transferred" element.
      */
@@ -45,8 +44,7 @@ public class SdpTransferred extends AbstractXmlElement
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    public SdpTransferred()
-    {
+    public SdpTransferred() {
         super(getBuilder());
     }
 
@@ -55,13 +53,11 @@ public class SdpTransferred extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpTransferred(Builder builder)
-    {
+    public SdpTransferred(Builder builder) {
         super(builder);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -69,22 +65,18 @@ public class SdpTransferred extends AbstractXmlElement
      * Builder for SdpTransferred. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpTransferred.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpTransferred>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpTransferred> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         @Override
-        public SdpTransferred build()
-        {
+        public SdpTransferred build() {
             return new SdpTransferred(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

@@ -23,7 +23,7 @@ public class AndroidMergedPopup extends AndroidPopup
     /**
      * List of merged popups.
      */
-    private List<AndroidPopup> mergedPopups = new ArrayList<>();
+    private final List<AndroidPopup> mergedPopups = new ArrayList<>();
 
     /**
      * Creates new instance of <code>AndroidMergedPopup</code> with given <code>AndroidPopup</code> as root.
@@ -33,7 +33,7 @@ public class AndroidMergedPopup extends AndroidPopup
     AndroidMergedPopup(AndroidPopup rootPopup)
     {
         super(rootPopup.handler, rootPopup.popupMessage);
-        this.id = rootPopup.id;
+        this.nId = rootPopup.nId;
     }
 
     /**

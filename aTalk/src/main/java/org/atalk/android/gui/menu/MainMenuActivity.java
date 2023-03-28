@@ -86,7 +86,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     /**
      * Video bridge conference call menu. In the case of more than one account.
      */
-    private MenuItem videoBridgeMenuItem = null;
+    private final MenuItem videoBridgeMenuItem = null;
     private VideoBridgeProviderMenuItem menuVbItem = null;
 
     private static boolean done = false;

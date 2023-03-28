@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -64,7 +66,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     /**
      * A map reference of MetaContact to ContactViewHolder for the unread message count update
      */
-    private Map<MetaContact, ContactViewHolder> mContactViewHolder = new HashMap<>();
+    private final Map<MetaContact, ContactViewHolder> mContactViewHolder = new HashMap<>();
 
     /**
      * Flag set to true to indicate the view is the main contact list and all available options etc are enabled
@@ -75,7 +77,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     private final boolean isMainContactList;
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
 
     /**
      * Creates the contact list adapter.
@@ -509,10 +511,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
                     case R.id.contactCallVideoButton:
                         if (viewHolder != null) {
-                            // AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(),
-                            //        viewHolder.callVideoButton, JidAddress, (isAudioCall == null));
-                            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), metaContact, (isAudioCall == null),
-                                    viewHolder.callVideoButton);
+                            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), metaContact,
+                                    (isAudioCall == null), viewHolder.callVideoButton);
                         }
                         break;
 
@@ -585,7 +585,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     private void setAvatar(ImageView avatarView, Drawable avatarImage)
     {
         if (avatarImage == null) {
-            avatarImage = aTalkApp.getAppResources().getDrawable(R.drawable.contact_avatar);
+            avatarImage = ResourcesCompat.getDrawable(aTalkApp.getAppResources(),
+                    R.drawable.contact_avatar, null);
         }
         avatarView.setImageDrawable(avatarImage);
     }

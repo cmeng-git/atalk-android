@@ -22,6 +22,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
@@ -35,8 +36,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidCallUtil
-{
+public class AndroidCallUtil {
     /**
      * Field used to track the thread used to create outgoing calls.
      */
@@ -50,8 +50,7 @@ public class AndroidCallUtil
      * @param callButtonView the button view that generated the call
      * @param isVideoCall true to setup video call
      */
-    public static void createAndroidCall(Context context, Jid contact, View callButtonView, boolean isVideoCall)
-    {
+    public static void createAndroidCall(Context context, Jid contact, View callButtonView, boolean isVideoCall) {
         showCallViaMenu(context, contact, callButtonView, isVideoCall);
     }
 
@@ -63,8 +62,7 @@ public class AndroidCallUtil
      * @param v the View that will contain the popup menu.
      * @param isVideoCall true for video call setup
      */
-    private static void showCallViaMenu(final Context context, final Jid calleeJid, View v, final boolean isVideoCall)
-    {
+    private static void showCallViaMenu(final Context context, final Jid calleeJid, View v, final boolean isVideoCall) {
         PopupMenu popup = new PopupMenu(context, v);
         Menu menu = popup.getMenu();
         ProtocolProviderService mProvider = null;
@@ -103,8 +101,13 @@ public class AndroidCallUtil
      * @param isVideoCall true to setup video call
      * @param callButtonView not null if call via contact list fragment.
      */
-    public static void createCall(Context context, MetaContact metaContact, boolean isVideoCall, View callButtonView)
-    {
+    public static void createCall(Context context, MetaContact metaContact, boolean isVideoCall, View callButtonView) {
+        // Check for resource permission before continue
+        if (!aTalk.isMediaCallAllowed(isVideoCall)) {
+            Timber.w("createCall permission denied #1: %s", isVideoCall);
+            return;
+        }
+
         Contact contact = metaContact.getDefaultContact();
         Jid callee = contact.getJid();
         ProtocolProviderService pps = contact.getProtocolProvider();
@@ -135,8 +138,12 @@ public class AndroidCallUtil
      * @param isVideoCall true for video call setup
      */
     public static void createCall(final Context context, final ProtocolProviderService provider,
-            final Jid callee, final boolean isVideoCall)
-    {
+            final Jid callee, final boolean isVideoCall) {
+        if (!aTalk.isMediaCallAllowed(isVideoCall)) {
+            Timber.w("createCall permission denied #2: %s", isVideoCall);
+            return;
+        }
+
         // Force to null assuming user is making a call seeing no call in progress, otherwise cannot make call at all
         if (createCallThread != null) {
             Timber.w("Another call is being created; restarting call thread!");
@@ -147,16 +154,13 @@ public class AndroidCallUtil
             aTalkApp.showToastMessage(R.string.gui_call_max_transfer);
             return;
         }
-
         // cmeng (20210319: Seems to have no chance to show; and it causes waitForDialogOpened() (10s) error often, so remove it
 //        final long dialogId = ProgressDialogFragment.showProgressDialog(
 //                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING),
 //                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING_MSG, callee));
 
-        createCallThread = new Thread("Create call thread")
-        {
-            public void run()
-            {
+        createCallThread = new Thread("Create call thread") {
+            public void run() {
                 try {
                     CallManager.createCall(provider, callee.toString(), isVideoCall);
                 } catch (Throwable t) {
@@ -174,10 +178,10 @@ public class AndroidCallUtil
      * Checks if there is a call in progress. If true then shows a warning toast and finishes the activity.
      *
      * @param activity activity doing a check.
+     *
      * @return <code>true</code> if there is call in progress and <code>Activity</code> was finished.
      */
-    public static boolean checkCallInProgress(Activity activity)
-    {
+    public static boolean checkCallInProgress(Activity activity) {
         if (CallManager.getActiveCallsCount() > 0) {
             Timber.w("Call is in progress");
             Toast.makeText(activity, R.string.service_gui_WARN_CALL_IN_PROGRESS, Toast.LENGTH_SHORT).show();

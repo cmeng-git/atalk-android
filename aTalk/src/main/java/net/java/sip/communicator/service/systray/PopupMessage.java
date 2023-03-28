@@ -9,8 +9,8 @@ package net.java.sip.communicator.service.systray;
 import javax.swing.JComponent;
 
 /**
- * The <code>PopupMessage</code> class encloses informations to show in a popup.
- * While a message title and a message body are mandatory informations,
+ * The <code>PopupMessage</code> class encloses information to show in a popup.
+ * While a message title and a message body are mandatory information,
  * a popup message could provides more stuffs like a component or an image which
  * may be used by a <code>PopupMessageHandler</code> capable to handle it.
  *

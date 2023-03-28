@@ -36,8 +36,7 @@ import static net.java.sip.communicator.service.notification.event.NotificationE
  * @author Ingo Bauersachs
  * @author Eng Chong Meng
  */
-class NotificationServiceImpl implements NotificationService
-{
+class NotificationServiceImpl implements NotificationService {
     private static final String NOTIFICATIONS_PREFIX = "notifications";
 
     /**
@@ -77,8 +76,7 @@ class NotificationServiceImpl implements NotificationService
     /**
      * Creates an instance of <code>NotificationServiceImpl</code> by loading all previously saved notifications.
      */
-    NotificationServiceImpl()
-    {
+    NotificationServiceImpl() {
         // Load all previously saved notifications.
         this.loadNotifications();
     }
@@ -89,8 +87,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param handler The handler that executes the action.
      */
-    public void addActionHandler(NotificationHandler handler)
-    {
+    public void addActionHandler(NotificationHandler handler) {
         if (handler == null)
             throw new IllegalArgumentException("handler cannot be null");
 
@@ -112,8 +109,7 @@ class NotificationServiceImpl implements NotificationService
      * @param listener the listener that we'd like to register to listen for changes in the event
      * notifications stored by this service.
      */
-    public void addNotificationChangeListener(NotificationChangeListener listener)
-    {
+    public void addNotificationChangeListener(NotificationChangeListener listener) {
         synchronized (changeListeners) {
             changeListeners.add(listener);
         }
@@ -126,8 +122,7 @@ class NotificationServiceImpl implements NotificationService
      * @param eventType the event type.
      * @param defaultAction the default action which values we will use.
      */
-    private void checkDefaultAgainstLoadedNotification(String eventType, NotificationAction defaultAction)
-    {
+    private void checkDefaultAgainstLoadedNotification(String eventType, NotificationAction defaultAction) {
         // checking for new sound action properties
         if (defaultAction instanceof SoundNotificationAction) {
             SoundNotificationAction soundDefaultAction = (SoundNotificationAction) defaultAction;
@@ -184,8 +179,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param data The notification data to act upon.
      */
-    private void fireNotification(NotificationData data)
-    {
+    private void fireNotification(NotificationData data) {
         Notification notification = notifications.get(data.getEventType());
         if ((notification == null) || !notification.isActive())
             return;
@@ -243,8 +237,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @return false if option is not enable or is not wihtin the quite hours period.
      */
-    public static boolean isQuietHours()
-    {
+    public static boolean isQuietHours() {
         if (!ConfigurationUtils.isQuiteHoursEnable())
             return false;
 
@@ -265,11 +258,11 @@ class NotificationServiceImpl implements NotificationService
      * notification is currently activated, we go through the list of registered actions and execute them.
      *
      * @param eventType the type of the event that we'd like to fire a notification for.
+     *
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown, or the notification is not active.
      */
-    public NotificationData fireNotification(String eventType)
-    {
+    public NotificationData fireNotification(String eventType) {
         return fireNotification(eventType, SystrayService.INFORMATION_MESSAGE_TYPE, null, null, null);
     }
 
@@ -282,11 +275,11 @@ class NotificationServiceImpl implements NotificationService
      * @param title the title of the given message
      * @param message the message to use if and where appropriate (e.g. with systray or log notification.)
      * @param icon the icon to show in the notification if and where appropriate
+     *
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown or the notification is not active.
      */
-    public NotificationData fireNotification(String eventType, int msgType, String title, String message, byte[] icon)
-    {
+    public NotificationData fireNotification(String eventType, int msgType, String title, String message, byte[] icon) {
         return fireNotification(eventType, msgType, title, message, icon, null);
     }
 
@@ -302,12 +295,12 @@ class NotificationServiceImpl implements NotificationService
      * @param extras additional/extra {@link NotificationHandler}-specific data to be provided to the firing
      * of the specified notification(s). The well-known keys are defined by the
      * <code>NotificationData</code> <code>XXX_EXTRA</code> constants.
+     *
      * @return An object referencing the notification. It may be used to stop a still running
      * notification. Can be null if the eventType is unknown or the notification is not active.
      */
     public NotificationData fireNotification(String eventType, int msgType, String title, String message,
-            byte[] icon, Map<String, Object> extras)
-    {
+            byte[] icon, Map<String, Object> extras) {
         Notification notification = notifications.get(eventType);
         if ((notification == null) || !notification.isActive())
             return null;
@@ -331,8 +324,7 @@ class NotificationServiceImpl implements NotificationService
      * @param sourceEventType the <code>eventType</code>, which is the parent of the action
      * @param action the notification action
      */
-    private void fireNotificationActionTypeEvent(String eventType, String sourceEventType, NotificationAction action)
-    {
+    private void fireNotificationActionTypeEvent(String eventType, String sourceEventType, NotificationAction action) {
         NotificationActionTypeEvent event
                 = new NotificationActionTypeEvent(this, eventType, sourceEventType, action);
 
@@ -359,8 +351,7 @@ class NotificationServiceImpl implements NotificationService
      * <code>NotificationEventTypeEvent</code> class.
      * @param sourceEventType the <code>eventType</code>, for which this event is about
      */
-    private void fireNotificationEventTypeEvent(String eventType, String sourceEventType)
-    {
+    private void fireNotificationEventTypeEvent(String eventType, String sourceEventType) {
         Timber.d("Dispatching NotificationEventType Change. Listeners = %s evt = %s",
                 changeListeners.size(), eventType);
 
@@ -381,8 +372,7 @@ class NotificationServiceImpl implements NotificationService
      * @param actionType the type for which the list of handlers should be retrieved or <code>null</code> if all
      * handlers shall be returned.
      */
-    public Iterable<NotificationHandler> getActionHandlers(String actionType)
-    {
+    public Iterable<NotificationHandler> getActionHandlers(String actionType) {
         if (actionType != null) {
             NotificationHandler handler = handlers.get(actionType);
             Set<NotificationHandler> ret;
@@ -401,10 +391,10 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param eventType the type of the event that we'd like to retrieve.
      * @param actionType the type of the action that we'd like to retrieve a descriptor for.
+     *
      * @return the notification action of the action to be executed when an event of the specified type has occurred.
      */
-    public NotificationAction getEventNotificationAction(String eventType, String actionType)
-    {
+    public NotificationAction getEventNotificationAction(String eventType, String actionType) {
         Notification notification = notifications.get(eventType);
         return (notification == null) ? null : notification.getAction(actionType);
     }
@@ -416,12 +406,12 @@ class NotificationServiceImpl implements NotificationService
      * @param eventType the event type
      * @param action the action which property to check.
      * @param property the property name without the action prefix.
+     *
      * @return the property value or null if missing.
      * @throws IllegalArgumentException when the event ot action is not found.
      */
     private String getNotificationActionProperty(String eventType, NotificationAction action, String property)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         String eventTypeNodeName = null;
         String actionTypeNodeName = null;
 
@@ -463,8 +453,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @return an iterator over a list of all events registered in this notifications service
      */
-    public Iterable<String> getRegisteredEvents()
-    {
+    public Iterable<String> getRegisteredEvents() {
         return Collections.unmodifiableSet(notifications.keySet());
     }
 
@@ -474,18 +463,17 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param eventType the name of the event (as defined by the plugin that's registered it) that we are
      * checking.
+     *
      * @return {@code true} if actions for the specified <code>eventType</code> are activated,
      * {@code false} - otherwise. If the given <code>eventType</code> is not contained in the
      * list of registered event types - returns {@code false}.
      */
-    public boolean isActive(String eventType)
-    {
+    public boolean isActive(String eventType) {
         Notification eventNotification = notifications.get(eventType);
         return (eventNotification != null) && eventNotification.isActive();
     }
 
-    private boolean isDefault(String eventType, String actionType)
-    {
+    private boolean isDefault(String eventType, String actionType) {
         List<String> eventTypes = configService.getPropertyNamesByPrefix(NOTIFICATIONS_PREFIX, true);
         for (String eventTypeRootPropName : eventTypes) {
             String eType = configService.getString(eventTypeRootPropName);
@@ -507,8 +495,7 @@ class NotificationServiceImpl implements NotificationService
         return true;
     }
 
-    private boolean isEnabled(String configProperty)
-    {
+    private boolean isEnabled(String configProperty) {
         // if setting is missing we accept it is true this way we not affect old saved settings
         Object isEnabledObj = configService.getProperty(configProperty);
         return isEnabledObj == null || Boolean.parseBoolean((String) isEnabledObj);
@@ -517,8 +504,7 @@ class NotificationServiceImpl implements NotificationService
     /**
      * Loads all previously saved event notifications.
      */
-    private void loadNotifications()
-    {
+    private void loadNotifications() {
         List<String> eventTypes = configService.getPropertyNamesByPrefix(NOTIFICATIONS_PREFIX, true);
         for (String eventTypeRootPropName : eventTypes) {
             boolean isEventActive = isEnabled(eventTypeRootPropName + ".active");
@@ -583,6 +569,9 @@ class NotificationServiceImpl implements NotificationService
                         action = new VibrateNotificationAction(descriptor, pattern, repeat);
                         break;
                 }
+                if (action == null)
+                    continue;
+
                 action.setEnabled(isEnabled(actionPropName + ".enabled"));
 
                 // Load the data in the notifications table.
@@ -605,8 +594,7 @@ class NotificationServiceImpl implements NotificationService
      * setting an action for.
      * @param action the <code>NotificationAction</code> to register
      */
-    public void registerDefaultNotificationForEvent(String eventType, NotificationAction action)
-    {
+    public void registerDefaultNotificationForEvent(String eventType, NotificationAction action) {
         if (isDefault(eventType, action.getActionType())) {
             NotificationAction h = getEventNotificationAction(eventType, action.getActionType());
             boolean isNew = false;
@@ -656,8 +644,7 @@ class NotificationServiceImpl implements NotificationService
      * notification.
      */
     public void registerDefaultNotificationForEvent(String eventType, String actionType,
-            String actionDescriptor, String defaultMessage)
-    {
+            String actionDescriptor, String defaultMessage) {
         Timber.log(TimberLog.FINER, "Registering default event Type: %s; Action: %s; Descriptor: %s; Message: %s",
                 eventType, actionType, actionDescriptor, defaultMessage);
 
@@ -734,8 +721,7 @@ class NotificationServiceImpl implements NotificationService
      * setting an action for.
      * @param action the <code>NotificationAction</code> responsible for handling the given <code>actionType</code>
      */
-    public void registerNotificationForEvent(String eventType, NotificationAction action)
-    {
+    public void registerNotificationForEvent(String eventType, NotificationAction action) {
         Notification notification;
         if (notifications.containsKey(eventType))
             notification = notifications.get(eventType);
@@ -772,8 +758,7 @@ class NotificationServiceImpl implements NotificationService
      * notification.
      */
     public void registerNotificationForEvent(String eventType, String actionType,
-            String actionDescriptor, String defaultMessage)
-    {
+            String actionDescriptor, String defaultMessage) {
         Timber.d("Registering event Type: %s; Action: %s; Descriptor: %s; Message: %s",
                 eventType, actionType, actionDescriptor, defaultMessage);
 
@@ -802,8 +787,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param actionType The handler type to remove.
      */
-    public void removeActionHandler(String actionType)
-    {
+    public void removeActionHandler(String actionType) {
         if (actionType == null)
             throw new IllegalArgumentException("actionType cannot be null");
 
@@ -818,8 +802,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param eventType the name of the event (as defined by the plugin that's registering it) to be removed.
      */
-    public void removeEventNotification(String eventType)
-    {
+    public void removeEventNotification(String eventType) {
         notifications.remove(eventType);
         this.fireNotificationEventTypeEvent(EVENT_TYPE_REMOVED, eventType);
     }
@@ -832,8 +815,7 @@ class NotificationServiceImpl implements NotificationService
      * @param actionType the type of the action that is to be executed when the specified event occurs (could
      * be one of the ACTION_XXX fields).
      */
-    public void removeEventNotificationAction(String eventType, String actionType)
-    {
+    public void removeEventNotificationAction(String eventType, String actionType) {
         Notification notification = notifications.get(eventType);
         if (notification == null)
             return;
@@ -853,8 +835,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param listener the listener that we'd like to remove
      */
-    public void removeNotificationChangeListener(NotificationChangeListener listener)
-    {
+    public void removeNotificationChangeListener(NotificationChangeListener listener) {
         synchronized (changeListeners) {
             changeListeners.remove(listener);
         }
@@ -863,12 +844,13 @@ class NotificationServiceImpl implements NotificationService
     /**
      * Deletes all registered events and actions and registers and saves the default events as current.
      */
-    public void restoreDefaults()
-    {
+    public void restoreDefaults() {
         for (String eventType : new Vector<>(notifications.keySet())) {
             Notification notification = notifications.get(eventType);
-            for (String actionType : new Vector<>(notification.getActions().keySet()))
-                removeEventNotificationAction(eventType, actionType);
+            if (notification != null) {
+                for (String actionType : new Vector<>(notification.getActions().keySet()))
+                    removeEventNotificationAction(eventType, actionType);
+            }
             removeEventNotification(eventType);
         }
 
@@ -890,8 +872,7 @@ class NotificationServiceImpl implements NotificationService
      * @param isActive is the global notification event active state, valid only if action is null
      * @param isDefault is it a default one
      */
-    private void saveNotification(String eventType, NotificationAction action, boolean isActive, boolean isDefault)
-    {
+    private void saveNotification(String eventType, NotificationAction action, boolean isActive, boolean isDefault) {
         String eventTypeNodeName = null;
         String actionTypeNodeName = null;
 
@@ -983,8 +964,7 @@ class NotificationServiceImpl implements NotificationService
      * @param eventType the name of the event, which actions should be activated /deactivated.
      * @param isActive indicates whether to activate or deactivate the actions related to the specified <code>eventType</code>.
      */
-    public void setActive(String eventType, boolean isActive)
-    {
+    public void setActive(String eventType, boolean isActive) {
         Notification eventNotification = notifications.get(eventType);
         if (eventNotification == null)
             return;
@@ -999,8 +979,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param data the data that has been returned when firing the event..
      */
-    public void stopNotification(NotificationData data)
-    {
+    public void stopNotification(NotificationData data) {
         Iterable<NotificationHandler> soundHandlers = getActionHandlers(NotificationAction.ACTION_SOUND);
 
         // There could be no sound action handler for this event type e.g. call ringtone
@@ -1024,8 +1003,7 @@ class NotificationServiceImpl implements NotificationService
      *
      * @param data Additional data for the event.
      */
-    public boolean isPlayingNotification(NotificationData data)
-    {
+    public boolean isPlayingNotification(NotificationData data) {
         boolean isPlaying = false;
         Iterable<NotificationHandler> soundHandlers = getActionHandlers(NotificationAction.ACTION_SOUND);
 

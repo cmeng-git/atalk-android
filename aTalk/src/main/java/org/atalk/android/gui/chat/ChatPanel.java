@@ -60,7 +60,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -600,14 +600,13 @@ public class ChatPanel implements Chat, MessageListener {
         MamManager mamManager;
         XMPPConnection connection = getProtocolProvider().getConnection();
 
-        EntityBareJid jid;
+        Jid jid;
         if (descriptor instanceof ChatRoom) {
             jid = ((ChatRoom) descriptor).getIdentifier();
             mamManager = MamManager.getInstanceFor(((ChatRoom) descriptor).getMultiUserChat());
-
         }
         else {
-            jid = ((MetaContact) descriptor).getDefaultContact().getJid().asEntityBareJidIfPossible();
+            jid = ((MetaContact) descriptor).getDefaultContact().getJid().asBareJid();
             mamManager = MamManager.getInstanceFor(connection, null);
         }
 

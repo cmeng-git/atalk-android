@@ -59,6 +59,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.Splash;
+import org.atalk.android.gui.aTalk;
 import org.atalk.service.SystemEventReceiver;
 
 import java.util.LinkedList;
@@ -72,22 +73,25 @@ import timber.log.Timber;
 /**
  * Sample activity showing the permission request process with Dexter.
  */
-public class PermissionsActivity extends AppCompatActivity
-{
+public class PermissionsActivity extends AppCompatActivity {
+    @BindView(R.id.audio_permission_feedback)
+    TextView audioPermissionFeedbackView;
     @BindView(R.id.camera_permission_feedback)
     TextView cameraPermissionFeedbackView;
     @BindView(R.id.contacts_permission_feedback)
     TextView contactsPermissionFeedbackView;
     @BindView(R.id.location_permission_feedback)
     TextView locationPermissionFeedbackView;
-    @BindView(R.id.audio_permission_feedback)
-    TextView audioPermissionFeedbackView;
+    @BindView(R.id.notifications_permission_feedback)
+    TextView notificationsPermissionFeedbackView;
     @BindView(R.id.phone_permission_feedback)
     TextView phonePermissionFeedbackView;
     @BindView(R.id.storage_permission_feedback)
     TextView storagePermissionFeedbackView;
-    @BindView(R.id.app_info_permissions_button)
-    Button button_app_info;
+    @BindView(R.id.storage_permission_button)
+    Button button_storage;
+    @BindView(R.id.notifications_permission_button)
+    Button button_notifications;
     @BindView(android.R.id.content)
     View contentView;
 
@@ -99,6 +103,7 @@ public class PermissionsActivity extends AppCompatActivity
     private PermissionListener audioPermissionListener;
     private PermissionListener phonePermissionListener;
     private PermissionListener storagePermissionListener;
+    private PermissionListener notificationsPermissionListener;
     private PermissionRequestErrorListener errorListener;
 
     private ActivityResultLauncher<Void> mBatteryOptimization;
@@ -106,10 +111,26 @@ public class PermissionsActivity extends AppCompatActivity
     protected static List<PermissionGrantedResponse> grantedPermissionResponses = new LinkedList<>();
     protected static List<PermissionDeniedResponse> deniedPermissionResponses = new LinkedList<>();
 
+    protected static List<String> permissionList = new LinkedList<>();
+
+    static {
+        permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        permissionList.add(Manifest.permission.CAMERA);
+        permissionList.add(Manifest.permission.READ_CONTACTS);
+        permissionList.add(Manifest.permission.READ_PHONE_STATE);
+        permissionList.add(Manifest.permission.RECORD_AUDIO);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Always request permission on first apk launch for android.M
@@ -138,13 +159,32 @@ public class PermissionsActivity extends AppCompatActivity
             if ((!permissionRequest) && !showBatteryOptimizationDialog) {
                 startLauncher();
             }
+
+            // POST_NOTIFICATIONS is only valid for API-33 (TIRAMISU)
+            if (permissionList.contains(Manifest.permission.POST_NOTIFICATIONS)) {
+                notificationsPermissionFeedbackView.setVisibility(View.VISIBLE);
+                button_notifications.setVisibility(View.VISIBLE);
+            }
+            else {
+                notificationsPermissionFeedbackView.setVisibility(View.GONE);
+                button_notifications.setVisibility(View.GONE);
+            }
+
+            // handler for WRITE_EXTERNAL_STORAGE pending android API
+            if (aTalk.hasWriteStoragePermission(this, false)) {
+                storagePermissionFeedbackView.setText(R.string.permission_granted_feedback);
+                button_storage.setEnabled(false);
+            }
+            else {
+                button_storage.setEnabled(true);
+            }
         }
-        else
+        else {
             startLauncher();
+        }
     }
 
-    private void startLauncher()
-    {
+    private void startLauncher() {
         Class<?> activityClass = aTalkApp.getHomeScreenActivityClass();
         Intent i = new Intent(this, activityClass);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -154,58 +194,47 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.button_done)
-    public void onDoneButtonClicked()
-    {
+    public void onDoneButtonClicked() {
         startLauncher();
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         startLauncher();
     }
 
-    public void onAllPermissionsCheck()
-    {
+    public void onAllPermissionsCheck() {
         Dexter.withContext(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_CONTACTS,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                .withPermissions(permissionList)
                 .withListener(allPermissionsListener)
                 .withErrorListener(errorListener)
                 .check();
     }
 
     @OnClick(R.id.all_permissions_button)
-    public void onAllPermissionsButtonClicked()
-    {
-        button_app_info.setVisibility(View.INVISIBLE);
+    public void onAllPermissionsButtonClicked() {
         grantedPermissionResponses.clear();
         deniedPermissionResponses.clear();
 
         Dexter.withContext(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.READ_CONTACTS,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                .withPermissions(permissionList)
                 .withListener(dialogMultiplePermissionsListener)
                 .withErrorListener(errorListener)
                 .check();
     }
 
+    @OnClick(R.id.audio_permission_button)
+    public void onAudioPermissionButtonClicked() {
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.RECORD_AUDIO)
+                .withListener(audioPermissionListener)
+                .withErrorListener(errorListener)
+                .check();
+    }
+
     @OnClick(R.id.camera_permission_button)
-    public void onCameraPermissionButtonClicked()
-    {
+    public void onCameraPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(cameraPermissionListener)
@@ -214,8 +243,7 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.contacts_permission_button)
-    public void onContactsPermissionButtonClicked()
-    {
+    public void onContactsPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_CONTACTS)
                 .withListener(contactsPermissionListener)
@@ -224,8 +252,7 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.location_permission_button)
-    public void onLocationPermissionButtonClicked()
-    {
+    public void onLocationPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
                 .withListener(locationPermissionListener)
@@ -233,19 +260,18 @@ public class PermissionsActivity extends AppCompatActivity
                 .check();
     }
 
-    @OnClick(R.id.audio_permission_button)
-    public void onAudioPermissionButtonClicked()
-    {
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @OnClick(R.id.notifications_permission_button)
+    public void onNotificationsPermissionButtonClicked() {
         Dexter.withContext(this)
-                .withPermission(Manifest.permission.RECORD_AUDIO)
-                .withListener(audioPermissionListener)
+                .withPermission(Manifest.permission.POST_NOTIFICATIONS)
+                .withListener(notificationsPermissionListener)
                 .withErrorListener(errorListener)
                 .check();
     }
 
     @OnClick(R.id.phone_permission_button)
-    public void onPhonePermissionButtonClicked()
-    {
+    public void onPhonePermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_PHONE_STATE)
                 .withListener(phonePermissionListener)
@@ -254,8 +280,7 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.storage_permission_button)
-    public void onStoragePermissionButtonClicked()
-    {
+    public void onStoragePermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(storagePermissionListener)
@@ -264,8 +289,7 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.app_info_permissions_button)
-    public void onInfoButtonClicked()
-    {
+    public void onInfoButtonClicked() {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + this.getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
@@ -273,8 +297,7 @@ public class PermissionsActivity extends AppCompatActivity
         startActivity(myAppSettings);
     }
 
-    public void showPermissionRationale(final PermissionToken token)
-    {
+    public void showPermissionRationale(final PermissionToken token) {
         new AlertDialog.Builder(this).setTitle(R.string.permission_rationale_title)
                 .setMessage(R.string.permission_rationale_message)
                 .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
@@ -294,14 +317,13 @@ public class PermissionsActivity extends AppCompatActivity
      * only if both the arrays are empty. Non-empty -> orientation change
      */
     @TargetApi(23)
-    private boolean getPackagePermissionsStatus()
-    {
+    private boolean getPackagePermissionsStatus() {
         if (grantedPermissionResponses.isEmpty() && deniedPermissionResponses.isEmpty()) {
             PackageManager pm = getPackageManager();
             try {
                 PackageInfo packageInfo = pm.getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
 
-                //Get Permissions
+                // Get Permissions
                 String[] requestedPermissions = packageInfo.requestedPermissions;
                 if (requestedPermissions != null) {
                     for (String requestedPermission : requestedPermissions) {
@@ -309,12 +331,12 @@ public class PermissionsActivity extends AppCompatActivity
                             continue;
 
                         PermissionRequest pr = new PermissionRequest(requestedPermission);
-                        //denied
+                        // denied
                         if (ActivityCompat.shouldShowRequestPermissionRationale(this, requestedPermission)) {
                             deniedPermissionResponses.add(new PermissionDeniedResponse(pr, false));
                         }
                         else {
-                            //allowed
+                            // allowed
                             if (ActivityCompat.checkSelfPermission(this,
                                     requestedPermission) == PackageManager.PERMISSION_GRANTED) {
                                 grantedPermissionResponses.add(new PermissionGrantedResponse(pr));
@@ -348,8 +370,7 @@ public class PermissionsActivity extends AppCompatActivity
     /**
      * Update the permissions status with the default application permissions on entry
      */
-    private void permissionsStatusUpdate()
-    {
+    private void permissionsStatusUpdate() {
         // if (grantedPermissionResponses.isEmpty() && deniedPermissionResponses
         for (PermissionGrantedResponse response : grantedPermissionResponses) {
             showPermissionGranted(response.getPermissionName());
@@ -364,8 +385,7 @@ public class PermissionsActivity extends AppCompatActivity
      *
      * @param permission permission view to be updated
      */
-    public void showPermissionGranted(String permission)
-    {
+    public void showPermissionGranted(String permission) {
         TextView feedbackView = getFeedbackViewForPermission(permission);
         if (feedbackView != null) {
             feedbackView.setText(R.string.permission_granted_feedback);
@@ -378,15 +398,11 @@ public class PermissionsActivity extends AppCompatActivity
      *
      * @param permission permission view to be updated
      */
-    public void showPermissionDenied(String permission, boolean isPermanentlyDenied)
-    {
+    public void showPermissionDenied(String permission, boolean isPermanentlyDenied) {
         TextView feedbackView = getFeedbackViewForPermission(permission);
         if (feedbackView != null) {
             feedbackView.setText(isPermanentlyDenied
                     ? R.string.permission_permanently_denied_feedback : R.string.permission_denied_feedback);
-            if (isPermanentlyDenied) {
-                button_app_info.setVisibility(View.VISIBLE);
-            }
             feedbackView.setTextColor(ContextCompat.getColor(this, R.color.permission_denied));
         }
     }
@@ -394,8 +410,7 @@ public class PermissionsActivity extends AppCompatActivity
     /**
      * Initialize all the permission listener required actions
      */
-    private void createPermissionListeners()
-    {
+    private void createPermissionListeners() {
         PermissionListener dialogOnDeniedPermissionListener;
         PermissionListener feedbackViewPermissionListener = new AppPermissionListener(this);
         MultiplePermissionsListener feedbackViewMultiplePermissionListener = new MultiplePermissionListener(this);
@@ -416,6 +431,16 @@ public class PermissionsActivity extends AppCompatActivity
                 .build();
         dialogMultiplePermissionsListener = new CompositeMultiplePermissionsListener(
                 feedbackViewMultiplePermissionListener, dialogOnAnyDeniedPermissionListener);
+
+        dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
+                .withContext(this)
+                .withTitle(R.string.audio_permission_denied_dialog_title)
+                .withMessage(R.string.audio_permission_denied_feedback)
+                .withButtonText(android.R.string.ok)
+                .withIcon(R.drawable.ic_icon)
+                .build();
+        audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
+                dialogOnDeniedPermissionListener);
 
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
@@ -449,12 +474,12 @@ public class PermissionsActivity extends AppCompatActivity
 
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
                 .withContext(this)
-                .withTitle(R.string.audio_permission_denied_dialog_title)
-                .withMessage(R.string.audio_permission_denied_feedback)
+                .withTitle(R.string.notifications_permission_denied_dialog_title)
+                .withMessage(R.string.notifications_permission_denied_feedback)
                 .withButtonText(android.R.string.ok)
                 .withIcon(R.drawable.ic_icon)
                 .build();
-        audioPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
+        notificationsPermissionListener = new CompositePermissionListener(feedbackViewPermissionListener,
                 dialogOnDeniedPermissionListener);
 
         dialogOnDeniedPermissionListener = DialogOnDeniedPermissionListener.Builder
@@ -484,26 +509,29 @@ public class PermissionsActivity extends AppCompatActivity
      * Get the view of the permission for update, null if view does not exist
      *
      * @param name permission name
+     *
      * @return the textView for the request permission
      */
-    private TextView getFeedbackViewForPermission(String name)
-    {
+    private TextView getFeedbackViewForPermission(String name) {
         TextView feedbackView;
         switch (name) {
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                feedbackView = locationPermissionFeedbackView;
+                break;
             case Manifest.permission.CAMERA:
                 feedbackView = cameraPermissionFeedbackView;
+                break;
+            case Manifest.permission.POST_NOTIFICATIONS:
+                feedbackView = notificationsPermissionFeedbackView;
                 break;
             case Manifest.permission.READ_CONTACTS:
                 feedbackView = contactsPermissionFeedbackView;
                 break;
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                feedbackView = locationPermissionFeedbackView;
+            case Manifest.permission.READ_PHONE_STATE:
+                feedbackView = phonePermissionFeedbackView;
                 break;
             case Manifest.permission.RECORD_AUDIO:
                 feedbackView = audioPermissionFeedbackView;
-                break;
-            case Manifest.permission.READ_PHONE_STATE:
-                feedbackView = phonePermissionFeedbackView;
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 feedbackView = storagePermissionFeedbackView;
@@ -517,8 +545,7 @@ public class PermissionsActivity extends AppCompatActivity
     /**********************************************************************************************
      * Android Battery Usage Optimization Request; Will only be called if >= Build.VERSION_CODES.M
      ***********************************************************************************************/
-    private boolean openBatteryOptimizationDialogIfNeeded()
-    {
+    private boolean openBatteryOptimizationDialogIfNeeded() {
         // Will always request for battery optimization disable for aTalk on every aTalk new launch, if not disabled
         if (isOptimizingBattery()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -541,8 +568,7 @@ public class PermissionsActivity extends AppCompatActivity
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    protected boolean isOptimizingBattery()
-    {
+    protected boolean isOptimizingBattery() {
         final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
     }
@@ -552,12 +578,10 @@ public class PermissionsActivity extends AppCompatActivity
      */
     @TargetApi(Build.VERSION_CODES.M)
     @SuppressLint("BatteryLife")
-    public class GetBatteryOptimization extends ActivityResultContract<Void, Boolean>
-    {
+    public class GetBatteryOptimization extends ActivityResultContract<Void, Boolean> {
         @NonNull
         @Override
-        public Intent createIntent(@NonNull Context context, @Nullable Void input)
-        {
+        public Intent createIntent(@NonNull Context context, @Nullable Void input) {
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             Uri uri = Uri.parse("package:" + getPackageName());
             intent.setData(uri);
@@ -565,8 +589,7 @@ public class PermissionsActivity extends AppCompatActivity
         }
 
         @Override
-        public Boolean parseResult(int resultCode, @Nullable Intent result)
-        {
+        public Boolean parseResult(int resultCode, @Nullable Intent result) {
             return (resultCode == AppCompatActivity.RESULT_OK);
         }
     }
@@ -574,8 +597,7 @@ public class PermissionsActivity extends AppCompatActivity
     /**
      * Return success == true if disable battery optimization for aTalk is allowed
      */
-    private ActivityResultLauncher<Void> requestBatteryOptimization()
-    {
+    private ActivityResultLauncher<Void> requestBatteryOptimization() {
         return registerForActivityResult(new GetBatteryOptimization(), success -> {
             if (!success) {
                 aTalkApp.showToastMessage(R.string.battery_optimization_on);

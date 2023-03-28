@@ -95,12 +95,13 @@ public class DialogActivity extends OSGiActivity
     /**
      * The dialog listener.
      */
-    private DialogListener listener;
+    private DialogListener mListener;
 
     /**
      * Dialog listener's id used to identify listener in {@link #listenersMap}.
+     * The value get be retrieved for use in caller reference when user click the button.
      */
-    private long listenerID;
+    private long mListenerId;
 
     /**
      * Flag remembers if the dialog was confirmed.
@@ -182,12 +183,12 @@ public class DialogActivity extends OSGiActivity
         ViewUtil.ensureVisible(mContent, R.id.cancelButton, confirmTxt != null);
 
         // Sets the listener
-        this.listenerID = intent.getLongExtra(EXTRA_LISTENER_ID, -1);
-        if (listenerID != -1) {
-            this.listener = listenersMap.get(listenerID);
+        mListenerId = intent.getLongExtra(EXTRA_LISTENER_ID, -1);
+        if (mListenerId != -1) {
+            mListener = listenersMap.get(mListenerId);
         }
-        this.cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
 
+        this.cancelable = intent.getBooleanExtra(EXTRA_CANCELABLE, false);
         // Prevents from closing the dialog on outside touch
         setFinishOnTouchOutside(cancelable);
 
@@ -241,8 +242,8 @@ public class DialogActivity extends OSGiActivity
     @SuppressWarnings("unused")
     public void onOkClicked(View v)
     {
-        if (listener != null) {
-            if (!listener.onConfirmClicked(this)) {
+        if (mListener != null) {
+            if (!mListener.onConfirmClicked(this)) {
                 return;
             }
         }
@@ -282,14 +283,22 @@ public class DialogActivity extends OSGiActivity
         }
         */
         // Notify that dialog was cancelled if confirmed == false
-        if (listener != null && !confirmed) {
-            listener.onDialogCancelled(this);
+        if (mListener != null && !confirmed) {
+            mListener.onDialogCancelled(this);
         }
 
         // Removes the listener from map
-        if (listenerID != -1) {
-            listenersMap.remove(listenerID);
+        if (mListenerId != -1) {
+            listenersMap.remove(mListenerId);
         }
+    }
+
+    /**
+     * Get the listener Id for the dialog
+     * @return the current mListenerId
+     */
+    public long getListenerID() {
+        return mListenerId;
     }
 
     /**
@@ -297,17 +306,17 @@ public class DialogActivity extends OSGiActivity
      */
     class CommandDialogListener extends BroadcastReceiver
     {
-        private final long dialogId;
+        private final long mDialogId;
 
         CommandDialogListener(long dialogId)
         {
-            this.dialogId = dialogId;
+            mDialogId = dialogId;
         }
 
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == dialogId) {
+            if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == mDialogId) {
                 if (ACTION_CLOSE_DIALOG.equals(intent.getAction())) {
                     // Unregistered listener and finish this activity with dialogId
                     if (commandIntentListener != null) {
@@ -315,7 +324,7 @@ public class DialogActivity extends OSGiActivity
 
                         // Notify about dialogs list change
                         synchronized (displayedDialogs) {
-                            displayedDialogs.remove(listenerID);
+                            displayedDialogs.remove(mListenerId);
                             displayedDialogs.notifyAll();
                         }
                         commandIntentListener = null;
@@ -409,15 +418,15 @@ public class DialogActivity extends OSGiActivity
      * @param confirmTxt confirm button label.
      * @param listener the confirm action listener.
      */
-    public static void showConfirmDialog(Context context, String title, String message,
+    public static long showConfirmDialog(Context context, String title, String message,
             String confirmTxt, DialogListener listener)
     {
         Intent alert = new Intent(context, DialogActivity.class);
 
+        long listenerId = System.currentTimeMillis();
         if (listener != null) {
-            long listenerID = System.currentTimeMillis();
-            listenersMap.put(listenerID, listener);
-            alert.putExtra(EXTRA_LISTENER_ID, listenerID);
+            listenersMap.put(listenerId, listener);
+            alert.putExtra(EXTRA_LISTENER_ID, listenerId);
         }
 
         alert.putExtra(EXTRA_TITLE, title);
@@ -426,6 +435,7 @@ public class DialogActivity extends OSGiActivity
 
         alert.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(alert);
+        return listenerId;
     }
 
     /**
@@ -467,7 +477,6 @@ public class DialogActivity extends OSGiActivity
         long dialogId = System.currentTimeMillis();
 
         alert.putExtra(EXTRA_DIALOG_ID, dialogId);
-
         if (listener != null) {
             listenersMap.put(dialogId, listener);
             alert.putExtra(EXTRA_LISTENER_ID, dialogId);

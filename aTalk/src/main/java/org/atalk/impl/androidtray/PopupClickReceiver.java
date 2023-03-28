@@ -60,7 +60,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     private final NotificationPopupHandler notificationHandler;
 
     /**
-     * Creates new instance of <code>PopupClickReceiver</code> bound to given <code>notifcationHandler</code>.
+     * Creates new instance of <code>PopupClickReceiver</code> bound to given <code>notificationHandler</code>.
      *
      * @param notificationHandler the <code>NotificationPopupHandler</code> that manages the popups.
      */
@@ -123,7 +123,7 @@ public class PopupClickReceiver extends BroadcastReceiver
             case ACTION_POPUP_CLEAR:
             case ACTION_MARK_AS_READ:
             case ACTION_SNOOZE:
-            case ACTION_CALL_ANSWER:
+            case ACTION_CALL_ANSWER: // this will not be called here
             case ACTION_CALL_DISMISS:
                 notificationHandler.fireNotificationClicked(notificationId, action);
                 break;

@@ -16,14 +16,21 @@
  */
 package org.atalk.android.gui;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.*;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -49,7 +56,10 @@ import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.cketti.library.changelog.ChangeLog;
 import timber.log.Timber;
@@ -73,12 +83,20 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     public final static int CALL_HISTORY_FRAGMENT = 3;
     // public final static int WP_FRAGMENT = 4;
 
+    // android Permission Request Code
+    public static final int PRC_CAMERA = 2000;
+    public static final int PRC_GET_CONTACTS = 2001;
+    public static final int PRC_RECORD_AUDIO = 2002;
+    public static final int PRC_WRITE_EXTERNAL_STORAGE = 2003;
+
     /**
      * The action that will show contacts.
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
 
     private static Boolean mPrefChange = false;
+
+    private static final ArrayList<aTalk> mInstances = new ArrayList<>();
 
     /**
      * The main pager view fragment containing the contact List
@@ -169,6 +187,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * @param instanceState <code>Activity</code> instance state.
      */
     private void handleIntent(Intent intent, Bundle instanceState) {
+        mInstances.add(this);
+
         String action = intent.getAction();
         if (Intent.ACTION_SEARCH.equals(action)) {
             String query = intent.getStringExtra(SearchManager.QUERY);
@@ -340,5 +360,80 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     public static Fragment getFragment(int position) {
         String tag = mFragmentTags.get(position);
         return (mFragmentManager != null) ? mFragmentManager.findFragmentByTag(tag) : null;
+    }
+
+    public static aTalk getInstance() {
+        return mInstances.get(0);
+    }
+
+    // =========== Runtime permission handlers ==========
+    /**
+     * Check the WRITE_EXTERNAL_STORAGE state; proceed to request for permission if requestPermission == true.
+     * Require to support WRITE_EXTERNAL_STORAGE pending aTalk installed API version.
+     *
+     * @param callBack the requester activity to receive onRequestPermissionsResult()
+     * @param requestPermission Proceed to request for the permission if was denied; check only if false
+     *
+     * @return the current WRITE_EXTERNAL_STORAGE permission state
+     */
+    public static boolean hasWriteStoragePermission(Activity callBack, boolean requestPermission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return true;
+        }
+        return hasPermission(callBack, requestPermission,  PRC_WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    }
+
+    public static boolean hasPermission(Activity callBack, boolean requestPermission, int requestCode, String permission) {
+        // Timber.d(new Exception(),"Callback: %s => %s (%s)", callBack, permission, requestPermission);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(mInstances.get(0), permission) != PackageManager.PERMISSION_GRANTED) {
+                if (requestPermission) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(callBack, permission)) {
+                        ActivityCompat.requestPermissions(callBack, new String[]{permission}, requestCode);
+                    } else {
+                        showHintMessage(requestCode, permission);
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ========== Media call resource permission requests ==========
+    public static boolean isMediaCallAllowed(boolean isVideoCall) {
+        // Check for resource permission before continue
+        if (hasPermission(getInstance(), true, PRC_RECORD_AUDIO, Manifest.permission.RECORD_AUDIO)) {
+            return !isVideoCall || hasPermission(getInstance(), true, PRC_CAMERA, Manifest.permission.CAMERA);
+        }
+        return false;
+    }
+
+    public static void showHintMessage(int requestCode, String permission) {
+        if (requestCode == PRC_RECORD_AUDIO) {
+                aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
+        }
+        else if (requestCode == PRC_CAMERA) {
+                aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
+        } else {
+            aTalkApp.showToastMessage(aTalkApp.getResString(R.string.permission_rationale_title) + ": " + permission);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
+        Timber.d("onRequestPermissionsResult: %s => %s", requestCode, permissions);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PRC_RECORD_AUDIO) {
+            if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED != grantResults[0])) {
+                aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
+            }
+        }
+        else if (requestCode == PRC_CAMERA) {
+            if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED != grantResults[0])) {
+                aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
+            }
+        }
     }
 }

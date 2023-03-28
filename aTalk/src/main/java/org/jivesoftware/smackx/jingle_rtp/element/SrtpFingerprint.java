@@ -26,8 +26,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0320.html">XEP-0320: Use of DTLS-SRTP in Jingle Sessions 1.0.0 (2020-05-26)</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc4145">TCP-Based Media Transport in the Session Description Protocol (SDP)</a>
  */
-public class SrtpFingerprint extends AbstractXmlElement
-{
+public class SrtpFingerprint extends AbstractXmlElement {
     /**
      * The XML name of the <code>fingerprint</code> element defined by: XEP-0320: Use of DTLS-SRTP in Jingle Sessions.
      */
@@ -56,8 +55,7 @@ public class SrtpFingerprint extends AbstractXmlElement
      */
     private static final String ATTR_SETUP = "setup";
 
-    public SrtpFingerprint()
-    {
+    public SrtpFingerprint() {
         super(getBuilder());
     }
 
@@ -66,8 +64,7 @@ public class SrtpFingerprint extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SrtpFingerprint(Builder builder)
-    {
+    public SrtpFingerprint(Builder builder) {
         super(builder);
     }
 
@@ -76,8 +73,7 @@ public class SrtpFingerprint extends AbstractXmlElement
      *
      * @return the fingerprint carried/represented by this instance
      */
-    public String getFingerprint()
-    {
+    public String getFingerprint() {
         return getText();
     }
 
@@ -86,8 +82,7 @@ public class SrtpFingerprint extends AbstractXmlElement
      *
      * @return the hash function utilized to calculate the fingerprint carried/represented by this instance
      */
-    public String getHash()
-    {
+    public String getHash() {
         return getAttributeValue(ATTR_HASH);
     }
 
@@ -96,18 +91,15 @@ public class SrtpFingerprint extends AbstractXmlElement
      *
      * @return value of 'setup' attribute. See {@link #ATTR_SETUP} for more info.
      */
-    public String getSetup()
-    {
+    public String getSetup() {
         return getAttributeValue(ATTR_SETUP);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
-    public static Builder from(SrtpFingerprint content)
-    {
+    public static Builder from(SrtpFingerprint content) {
         Builder builder = new Builder(ELEMENT, NAMESPACE);
         builder.addAttributes(content.getAttributes());
         builder.addChildElements(content.getChildElements());
@@ -120,10 +112,8 @@ public class SrtpFingerprint extends AbstractXmlElement
      * Builder for SrtpEncryption. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SrtpEncryption.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SrtpFingerprint>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, SrtpFingerprint> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -133,8 +123,7 @@ public class SrtpFingerprint extends AbstractXmlElement
          * @param fingerprint the fingerprint to be carried/represented by this instance
          * @return builder instance
          */
-        public Builder setFingerprint(String fingerprint)
-        {
+        public Builder setFingerprint(String fingerprint) {
             setText(fingerprint);
             return this;
         }
@@ -145,8 +134,7 @@ public class SrtpFingerprint extends AbstractXmlElement
          * @param hash the hash function utilized to calculate the fingerprint carried/represented by this instance
          * @return builder instance
          */
-        public Builder setHash(String hash)
-        {
+        public Builder setHash(String hash) {
             addAttribute(ATTR_HASH, hash);
             return this;
         }
@@ -157,21 +145,18 @@ public class SrtpFingerprint extends AbstractXmlElement
          * @param setup see {@link #ATTR_SETUP} for the list of allowed values.
          * @return builder instance
          */
-        public Builder setSetup(String setup)
-        {
+        public Builder setSetup(String setup) {
             addAttribute(ATTR_SETUP, setup);
             return this;
         }
 
         @Override
-        public SrtpFingerprint build()
-        {
+        public SrtpFingerprint build() {
             return new SrtpFingerprint(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

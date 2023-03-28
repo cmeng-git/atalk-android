@@ -24,8 +24,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Brian Baldino
  * @author Eng Chong Meng
  */
-public class SdpSourceRidGroup extends SdpSourceGroup
-{
+public class SdpSourceRidGroup extends SdpSourceGroup {
     /**
      * The name of the "rid-group" element.
      */
@@ -34,8 +33,7 @@ public class SdpSourceRidGroup extends SdpSourceGroup
     /**
      * <code>SdpSourceRidGroup</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public SdpSourceRidGroup()
-    {
+    public SdpSourceRidGroup() {
         super(getBuilder());
     }
 
@@ -44,13 +42,11 @@ public class SdpSourceRidGroup extends SdpSourceGroup
      *
      * @param builder Builder instance
      */
-    public SdpSourceRidGroup(Builder builder)
-    {
+    public SdpSourceRidGroup(Builder builder) {
         super(builder);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -58,22 +54,18 @@ public class SdpSourceRidGroup extends SdpSourceGroup
      * Builder for SdpSourceRidGroup. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpSourceRidGroup.
      */
-    public static final class Builder extends SdpSourceGroup.Builder
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends SdpSourceGroup.Builder {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         @Override
-        public SdpSourceRidGroup build()
-        {
+        public SdpSourceRidGroup build() {
             return new SdpSourceRidGroup(this);
         }
 
         @Override
-        public SdpSourceRidGroup.Builder getThis()
-        {
+        public SdpSourceRidGroup.Builder getThis() {
             return this;
         }
     }

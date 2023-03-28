@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents <code>ssrc-group</code> elements described.
@@ -30,8 +30,7 @@ import javax.xml.namespace.QName;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SdpSourceGroup extends AbstractXmlElement
-{
+public class SdpSourceGroup extends AbstractXmlElement {
     /**
      * The name of the "ssrc-group" element.
      */
@@ -67,8 +66,7 @@ public class SdpSourceGroup extends AbstractXmlElement
     /**
      * <code>SdpSourceGroup</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public SdpSourceGroup()
-    {
+    public SdpSourceGroup() {
         super(getBuilder());
     }
 
@@ -77,8 +75,7 @@ public class SdpSourceGroup extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpSourceGroup(Builder builder)
-    {
+    public SdpSourceGroup(Builder builder) {
         super(builder);
     }
 
@@ -87,8 +84,7 @@ public class SdpSourceGroup extends AbstractXmlElement
      *
      * @return the semantics of this source group.
      */
-    public String getSemantics()
-    {
+    public String getSemantics() {
         return getAttributeValue(ATTR_SEMANTICS);
     }
 
@@ -97,13 +93,11 @@ public class SdpSourceGroup extends AbstractXmlElement
      *
      * @return the sources of this source group.
      */
-    public List<SdpSource> getSources()
-    {
+    public List<SdpSource> getSources() {
         return getChildElements(SdpSource.class);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -111,10 +105,8 @@ public class SdpSourceGroup extends AbstractXmlElement
      * Builder for SdpSourceGroup. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpSourceGroup.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpSourceGroup>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpSourceGroup> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -124,8 +116,7 @@ public class SdpSourceGroup extends AbstractXmlElement
          * @param semantics Semantics string
          * @return builder instance
          */
-        public Builder setSemantics(String semantics)
-        {
+        public Builder setSemantics(String semantics) {
             addAttribute(ATTR_SEMANTICS, semantics);
             return this;
         }
@@ -136,8 +127,7 @@ public class SdpSourceGroup extends AbstractXmlElement
          * @param sources the sources of this source group.
          * @return builder instance
          */
-        public Builder addSources(List<SdpSource> sources)
-        {
+        public Builder addSources(List<SdpSource> sources) {
             if (sources != null && sources.size() != 0) {
                 addChildElements(sources);
             }
@@ -145,14 +135,12 @@ public class SdpSourceGroup extends AbstractXmlElement
         }
 
         @Override
-        public SdpSourceGroup build()
-        {
+        public SdpSourceGroup build() {
             return new SdpSourceGroup(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

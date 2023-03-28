@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Implements <code>AbstractExtensionElement</code> for the <code>source</code> element defined below.
@@ -31,8 +31,7 @@ import javax.xml.namespace.QName;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SdpSource extends AbstractXmlElement
-{
+public class SdpSource extends AbstractXmlElement {
     /**
      * The XML name of the <code>setup</code> element defined by Source-Specific Media Attributes in Jingle.
      */
@@ -59,8 +58,7 @@ public class SdpSource extends AbstractXmlElement
     /**
      * <code>SdpSource</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public SdpSource()
-    {
+    public SdpSource() {
         super(getBuilder());
     }
 
@@ -69,8 +67,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpSource(Builder builder)
-    {
+    public SdpSource(Builder builder) {
         super(builder);
     }
 
@@ -79,8 +76,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @return the <code>ParameterExtensionElement</code>s of this source
      */
-    public List<ParameterElement> getParameters()
-    {
+    public List<ParameterElement> getParameters() {
         return getChildElements(ParameterElement.class);
     }
 
@@ -90,8 +86,7 @@ public class SdpSource extends AbstractXmlElement
      * @param name the name of SSRC parameter to find.
      * @return value of SSRC parameter
      */
-    public String getParameter(String name)
-    {
+    public String getParameter(String name) {
         for (ParameterElement param : getParameters()) {
             if (name.equals(param.getName()))
                 return param.getValue();
@@ -104,8 +99,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @return the synchronization source (SSRC) ID of this source
      */
-    public long getSSRC()
-    {
+    public long getSSRC() {
         String s = getAttributeValue(ATTR_SSRC);
 
         return (s == null) ? -1 : Long.parseLong(s);
@@ -116,8 +110,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @return true if it has an ssrc, false otherwise
      */
-    public boolean hasSSRC()
-    {
+    public boolean hasSSRC() {
         return getAttributeValue(ATTR_SSRC) != null;
     }
 
@@ -126,8 +119,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @return the rid of the source or null
      */
-    public String getRid()
-    {
+    public String getRid() {
         return getAttributeValue(ATTR_RID);
     }
 
@@ -136,8 +128,7 @@ public class SdpSource extends AbstractXmlElement
      *
      * @return true if it has an rid, false otherwise
      */
-    public boolean hasRid()
-    {
+    public boolean hasRid() {
         return getAttributeValue(ATTR_RID) != null;
     }
 
@@ -150,19 +141,16 @@ public class SdpSource extends AbstractXmlElement
      * given have matching source identifiers.  NOTE: will return
      * false if neither SdpSourceGroup has any source identifier set
      */
-    public boolean sourceEquals(SdpSource other)
-    {
+    public boolean sourceEquals(SdpSource other) {
         if (hasSSRC() && other.hasSSRC()) {
             return getSSRC() == other.getSSRC();
-        }
-        else if (hasRid() && other.hasRid()) {
+        } else if (hasRid() && other.hasRid()) {
             return getRid().equals(other.getRid());
         }
         return false;
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -170,10 +158,8 @@ public class SdpSource extends AbstractXmlElement
      * Builder for SdpSource. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpSource.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpSource>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpSource> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -183,8 +169,7 @@ public class SdpSource extends AbstractXmlElement
          * @param parameter the <code>ParameterElement</code> to add to this source
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter)
-        {
+        public Builder addParameter(ParameterElement parameter) {
             addChildElement(parameter);
             return this;
         }
@@ -195,12 +180,10 @@ public class SdpSource extends AbstractXmlElement
          * @param ssrc the synchronization source (SSRC) ID to be set on this source
          * @return builder instance
          */
-        public Builder setSsrc(long ssrc)
-        {
+        public Builder setSsrc(long ssrc) {
             if (ssrc == -1) {
                 removeAttribute(ATTR_SSRC);
-            }
-            else {
+            } else {
                 addAttribute(ATTR_SSRC, Long.toString(0xffffffffL & ssrc));
             }
             return this;
@@ -212,26 +195,22 @@ public class SdpSource extends AbstractXmlElement
          * @param rid the rid to be set (or null to clear the existing rid)
          * @return builder instance
          */
-        public Builder setRid(String rid)
-        {
+        public Builder setRid(String rid) {
             if (rid == null) {
                 removeAttribute(ATTR_RID);
-            }
-            else {
+            } else {
                 addAttribute(ATTR_RID, rid);
             }
             return this;
         }
 
         @Override
-        public SdpSource build()
-        {
+        public SdpSource build() {
             return new SdpSource(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

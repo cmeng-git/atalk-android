@@ -80,7 +80,7 @@ public class CallManager
     public static final String CALL_EVENT = "call_event";
 
     // True to indicate the jingleMessage <accept/> is auto-send onReceive the <propose/> stanza
-    public static final String JM_AUTO_ACCEPT = "jm_auto_accept";
+    public static final String AUTO_ACCEPT = "auto_accept";
 
     // android call parameters
     public static final String CALL_TRANSFER = "CallTransfer";
@@ -1159,7 +1159,6 @@ public class CallManager
             this.existingCall = existingCall;
             this.isVideoCall = isVideoCall;
         }
-
         @Override
         public void run()
         {

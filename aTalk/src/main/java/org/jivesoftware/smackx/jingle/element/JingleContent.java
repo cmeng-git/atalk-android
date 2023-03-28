@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
@@ -139,7 +140,6 @@ public final class JingleContent extends AbstractXmlElement {
         return mSecurity;
     }
 
-
     public void setSenders(Senders senders) {
         setAttribute(ATTR_SENDERS, senders.toString());
     }
@@ -153,17 +153,18 @@ public final class JingleContent extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the JingleContent.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, JingleContent> {
-        protected JingleContentDescription description;
-        protected JingleContentTransport transport;
-        protected JingleContentSecurity security;
+        private JingleContentDescription description;
+        private JingleContentTransport transport;
+        private JingleContentSecurity security;
 
-        protected Builder(String element, String namespace) {
+        public Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         public Builder setCreator(Creator creator) {
-            if (creator != null)
+            if (creator != null) {
                 addAttribute(ATTR_CREATOR, creator.toString());
+            }
             return this;
         }
 
@@ -207,6 +208,8 @@ public final class JingleContent extends AbstractXmlElement {
 
         @Override
         public JingleContent build() {
+            StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_CREATOR), "Jingle content creator must not be null");
+            StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_NAME), "Jingle content name must not be null nor empty");
             return new JingleContent(this);
         }
 

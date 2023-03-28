@@ -27,6 +27,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.jivesoftware.smackx.avatar.AvatarManager;
@@ -47,8 +48,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidCallListener implements CallListener, CallChangeListener
-{
+public class AndroidCallListener implements CallListener, CallChangeListener {
     public static String VIDEO = "(video): ";
     public static String AUDIO = "(audio): ";
 
@@ -67,8 +67,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
-    public void incomingCallReceived(CallEvent ev)
-    {
+    public void incomingCallReceived(CallEvent ev) {
         onCallEvent(ev);
         ev.getSourceCall().addCallChangeListener(this);
     }
@@ -78,8 +77,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
-    public void outgoingCallCreated(CallEvent ev)
-    {
+    public void outgoingCallCreated(CallEvent ev) {
         onCallEvent(ev);
     }
 
@@ -88,8 +86,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * Delivers the <code>CallEvent</code> to the AWT event dispatching thread.
      */
-    public void callEnded(CallEvent ev)
-    {
+    public void callEnded(CallEvent ev) {
         onCallEvent(ev);
         ev.getSourceCall().removeCallChangeListener(this);
     }
@@ -100,8 +97,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param evt the <code>CallEvent</code> this <code>CallListener</code> is being notified about
      */
-    protected void onCallEvent(final CallEvent evt)
-    {
+    protected void onCallEvent(final CallEvent evt) {
         Call call = evt.getSourceCall();
 
         Timber.d("Received CallEvent: %s: %s", evt.getEventID(), call.getCallId());
@@ -130,6 +126,8 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                     // Launch UI for user selection of audio or video call
                     sid = CallManager.addActiveCall(call);
                     boolean jmCall = call.getCallId().equals(JingleMessageSessionImpl.getSid());
+                    Timber.d("aTalk jmCall: %s;  ForeGround: %s; LockScreen: %s; %s",
+                            jmCall, aTalkApp.isForeground, aTalkApp.isDeviceLocked(), sid);
 
                     if (aTalkApp.isForeground) {
                         // For incoming call accepted via Jingle Message propose session.
@@ -146,10 +144,16 @@ public class AndroidCallListener implements CallListener, CallChangeListener
                             startReceivedCallActivity(sid);
                         }
                     }
-                    // else launch a heads-up UI for user to accept the call
+                    // Launch a heads-up UI for user to accept the call with pendingIntent based on derived msgType.
+                    // When android is NOT (inForeGround OR deviceLocked), Launch HeadsUp notification UI for user
+                    // to accept call; procced to auto answer call once accept in ReceivedCallActivity.
+                    // @See NotificationPopupHandler#showPopupMessage()
                     else {
                         Jid peerJid = call.getCallPeers().next().getContact().getJid();
-                        startIncomingCallNotification(peerJid, sid, SystrayService.JINGLE_INCOMING_CALL, evt.isVideoCall());
+                        int msgType = jmCall || !aTalkApp.isDeviceLocked() ?
+                                SystrayService.HEADS_UP_INCOMING_CALL : SystrayService.JINGLE_INCOMING_CALL;
+                        Timber.d("Call msgType: %s", msgType);
+                        startIncomingCallNotification(peerJid, sid, msgType, evt.isVideoCall());
                     }
 
                     // merge call - exception; It will end up with a conference call.
@@ -167,16 +171,14 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * Clears call state stored in previous calls.
      */
-    private void clearVideoCallState()
-    {
+    private void clearVideoCallState() {
         VideoCallActivity.callState = new VideoCallActivity.CallStateHolder();
     }
 
     /**
      * Stores speakerphone status for the call duration; to be restored after the call has ended.
      */
-    private void storeSpeakerPhoneStatus()
-    {
+    private void storeSpeakerPhoneStatus() {
         AudioManager audioManager = aTalkApp.getAudioManager();
         speakerPhoneBeforeCall = audioManager.isSpeakerphoneOn();
         // Timber.d("Storing speakerphone status: %s", speakerPhoneBeforeCall);
@@ -185,8 +187,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     /**
      * Restores speakerphone status.
      */
-    private static void restoreSpeakerPhoneStatus()
-    {
+    private static void restoreSpeakerPhoneStatus() {
         if (speakerPhoneBeforeCall != null) {
             AudioManager audioManager = aTalkApp.getAudioManager();
             audioManager.setSpeakerphoneOn(speakerPhoneBeforeCall);
@@ -196,18 +197,15 @@ public class AndroidCallListener implements CallListener, CallChangeListener
     }
 
     @Override
-    public void callPeerAdded(CallPeerEvent callPeerEvent)
-    {
+    public void callPeerAdded(CallPeerEvent callPeerEvent) {
     }
 
     @Override
-    public void callPeerRemoved(CallPeerEvent callPeerEvent)
-    {
+    public void callPeerRemoved(CallPeerEvent callPeerEvent) {
     }
 
     @Override
-    public void callStateChanged(CallChangeEvent evt)
-    {
+    public void callStateChanged(CallChangeEvent evt) {
         Object callState = evt.getNewValue();
         Call call = evt.getSourceCall();
 
@@ -231,11 +229,13 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param call the <code>Call</code> to be handled
      */
-    private void startVideoCallActivity(String sid)
-    {
-        Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, sid);
-        videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appContext.startActivity(videoCall);
+    private void startVideoCallActivity(String sid) {
+        // Check for resource permission before continue; min mic is enabled
+        if (aTalk.isMediaCallAllowed(false)) {
+            Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, sid);
+            videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            appContext.startActivity(videoCall);
+        }
     }
 
     /**
@@ -243,8 +243,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param call the <code>Call</code> to be handled
      */
-    private void startReceivedCallActivity(String sid)
-    {
+    private void startReceivedCallActivity(String sid) {
         Intent intent = new Intent(appContext, ReceivedCallActivity.class)
                 .putExtra(CallManager.CALL_SID, sid)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -259,8 +258,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      * @param msgType the Message type:  SystrayService.JINGLE_MESSAGE_PROPOSE / JINGLE_INCOMING_CALL
      * @param isVideoCall video call if true, audio call otherwise
      */
-    public static void startIncomingCallNotification(Jid caller, final String sid, int msgType, boolean isVideoCall)
-    {
+    public static void startIncomingCallNotification(Jid caller, final String sid, int msgType, boolean isVideoCall) {
         Map<String, Object> extras = new HashMap<>();
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, sid);
         extras.put(NotificationData.SOUND_NOTIFICATION_HANDLER_LOOP_CONDITION_EXTRA,
@@ -281,12 +279,9 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      * @param call the call to answer
      * @param isVideoCall indicates if video shall be used.
      */
-    public static void answerCall(final Call call, boolean isVideoCall)
-    {
-        new Thread()
-        {
-            public void run()
-            {
+    public static void answerCall(final Call call, boolean isVideoCall) {
+        new Thread() {
+            public void run() {
                 CallManager.answerCall(call, isVideoCall);
                 String callIdentifier = CallManager.addActiveCall(call);
                 Intent videoCall = VideoCallActivity.createVideoCallIntent(appContext, callIdentifier);
@@ -301,8 +296,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param call the call to end
      */
-    private void endCall(Call call)
-    {
+    private void endCall(Call call) {
         // Clears all inCall notification
         AndroidUtils.clearGeneralNotification(appContext);
         // NotificationPopupHandler.removeCallNotification(call.getCallId()); // Called by Jingle call only
@@ -317,8 +311,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener
      *
      * @param evt the <code>CallChangeEvent</code> that describes missed call.
      */
-    private void fireMissedCallNotification(CallChangeEvent evt)
-    {
+    private void fireMissedCallNotification(CallChangeEvent evt) {
         NotificationService notificationService = NotificationWiringActivator.getNotificationService();
 
         Contact contact = evt.getCause().getSourceCallPeer().getContact();

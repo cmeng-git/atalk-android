@@ -266,7 +266,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-запрос авторизации</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Авторизация для %2$s\n(ID: %3$s).\nПринимаете ли вы этот запрос для учетной записи:\n%4$s?\n\nПроверьте, соответствует ли данный идентификатор сайту, если он доступен</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Авторизация для %2$s\nКод проверки: %3$s\nПринимаете ли вы этот запрос для учетной записи:\n%4$s?\n\nПроверьте, соответствует ли данный идентификатор сайту, если он доступен</string>
 
     <string name="app_authors_fmt">Авторы: %1$s</string>
     <string name="app_libraries">aTalk использует следующие сторонние библиотеки: %1$s</string>
@@ -1565,6 +1565,7 @@
     <string name="ask_for_camera_permission_button">Камера</string>
     <string name="ask_for_contacts_permission_button">Контакты</string>
     <string name="ask_for_location_permission_button">Местоположение</string>
+    <string name="ask_for_notifications_permission_button">Уведомления</string>
     <string name="ask_for_phone_permission_button">Телефон</string>
     <string name="ask_for_storage_permission_button">Хранение</string>
     <string name="permission_hint">Для максимальной производительности и полной поддержки приложений, aTalk требует предоставления разрешений для следующих служб. Без них aTalk может не работать или может иметь неожиданное поведение!</string>
@@ -1578,13 +1579,16 @@
     <string name="audio_permission_denied_feedback">Звуковой вызов не будет доступен, пока вы не предоставите запрос на разрешение</string>
 
     <string name="camera_permission_denied_dialog_title">Запрос разрешения камеры</string>
-    <string name="camera_permission_denied_feedback">Разрешение камеры: все связанные с камерой действия не будут доступны, пока вы не предоставите запрос на разрешение</string>
+    <string name="camera_permission_denied_feedback">все связанные с камерой действия не будут доступны, пока вы не предоставите запрос на разрешение</string>
 
     <string name="contacts_permission_denied_dialog_title">Запрос на доступ к контактам</string>
     <string name="contacts_permission_denied_feedback">Требуется разрешение для доступа к телефону и настройки вызова</string>
 
     <string name="location_permission_denied_dialog_title">Запрос разрешения на размещение</string>
     <string name="location_permission_denied_feedback">Функции GPS-Location не будут доступны, пока вы не предоставите запрос на разрешение</string>
+
+    <string name="notifications_permission_denied_dialog_title">Запрос разрешения на уведомления</string>
+    <string name="notifications_permission_denied_feedback">Уведомления от aTalk будут отключены, пока вы не предоставите запрос на разрешение.</string>
 
     <string name="phone_permission_denied_dialog_title">Прочитать запрос разрешения состояния телефона</string>
     <string name="phone_permission_denied_feedback">Функции телефона не будут доступны, пока вы не предоставите запрос на разрешение</string>

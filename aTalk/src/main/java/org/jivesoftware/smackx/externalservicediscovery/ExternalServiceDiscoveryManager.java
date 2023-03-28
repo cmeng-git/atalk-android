@@ -16,6 +16,14 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -29,17 +37,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.threeten.bp.Instant;
 import org.threeten.bp.temporal.ChronoUnit;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A manager for XEP-0215: External Service Discovery.
@@ -47,8 +48,7 @@ import java.util.logging.Logger;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
-public final class ExternalServiceDiscoveryManager extends Manager
-{
+public final class ExternalServiceDiscoveryManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(ExternalServiceDiscoveryManager.class.getName());
 
     // Create a new ExternalServiceDiscoveryManager on every established connection
@@ -69,8 +69,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
      * @param connection the connection object.
      * @return a ExternalServiceDiscoveryManager instance
      */
-    public static synchronized ExternalServiceDiscoveryManager getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized ExternalServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
         ExternalServiceDiscoveryManager extServiceManager = INSTANCES.get(connection);
 
         if (extServiceManager == null) {
@@ -80,15 +79,12 @@ public final class ExternalServiceDiscoveryManager extends Manager
         return extServiceManager;
     }
 
-    private ExternalServiceDiscoveryManager(XMPPConnection connection)
-    {
+    private ExternalServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
         AbstractIqRequestHandler iqRequestHandler
-                = new AbstractIqRequestHandler(ExternalServices.ELEMENT, ExternalServices.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async)
-        {
+                = new AbstractIqRequestHandler(ExternalServices.ELEMENT, ExternalServices.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async) {
             @Override
-            public IQ handleIQRequest(IQ iqRequest)
-            {
+            public IQ handleIQRequest(IQ iqRequest) {
                 if (iqRequest instanceof ExternalServiceDiscovery) {
                     handleESDServicePush(((ExternalServiceDiscovery) iqRequest).getServices());
                     return IQ.createResultIQ(iqRequest);
@@ -97,11 +93,9 @@ public final class ExternalServiceDiscoveryManager extends Manager
             }
         };
 
-        connection.addConnectionListener(new ConnectionListener()
-        {
+        connection.addConnectionListener(new ConnectionListener() {
             @Override
-            public void authenticated(XMPPConnection connection, boolean resumed)
-            {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
                 // No need to reset the cache values if the connection is resumed.
                 if (resumed) {
                     return;
@@ -121,8 +115,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
             }
 
             @Override
-            public void connectionClosed()
-            {
+            public void connectionClosed() {
                 connection.unregisterIQRequestHandler(iqRequestHandler);
                 mExtServices = null;
             }
@@ -141,8 +134,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public boolean discoverExtServices() throws XMPPErrorException, SmackException.NotConnectedException,
-            InterruptedException, SmackException.NoResponseException
-    {
+            InterruptedException, SmackException.NoResponseException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         List<DiscoverInfo> servicesDiscoverInfo = sdm.findServicesDiscoverInfo(ExternalServices.NAMESPACE, true, true);
         hasExtService = !servicesDiscoverInfo.isEmpty();
@@ -154,13 +146,11 @@ public final class ExternalServiceDiscoveryManager extends Manager
      *
      * @return true if ExternalServices was discovered
      */
-    public boolean hasExtService()
-    {
+    public boolean hasExtService() {
         return hasExtService;
     }
 
-    private void handleESDServicePush(List<ServiceElement> services)
-    {
+    private void handleESDServicePush(List<ServiceElement> services) {
         if (mExtServices == null || services == null || services.isEmpty()) {
             // Force reload until handleServicePush is fully tested
             // mServiceExpire = null;
@@ -198,8 +188,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
      * Get the discovered services of a current XMPP connection (i.e. serviceName).
      * Saved a copy of the service and its expires time if specified.
      */
-    private void getExtServices()
-    {
+    private void getExtServices() {
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
         ExternalServiceDiscovery extServiceDisco = new ExternalServiceDiscovery();
         extServiceDisco.setType(IQ.Type.get);
@@ -221,8 +210,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
                             if (service.getExpires() != null) {
                                 if (expireTE == null) {
                                     expireTE = expireT;
-                                }
-                                else if (expireTE.compareTo(expireT) > 0) {
+                                } else if (expireTE.compareTo(expireT) > 0) {
                                     expireTE = expireT;
                                 }
                             }
@@ -232,8 +220,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
 
                 if (expireTE != null) {
                     expireTE = Instant.parse(expireTE).toString();
-                }
-                else {
+                } else {
                     expireTE = Instant.now()
                             .plus(3, ChronoUnit.MONTHS)
                             .toString();
@@ -245,8 +232,7 @@ public final class ExternalServiceDiscoveryManager extends Manager
         }
     }
 
-    public List<ServiceElement> getTransportServices(String transport)
-    {
+    public List<ServiceElement> getTransportServices(String transport) {
         // Check time expired and reload if necessary
         // Timber.d("UTC now / expire: %s / %s", Instant.now().toString(), (expire == null) ? null : Instant.parse(expire).toString());
         if (mServiceExpire == null || Instant.now().truncatedTo(ChronoUnit.SECONDS).isAfter(Instant.parse(mServiceExpire))) {

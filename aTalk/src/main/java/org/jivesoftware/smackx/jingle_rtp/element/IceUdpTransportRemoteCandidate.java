@@ -26,15 +26,13 @@ package org.jivesoftware.smackx.jingle_rtp.element;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class IceUdpTransportRemoteCandidate extends IceUdpTransportCandidate
-{
+public class IceUdpTransportRemoteCandidate extends IceUdpTransportCandidate {
     /**
      * The name of the "remote-candidate" element.
      */
     public static final String ELEMENT = "remote-candidate";
 
-    public IceUdpTransportRemoteCandidate()
-    {
+    public IceUdpTransportRemoteCandidate() {
         super(getBuilder());
     }
 
@@ -43,13 +41,11 @@ public class IceUdpTransportRemoteCandidate extends IceUdpTransportCandidate
      *
      * @param builder Builder instance
      */
-    public IceUdpTransportRemoteCandidate(Builder builder)
-    {
+    public IceUdpTransportRemoteCandidate(Builder builder) {
         super(builder);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -57,22 +53,18 @@ public class IceUdpTransportRemoteCandidate extends IceUdpTransportCandidate
      * Builder for IceUdpTransportRemoteCandidate. Use {@link IceUdpTransportRemoteCandidate#getBuilder()} to
      * obtain a new instance and {@link #build} to build the IceUdpTransportRemoteCandidate.
      */
-    public static final class Builder extends IceUdpTransportCandidate.Builder
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends IceUdpTransportCandidate.Builder {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         @Override
-        public IceUdpTransportRemoteCandidate build()
-        {
+        public IceUdpTransportRemoteCandidate build() {
             return new IceUdpTransportRemoteCandidate(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

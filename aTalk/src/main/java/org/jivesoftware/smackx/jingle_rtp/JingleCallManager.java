@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
@@ -58,16 +60,13 @@ import org.jivesoftware.smackx.jitsimeet.BundleExtension;
 import org.jivesoftware.smackx.jitsimeet.SSRCInfoExtension;
 import org.jxmpp.jid.FullJid;
 
-import java.util.WeakHashMap;
-
 /**
  * Manager for Jingle RTP session i.e.
  * <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)</a>
  *
  * @author Eng Chong Meng
  */
-public final class JingleCallManager extends Manager implements JingleHandler
-{
+public final class JingleCallManager extends Manager implements JingleHandler {
     private static final WeakHashMap<XMPPConnection, JingleCallManager> INSTANCES = new WeakHashMap<>();
 
     /**
@@ -75,8 +74,7 @@ public final class JingleCallManager extends Manager implements JingleHandler
      */
     private final BasicTelephony mBasicTelephony;
 
-    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony operation)
-    {
+    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony operation) {
         JingleCallManager manager = INSTANCES.get(connection);
 
         if (manager == null) {
@@ -86,8 +84,7 @@ public final class JingleCallManager extends Manager implements JingleHandler
         return manager;
     }
 
-    private JingleCallManager(XMPPConnection connection, BasicTelephony basicTelephony)
-    {
+    private JingleCallManager(XMPPConnection connection, BasicTelephony basicTelephony) {
         super(connection);
         mBasicTelephony = basicTelephony;
 
@@ -244,14 +241,13 @@ public final class JingleCallManager extends Manager implements JingleHandler
     /**
      * Register a new JingleSessionHandler with JingleManager when a new session-initiate is received.
      * Note: this will not get call if the media call setup is via JingleMessage protocol;
-     * Media call <transfer/> is handled via this callback
+     * Media call <code>transfer</code> is handled via this callback
      *
      * @param jingle Jingle session-initiate
      * @return IQ.Result for ack
      */
     @Override
-    public IQ handleJingleRequest(Jingle jingle)
-    {
+    public IQ handleJingleRequest(Jingle jingle) {
         // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
         // conversations excludes initiator attribute in session-initiate
         FullJid initiator = jingle.getInitiator();
@@ -264,8 +260,7 @@ public final class JingleCallManager extends Manager implements JingleHandler
         return IQ.createResultIQ(jingle);
     }
 
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return RtpDescription.NAMESPACE;
     }
 }

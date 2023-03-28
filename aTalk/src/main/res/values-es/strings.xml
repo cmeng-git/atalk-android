@@ -269,7 +269,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Solicitud de autorización HTTP</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Autorización para %2$s\n(ID: %3$s).\n¿Acepta esta solicitud de cuenta:\n%4$s?\n\nVerifique que el ID dado coincida con el sitio si está disponible</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Autorización para %2$s\nCódigo de validación: %3$s\n¿Acepta esta solicitud de cuenta:\n%4$s?\n\nVerifique que el ID dado coincida con el sitio si está disponible</string>
 
     <string name="app_authors_fmt">Autores: %s</string>
     <string name="app_libraries">aTalk utiliza las siguientes bibliotecas de terceros: %s</string>
@@ -1596,6 +1596,7 @@
     <string name="ask_for_camera_permission_button">Cámara</string>
     <string name="ask_for_contacts_permission_button">Contactos</string>
     <string name="ask_for_location_permission_button">Localización</string>
+    <string name="ask_for_notifications_permission_button">Notificaciones</string>
     <string name="ask_for_phone_permission_button">Teléfono</string>
     <string name="ask_for_storage_permission_button">Almacenamiento</string>
     <string name="permission_hint">¡Para obtener el máximo rendimiento de la aplicación y compatibilidad con todas las funciones, aTalk requiere que otorgues los permisos para los siguientes servicios. Sin ellos, aTalk puede no funcionar o tener un comportamiento inesperado!</string>
@@ -1609,13 +1610,16 @@
     <string name="audio_permission_denied_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
 
     <string name="camera_permission_denied_dialog_title">Solicitud de permiso de cámara</string>
-    <string name="camera_permission_denied_feedback">Permiso de cámara: todas las actividades asociadas a la cámara no estarán disponibles hasta que otorgue la solicitud de permiso</string>
+    <string name="camera_permission_denied_feedback">Todas las actividades asociadas a la cámara no estarán disponibles hasta que otorgue la solicitud de permiso</string>
 
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
     <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>
 
     <string name="location_permission_denied_dialog_title">Solicitud de permiso de ubicación</string>
     <string name="location_permission_denied_feedback">Las funciones de localización GPS no estarán disponibles hasta que concedas la solicitud de permiso.</string>
+
+    <string name="notifications_permission_denied_dialog_title">Solicitud de permiso de notificaciones</string>
+    <string name="notifications_permission_denied_feedback">Las notificaciones de aTalk estarán deshabilitadas hasta que concedas la solicitud de permiso.</string>
 
     <string name="phone_permission_denied_dialog_title">Solicitud de permiso para leer estado del teléfono</string>
     <string name="phone_permission_denied_feedback">Las funciones del teléfono no estarán disponibles hasta que otorgues la solicitud de permiso</string>

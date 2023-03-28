@@ -827,8 +827,9 @@ public class ChatActivity extends OSGiActivity
      */
     public void getLastSeen(PresenceStatus status)
     {
-        // cmeng: this happens if the contact remove presence subscription while still in chat session
-        if (mRecipient != null) {
+        // a. happen if the contact remove presence subscription while still in chat session
+        // b. LastActivity does not apply to DomainBareJid
+        if (mRecipient != null && !(mRecipient.getJid() instanceof DomainBareJid)) {
             XMPPConnection connection = mRecipient.getProtocolProvider().getConnection();
 
             // Proceed only if user is online and registered

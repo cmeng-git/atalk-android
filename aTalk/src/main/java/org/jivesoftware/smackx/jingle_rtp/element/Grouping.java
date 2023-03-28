@@ -18,17 +18,17 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import static org.jivesoftware.smack.xml.XmlPullParser.Event.END_ELEMENT;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 /**
  * Jingle group packet extension.
@@ -37,8 +37,7 @@ import javax.xml.namespace.QName;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0338.html">XEP-0338: Jingle Grouping Framework 1.0.0 (2020-07-21)</a>
  */
-public class Grouping extends AbstractXmlElement
-{
+public class Grouping extends AbstractXmlElement {
     /**
      * The name of the "group" element.
      */
@@ -61,8 +60,7 @@ public class Grouping extends AbstractXmlElement
      */
     public static final String SEMANTICS_BUNDLE = "BUNDLE";
 
-    public Grouping()
-    {
+    public Grouping() {
         super(getBuilder());
     }
 
@@ -71,8 +69,7 @@ public class Grouping extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public Grouping(Builder builder)
-    {
+    public Grouping(Builder builder) {
         super(builder);
     }
 
@@ -81,8 +78,7 @@ public class Grouping extends AbstractXmlElement
      *
      * @return the semantics of this group.
      */
-    public String getSemantics()
-    {
+    public String getSemantics() {
         return getAttributeValue(ATTR_SEMANTICS);
     }
 
@@ -91,8 +87,7 @@ public class Grouping extends AbstractXmlElement
      *
      * @return the contents of this group.
      */
-    public List<JingleContent> getContents()
-    {
+    public List<JingleContent> getContents() {
         return getChildElements(JingleContent.class);
     }
 
@@ -102,16 +97,14 @@ public class Grouping extends AbstractXmlElement
      * @param contents the list that contains the contents to be bundled.
      * @return new <code>Grouping</code> for BUNDLE semantics initialized with given <code>contents</code> list.
      */
-    public static Grouping createBundleGroup(List<JingleContent> contents)
-    {
+    public static Grouping createBundleGroup(List<JingleContent> contents) {
         Grouping.Builder builder = Grouping.getBuilder()
                 .setSemantics(SEMANTICS_BUNDLE)
                 .addContents(contents);
         return builder.build();
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -119,10 +112,8 @@ public class Grouping extends AbstractXmlElement
      * Builder for Grouping. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the Grouping.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, Grouping>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, Grouping> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -132,8 +123,7 @@ public class Grouping extends AbstractXmlElement
          * @param semantics Semantics string value
          * @return builder instance
          */
-        public Builder setSemantics(String semantics)
-        {
+        public Builder setSemantics(String semantics) {
             addAttribute(ATTR_SEMANTICS, semantics);
             return this;
         }
@@ -145,8 +135,7 @@ public class Grouping extends AbstractXmlElement
          * @param contents the contents of this group.
          * @return builder instance
          */
-        public Builder addContents(List<JingleContent> contents)
-        {
+        public Builder addContents(List<JingleContent> contents) {
             for (JingleContent content : contents) {
                 JingleContent.Builder contentBuilder = JingleContent.getBuilder();
                 contentBuilder.setName(content.getName());
@@ -156,14 +145,12 @@ public class Grouping extends AbstractXmlElement
         }
 
         @Override
-        public Grouping build()
-        {
+        public Grouping build() {
             return new Grouping(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }
@@ -178,8 +165,7 @@ public class Grouping extends AbstractXmlElement
      * @throws SmackParsingException if an error occurs parsing the XML.
      */
     public static Grouping parseExtension(XmlPullParser parser)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         DefaultXmlElementProvider<JingleContent> contentProvider = new DefaultXmlElementProvider<>(JingleContent.class);
 
         Grouping.Builder builder = Grouping.getBuilder();

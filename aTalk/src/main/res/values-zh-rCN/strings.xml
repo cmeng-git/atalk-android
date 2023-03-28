@@ -265,7 +265,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP 授权请求</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">%2$s 的 HTTP (%1$s) 授权\n（ID：%3$s）。\n你是否接受帐户的此请求：\n%4$s？\n \n验证给定的 ID 匹配站点（如果可用）</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">%2$s 的 HTTP (%1$s) 授权\n验证码：%3$s\n你是否接受帐户的此请求：\n%4$s？\n \n验证给定的 ID 匹配站点（如果可用）</string>
 
     <string name="app_authors_fmt">作者：%1$s</string>
     <string name="app_libraries">aTalk 使用以下第三方库：%1$s</string>
@@ -1581,6 +1581,7 @@
     <string name="ask_for_camera_permission_button">相机</string>
     <string name="ask_for_contacts_permission_button">联系人</string>
     <string name="ask_for_location_permission_button">位置</string>
+    <string name="ask_for_notifications_permission_button">通知</string>
     <string name="ask_for_phone_permission_button">电话</string>
     <string name="ask_for_storage_permission_button">存储空间</string>
     <string name="permission_hint">为了应用程序的最佳性能和完整的功能支持，aTalk 需要您授予以下服务的权限。没有它们，aTalk 可能无法工作或出现意外行为！</string>
@@ -1594,13 +1595,16 @@
     <string name="audio_permission_denied_feedback">在您授予权限请求之前，音频通话将不可用</string>
 
     <string name="camera_permission_denied_dialog_title">相机权限请求</string>
-    <string name="camera_permission_denied_feedback">相机权限：在您授予权限请求之前，所有与相机相关的活动都将不可用</string>
+    <string name="camera_permission_denied_feedback">在您授予权限请求之前，所有与相机相关的活动都将不可用</string>
 
     <string name="contacts_permission_denied_dialog_title">联系人权限请求</string>
     <string name="contacts_permission_denied_feedback">电话状态访问和通话设置需要联系人权限</string>
 
     <string name="location_permission_denied_dialog_title">位置权限请求</string>
     <string name="location_permission_denied_feedback">在您授予权限请求之前，GPS 定位功能将不可用</string>
+
+    <string name="notifications_permission_denied_dialog_title">通知权限请求</string>
+    <string name="notifications_permission_denied_feedback">在您授予权限请求之前，来自 aTalk 的通知将被禁用</string>
 
     <string name="phone_permission_denied_dialog_title">读取手机状态权限请求</string>
     <string name="phone_permission_denied_feedback">在您授予权限请求之前，手机功能将不可用</string>

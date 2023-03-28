@@ -16,13 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.MultiMap;
-import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,6 +28,13 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.MultiMap;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
@@ -45,8 +45,7 @@ import javax.xml.namespace.QName;
  * @author Florian Schmaus
  * @author Eng Chong Meng
  */
-public class AbstractXmlElement implements ExtensionElement
-{
+public class AbstractXmlElement implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(AbstractXmlElement.class.getName());
     private final String element;
     private final String namespace;
@@ -70,14 +69,12 @@ public class AbstractXmlElement implements ExtensionElement
      *
      * @param builder the sub-class Builder
      */
-    protected AbstractXmlElement(Builder<?, ?> builder)
-    {
+    protected AbstractXmlElement(Builder<?, ?> builder) {
         this.element = StringUtils.requireNotNullNorEmpty(builder.element, "Name must not be null nor empty");
         this.namespace = builder.namespace; // StringUtils.requireNotNullNorEmpty(builder.namespace, "Namespace must not be null nor empty");
         if (builder.attributes == null) {
             this.attributes = Collections.emptyMap();
-        }
-        else {
+        } else {
             this.attributes = builder.attributes;
         }
         this.text = builder.text;
@@ -86,14 +83,12 @@ public class AbstractXmlElement implements ExtensionElement
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return element;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return namespace;
     }
 
@@ -106,8 +101,7 @@ public class AbstractXmlElement implements ExtensionElement
      * @see DefaultXmlElementProvider on usage
      */
     // public <B extends Builder<?, ?>> B getBuilder(String namespace)
-    public AbstractXmlElement.Builder<?, ?> getBuilder(String namespace)
-    {
+    public AbstractXmlElement.Builder<?, ?> getBuilder(String namespace) {
         if (namespace != null) {
             mBuilder.namespace = namespace;
         }
@@ -119,8 +113,7 @@ public class AbstractXmlElement implements ExtensionElement
      *
      * @return the text content of this extension or <code>null</code> if no text content has been specified so far.
      */
-    public String getText()
-    {
+    public String getText() {
         return text;
     }
 
@@ -132,8 +125,7 @@ public class AbstractXmlElement implements ExtensionElement
      * @return the string value of the specified <code>attribute</code> or <code>null</code> if no such attribute
      * is currently registered with this extension.
      */
-    public String getAttributeValue(String attribute)
-    {
+    public String getAttributeValue(String attribute) {
         return attributes.get(attribute);
     }
 
@@ -144,8 +136,7 @@ public class AbstractXmlElement implements ExtensionElement
      * @return the <code>int</code> value of the specified <code>attribute</code> or value -1
      * if no such attribute is currently registered with this extension
      */
-    public int getAttributeAsInt(String attribute)
-    {
+    public int getAttributeAsInt(String attribute) {
         String value = getAttributeValue(attribute);
         return (value == null) ? -1 : Integer.parseInt(value);
     }
@@ -159,8 +150,7 @@ public class AbstractXmlElement implements ExtensionElement
      * @throws IllegalArgumentException if <code>attribute</code> is not a valid {@link URI}
      */
     public URI getAttributeAsURI(String attribute)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         String attributeVal = getAttributeValue(attribute);
         if (attributeVal == null)
             return null;
@@ -172,14 +162,12 @@ public class AbstractXmlElement implements ExtensionElement
         }
     }
 
-    public Map<String, String> getAttributes()
-    {
+    public Map<String, String> getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> T getFirstChildElement(String element, String namespace)
-    {
+    public <T extends ExtensionElement> T getFirstChildElement(String element, String namespace) {
         if (elements == null) {
             return null;
         }
@@ -187,8 +175,7 @@ public class AbstractXmlElement implements ExtensionElement
         return (T) elements.getFirst(key);
     }
 
-    public <T extends ExtensionElement> T getFirstChildElement(String element)
-    {
+    public <T extends ExtensionElement> T getFirstChildElement(String element) {
         return getFirstChildElement(element, namespace);
     }
 
@@ -201,8 +188,7 @@ public class AbstractXmlElement implements ExtensionElement
      * <code>null</code> if no such child extension was found.
      */
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> T getFirstChildElement(Class<T> type)
-    {
+    public <T extends ExtensionElement> T getFirstChildElement(Class<T> type) {
         try {
             return (T) elements.getFirst(type.getDeclaredConstructor().newInstance().getQName());
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
@@ -212,8 +198,7 @@ public class AbstractXmlElement implements ExtensionElement
         }
     }
 
-    public List<? extends ExtensionElement> getChildElements(String element, String namespace)
-    {
+    public List<? extends ExtensionElement> getChildElements(String element, String namespace) {
         if (elements == null) {
             return null;
         }
@@ -221,8 +206,7 @@ public class AbstractXmlElement implements ExtensionElement
         return elements.getAll(key);
     }
 
-    public List<? extends ExtensionElement> getChildElements(String element)
-    {
+    public List<? extends ExtensionElement> getChildElements(String element) {
         return getChildElements(element, namespace);
     }
 
@@ -234,8 +218,7 @@ public class AbstractXmlElement implements ExtensionElement
      *
      * @return the {@link List} of elements that this stanza extension contains.
      */
-    public List<? extends ExtensionElement> getChildElements()
-    {
+    public List<? extends ExtensionElement> getChildElements() {
         if (elements == null) {
             return Collections.emptyList();
         }
@@ -251,8 +234,7 @@ public class AbstractXmlElement implements ExtensionElement
      * match the specified <code>type</code>
      */
     @SuppressWarnings("unchecked")
-    public <T extends ExtensionElement> List<T> getChildElements(Class<T> type)
-    {
+    public <T extends ExtensionElement> List<T> getChildElements(Class<T> type) {
         try {
             QName qName = type.getDeclaredConstructor().newInstance().getQName();
             return (elements == null) ? Collections.emptyList() : (List<T>) elements.getAll(qName);
@@ -273,8 +255,7 @@ public class AbstractXmlElement implements ExtensionElement
      * <code>src</code> which has the same attributes, elements and text
      */
     @SuppressWarnings("unchecked")
-    public static <T extends AbstractXmlElement> T clone(T src)
-    {
+    public static <T extends AbstractXmlElement> T clone(T src) {
         T dst;
         try {
             dst = (T) src.getClass().getConstructor().newInstance();
@@ -297,51 +278,43 @@ public class AbstractXmlElement implements ExtensionElement
      * Current aTalk implementation requires the following functions support;
      * The functions are required to change the values of an existing reference XmlElement
      */
-    public void setAttribute(String name, String value)
-    {
+    public void setAttribute(String name, String value) {
         StringUtils.requireNotNullNorEmpty(name, "Attribute name must be set");
         if (value != null) {
             attributes.put(name, value);
         }
     }
 
-    public void setAttribute(String name, int value)
-    {
+    public void setAttribute(String name, int value) {
         StringUtils.requireNotNullNorEmpty(name, "Attribute name must be set");
         setAttribute(name, Integer.toString(value));
     }
 
-    public void removeAttribute(String name)
-    {
+    public void removeAttribute(String name) {
         attributes.remove(name);
     }
 
-    public void addChildElement(ExtensionElement element)
-    {
+    public void addChildElement(ExtensionElement element) {
         QName key = element.getQName();
         if (elements != null) {
             elements.put(key, element);
-        }
-        else {
+        } else {
             LOGGER.log(Level.SEVERE, "Element Name: " + element.getElementName());
         }
     }
 
-    public Boolean removeChildElement(ExtensionElement element)
-    {
+    public Boolean removeChildElement(ExtensionElement element) {
         QName key = element.getQName();
         return (elements != null) && (elements.remove(key) != null);
     }
 
     // =========================================
 
-    protected void addExtraAttributes(XmlStringBuilder xml)
-    {
+    protected void addExtraAttributes(XmlStringBuilder xml) {
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         if (xmlCache != null) {
             return xmlCache;
         }
@@ -365,8 +338,7 @@ public class AbstractXmlElement implements ExtensionElement
                 }
             }
             xml.closeElement(this);
-        }
-        else {
+        } else {
             xml.closeEmptyElement();
         }
 
@@ -374,8 +346,7 @@ public class AbstractXmlElement implements ExtensionElement
         return xml;
     }
 
-    public abstract static class Builder<B extends Builder<B, C>, C extends AbstractXmlElement>
-    {
+    public abstract static class Builder<B extends Builder<B, C>, C extends AbstractXmlElement> {
         private final String element;
         private String namespace;
 
@@ -383,15 +354,13 @@ public class AbstractXmlElement implements ExtensionElement
         private Map<String, String> attributes;
         protected MultiMap<QName, ExtensionElement> elements = new MultiMap<>();
 
-        protected Builder(String element, String namespace)
-        {
+        protected Builder(String element, String namespace) {
             this.element = element;
             this.namespace = namespace;
         }
 
         // see https://xmpp.org/extensions/xep-0294.html#element may call with null value; just ignore
-        public B addAttribute(String name, String value)
-        {
+        public B addAttribute(String name, String value) {
             StringUtils.requireNotNullNorEmpty(name, "Attribute name must be set");
             if (value != null) {
                 if (attributes == null) {
@@ -402,13 +371,11 @@ public class AbstractXmlElement implements ExtensionElement
             return getThis();
         }
 
-        public B addAttribute(String name, int value)
-        {
+        public B addAttribute(String name, int value) {
             return addAttribute(name, Integer.toString(value));
         }
 
-        public B addAttributes(Map<String, String> attributes)
-        {
+        public B addAttributes(Map<String, String> attributes) {
             if (this.attributes == null) {
                 this.attributes = new LinkedHashMap<>(attributes.size());
             }
@@ -416,23 +383,27 @@ public class AbstractXmlElement implements ExtensionElement
             return getThis();
         }
 
+        public String getAttribute(String name) {
+            if (this.attributes != null) {
+                return attributes.get(name);
+            }
+            return null;
+        }
+
         // Remove the existing attribute with the given attribute name
-        public B removeAttribute(String name)
-        {
+        public B removeAttribute(String name) {
             if (this.attributes != null) {
                 this.attributes.remove(name);
             }
             return getThis();
         }
 
-        public B setText(String text)
-        {
+        public B setText(String text) {
             this.text = Objects.requireNonNull(text, "Text must be not null");
             return getThis();
         }
 
-        public B addChildElement(ExtensionElement element)
-        {
+        public B addChildElement(ExtensionElement element) {
             Objects.requireNonNull(element, "Element must not be null");
             if (elements == null) {
                 elements = new MultiMap<>();
@@ -443,8 +414,11 @@ public class AbstractXmlElement implements ExtensionElement
             return getThis();
         }
 
-        public B addChildElements(List<? extends ExtensionElement> xElements)
-        {
+        public B addChildElements(List<? extends ExtensionElement> xElements) {
+            if (xElements == null) {
+                return getThis();
+            }
+
             if (elements == null) {
                 elements = new MultiMap<>();
             }
@@ -456,8 +430,7 @@ public class AbstractXmlElement implements ExtensionElement
             return getThis();
         }
 
-        public B removeChildElement(ExtensionElement element)
-        {
+        public B removeChildElement(ExtensionElement element) {
             Objects.requireNonNull(element, "Element must not be null");
             if (elements == null) {
                 return getThis();

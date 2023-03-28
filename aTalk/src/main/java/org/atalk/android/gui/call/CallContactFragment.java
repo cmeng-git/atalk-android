@@ -7,20 +7,21 @@ package org.atalk.android.gui.call;
 
 import android.Manifest;
 import android.accounts.Account;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
@@ -41,8 +42,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CallContactFragment extends OSGiFragment
-{
+public class CallContactFragment extends OSGiFragment {
     /**
      * The bundle context.
      */
@@ -53,15 +53,12 @@ public class CallContactFragment extends OSGiFragment
      */
     public static String ARG_PHONE_NUMBER = "arg.phone_number";
 
-    private final int PERMISSION_GET_ACCOUNTS = 10;
-
     /**
      * {@inheritDoc}
      */
     @Override
     public synchronized void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         super.start(bundleContext);
         /*
          * If there are unit tests to be run, do not run anything else and just perform
@@ -71,15 +68,14 @@ public class CallContactFragment extends OSGiFragment
             return;
 
         this.bundleContext = bundleContext;
-        // initAndroidAccounts();
+        initAndroidAccounts();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View content = inflater.inflate(R.layout.call_contact, container, false);
 
         final ImageView callButton = content.findViewById(R.id.callButtonFull);
@@ -108,8 +104,7 @@ public class CallContactFragment extends OSGiFragment
      * @param v the View that will contain the popup menu.
      * @param calleeAddress target callee name.
      */
-    private void showCallViaMenu(View v, final String calleeAddress)
-    {
+    private void showCallViaMenu(View v, final String calleeAddress) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         Menu menu = popup.getMenu();
         ProtocolProviderService mProvider = null;
@@ -145,12 +140,9 @@ public class CallContactFragment extends OSGiFragment
      * @param destination target callee name.
      * @param provider the provider that will be used to make a call.
      */
-    private void createCall(final ProtocolProviderService provider, final String destination)
-    {
-        new Thread()
-        {
-            public void run()
-            {
+    private void createCall(final ProtocolProviderService provider, final String destination) {
+        new Thread() {
+            public void run() {
                 try {
                     CallManager.createCall(provider, destination, false);
                 } catch (Throwable t) {
@@ -164,14 +156,9 @@ public class CallContactFragment extends OSGiFragment
     /**
      * Loads Android accounts.
      */
-    private void initAndroidAccounts()
-    {
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.GET_ACCOUNTS}, PERMISSION_GET_ACCOUNTS);
-        }
-        else {
+    public void initAndroidAccounts() {
+        if (aTalk.hasPermission(getActivity(), true,
+                aTalk.PRC_GET_CONTACTS, Manifest.permission.GET_ACCOUNTS)) {
             android.accounts.AccountManager androidAccManager = android.accounts.AccountManager.get(getActivity());
             Account[] androidAccounts = androidAccManager.getAccountsByType(getString(R.string.ACCOUNT_TYPE));
             for (Account account : androidAccounts) {
@@ -180,27 +167,14 @@ public class CallContactFragment extends OSGiFragment
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-            @NonNull int[] grantResults)
-    {
-        // If request is canceled, the result arrays are empty.
-        if (requestCode == PERMISSION_GET_ACCOUNTS) {
-            if ((grantResults.length > 0)
-                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                // permission granted, so proceed
-                initAndroidAccounts();
-            }
-        }
-    }
-
     /**
      * Creates new parametrized instance of <code>CallContactFragment</code>.
      *
      * @param phoneNumber optional phone number that will be filled.
+     *
      * @return new parameterized instance of <code>CallContactFragment</code>.
      */
-    public static CallContactFragment newInstance(String phoneNumber)
-    {
+    public static CallContactFragment newInstance(String phoneNumber) {
         CallContactFragment ccFragment = new CallContactFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PHONE_NUMBER, phoneNumber);

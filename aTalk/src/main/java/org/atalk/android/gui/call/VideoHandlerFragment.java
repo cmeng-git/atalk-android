@@ -9,7 +9,6 @@ import static android.hardware.camera2.CameraMetadata.LENS_FACING_BACK;
 import static android.hardware.camera2.CameraMetadata.LENS_FACING_FRONT;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -23,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
@@ -33,6 +31,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.controller.SimpleDragController;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.codec.video.AndroidDecoder;
@@ -209,14 +208,13 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
             }
         });
 
-        isCameraEnable = ContextCompat.checkSelfPermission(mCallActivity, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED;
-
+        isCameraEnable = aTalk.hasPermission(aTalk.getInstance(), false,
+                aTalk.PRC_CAMERA, Manifest.permission.CAMERA);
         calleeAvatar = mCallActivity.findViewById(R.id.calleeAvatar);
         mCallVideoButton = mCallActivity.findViewById(R.id.button_call_video);
 
+        mCallVideoButton.setOnClickListener(this::onLocalVideoButtonClicked);
         if (isCameraEnable) {
-            mCallVideoButton.setOnClickListener(this::onLocalVideoButtonClicked);
             mCallVideoButton.setOnLongClickListener(this);
         }
         mCall = mCallActivity.getCall();
@@ -455,13 +453,15 @@ public class VideoHandlerFragment extends OSGiFragment implements View.OnLongCli
     }
 
     /**
-     * Called when local video button is pressed.
+     * Called when local video button is pressed. Give user feedback if camera not enabled
      *
      * @param callVideoButton local video button <code>View</code>.
      */
     private void onLocalVideoButtonClicked(View callVideoButton)
     {
-        initLocalVideoState(!isLocalVideoEnabled());
+        if (aTalk.isMediaCallAllowed(true)) {
+            initLocalVideoState(!isLocalVideoEnabled());
+        }
     }
 
     /**

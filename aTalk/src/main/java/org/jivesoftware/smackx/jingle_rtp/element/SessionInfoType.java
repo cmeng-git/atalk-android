@@ -21,8 +21,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
  *
  * @author Emil Ivov
  */
-public enum SessionInfoType
-{
+public enum SessionInfoType {
     /**
      * The <code>active</code> payload indicates that the principal or device is again actively
      * participating in the session after having been on mute or having put the other party on hold.

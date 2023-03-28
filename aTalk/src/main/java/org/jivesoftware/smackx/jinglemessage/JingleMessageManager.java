@@ -16,6 +16,12 @@
  */
 package org.jivesoftware.smackx.jinglemessage;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.StanzaListener;
@@ -33,27 +39,20 @@ import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A JingleMessage manager for media call setup.
  *
  * @author Eng Chong Meng
  */
-public final class JingleMessageManager extends Manager
-{
+public final class JingleMessageManager extends Manager {
     private static final Map<XMPPConnection, JingleMessageManager> INSTANCES = new WeakHashMap<>();
 
-    public static synchronized JingleMessageManager getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized JingleMessageManager getInstanceFor(XMPPConnection connection) {
         JingleMessageManager jingleMessageManager = INSTANCES.get(connection);
         if (jingleMessageManager == null) {
             jingleMessageManager = new JingleMessageManager(connection);
@@ -78,14 +77,11 @@ public final class JingleMessageManager extends Manager
 
     private final AsyncButOrdered<Chat> asyncButOrdered = new AsyncButOrdered<>();
 
-    private JingleMessageManager(final XMPPConnection connection)
-    {
+    private JingleMessageManager(final XMPPConnection connection) {
         super(connection);
-        connection.addSyncStanzaListener(new StanzaListener()
-        {
+        connection.addSyncStanzaListener(new StanzaListener() {
             @Override
-            public void processStanza(Stanza stanza)
-            {
+            public void processStanza(Stanza stanza) {
                 // ignore any delayed Jingle Messages
                 if (stanza.hasExtension(DelayInformation.ELEMENT, DelayInformation.NAMESPACE))
                     return;
@@ -99,11 +95,9 @@ public final class JingleMessageManager extends Manager
                 final EntityBareJid bareFrom = fullFrom.asEntityBareJid();
                 final Chat chat = chatWith(connection, bareFrom);
 
-                asyncButOrdered.performAsyncButOrdered(chat, new Runnable()
-                {
+                asyncButOrdered.performAsyncButOrdered(chat, new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         for (JingleMessageListener listener : jingleMessageListeners) {
                             switch (jingleMessage.getAction()) {
                                 case JingleMessage.ACTION_PROPOSE:
@@ -140,8 +134,7 @@ public final class JingleMessageManager extends Manager
      * @param listener the listener to add.
      * @return <code>true</code> if the listener was not already added.
      */
-    public boolean addIncomingListener(JingleMessageListener listener)
-    {
+    public boolean addIncomingListener(JingleMessageListener listener) {
         return jingleMessageListeners.add(listener);
     }
 
@@ -151,8 +144,7 @@ public final class JingleMessageManager extends Manager
      * @param listener the listener to remove.
      * @return <code>true</code> if the listener was active and got removed.
      */
-    public boolean removeIncomingListener(JingleMessageListener listener)
-    {
+    public boolean removeIncomingListener(JingleMessageListener listener) {
         return jingleMessageListeners.remove(listener);
     }
 
@@ -163,8 +155,7 @@ public final class JingleMessageManager extends Manager
      * @param jid the XMPP address of the other entity to chat with.
      * @return the Chat API for the given XMPP address.
      */
-    public Chat chatWith(XMPPConnection connection, EntityBareJid jid)
-    {
+    public Chat chatWith(XMPPConnection connection, EntityBareJid jid) {
         Chat chat = chats.get(jid);
         if (chat == null) {
             synchronized (chats) {

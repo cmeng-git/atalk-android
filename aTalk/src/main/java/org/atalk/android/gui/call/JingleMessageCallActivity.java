@@ -31,7 +31,6 @@ import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jetbrains.annotations.NotNull;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.Jid;
 
@@ -42,14 +41,13 @@ import org.jxmpp.jid.Jid;
  * Implementation for aTalk v3.0.5:
  * Starting with Android 12 notifications will not work if they do not start activities directly
  * NotificationService: Indirect notification activity start (trampoline) from org.atalk.android blocked
- * https://proandroiddev.com/notification-trampoline-restrictions-android12-7d2a8b15bbe2
+ * <a href="https://proandroiddev.com/notification-trampoline-restrictions-android12-7d2a8b15bbe2">Notification trampoline restrictions-Android12</a>
  * Heads-up notification launches ReceivedCallActivity directly; failed if launches JingleMessageCallActivity => ReceivedCallActivity;
  * ActivityTaskManager: Background activity start will failed for android-12 and above.
  *
  * @author Eng Chong Meng
  */
-public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageSessionImpl.JmEndListener
-{
+public class JingleMessageCallActivity extends OSGiActivity implements JingleMessageSessionImpl.JmEndListener {
     private ImageView peerAvatar;
     private String mSid;
 
@@ -64,8 +62,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.call_received);
 
@@ -89,8 +86,8 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
 
             String eventType = extras.getString(CallManager.CALL_EVENT);
             boolean isIncomingCall = NotificationManager.INCOMING_CALL.equals(eventType);
-            boolean mAutoAccept = extras.getBoolean(CallManager.JM_AUTO_ACCEPT, false);
-            if (isIncomingCall && mAutoAccept) {
+            boolean autoAccept = extras.getBoolean(CallManager.AUTO_ACCEPT, false);
+            if (isIncomingCall && autoAccept) {
                 JingleMessageSessionImpl.sendJingleAccept(mSid);
                 return;
             }
@@ -126,30 +123,11 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Hangs up the call when back is pressed as this Activity will not be displayed again.
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
@@ -158,16 +136,20 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     }
 
     /**
-     * End activity and bring aTalk foreground; else user is prompted with heads-up notification
-     * and ReceivedCallActivitry UI to take action, and confuse user;
+     * Bring aTalk to foreground, and end JingleMessageCallActivity UI; else user is prompted with
+     * both heads-up notification and ReceivedCallActivity UI to take action, this confuses user;
      * Also to avoid failure arises on launching ...CallActivity from background;
+     *
+     * Note: Due to android design constraints i.e. only activity launch is allowed when android is in locked screen.
+     * Hence two UI are still being shown on call received i.e. JingleMessageCallActivity and VideoCallActivity
      */
     @Override
-    public void onJmEndCallback()
-    {
+    public void onJmEndCallback() {
         NotificationPopupHandler.removeCallNotification(mSid);
-        finish();
         startActivity(aTalk.class);
+
+        // Must destroy JingleMessageCallActivity UI, else remain visible after end call.
+        finish();
     }
 
     /**
@@ -175,8 +157,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
      *
      * @param avatar the avatar of the callee
      */
-    public void setPeerImage(Jid callee)
-    {
+    public void setPeerImage(Jid callee) {
         if (callee == null)
             return;
 

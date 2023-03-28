@@ -58,7 +58,7 @@ configurations.all {
     it.resolutionStrategy {
         eachDependency { details ->
             // multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
+            if (details.requested.group == "org.igniterealtime.smack" && ['smack-core', 'smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
                 //changing the name reference to smack libraries to its individual jar
                 // details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
                 details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 301040
-        versionName "3.1.4"
+        versionCode 301050
+        versionName "3.1.5"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -212,6 +212,8 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/core_release.kotlin_module'
+        exclude 'META-INF/kotlin-stdlib-jdk7.kotlin_module'
     }
 }
 
@@ -234,10 +236,10 @@ dependencies {
 
     // Upgrade android libraries to 1.5.x create problem. Required API-33
     // See https://issuetracker.google.com/issues/240473335
-    implementation 'androidx.activity:activity:1.4.0'
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.activity:activity:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment:1.4.1'
+    implementation 'androidx.fragment:fragment:1.5.6'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -261,14 +263,12 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
-    // exoplayer:2.18.1 requires api-33
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
-    // Do not update to 1.7.x; has problem
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.5'
+    // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
     implementation 'com.google.android.material:material:1.6.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
-    // implementation 'org.threeten:threetenbp:1.6.4'
     implementation 'com.splitwise:tokenautocomplete:4.0.0-beta01'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 

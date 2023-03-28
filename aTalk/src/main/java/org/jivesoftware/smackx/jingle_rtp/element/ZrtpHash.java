@@ -25,8 +25,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0262.html">XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0 (2011-06-15)</a>
  */
-public class ZrtpHash extends AbstractXmlElement
-{
+public class ZrtpHash extends AbstractXmlElement {
     /**
      * The name of the "zrtp-hash" element.
      */
@@ -45,8 +44,7 @@ public class ZrtpHash extends AbstractXmlElement
     /**
      * Creates a {@link ZrtpHash} instance for the specified <code>namespace</code> and <code>elementName</code>.
      */
-    public ZrtpHash()
-    {
+    public ZrtpHash() {
         super(getBuilder());
     }
 
@@ -55,8 +53,7 @@ public class ZrtpHash extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public ZrtpHash(Builder builder)
-    {
+    public ZrtpHash(Builder builder) {
         super(builder);
     }
 
@@ -65,8 +62,7 @@ public class ZrtpHash extends AbstractXmlElement
      *
      * @return the ZRTP version used by the implementation that created the hash.
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return getAttributeValue(ATTR_VERSION);
     }
 
@@ -75,13 +71,11 @@ public class ZrtpHash extends AbstractXmlElement
      *
      * @return the value of the ZRTP hash this element is carrying.
      */
-    public String getHashValue()
-    {
+    public String getHashValue() {
         return getText();
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -89,10 +83,8 @@ public class ZrtpHash extends AbstractXmlElement
      * Builder for ZrtpHash. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the ZrtpHash.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, ZrtpHash>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, ZrtpHash> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -102,8 +94,7 @@ public class ZrtpHash extends AbstractXmlElement
          * @param value the value of the ZRTP hash this element will be carrying.
          * @return builder instance
          */
-        public Builder setHashValue(String value)
-        {
+        public Builder setHashValue(String value) {
             setText(value);
             return this;
         }
@@ -114,21 +105,18 @@ public class ZrtpHash extends AbstractXmlElement
          * @param version the ZRTP version used by the implementation that created the hash.
          * @return builder instance
          */
-        public Builder setVersion(String version)
-        {
+        public Builder setVersion(String version) {
             addAttribute(ATTR_VERSION, version);
             return this;
         }
 
         @Override
-        public ZrtpHash build()
-        {
+        public ZrtpHash build() {
             return new ZrtpHash(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

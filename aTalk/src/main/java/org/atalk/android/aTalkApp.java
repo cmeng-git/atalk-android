@@ -5,6 +5,7 @@
  */
 package org.atalk.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.app.DownloadManager;
@@ -38,7 +39,6 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
-import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -49,7 +49,6 @@ import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.DrawableCache;
-import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
 import org.atalk.impl.androidnotification.NotificationHelper;
@@ -358,6 +357,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      */
     public static String getResStringByName(String aString) {
         String packageName = mInstance.getPackageName();
+        @SuppressLint("DiscouragedApi")
         int resId = mInstance.getResources().getIdentifier(aString, "string", packageName);
 
         return (resId != 0) ? mInstance.getString(resId) : "";
@@ -505,9 +505,9 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     }
 
     /**
-     * Returns the time elapsed since last atalk <code>Activity</code> was open in milliseconds.
+     * Returns the time elapsed since last aTalk <code>Activity</code> was open in milliseconds.
      *
-     * @return the time elapsed since last atalk <code>Activity</code> was open in milliseconds.
+     * @return the time elapsed since last aTalk <code>Activity</code> was open in milliseconds.
      */
     public static long getLastGuiActivityInterval() {
         // GUI is currently active
