@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -28,11 +32,8 @@ import org.jivesoftware.smackx.jingle.Role;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jxmpp.jid.FullJid;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Class that represents a Jingle session.
@@ -40,8 +41,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class JingleCallSessionImpl extends JingleSession
-{
+public class JingleCallSessionImpl extends JingleSession {
     private static final Logger LOGGER = Logger.getLogger(JingleCallSessionImpl.class.getName());
 
     /**
@@ -63,8 +63,7 @@ public class JingleCallSessionImpl extends JingleSession
      * @param sid Jingle session Id
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
-    public JingleCallSessionImpl(XMPPConnection connection, FullJid recipient, String sid, BasicTelephony basicTelephony)
-    {
+    public JingleCallSessionImpl(XMPPConnection connection, FullJid recipient, String sid, BasicTelephony basicTelephony) {
         this(connection, connection.getUser(), recipient, Role.initiator, sid, null, basicTelephony);
     }
 
@@ -79,8 +78,7 @@ public class JingleCallSessionImpl extends JingleSession
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, String sid,
-            List<JingleContent> contents, BasicTelephony basicTelephony)
-    {
+            List<JingleContent> contents, BasicTelephony basicTelephony) {
         this(connection, initiator, connection.getUser(), Role.responder, sid, contents, basicTelephony);
     }
 
@@ -96,8 +94,7 @@ public class JingleCallSessionImpl extends JingleSession
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role,
-            String sessionId, List<JingleContent> contents, BasicTelephony basicTelephony)
-    {
+            String sessionId, List<JingleContent> contents, BasicTelephony basicTelephony) {
         super(initiator, responder, role, sessionId, contents);
 
         mBasicTelephony = basicTelephony;
@@ -116,8 +113,7 @@ public class JingleCallSessionImpl extends JingleSession
      * @return IQResult
      */
     @Override
-    public IQ handleJingleSessionRequest(Jingle request)
-    {
+    public IQ handleJingleSessionRequest(Jingle request) {
         Async.go(() -> mBasicTelephony.handleJingleSession(request));
         return IQ.createResultIQ(request);
     }
@@ -156,13 +152,11 @@ public class JingleCallSessionImpl extends JingleSession
     }
 
     @Override
-    public XMPPConnection getConnection()
-    {
+    public XMPPConnection getConnection() {
         return mConnection;
     }
 
     @Override
-    public void onTransportMethodFailed(String namespace)
-    {
+    public void onTransportMethodFailed(String namespace) {
     }
 }

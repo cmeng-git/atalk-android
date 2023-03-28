@@ -24,27 +24,23 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class InputEvent extends AbstractXmlElement
-{
+public class InputEvent extends AbstractXmlElement {
     /**
      * Name of the XML element representing the extension.
      */
-    public final static String ELEMENT = "inputevt";
+    public static final String ELEMENT = "inputevt";
 
-    public final static String NAMESPACE = "http://jitsi.org/protocol/inputevt";
+    public static final String NAMESPACE = "http://jitsi.org/protocol/inputevt";
 
-    public InputEvent()
-    {
+    public InputEvent() {
         super(getBuilder());
     }
 
-    public InputEvent(Builder builder)
-    {
+    public InputEvent(Builder builder) {
         super(builder);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -52,22 +48,18 @@ public class InputEvent extends AbstractXmlElement
      * Builder for InputEvent. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the InputEvent.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, InputEvent>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, InputEvent> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         @Override
-        public InputEvent build()
-        {
+        public InputEvent build() {
             return new InputEvent(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * SctpMap extension in transport packet extension.
@@ -27,8 +27,7 @@ import javax.xml.namespace.QName;
  *
  * @author Eng Chong Meng
  */
-public class SctpMap extends AbstractXmlElement
-{
+public class SctpMap extends AbstractXmlElement {
     public static final String ELEMENT = "sctpmap";
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:dtls-sctp:1";
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
@@ -44,20 +43,17 @@ public class SctpMap extends AbstractXmlElement
     public static final String ATTR_PROTOCOL = "protocol";
 
     /**
-     * Protocol enumeration of <tt>SctpMap</tt>. Currently it only contains WEBRTC_CHANNEL.
+     * Protocol enumeration of <code>SctpMap</code>. Currently it only contains WEBRTC_CHANNEL.
      */
-    public enum Protocol
-    {
+    public enum Protocol {
         webrtc_datachannel;
 
-        public static Protocol fromString(String string)
-        {
+        public static Protocol fromString(String string) {
             return Protocol.valueOf(string.replace('-', '_'));
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return name().replace('_', '-');
         }
     }
@@ -67,23 +63,19 @@ public class SctpMap extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SctpMap(Builder builder)
-    {
+    public SctpMap(Builder builder) {
         super(builder);
     }
 
-    public int getPort()
-    {
+    public int getPort() {
         return getAttributeAsInt(ATTR_NUMBER);
     }
 
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return getAttributeValue(ATTR_PROTOCOL);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -91,40 +83,33 @@ public class SctpMap extends AbstractXmlElement
      * Builder for SctpMap. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SctpMap.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SctpMap>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, SctpMap> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
-        public Builder setPort(int port)
-        {
+        public Builder setPort(int port) {
             addAttribute(ATTR_NUMBER, port);
             return this;
         }
 
-        public Builder setProtocol(String protocol)
-        {
+        public Builder setProtocol(String protocol) {
             addAttribute(ATTR_PROTOCOL, protocol);
             return this;
         }
 
-        public Builder setProtocol(Protocol protocol)
-        {
+        public Builder setProtocol(Protocol protocol) {
             addAttribute(ATTR_PROTOCOL, protocol.toString());
             return this;
         }
 
         @Override
-        public SctpMap build()
-        {
+        public SctpMap build() {
             return new SctpMap(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

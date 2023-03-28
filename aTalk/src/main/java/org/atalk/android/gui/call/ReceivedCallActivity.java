@@ -5,6 +5,7 @@
  */
 package org.atalk.android.gui.call;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import net.java.sip.communicator.service.protocol.event.CallChangeListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.aTalk;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.service.osgi.OSGiActivity;
 
@@ -48,9 +50,6 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      */
     private Call call;
 
-    private ImageView mCallButton;
-    private ImageView mVideoCallButton;
-
     /**
      * Called when the activity is starting. Initializes the call identifier.
      *
@@ -68,6 +67,17 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
                 | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                 | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
+
+        ImageView hangupView = findViewById(R.id.hangupButton);
+        hangupView.setOnClickListener(v -> hangupCall());
+
+        ImageView mCallButton = findViewById(R.id.callButton);
+        mCallButton.setOnClickListener(v -> answerCall(call, false));
+
+        // Proceed with video call only if camera permission is granted.
+        ImageView mVideoCallButton = findViewById(R.id.videoCallButton);
+        mVideoCallButton.setOnClickListener(v -> answerCall(call,
+                aTalk.hasPermission(this, false, aTalk.PRC_CAMERA, Manifest.permission.CAMERA)));
 
         Bundle extras = getIntent().getExtras();
         Timber.d("ReceivedCall onCreate!!!");
@@ -95,16 +105,10 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
                 finish();
                 return;
             }
+
+            if (extras.getBoolean(CallManager.AUTO_ACCEPT, false))
+                mVideoCallButton.performClick();
         }
-
-        ImageView hangupView = findViewById(R.id.hangupButton);
-        hangupView.setOnClickListener(v -> hangupCall());
-
-        ImageView mCallButton = findViewById(R.id.callButton);
-        mCallButton.setOnClickListener(v -> answerCall(call, false));
-
-        ImageView mVideoCallButton = findViewById(R.id.videoCallButton);
-        mVideoCallButton.setOnClickListener(v -> answerCall(call, true));
     }
 
     /**
@@ -142,7 +146,7 @@ public class ReceivedCallActivity extends OSGiActivity implements CallChangeList
      * Answers the given call and launches the call user interface.
      *
      * @param call the call to answer
-     * @param isVideoCall indicates if video shall be used
+     * @param isVideoCall indicates if video shall be usede
      */
     private void answerCall(final Call call, boolean isVideoCall)
     {

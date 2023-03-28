@@ -49,8 +49,9 @@ public interface SystrayService
 
     /**
      * Message type corresponding to JINGLE_INCOMING_CALL arise due to JingleMessage <accept/>
+     * or via HeadsUp notification where user has already accepted the call.
      */
-    int JINGLE_MESSAGE_INCOMING_CALL = 6;
+    int HEADS_UP_INCOMING_CALL = 6;
 
     /**
      * Message type is not accessible.

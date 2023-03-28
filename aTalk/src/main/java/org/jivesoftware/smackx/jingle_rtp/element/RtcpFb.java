@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Packet extension that holds RTCP feedback types of the {@link PayloadType}.
@@ -27,8 +27,7 @@ import javax.xml.namespace.QName;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class RtcpFb extends AbstractXmlElement
-{
+public class RtcpFb extends AbstractXmlElement {
     /**
      * The name of the RTCP feedback element.
      */
@@ -54,8 +53,7 @@ public class RtcpFb extends AbstractXmlElement
     /**
      * <code>RtcpFb</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public RtcpFb()
-    {
+    public RtcpFb() {
         super(getBuilder());
     }
 
@@ -64,8 +62,7 @@ public class RtcpFb extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public RtcpFb(Builder builder)
-    {
+    public RtcpFb(Builder builder) {
         super(builder);
     }
 
@@ -74,8 +71,7 @@ public class RtcpFb extends AbstractXmlElement
      *
      * @return RTCP feedback type attribute if already set or <code>null</code> otherwise.
      */
-    public String getFeedbackType()
-    {
+    public String getFeedbackType() {
         return getAttributeValue(ATTR_TYPE);
     }
 
@@ -84,13 +80,11 @@ public class RtcpFb extends AbstractXmlElement
      *
      * @return RTCP feedback subtype attribute if already set or <code>null</code> otherwise.
      */
-    public String getFeedbackSubtype()
-    {
+    public String getFeedbackSubtype() {
         return getAttributeValue(ATTR_SUBTYPE);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -98,10 +92,8 @@ public class RtcpFb extends AbstractXmlElement
      * Builder for RtcpFb. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RtcpFb.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtcpFb>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtcpFb> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -111,8 +103,7 @@ public class RtcpFb extends AbstractXmlElement
          * @param parameter the <code>ParameterElement</code> to add to this source
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter)
-        {
+        public Builder addParameter(ParameterElement parameter) {
             addChildElement(parameter);
             return this;
         }
@@ -123,8 +114,7 @@ public class RtcpFb extends AbstractXmlElement
          * @param feedbackType the RTCP feedback type to set.
          * @return builder instance
          */
-        public Builder setFeedbackType(String feedbackType)
-        {
+        public Builder setFeedbackType(String feedbackType) {
             addAttribute(ATTR_TYPE, feedbackType);
             return this;
         }
@@ -135,21 +125,18 @@ public class RtcpFb extends AbstractXmlElement
          * @param feedbackSubType the RTCP feedback subtype to set.
          * @return builder instance
          */
-        public Builder setFeedbackSubtype(String feedbackSubType)
-        {
+        public Builder setFeedbackSubtype(String feedbackSubType) {
             addAttribute(ATTR_SUBTYPE, feedbackSubType);
             return this;
         }
 
         @Override
-        public RtcpFb build()
-        {
+        public RtcpFb build() {
             return new RtcpFb(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

@@ -27,15 +27,13 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class RawUdpTransport extends IceUdpTransport
-{
+public class RawUdpTransport extends IceUdpTransport {
     /**
      * The nameSpace of the "transport" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:raw-udp:1";
 
-    public RawUdpTransport()
-    {
+    public RawUdpTransport() {
         super(getBuilder());
     }
 
@@ -44,13 +42,11 @@ public class RawUdpTransport extends IceUdpTransport
      *
      * @param builder Builder instance
      */
-    public RawUdpTransport(Builder builder)
-    {
+    public RawUdpTransport(Builder builder) {
         super(builder);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -58,22 +54,18 @@ public class RawUdpTransport extends IceUdpTransport
      * Builder for RawUdpTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RawUdpTransport.
      */
-    public static final class Builder extends IceUdpTransport.Builder
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends IceUdpTransport.Builder {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
         @Override
-        public RawUdpTransport build()
-        {
+        public RawUdpTransport build() {
             return new RawUdpTransport(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

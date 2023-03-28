@@ -83,6 +83,7 @@ import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.listener.OmemoMessageListener;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
+import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 import org.jivesoftware.smackx.xhtmlim.XHTMLManager;
 import org.jivesoftware.smackx.xhtmlim.XHTMLText;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -737,8 +738,16 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             content = subject + ": " + content;
         }
 
-        IMessage newMessage = createMessageWithUID(content, encType, message.getStanzaId());
-        newMessage.setRemoteMsgId(message.getStanzaId());
+        // Some DomainBareJid message contain null msgId, so get it from StanzaIdElement if available
+        String stanzaId = message.getStanzaId();
+        if (TextUtils.isEmpty(stanzaId)) {
+            ExtensionElement stanzaIdElement = stanza.getExtension(StanzaIdElement.QNAME);
+            if (stanzaIdElement instanceof StanzaIdElement) {
+                stanzaId = ((StanzaIdElement) stanzaIdElement).getId();
+            }
+        }
+        IMessage newMessage = createMessageWithUID(content, encType, stanzaId);
+        newMessage.setRemoteMsgId(stanzaId);
 
         // createVolatileContact will check before create
         Contact sourceContact = opSetPersPresence.createVolatileContact(message.getFrom());

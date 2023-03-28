@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import java.net.URI;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
-import java.net.URI;
 
 /**
  * RTP header extension.
@@ -28,7 +28,7 @@ import java.net.URI;
  * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
  * @see <a href="https://xmpp.org/extensions/xep-0294.html">XEP-0294: Jingle RTP Header Extensions Negotiation  1.1.1 (2021-10-23)</a>
  *
- * Note: Any type of RTP Header Extension that requires extra parameters in the a=b form can embed <parameter/>
+ * Note: Any type of RTP Header Extension that requires extra parameters in the a=b form can embed <code>parameter</code>
  * elements to describe it. Any other form of parameter can be stored as the 'key' attribute in a parameter
  * element with an empty value.
  * @see <a href="https://xmpp.org/extensions/xep-0294.html#element">XEP-0294 § 3. New elements</a>
@@ -36,8 +36,7 @@ import java.net.URI;
  * @author Sebastien Vincent
  * @author Eng Chong Meng
  */
-public class RtpHeader extends AbstractXmlElement
-{
+public class RtpHeader extends AbstractXmlElement {
     public static final String ELEMENT = "rtp-hdrext";
     public static final String NAMESPACE = "urn:xmpp:jingle:apps:rtp:rtp-hdrext:0";
 
@@ -61,8 +60,7 @@ public class RtpHeader extends AbstractXmlElement
      */
     public static final String ATTR_ATTRIBUTES = "attributes";
 
-    public RtpHeader()
-    {
+    public RtpHeader() {
         super(getBuilder());
     }
 
@@ -71,8 +69,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public RtpHeader(Builder builder)
-    {
+    public RtpHeader(Builder builder) {
         super(builder);
     }
 
@@ -81,8 +78,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @return the ID
      */
-    public String getId()
-    {
+    public String getId() {
         return getAttributeValue(ATTR_ID);
     }
 
@@ -91,8 +87,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @return the direction
      */
-    public Senders getSenders()
-    {
+    public Senders getSenders() {
         String attributeVal = getAttributeValue(ATTR_SENDERS);
 
         return (attributeVal == null) ? null : Senders.valueOf(attributeVal);
@@ -103,8 +98,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @return the URI
      */
-    public URI getURI()
-    {
+    public URI getURI() {
         String uri = getAttributeValue(ATTR_URI);
         return URI.create(uri);
     }
@@ -114,8 +108,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @return "attributes" value
      */
-    public String getExtAttributes()
-    {
+    public String getExtAttributes() {
         for (ExtensionElement ext : getChildElements()) {
             if (ext instanceof ParameterElement) {
                 ParameterElement p = (ParameterElement) ext;
@@ -132,8 +125,7 @@ public class RtpHeader extends AbstractXmlElement
      *
      * @param attributes attributes value
      */
-    public void setExtAttributes(String attributes)
-    {
+    public void setExtAttributes(String attributes) {
         // The rtp-hdrext extension can only contain a single "parameter" child
         removeChildElement(new ParameterElement());
 
@@ -142,8 +134,7 @@ public class RtpHeader extends AbstractXmlElement
                 .build());
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -151,10 +142,8 @@ public class RtpHeader extends AbstractXmlElement
      * Builder for RtpHeader. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RtpHeader.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtpHeader>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtpHeader> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -164,8 +153,7 @@ public class RtpHeader extends AbstractXmlElement
          * @param id ID to set
          * @return builder instance
          */
-        public Builder setID(String id)
-        {
+        public Builder setID(String id) {
             addAttribute(ATTR_ID, id);
             return this;
         }
@@ -176,8 +164,7 @@ public class RtpHeader extends AbstractXmlElement
          * @param senders the direction
          * @return builder instance
          */
-        public Builder setSenders(Senders senders)
-        {
+        public Builder setSenders(Senders senders) {
             addAttribute(ATTR_SENDERS, senders.toString());
             return this;
         }
@@ -188,8 +175,7 @@ public class RtpHeader extends AbstractXmlElement
          * @param uri URI to set
          * @return builder instance
          */
-        public Builder setURI(URI uri)
-        {
+        public Builder setURI(URI uri) {
             addAttribute(ATTR_URI, uri.toString());
             return this;
         }
@@ -200,8 +186,7 @@ public class RtpHeader extends AbstractXmlElement
          * @param attributes attributes value
          * @return builder instance
          */
-        public Builder setExtAttributes(String attributes)
-        {
+        public Builder setExtAttributes(String attributes) {
             // The rtp-hdrext extension can only contain a single "parameter" child
             removeChildElement(new ParameterElement());
             addChildElement(ParameterElement.builder(RtpHeader.NAMESPACE)
@@ -211,14 +196,12 @@ public class RtpHeader extends AbstractXmlElement
         }
 
         @Override
-        public RtpHeader build()
-        {
+        public RtpHeader build() {
             return new RtpHeader(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

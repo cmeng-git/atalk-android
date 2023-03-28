@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Implements the <code>services</code> element described in the following XEP.
@@ -30,8 +30,7 @@ import javax.xml.namespace.QName;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
-public class ExternalServices extends AbstractXmlElement
-{
+public class ExternalServices extends AbstractXmlElement {
     /**
      * The XML name of the <code>services</code> element.
      */
@@ -44,8 +43,7 @@ public class ExternalServices extends AbstractXmlElement
     /**
      * <code>ExternalServices</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public ExternalServices()
-    {
+    public ExternalServices() {
         super(getBuilder());
     }
 
@@ -54,13 +52,11 @@ public class ExternalServices extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public ExternalServices(Builder builder)
-    {
+    public ExternalServices(Builder builder) {
         super(builder);
     }
 
-    public String getType()
-    {
+    public String getType() {
         return getAttributeValue(ServiceElement.ATTR_TYPE);
     }
 
@@ -69,8 +65,7 @@ public class ExternalServices extends AbstractXmlElement
      *
      * @return the <code>ExtensionElement</code>s of this source
      */
-    public List<ServiceElement> getServices()
-    {
+    public List<ServiceElement> getServices() {
         return getChildElements(ServiceElement.class);
     }
 
@@ -80,8 +75,7 @@ public class ExternalServices extends AbstractXmlElement
      * @param transport the transport type to find.
      * @return list of ServiceElement that support the given transport
      */
-    public List<ServiceElement> getServiceType(String transport)
-    {
+    public List<ServiceElement> getServiceType(String transport) {
         List<ServiceElement> services = new ArrayList<>();
         for (ServiceElement service : getServices()) {
             if (transport.equals(service.getTransport()))
@@ -90,8 +84,7 @@ public class ExternalServices extends AbstractXmlElement
         return services;
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -99,15 +92,12 @@ public class ExternalServices extends AbstractXmlElement
      * Builder for ExternalServices. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the ExternalServices.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, ExternalServices>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, ExternalServices> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
-        public Builder setType(String type)
-        {
+        public Builder setType(String type) {
             addAttribute(ServiceElement.ATTR_TYPE, type);
             return this;
         }
@@ -118,21 +108,18 @@ public class ExternalServices extends AbstractXmlElement
          * @param serviceElement the <code>ServiceElement</code> to add to this element
          * @return builder instance
          */
-        public Builder addService(ServiceElement serviceElement)
-        {
+        public Builder addService(ServiceElement serviceElement) {
             addChildElement(serviceElement);
             return this;
         }
 
         @Override
-        public ExternalServices build()
-        {
+        public ExternalServices build() {
             return new ExternalServices(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

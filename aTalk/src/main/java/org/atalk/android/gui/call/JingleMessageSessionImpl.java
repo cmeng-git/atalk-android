@@ -31,6 +31,7 @@ import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.impl.androidnotification.VibrateHandlerImpl;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.util.MediaType;
@@ -64,8 +65,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public final class JingleMessageSessionImpl implements JingleMessageListener
-{
+public final class JingleMessageSessionImpl implements JingleMessageListener {
     private static final Map<XMPPConnection, JingleMessageSessionImpl> INSTANCES = new WeakHashMap<>();
 
     private static final Map<XMPPConnection, OperationSetBasicTelephonyJabberImpl> jmStateListeners = new HashMap<>();
@@ -83,8 +83,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
     // Should send retract to close the loop, when user ends the call and jingle session-initiate has not started
     private static boolean allowSendRetract = false;
 
-    public static synchronized JingleMessageSessionImpl getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized JingleMessageSessionImpl getInstanceFor(XMPPConnection connection) {
         JingleMessageSessionImpl jingleMessageSessionImpl = INSTANCES.get(connection);
         if (jingleMessageSessionImpl == null) {
             jingleMessageSessionImpl = new JingleMessageSessionImpl(connection);
@@ -93,8 +92,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         return jingleMessageSessionImpl;
     }
 
-    private JingleMessageSessionImpl(XMPPConnection connection)
-    {
+    private JingleMessageSessionImpl(XMPPConnection connection) {
         JingleMessageManager jingleMessageManager = JingleMessageManager.getInstanceFor(connection);
         jingleMessageManager.addIncomingListener(this);
     }
@@ -108,8 +106,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param remote the targeted contact (BareJid) to send the call propose
      * @param videoCall video call if true, audio call otherwise
      */
-    public static void sendJingleMessagePropose(XMPPConnection connection, Jid remote, boolean videoCall)
-    {
+    public static void sendJingleMessagePropose(XMPPConnection connection, Jid remote, boolean videoCall) {
         mConnection = connection;
         mRemote = remote;
         isVideoCall = videoCall;
@@ -150,8 +147,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param sid the unique for Jingle Message / Jingle Session sid
      */
-    private static void startJMCallActivity(String sid)
-    {
+    private static void startJMCallActivity(String sid) {
         Context context = aTalkApp.getGlobalContext();
         Intent intent = new Intent(context, JingleMessageCallActivity.class);
 
@@ -171,8 +167,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param message the original received Jingle Message
      */
     @Override
-    public void onJingleMessageProceed(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    public void onJingleMessageProceed(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         String sid = jingleMessage.getId();
         mRemote = message.getFrom();
 
@@ -196,8 +191,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param message the original received Jingle Message
      */
     @Override
-    public void onJingleMessageReject(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    public void onJingleMessageReject(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         String sid = jingleMessage.getId();
         mRemote = message.getFrom();
         allowSendRetract = false;
@@ -212,8 +206,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param remote the remote callee
      * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleMessageRetract(Jid remote, String sid)
-    {
+    public static void sendJingleMessageRetract(Jid remote, String sid) {
         allowSendRetract = false;
         JingleMessage msgRetract = new JingleMessage(JingleMessage.ACTION_RETRACT, sid);
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
@@ -231,8 +224,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param peer the remote call peer
      */
-    public static void sendJingleMessageRetract(CallPeer peer)
-    {
+    public static void sendJingleMessageRetract(CallPeer peer) {
         Jid jid = peer.getPeerJid();
         if ((mRemote != null) && mRemote.isParentOf(jid) && allowSendRetract) {
             sendJingleMessageRetract(mRemote, peer.getCall().getCallId());
@@ -249,8 +241,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param message the original received Jingle Message
      */
     @Override
-    public void onJingleMessagePropose(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    public void onJingleMessagePropose(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         List<String> media = jingleMessage.getMedia();
         boolean isVideoCall = media.contains(MediaType.VIDEO.toString());
         String sid = jingleMessage.getId();
@@ -258,26 +249,14 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         mConnection = connection;
         mRemote = message.getFrom();
 
-        notifyOnStateChange(connection, JingleMessageType.propose, mRemote, sid);
-        // v3.0.5: always starts with heads-up notification for JingleMessage call propose
-        AndroidCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
-    }
-
-    /**
-     * Starts the receive call UI when in legacy jingle call (not use)
-     * v3.0.5: always starts with heads-up notification for JingleMessage call propose
-     *
-     * @param call the <code>Call</code> to be handled
-     */
-    private void startJingleMessageCallActivity(String sid)
-    {
-        Context context = aTalkApp.getGlobalContext();
-        Intent intent = new Intent(context, JingleMessageCallActivity.class)
-                .putExtra(CallManager.CALL_SID, sid)
-                .putExtra(CallManager.CALL_EVENT, NotificationManager.INCOMING_CALL)
-                // .putExtra(CallManager.CALL_AUTO_ANSWER, true)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        // Check for resource permission before proceed, if mic is enabled at a minimum
+        if (aTalk.isMediaCallAllowed(false)) {
+            notifyOnStateChange(connection, JingleMessageType.propose, mRemote, sid);
+            // v3.0.5: always starts with heads-up notification for JingleMessage call propose
+            AndroidCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
+        } else {
+            sendJingleMessageReject(sid);
+        }
     }
 
     /**
@@ -289,8 +268,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleAccept(String sid)
-    {
+    public static void sendJingleAccept(String sid) {
         Jid local = mConnection.getUser();
         mSid = sid;
 
@@ -313,8 +291,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param message the original received Jingle Message
      */
     @Override
-    public void onJingleMessageAccept(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    public void onJingleMessageAccept(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         // Valid caller found, and we are the sender of the "accept" jingle message, then request sender to proceed
         Jid callee = message.getFrom();
         if (mRemote != null) {
@@ -343,8 +320,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param sid the intended Jingle Message call id
      */
-    public static void sendJingleMessageReject(String sid)
-    {
+    public static void sendJingleMessageReject(String sid) {
         if (mRemote != null) {
             JingleMessage msgReject = new JingleMessage(JingleMessage.ACTION_REJECT, sid);
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
@@ -366,8 +342,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param message the original received Jingle Message
      */
     @Override
-    public void onJingleMessageRetract(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    public void onJingleMessageRetract(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         String sid = jingleMessage.getId();
         NotificationPopupHandler.removeCallNotification(sid);
 
@@ -378,8 +353,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
         }
     }
 
-    private void onCallRetract(FullJid caller)
-    {
+    private void onCallRetract(FullJid caller) {
         // fired a missed call notification
         Map<String, Object> extras = new HashMap<>();
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, caller);
@@ -401,8 +375,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param jingleMessage the extension element to be sent
      * @param message the source message for parameters extraction; to and from may have been modified by caller
      */
-    private static void sendJingleMessage(XMPPConnection connection, JingleMessage jingleMessage, Message message)
-    {
+    private static void sendJingleMessage(XMPPConnection connection, JingleMessage jingleMessage, Message message) {
         MessageBuilder msgBuilder = StanzaBuilder.buildMessage(message.getStanzaId())
                 .ofType(Message.Type.chat)
                 .from(connection.getUser())
@@ -422,10 +395,10 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * Check to see if the session-initiate is triggered via JingleMessage <code>accept</code>.
      *
      * @param jingleSI incoming Jingle session-initiate for verification
+     *
      * @return true if the call was via JingleMessage
      */
-    public static boolean isJingleMessageAccept(Jingle jingleSI)
-    {
+    public static boolean isJingleMessageAccept(Jingle jingleSI) {
         // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
         FullJid initiator = jingleSI.getInitiator();
         if (initiator == null) {
@@ -441,8 +414,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param allow false to disable sending retract when user ends the call
      * {@link CallPeerJabberImpl#initiateSession(Iterable, String)}
      */
-    public static void setAllowSendRetract(boolean allow)
-    {
+    public static void setAllowSendRetract(boolean allow) {
         allowSendRetract = allow;
     }
 
@@ -451,16 +423,14 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @return Jid of the callee
      */
-    public static Jid getRemote()
-    {
+    public static Jid getRemote() {
         return mRemote;
     }
 
     /**
      * legacy call must check for correct sid before assumes JingleMessage session call
      */
-    public static String getSid()
-    {
+    public static String getSid() {
         return mSid;
     }
 
@@ -471,8 +441,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param id String id
      * @param arg arg for the string format
      */
-    private static void endJmCallProcess(Integer id, Object... arg)
-    {
+    private static void endJmCallProcess(Integer id, Object... arg) {
         if (id != null) {
             aTalkApp.showToastMessage(id, arg);
         }
@@ -489,8 +458,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param basicTelephony OperationSetBasicTelephonyJabberImpl instance
      */
-    public static void addJmStateListener(OperationSetBasicTelephonyJabberImpl basicTelephony)
-    {
+    public static void addJmStateListener(OperationSetBasicTelephonyJabberImpl basicTelephony) {
         ProtocolProviderServiceJabberImpl pps = basicTelephony.getProtocolProvider();
         jmStateListeners.put(pps.getConnection(), basicTelephony);
     }
@@ -500,8 +468,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param basicTelephony OperationSetBasicTelephonyJabberImpl instance
      */
-    public static void removeJmStateListener(OperationSetBasicTelephonyJabberImpl basicTelephony)
-    {
+    public static void removeJmStateListener(OperationSetBasicTelephonyJabberImpl basicTelephony) {
         ProtocolProviderServiceJabberImpl pps = basicTelephony.getProtocolProvider();
         jmStateListeners.remove(pps.getConnection());
     }
@@ -514,15 +481,13 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      * @param remote The remote caller/callee, should be a FullJid
      * @param sid The Jingle sessionId for session-initiate; must be from negotiated JingleMessage
      */
-    public void notifyOnStateChange(XMPPConnection connection, JingleMessageType type, Jid remote, String sid)
-    {
+    public void notifyOnStateChange(XMPPConnection connection, JingleMessageType type, Jid remote, String sid) {
         OperationSetBasicTelephonyJabberImpl basicTelephone = jmStateListeners.get(connection);
         if (basicTelephone != null)
             basicTelephone.onJmStateChange(type, remote.asEntityFullJidIfPossible(), sid);
     }
 
-    public interface JmStateListener
-    {
+    public interface JmStateListener {
         void onJmStateChange(JingleMessageType type, FullJid remote, String sid);
     }
 
@@ -531,13 +496,11 @@ public final class JingleMessageSessionImpl implements JingleMessageListener
      *
      * @param fl JmEndListener to finish the activity
      */
-    public static void setJmEndListener(JmEndListener fl)
-    {
+    public static void setJmEndListener(JmEndListener fl) {
         jmEndListener = fl;
     }
 
-    public interface JmEndListener
-    {
+    public interface JmEndListener {
         void onJmEndCallback();
     }
 }

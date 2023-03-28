@@ -1,26 +1,30 @@
 package org.atalk.android.plugin.textspeech;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.speech.tts.*;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiActivity;
@@ -33,14 +37,11 @@ import java.util.Locale;
 import timber.log.Timber;
 
 public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitListener, View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener
-{
+        CompoundButton.OnCheckedChangeListener {
     private static final String ACTION_TTS_SETTINGS = "com.android.settings.TTS_SETTINGS";
 
     private static final int ACT_CHECK_TTS_DATA = 1001;
     private static final int REQUEST_DEFAULT = 1003;
-
-    private final int REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE = 2000;
 
     private int permissionCount = 0;
     private final String mUtteranceID = "totts";
@@ -57,8 +58,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     private static State mState = State.UNKNOWN;
     private int requestCode = REQUEST_DEFAULT;
 
-    public enum State
-    {
+    public enum State {
         LOADING,
         DOWNLOAD_FAILED,
         ERROR,
@@ -67,8 +67,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tts_main);
 
@@ -107,11 +106,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
         initButton();
 
         // Perform the dynamic permission request
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE);
-
+        aTalk.hasWriteStoragePermission(this, true);
         setState(State.LOADING);
 
         /*
@@ -130,8 +125,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         super.onStop();
         String tmp = ViewUtil.toString(mTtsDelay);
         if ((tmp != null) && !ttsDelay.equals(tmp)) {
@@ -139,8 +133,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
         }
     }
 
-    private Locale getTtsLanguage()
-    {
+    private Locale getTtsLanguage() {
         if (mTTS != null) {
             try {
                 Voice voice = mTTS.getVoice();
@@ -164,8 +157,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
      * @param status The TTS engine initialization status.
      */
     @Override
-    public void onInit(int status)
-    {
+    public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
             setState(State.SUCCESS);
 
@@ -194,8 +186,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         String ttsText = ViewUtil.toString(mTtsText);
         switch (v.getId()) {
             case R.id.tts_play:
@@ -219,14 +210,13 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-    {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.tts_enable) {
             ConfigurationUtils.setTtsEnable(isChecked);
         }
     }
 
-      /* Use standard ActivityResultContract instead */
+    /* Use standard ActivityResultContract instead */
 //    /**
 //     * GetTTSInfo class ActivityResultContract implementation.
 //     */
@@ -293,8 +283,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
      *
      * @param resultCode The result of voice data verification.
      */
-    private void onDataChecked(int resultCode)
-    {
+    private void onDataChecked(int resultCode) {
         if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
 //            Intent intent = new Intent(this, TTSService.class);
 //            startService(intent);
@@ -315,8 +304,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     /**
      * Initializes the TTS engine.
      */
-    private void initializeEngine()
-    {
+    private void initializeEngine() {
         if (mTTS != null)
             mTTS = null;
         mTTS = new TextToSpeech(this, this);
@@ -327,8 +315,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
      *
      * @param state The current state.
      */
-    private void setState(State state)
-    {
+    private void setState(State state) {
         mState = state;
         if (mState == State.LOADING) {
             findViewById(R.id.loading).setVisibility(View.VISIBLE);
@@ -341,37 +328,31 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION_WRITE_EXTERNAL_STORAGE) {
+        if (requestCode == aTalk.PRC_WRITE_EXTERNAL_STORAGE) {
             if ((grantResults.length != 0) && (PackageManager.PERMISSION_GRANTED == grantResults[0]))
                 permissionCount++;
         }
     }
 
-    TextWatcher mTextWatcher = new TextWatcher()
-    {
+    TextWatcher mTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
             initButton();
         }
 
         @Override
-        public void afterTextChanged(Editable s)
-        {
+        public void afterTextChanged(Editable s) {
             initButton();
         }
     };
 
-    private void initButton()
-    {
+    private void initButton() {
         boolean enable = (State.SUCCESS == mState) && (mTtsText.getText().length() > 0);
         btnPlay.setEnabled(enable);
         btnSave.setEnabled(enable);
@@ -381,31 +362,30 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
         btnSave.setAlpha(alpha);
     }
 
-    private void saveToAudioFile(String text)
-    {
+    private void saveToAudioFile(String text) {
         // Create tts audio file
         File ttsFile = createTtsSpeechFile();
+        if (ttsFile == null) {
+            return;
+        }
+
         String audioFilename = ttsFile.getAbsolutePath();
 
         mTTS.synthesizeToFile(text, null, new File(audioFilename), mUtteranceID);
-        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener()
-        {
+        mTTS.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
-            public void onStart(String utteranceId)
-            {
+            public void onStart(String utteranceId) {
             }
 
             @Override
-            public void onDone(String utteranceId)
-            {
+            public void onDone(String utteranceId) {
                 if (utteranceId.equals(mUtteranceID)) {
                     aTalkApp.showToastMessage("Saved to " + audioFilename);
                 }
             }
 
             @Override
-            public void onError(String utteranceId)
-            {
+            public void onError(String utteranceId) {
             }
         });
     }
@@ -415,8 +395,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
      *
      * @return Voice file for saving audio
      */
-    private static File createTtsSpeechFile()
-    {
+    private static File createTtsSpeechFile() {
         File ttsFile = null;
         File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND, true);
         if (!mediaDir.exists() && !mediaDir.mkdirs()) {
@@ -432,14 +411,12 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
         return ttsFile;
     }
 
-    public static State getState()
-    {
+    public static State getState() {
         return mState;
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         if (mTTS != null) {
             mTTS.stop();
             mTTS.shutdown();

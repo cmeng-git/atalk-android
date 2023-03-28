@@ -32,8 +32,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class ParameterElement extends AbstractXmlElement
-{
+public class ParameterElement extends AbstractXmlElement {
     /**
      * The name of the "parameter" element.
      */
@@ -55,8 +54,7 @@ public class ParameterElement extends AbstractXmlElement
      *
      * @see #getBuilder(String)
      */
-    public ParameterElement()
-    {
+    public ParameterElement() {
         super(builder(RtpDescription.NAMESPACE));
     }
 
@@ -65,8 +63,7 @@ public class ParameterElement extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public ParameterElement(Builder builder)
-    {
+    public ParameterElement(Builder builder) {
         super(builder);
     }
 
@@ -75,8 +72,7 @@ public class ParameterElement extends AbstractXmlElement
      *
      * @return the name of the format parameter we are representing here.
      */
-    public String getName()
-    {
+    public String getName() {
         return getAttributeValue(ATTR_NAME);
     }
 
@@ -85,13 +81,11 @@ public class ParameterElement extends AbstractXmlElement
      *
      * @return the value of the format parameter we are representing here.
      */
-    public String getValue()
-    {
+    public String getValue() {
         return getAttributeValue(ATTR_VALUE);
     }
 
-    public static Builder builder(String nameSpace)
-    {
+    public static Builder builder(String nameSpace) {
         return new Builder(ELEMENT, nameSpace);
     }
 
@@ -99,10 +93,8 @@ public class ParameterElement extends AbstractXmlElement
      * Builder for ParameterElement. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the ParameterElement.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, ParameterElement>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, ParameterElement> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -112,8 +104,7 @@ public class ParameterElement extends AbstractXmlElement
          * @param name the name of the format parameter we are representing here.
          * @return builder instance
          */
-        public Builder setName(String name)
-        {
+        public Builder setName(String name) {
             addAttribute(ATTR_NAME, name);
             return this;
         }
@@ -121,15 +112,14 @@ public class ParameterElement extends AbstractXmlElement
         /**
          * Sets that value of the format parameter we are representing here.
          *
-         * Note: A RTP Header Extension that requires extra parameters in the a=b form can embed <parameter/> elements
+         * Note: A RTP Header Extension that requires extra parameters in the a=b form can embed <code>parameter</code> elements
          * to describe it. Any other form of parameter can be stored as the 'key' attribute in a parameter element
          * with an empty value. https://xmpp.org/extensions/xep-0294.html#element
          *
          * @param value the value of the format parameter we are representing here.
          * @return builder instance
          */
-        public Builder setValue(String value)
-        {
+        public Builder setValue(String value) {
             addAttribute(ATTR_VALUE, value);
             return this;
         }
@@ -141,22 +131,19 @@ public class ParameterElement extends AbstractXmlElement
          * @param value the value of the format parameter we are representing here.
          * @return builder instance
          */
-        public Builder setNameValue(String name, String value)
-        {
+        public Builder setNameValue(String name, String value) {
             addAttribute(ATTR_NAME, name);
             addAttribute(ATTR_VALUE, value);
             return this;
         }
 
         @Override
-        public ParameterElement build()
-        {
+        public ParameterElement build() {
             return new ParameterElement(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

@@ -23,14 +23,13 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
  *
- * For RTP sessions, often the <bandwidth/> element will specify the "session bandwidth" as described in Section 6.2
+ * For RTP sessions, often the <code>bandwidth</code> element will specify the "session bandwidth" as described in Section 6.2
  * of RFC 3550, measured in kilobits per second as described in Section 5.2 of RFC 4566.
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class SdpBandwidth extends AbstractXmlElement
-{
+public class SdpBandwidth extends AbstractXmlElement {
     /**
      * The name of the "bandwidth" element.
      */
@@ -49,8 +48,7 @@ public class SdpBandwidth extends AbstractXmlElement
     /**
      * <code>SdpBandwidth</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public SdpBandwidth()
-    {
+    public SdpBandwidth() {
         super(getBuilder());
     }
 
@@ -59,8 +57,7 @@ public class SdpBandwidth extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpBandwidth(Builder builder)
-    {
+    public SdpBandwidth(Builder builder) {
         super(builder);
     }
 
@@ -69,8 +66,7 @@ public class SdpBandwidth extends AbstractXmlElement
      *
      * @return a <code>String</code> value which would often be one of the <code>bwtype</code> values specified by SDP
      */
-    public String getType()
-    {
+    public String getType() {
         return getAttributeValue(ATTR_TYPE);
     }
 
@@ -79,13 +75,11 @@ public class SdpBandwidth extends AbstractXmlElement
      *
      * @return the value of this bandwidth extension.
      */
-    public String getBandwidth()
-    {
+    public String getBandwidth() {
         return getText();
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -93,10 +87,8 @@ public class SdpBandwidth extends AbstractXmlElement
      * Builder for SdpBandwidth. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpBandwidth.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpBandwidth>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpBandwidth> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -106,8 +98,7 @@ public class SdpBandwidth extends AbstractXmlElement
          * @param type a <code>String</code> value which would often be one of the <code>bwtype</code> values specified by SDP
          * @return builder instance
          */
-        public Builder setType(String type)
-        {
+        public Builder setType(String type) {
             addAttribute(ATTR_TYPE, type);
             return this;
         }
@@ -118,21 +109,18 @@ public class SdpBandwidth extends AbstractXmlElement
          * @param bw the value of this bandwidth extension.
          * @return builder instance
          */
-        public Builder setBandwidth(String bw)
-        {
+        public Builder setBandwidth(String bw) {
             setText(bw);
             return this;
         }
 
         @Override
-        public SdpBandwidth build()
-        {
+        public SdpBandwidth build() {
             return new SdpBandwidth(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

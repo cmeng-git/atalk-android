@@ -1,12 +1,12 @@
-/*
- * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+/**
+ *
+ *  Copyright 2019-2023 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,20 +16,19 @@
  */
 package org.jivesoftware.smackx.httpauthorizationrequest.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import javax.xml.namespace.QName;
-
 /**
- * ExtensionElement <Conform/> for HTTP Request
- * XEP-0070: Verifying HTTP Requests via XMPP
+ * ExtensionElement <code>Conform</code> for HTTP Request.
+ * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  */
-public class ConfirmExtension implements ExtensionElement
-{
-    public static final String NAMESPACE = "http://jabber.org/protocol/http-auth";
+public class ConfirmExtension implements ExtensionElement {
     public static final String ELEMENT = "confirm";
+    public static final String NAMESPACE = "http://jabber.org/protocol/http-auth";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
@@ -43,9 +42,12 @@ public class ConfirmExtension implements ExtensionElement
 
     /**
      * Create a new IdleElement with the current date as date of last user interaction.
+     *
+     * @param id Stanza Id
+     * @param method HTTP method
+     * @param url requested URL
      */
-    public ConfirmExtension(String id, String method, String url)
-    {
+    public ConfirmExtension(String id, String method, String url) {
         this.id = id;
         this.method = method;
         this.url = url;
@@ -56,8 +58,7 @@ public class ConfirmExtension implements ExtensionElement
      *
      * @return id of attr-value confirm extension
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
@@ -66,8 +67,7 @@ public class ConfirmExtension implements ExtensionElement
      *
      * @return the method attr-value of confirm extension
      */
-    public String getMethod()
-    {
+    public String getMethod() {
         return method;
     }
 
@@ -76,31 +76,22 @@ public class ConfirmExtension implements ExtensionElement
      *
      * @return the url attr-value of confirm extension
      */
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     /**
-     * Extraction of Confirm Extension from message
+     * Extraction of Confirm Extension from message.
      * @param message received message
      * @return Confirm extension
      */
@@ -108,12 +99,8 @@ public class ConfirmExtension implements ExtensionElement
         return message.getExtension(ConfirmExtension.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace)
-    {
+    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this)
                 .attribute(ATTR_ID, id)
                 .attribute(ATTR_METHOD, method)

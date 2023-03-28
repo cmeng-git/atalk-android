@@ -29,8 +29,7 @@ import org.jivesoftware.smackx.jingle_rtp.CandidateType;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class IceUdpTransportCandidate extends AbstractXmlElement implements Comparable<IceUdpTransportCandidate>
-{
+public class IceUdpTransportCandidate extends AbstractXmlElement implements Comparable<IceUdpTransportCandidate> {
     /**
      * The name of the "candidate" element.
      */
@@ -115,8 +114,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
 
     public static final String ATTR_HOST = "host";
 
-    public IceUdpTransportCandidate()
-    {
+    public IceUdpTransportCandidate() {
         super(getBuilder());
     }
 
@@ -125,8 +123,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @param builder Builder instance
      */
-    public IceUdpTransportCandidate(Builder builder)
-    {
+    public IceUdpTransportCandidate(Builder builder) {
         super(builder);
     }
 
@@ -135,8 +132,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return a component ID as defined in ICE-CORE.
      */
-    public int getComponent()
-    {
+    public int getComponent() {
         return getAttributeAsInt(ATTR_COMPONENT);
     }
 
@@ -145,8 +141,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return the candidate foundation as defined in ICE-CORE.
      */
-    public String getFoundation()
-    {
+    public String getFoundation() {
         return getAttributeValue(ATTR_FOUNDATION);
     }
 
@@ -157,8 +152,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's generation index.
      */
-    public int getGeneration()
-    {
+    public int getGeneration() {
         return getAttributeAsInt(ATTR_GENERATION);
     }
 
@@ -167,8 +161,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidates' unique identifier <code>String</code>
      */
-    public String getID()
-    {
+    public String getID() {
         return getAttributeValue(ATTR_ID);
     }
 
@@ -178,8 +171,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's IPv4 or IPv6 address.
      */
-    public String getIP()
-    {
+    public String getIP() {
         return getAttributeValue(ATTR_IP);
     }
 
@@ -190,8 +182,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return the network index indicating the interface that the candidate belongs to.
      */
-    public int getNetwork()
-    {
+    public int getNetwork() {
         return getAttributeAsInt(ATTR_NETWORK);
     }
 
@@ -200,8 +191,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's port number.
      */
-    public int getPort()
-    {
+    public int getPort() {
         return getAttributeAsInt(ATTR_PORT);
     }
 
@@ -210,8 +200,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's priority
      */
-    public int getPriority()
-    {
+    public int getPriority() {
         return getAttributeAsInt(ATTR_PRIORITY);
     }
 
@@ -220,8 +209,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's transport protocol.
      */
-    public String getProtocol()
-    {
+    public String getProtocol() {
         return getAttributeValue(ATTR_PROTOCOL);
     }
 
@@ -230,8 +218,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's related address as described by ICE's RFC 5245.
      */
-    public String getRelAddr()
-    {
+    public String getRelAddr() {
         return getAttributeValue(ATTR_REL_ADDR);
     }
 
@@ -240,8 +227,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidate's related port as described by ICE's RFC 5245.
      */
-    public int getRelPort()
-    {
+    public int getRelPort() {
         return getAttributeAsInt(ATTR_REL_PORT);
     }
 
@@ -253,8 +239,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return this candidates' type as per ICE's RFC 5245.
      */
-    public CandidateType getType()
-    {
+    public CandidateType getType() {
         return CandidateType.fromString(getAttributeValue(ATTR_TYPE));
     }
 
@@ -263,20 +248,18 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      *
      * @return TcpType string
      */
-    public String getTcpType()
-    {
+    public String getTcpType() {
         return getAttributeValue(ATTR_TCPTYPE);
     }
 
     /**
      * Compares this instance with another IceUdpTransportCandidate by preference of type:
-     * host < local < prflx < srflx < stun < relay.
+     * host &lt; local &lt; prflx &lt; srflx &lt; stun &lt; relay.
      *
      * @return 0 if the type are equal. -1 if this instance type is preferred. Otherwise 1.
      */
     @Override
-    public int compareTo(IceUdpTransportCandidate iceUdpCandidate)
-    {
+    public int compareTo(IceUdpTransportCandidate iceUdpCandidate) {
         // If the types are different.
         if (this.getType() != iceUdpCandidate.getType()) {
             CandidateType[] types = {
@@ -303,8 +286,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
         return 0;
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -312,10 +294,8 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
      * Builder for IceUdpTransportCandidate. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the IceUdpTransportCandidate.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, IceUdpTransportCandidate>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, IceUdpTransportCandidate> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -325,8 +305,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param component a component ID as defined in ICE-CORE.
          * @return builder instance
          */
-        public Builder setComponent(int component)
-        {
+        public Builder setComponent(int component) {
             addAttribute(ATTR_COMPONENT, component);
             return this;
         }
@@ -337,8 +316,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param foundation the candidate foundation as defined in ICE-CORE.
          * @return builder instance
          */
-        public Builder setFoundation(String foundation)
-        {
+        public Builder setFoundation(String foundation) {
             addAttribute(ATTR_FOUNDATION, foundation);
             return this;
         }
@@ -351,8 +329,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param generation this candidate's generation index.
          * @return builder instance
          */
-        public Builder setGeneration(int generation)
-        {
+        public Builder setGeneration(int generation) {
             addAttribute(ATTR_GENERATION, generation);
             return this;
         }
@@ -363,8 +340,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param id this candidates' unique identifier <code>String</code>
          * @return builder instance
          */
-        public Builder setID(String id)
-        {
+        public Builder setID(String id) {
             addAttribute(ATTR_ID, id);
             return this;
         }
@@ -376,8 +352,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param ip this candidate's IPv4 or IPv6 address.
          * @return builder instance
          */
-        public Builder setIP(String ip)
-        {
+        public Builder setIP(String ip) {
             addAttribute(ATTR_IP, ip);
             return this;
         }
@@ -390,8 +365,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param network the network index indicating the interface that the candidate belongs to.
          * @return builder instance
          */
-        public Builder setNetwork(int network)
-        {
+        public Builder setNetwork(int network) {
             addAttribute(ATTR_NETWORK, network);
             return this;
         }
@@ -402,8 +376,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param port this candidate's port number.
          * @return builder instance
          */
-        public Builder setPort(int port)
-        {
+        public Builder setPort(int port) {
             if (port < 0) {
                 throw new IllegalArgumentException("Port MUST NOT be less than 0.");
             }
@@ -417,8 +390,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param priority this candidate's priority
          * @return builder instance
          */
-        public Builder setPriority(long priority)
-        {
+        public Builder setPriority(long priority) {
             if (priority < 0) {
                 throw new IllegalArgumentException("Priority MUST NOT be less than 0.");
             }
@@ -432,8 +404,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param protocol this candidate's transport protocol.
          * @return builder instance
          */
-        public Builder setProtocol(String protocol)
-        {
+        public Builder setProtocol(String protocol) {
             addAttribute(ATTR_PROTOCOL, protocol);
             return this;
         }
@@ -444,8 +415,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param relAddr this candidate's related address as described by ICE's RFC 5245.
          * @return builder instance
          */
-        public Builder setRelAddr(String relAddr)
-        {
+        public Builder setRelAddr(String relAddr) {
             addAttribute(ATTR_REL_ADDR, relAddr);
             return this;
         }
@@ -456,8 +426,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param relPort this candidate's related port as described by ICE's RFC 5245.
          * @return builder instance
          */
-        public Builder setRelPort(int relPort)
-        {
+        public Builder setRelPort(int relPort) {
             addAttribute(ATTR_REL_PORT, relPort);
             return this;
         }
@@ -471,8 +440,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param type the candidates' type as per ICE's RFC 5245.
          * @return builder instance
          */
-        public Builder setType(CandidateType type)
-        {
+        public Builder setType(CandidateType type) {
             addAttribute(ATTR_TYPE, type.toString());
             return this;
         }
@@ -483,21 +451,18 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
          * @param tcpType TCP Type
          * @return builder instance
          */
-        public Builder setTcpType(String tcpType)
-        {
+        public Builder setTcpType(String tcpType) {
             addAttribute(ATTR_TCPTYPE, tcpType);
             return this;
         }
 
         @Override
-        public IceUdpTransportCandidate build()
-        {
+        public IceUdpTransportCandidate build() {
             return new IceUdpTransportCandidate(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

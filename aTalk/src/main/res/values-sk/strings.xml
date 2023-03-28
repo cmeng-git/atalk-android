@@ -265,7 +265,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">Žiadosť o autorizáciu HTTP</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) autorizácia pre %2$s\n (ID: %3$s).\nPrijali ste túto žiadosť o účet:\n%4$s?\n\nOverte stránku s identifikáciami ID, ak sú k dispozícii</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) autorizácia pre %2$s\nOverovací kód: %3$s\nPrijali ste túto žiadosť o účet:\n%4$s?\n\nOverte stránku s identifikáciami ID, ak sú k dispozícii</string>
 
     <string name="app_authors_fmt">Autori: %1$s</string>
     <string name="app_libraries">aTalk používa nasledujúce knižnice tretích strán: %1$s</string>
@@ -1578,6 +1578,7 @@
     <string name="ask_for_camera_permission_button">Kamera</string>
     <string name="ask_for_contacts_permission_button">Kontakty</string>
     <string name="ask_for_location_permission_button">Poloha</string>
+    <string name="ask_for_notifications_permission_button">Upozornenia</string>
     <string name="ask_for_phone_permission_button">Telefonovanie</string>
     <string name="ask_for_storage_permission_button">Ukladovanie</string>
     <string name="permission_hint">Na podporu všetkých funkcií aTalk sa vyžaduje, aby ste udelili povolenia pre nasledujúce služby. Bez nich nemusia funkcie aTalk fungovať alebo môžu mať neočakávané správanie!</string>
@@ -1591,13 +1592,16 @@
     <string name="audio_permission_denied_feedback">Zvukový hovor nebude k dispozícii, kým nevyhoviete žiadosti o povolenie</string>
 
     <string name="camera_permission_denied_dialog_title">Žiadosť o povolenie kamery</string>
-    <string name="camera_permission_denied_feedback">Povolenie kamery: všetky aktivity súvisiace s kamerou nebudú k dispozícii, kým nevydáte žiadosť o povolenie</string>
+    <string name="camera_permission_denied_feedback">Všetky aktivity súvisiace s kamerou nebudú k dispozícii, kým nevydáte žiadosť o povolenie</string>
 
     <string name="contacts_permission_denied_dialog_title">Žiadosť o povolenie kontaktov</string>
     <string name="contacts_permission_denied_feedback">Na prístup do stavu telefónu a nastavenie hovoru je potrebné povolenie kontaktov</string>
 
     <string name="location_permission_denied_dialog_title">Žiadosť o povolenie polohy</string>
     <string name="location_permission_denied_feedback">Funkcie GPS-Polohy nebudú k dispozícii, kým neudelíte žiadosť o povolenie</string>
+
+    <string name="notifications_permission_denied_dialog_title">Žiadosť o povolenie upozornení</string>
+    <string name="notifications_permission_denied_feedback">Upozornenia z aTalk budú vypnuté, kým neschválite žiadosť o povolenie</string>
 
     <string name="phone_permission_denied_dialog_title">Prečítajte si žiadosť o povolenie štátneho telefónu</string>
     <string name="phone_permission_denied_feedback">Telefónne funkcie nebudú k dispozícii, kým neudelíte žiadosť o povolenie</string>

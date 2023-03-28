@@ -16,8 +16,6 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -28,8 +26,6 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.text.TextUtils;
 import android.util.Size;
 import android.view.Surface;
-
-import androidx.core.content.ContextCompat;
 
 import net.java.sip.communicator.util.UtilActivator;
 
@@ -62,8 +58,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class AndroidCameraSystem extends DeviceSystem
-{
+public class AndroidCameraSystem extends DeviceSystem {
     private static final String VIDEO_SIZE = ".video.size";
     public static final String PREVIEW_FORMAT = ".preview.format";
 
@@ -80,8 +75,7 @@ public class AndroidCameraSystem extends DeviceSystem
      * @throws Exception from super
      */
     public AndroidCameraSystem()
-            throws Exception
-    {
+            throws Exception {
         super(MediaType.VIDEO, LOCATOR_PROTOCOL_ANDROIDCAMERA);
     }
 
@@ -89,12 +83,11 @@ public class AndroidCameraSystem extends DeviceSystem
      * {@inheritDoc}
      */
     @Override
-    protected void doInitialize()
-    {
-        if (isCameraInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
+    protected void doInitialize() {
+        if (isCameraInitialized) {
             return;
         }
+
         // cleanup camera properties messed up by camera1/2 testing during development
         // cleanMediaDB();
 
@@ -243,8 +236,7 @@ public class AndroidCameraSystem extends DeviceSystem
         }
     }
 
-    public static void cleanMediaDB()
-    {
+    public static void cleanMediaDB() {
         String[] prefixes = new String[]{LOCATOR_PROTOCOL_MEDIARECORDER, LOCATOR_PROTOCOL_ANDROIDCAMERA};
 
         ConfigurationService cs = UtilActivator.getConfigurationService();

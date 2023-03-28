@@ -16,7 +16,6 @@
  */
 package org.atalk.impl.androidupdate;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
@@ -30,14 +29,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.core.content.ContextCompat;
-
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
@@ -159,8 +157,7 @@ public class UpdateServiceImpl implements UpdateService
                             @Override
                             public boolean onConfirmClicked(DialogActivity dialog)
                             {
-                                if (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                if (aTalk.hasWriteStoragePermission(aTalk.getInstance(), true)) {
                                     if (checkLastDLFileAction() >= DownloadManager.ERROR_UNKNOWN) {
                                         downloadApk();
                                     }

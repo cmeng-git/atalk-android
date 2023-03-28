@@ -1154,7 +1154,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     // Remove deleted message from ChatPanel#msgCache
                     chatPanel.updateCacheMessage(msgUuid, null);
 
-                    // Remove deleted message from display messages; merged messages may return null.
+                    // Remove deleted message from display messages UI; merged messages may return null.
                     // Merged messages view is deleted using the root msgUuid.
                     Integer row = msgUuid2Idx.get(msgUuid);
                     if (row != null) {
@@ -1162,7 +1162,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         msgUuid2Idx.remove(msgUuid);
                     }
                     else {
-                        Timber.e("undelete message: %s => %s", idx, msgUuid);
+                        Timber.e("No message for delete: %s => %s", idx, msgUuid);
                     }
                 }
                 // Timber.d("Clear Message: %s => %s (%s)", msgSize, messages.size(), deletedUUIDs.size());

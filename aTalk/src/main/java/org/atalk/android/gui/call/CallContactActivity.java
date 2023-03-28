@@ -6,12 +6,14 @@
 package org.atalk.android.gui.call;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 
-import org.atalk.service.osgi.OSGiActivity;
+import androidx.annotation.NonNull;
 
-import androidx.fragment.app.Fragment;
+import org.atalk.android.gui.aTalk;
+import org.atalk.service.osgi.OSGiActivity;
 
 /**
  * Tha <code>CallContactActivity</code> can be used to call contact. The phone number can be filled
@@ -20,8 +22,9 @@ import androidx.fragment.app.Fragment;
  * @author Yana Stamcheva
  * @author Pawel Domas
  */
-public class CallContactActivity extends OSGiActivity
-{
+public class CallContactActivity extends OSGiActivity {
+    protected CallContactFragment ccFragment;
+
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
      *
@@ -30,8 +33,7 @@ public class CallContactActivity extends OSGiActivity
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // There's no need to create fragment if the Activity is being restored.
@@ -41,8 +43,21 @@ public class CallContactActivity extends OSGiActivity
             Intent intent = getIntent();
             if (intent.getDataString() != null)
                 phoneNumber = PhoneNumberUtils.getNumberFromIntent(intent, this);
-            Fragment ccFragment = CallContactFragment.newInstance(phoneNumber);
+            ccFragment = CallContactFragment.newInstance(phoneNumber);
             getSupportFragmentManager().beginTransaction().add(android.R.id.content, ccFragment).commit();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // If request is canceled, the result arrays are empty.
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == aTalk.PRC_GET_CONTACTS) {
+            if ((grantResults.length > 0)
+                    && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // permission granted, so proceed
+                ccFragment.initAndroidAccounts();
+            }
         }
     }
 }

@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents the <code>payload-type</code> elements described.
@@ -28,8 +28,7 @@ import javax.xml.namespace.QName;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
  */
-public class PayloadType extends AbstractXmlElement
-{
+public class PayloadType extends AbstractXmlElement {
     /**
      * The name of the "payload-type" element.
      */
@@ -75,13 +74,11 @@ public class PayloadType extends AbstractXmlElement
      * PayloadType is currently a child element of standard RtpDescription;
      * // @see org.jivesoftware.smackx.colibri.ColibriConferenceIQ
      */
-    public PayloadType()
-    {
+    public PayloadType() {
         super(builder(RtpDescription.NAMESPACE));
     }
 
-    public PayloadType(Builder builder)
-    {
+    public PayloadType(Builder builder) {
         super(builder);
     }
 
@@ -90,8 +87,7 @@ public class PayloadType extends AbstractXmlElement
      *
      * @return the number of channels in this payload type.
      */
-    public int getChannels()
-    {
+    public int getChannels() {
         /*
          * XEP-0167: Jingle RTP Sessions says: if omitted, it MUST be assumed to contain one channel.
          */
@@ -104,8 +100,7 @@ public class PayloadType extends AbstractXmlElement
      *
      * @return the sampling frequency in Hertz used by this encoding.
      */
-    public int getClockrate()
-    {
+    public int getClockrate() {
         return getAttributeAsInt(ATTR_CLOCKRATE);
     }
 
@@ -114,8 +109,7 @@ public class PayloadType extends AbstractXmlElement
      *
      * @return the payload identifier for this encoding (as specified by RFC 3551 or a dynamic one).
      */
-    public int getID()
-    {
+    public int getID() {
         return getAttributeAsInt(ATTR_ID);
     }
 
@@ -124,8 +118,7 @@ public class PayloadType extends AbstractXmlElement
      *
      * @return maximum packet time as specified in RFC 4566
      */
-    public int getMaxptime()
-    {
+    public int getMaxptime() {
         return getAttributeAsInt(ATTR_MAXPTIME);
     }
 
@@ -134,8 +127,7 @@ public class PayloadType extends AbstractXmlElement
      *
      * @return packet time as specified in RFC 4566
      */
-    public int getPtime()
-    {
+    public int getPtime() {
         return getAttributeAsInt(ATTR_PTIME);
     }
 
@@ -146,8 +138,7 @@ public class PayloadType extends AbstractXmlElement
      * @return the name of the encoding, or as per the XEP: the appropriate subtype of the MIME
      * type. Setting this field is RECOMMENDED for static payload types, REQUIRED for dynamic payload types.
      */
-    public String getName()
-    {
+    public String getName() {
         return getAttributeValue(ATTR_NAME);
     }
 
@@ -158,13 +149,11 @@ public class PayloadType extends AbstractXmlElement
      *
      * @param channels the number of channels in this payload type.
      */
-    public void setChannels(int channels)
-    {
+    public void setChannels(int channels) {
         setAttribute(ATTR_CHANNELS, channels);
     }
 
-    public static Builder builder(String nameSpace)
-    {
+    public static Builder builder(String nameSpace) {
         return new Builder(ELEMENT, nameSpace);
     }
 
@@ -172,10 +161,8 @@ public class PayloadType extends AbstractXmlElement
      * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the JingleContentTransport.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, PayloadType>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, PayloadType> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -185,8 +172,7 @@ public class PayloadType extends AbstractXmlElement
          * @param channels the number of channels in this payload type.
          * @return builder instance
          */
-        public Builder setChannels(int channels)
-        {
+        public Builder setChannels(int channels) {
             addAttribute(ATTR_CHANNELS, channels);
             return this;
         }
@@ -197,8 +183,7 @@ public class PayloadType extends AbstractXmlElement
          * @param clockrate the sampling frequency in Hertz used by this encoding.
          * @return builder instance
          */
-        public Builder setClockrate(int clockrate)
-        {
+        public Builder setClockrate(int clockrate) {
             addAttribute(ATTR_CLOCKRATE, clockrate);
             return this;
         }
@@ -209,8 +194,7 @@ public class PayloadType extends AbstractXmlElement
          * @param id the payload type id
          * @return builder instance
          */
-        public Builder setId(int id)
-        {
+        public Builder setId(int id) {
             addAttribute(ATTR_ID, id);
             return this;
         }
@@ -221,8 +205,7 @@ public class PayloadType extends AbstractXmlElement
          * @param maxptime the maximum packet time as specified in RFC 4566
          * @return builder instance
          */
-        public Builder setMaxptime(int maxptime)
-        {
+        public Builder setMaxptime(int maxptime) {
             addAttribute(ATTR_MAXPTIME, maxptime);
             return this;
         }
@@ -233,8 +216,7 @@ public class PayloadType extends AbstractXmlElement
          * @param ptime the packet time as specified in RFC 4566
          * @return builder instance
          */
-        public Builder setPtime(int ptime)
-        {
+        public Builder setPtime(int ptime) {
             addAttribute(ATTR_PTIME, ptime);
             return this;
         }
@@ -246,8 +228,7 @@ public class PayloadType extends AbstractXmlElement
          * @param name the name of this encoding.
          * @return builder instance
          */
-        public Builder setName(String name)
-        {
+        public Builder setName(String name) {
             addAttribute(ATTR_NAME, name);
             return this;
         }
@@ -258,8 +239,7 @@ public class PayloadType extends AbstractXmlElement
          * @param parameter an SDP parameter for this encoding.
          * @return builder instance
          */
-        public Builder addParameter(ParameterElement parameter)
-        {
+        public Builder addParameter(ParameterElement parameter) {
             // parameters are the only extensions we can have so let's use super's list.
             addChildElement(parameter);
             return this;
@@ -271,21 +251,18 @@ public class PayloadType extends AbstractXmlElement
          * @param rtcpFbPacketExtension RTCP feedback type for this encoding.
          * @return builder instance
          */
-        public Builder addRtcpFeedbackType(RtcpFb rtcpFbPacketExtension)
-        {
+        public Builder addRtcpFeedbackType(RtcpFb rtcpFbPacketExtension) {
             addChildElement(rtcpFbPacketExtension);
             return this;
         }
 
         @Override
-        public PayloadType build()
-        {
+        public PayloadType build() {
             return new PayloadType(this);
         }
 
         @Override
-        protected PayloadType.Builder getThis()
-        {
+        protected PayloadType.Builder getThis() {
             return this;
         }
     }

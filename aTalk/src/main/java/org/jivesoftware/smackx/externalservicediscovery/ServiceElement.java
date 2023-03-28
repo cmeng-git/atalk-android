@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents the <code>service</code> elements described in the following XEPs.
@@ -27,8 +27,7 @@ import javax.xml.namespace.QName;
  * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0215.html">XEP-0215: External Service Discovery</a>
  */
-public class ServiceElement extends AbstractXmlElement
-{
+public class ServiceElement extends AbstractXmlElement {
     /**
      * The name of the ServiceElement.
      */
@@ -58,8 +57,7 @@ public class ServiceElement extends AbstractXmlElement
      *
      * @see #getBuilder(String)
      */
-    public ServiceElement()
-    {
+    public ServiceElement() {
         super(builder(ExternalServices.NAMESPACE));
     }
 
@@ -68,63 +66,51 @@ public class ServiceElement extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public ServiceElement(Builder builder)
-    {
+    public ServiceElement(Builder builder) {
         super(builder);
     }
 
-    public String getAction()
-    {
+    public String getAction() {
         return getAttributeValue(ATTR_ACTION);
     }
 
-    public String getExpires()
-    {
+    public String getExpires() {
         return getAttributeValue(ATTR_EXPIRES);
     }
 
-    public String getHost()
-    {
+    public String getHost() {
         return getAttributeValue(ATTR_HOST);
     }
 
-    public String getName()
-    {
+    public String getName() {
         return getAttributeValue(ATTR_NAME);
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return getAttributeValue(ATTR_PASSWORD);
     }
 
-    public int getPort()
-    {
+    public int getPort() {
         return getAttributeAsInt(ATTR_PORT);
     }
 
-    public String getRestricted()
-    {
+    public String getRestricted() {
         return getAttributeValue(ATTR_RESTRICTED);
     }
 
-    public String getTransport()
-    {
+    public String getTransport() {
         return getAttributeValue(ATTR_TRANSPORT);
     }
 
-    public String getType()
-    {
+    public String getType() {
         return getAttributeValue(ATTR_TYPE);
     }
 
-    public String getUserName()
-    {
+    public String getUserName() {
         return getAttributeValue(ATTR_USERNAME);
     }
 
-    public static Builder builder(String nameSpace)
-    {
+    public static Builder builder(String nameSpace) {
         return new Builder(ELEMENT, nameSpace);
     }
 
@@ -134,15 +120,12 @@ public class ServiceElement extends AbstractXmlElement
      * @param oElement the other ServerElement to compare to
      * @return true if this ServerElement and the one given have relevant matching attributes.
      */
-    public boolean serviceEquals(ServiceElement oElement)
-    {
+    public boolean serviceEquals(ServiceElement oElement) {
         if (oElement == null) {
             return false;
-        }
-        else if (oElement == this) {
+        } else if (oElement == this) {
             return true;
-        }
-        else {
+        } else {
             return this.getHost().equals(oElement.getHost())
                     && this.getPort() == oElement.getPort()
                     && this.getTransport().equals(oElement.getTransport())
@@ -154,82 +137,68 @@ public class ServiceElement extends AbstractXmlElement
      * Builder for ServiceElement. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the ServiceElement.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, ServiceElement>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, ServiceElement> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
-        public Builder setAction(String action)
-        {
+        public Builder setAction(String action) {
             addAttribute(ATTR_HOST, action);
             return this;
         }
 
-        public Builder setExpires(String expires)
-        {
+        public Builder setExpires(String expires) {
             addAttribute(ATTR_HOST, expires);
             return this;
         }
 
-        public Builder setHost(String host)
-        {
+        public Builder setHost(String host) {
             addAttribute(ATTR_HOST, host);
             return this;
         }
 
-        public Builder setName(String name)
-        {
+        public Builder setName(String name) {
             addAttribute(ATTR_NAME, name);
             return this;
         }
 
-        public Builder setPassword(String password)
-        {
+        public Builder setPassword(String password) {
             addAttribute(ATTR_PASSWORD, password);
             return this;
         }
 
-        public Builder setPort(String port)
-        {
+        public Builder setPort(String port) {
             addAttribute(ATTR_NAME, port);
             return this;
         }
 
-        public Builder setRestricted(String restricted)
-        {
+        public Builder setRestricted(String restricted) {
             addAttribute(ATTR_TRANSPORT, restricted);
             return this;
         }
 
-        public Builder setTransport(String transport)
-        {
+        public Builder setTransport(String transport) {
             addAttribute(ATTR_TRANSPORT, transport);
             return this;
         }
 
-        public Builder setType(String type)
-        {
+        public Builder setType(String type) {
             addAttribute(ATTR_TYPE, type);
             return this;
         }
 
-        public Builder setUserName(String username)
-        {
+        public Builder setUserName(String username) {
             addAttribute(ATTR_USERNAME, username);
             return this;
         }
 
         @Override
-        public ServiceElement build()
-        {
+        public ServiceElement build() {
             return new ServiceElement(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

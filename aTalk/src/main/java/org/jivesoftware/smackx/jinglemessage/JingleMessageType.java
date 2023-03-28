@@ -25,27 +25,23 @@ import androidx.annotation.NonNull;
  * @author Eng Chong Meng
  */
 
-public enum JingleMessageType
-{
+public enum JingleMessageType {
     accept,
     proceed,
     propose,
     reject,
     retract;
 
-    JingleMessageType()
-    {
+    JingleMessageType() {
     }
 
     @NonNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name();
     }
 
-    public static JingleMessageType fromString(String name)
-    {
+    public static JingleMessageType fromString(String name) {
         for (JingleMessageType t : JingleMessageType.values()) {
             if (t.toString().equals(name)) {
                 return t;

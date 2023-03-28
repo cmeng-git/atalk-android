@@ -16,37 +16,32 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smack.packet.IQ;
-
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * The ExternalServiceDiscovery IQ is used retrieve server stun/turn service support from the registered xmpp server.
  *
  * @author Eng Chong Meng
  */
-public class ExternalServiceDiscovery extends IQ
-{
+public class ExternalServiceDiscovery extends IQ {
     private ExternalServices mExternalServices;
 
-    public ExternalServiceDiscovery()
-    {
+    public ExternalServiceDiscovery() {
         super(ExternalServices.ELEMENT, ExternalServices.NAMESPACE);
     }
 
-    public void setServices(ExternalServices externalServices)
-    {
+    public void setServices(ExternalServices externalServices) {
         mExternalServices = externalServices;
         addExtensions(externalServices.getServices());
     }
 
-    public ExternalServices getExternalServices()
-    {
+    public ExternalServices getExternalServices() {
         return mExternalServices;
     }
 
-    public List<ServiceElement> getServices()
-    {
+    public List<ServiceElement> getServices() {
         return super.getExtensions(ServiceElement.class);
     }
 
@@ -54,8 +49,7 @@ public class ExternalServiceDiscovery extends IQ
      * /** {@inheritDoc}
      */
     @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml)
-    {
+    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.setEmptyElement();
         return xml;
     }

@@ -266,7 +266,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP Authorization Request</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Authorization for %2$s\n(ID: %3$s).\nDo you accept this request for account:\n%4$s?\n\nVerify given ID matches site if available</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Authorization for %2$s\nValidation code: %3$s\nDo you accept this request for account:\n%4$s?\n\nVerify given ID matches site if available</string>
 
     <string name="app_authors_fmt">Authors: %1$s</string>
     <string name="app_libraries">aTalk uses the following third-party libraries: %1$s</string>
@@ -1582,6 +1582,7 @@
     <string name="ask_for_camera_permission_button">Camera</string>
     <string name="ask_for_contacts_permission_button">Contacts</string>
     <string name="ask_for_location_permission_button">Location</string>
+    <string name="ask_for_notifications_permission_button">Notifications</string>
     <string name="ask_for_phone_permission_button">Phone</string>
     <string name="ask_for_storage_permission_button">Storage</string>
     <string name="permission_hint">For application maximum performance and full features support, aTalk requires you to grant permissions for the following services. Without them, aTalk may not work or may have unexpected behavior!</string>
@@ -1595,13 +1596,16 @@
     <string name="audio_permission_denied_feedback">Audio call will not be available until you grant the permission request</string>
 
     <string name="camera_permission_denied_dialog_title">Camera permission request</string>
-    <string name="camera_permission_denied_feedback">Camera permission: all camera associated activities will not be available until you grant the permission request</string>
+    <string name="camera_permission_denied_feedback">All camera associated activities will not be available until you grant the permission request</string>
 
     <string name="contacts_permission_denied_dialog_title">Contacts permission request</string>
     <string name="contacts_permission_denied_feedback">Contacts permission is needed for phone state access and call setup</string>
 
     <string name="location_permission_denied_dialog_title">Location permission request</string>
     <string name="location_permission_denied_feedback">GPS-Location features will not be available until you grant the permission request</string>
+
+    <string name="notifications_permission_denied_dialog_title">Notifications permission request</string>
+    <string name="notifications_permission_denied_feedback">Notifications from aTalk will be disabled until you grant the permission request</string>
 
     <string name="phone_permission_denied_dialog_title">Read Phone State permission request</string>
     <string name="phone_permission_denied_feedback">Phone features will not be available until you grant the permission request</string>

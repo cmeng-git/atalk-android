@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
-import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

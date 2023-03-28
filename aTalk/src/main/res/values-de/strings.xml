@@ -264,7 +264,7 @@
 
     <!-- HTTP Authorization Request Dialog -->
     <string name="service_gui_HTTP_REQUEST_TITLE">HTTP-Autorisierungsanforderung</string>
-    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Autorisierung für %2$s\n(ID: %3$s).\nNehmen Sie diese Kontoanforderung an:\n%4$s?\n\nGegebene ID auf Website überprüfen, falls verfügbar</string>
+    <string name="service_gui_HTTP_REQUEST_INSTRUCTION">HTTP (%1$s) Autorisierung für %2$s\nValidierungscode: %3$s\nNehmen Sie diese Kontoanforderung an:\n%4$s?\n\nGegebene ID auf Website überprüfen, falls verfügbar</string>
 
     <string name="app_authors_fmt">Autor: %1$s</string>
     <string name="app_libraries">aTalk benutzt folgende Bibliotheken von Drittanbietern: %1$s</string>
@@ -1552,6 +1552,7 @@
     <string name="ask_for_camera_permission_button">Kamera</string>
     <string name="ask_for_contacts_permission_button">Kontakte</string>
     <string name="ask_for_location_permission_button">Standort</string>
+    <string name="ask_for_notifications_permission_button">Benachrichtigungen</string>
     <string name="ask_for_phone_permission_button">Telefon</string>
     <string name="ask_for_storage_permission_button">Speicher</string>
     <string name="permission_hint">Für das maximale Ausnutzen aller Anwendungsfunktionalitäten müsst du in aTalk Berechtigungen für die folgenden Dienste erteilen. Ohne sie funktioniert aTalk möglicherweise nicht oder verhält sich unsachgemäß.</string>
@@ -1565,13 +1566,16 @@
     <string name="audio_permission_denied_feedback">Audioanrufe sind erst verfügbar, wenn du die Berechtigungsanforderung erteilst</string>
 
     <string name="camera_permission_denied_dialog_title">Kameraerlaubnisanforderung</string>
-    <string name="camera_permission_denied_feedback">Kamera-Berechtigung: Alle mit der Kamera verbundenen Aktivitäten sind erst verfügbar, wenn Sie die Berechtigungsanforderung erteilen</string>
+    <string name="camera_permission_denied_feedback">Alle mit der Kamera verbundenen Aktivitäten sind erst verfügbar, wenn Sie die Berechtigungsanforderung erteilen</string>
 
     <string name="contacts_permission_denied_dialog_title">Kontaktberechtigungsanforderung</string>
     <string name="contacts_permission_denied_feedback">Die Zugriffsrechte für Kontakte sind für den Zugriff auf den Telefonstatus und die Anrufkonfiguration erforderlich</string>
 
     <string name="location_permission_denied_dialog_title">Standortberechtigungsanforderung</string>
     <string name="location_permission_denied_feedback">GPS-Ortungsfunktionen sind erst verfügbar, wenn du die Berechtigung erteilt hast.</string>
+
+    <string name="notifications_permission_denied_dialog_title">Berechtigungsanfrage für Benachrichtigungen</string>
+    <string name="notifications_permission_denied_feedback">Benachrichtigungen von aTalk werden deaktiviert, bis Sie die Erlaubnisanfrage erteilen</string>
 
     <string name="phone_permission_denied_dialog_title">Leseberechtigung für Telefonstatus</string>
     <string name="phone_permission_denied_feedback">Telefonfunktionen sind erst verfügbar, wenn du die Berechtigung erteilt hast.</string>

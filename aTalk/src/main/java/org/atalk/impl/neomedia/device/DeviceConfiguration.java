@@ -311,7 +311,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
         for (MediaType mediaType : MediaType.values()) {
             DeviceSystem[] deviceSystems = DeviceSystem.getDeviceSystems(mediaType);
 
-            if (deviceSystems != null) {
+            if (deviceSystems.length != 0) {
                 for (DeviceSystem deviceSystem : deviceSystems) {
                     // It only makes sense to track DeviceSystems which support reinitialization/reloading.
                     if ((deviceSystem.getFeatures() & DeviceSystem.FEATURE_REINITIALIZE) != 0) {

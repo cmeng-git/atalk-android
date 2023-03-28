@@ -16,6 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -25,11 +30,6 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.AbstractExtensionElement;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A provider that parses incoming stanza extensions into instances of the {@link Class} that it has
  * been instantiated for.
@@ -38,8 +38,7 @@ import java.util.logging.Logger;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends ExtensionElementProvider<EE>
-{
+public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends ExtensionElementProvider<EE> {
     /**
      * The {@link Class} that the stanza we will be parsing here belong to.
      */
@@ -55,14 +54,12 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      * @param c the {@link Class} that the stanza we will be parsing belong to.
      * @param nameSpace stanzas builder with the modified nameSpace
      */
-    public DefaultXmlElementProvider(Class<EE> c, String nameSpace)
-    {
+    public DefaultXmlElementProvider(Class<EE> c, String nameSpace) {
         stanzaClass = c;
         this.nameSpace = nameSpace;
     }
 
-    public DefaultXmlElementProvider(Class<EE> c)
-    {
+    public DefaultXmlElementProvider(Class<EE> c) {
         stanzaClass = c;
         nameSpace = null;
     }
@@ -74,12 +71,13 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      *
      * @param parser an XML parser positioned at the stanza's starting element.
      * @return a new stanza extension instance.
-     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
+     * @throws IOException if an error occurs in IO.
+     * @throws XmlPullParserException if an error occurs pull parsing the XML.
+     * @throws SmackParsingException if an error occurs parsing the XML.
      */
     @Override
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.getDeclaredConstructor().newInstance();
@@ -108,14 +106,13 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     // Extension element provider may not have been added properly if null
                     if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
                         LOGGER.log(Level.WARNING, "No provider for EE<" + name + " " + namespace + "/>");
-                    }
-                    else {
+                    } else {
                         ExtensionElement childExtension = provider.parse(parser);
                         if (childExtension instanceof AbstractXmlElement || childExtension instanceof AbstractExtensionElement) {
                             mBuilder.addChildElement(childExtension);
-                        }
-                        else
+                        } else
                             LOGGER.log(Level.INFO, "Invalid Abstract Element: " + childExtension.getQName());
+
                     }
                     break;
 

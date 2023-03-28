@@ -9,8 +9,8 @@ import androidx.annotation.NonNull;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
-import org.atalk.util.OSUtils;
 import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.io.IOException;
@@ -42,8 +42,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class DeviceSystem extends PropertyChangeNotifier
-{
+public abstract class DeviceSystem extends PropertyChangeNotifier {
     /**
      * The list of <code>DeviceSystem</code>s which have been initialized.
      */
@@ -88,12 +87,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * specified <code>MediaLocator</code> protocol
      * @param locatorProtocol the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s
      * which are to be returned
+     *
      * @return a <code>List</code> of <code>CaptureDeviceInfo</code>s which are elements of the specified
      * <code>deviceList</code> and have the specified <code>locatorProtocol</code>
      */
     protected static List<CaptureDeviceInfo> filterDeviceListByLocatorProtocol(
-            List<CaptureDeviceInfo> deviceList, String locatorProtocol)
-    {
+            List<CaptureDeviceInfo> deviceList, String locatorProtocol) {
         if ((deviceList != null) && (deviceList.size() > 0)) {
             Iterator<CaptureDeviceInfo> deviceListIter = deviceList.iterator();
 
@@ -108,8 +107,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
         return deviceList;
     }
 
-    public static DeviceSystem[] getDeviceSystems(MediaType mediaType)
-    {
+    public static DeviceSystem[] getDeviceSystems(MediaType mediaType) {
         List<DeviceSystem> ret;
         synchronized (deviceSystems) {
             ret = new ArrayList<>(deviceSystems.size());
@@ -129,8 +127,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * of flags from its {@link #getFeatures()} method which contains the constant/flag
      * {@link #FEATURE_REINITIALIZE}.
      */
-    public static void initializeDeviceSystems()
-    {
+    public static void initializeDeviceSystems() {
         /*
          * Detect the audio capture devices unless the configuration explicitly states that they are
          * to not be detected.
@@ -157,8 +154,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      *
      * @param mediaType the <code>MediaType</code> of the <code>DeviceSystem</code>s to be initialized
      */
-    public static void initializeDeviceSystems(MediaType mediaType)
-    {
+    public static void initializeDeviceSystems(MediaType mediaType) {
         /*
          * The list of supported DeviceSystem implementations if hard-coded. The order of the
          * classes is significant and represents a decreasing preference with respect to which
@@ -174,16 +170,18 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
                         (OSUtils.IS_LINUX || OSUtils.IS_FREEBSD) ? ".PulseAudioSystem" : null,
                         OSUtils.IS_WINDOWS ? ".WASAPISystem" : null,
                         OSUtils.IS_MAC ? ".MacCoreaudioSystem" : null,
-                        OSUtils.IS_ANDROID ? null : ".PortAudioSystem", ".AudioSilenceSystem", ".NoneAudioSystem"};
+                        OSUtils.IS_ANDROID ? null : ".PortAudioSystem", ".AudioSilenceSystem",
+                        ".NoneAudioSystem"};
                 break;
             case VIDEO:
                 classNames = new String[]{
                         // MediaRecorderSystem not working for API-23; so remove the support
                         // OSUtils.IS_ANDROID ? ".MediaRecorderSystem" : null,
-                        OSUtils.IS_ANDROID ? ".AndroidCameraSystem" : null,
+                        (OSUtils.IS_ANDROID) ? ".AndroidCameraSystem" : null,
                         (OSUtils.IS_LINUX || OSUtils.IS_FREEBSD) ? ".Video4Linux2System" : null,
                         OSUtils.IS_MAC ? ".QuickTimeSystem" : null,
-                        OSUtils.IS_WINDOWS ? ".DirectShowSystem" : null, ".ImgStreamingSystem"};
+                        OSUtils.IS_WINDOWS ? ".DirectShowSystem" : null,
+                        ".ImgStreamingSystem"};
                 break;
             default:
                 throw new IllegalArgumentException("mediaType");
@@ -202,8 +200,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @param classNames the names of the classes which extend the <code>DeviceSystem</code> class
      * and instances of which are to be initialized.
      */
-    private static void initializeDeviceSystems(String[] classNames)
-    {
+    private static void initializeDeviceSystems(String[] classNames) {
         synchronized (deviceSystems) {
             String packageName = null;
 
@@ -282,12 +279,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * the invocation returns.
      *
      * @param deviceSystem the <code>DeviceSystem</code> to invoke <code>initialize()</code> on
+     *
      * @throws Exception if an error occurs during the initialization of <code>initialize()</code> on the
      * specified <code>deviceSystem</code>
      */
     static void invokeDeviceSystemInitialize(DeviceSystem deviceSystem)
-            throws Exception
-    {
+            throws Exception {
         invokeDeviceSystemInitialize(deviceSystem, false);
     }
 
@@ -297,12 +294,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @param deviceSystem the <code>DeviceSystem</code> to invoke <code>initialize()</code> on
      * @param asynchronous <code>true</code> if the invocation is to be performed in a separate thread and the method
      * is to return immediately without waiting for the invocation to return; otherwise, <code>false</code>
+     *
      * @throws Exception if an error occurs during the initialization of <code>initialize()</code> on the
      * specified <code>deviceSystem</code>
      */
     private static void invokeDeviceSystemInitialize(final DeviceSystem deviceSystem, boolean asynchronous)
-            throws Exception
-    {
+            throws Exception {
         if (OSUtils.IS_WINDOWS || asynchronous) {
             /*
              * The use of Component Object Model (COM) technology is common on Windows. The
@@ -313,11 +310,9 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
 
             final String className = deviceSystem.getClass().getName();
             final Throwable[] exception = new Throwable[1];
-            Thread thread = new Thread(className + ".initialize()")
-            {
+            Thread thread = new Thread(className + ".initialize()") {
                 @Override
-                public void run()
-                {
+                public void run() {
                     try {
                         Timber.log(TimberLog.FINER, "Will initialize %s", className);
                         deviceSystem.initialize();
@@ -387,14 +382,12 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
     private final MediaType mediaType;
 
     protected DeviceSystem(MediaType mediaType, String locatorProtocol)
-            throws Exception
-    {
+            throws Exception {
         this(mediaType, locatorProtocol, 0);
     }
 
     protected DeviceSystem(MediaType mediaType, String locatorProtocol, int features)
-            throws Exception
-    {
+            throws Exception {
         if (mediaType == null)
             throw new NullPointerException("mediaType");
         if (locatorProtocol == null)
@@ -413,8 +406,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @return a new <code>Renderer</code> instance which is to perform playback on a device contributed
      * by this system or <code>null</code>
      */
-    public Renderer createRenderer()
-    {
+    public Renderer createRenderer() {
         String className = getRendererClassName();
         if (className != null) {
             try {
@@ -450,8 +442,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * The possible flags are among the <code>FEATURE_XXX</code> constants defined by the
      * <code>DeviceSystem</code> class and its extenders.
      */
-    public final int getFeatures()
-    {
+    public final int getFeatures() {
         return features;
     }
 
@@ -462,8 +453,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @return The format depending on the media type: AudioFormat for AUDIO, VideoFormat for VIDEO.
      * Otherwise, returns null.
      */
-    public Format getFormat()
-    {
+    public Format getFormat() {
         Format format;
         switch (getMediaType()) {
             case AUDIO:
@@ -487,13 +477,11 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @return the protocol of the <code>MediaLocator</code>s of the <code>CaptureDeviceInfo</code>s (to be)
      * registered (with FMJ) by this <code>DeviceSystem</code>
      */
-    public final String getLocatorProtocol()
-    {
+    public final String getLocatorProtocol() {
         return locatorProtocol;
     }
 
-    public final MediaType getMediaType()
-    {
+    public final MediaType getMediaType() {
         return mediaType;
     }
 
@@ -507,8 +495,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * or <code>null</code> if no <code>Renderer</code> instance is to be created by the
      * <code>DeviceSystem</code> implementation or <code>createRenderer(boolean) is overridden.
      */
-    protected String getRendererClassName()
-    {
+    protected String getRendererClassName() {
         return null;
     }
 
@@ -524,8 +511,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * @throws Exception if an error occurs during the initialization of this <code>DeviceSystem</code>
      */
     protected final synchronized void initialize()
-            throws Exception
-    {
+            throws Exception {
         preInitialize();
         try {
             doInitialize();
@@ -542,8 +528,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * that the list of devices detected by this instance may have changed.
      */
     protected void postInitialize()
-            throws Exception
-    {
+            throws Exception {
         try {
             Format format = getFormat();
             if (format != null) {
@@ -582,8 +567,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      * the same protocol as {@link #getLocatorProtocol()} of this instance.
      */
     protected void preInitialize()
-            throws Exception
-    {
+            throws Exception {
         Format format = getFormat();
         if (format != null) {
             @SuppressWarnings("unchecked")
@@ -620,8 +604,7 @@ public abstract class DeviceSystem extends PropertyChangeNotifier
      */
     @NonNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getLocatorProtocol();
     }
 }

@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  *
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
- * The <description/> element MAY contain a <rtcp-mux/> element that specifies the ability to multiplex
+ * The <code>description</code> element MAY contain a <code>rtcp-mux</code> element that specifies the ability to multiplex
  * RTP Data and Control Packets on a single port as described in RFC 5761 [13].
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5761#section-5">RFC5761 § 5.  Multiplexing RTP and RTCP on a Single Port</a>
@@ -31,8 +31,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class RtcpMux extends AbstractXmlElement
-{
+public class RtcpMux extends AbstractXmlElement {
     /**
      * The name of the "encryption" element.
      */
@@ -44,8 +43,7 @@ public class RtcpMux extends AbstractXmlElement
      *
      * @see #getBuilder(String)
      */
-    public RtcpMux()
-    {
+    public RtcpMux() {
         super(builder(RtpDescription.NAMESPACE));
     }
 
@@ -54,13 +52,11 @@ public class RtcpMux extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public RtcpMux(Builder builder)
-    {
+    public RtcpMux(Builder builder) {
         super(builder);
     }
 
-    public static Builder builder(String nameSpace)
-    {
+    public static Builder builder(String nameSpace) {
         return new Builder(ELEMENT, nameSpace);
     }
 
@@ -68,23 +64,19 @@ public class RtcpMux extends AbstractXmlElement
      * Builder for RtcpMux. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RtcpMux.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtcpMux>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, RtcpMux> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
 
         @Override
-        public RtcpMux build()
-        {
+        public RtcpMux build() {
             return new RtcpMux(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

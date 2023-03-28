@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -24,17 +26,13 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
 
-import java.io.IOException;
-
 /**
  * The <code>IQProvider</code> for {@link ExternalServiceDiscovery}.
  *
  * @author Eng Chong Meng
  */
-public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalServiceDiscovery>
-{
-    public ExternalServiceDiscoveryProvider()
-    {
+public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalServiceDiscovery> {
+    public ExternalServiceDiscoveryProvider() {
         ProviderManager.addExtensionProvider(
                 ExternalServices.ELEMENT, ExternalServices.NAMESPACE,
                 new DefaultXmlElementProvider<>(ExternalServices.class));
@@ -51,8 +49,7 @@ public class ExternalServiceDiscoveryProvider extends IQProvider<ExternalService
      */
     @Override
     public ExternalServiceDiscovery parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         ExternalServiceDiscovery iqESD = null;
 
         if (ExternalServices.ELEMENT.equals(parser.getName()) && ExternalServices.NAMESPACE.equals(parser.getNamespace())) {

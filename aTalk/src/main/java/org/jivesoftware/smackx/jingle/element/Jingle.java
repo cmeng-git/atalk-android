@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqBuilder;
@@ -24,11 +28,8 @@ import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
-import org.jxmpp.jid.FullJid;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.jxmpp.jid.FullJid;
 
 /**
  * The Jingle element.
@@ -219,7 +220,7 @@ public final class Jingle extends IQ {
 
     /**
      * Add <code>contentPacket</code> to this Jingle IQ's content list. Use to build up the full Jingle stanza that has
-     * both the <description/> and <transport/> elements before the actual processing of the Jingle
+     * both the <code>description</code> and <code>transport</code> elements before the actual processing of the Jingle
      * <code>session_initiate</code> or <code>session-accept</code>.
      *
      * @param content the content packet extension we'd like to add to this element's content list.

@@ -51,6 +51,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.call.notification.CallNotificationManager;
 import org.atalk.android.gui.share.Attachment;
@@ -178,8 +179,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     public ChatController(Activity activity, ChatFragment fragment) {
         parent = activity;
         this.chatFragment = fragment;
-        isAudioAllowed = ContextCompat.checkSelfPermission(parent,
-                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        // Do not use aTalk.getInstance, may not have initialized
+        isAudioAllowed = aTalk.hasPermission(parent, false,
+                aTalk.PRC_RECORD_AUDIO, Manifest.permission.RECORD_AUDIO);
     }
 
     /**
@@ -229,7 +231,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 audioBtn.setOnClickListener(this);
                 audioBtn.setOnLongClickListener(this);
                 audioBtn.setOnTouchListener(this);
-            } else {
+            }
+            else {
                 Timber.w("Audio recording is not allowed - permission denied!");
             }
 
@@ -440,7 +443,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             quotedMessage = aTalkApp.getResString(R.string.service_gui_CHAT_REPLY,
                     replyMessage.getSender(), body);
             chatMessageReply.setText(Html.fromHtml(quotedMessage, imageGetter, null));
-        } else {
+        }
+        else {
             quotedMessage = null;
             chatMessageReply.setVisibility(View.GONE);
             chatReplyCancel.setVisibility(View.GONE);
@@ -467,7 +471,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                                     if (StringUtils.isNotEmpty(filePath)) {
                                         if (new File(filePath).exists()) {
                                             chatPanel.addFTSendRequest(filePath, ChatMessage.MESSAGE_FILE_TRANSFER_SEND);
-                                        } else {
+                                        }
+                                        else {
                                             aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
                                         }
                                     }
@@ -475,7 +480,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                                 mpAdapter.clearPreviews();
                             }
                         }
-                    } else {
+                    }
+                    else {
                         // allow last message correction to send empty string to clear last sent text
                         String correctionUID = chatPanel.getCorrectionUID();
                         String textEdit = ViewUtil.toString(msgEdit);
@@ -499,11 +505,13 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                             Timber.d("HTML text entry detected: %s", textEdit);
                             msgEdit.setText(textEdit);
                             sendMessage(textEdit, IMessage.ENCODE_HTML);
-                        } else
+                        }
+                        else
                             sendMessage(textEdit, IMessage.ENCODE_PLAIN);
                     }
                     updateSendModeState();
-                } else {
+                }
+                else {
                     aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
                 }
                 if (quotedMessage == null)
@@ -535,7 +543,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     }
                     if (callId != null)
                         CallNotificationManager.getInstanceFor(callId).backToCall();
-                } else
+                }
+                else
                     updateSendModeState();
                 break;
 
@@ -613,7 +622,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                         onAnimationEnd(1200);
                         done = true;
                     }
-                } else {
+                }
+                else {
                     if (isRecording) {
                         Timber.d("Audio recording sending!!!");
                         isRecording = false;
@@ -682,7 +692,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 mSoundMeter.setLevel(mdBSpl);
                 mdBTextView.setText(sdBSpl);
                 mRecordTimer.setText(mDuration);
-            } else if (AudioBgService.ACTION_AUDIO_RECORD.equals(intent.getAction())) {
+            }
+            else if (AudioBgService.ACTION_AUDIO_RECORD.equals(intent.getAction())) {
                 Timber.i("Sending audio recorded file!!!");
                 LocalBroadcastManager.getInstance(parent).unregisterReceiver(mReceiver);
                 String filePath = intent.getStringExtra(AudioBgService.URI);
@@ -710,7 +721,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 if (voiceResults == null) {
                     Timber.w("No voice results");
                     updateSendModeState();
-                } else {
+                }
+                else {
                     // Contains multiple text strings for selection
                     // StringBuffer spkText = new StringBuffer();
                     // for (String match : voiceResults) {
@@ -831,7 +843,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                     setNewChatState(ChatState.composing);
                     chatStateCtrlThread = new ChatStateControl();
                     chatStateCtrlThread.start();
-                } else
+                }
+                else
                     chatStateCtrlThread.refreshChatState();
             }
         }
@@ -857,20 +870,24 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         // Sending Text before attachment
         if (!TextUtils.isEmpty(msgEdit.getText()) || (chatPanel.getCorrectionUID() != null)) {
             sendBtn.setVisibility(View.VISIBLE);
-        } else if (hasAttachments) {
+        }
+        else if (hasAttachments) {
             msgEdit.setVisibility(View.GONE);
             mediaPreview.setVisibility(View.VISIBLE);
             imagePreview.setVisibility(View.VISIBLE);
             sendBtn.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             sendBtn.setVisibility(View.INVISIBLE);
 
             if (CallManager.getActiveCallsCount() > 0) {
                 callBtn.setVisibility(View.VISIBLE);
-            } else if (isAudioAllowed) {
+            }
+            else if (isAudioAllowed) {
                 audioBtn.setBackgroundResource(R.drawable.ic_voice_mic);
                 audioBtn.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else {
                 sendBtn.setVisibility(View.VISIBLE);
             }
         }
@@ -920,9 +937,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             String filePath = FilePathHelper.getFilePath(parent, contentUri);
             if (StringUtils.isNotEmpty(filePath)) {
                 sendSticker(filePath);
-            } else
+            }
+            else
                 aTalkApp.showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
-        } else {
+        }
+        else {
             aTalkApp.showToastMessage(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
         }
     }
@@ -979,9 +998,11 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 }
                 if (refreshComposing) {
                     newState = ChatState.composing;
-                } else if (initActive) {
+                }
+                else if (initActive) {
                     newState = ChatState.active;
-                } else if (cancel) {
+                }
+                else if (cancel) {
                     newState = ChatState.gone;
                 }
 

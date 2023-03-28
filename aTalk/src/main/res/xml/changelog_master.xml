@@ -6,8 +6,20 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.4 (02/23/2023)" versioncode="301040">
+    <release version="3.1.5 (03/28/2023)" versioncode="301050">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Upgrade aTalk to support android Tiramisu API-33. Need POST_NOTIFICATION, and to handle WRITE_EXTERNAL_STORAGE permission pending android API</change>
+        <change>Always show video call option: When user starts video call, perform runtime CAMERA permission request if it was not granted</change>
+        <change>Enhance aTalk incoming call (via jingleMessage or legacy jingleRtp) handling for all the various android states i.e. device locked, aTalk in background etc</change>
+        <change>Include the optional 'confirm' child extension in HttpAuthorizationRequest IQ response; required by 'demo.agayon.be'</change>
+        <change>Support multiple instances of HttpAuthorizationRequest received; generate Heads-Up notification when device is in locked state</change>
+        <change>Need to take care for an object with DomainBareJid instance in mamQuery</change>
+        <change>When received message does not contain a msgId, use stanzaId from StanzaIdElement if available for history log and mamQuery</change>
+        <change>Do not proceed to retrieve LastActivity info for DomainBareJid object</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.4 (02/23/2023)" versioncode="301040">
         <change>Port aTalk BOSH implementation to be compatible with smack v4.4.6</change>
         <change>Fix first offline message not shown when HistoryLog is disabled and ChatSession has not been launched before</change>
         <change>Use valid date in mamQuery for new muc creation on invitation; default to 30 days ago if none found</change>

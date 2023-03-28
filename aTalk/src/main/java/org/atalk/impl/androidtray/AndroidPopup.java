@@ -66,7 +66,7 @@ public class AndroidPopup
     /**
      * Notification id.
      */
-    protected int id;
+    protected int nId;
 
     /**
      * Optional chatTransport descriptor if supplied by <code>PopupMessage</code>.
@@ -104,7 +104,7 @@ public class AndroidPopup
         mContext = aTalkApp.getGlobalContext();
 
         group = popupMessage.getGroup();
-        id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
+        nId = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
 
         // set separate notification icon for each group of notification
         switch (group) {
@@ -145,7 +145,7 @@ public class AndroidPopup
             // By default all notifications share aTalk icon
             case AndroidNotifications.DEFAULT_GROUP:
             default:
-                id = SystrayServiceImpl.getGeneralNotificationId();
+                nId = SystrayServiceImpl.getGeneralNotificationId();
                 mSmallIcon = R.drawable.ic_notification;
                 break;
         }
@@ -171,12 +171,12 @@ public class AndroidPopup
     /**
      * Removes this notification.
      */
-    public void removeNotification(int nId)
+    public void removeNotification(int id)
     {
         cancelTimeout();
-        snoozeEndTimes.remove(nId);
+        snoozeEndTimes.remove(id);
         NotificationManager notifyManager = aTalkApp.getNotificationManager();
-        notifyManager.cancel(id);
+        notifyManager.cancel(nId);
     }
 
     /**
@@ -205,7 +205,7 @@ public class AndroidPopup
      */
     public int getId()
     {
-        return id;
+        return nId;
     }
 
     /**
@@ -421,7 +421,7 @@ public class AndroidPopup
     {
         // Remove timeout handler
         if (timeoutHandler != null) {
-            Timber.d("Removing timeout from notification: %s", id);
+            Timber.d("Removing timeout from notification: %s", nId);
             // FFR: NPE: 2.1.5 AndroidPopup.cancelTimeout (AndroidPopup.java:379) ?
             timeoutHandler.cancel();
             timeoutHandler = null;
@@ -469,7 +469,7 @@ public class AndroidPopup
         cancelTimeout();
         long timeout = popupMessage.getTimeout();
         if (timeout > 0) {
-            Timber.d("Setting timeout %d; on notification: %d", timeout, id);
+            Timber.d("Setting timeout %d; on notification: %d", timeout, nId);
 
             timeoutHandler = new Timer();
             timeoutHandler.schedule(new TimerTask()

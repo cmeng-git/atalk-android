@@ -35,6 +35,7 @@ import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException;
@@ -56,6 +57,7 @@ import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.confdesc.CallIdExtension;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.jingle.JingleManager;
+import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -99,8 +101,7 @@ public class OperationSetBasicTelephonyJabberImpl
         extends AbstractOperationSetBasicTelephony<ProtocolProviderServiceJabberImpl>
         implements RegistrationStateChangeListener, OperationSetSecureSDesTelephony,
         OperationSetSecureZrtpTelephony, JingleMessageSessionImpl.JmStateListener, StanzaListener,
-        BasicTelephony, OperationSetAdvancedTelephony<ProtocolProviderServiceJabberImpl>
-{
+        BasicTelephony, OperationSetAdvancedTelephony<ProtocolProviderServiceJabberImpl> {
     /**
      * A reference to the <code>ProtocolProviderServiceJabberImpl</code> instance that created us.
      */
@@ -128,11 +129,10 @@ public class OperationSetBasicTelephonyJabberImpl
 
     /**
      * Creates a new instance.
-     *
+
      * @param protocolProvider a reference to the <code>ProtocolProviderServiceJabberImpl</code> instance that created us.
      */
-    public OperationSetBasicTelephonyJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider)
-    {
+    public OperationSetBasicTelephonyJabberImpl(ProtocolProviderServiceJabberImpl protocolProvider) {
         mPPS = protocolProvider;
         mPPS.addRegistrationStateChangeListener(this);
     }
@@ -143,8 +143,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param evt the event received
      */
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         RegistrationState registrationState = evt.getNewState();
         if (registrationState == RegistrationState.REGISTERED) {
             mConnection = mPPS.getConnection();
@@ -170,6 +169,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param callee the address of the callee who we should invite to a new <code>Call</code>
      * @param conference the <code>CallConference</code> in which the newly-created <code>Call</code> is to participate
+     *
      * @return a newly created <code>Call</code>. The specified <code>callee</code> is available in the
      * <code>Call</code> as a <code>CallPeer</code>
      * @throws OperationFailedException with the corresponding code if we fail to create the call
@@ -177,8 +177,7 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     @Override
     public Call createCall(String callee, CallConference conference)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         CallJabberImpl call = new CallJabberImpl(this, getSid());
         if (conference != null)
             call.setConference(conference);
@@ -208,26 +207,21 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     @Override
     public CallJabberImpl createCall(ConferenceDescription cd, final ChatRoom chatRoom)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         final CallJabberImpl call = new CallJabberImpl(this, getSid());
         ((ChatRoomJabberImpl) chatRoom).addConferenceCall(call);
 
-        call.addCallChangeListener(new CallChangeListener()
-        {
+        call.addCallChangeListener(new CallChangeListener() {
             @Override
-            public void callPeerAdded(CallPeerEvent ev)
-            {
+            public void callPeerAdded(CallPeerEvent ev) {
             }
 
             @Override
-            public void callPeerRemoved(CallPeerEvent ev)
-            {
+            public void callPeerRemoved(CallPeerEvent ev) {
             }
 
             @Override
-            public void callStateChanged(CallChangeEvent ev)
-            {
+            public void callStateChanged(CallChangeEvent ev) {
                 if (CallState.CALL_ENDED.equals(ev.getNewValue())) {
                     ((ChatRoomJabberImpl) chatRoom).removeConferenceCall(call);
                 }
@@ -264,16 +258,14 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @return Jingle session Id
      */
-    public String getSid()
-    {
+    public String getSid() {
         return (mSid != null) ? mSid : JingleManager.randomId();
     }
 
     /**
      * init mSid with a randomId if callee does not support JingleMessage protocol
      */
-    public void initSid()
-    {
+    public void initSid() {
         mSid = JingleManager.randomId();
     }
 
@@ -284,6 +276,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param calleeAddress the address of the callee that we'd like to connect with.
      * @param siChildElement a collection of additional and optional <code>ExtensionElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init the specified <code>call</code>
+     *
      * @return the <code>CallPeer</code> that represented by the specified uri. All following state
      * change events will be delivered through that call peer. The <code>Call</code> that this
      * peer is a member of could be retrieved from the <code>CallPeer</code> instance with the
@@ -292,8 +285,7 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress,
             Iterable<ExtensionElement> siChildElement)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         FullJid calleeJid = null;
         if (calleeAddress.contains("/")) {
             try {
@@ -307,8 +299,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
     AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, FullJid calleeJid,
             Iterable<ExtensionElement> siChildElement)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return createOutgoingCall(call, calleeJid.toString(), calleeJid, siChildElement);
     }
 
@@ -320,6 +311,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param fullCalleeURI the full Jid address, which if specified would explicitly initiate a call to this full address
      * @param sessionInitiateExtensions a collection of additional and optional <code>ExtensionElement</code>s to be
      * added to the <code>session-initiate</code> {@link Jingle} which is to init the specified <code>call</code>
+     *
      * @return the <code>CallPeer</code> that represented by the specified uri. All following state
      * change events will be delivered through that call peer. The <code>Call</code> that this
      * peer is a member of could be retrieved from the <code>CallPeer</code> instance with the
@@ -328,8 +320,7 @@ public class OperationSetBasicTelephonyJabberImpl
      */
     AbstractCallPeer<?, ?> createOutgoingCall(CallJabberImpl call, String calleeAddress,
             FullJid fullCalleeURI, Iterable<ExtensionElement> sessionInitiateExtensions)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         Timber.i("Creating outgoing call to %s", calleeAddress);
         if (mConnection == null || call == null) {
             throw new OperationFailedException("Failed to create Outgoing Jingle Session - NO valid XMPPConnection.",
@@ -479,10 +470,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * either Jingle or Gtalk. Returns the full JID.
      *
      * @param calleeAddress the bareJid of the callee
+     *
      * @return the full callee URI (Jid)
      */
-    private EntityFullJid discoverFullJid(Jid calleeAddress)
-    {
+    private EntityFullJid discoverFullJid(Jid calleeAddress) {
         DiscoverInfo discoverInfo = null;
         PresenceStatus jabberStatus = null;
         int bestPriority = -1;
@@ -526,10 +517,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * Gets the full callee URI for a specific callee address.
      *
      * @param calleeJid the callee address to get the full callee URI for
+     *
      * @return the full callee URI for the specified <code>calleeAddress</code>
      */
-    EntityFullJid getFullCalleeURI(Jid calleeJid)
-    {
+    EntityFullJid getFullCalleeURI(Jid calleeJid) {
         return (calleeJid.isEntityFullJid()) ? calleeJid.asEntityFullJidIfPossible()
                 : Roster.getInstanceFor(mConnection).getPresence(calleeJid.asBareJid()).getFrom().asEntityFullJidIfPossible();
     }
@@ -538,10 +529,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * Gets the full callee URI for a specific callee address.
      *
      * @param calleeAddress the callee address to get the full callee URI for
+     *
      * @return the full callee URI for the specified <tt>calleeAddress</tt>
      */
-    EntityFullJid getFullCalleeURI(String calleeAddress)
-    {
+    EntityFullJid getFullCalleeURI(String calleeAddress) {
         try {
             Jid calleeJid = JidCreate.from(calleeAddress);
             return getFullCalleeURI(calleeJid);
@@ -555,8 +546,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @return an iterator over all currently active calls.
      */
-    public Iterator<CallJabberImpl> getActiveCalls()
-    {
+    public Iterator<CallJabberImpl> getActiveCalls() {
         return activeCallsRepository.getActiveCalls();
     }
 
@@ -565,10 +555,10 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param sid the Jingle session ID of the active <code>Call</code> between the local peer and the
      * callee in the case of attended transfer; <code>null</code> in the case of unattended transfer
+     *
      * @return The active call peer corresponding to the given sid. "null" if there is no such call.
      */
-    public CallPeerJabberImpl getActiveCallPeer(String sid)
-    {
+    public CallPeerJabberImpl getActiveCallPeer(String sid) {
         return activeCallsRepository.findCallPeerBySid(sid);
     }
 
@@ -576,11 +566,11 @@ public class OperationSetBasicTelephonyJabberImpl
      * Resumes communication with a call peer previously put on hold.
      *
      * @param peer the call peer to put on hold.
+     *
      * @throws OperationFailedException if we fail to send the "hold" message.
      */
     public synchronized void putOffHold(CallPeer peer)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         putOnHold(peer, false);
     }
 
@@ -588,11 +578,11 @@ public class OperationSetBasicTelephonyJabberImpl
      * Puts the specified CallPeer "on hold".
      *
      * @param peer the peer that we'd like to put on hold.
+     *
      * @throws OperationFailedException if we fail to send the "hold" message.
      */
     public synchronized void putOnHold(CallPeer peer)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         putOnHold(peer, true);
     }
 
@@ -601,11 +591,11 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param peer the <code>CallPeer</code> to be put on or off hold
      * @param on <code>true</code> to have the specified <code>CallPeer</code> put on hold; <code>false</code>, otherwise
+     *
      * @throws OperationFailedException if we fail to send the "hold" message.
      */
     private void putOnHold(CallPeer peer, boolean on)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if (peer instanceof CallPeerJabberImpl)
             ((CallPeerJabberImpl) peer).putOnHold(on);
     }
@@ -614,12 +604,12 @@ public class OperationSetBasicTelephonyJabberImpl
      * Ends the call with the specified <code>peer</code>.
      *
      * @param peer the peer that we'd like to hang up on.
+     *
      * @throws ClassCastException if peer is not an instance of this CallPeerSipImpl.
      * @throws OperationFailedException if we fail to terminate the call.
      */
     public synchronized void hangupCallPeer(CallPeer peer)
-            throws ClassCastException, OperationFailedException
-    {
+            throws ClassCastException, OperationFailedException {
         hangupCallPeer(peer, HANGUP_REASON_NORMAL_CLEARING, null);
     }
 
@@ -627,14 +617,13 @@ public class OperationSetBasicTelephonyJabberImpl
      * Ends the call with the specified <code>peer</code>.
      *
      * @param peer the peer that we'd like to hang up on.
-     * @param reasonCode indicates if the hangup is following to a call failure or simply a disconnect indicate
-     * by the reason.
-     * @param reasonText the reason of the hangup. If the hangup is due to a call failure, then this string
-     * could indicate the reason of the failure
+     * @param reasonCode indicates if the hangup is following to a call failure or
+     * simply a disconnect indicate by the reason.
+     * @param reasonText the reason of the hangup. If the hangup is due to a call failure,
+     * then this string could indicate the reason of the failure
      */
     public void hangupCallPeer(CallPeer peer, int reasonCode, String reasonText)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         boolean failed = (reasonCode != HANGUP_REASON_NORMAL_CLEARING);
 
         // if we are failing a peer and have a reason, add the reason packet extension
@@ -661,10 +650,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * Converts the codes for hangup from OperationSetBasicTelephony one to the jabber reasons.
      *
      * @param reasonCode the reason code.
+     *
      * @return the jabber Response.
      */
-    private static Reason convertReasonCodeToSIPCode(int reasonCode)
-    {
+    private static Reason convertReasonCodeToSIPCode(int reasonCode) {
         switch (reasonCode) {
             case HANGUP_REASON_NORMAL_CLEARING:
                 return Reason.success;
@@ -683,11 +672,11 @@ public class OperationSetBasicTelephonyJabberImpl
      * Implements method <code>answerCallPeer</code> from <code>OperationSetBasicTelephony</code>.
      *
      * @param peer the call peer that we want to answer
+     *
      * @throws OperationFailedException if we fail to answer
      */
     public void answerCallPeer(CallPeer peer)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // XXX maybe add answer/hangup abstract method to MediaAwareCallPeer
         if (peer instanceof CallPeerJabberImpl)
             ((CallPeerJabberImpl) peer).answer();
@@ -696,8 +685,7 @@ public class OperationSetBasicTelephonyJabberImpl
     /**
      * Closes all active calls. And releases resources.
      */
-    public void shutdown()
-    {
+    public void shutdown() {
         Timber.log(TimberLog.FINER, "Ending all active calls.");
         Iterator<CallJabberImpl> activeCalls = this.activeCallsRepository.getActiveCalls();
 
@@ -731,8 +719,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param sid Jingle session Id
      */
     @Override
-    public void onJmStateChange(JingleMessageType type, FullJid remote, String sid)
-    {
+    public void onJmStateChange(JingleMessageType type, FullJid remote, String sid) {
         switch (type) {
             case accept:
                 mSid = sid;
@@ -768,8 +755,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @see <a href="https://xmpp.org/extensions/xep-0166.html#protocol-response">6.3 Responder Response</a>
      */
     @Override
-    public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException
-    {
+    public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException, SmackException.NotLoggedInException {
         StanzaError err = stanza.getError();
         String message = aTalkApp.getResString(R.string.service_gui_CALL_ERROR, (err != null) ? err.getCondition() : "Unknown");
         Timber.e(message);
@@ -783,15 +769,13 @@ public class OperationSetBasicTelephonyJabberImpl
     }
 
     @Override
-    public void handleJingleSession(Jingle jingle, JingleCallSessionImpl session)
-    {
+    public void handleJingleSession(Jingle jingle, JingleCallSessionImpl session) {
         mJingleSession = session;
         handleJingleSession(jingle);
     }
 
     @Override
-    public void handleJingleSession(Jingle jingle)
-    {
+    public void handleJingleSession(Jingle jingle) {
         try {
             /*
              * let's first see whether we have a peer that's concerned by this IQ.
@@ -823,8 +807,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param jingleIQ the {@link Jingle} packet we need to be analyzing.
      */
-    private synchronized void processJingleSynchronize(final Jingle jingleIQ)
-    {
+    private synchronized void processJingleSynchronize(final Jingle jingleIQ) {
         CallPeerJabberImpl callPeer;
 
         JingleAction action = jingleIQ.getAction();
@@ -952,8 +935,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param jingle the {@link Jingle} packet we need to be analyzing.
      */
     private void processJingle(final Jingle jingle, final CallPeerJabberImpl callPeer)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         JingleAction action = jingle.getAction();
         Timber.d("### Processing Jingle IQ (%s: %s); callPeer: %s", action, jingle.getStanzaId(), callPeer.getAddress());
         switch (action) {
@@ -1058,11 +1040,11 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param callPeer CallPeerJabberImpl
      * @param jingle Jingle element of session-accept
+     *
      * @see #processTransportInfo(CallPeerJabberImpl, Jingle)
      * @see IceUdpTransportManager#startConnectivityEstablishment(Map remote)
      */
-    private void processSessionAccept(CallPeerJabberImpl callPeer, Jingle jingle)
-    {
+    private void processSessionAccept(CallPeerJabberImpl callPeer, Jingle jingle) {
         if (!mTIProcess) {
             jingleSA = jingle;
         }
@@ -1080,7 +1062,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * Proceed to process session-initiate upon received, independent whether it contains the required transport candidates;
      * Conversations sends only one candidate per transport-info stanza before and after session-initiate;
      * aTalk is able to handle trailing transport-info conditions even the processSessionInitiate() has started
-     * For leading transport-info's: if any, merged cached mediaTransports() before processing; need priority sorting
+     * For leading transport-info's: if any, merged cached mediaTransports() before processing; need priority sorting.
+     *
+     * Received incoming call must have at least mic enabled before it is allowed to proceed;
+     * Actual Video sending is handled in: ReceivedCallActivity#answerCall(Call, boolean)
      *
      * Note: Process in new thread so jingleSI can get updated with trailing transport-info received. Found that
      * actual startConnectivityEstablishment happen much later:
@@ -1090,21 +1075,35 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param call CallJabberImpl
      * @param callPeer CallPeerJabberImpl
      * @param jingle Jingle element of session-initiate
+     *
      * @see IceUdpTransportManager#startConnectivityEstablishment(Map remote)
      * @see #processTransportInfo(CallPeerJabberImpl, Jingle)
      */
-    private void processSessionInitiateInternal(CallJabberImpl call, CallPeerJabberImpl callPeer, Jingle jingle)
-    {
-        jingleSI = jingle;
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                call.processSessionInitiate(callPeer, jingle, mJingleSession);
-                jingleSI = null;
+    private void processSessionInitiateInternal(CallJabberImpl call, CallPeerJabberImpl callPeer, Jingle jingle) {
+        // boolean isVideoCall = false;
+        // for (JingleContent jingleContent : jingle.getContents()) {
+        //     isVideoCall = "video".equalsIgnoreCase(((RtpDescription) jingleContent.getDescription()).getMedia());
+        // }
+
+        // Check for resource permission before proceed; mic must be enabled at a minimum.
+        if (aTalk.isMediaCallAllowed(false)) {
+            jingleSI = jingle;
+            new Thread() {
+                @Override
+                public void run() {
+                    call.processSessionInitiate(callPeer, jingle, mJingleSession);
+                    jingleSI = null;
+                }
+            }.start();
+        }
+        else {
+            try {
+                new JingleUtil(mConnection).sendSessionTerminateUnsupportedApplications(jingle.getInitiator(), jingle.getSid());
+            } catch (InterruptedException | XMPPException.XMPPErrorException |
+                     NotConnectedException | NoResponseException e) {
+                throw new RuntimeException(e);
             }
-        }.start();
+        }
     }
 
     /**
@@ -1127,8 +1126,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param jingleTransport Jingle IQ stanza with action='transport-info'
      * @param callPeer CallPeerJabberImpl to be targeted
      */
-    private void processTransportInfo(CallPeerJabberImpl callPeer, Jingle jingleTransport)
-    {
+    private void processTransportInfo(CallPeerJabberImpl callPeer, Jingle jingleTransport) {
         // Cached all transport-info received prior to session-initiate e.g. Conversations sends transport-info's before session-initiate
         if (callPeer == null) {
             if (mediaTransports == null) {
@@ -1217,8 +1215,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @return a reference to the {@link ActiveCallsRepositoryJabberImpl} that we are currently using.
      */
-    protected ActiveCallsRepositoryJabberImpl getActiveCallsRepository()
-    {
+    protected ActiveCallsRepositoryJabberImpl getActiveCallsRepository() {
         return activeCallsRepository;
     }
 
@@ -1227,8 +1224,7 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @return a reference to the <code>ProtocolProviderService</code> that created this operation set.
      */
-    public ProtocolProviderServiceJabberImpl getProtocolProvider()
-    {
+    public ProtocolProviderServiceJabberImpl getProtocolProvider() {
         return mPPS;
     }
 
@@ -1236,10 +1232,10 @@ public class OperationSetBasicTelephonyJabberImpl
      * Gets the secure state of the call session in which a specific peer is involved
      *
      * @param peer the peer for who the call state is required
+     *
      * @return the call state
      */
-    public boolean isSecure(CallPeer peer)
-    {
+    public boolean isSecure(CallPeer peer) {
         return ((MediaAwareCallPeer<?, ?, ?>) peer).getMediaHandler().isSecure();
     }
 
@@ -1252,12 +1248,12 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param peer the <code>CallPeer</code> to be transferred to the specified callee address
      * @param target the address in the form of <code>CallPeer</code> of the callee to transfer <code>peer</code> to
+     *
      * @throws OperationFailedException if something goes wrong
      * @see OperationSetAdvancedTelephony#transfer(CallPeer, CallPeer)
      */
     public void transfer(CallPeer peer, CallPeer target)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         CallPeerJabberImpl jabberTarget = (CallPeerJabberImpl) target;
         EntityFullJid to = getFullCalleeURI(jabberTarget.getPeerJid());
         /*
@@ -1286,12 +1282,12 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param peer the <code>CallPeer</code> to be transferred to the specified callee address
      * @param target the address of the callee to transfer <code>peer</code> to
+     *
      * @throws OperationFailedException if something goes wrong
      * @see OperationSetAdvancedTelephony#transfer(CallPeer, String)
      */
     public void transfer(CallPeer peer, String target)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         EntityFullJid targetJid = getFullCalleeURI(target);
         transfer(peer, targetJid, null);
     }
@@ -1304,11 +1300,11 @@ public class OperationSetBasicTelephonyJabberImpl
      * @param to the address of the callee to transfer <code>peer</code> to
      * @param sid the Jingle session ID of the active <code>Call</code> between the local peer and the
      * callee in the case of attended transfer; <code>null</code> in the case of unattended transfer
+     *
      * @throws OperationFailedException if something goes wrong
      */
     private void transfer(CallPeer peer, EntityFullJid to, String sid)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         EntityFullJid caller = getFullCalleeURI(peer.getPeerJid());
         try {
             DiscoverInfo discoverInfo = mPPS.getDiscoveryManager().discoverInfo(caller);
@@ -1328,7 +1324,6 @@ public class OperationSetBasicTelephonyJabberImpl
      *
      * @param authority transfer authority.
      */
-    public void setTransferAuthority(TransferAuthority authority)
-    {
+    public void setTransferAuthority(TransferAuthority authority) {
     }
 }

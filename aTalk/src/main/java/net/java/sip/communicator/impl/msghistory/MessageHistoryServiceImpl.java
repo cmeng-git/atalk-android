@@ -84,6 +84,7 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -95,6 +96,7 @@ import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.exceptions.NoRawSessionException;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.receipts.ReceiptReceivedListener;
+import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -785,8 +787,19 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (userJid.equals(sender)) {
                 continue;
             }
-            timeStamp = forwarded.getDelayInformation().getStamp();
+
+            // Some received/DomainBareJid message does not have msgId. So use stanzaId from StanzaIdElement if found.
             String msgId = msg.getStanzaId();
+            if (TextUtils.isEmpty(msgId)) {
+                ExtensionElement stanzaIdElement = msg.getExtension(StanzaIdElement.QNAME);
+                if (stanzaIdElement instanceof StanzaIdElement) {
+                    msgId = ((StanzaIdElement) stanzaIdElement).getId();
+                }
+            }
+            if (TextUtils.isEmpty(msgId)) {
+                continue;
+            }
+            timeStamp = forwarded.getDelayInformation().getStamp();
 
             String[] args = {msgId, chatId};
             Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, null, ChatMessage.UUID

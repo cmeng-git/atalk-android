@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import javax.xml.namespace.QName;
 
 /**
  * Implements <code>ExtensionElement</code> for the "transfer" element defined below.
@@ -34,8 +35,7 @@ import javax.xml.namespace.QName;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class SdpTransfer extends AbstractXmlElement
-{
+public class SdpTransfer extends AbstractXmlElement {
     /**
      * The name of the "transfer" element.
      */
@@ -66,8 +66,7 @@ public class SdpTransfer extends AbstractXmlElement
      */
     public static final String ATTR_TO = "to";
 
-    public SdpTransfer()
-    {
+    public SdpTransfer() {
         super(getBuilder());
     }
 
@@ -76,8 +75,7 @@ public class SdpTransfer extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpTransfer(Builder builder)
-    {
+    public SdpTransfer(Builder builder) {
         super(builder);
     }
 
@@ -86,8 +84,7 @@ public class SdpTransfer extends AbstractXmlElement
      *
      * @return the value of the "from" attribute of this "transfer" element
      */
-    public Jid getFrom()
-    {
+    public Jid getFrom() {
         try {
             return JidCreate.from(getAttributeValue(ATTR_FROM));
         } catch (XmppStringprepException | IllegalArgumentException e) {
@@ -100,8 +97,7 @@ public class SdpTransfer extends AbstractXmlElement
      *
      * @return the value of the "sid" attribute of this "transfer" element
      */
-    public String getSid()
-    {
+    public String getSid() {
         return getAttributeValue(ATTR_SID);
     }
 
@@ -110,8 +106,7 @@ public class SdpTransfer extends AbstractXmlElement
      *
      * @return the value of the "to" attribute of this "transfer" element
      */
-    public Jid getTo()
-    {
+    public Jid getTo() {
         try {
             return JidCreate.from(getAttributeValue(ATTR_TO));
         } catch (XmppStringprepException e) {
@@ -119,8 +114,7 @@ public class SdpTransfer extends AbstractXmlElement
         }
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -128,10 +122,8 @@ public class SdpTransfer extends AbstractXmlElement
      * Builder for SdpTransfer. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpTransfer.
      */
-    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpTransfer>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static class Builder extends AbstractXmlElement.Builder<Builder, SdpTransfer> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -141,8 +133,7 @@ public class SdpTransfer extends AbstractXmlElement
          * @param from the value of the "from" attribute of this "transfer" element
          * @return builder instance
          */
-        public Builder setFrom(Jid from)
-        {
+        public Builder setFrom(Jid from) {
             addAttribute(ATTR_FROM, from.toString());
             return this;
         }
@@ -153,8 +144,7 @@ public class SdpTransfer extends AbstractXmlElement
          * @param sid the value of the "sid" attribute of this "transfer" element
          * @return builder instance
          */
-        public Builder setSid(String sid)
-        {
+        public Builder setSid(String sid) {
             addAttribute(ATTR_SID, sid);
             return this;
         }
@@ -165,21 +155,18 @@ public class SdpTransfer extends AbstractXmlElement
          * @param to the value of the "to" attribute of this "transfer" element
          * @return builder instance
          */
-        public Builder setTo(Jid to)
-        {
+        public Builder setTo(Jid to) {
             addAttribute(ATTR_TO, to.toString());
             return this;
         }
 
         @Override
-        public SdpTransfer build()
-        {
+        public SdpTransfer build() {
             return new SdpTransfer(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

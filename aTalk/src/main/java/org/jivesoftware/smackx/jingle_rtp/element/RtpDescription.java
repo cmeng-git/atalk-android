@@ -25,13 +25,12 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)</a>
  *
  * Multiplexing RTP Data and Control Packets on a Single Port (April 2010),
- * https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE) seem to propose <rtpc-mux/> to be included in transport
+ * https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE) seem to propose <code>rtpc-mux</code> to be included in transport
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class RtpDescription extends JingleContentDescription
-{
+public class RtpDescription extends JingleContentDescription {
     /**
      * The name of the "description" element.
      */
@@ -52,8 +51,7 @@ public class RtpDescription extends JingleContentDescription
      */
     public static final String ATTR_SSRC = "ssrc";
 
-    public RtpDescription()
-    {
+    public RtpDescription() {
         super(getBuilder());
     }
 
@@ -62,8 +60,7 @@ public class RtpDescription extends JingleContentDescription
      *
      * @param builder Builder instance
      */
-    public RtpDescription(Builder builder)
-    {
+    public RtpDescription(Builder builder) {
         super(builder);
     }
 
@@ -72,8 +69,7 @@ public class RtpDescription extends JingleContentDescription
      *
      * @return the media type for the stream that this description element represents, such as "audio" or "video".
      */
-    public String getMedia()
-    {
+    public String getMedia() {
         return getAttributeValue(ATTR_MEDIA);
     }
 
@@ -84,8 +80,7 @@ public class RtpDescription extends JingleContentDescription
      * @return the synchronization source ID (SSRC as per RFC 3550) that the stream represented by
      * this description element will be using.
      */
-    public String getSsrc()
-    {
+    public String getSsrc() {
         return getAttributeValue(ATTR_SSRC);
     }
 
@@ -95,13 +90,11 @@ public class RtpDescription extends JingleContentDescription
      *
      * @param ssrc the SSRC ID that the RTP stream represented here will be using.
      */
-    public void setSsrc(String ssrc)
-    {
+    public void setSsrc(String ssrc) {
         setAttribute(ATTR_SSRC, ssrc);
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -109,10 +102,8 @@ public class RtpDescription extends JingleContentDescription
      * Builder for RtpDescription. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the RtpDescription.
      */
-    public static final class Builder extends JingleContentDescription.Builder
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends JingleContentDescription.Builder {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -122,8 +113,7 @@ public class RtpDescription extends JingleContentDescription
          * @param media the media type for the stream that this element represents such as "audio" or "video".
          * @return builder instance
          */
-        public Builder setMedia(String media)
-        {
+        public Builder setMedia(String media) {
             addAttribute(ATTR_MEDIA, media);
             return this;
         }
@@ -135,8 +125,7 @@ public class RtpDescription extends JingleContentDescription
          * @param ssrc the SSRC ID that the RTP stream represented here will be using.
          * @return builder instance
          */
-        public Builder setSsrc(String ssrc)
-        {
+        public Builder setSsrc(String ssrc) {
             addAttribute(ATTR_SSRC, ssrc);
             return this;
         }
@@ -147,8 +136,7 @@ public class RtpDescription extends JingleContentDescription
          * @param srtpEncryption the encryption {@link ExtensionElement} we'd like to add to this packet.
          * @return builder instance
          */
-        public Builder addEncryption(SrtpEncryption srtpEncryption)
-        {
+        public Builder addEncryption(SrtpEncryption srtpEncryption) {
             addChildElement(srtpEncryption);
             return this;
         }
@@ -159,8 +147,7 @@ public class RtpDescription extends JingleContentDescription
          * @param rtcpmux the rtcpmux {@link ExtensionElement} we'd like to add to this packet.
          * @return builder instance
          */
-        public Builder addRtcpMux(RtcpMux rtcpmux)
-        {
+        public Builder addRtcpMux(RtcpMux rtcpmux) {
             addChildElement(rtcpmux);
             return this;
         }
@@ -172,8 +159,7 @@ public class RtpDescription extends JingleContentDescription
          * @param bandwidth the max/preferred bandwidth indication that we'd like to add to this packet.
          * @return builder instance
          */
-        public Builder addBandwidth(SdpBandwidth bandwidth)
-        {
+        public Builder addBandwidth(SdpBandwidth bandwidth) {
             addChildElement(bandwidth);
             return this;
         }
@@ -184,8 +170,7 @@ public class RtpDescription extends JingleContentDescription
          * @param rtpHeader an optional <code>rtpHeader</code> element that allows negotiation RTP extension headers as per RFC 5282.
          * @return builder instance
          */
-        public Builder addRtpHeader(RtpHeader rtpHeader)
-        {
+        public Builder addRtpHeader(RtpHeader rtpHeader) {
             addChildElement(rtpHeader);
             return this;
         }
@@ -196,21 +181,18 @@ public class RtpDescription extends JingleContentDescription
          * @param payloadType the new payload to add.
          * @return builder instance
          */
-        public Builder addPayloadType(PayloadType payloadType)
-        {
+        public Builder addPayloadType(PayloadType payloadType) {
             addChildElement(payloadType);
             return this;
         }
 
         @Override
-        public RtpDescription build()
-        {
+        public RtpDescription build() {
             return new RtpDescription(this);
         }
 
         @Override
-        protected Builder getThis()
-        {
+        protected Builder getThis() {
             return this;
         }
     }

@@ -1,5 +1,24 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.5 (301050)
+Release Date:   03/28/20238
+Author:         cmeng
+- Upgrade aTalk to support android Tiramisu API-33; Need to add permission.POST_NOTIFICATION
+- aTalkApp.hasWriteStoragePermission(): Need to handle WRITE_EXTERNAL_STORAGE permission pending installed android API.
+- Always show video call option: When user starts video call, perform runtime CAMERA permission request if it was not granted.
+  * Camera2 API does not not required Camera permission to proceed with AndroidCameraSystem#doInitialize().
+- Enhance aTalk incoming call (via jingleMessage or legacy jingleRtp) handling for all the various android states i.e. device locked, aTalk in background etc.
+- Include the optional 'confirm' element in HttpAuthorizationRequest IQ response; required by 'demo.agayon.be'; need smack IQ classes update.
+- Support multiple instances of HttpAuthorizationRequest received; generate Heads-Up notification when device is in locked state.
+- ChatPanel#mamQuery(): Need to take care for the description object with DomainBareJid instance.
+- When received message does not contain a msgId, use stanzaId from StanzaIdElement if available for historyLog and mamQuery.
+  * OperationSetBasicInstantMessagingJabberImpl#processStanza()
+  * MessageHistoryServiceImpl#saveMamIfNotExit()
+- ChatActivity#getLastSeen: LastActivity does not apply to DomainBareJid object, so block access.
+- Update smack classes so they meet style check and JingleContent test requirements.
+- Need to update AS to Electric Eel for full API-33 build?
+
+=========================================================================
 Version:        3.1.4 (301040)
 Release Date:   02/23/2023
 Author:         cmeng

@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.Objects;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * The element containing details about an encryption algorithm that could be used during a jingle session.
@@ -31,8 +31,7 @@ import javax.xml.namespace.QName;
  * @author Vincent Lucas
  * @author Eng Chong Meng
  */
-public class SdpCrypto extends AbstractXmlElement
-{
+public class SdpCrypto extends AbstractXmlElement {
     /**
      * The name of the "crypto" element.
      */
@@ -69,8 +68,7 @@ public class SdpCrypto extends AbstractXmlElement
     /**
      * <code>SdpCrypto</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
-    public SdpCrypto()
-    {
+    public SdpCrypto() {
         super(getBuilder());
     }
 
@@ -79,8 +77,7 @@ public class SdpCrypto extends AbstractXmlElement
      *
      * @param builder Builder instance
      */
-    public SdpCrypto(Builder builder)
-    {
+    public SdpCrypto(Builder builder) {
         super(builder);
     }
 
@@ -89,8 +86,7 @@ public class SdpCrypto extends AbstractXmlElement
      *
      * @return a <code>String</code> that describes the encryption and authentication algorithms.
      */
-    public String getCryptoSuite()
-    {
+    public String getCryptoSuite() {
         return getAttributeValue(ATTR_CRYPTO_SUITE);
     }
 
@@ -99,8 +95,7 @@ public class SdpCrypto extends AbstractXmlElement
      *
      * @return a <code>String</code> that provides one or more sets of keying material for the crypto-suite in question.
      */
-    public String getKeyParams()
-    {
+    public String getKeyParams() {
         return getAttributeValue(ATTR_KEY_PARAMS);
     }
 
@@ -109,8 +104,7 @@ public class SdpCrypto extends AbstractXmlElement
      *
      * @return a <code>String</code> that provides transport-specific parameters for SRTP negotiation.
      */
-    public String getSessionParams()
-    {
+    public String getSessionParams() {
         return getAttributeValue(ATTR_SESSION_PARAMS);
     }
 
@@ -119,8 +113,7 @@ public class SdpCrypto extends AbstractXmlElement
      *
      * @return a <code>String</code> containing a decimal number used as an identifier for a particular crypto element.
      */
-    public String getTag()
-    {
+    public String getTag() {
         return getAttributeValue(ATTR_TAG);
     }
 
@@ -130,8 +123,7 @@ public class SdpCrypto extends AbstractXmlElement
      * @param cryptoSuite a <code>String</code> that describes the encryption and authentication algorithms.
      * @return True if the current crypto suite equals the one given in parameter. False, otherwise.
      */
-    public boolean equalsCryptoSuite(String cryptoSuite)
-    {
+    public boolean equalsCryptoSuite(String cryptoSuite) {
         return equalsStrings(getCryptoSuite(), cryptoSuite);
     }
 
@@ -141,8 +133,7 @@ public class SdpCrypto extends AbstractXmlElement
      * @param keyParams that provides one or more sets of keying material for the crypto-suite in question.
      * @return True if the current key params equals the one given in parameter. False, otherwise.
      */
-    public boolean equalsKeyParams(String keyParams)
-    {
+    public boolean equalsKeyParams(String keyParams) {
         return equalsStrings(getKeyParams(), keyParams);
     }
 
@@ -152,8 +143,7 @@ public class SdpCrypto extends AbstractXmlElement
      * @param sessionParams a <code>String</code> that provides transport-specific parameters for SRTP negotiation.
      * @return True if the current session params equals the one given in parameter. False, otherwise.
      */
-    public boolean equalsSessionParams(String sessionParams)
-    {
+    public boolean equalsSessionParams(String sessionParams) {
         return equalsStrings(getSessionParams(), sessionParams);
     }
 
@@ -163,8 +153,7 @@ public class SdpCrypto extends AbstractXmlElement
      * @param tag a <code>String</code> containing a decimal number used as an identifier for a particular crypto element.
      * @return True if the current tag equals the one given in parameter. False, otherwise.
      */
-    public boolean equalsTag(String tag)
-    {
+    public boolean equalsTag(String tag) {
         return equalsStrings(getTag(), tag);
     }
 
@@ -175,8 +164,7 @@ public class SdpCrypto extends AbstractXmlElement
      * @param string2 A String to be compared with the first one.
      * @return True if both strings are null, or if they represent the same sequence of characters. False, otherwise.
      */
-    private static boolean equalsStrings(String string1, String string2)
-    {
+    private static boolean equalsStrings(String string1, String string2) {
         return ((string1 == null) && (string2 == null))
                 || ((string1 != null) && string1.equals(string2)
         );
@@ -190,8 +178,7 @@ public class SdpCrypto extends AbstractXmlElement
      * (crypto-suite, key-params, session-params and tag) corresponding to the current one. False, otherwise.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (obj instanceof SdpCrypto) {
             SdpCrypto crypto = (SdpCrypto) obj;
 
@@ -204,8 +191,7 @@ public class SdpCrypto extends AbstractXmlElement
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(
                 getCryptoSuite(),
                 getKeyParams(),
@@ -213,8 +199,7 @@ public class SdpCrypto extends AbstractXmlElement
                 getTag());
     }
 
-    public static Builder getBuilder()
-    {
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -222,10 +207,8 @@ public class SdpCrypto extends AbstractXmlElement
      * Builder for SdpCrypto. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
      * to obtain a new instance and {@link #build} to build the SdpCrypto.
      */
-    public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpCrypto>
-    {
-        protected Builder(String element, String namespace)
-        {
+    public static final class Builder extends AbstractXmlElement.Builder<Builder, SdpCrypto> {
+        protected Builder(String element, String namespace) {
             super(element, namespace);
         }
 
@@ -240,8 +223,7 @@ public class SdpCrypto extends AbstractXmlElement
          * @param sessionParams a <code>String</code> that provides transport-specific parameters for SRTP negotiation.
          * @return builder instance
          */
-        public Builder setCrypto(int tag, String cryptoSuite, String keyParams, String sessionParams)
-        {
+        public Builder setCrypto(int tag, String cryptoSuite, String keyParams, String sessionParams) {
             // Encode the tag element.
             setTag(Integer.toString(tag));
             // Encode the crypto-suite element.
@@ -262,8 +244,7 @@ public class SdpCrypto extends AbstractXmlElement
          * @param cryptoSuite a <code>String</code> that describes the encryption and authentication algorithms.
          * @return builder instance
          */
-        public Builder setCryptoSuite(String cryptoSuite)
-        {
+        public Builder setCryptoSuite(String cryptoSuite) {
             addAttribute(ATTR_CRYPTO_SUITE, cryptoSuite);
             return this;
         }
@@ -274,8 +255,7 @@ public class SdpCrypto extends AbstractXmlElement
          * @param tag a <code>String</code> containing a decimal number used as an identifier for a particular crypto element.
          * @return builder instance
          */
-        public Builder setTag(String tag)
-        {
+        public Builder setTag(String tag) {
             addAttribute(ATTR_TAG, tag);
             return this;
         }
@@ -287,8 +267,7 @@ public class SdpCrypto extends AbstractXmlElement
          * @param keyParams a <code>String</code> that provides one or more sets of keying material for the crypto-suite in question.
          * @return builder instance
          */
-        public Builder setKeyParams(String keyParams)
-        {
+        public Builder setKeyParams(String keyParams) {
             addAttribute(ATTR_KEY_PARAMS, keyParams);
             return this;
         }
@@ -299,21 +278,18 @@ public class SdpCrypto extends AbstractXmlElement
          * @param sessionParams a <code>String</code> that provides transport-specific parameters for SRTP negotiation.
          * @return builder instance
          */
-        public Builder setSessionParams(String sessionParams)
-        {
+        public Builder setSessionParams(String sessionParams) {
             addAttribute(ATTR_SESSION_PARAMS, sessionParams);
             return this;
         }
 
         @Override
-        public SdpCrypto build()
-        {
+        public SdpCrypto build() {
             return new SdpCrypto(this);
         }
 
         @Override
-        public Builder getThis()
-        {
+        public Builder getThis() {
             return this;
         }
     }

@@ -219,13 +219,15 @@ public abstract class CameraStreamBase extends AbstractPushBufferStream<DataSour
             initPreviewOrientation(true);
 
             cameraManager.openCamera(mCameraId, mStateCallback, mBackgroundHandler);
+        } catch (SecurityException e) {
+            Timber.e("openCamera: %s", e.getMessage());
         } catch (CameraAccessException e) {
             Timber.e("openCamera: Cannot access the camera.");
         } catch (NullPointerException e) {
             Timber.e("Camera2API is not supported on the device.");
         } catch (InterruptedException e) {
             // throw new RuntimeException("Interrupted while trying to lock camera opening.");
-            Timber.w("Exception in start camera init: %s", e.getMessage());
+            Timber.e("Exception in start camera init: %s", e.getMessage());
         }
     }
 

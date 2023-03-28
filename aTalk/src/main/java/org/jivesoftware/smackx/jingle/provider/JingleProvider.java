@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
@@ -44,10 +47,8 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
-import org.jxmpp.jid.FullJid;
 
-import java.io.IOException;
-import java.util.logging.Logger;
+import org.jxmpp.jid.FullJid;
 
 /**
  * An implementation of a Jingle IQ provider that parses incoming Jingle IQs.
@@ -56,8 +57,7 @@ import java.util.logging.Logger;
  * @author Eng Chong Meng
  * @author Emil Ivov
  */
-public class JingleProvider extends IqProvider<Jingle>
-{
+public class JingleProvider extends IqProvider<Jingle> {
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
     /**
@@ -65,12 +65,13 @@ public class JingleProvider extends IqProvider<Jingle>
      *
      * @param parser an XML parser.
      * @return a new {@link Jingle} instance.
-     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
+     * @throws IOException if an error occurs in IO.
+     * @throws XmlPullParserException if an error occurs pull parsing the XML.
+     * @throws SmackParsingException if an error occurs parsing the XML.
      */
     @Override
     public Jingle parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+            throws XmlPullParserException, IOException, SmackParsingException {
         Jingle.Builder builder = Jingle.builder(iqData);
 
         String actionString = parser.getAttributeValue("", Jingle.ATTR_ACTION);
@@ -126,9 +127,8 @@ public class JingleProvider extends IqProvider<Jingle>
                                 else {
                                     builder.setSessionInfo(SessionInfo.builder(type).build());
                                 }
-                            }
                             // Handle all the aTalk AbstractExtensionElement extensions embedded in JingleIQ
-                            else {
+                            } else {
                                 ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(tagName, namespace);
                                 if (provider != null) {
                                     LOGGER.info("Found provider for EE<" + tagName + " " + namespace + "/>");
@@ -161,8 +161,7 @@ public class JingleProvider extends IqProvider<Jingle>
     }
 
     public static JingleContent parseJingleContent(XmlPullParser parser, final int initialDepth)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+            throws XmlPullParserException, IOException, SmackParsingException {
         JingleContent.Builder builder = JingleContent.getBuilder();
 
         String creatorString = parser.getAttributeValue("", JingleContent.ATTR_CREATOR);
@@ -195,8 +194,7 @@ public class JingleProvider extends IqProvider<Jingle>
                             if (provider == null) {
                                 StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
                                 description = new UnknownJingleContentDescription(standardExtensionElement);
-                            }
-                            else {
+                            } else {
                                 description = provider.parse(parser);
                             }
                             builder.setDescription(description);
@@ -209,8 +207,7 @@ public class JingleProvider extends IqProvider<Jingle>
                             if (provider == null) {
                                 StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
                                 transport = new UnknownJingleContentTransport(standardExtensionElement);
-                            }
-                            else {
+                            } else {
                                 transport = provider.parse(parser);
                             }
                             builder.setTransport(transport);
@@ -265,8 +262,7 @@ public class JingleProvider extends IqProvider<Jingle>
     }
 
     public static JingleReason parseJingleReason(XmlPullParser parser)
-            throws XmlPullParserException, IOException, SmackParsingException
-    {
+            throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         final String jingleNamespace = parser.getNamespace();
@@ -298,8 +294,7 @@ public class JingleProvider extends IqProvider<Jingle>
                                 reason = Reason.fromString(elementName);
                                 break;
                         }
-                    }
-                    else {
+                    } else {
                         element = PacketParserUtils.parseExtensionElement(elementName, namespace, parser, null);
                     }
                     break;
@@ -314,8 +309,7 @@ public class JingleProvider extends IqProvider<Jingle>
         JingleReason res;
         if (sid != null) {
             res = new JingleReason.AlternativeSession(sid, text, element);
-        }
-        else {
+        } else {
             res = new JingleReason(reason, text, element);
         }
         return res;

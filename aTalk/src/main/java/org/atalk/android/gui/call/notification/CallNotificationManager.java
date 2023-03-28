@@ -73,7 +73,7 @@ public class CallNotificationManager
 
     /**
      * Map to facilitate the toggle of requestCodeBase between 0 and 10 to avoid existing PendingIntents get cancel:
-     * FLAG_CANCEL_CURRENT https://developer.android.com/reference/android/app/PendingIntent.
+     * FLAG_CANCEL_CURRENT <a href="https://developer.android.com/reference/android/app/PendingIntent">PendingIntent</a>.
      */
     private static final Map<String, Integer> requestCodes = new HashMap<>();
 

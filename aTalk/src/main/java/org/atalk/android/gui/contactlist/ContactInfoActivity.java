@@ -63,10 +63,6 @@ public class ContactInfoActivity extends OSGiActivity
     public static final String INTENT_CONTACT_ID = "contact_id";
 
     public static final int ABOUT_ME_MAX_CHARACTERS = 200;
-    /**
-     * The operation set giving access to the server stored contact details.
-     */
-    private OperationSetServerStoredContactInfo contactInfoOpSet;
 
     /**
      * The currently selected contact we are displaying information about.
@@ -92,7 +88,11 @@ public class ContactInfoActivity extends OSGiActivity
             else {
                 mContact = metaContact.getDefaultContact();
                 ProtocolProviderService pps = mContact.getProtocolProvider();
-                contactInfoOpSet = pps.getOperationSet(OperationSetServerStoredContactInfo.class);
+                /*
+                 * The operation set giving access to the server stored contact details.
+                 */
+                OperationSetServerStoredContactInfo contactInfoOpSet
+                        = pps.getOperationSet(OperationSetServerStoredContactInfo.class);
                 if ((contactInfoOpSet != null) && pps.isRegistered()) {
                     initPresenceStatus();
                     initSummaryPanel();
