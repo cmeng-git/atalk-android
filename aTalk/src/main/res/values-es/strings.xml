@@ -1610,7 +1610,7 @@
     <string name="audio_permission_denied_feedback">La llamada de audio no estará disponible hasta que concedas la solicitud de permiso</string>
 
     <string name="camera_permission_denied_dialog_title">Solicitud de permiso de cámara</string>
-    <string name="camera_permission_denied_feedback">Todas las actividades asociadas a la cámara no estarán disponibles hasta que otorgue la solicitud de permiso</string>
+    <string name="camera_permission_denied_feedback">Ninguna actividad asociada a la cámara estará disponible hasta que otorgues la solicitud de permiso</string>
 
     <string name="contacts_permission_denied_dialog_title">Solicitud de permiso de contactos</string>
     <string name="contacts_permission_denied_feedback">El permiso de los contactos es necesario para el acceso al estado del teléfono y la configuración de llamadas.</string>
