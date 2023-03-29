@@ -117,11 +117,11 @@ public class OmemoAuthenticateDialog extends OSGiActivity
         String localFingerprint = null;
         BareJid userJid = null;
         // mOmemoManager can never be null from caller??? NPE from FFR: OmemoAuthenticateDialog.onCreate (OmemoAuthenticateDialog.java:122)
-        // anyway move into try/catch loop
+        // anyway move into try/catch with NullPointerException loop (20220329)
         try {
             userJid = mOmemoManager.getOwnJid();
             localFingerprint = mOmemoManager.getOwnFingerprint().toString();
-        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException e) {
+        } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | IOException | NullPointerException e) {
             Timber.w("Get own fingerprint exception: %s", e.getMessage());
         }
 

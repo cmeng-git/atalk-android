@@ -6,7 +6,7 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.5 (03/28/2023)" versioncode="301050">
+    <release version="3.1.5 (03/29/2023)" versioncode="301051">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Upgrade aTalk to support android Tiramisu API-33. Need POST_NOTIFICATION, and to handle WRITE_EXTERNAL_STORAGE permission pending android API</change>
         <change>Always show video call option: When user starts video call, perform runtime CAMERA permission request if it was not granted</change>
@@ -16,6 +16,7 @@
         <change>Need to take care for an object with DomainBareJid instance in mamQuery</change>
         <change>When received message does not contain a msgId, use stanzaId from StanzaIdElement if available for history log and mamQuery</change>
         <change>Do not proceed to retrieve LastActivity info for DomainBareJid object</change>
+        <change>Fix all Google Play Console FFR where possible since 3.1.4 (20230329)</change>
         <change>Bug fixes and enhancements</change>
     </release>
 

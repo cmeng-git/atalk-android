@@ -1,10 +1,11 @@
 Project aTalk-Android Release Notes
 =========================================================================
-Version:        3.1.5 (301050)
-Release Date:   03/28/20238
+Version:        3.1.5 (301051)
+Release Date:   03/29/20238
 Author:         cmeng
 - Upgrade aTalk to support android Tiramisu API-33; Need to add permission.POST_NOTIFICATION
 - aTalkApp.hasWriteStoragePermission(): Need to handle WRITE_EXTERNAL_STORAGE permission pending installed android API.
+  Do not access no-existence class aTalk#hasWriteStoragePermission() in PermissionActivity class
 - Always show video call option: When user starts video call, perform runtime CAMERA permission request if it was not granted.
   * Camera2 API does not not required Camera permission to proceed with AndroidCameraSystem#doInitialize().
 - Enhance aTalk incoming call (via jingleMessage or legacy jingleRtp) handling for all the various android states i.e. device locked, aTalk in background etc.
@@ -16,6 +17,7 @@ Author:         cmeng
   * MessageHistoryServiceImpl#saveMamIfNotExit()
 - ChatActivity#getLastSeen: LastActivity does not apply to DomainBareJid object, so block access.
 - Update smack classes so they meet style check and JingleContent test requirements.
+- Fix all Google Play Console FFR where possible since 3.1.4 (20230329)
 - Need to update AS to Electric Eel for full API-33 build?
 
 =========================================================================

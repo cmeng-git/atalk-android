@@ -171,7 +171,8 @@ public class PermissionsActivity extends AppCompatActivity {
             }
 
             // handler for WRITE_EXTERNAL_STORAGE pending android API
-            if (aTalk.hasWriteStoragePermission(this, false)) {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 storagePermissionFeedbackView.setText(R.string.permission_granted_feedback);
                 button_storage.setEnabled(false);
             }

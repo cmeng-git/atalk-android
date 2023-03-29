@@ -23,7 +23,7 @@ public class MergedMessage implements ChatMessage
     /**
      * Root message instance.
      */
-    private final ChatMessage rootMessage;
+    private final ChatMessage mRootMessage;
 
     /**
      * The list of messages consecutive to this <code>MergedMessage</code>.
@@ -31,19 +31,14 @@ public class MergedMessage implements ChatMessage
     private final List<ChatMessage> children = new ArrayList<>();
 
     /**
-     * The message date(updated with each merge).
+     * The message date (updated with each new merge message).
      */
-    private Date date;
+    private Date mDate;
 
     /**
      * Variable used to cache merged message content.
      */
     private String mergedMessage;
-
-    /**
-     * The direction of the message.
-     */
-    private String mDirection = ChatMessage.DIR_OUT;
 
     /**
      * Variable used to cache merged message Ids.
@@ -58,8 +53,8 @@ public class MergedMessage implements ChatMessage
      */
     public MergedMessage(ChatMessage rootMsg)
     {
-        this.rootMessage = rootMsg;
-        date = rootMsg.getDate();
+        mRootMessage = rootMsg;
+        mDate = rootMsg.getDate();
     }
 
     /**
@@ -68,7 +63,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public String getSender()
     {
-        return rootMessage.getSender();
+        return mRootMessage.getSender();
     }
 
     /**
@@ -77,7 +72,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public String getSenderName()
     {
-        return rootMessage.getSenderName();
+        return mRootMessage.getSenderName();
     }
 
     /**
@@ -86,7 +81,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public Date getDate()
     {
-        return date;
+        return mDate;
     }
 
     /**
@@ -95,7 +90,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public int getMessageType()
     {
-        return rootMessage.getMessageType();
+        return mRootMessage.getMessageType();
     }
 
     /**
@@ -104,7 +99,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public int getMimeType()
     {
-        return rootMessage.getMimeType();
+        return mRootMessage.getMimeType();
     }
 
     /**
@@ -113,7 +108,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public int getEncryptionType()
     {
-        return rootMessage.getEncryptionType();
+        return mRootMessage.getEncryptionType();
     }
 
     @Override
@@ -129,7 +124,7 @@ public class MergedMessage implements ChatMessage
      */
     public int getReceiptStatus()
     {
-        int receiptStatus = rootMessage.getReceiptStatus();
+        int receiptStatus = mRootMessage.getReceiptStatus();
         for (ChatMessage ch : children) {
             if (ch.getReceiptStatus() < receiptStatus)
                 receiptStatus = ch.getReceiptStatus();
@@ -148,7 +143,7 @@ public class MergedMessage implements ChatMessage
         /*
          * Variable used to cache merged message Ids.
          */
-        serverMsgIds = rootMessage.getServerMsgId();
+        serverMsgIds = mRootMessage.getServerMsgId();
 
         // Merge the server message Ids
         for (ChatMessage ch : children) {
@@ -164,7 +159,7 @@ public class MergedMessage implements ChatMessage
      */
     public String getRemoteMsgId()
     {
-        String remoteMsgId = rootMessage.getRemoteMsgId();
+        String remoteMsgId = mRootMessage.getRemoteMsgId();
 
         // Merge the remote server message Ids
         for (ChatMessage ch : children) {
@@ -180,7 +175,7 @@ public class MergedMessage implements ChatMessage
      */
     public String getMessageUID()
     {
-        return rootMessage.getMessageUID();
+        return mRootMessage.getMessageUID();
     }
 
     /**
@@ -189,7 +184,7 @@ public class MergedMessage implements ChatMessage
      * @return the direction of this message.
      */
     public String getMessageDir() {
-        return mDirection;
+        return mRootMessage.getMessageDir();
     }
 
     /**
@@ -201,7 +196,7 @@ public class MergedMessage implements ChatMessage
     {
         List<String> msgUuidList = new ArrayList<>();
 
-        msgUuidList.add(rootMessage.getMessageUID());
+        msgUuidList.add(mRootMessage.getMessageUID());
         for (ChatMessage child : children) {
             msgUuidList.add(child.getMessageUID());
         }
@@ -215,7 +210,7 @@ public class MergedMessage implements ChatMessage
      */
     public String getCorrectedMessageUID()
     {
-        return rootMessage.getCorrectedMessageUID();
+        return mRootMessage.getCorrectedMessageUID();
     }
 
     /**
@@ -228,7 +223,7 @@ public class MergedMessage implements ChatMessage
         if (corrected == null) {
             children.add(consecutiveMessage);
             // Use the most recent date, as main date
-            date = consecutiveMessage.getDate();
+            mDate = consecutiveMessage.getDate();
             // Append the text only if we have cached content, otherwise it will be lazily generated on content request
             if (mergedMessage != null) {
                 mergedMessage = mergeText(mergedMessage, getMessageText(consecutiveMessage));
@@ -254,7 +249,7 @@ public class MergedMessage implements ChatMessage
     public String getMessage()
     {
         if (mergedMessage == null) {
-            mergedMessage = getMessageText(rootMessage);
+            mergedMessage = getMessageText(mRootMessage);
 
             // Merge the child text to root Message
             for (ChatMessage chatMessage : children) {
@@ -314,13 +309,14 @@ public class MergedMessage implements ChatMessage
 
     public MergedMessage updateDeliveryStatus(String msgId, int status)
     {
-        if (rootMessage.getServerMsgId().equals(msgId)) {
-            ((ChatMessageImpl) rootMessage).setReceiptStatus(status);
+        // FFR: getServerMsgId() may be null (20230329)
+        if (msgId.equals(mRootMessage.getServerMsgId())) {
+            ((ChatMessageImpl) mRootMessage).setReceiptStatus(status);
         }
         else {
             for (int i = 0; i < children.size(); i++) {
                 ChatMessage child = children.get(i);
-                if (child.getServerMsgId().equals(msgId)) {
+                if (msgId.equals(child.getServerMsgId())) {
                     ((ChatMessageImpl) child).setReceiptStatus(status);
                     break;
                 }
@@ -345,7 +341,7 @@ public class MergedMessage implements ChatMessage
                     && (candidate.getContentForCorrection() != null))
                 return candidate;
         }
-        return rootMessage;
+        return mRootMessage;
     }
 
     /**
@@ -372,7 +368,7 @@ public class MergedMessage implements ChatMessage
     @Override
     public String getContentForClipboard()
     {
-        StringBuilder output = new StringBuilder(rootMessage.getContentForClipboard());
+        StringBuilder output = new StringBuilder(mRootMessage.getContentForClipboard());
         for (ChatMessage c : children) {
             output.append("\n").append(c.getContentForClipboard());
         }
@@ -406,25 +402,25 @@ public class MergedMessage implements ChatMessage
     @Override
     public boolean isConsecutiveMessage(ChatMessage nextMsg)
     {
-        return ((findCorrectedMessage(nextMsg) != null) || (rootMessage.isConsecutiveMessage(nextMsg)));
+        return ((findCorrectedMessage(nextMsg) != null) || (mRootMessage.isConsecutiveMessage(nextMsg)));
     }
 
     @Override
     public FileRecord getFileRecord()
     {
-        return rootMessage.getFileRecord();
+        return mRootMessage.getFileRecord();
     }
 
     @Override
     public OperationSetFileTransfer getOpSet()
     {
-        return rootMessage.getOpSet();
+        return mRootMessage.getOpSet();
     }
 
     @Override
     public IncomingFileTransferRequest getFTRequest()
     {
-        return rootMessage.getFTRequest();
+        return mRootMessage.getFTRequest();
     }
 
     /**
@@ -435,6 +431,6 @@ public class MergedMessage implements ChatMessage
     @Override
     public HttpFileDownloadJabberImpl getHttpFileTransfer()
     {
-        return rootMessage.getHttpFileTransfer();
+        return mRootMessage.getHttpFileTransfer();
     }
 }

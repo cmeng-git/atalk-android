@@ -1486,14 +1486,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (connection instanceof XMPPTCPConnection)
                 setTrafficClass();
 
-            // check and set auto tune ping interval if necessary
-            tunePingInterval();
-
             // must initialize caps entities upon success connection to ensure it is ready for the very first <iq/> send
             initServicesAndFeatures();
 
             /*  Start up External Service Discovery Manager XEP-0215 */
             ExternalServiceDiscoveryManager.getInstanceFor(connection);
+
+            // check and set auto tune ping interval if necessary
+            tunePingInterval();
 
             /*
              * Broadcast to all others after connection is connected but before actual account registration start.
