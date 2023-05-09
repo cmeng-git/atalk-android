@@ -57,12 +57,11 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaDecoder",
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaEncoder",
 
-             EncodingConfigurationImpl.G729 ? "org.atalk.impl.neomedia.codec.audio.g729.JavaDecoder" : null,
-             EncodingConfigurationImpl.G729 ? "org.atalk.impl.neomedia.codec.audio.g729.JavaEncoder" : null,
+            "org.atalk.impl.neomedia.codec.audio.g729.JavaDecoder",
+            "org.atalk.impl.neomedia.codec.audio.g729.JavaEncoder",
 
-            // cmeng - removed support g722; libjng722.so implementation incomplete???
-            // "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoderImpl",
-            // "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoderImpl",
+            "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoderImpl",
+            "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoderImpl",
 
             // gsm
             "org.atalk.impl.neomedia.codec.audio.gsm.Decoder",
@@ -103,10 +102,10 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.video.SwScale",
 
             // Adaptive Multi-Rate Wideband (AMR-WB)
-            // "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
-            // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
-            // "org.atalk.impl.neomedia.codec.audio.amrwb.JNIEncoder",
-            // "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
+             "org.atalk.impl.neomedia.codec.audio.amrwb.DePacketizer",
+             "org.atalk.impl.neomedia.codec.audio.amrwb.JNIDecoder",
+             "org.atalk.impl.neomedia.codec.audio.amrwb.JNIEncoder",
+             "org.atalk.impl.neomedia.codec.audio.amrwb.Packetizer",
     };
 
     /**

@@ -11,9 +11,9 @@
         android:summary="Configure general preferences">
 
         <intent
-            android:action="org.atalk.android.gui.account.AccountPreferencesActivity.ACCOUNT_SETUP"
+            android:action="org.atalk.android.gui.account.settings.AccountPreferenceActivity.ACCOUNT_SETUP"
             android:targetPackage="org.atalk"
-            android:targetClass="org.atalk.android.gui.account.AccountPreferencesActivity" />
+            android:targetClass="org.atalk.android.gui.account.settings.AccountPreferenceActivity" />
     </PreferenceScreen>
 
     <PreferenceScreen
@@ -22,9 +22,9 @@
         android:summary="Configure chat preferences">
 
         <intent
-            android:action="org.atalk.android.gui.account.AccountPreferencesActivity.ACCOUNT_SETUP"
+            android:action="org.atalk.android.gui.account.settings.AccountPreferenceActivity.ACCOUNT_SETUP"
             android:targetPackage="org.atalk"
-            android:targetClass="org.atalk.android.gui.account.AccountPreferencesActivity" />
+            android:targetClass="org.atalk.android.gui.account.settings.AccountPreferenceActivity" />
     </PreferenceScreen>
 
 </PreferenceScreen>

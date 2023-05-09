@@ -25,8 +25,10 @@ import java.util.List;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class SipSettings extends BasicSettingsActivity
+public class SipSettings extends CodecSettingsActivity
 {
+    private static final String P_KEY_SIP_SSL_PROTOCOL = "pref.cat.sip.ssl_protocols";
+
     @Override
     public int getPreferencesXmlId()
     {
@@ -54,7 +56,7 @@ public class SipSettings extends BasicSettingsActivity
             super.onCreate(savedInstanceState);
 
             // Create supported protocols checkboxes
-            PreferenceCategory protocols = findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
+            PreferenceCategory protocols = findPreference(P_KEY_SIP_SSL_PROTOCOL);
 
             String configuredProtocols = Arrays.toString(ConfigurationUtils.getEnabledSslProtocols());
 
@@ -75,7 +77,7 @@ public class SipSettings extends BasicSettingsActivity
             super.onDestroy();
 
             // Find ssl protocol checkboxes and commit changes
-            PreferenceCategory protocols = findPreference(getString(R.string.pref_cat_sip_ssl_protocols));
+            PreferenceCategory protocols = findPreference(P_KEY_SIP_SSL_PROTOCOL);
 
             int count = protocols.getPreferenceCount();
             List<String> enabledSslProtocols = new ArrayList<>(count);

@@ -21,12 +21,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.preference.*;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.android.gui.util.PreferenceUtil;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
@@ -37,12 +38,11 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
  * @author Eng Chong Meng
  */
 public class QuietTimeFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener, PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback
-{
+        implements SharedPreferences.OnSharedPreferenceChangeListener, PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback {
     // QuietTime
-    private static final String P_KEY_QUIET_HOURS_ENABLE = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
-    private static final String P_KEY_QUIET_HOURS_START = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
-    private static final String P_KEY_QUIET_HOURS_END = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
+    public static final String P_KEY_QUIET_HOURS_ENABLE = "pref.key.quiet_hours_enable";
+    public static final String P_KEY_QUIET_HOURS_START = "pref.key.quiet_hours_start";
+    public static final String P_KEY_QUIET_HOURS_END = "pref.key.quiet_hours_end";
 
     private static final String DIALOG_FRAGMENT_TAG = "TimePickerDialog";
 
@@ -55,8 +55,7 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
     private final SummaryMapper summaryMapper = new SummaryMapper();
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the quiet time preferences from an XML resource
         super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.quiet_time_preferences, rootKey);
@@ -66,9 +65,9 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
+        setPrefTitle(R.string.title_pref_quiet_hours);
 
         mPreferenceScreen = getPreferenceScreen();
         shPrefs = getPreferenceManager().getSharedPreferences();
@@ -81,8 +80,7 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
         super.onStop();
@@ -91,8 +89,7 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
     /**
      * Initializes notifications section
      */
-    private void initQuietTimePreferences()
-    {
+    private void initQuietTimePreferences() {
         // Quite hours enable
         PreferenceUtil.setCheckboxVal(mPreferenceScreen, P_KEY_QUIET_HOURS_ENABLE,
                 ConfigurationUtils.isQuiteHoursEnable());
@@ -105,16 +102,17 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-    {
-        if (key.equals(P_KEY_QUIET_HOURS_ENABLE)) {
-            ConfigurationUtils.setQuiteHoursEnable(shPreferences.getBoolean(P_KEY_QUIET_HOURS_ENABLE, true));
-        }
-        else if (key.equals(P_KEY_QUIET_HOURS_START)) {
-            ConfigurationUtils.setQuiteHoursStart(shPreferences.getLong(P_KEY_QUIET_HOURS_START, TimePreference.DEFAULT_VALUE));
-        }
-        else if (key.equals(P_KEY_QUIET_HOURS_END)) {
-            ConfigurationUtils.setQuiteHoursEnd(shPreferences.getLong(P_KEY_QUIET_HOURS_END, TimePreference.DEFAULT_VALUE));
+    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
+        switch (key) {
+            case P_KEY_QUIET_HOURS_ENABLE:
+                ConfigurationUtils.setQuiteHoursEnable(shPreferences.getBoolean(P_KEY_QUIET_HOURS_ENABLE, true));
+                break;
+            case P_KEY_QUIET_HOURS_START:
+                ConfigurationUtils.setQuiteHoursStart(shPreferences.getLong(P_KEY_QUIET_HOURS_START, TimePreference.DEFAULT_VALUE));
+                break;
+            case P_KEY_QUIET_HOURS_END:
+                ConfigurationUtils.setQuiteHoursEnd(shPreferences.getLong(P_KEY_QUIET_HOURS_END, TimePreference.DEFAULT_VALUE));
+                break;
         }
     }
 
@@ -126,19 +124,18 @@ public class QuietTimeFragment extends OSGiPreferenceFragment
      * @return This fragment reference that implements OnPreferenceDisplayDialogCallback
      */
     @Override
-    public Fragment getCallbackFragment()
-    {
+    public Fragment getCallbackFragment() {
         return this;
     }
 
     /**
      * @param caller The fragment containing the preference requesting the dialog
      * @param pref The preference requesting the dialog
+     *
      * @return {@code true} if the dialog creation has been handled
      */
     @Override
-    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref)
-    {
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref) {
         if (pref instanceof TimePreference) {
             TimePickerPreferenceDialog dialogFragment = TimePickerPreferenceDialog.newInstance((TimePreference) pref);
             dialogFragment.setTargetFragment(this, 0);

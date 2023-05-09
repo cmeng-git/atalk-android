@@ -34,12 +34,13 @@ import java.util.List;
  * @author Eng Chong Meng
  */
 public class AccountPreferenceActivity extends OSGiActivity
-        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback
-{
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     /**
      * Extra key used to pass the unique user ID using {@link android.content.Intent}
      */
     public static final String EXTRA_USER_ID = "user_id_key";
+
+    private static final String ACCOUNT_FRAGMENT_TAG = "AccountPreferenceFragment";
 
     /**
      * The {@link AccountPreferenceFragment}
@@ -53,10 +54,10 @@ public class AccountPreferenceActivity extends OSGiActivity
      *
      * @param ctx the context.
      * @param accountID <code>AccountID</code> for which preferences will be opened.
+     *
      * @return <code>Intent</code> for starting account preferences activity parametrized with given <code>AccountID</code>.
      */
-    public static Intent getIntent(Context ctx, AccountID accountID)
-    {
+    public static Intent getIntent(Context ctx, AccountID accountID) {
         Intent intent = new Intent(ctx, AccountPreferenceActivity.class);
         intent.putExtra(EXTRA_USER_ID, accountID.getAccountUniqueID());
         return intent;
@@ -66,8 +67,7 @@ public class AccountPreferenceActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Settings cannot be opened during a call
@@ -87,12 +87,19 @@ public class AccountPreferenceActivity extends OSGiActivity
 
                 // Display the fragment as the main content.
                 getSupportFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, preferencesFragment)
+                        .replace(android.R.id.content, preferencesFragment, ACCOUNT_FRAGMENT_TAG)
                         .commit();
             }
             else {
-                preferencesFragment
-                        = (AccountPreferenceFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
+                Fragment aFragment = getSupportFragmentManager().findFragmentByTag(ACCOUNT_FRAGMENT_TAG);
+                if (aFragment instanceof AccountPreferenceFragment) {
+                    preferencesFragment = (AccountPreferenceFragment) aFragment;
+                }
+                else {
+                    aTalkApp.showToastMessage("No valid registered account found: " + userUniqueID);
+                    finish();
+                }
+
             }
         }
         else {
@@ -106,10 +113,10 @@ public class AccountPreferenceActivity extends OSGiActivity
      *
      * @param userUniqueID the account unique ID identifying edited account.
      * @param protocolName protocol name for which the impl fragment will be created.
+     *
      * @return impl preference fragment for given <code>userUniqueID</code> and <code>protocolName</code>.
      */
-    private AccountPreferenceFragment createPreferencesFragment(String userUniqueID, String protocolName)
-    {
+    private AccountPreferenceFragment createPreferencesFragment(String userUniqueID, String protocolName) {
         AccountPreferenceFragment preferencesFragment;
         switch (protocolName) {
             case ProtocolNames.SIP:
@@ -133,8 +140,7 @@ public class AccountPreferenceActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Catch the back key code and perform commit operation
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
@@ -150,7 +156,7 @@ public class AccountPreferenceActivity extends OSGiActivity
     }
 
     /**
-     *  Called when a preference in the tree rooted at the parent Preference has been clicked.
+     * Called when a preference in the tree rooted at the parent Preference has been clicked.
      *
      * @param caller The caller reference
      * @param pref The click preference to launch
@@ -158,8 +164,7 @@ public class AccountPreferenceActivity extends OSGiActivity
      * @return true always
      */
     @Override
-    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref)
-    {
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         // Instantiate the new Fragment
         final Bundle args = pref.getExtras();
         args.putString(EXTRA_ACCOUNT_ID, userUniqueID);

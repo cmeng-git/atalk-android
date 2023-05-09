@@ -56,10 +56,10 @@ import com.karumi.dexter.listener.single.CompositePermissionListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.Splash;
-import org.atalk.android.gui.aTalk;
 import org.atalk.service.SystemEventReceiver;
 
 import java.util.LinkedList;
@@ -73,7 +73,7 @@ import timber.log.Timber;
 /**
  * Sample activity showing the permission request process with Dexter.
  */
-public class PermissionsActivity extends AppCompatActivity {
+public class PermissionsActivity extends BaseActivity {
     @BindView(R.id.audio_permission_feedback)
     TextView audioPermissionFeedbackView;
     @BindView(R.id.camera_permission_feedback)

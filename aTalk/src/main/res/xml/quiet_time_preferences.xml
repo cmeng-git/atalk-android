@@ -7,19 +7,19 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/pref_key_quiet_hours_enable"
+            android:key="pref.key.quiet_hours_enable"
             android:summary="@string/pref_quiet_hours_summary"
             android:title="@string/title_pref_enable_quiet_hours" />
 
         <org.atalk.android.gui.settings.TimePreference
-            android:dependency="@string/pref_key_quiet_hours_enable"
+            android:dependency="pref.key.quiet_hours_enable"
             android:key="pref.key.quiet_hours_start"
             android:negativeButtonText="@string/service_gui_CANCEL"
             android:positiveButtonText="@string/service_gui_SET"
             android:title="@string/title_pref_quiet_hours_start_time" />
 
         <org.atalk.android.gui.settings.TimePreference
-            android:dependency="@string/pref_key_quiet_hours_enable"
+            android:dependency="pref.key.quiet_hours_enable"
             android:key="pref.key.quiet_hours_end"
             android:negativeButtonText="@string/service_gui_CANCEL"
             android:positiveButtonText="@string/service_gui_SET"

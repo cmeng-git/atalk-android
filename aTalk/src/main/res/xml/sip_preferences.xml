@@ -4,17 +4,17 @@
                   xmlns:custom="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
             android:title="@string/service_gui_SIP_CONN_GENERAL"
-            android:key="@string/pref_cat_sip_conn_general">
+            android:key="pref.cat.sip.conn.general" >
         <org.atalk.android.gui.settings.widget.ConfigEditText
                 android:title="@string/plugin_generalconfig_SIP_CLIENT_PORT"
-                android:key="@string/pref_key_sip_client_port"
+                android:key="SIP_PREFERRED_CLEAR_PORT"
                 android:inputType="number"
                 custom:intMax="65535"
                 custom:intMin="0"
                 custom:allowEmpty="true"/>
         <org.atalk.android.gui.settings.widget.ConfigEditText
                 android:title="@string/plugin_generalconfig_SIP_CLIENT_SECURE_PORT"
-                android:key="@string/pref_key_sip_client_secure_port"
+                android:key="SIP_PREFERRED_SECURE_PORT"
                 android:inputType="number"
                 custom:intMax="65535"
                 custom:intMin="0"
@@ -22,6 +22,6 @@
     </PreferenceCategory>
     <PreferenceCategory
             android:title="@string/plugin_generalconfig_SIP_SSL_PROTOCOLS"
-            android:key="@string/pref_cat_sip_ssl_protocols">
+            android:key="pref.cat.sip.ssl_protocols" >
     </PreferenceCategory>
 </PreferenceScreen>

@@ -35,6 +35,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
 
@@ -72,7 +73,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * A map containing bindings between aTalk's jabber presence status instances and Jabber status codes
      */
-    private static Map<String, Presence.Mode> scToJabberModesMappings = new Hashtable<>();
+    private static final Map<String, Presence.Mode> scToJabberModesMappings = new Hashtable<>();
 
     static {
         scToJabberModesMappings.put(JabberStatusEnum.AWAY, Presence.Mode.away);
@@ -87,7 +88,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * A map containing bindings between aTalk's xmpp presence status instances and priorities to use for statuses.
      */
-    private static Map<String, Integer> statusToPriorityMappings = new Hashtable<>();
+    private static final Map<String, Integer> statusToPriorityMappings = new Hashtable<>();
 
     /**
      * The server stored contact list that will be encapsulating smack's buddy list.
@@ -142,13 +143,13 @@ public class OperationSetPersistentPresenceJabberImpl
      *
      * @see InfoRetriever#retrieveDetails(BareJid contactAddress)
      */
-    private InfoRetriever mInfoRetriever;
+    private final InfoRetriever mInfoRetriever;
 
     /*
      * cmeng: 20190212 - Disable info Retrieval on first login even when local cache is empty
      * ejabberd will send VCardTempXUpdate with photo attr in <presence/> stanza when buddy come online
      */
-    private boolean infoRetrieveOnStart = false;
+    private final boolean infoRetrieveOnStart = false;
 
     /**
      * Creates the OperationSet.
@@ -260,16 +261,13 @@ public class OperationSetPersistentPresenceJabberImpl
         if (notInContactListGroup != null) {
             sourceContact = notInContactListGroup.findContact(id);
         }
-        if (sourceContact != null) {
-            return sourceContact;
-        }
-        else {
+        if (sourceContact == null) {
             sourceContact = ssContactList.createVolatileContact(id, isPrivateMessagingContact, displayName);
             if (isPrivateMessagingContact && id.hasResource()) {
                 updateResources(sourceContact, false);
             }
-            return sourceContact;
         }
+        return sourceContact;
     }
 
     /**
@@ -1142,7 +1140,7 @@ public class OperationSetPersistentPresenceJabberImpl
         /**
          * Stored presences for later processing.
          */
-        private List<Presence> storedPresences = null;
+        private CopyOnWriteArrayList<Presence> storedPresences = null;
 
         /**
          * Map containing all statuses for a userJid.
@@ -1183,8 +1181,8 @@ public class OperationSetPersistentPresenceJabberImpl
          */
         void storeEvents()
         {
-            this.storedPresences = new ArrayList<>();
-            this.storeEvents = true;
+            storedPresences = new CopyOnWriteArrayList<>();
+            storeEvents = true;
         }
 
         /**
@@ -1315,7 +1313,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * List of early subscriptions.
      */
-    private Map<Jid, String> earlySubscriptions = new HashMap<>();
+    private final Map<Jid, String> earlySubscriptions = new HashMap<>();
 
     /**
      * Adds auth handler.
@@ -1429,7 +1427,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
         String displayName = null;
         // For 4.4.3-master (20200416): subscribeRequest.getExtension(Nick.class); => IllegalArgumentException
-        Nick nickExt = (Nick) subscribeRequest.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+        Nick nickExt = (Nick) subscribeRequest.getExtension(Nick.QNAME);
         if (nickExt != null)
             displayName = nickExt.getName();
 

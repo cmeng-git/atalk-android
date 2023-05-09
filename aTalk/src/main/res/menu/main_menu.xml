@@ -15,7 +15,7 @@
     <item
         android:id="@+id/show_location"
         android:icon="@drawable/ic_location_dark"
-        android:title="@string/service_gui_GEO_SHOW"
+        android:title="@string/service_gui_GEO_SMAP"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/telephony"

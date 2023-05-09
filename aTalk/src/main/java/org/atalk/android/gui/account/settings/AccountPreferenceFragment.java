@@ -170,6 +170,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
     {
         // Load the preferences from the given resource
         super.onCreatePreferences(savedInstanceState, rootKey);
+        setPrefTitle(R.string.service_gui_ACCOUNT_SETTINGS);
         setPreferencesFromResource(preferencesResourceId, rootKey);
 
         if (savedInstanceState != null) {

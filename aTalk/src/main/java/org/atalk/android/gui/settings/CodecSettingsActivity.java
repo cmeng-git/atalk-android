@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 
+import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiPreferenceActivity;
 
 /**
@@ -21,19 +22,23 @@ import org.atalk.service.osgi.OSGiPreferenceActivity;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class BasicSettingsActivity extends OSGiPreferenceActivity
-{
+public class CodecSettingsActivity extends OSGiPreferenceActivity {
     /**
      * Returns preference XML resource ID.
      *
      * @return preference XML resource ID.
      */
-    protected int getPreferencesXmlId()
-    {
+    protected int getPreferencesXmlId() {
         // Cant' find custom preference classes using:
         // addPreferencesFromIntent(getActivity().getIntent());
         try {
             ActivityInfo app = getPackageManager().getActivityInfo(getComponentName(), PackageManager.GET_META_DATA);
+
+            if(app.name.contains("Opus"))
+                setMainTitle(R.string.service_gui_settings_OPUS);
+            else
+                setMainTitle(R.string.service_gui_settings_SILK);
+
             return app.metaData.getInt("android.preference");
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
@@ -44,25 +49,21 @@ public class BasicSettingsActivity extends OSGiPreferenceActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment(getPreferencesXmlId())).commit();
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragmentCompat
-    {
-        private int preferResId;
+    public static class MyPreferenceFragment extends PreferenceFragmentCompat {
+        private final int mPreferResId;
 
-        public MyPreferenceFragment(int preferResId)
-        {
-            this.preferResId = preferResId;
+        public MyPreferenceFragment(int preferResId) {
+            mPreferResId = preferResId;
         }
 
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-        {
-            setPreferencesFromResource(preferResId, rootKey);
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(mPreferResId, rootKey);
         }
     }
 }

@@ -5,6 +5,8 @@
  */
 package org.atalk.android;
 
+import static org.atalk.android.gui.settings.SettingsFragment.P_KEY_LOCALE;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -39,6 +41,7 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;
@@ -49,6 +52,7 @@ import org.atalk.android.gui.account.AccountLoginActivity;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.DrawableCache;
+import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
 import org.atalk.android.plugin.timberlog.TimberLogImpl;
 import org.atalk.impl.androidnotification.NotificationHelper;
@@ -90,7 +94,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     /**
      * Static instance holder.
      */
-    private static aTalkApp mInstance;
+    private static Context mInstance;
 
     /**
      * The currently shown activity.
@@ -100,7 +104,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     /**
      * Bitmap cache instance.
      */
-    private final DrawableCache drawableCache = new DrawableCache();
+    private final static DrawableCache drawableCache = new DrawableCache();
 
     /**
      * Used to keep the track of GUI activity.
@@ -144,12 +148,24 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         // MigrationTo6.updateChatSessionTable(DatabaseBackend.getInstance(this).getWritableDatabase());
 
         // Do this after WebView(this).destroy(); Set up contextWrapper to use aTalk user selected Language
-        mInstance = this;
         super.onCreate();
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         AndroidThreeTen.init(this);
 
         getDisplaySize();
+    }
+
+    /**
+     * setLocale for Application class to work properly with PBContext class.
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+        // mInstance must be initialize before getProperty() for SQLiteConfigurationStore() init.
+        mInstance = base;
+        String language = ConfigurationUtils.getProperty(P_KEY_LOCALE, "");
+        // showToastMessage("aTalkApp reinit locale: " + language);
+        mInstance = LocaleHelper.setLocale(base, language);
+        super.attachBaseContext(mInstance);
     }
 
     /**
@@ -227,22 +243,15 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     }
 
     /**
-     * Shutdowns the app by stopping <code>OSGiService</code> and broadcasting {@link #ACTION_EXIT}.
+     * Shutdowns the app by stopping <code>OSGiService</code> and broadcastingaction  {@link #ACTION_EXIT}.
      */
     public static void shutdownApplication() {
-        mInstance.doShutdownApplication();
-    }
-
-    /**
-     * Shutdowns the OSGI service and sends the EXIT action broadcast.
-     */
-    private void doShutdownApplication() {
         // Shutdown the OSGi service
-        stopService(new Intent(this, OSGiService.class));
+        mInstance.stopService(new Intent(mInstance, OSGiService.class));
         // Broadcast the exit action
         Intent exitIntent = new Intent();
         exitIntent.setAction(ACTION_EXIT);
-        sendBroadcast(exitIntent);
+        mInstance.sendBroadcast(exitIntent);
     }
 
     /**
@@ -251,7 +260,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return global bitmap cache of the application.
      */
     public static DrawableCache getImageCache() {
-        return mInstance.drawableCache;
+        return drawableCache;
     }
 
     /**
@@ -313,7 +322,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      *
      * @return aTalkApp mInstance
      */
-    public static aTalkApp getInstance() {
+    public static Context getInstance() {
         return mInstance;
     }
 

@@ -4,67 +4,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:key="@string/pref_cat_account"
+        android:key="pref_cat_account"
         android:title="@string/service_gui_JBR_USER_CATEGORY">
         <EditTextPreference
             android:enabled="true"
-            android:key="@string/pref_key_user_id"
+            android:key="pref_key_user_id"
             android:title="@string/service_gui_JBR_USER" />
 
         <EditTextPreference
             android:inputType="textPassword"
-            android:key="@string/pref_key_password"
+            android:key="pref_key_password"
             android:title="@string/service_gui_JBR_PASSWORD" />
 
         <CheckBoxPreference
-            android:key="@string/pref_key_store_password"
+            android:key="pref_key_store_password"
             android:summary="@string/service_gui_JBR_STORE_PASSWORD_SUMMARY"
             android:title="@string/service_gui_JBR_STORE_PASSWORD" />
 
         <ListPreference
             android:entries="@array/dnssec_Mode_name"
             android:entryValues="@array/dnssec_Mode_value"
-            android:key="@string/pref_key_dnssec_mode"
+            android:key="dns.DNSSEC_MODE"
             android:title="@string/service_gui_settings_DNSSEC_DANE" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="@string/pref_cat_jbr_advanced"
+        android:key="pref.cat.jbr.advanced"
         android:title="@string/service_gui_JBR_ADVANCED">
         <Preference
-            android:key="@string/pref_key_enable_encryption"
+            android:key="pref_key_enable_encryption"
             android:title="@string/service_gui_PREF_ENCRYPTION" />
 
         <Preference
-            android:key="@string/pref_screen_jbr_conn"
+            android:key="pref.screen.jbr.connection"
             android:summary="@string/service_gui_JBR_CONN_SUMMARY"
             android:title="@string/service_gui_JBR_CONNECTION"
             app:fragment="org.atalk.android.gui.account.settings.XmppConnectionFragment" />
 
         <Preference
-            android:key="@string/pref_key_bosh_configuration"
+            android:key="Bosh_Configuration"
             android:summary="@string/service_gui_settings_BOSH_PROXY_SUMMARY"
             android:title="@string/service_gui_settings_BOSH_PROXY" />
 
         <Preference
-            android:key="@string/pref_screen_jbr_ice"
+            android:key="pref.screen.jbr.ice"
             android:summary="@string/service_gui_JBR_ICE_SUMMARY"
             android:title="@string/service_gui_JBR_ICE"
             app:fragment="org.atalk.android.gui.account.settings.IceFragment" />
 
         <Preference
-            android:key="@string/pref_screen_jbr_tele"
+            android:key="pref.screen.jbr.telephony"
             android:summary="@string/service_gui_JBR_TELEPHONY_SUMMARY"
             android:title="@string/service_gui_JBR_TELEPHONY"
             app:fragment="org.atalk.android.gui.account.settings.TelephonyFragment" />
 
         <Preference
-            android:key="@string/pref_cat_video_encoding"
+            android:key="pref_cat_enc_video"
             android:summary="@string/service_gui_PREF_VIDEO_ENC_SUMMARY"
             android:title="@string/service_gui_PREF_VIDEO_ENCODING" />
 
         <Preference
-            android:key="@string/pref_cat_audio_encoding"
+            android:key="pref_cat_enc_audio"
             android:summary="@string/service_gui_PREF_AUDIO_ENC_SUMMARY"
             android:title="@string/service_gui_PREF_AUDIO_ENCODING" />
     </PreferenceCategory>

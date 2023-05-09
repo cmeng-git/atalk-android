@@ -45,7 +45,7 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
     /**
      * Instant of screen off Dialog - dismiss in screenOn()
      */
-    private ScreenOffDialog screenOffDialog = null;
+    private static ScreenOffDialog screenOffDialog = null;
 
     /**
      * {@inheritDoc}
@@ -116,8 +116,8 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
             return;
 
         float proximity = event.values[0];
-        // float max = event.sensor.getMaximumRange();
-        // Timber.i("Proximity updated: " + proximity + " max range: " + max);
+        float max = event.sensor.getMaximumRange();
+        Timber.i("Proximity updated: " + proximity + " max range: " + max);
 
         if (proximity > 0) {
             screenOn();
@@ -210,9 +210,10 @@ public class ProximitySensorFragment extends Fragment implements SensorEventList
                     else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                         volControl.onKeyVolDown();
                     }
-                    // Exit Screen Lock
+                    // Force to exit Screen Block in case device is not responsive
                     else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        onResume();
+                        screenOffDialog.dismiss();
+                        screenOffDialog = null;
                     }
                 }
                 return true;

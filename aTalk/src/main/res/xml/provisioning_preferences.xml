@@ -4,46 +4,46 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:key="@string/pref_cat_provisioning_METHOD"
+        android:key="pref.cat.provisioning.method"
         android:title="@string/plugin_provisioning_METHOD">
 
         <org.atalk.android.gui.settings.widget.ConfigListPreference
             android:entries="@array/pref_provisioning_method"
             android:entryValues="@array/pref_provisioning_method_values"
-            android:key="@string/pref_key_provisioning_METHOD"
+            android:key="pref.key.provisioning_METHOD"
             android:title="@string/plugin_provisioning_METHOD"
             custom:disableDependentsValue="Manual"
             custom:disableOnNotEqualValue="true" />
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
-            android:dependency="@string/pref_key_provisioning_METHOD"
-            android:key="@string/pref_key_provisioning_URL"
+            android:dependency="pref.key.provisioning_METHOD"
+            android:key="pref.key.provisioning_URL"
             android:title="@string/plugin_provisioning_MANUAL" />
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
-            android:key="@string/pref_key_provisioning_UUID"
+            android:key="net.java.sip.communicator.UUID"
             android:title="@string/plugin_provisioning_UUID"
             custom:editable="false" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="@string/pref_cat_provisioning_CREDENTIALS"
+        android:key="pref.cat.provisioning.credentials"
         android:title="@string/plugin_provisioning_CREDENTIALS">
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
-            android:key="@string/pref_key_provisioning_USERNAME"
+            android:key="plugin.provisioning.auth.USERNAME"
             android:title="@string/service_gui_USERNAME"
             custom:editable="false" />
 
         <org.atalk.android.gui.settings.widget.ConfigEditText
             android:inputType="textPassword"
-            android:key="@string/pref_key_provisioning_PASSWORD"
+            android:key="plugin.provisioning.auth"
             android:title="@string/service_gui_PASSWORD"
             custom:editable="false" />
 
         <Preference
             android:enabled="false"
-            android:key="@string/pref_key_provisioning_FORGET_PASSWORD"
+            android:key="pref.key.provisioning.forget_password"
             android:title="@string/plugin_provisioning_FORGET_PASSWORD" />
     </PreferenceCategory>
 </PreferenceScreen>

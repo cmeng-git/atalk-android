@@ -207,15 +207,17 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
      * @param sid the intended Jingle Message call id
      */
     public static void sendJingleMessageRetract(Jid remote, String sid) {
-        allowSendRetract = false;
-        JingleMessage msgRetract = new JingleMessage(JingleMessage.ACTION_RETRACT, sid);
-        MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
-                .ofType(Message.Type.chat)
-                .from(remote.asBareJid())
-                .to(mConnection.getUser());
+        if (mConnection != null) {
+            allowSendRetract = false;
+            JingleMessage msgRetract = new JingleMessage(JingleMessage.ACTION_RETRACT, sid);
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
+                    .ofType(Message.Type.chat)
+                    .from(remote.asBareJid())
+                    .to(mConnection.getUser());
 
-        sendJingleMessage(mConnection, msgRetract, messageBuilder.build());
-        endJmCallProcess(R.string.service_gui_CALL_RETRACTED, mConnection.getUser());
+            sendJingleMessage(mConnection, msgRetract, messageBuilder.build());
+            endJmCallProcess(R.string.service_gui_CALL_RETRACTED, mConnection.getUser());
+        }
     }
 
     /**
@@ -254,7 +256,8 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
             notifyOnStateChange(connection, JingleMessageType.propose, mRemote, sid);
             // v3.0.5: always starts with heads-up notification for JingleMessage call propose
             AndroidCallListener.startIncomingCallNotification(mRemote, sid, SystrayService.JINGLE_MESSAGE_PROPOSE, isVideoCall);
-        } else {
+        }
+        else {
             sendJingleMessageReject(sid);
         }
     }
@@ -269,16 +272,18 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
      * @param sid the intended Jingle Message call id
      */
     public static void sendJingleAccept(String sid) {
-        Jid local = mConnection.getUser();
-        mSid = sid;
+        if (mConnection != null) {
+            Jid local = mConnection.getUser();
+            mSid = sid;
 
-        JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, sid);
-        MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
-                .ofType(Message.Type.chat)
-                .from(local.asBareJid())   // the actual message send to
-                .to(local);                // the actual message send from
+            JingleMessage msgAccept = new JingleMessage(JingleMessage.ACTION_ACCEPT, sid);
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
+                    .ofType(Message.Type.chat)
+                    .from(local.asBareJid())   // the actual message send to
+                    .to(local);                // the actual message send from
 
-        sendJingleMessage(mConnection, msgAccept, messageBuilder.build());
+            sendJingleMessage(mConnection, msgAccept, messageBuilder.build());
+        }
     }
 
     /**
@@ -321,7 +326,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
      * @param sid the intended Jingle Message call id
      */
     public static void sendJingleMessageReject(String sid) {
-        if (mRemote != null) {
+        if (mRemote != null && (mConnection != null)) {
             JingleMessage msgReject = new JingleMessage(JingleMessage.ACTION_REJECT, sid);
             MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                     .ofType(Message.Type.chat)

@@ -45,8 +45,7 @@ import java.util.Collection;
  * @author Eng Chong Meng
  */
 public class ActionBarStatusFragment extends OSGiFragment
-        implements EventListener<PresenceStatus>, GlobalDisplayDetailsListener
-{
+        implements EventListener<PresenceStatus>, GlobalDisplayDetailsListener {
     /**
      * The online status.
      */
@@ -92,15 +91,13 @@ public class ActionBarStatusFragment extends OSGiFragment
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = (AppCompatActivity) context;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         loginRenderer = AndroidGUIActivator.getLoginRenderer();
@@ -108,15 +105,16 @@ public class ActionBarStatusFragment extends OSGiFragment
         globalStatusMenu = createGlobalStatusMenu();
 
         View actionBarView = mContext.findViewById(R.id.actionBarView);
-        actionBarView.setOnClickListener(v -> {
-            globalStatusMenu.show(actionBarView);
-            globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
-        });
+        if (actionBarView != null) {
+            actionBarView.setOnClickListener(v -> {
+                globalStatusMenu.show(actionBarView);
+                globalStatusMenu.setAnimStyle(GlobalStatusMenu.ANIM_REFLECT);
+            });
+        }
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         loginRenderer.addGlobalStatusListener(this);
         onChangeEvent(loginRenderer.getGlobalStatus());
@@ -127,8 +125,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         loginRenderer.removeGlobalStatusListener(this);
         displayDetailsService.removeGlobalDisplayDetailsListener(this);
@@ -139,8 +136,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      *
      * @return the newly created <code>GlobalStatusMenu</code>
      */
-    private GlobalStatusMenu createGlobalStatusMenu()
-    {
+    private GlobalStatusMenu createGlobalStatusMenu() {
         Resources res = getResources();
         ActionMenuItem ffcItem = new ActionMenuItem(FFC,
                 res.getString(R.string.service_gui_FFC_STATUS),
@@ -196,8 +192,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      *
      * @param newStatus new global status to set.
      */
-    private void publishGlobalStatus(final int newStatus)
-    {
+    private void publishGlobalStatus(final int newStatus) {
         /*
          * Runs publish status on separate thread to prevent NetworkOnMainThreadException
          */
@@ -227,15 +222,14 @@ public class ActionBarStatusFragment extends OSGiFragment
     }
 
     @Override
-    public void onChangeEvent(final PresenceStatus presenceStatus)
-    {
+    public void onChangeEvent(final PresenceStatus presenceStatus) {
         if ((presenceStatus == null) || (mContext == null))
             return;
 
         runOnUiThread(() -> {
             String mStatus = presenceStatus.getStatusName();
             ActionBarUtil.setSubtitle(mContext, mStatus);
-            ActionBarUtil.setStatus(mContext, StatusUtil.getStatusIcon(presenceStatus));
+            ActionBarUtil.setStatusIcon(mContext, StatusUtil.getStatusIcon(presenceStatus));
 
             MenuItem mOnOffLine = ((aTalk) mContext).getMenuItemOnOffLine();
             // Proceed only if mOnOffLine has been initialized
@@ -253,8 +247,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      * Indicates that the global avatar has been changed.
      */
     @Override
-    public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt)
-    {
+    public void globalDisplayAvatarChanged(final GlobalAvatarChangeEvent evt) {
         runOnUiThread(() -> setGlobalAvatar(evt.getNewAvatar()));
     }
 
@@ -262,8 +255,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      * Indicates that the global display name has been changed.
      */
     @Override
-    public void globalDisplayNameChanged(final GlobalDisplayNameChangeEvent evt)
-    {
+    public void globalDisplayNameChanged(final GlobalDisplayNameChangeEvent evt) {
         runOnUiThread(() -> setGlobalDisplayName(evt.getNewDisplayName()));
     }
 
@@ -272,8 +264,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      *
      * @param avatar the byte array representing the avatar to set
      */
-    private void setGlobalAvatar(final byte[] avatar)
-    {
+    private void setGlobalAvatar(final byte[] avatar) {
         if (avatar != null && avatar.length > 0) {
             ActionBarUtil.setAvatar(mContext, avatar);
         }
@@ -287,8 +278,7 @@ public class ActionBarStatusFragment extends OSGiFragment
      *
      * @param name the display name to set
      */
-    private void setGlobalDisplayName(final String name)
-    {
+    private void setGlobalDisplayName(final String name) {
         String displayName = name;
         Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
 

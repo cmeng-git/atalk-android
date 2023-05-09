@@ -9,15 +9,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.preference.*;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceScreen;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
 
@@ -27,30 +31,29 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
  * @author Eng Chong Meng
  */
 public class ExpertSettingsFragment extends OSGiPreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener
-{
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Advance video/audio settings
-    private static final String PC_KEY_ADVANCED = aTalkApp.getResString(R.string.pref_cat_settings_advanced);
-    // private static final String PC_KEY_VIDEO = aTalkApp.getResString(R.string.pref_cat_settings_video);
-    // private static final String PC_KEY_AUDIO = aTalkApp.getResString(R.string.pref_cat_settings_audio);
+    private static final String PC_KEY_ADVANCED = "pref.cat.settings.advanced";
+    // private static final String PC_KEY_VIDEO = "pref.cat.settings.video";
+    // private static final String PC_KEY_AUDIO = "pref.cat.settings.audio";
 
     // Audio settings
-    private static final String P_KEY_AUDIO_ECHO_CANCEL = aTalkApp.getResString(R.string.pref_key_audio_echo_cancel);
-    private static final String P_KEY_AUDIO_AGC = aTalkApp.getResString(R.string.pref_key_audio_agc);
-    private static final String P_KEY_AUDIO_DENOISE = aTalkApp.getResString(R.string.pref_key_audio_denoise);
+    private static final String P_KEY_AUDIO_ECHO_CANCEL = "pref.key.audio.echo_cancel";
+    private static final String P_KEY_AUDIO_AGC = "pref.key.audio.agc";
+    private static final String P_KEY_AUDIO_DENOISE = "pref.key.audio.denoise";
 
     // Hardware encoding/decoding (>=API16)
-    private static final String P_KEY_VIDEO_HW_ENCODE = aTalkApp.getResString(R.string.pref_key_video_hw_encode);
-    private static final String P_KEY_VIDEO_HW_DECODE = aTalkApp.getResString(R.string.pref_key_video_hw_decode);
+    private static final String P_KEY_VIDEO_HW_ENCODE = "neomedia.android.hw_encode";
+    private static final String P_KEY_VIDEO_HW_DECODE = "neomedia.android.hw_decode";
     // Direct surface encoding(hw encoding required and API18)
-    private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_encode);
-    private static final String P_KEY_VIDEO_DEC_DIRECT_SURFACE = aTalkApp.getResString(R.string.pref_key_video_surface_decode);
+    private static final String P_KEY_VIDEO_ENC_DIRECT_SURFACE = "neomedia.android.surface_encode";
+    private static final String P_KEY_VIDEO_DEC_DIRECT_SURFACE = "neomedia.android.surface_decode";
 
     // Video advanced settings
-    private static final String P_KEY_VIDEO_LIMIT_FPS = aTalkApp.getResString(R.string.pref_key_video_limit_fps);
-    private static final String P_KEY_VIDEO_TARGET_FPS = aTalkApp.getResString(R.string.pref_key_video_target_fps);
-    private static final String P_KEY_VIDEO_MAX_BANDWIDTH = aTalkApp.getResString(R.string.pref_key_video_max_bandwidth);
-    private static final String P_KEY_VIDEO_BITRATE = aTalkApp.getResString(R.string.pref_key_video_bitrate);
+    private static final String P_KEY_VIDEO_LIMIT_FPS = "pref.key.video.limit_fps";
+    private static final String P_KEY_VIDEO_TARGET_FPS = "pref.key.video.frame_rate";
+    private static final String P_KEY_VIDEO_MAX_BANDWIDTH = "pref.key.video.max_bandwidth";
+    private static final String P_KEY_VIDEO_BITRATE = "pref.key.video.bitrate";
 
     /**
      * The device configuration
@@ -66,19 +69,18 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     private final SummaryMapper summaryMapper = new SummaryMapper();
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-    {
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the expert_preferences from an XML resource
         super.onCreatePreferences(savedInstanceState, rootKey);
         setPreferencesFromResource(R.xml.expert_preferences, rootKey);
+        setPrefTitle(R.string.service_gui_settings_EXPERT);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         mPreferenceScreen = getPreferenceScreen();
@@ -112,8 +114,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
      * {@inheritDoc}
      */
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);
         super.onStop();
@@ -122,8 +123,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes audio settings.
      */
-    private void initAudioPreferences()
-    {
+    private void initAudioPreferences() {
         int audioSystemFeatures = mAudioSystem.getFeatures();
 
         // Echo cancellation
@@ -146,8 +146,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     }
 
     // Disable all media options when MediaServiceImpl is not initialized due to text-relocation in ffmpeg
-    private void disableMediaOptions()
-    {
+    private void disableMediaOptions() {
         // android OS cannot support removal of nested PreferenceCategory, so just disable all advance settings
         PreferenceCategory myPrefCat = findPreference(PC_KEY_ADVANCED);
         if (myPrefCat != null) {
@@ -168,8 +167,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     /**
      * Initializes video preferences part.
      */
-    private void initVideoPreferences()
-    {
+    private void initVideoPreferences() {
         updateHwCodecStatus();
 
         // Frame rate
@@ -210,8 +208,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
      *
      * @see org.atalk.android.gui.settings.widget.ConfigWidgetUtil#handlePersistValue(final Object value)
      */
-    private void updateHwCodecStatus()
-    {
+    private void updateHwCodecStatus() {
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();
 
         // MediaCodecs only work with AndroidCameraSystem(at least for now)
@@ -229,8 +226,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
     /**
      * {@inheritDoc}
      */
-    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
         // Echo cancellation
         if (key.equals(P_KEY_AUDIO_ECHO_CANCEL)) {
             mAudioSystem.setEchoCancel(shPreferences.getBoolean(P_KEY_AUDIO_ECHO_CANCEL, true));

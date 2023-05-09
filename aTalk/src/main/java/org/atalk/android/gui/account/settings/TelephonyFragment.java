@@ -6,6 +6,7 @@
 package org.atalk.android.gui.account.settings;
 
 import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
+import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.setUncommittedChanges;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,8 +19,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import timber.log.Timber;
 
@@ -28,13 +29,13 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class TelephonyFragment extends PreferenceFragmentCompat
+public class TelephonyFragment extends OSGiPreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     // Telephony
-    private static final String P_KEY_CALLING_DISABLED = aTalkApp.getResString(R.string.pref_key_calling_disabled);
-    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = aTalkApp.getResString(R.string.pref_key_override_phone_suffix);
-    private static final String P_KEY_TEL_BYPASS_GTALK_CAPS = aTalkApp.getResString(R.string.pref_key_tele_bypass_gtalk_caps);
+    private static final String P_KEY_CALLING_DISABLED = "pref_key_calling_disabled";
+    private static final String P_KEY_OVERRIDE_PHONE_SUFFIX = "pref_key_override_phone_suffix";
+    private static final String P_KEY_TEL_BYPASS_GTALK_CAPS = "pref_key_tele_bypass_gtalk_caps";
 
     /*
      * A new instance of AccountID and is not the same as accountID.
@@ -57,6 +58,7 @@ public class TelephonyFragment extends PreferenceFragmentCompat
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
         setPreferencesFromResource(R.xml.telephony_preference, rootKey);
+        setPrefTitle(R.string.service_gui_JBR_TELEPHONY);
 
         String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);

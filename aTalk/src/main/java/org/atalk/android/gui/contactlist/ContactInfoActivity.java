@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.util.AndroidImageUtil;
@@ -116,7 +115,7 @@ public class ContactInfoActivity extends OSGiActivity
         // Setup the contact presence status
         PresenceStatus presenceStatus = mContact.getPresenceStatus();
         if (presenceStatus != null) {
-            ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
+            ActionBarUtil.setStatusIcon(this, presenceStatus.getStatusIcon());
 
             TextView statusNameView = findViewById(R.id.presenceStatusName);
             ImageView statusIconView = findViewById(R.id.presenceStatusIcon);

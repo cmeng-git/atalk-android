@@ -7,11 +7,17 @@ package org.atalk.android.gui.actionbar;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Dimension;
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,17 +34,14 @@ import timber.log.Timber;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class ActionBarUtil
-{
-
+public class ActionBarUtil {
     /**
      * Sets the action bar title for the given activity.
      *
      * @param activity the <code>Activity</code>, for which we set the action bar title
      * @param title the title string to set
      */
-    public static void setTitle(AppCompatActivity activity, CharSequence title)
-    {
+    public static void setTitle(AppCompatActivity activity, CharSequence title) {
         ActionBar actionBar = activity.getSupportActionBar();
         // Some activities don't have ActionBar
         if (actionBar != null) {
@@ -52,14 +55,38 @@ public class ActionBarUtil
         }
     }
 
+//    public static void setPrefTitle(AppCompatActivity activity, int resId) {
+//        ActionBar actionBar = activity.getSupportActionBar();
+//        String title = activity.getResources().getString(resId);
+//
+//        // Some activities don't have ActionBar
+//        if (actionBar != null) {
+//            if (actionBar.getCustomView() != null) {
+//                TextView titleText = activity.findViewById(R.id.actionBarTitle);
+//                if (titleText != null) {
+//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleText.getLayoutParams();
+//                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
+//                    titleText.setLayoutParams(params);
+//
+//                    titleText.setTextSize(Dimension.PX, 20f);
+//                    titleText.setText(title);
+//                }
+//            }
+//            else
+//                actionBar.setTitle(title);
+//        }
+//    }
+
     /**
-     * Sets the action bar subtitle for the given activity.
+     * Sets the action bar subtitle for the given activity. The text may contain
+     * a, Account user online status
+     * b. The chat buddy last seen date or online status
+     * c. Callee Jid during media call
      *
      * @param activity the <code>Activity</code>, for which we set the action bar subtitle
      * @param subtitle the subtitle string to set
      */
-    public static void setSubtitle(AppCompatActivity activity, String subtitle)
-    {
+    public static void setSubtitle(AppCompatActivity activity, String subtitle) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
             TextView statusText = activity.findViewById(R.id.actionBarStatus);
@@ -72,33 +99,13 @@ public class ActionBarUtil
     }
 
     /**
-     * Set the action bar status for the given activity.
+     * Gets the action bar subTitle for the given activity.
      *
      * @param activity the <code>Activity</code>, for which we get the action bar title
-     * @param statusIcon display Icon per the user status
-     */
-    public static void setStatus(AppCompatActivity activity, byte[] statusIcon)
-    {
-        ActionBar actionBar = activity.getSupportActionBar();
-        if (actionBar != null) {
-            Bitmap avatarStatusBmp = AndroidImageUtil.bitmapFromBytes(statusIcon);
-            if (avatarStatusBmp != null) {
-                ImageView actionBarStatus = activity.findViewById(R.id.globalStatusIcon);
-                // actionBarStatus is null while search option is selected
-                if (actionBarStatus != null)
-                    actionBarStatus.setImageBitmap(avatarStatusBmp);
-            }
-        }
-    }
-
-    /**
-     * Gets the action bar title for the given activity.
      *
-     * @param activity the <code>Activity</code>, for which we get the action bar title
      * @return the title string
      */
-    public static String getStatus(AppCompatActivity activity)
-    {
+    public static String getStatus(AppCompatActivity activity) {
         if (activity != null) {
             ActionBar actionBar = activity.getSupportActionBar();
             // Some activities don't have ActionBar
@@ -112,13 +119,45 @@ public class ActionBarUtil
     }
 
     /**
+     * Get the user offline status during the selected Locale.
+     * Quiet messy to use this method as the user online status is being updated from multiple places
+     * including server presence status sending etc.
+     *
+     * @param activity the caller context
+     *
+     * @return use online status
+     */
+    public static boolean isOffline(AppCompatActivity activity) {
+        String offlineLabel = activity.getResources().getString(R.string.service_gui_OFFLINE);
+        return offlineLabel.equals(ActionBarUtil.getStatus(activity));
+    }
+
+    /**
+     * Set the action bar status for the given activity.
+     *
+     * @param activity the <code>Activity</code>, for which we get the action bar title
+     * @param statusIcon display Icon per the user status
+     */
+    public static void setStatusIcon(AppCompatActivity activity, byte[] statusIcon) {
+        ActionBar actionBar = activity.getSupportActionBar();
+        if (actionBar != null) {
+            Bitmap avatarStatusBmp = AndroidImageUtil.bitmapFromBytes(statusIcon);
+            if (avatarStatusBmp != null) {
+                ImageView actionBarStatus = activity.findViewById(R.id.globalStatusIcon);
+                // actionBarStatus is null while search option is selected
+                if (actionBarStatus != null)
+                    actionBarStatus.setImageBitmap(avatarStatusBmp);
+            }
+        }
+    }
+
+    /**
      * Sets the avatar icon of the action bar.
      *
      * @param activity the current activity where the status should be displayed
      * @param avatar the avatar to display
      */
-    public static void setAvatar(AppCompatActivity activity, byte[] avatar)
-    {
+    public static void setAvatar(AppCompatActivity activity, byte[] avatar) {
         // The default avatar drawable for display on ActionBar
         LayerDrawable avatarDrawable = getDefaultAvatarDrawable(activity);
 
@@ -155,8 +194,7 @@ public class ActionBarUtil
         }
     }
 
-    public static void setAvatar(AppCompatActivity activity, @DrawableRes int resId)
-    {
+    public static void setAvatar(AppCompatActivity activity, @DrawableRes int resId) {
         ActionBar actionBar = activity.getSupportActionBar();
         if (actionBar != null) {
             if (actionBar.getCustomView() == null)
@@ -174,8 +212,7 @@ public class ActionBarUtil
      *
      * @return the default avatar {@link Drawable}
      */
-    private static LayerDrawable getDefaultAvatarDrawable(AppCompatActivity activity)
-    {
+    private static LayerDrawable getDefaultAvatarDrawable(AppCompatActivity activity) {
         Resources res = activity.getResources();
         return (LayerDrawable) ResourcesCompat.getDrawable(res, R.drawable.avatar_layer_drawable, null);
     }

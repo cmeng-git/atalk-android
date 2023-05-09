@@ -5,7 +5,6 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.impl.neomedia.codec.EncodingConfigurationImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.device.ScreenDeviceImpl;
 import org.atalk.impl.neomedia.format.AudioMediaFormatImpl;
@@ -18,8 +17,8 @@ import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.OSUtils;
 import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -42,8 +41,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class MediaUtils
-{
+public class MediaUtils {
     /**
      * An empty array with <code>MediaFormat</code> element type. Explicitly defined in order to reduce
      * unnecessary allocations, garbage collection.
@@ -131,25 +129,30 @@ public class MediaUtils
                 MediaType.AUDIO,
                 Constants.SPEEX_RTP,
                 8000, 16000, 32000);
-//		 addMediaFormats(
-//		 		(byte) SdpConstants.G722,
-//				 "G722",
-//				 MediaType.AUDIO,
-//				 Constants.G722_RTP,
-//				 8000);
-        if (EncodingConfigurationImpl.G729) {
-            Map<String, String> g729FormatParams = new HashMap<>();
-            g729FormatParams.put("annexb", "no");
+        addMediaFormats(
+                (byte) SdpConstants.G722,
+                "G722",
+                MediaType.AUDIO,
+                Constants.G722_RTP,
+                8000);
 
-            addMediaFormats(
-                    (byte) SdpConstants.G729,
-                    "G729",
-                    MediaType.AUDIO,
-                    AudioFormat.G729_RTP,
-                    g729FormatParams,
-                    null,
-                    8000);
-        }
+        /*
+         * @see https://en.wikipedia.org/wiki/G.729 #Licensing
+         * As of January 1, 2017, the patent terms of most licensed patents under the G.729 Consortium
+         * have expired, the remaining unexpired patents are usable on a royalty-free basis.
+         */
+        Map<String, String> g729FormatParams = new HashMap<>();
+        g729FormatParams.put("annexb", "no");
+
+        addMediaFormats(
+                (byte) SdpConstants.G729,
+                "G729",
+                MediaType.AUDIO,
+                AudioFormat.G729_RTP,
+                g729FormatParams,
+                null,
+                8000);
+
         addMediaFormats(
                 MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
                 "telephone-event",
@@ -177,11 +180,11 @@ public class MediaUtils
                 Constants.FLEXFEC_03);
 
         ConfigurationService cfg = LibJitsi.getConfigurationService();
-
         boolean advertiseFEC = cfg.getBoolean(Constants.PROP_SILK_ADVERSISE_FEC, false);
         Map<String, String> silkFormatParams = new HashMap<>();
-        if (advertiseFEC)
+        if (advertiseFEC) {
             silkFormatParams.put("useinbandfec", "1");
+        }
         addMediaFormats(
                 MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN,
                 "SILK",
@@ -196,15 +199,15 @@ public class MediaUtils
          * https://tools.ietf.org/html/rfc7587
          */
         Map<String, String> opusFormatParams = new HashMap<>();
-        // not in rfc7587
-        // opusFormatParams.put("minptime", "10");
+        // opusFormatParams.put("minptime", "10"); /* not in rfc7587 */
 
         /*
          * Decoder support for FEC SHOULD be indicated at the time a session is setup.
          */
         boolean opusFec = cfg.getBoolean(Constants.PROP_OPUS_FEC, true);
-        if (opusFec)
+        if (opusFec) {
             opusFormatParams.put("useinbandfec", "1");
+        }
 
         /*
          * DTX can be used with both variable and constant bitrate.  It will have a slightly lower speech
@@ -213,12 +216,12 @@ public class MediaUtils
          * If no value is specified, the default is 0.
          */
         boolean opusDtx = cfg.getBoolean(Constants.PROP_OPUS_DTX, false);
-        if (opusDtx)
+        if (opusDtx) {
             opusFormatParams.put("usedtx", "1");
+        }
 
         Map<String, String> opusAdvancedParams = new HashMap<>();
-        /* The preferred duration of media represented by a packet that a decoder wants to receive, in milliseconds
-         */
+        /* The preferred duration of media represented by a packet that a decoder wants to receive, in milliseconds */
         opusAdvancedParams.put(Constants.PTIME, "20");
 
         addMediaFormats(
@@ -231,10 +234,10 @@ public class MediaUtils
                 opusAdvancedParams,
                 48000);
 
-        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, false);
 
         // Adaptive Multi-Rate Wideband (AMR-WB)
         // Checks whether ffmpeg is enabled and whether AMR-WB is available in the provided binaries
+        boolean enableFfmpeg = cfg.getBoolean(MediaService.ENABLE_FFMPEG_CODECS_PNAME, true);
         boolean amrwbEnabled = false;
         if (enableFfmpeg) {
             try {
@@ -416,8 +419,7 @@ public class MediaUtils
             String encoding,
             MediaType mediaType,
             String jmfEncoding,
-            double... clockRates)
-    {
+            double... clockRates) {
         addMediaFormats(
                 rtpPayloadType,
                 encoding,
@@ -457,8 +459,7 @@ public class MediaUtils
             int channels,
             Map<String, String> formatParameters,
             Map<String, String> advancedAttributes,
-            double... clockRates)
-    {
+            double... clockRates) {
         int clockRateCount = clockRates.length;
         List<MediaFormat> mediaFormats = new ArrayList<>(clockRateCount);
 
@@ -499,7 +500,6 @@ public class MediaUtils
             switch (mediaType) {
                 case AUDIO:
                     AudioFormat audioFormat = new AudioFormat(jmfEncoding);
-
                     format = audioFormat;
                     clockRate = audioFormat.getSampleRate();
                     break;
@@ -556,8 +556,7 @@ public class MediaUtils
             String jmfEncoding,
             Map<String, String> formatParameters,
             Map<String, String> advancedAttributes,
-            double... clockRates)
-    {
+            double... clockRates) {
         addMediaFormats(
                 rtpPayloadType,
                 encoding,
@@ -576,10 +575,10 @@ public class MediaUtils
      *
      * @param sendSize maximum size peer can send
      * @param maxRecvSize maximum size peer can display
+     *
      * @return string that represent imgattr that can be encoded via SIP/SDP or XMPP/Jingle
      */
-    public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize)
-    {
+    public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize) {
         StringBuffer img = new StringBuffer();
 
         /* send width */
@@ -641,13 +640,13 @@ public class MediaUtils
      * <code>MediaUtils</code>, returns <code>null</code>.
      *
      * @param format the JMF <code>Format</code> to get the <code>MediaFormat</code> representation for
+     *
      * @return a <code>MediaFormat</code> predefined in <code>MediaUtils</code> which represents
      * <code>format</code> if any; <code>null</code> if there is no such representing
      * <code>MediaFormat</code> in <code>MediaUtils</code>
      */
     @SuppressWarnings("unchecked")
-    public static MediaFormat getMediaFormat(Format format)
-    {
+    public static MediaFormat getMediaFormat(Format format) {
         double clockRate;
 
         if (format instanceof AudioFormat)
@@ -675,11 +674,11 @@ public class MediaUtils
      *
      * @param encoding the well-known encoding (name) of the <code>MediaFormat</code> to get
      * @param clockRate the clock rate of the <code>MediaFormat</code> to get
+     *
      * @return the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
      * <code>encoding</code> and <code>clockRate</code>
      */
-    public static MediaFormat getMediaFormat(String encoding, double clockRate)
-    {
+    public static MediaFormat getMediaFormat(String encoding, double clockRate) {
         return getMediaFormat(encoding, clockRate, null);
     }
 
@@ -690,11 +689,11 @@ public class MediaUtils
      * @param encoding the well-known encoding (name) of the <code>MediaFormat</code> to get
      * @param clockRate the clock rate of the <code>MediaFormat</code> to get
      * @param fmtps the format parameters of the <code>MediaFormat</code> to get
+     *
      * @return the <code>MediaFormat</code> known to <code>MediaUtils</code> and having the specified
      * <code>encoding</code> (name), <code>clockRate</code> and matching format parameters
      */
-    public static MediaFormat getMediaFormat(String encoding, double clockRate, Map<String, String> fmtps)
-    {
+    public static MediaFormat getMediaFormat(String encoding, double clockRate, Map<String, String> fmtps) {
         for (MediaFormat format : getMediaFormats(encoding)) {
             if ((format.getClockRate() == clockRate) && format.formatParametersMatch(fmtps))
                 return format;
@@ -710,11 +709,11 @@ public class MediaUtils
      * determine whether <code>MediaUtils</code> knows the specified <code>mediaFormat</code>
      *
      * @param mediaFormat the <code>MediaFormat</code> to determine the index of
+     *
      * @return the index of the specified <code>mediaFormat</code> in the internal storage of
      * <code>MediaUtils</code>
      */
-    public static int getMediaFormatIndex(MediaFormat mediaFormat)
-    {
+    public static int getMediaFormatIndex(MediaFormat mediaFormat) {
         return rtpPayloadTypelessMediaFormats.indexOf(mediaFormat);
     }
 
@@ -723,10 +722,10 @@ public class MediaUtils
      * payload type.
      *
      * @param rtpPayloadType the RTP payload type to retrieve the corresponding <code>MediaFormat</code>s for
+     *
      * @return an array of <code>MediaFormat</code>s corresponding to the specified RTP payload type
      */
-    public static MediaFormat[] getMediaFormats(byte rtpPayloadType)
-    {
+    public static MediaFormat[] getMediaFormats(byte rtpPayloadType) {
         MediaFormat[] mediaFormats = rtpPayloadTypeStrToMediaFormats.get(Byte.toString(rtpPayloadType));
 
         return (mediaFormats == null) ? EMPTY_MEDIA_FORMATS : mediaFormats.clone();
@@ -737,11 +736,11 @@ public class MediaUtils
      * <code>MediaType</code>.
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaFormat</code>s to get
+     *
      * @return the <code>MediaFormat</code>s known to <code>MediaUtils</code> and being of the specified
      * <code>mediaType</code>
      */
-    public static MediaFormat[] getMediaFormats(MediaType mediaType)
-    {
+    public static MediaFormat[] getMediaFormats(MediaType mediaType) {
         List<MediaFormat> mediaFormats = new ArrayList<>();
 
         for (MediaFormat[] formats : rtpPayloadTypeStrToMediaFormats.values()) {
@@ -763,11 +762,11 @@ public class MediaUtils
      * "RTP Profile for Audio and Video Conferences with Minimal Control".
      *
      * @param encoding the well-known encoding (name) to get the corresponding <code>MediaFormat</code>s of
+     *
      * @return a <code>List</code> of <code>MediaFormat</code>s corresponding to the specified encoding (name)
      */
     @SuppressWarnings("unchecked")
-    public static List<MediaFormat> getMediaFormats(String encoding)
-    {
+    public static List<MediaFormat> getMediaFormats(String encoding) {
         String jmfEncoding = null;
 
         for (Map.Entry<String, String> jmfEncodingToEncoding : jmfEncodingToEncodings.entrySet()) {
@@ -806,13 +805,13 @@ public class MediaUtils
      * <code>VideoFormat</code> encoding constants to get the corresponding RTP payload type of
      * @param clockRate the clock rate to be taken into account in the search for the RTP payload type if the
      * JMF encoding does not uniquely identify it
+     *
      * @return the RTP payload type corresponding to the specified JMF encoding and clock rate if
      * known in RFC 3551 "RTP Profile for Audio and Video Conferences with Minimal Control";
      * otherwise,
      * {@link MediaFormat#RTP_PAYLOAD_TYPE_UNKNOWN}
      */
-    public static byte getRTPPayloadType(String jmfEncoding, double clockRate)
-    {
+    public static byte getRTPPayloadType(String jmfEncoding, double clockRate) {
         if (jmfEncoding == null) {
             return MediaFormat.RTP_PAYLOAD_TYPE_UNKNOWN;
         }
@@ -874,12 +873,12 @@ public class MediaUtils
      * JMF-specific encoding.
      *
      * @param jmfEncoding the JMF encoding to get the corresponding well-known encoding of
+     *
      * @return the well-known encoding (name) as defined in RFC 3551
      * "RTP Profile for Audio and Video Conferences with Minimal Control" corresponding to
      * <code>jmfEncoding</code> if any; otherwise, <code>null</code>
      */
-    public static String jmfEncodingToEncoding(String jmfEncoding)
-    {
+    public static String jmfEncodingToEncoding(String jmfEncoding) {
         return jmfEncodingToEncodings.get(jmfEncoding);
     }
 }

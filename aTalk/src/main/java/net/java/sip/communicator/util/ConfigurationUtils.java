@@ -5,6 +5,11 @@
  */
 package net.java.sip.communicator.util;
 
+import static org.atalk.android.gui.settings.QuietTimeFragment.P_KEY_QUIET_HOURS_ENABLE;
+import static org.atalk.android.gui.settings.QuietTimeFragment.P_KEY_QUIET_HOURS_END;
+import static org.atalk.android.gui.settings.QuietTimeFragment.P_KEY_QUIET_HOURS_START;
+import static org.atalk.android.gui.settings.SettingsFragment.P_KEY_HEADS_UP_ENABLE;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +18,11 @@ import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetContactCapabilitiesJabberImpl;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,14 +30,11 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
 import org.atalk.android.gui.chat.ChatSession;
-import org.atalk.android.gui.chat.filetransfer.FileTransferConversation;
 import org.atalk.android.gui.settings.SettingsFragment;
 import org.atalk.android.gui.settings.TimePreference;
-import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.gui.util.ThemeHelper.Theme;
 import org.atalk.android.gui.webview.WebViewFragment;
-import java.awt.Color;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
@@ -44,10 +50,14 @@ import org.json.JSONObject;
 import org.jxmpp.jid.Jid;
 import org.osgi.framework.ServiceReference;
 
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -61,8 +71,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class ConfigurationUtils
-{
+public class ConfigurationUtils {
     /**
      * The send message command defined by the Enter key.
      */
@@ -436,16 +445,15 @@ public class ConfigurationUtils
     private static final String pHideAccountStatusSelectors = "gui.HIDE_ACCOUNT_STATUS_SELECTORS";
     private static final String pHideExtendedAwayStatus = "protocol.globalstatus.HIDE_EXTENDED_AWAY_STATUS";
     private static final String pIsWindowDecorated = "gui.IS_WINDOW_DECORATED";
-    public static final String pLanguage = aTalkApp.getResString(R.string.pref_key_locale);
     private static final String pLeaveChatRoomOnWindowClose = "gui.LEAVE_CHATROOM_ON_WINDOW_CLOSE";
     private static final String pMsgCommand = "gui.SEND_MESSAGE_COMMAND";
     private static final String pMessageDeliveryReceipt = "gui.SEND_MESSAGE_DELIVERY_RECEIPT";
     private static final String pMessageHistoryShown = "gui.IS_MESSAGE_HISTORY_SHOWN";
     private static final String pMultiChatWindowEnabled = "gui.IS_MULTI_CHAT_WINDOW_ENABLED";
     private static final String pPresenceSubscribeAuto = "gui.PRESENCE_SUBSCRIBE_MODE_AUTO";
-    public static final String pQuiteHoursEnable = aTalkApp.getResString(R.string.pref_key_quiet_hours_enable);
-    public static final String pQuiteHoursStart = aTalkApp.getResString(R.string.pref_key_quiet_hours_start);
-    public static final String pQuiteHoursEnd = aTalkApp.getResString(R.string.pref_key_quiet_hours_end);
+    public static final String pQuiteHoursEnable = P_KEY_QUIET_HOURS_ENABLE;
+    public static final String pQuiteHoursStart = P_KEY_QUIET_HOURS_START;
+    public static final String pQuiteHoursEnd = P_KEY_QUIET_HOURS_END;
     private static final String pRouteVideoAndDesktopUsingPhoneNumber = "gui.ROUTE_VIDEO_AND_DESKTOP_TO_PNONENUMBER";
     private static final String pSendThumbnail = "gui.sendThumbnail";
     private static final String pShowStatusChangedInChat = "gui.SHOW_STATUS_CHANGED_IN_CHAT";
@@ -453,9 +461,9 @@ public class ConfigurationUtils
     public static final String pTTSEnable = "gui.TTS_ENABLE";
     public static final String pTTSDelay = "gui.TTS_DELAY";
     private static final String pTypingNotification = "gui.SEND_TYPING_NOTIFICATIONS_ENABLED";
-    public static final String pWebPage = aTalkApp.getResString(R.string.pref_key_webview_PAGE);
+    public static final String pWebPage = "gui.WEB_PAGE_ACCESS";
     private static final String pWindowTransparency = "gui.WINDOW_TRANSPARENCY";
-    private static final String pHeadsUpEnable = aTalkApp.getResString(R.string.pref_key_heads_up_enable);
+    private static final String pHeadsUpEnable = P_KEY_HEADS_UP_ENABLE;
 
     /**
      * Indicates if phone numbers should be normalized before dialed.
@@ -494,8 +502,7 @@ public class ConfigurationUtils
     /**
      * Loads all user interface configurations.
      */
-    public static void loadGuiConfigurations()
-    {
+    public static void loadGuiConfigurations() {
         // Do it here one more time, sometime see accessing preference crash with configService == null
         mConfigService = UtilActivator.getConfigurationService();
         if (mConfigService == null) {
@@ -509,9 +516,10 @@ public class ConfigurationUtils
         // Init the aTalk app Theme before any activity use
         initAppTheme();
 
-        // Load the UI language last selected by user or default to system language i.e. ""
-        String language = mConfigService.getString(aTalkApp.getResString(R.string.pref_key_locale), "");
-        LocaleHelper.setLanguage(language);
+        // Load the UI language last selected by user or default to system language
+        // Already defined in aTalkApp#attachBaseContext()
+        // String language = mConfigService.getString(P_KEY_LOCALE, "");
+        // LocaleHelper.setLanguage(language);
 
         // Load the "webPage" property.
         mWebPage = mConfigService.getString(pWebPage);
@@ -623,13 +631,8 @@ public class ConfigurationUtils
         acceptFileSize = Integer.parseInt(fileSize);
 
         // Load the "chatHistorySize" property.
-        String chatHistorySizeString = mConfigService.getString(pChatHistorySize);
-        if (StringUtils.isEmpty(chatHistorySizeString))
-            chatHistorySizeString = UtilActivator.getResources().getSettingsString(pChatHistorySize);
-
-        if (StringUtils.isNotEmpty(chatHistorySizeString)) {
-            chatHistorySize = Integer.parseInt(chatHistorySizeString);
-        }
+        String chatHistorySizeString = mConfigService.getString(pChatHistorySize, "30");
+        chatHistorySize = Integer.parseInt(chatHistorySizeString);
 
         // Load the "CHAT_WRITE_AREA_SIZE" property.
         String chatWriteAreaSizeString = mConfigService.getString(pChatWriteAreaSize);
@@ -841,8 +844,7 @@ public class ConfigurationUtils
      *
      * @return is font support disabled.
      */
-    public static boolean isFontSupportEnabled()
-    {
+    public static boolean isFontSupportEnabled() {
         String fontDisabledProp = "gui.FONT_SUPPORT_ENABLED";
         boolean defaultValue = false;
 
@@ -860,8 +862,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "autoPopupNewMessage" property is true, otherwise - return FALSE.
      */
-    public static boolean isAutoPopupNewMessage()
-    {
+    public static boolean isAutoPopupNewMessage() {
         return autoPopupNewMessage;
     }
 
@@ -870,8 +871,7 @@ public class ConfigurationUtils
      *
      * @param autoPopup indicates to the user interface whether new messages should be opened and bring to front.
      **/
-    public static void setAutoPopupNewMessage(boolean autoPopup)
-    {
+    public static void setAutoPopupNewMessage(boolean autoPopup) {
         autoPopupNewMessage = autoPopup;
 
         if (autoPopupNewMessage)
@@ -886,8 +886,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "showCallPanel" property is true, otherwise - return FALSE.
      */
-    public static boolean isCallPanelShown()
-    {
+    public static boolean isCallPanelShown() {
         return isCallPanelShown;
     }
 
@@ -897,8 +896,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "showOffline" property is true, otherwise - return FALSE.
      */
-    public static boolean isShowOffline()
-    {
+    public static boolean isShowOffline() {
         return isShowOffline;
     }
 
@@ -908,8 +906,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "showApplication" property is true, otherwise - return FALSE.
      */
-    public static boolean isApplicationVisible()
-    {
+    public static boolean isApplicationVisible() {
         return isApplicationVisible;
     }
 
@@ -920,8 +917,7 @@ public class ConfigurationUtils
      * @return TRUE if "quitWarningShown" property is true, otherwise - return FALSE. Indicates to
      * the user interface whether the quit warning dialog should be shown when user clicks on the X button.
      */
-    public static boolean isQuitWarningShown()
-    {
+    public static boolean isQuitWarningShown() {
         return isQuitWarningShown;
     }
 
@@ -931,8 +927,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "iaAuotStart" property is true, otherwise - return FALSE.
      */
-    public static boolean isAutoStartEnable()
-    {
+    public static boolean isAutoStartEnable() {
         return isAutoStartOnBoot;
     }
 
@@ -941,8 +936,7 @@ public class ConfigurationUtils
      *
      * @param autoStart {@code true} to auto start aTalk on device reboot
      */
-    public static void setAutoStart(boolean autoStart)
-    {
+    public static void setAutoStart(boolean autoStart) {
         isAutoStartOnBoot = autoStart;
         mConfigService.setProperty(pAutoStart, Boolean.toString(autoStart));
     }
@@ -954,8 +948,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "isTtsEnable" property is true, otherwise - return FALSE.
      */
-    public static boolean isTtsEnable()
-    {
+    public static boolean isTtsEnable() {
         return isTtsEnable;
     }
 
@@ -964,14 +957,12 @@ public class ConfigurationUtils
      *
      * @param ttsEnable {@code true} to enable tts option
      */
-    public static void setTtsEnable(boolean ttsEnable)
-    {
+    public static void setTtsEnable(boolean ttsEnable) {
         isTtsEnable = ttsEnable;
         mConfigService.setProperty(pTTSEnable, Boolean.toString(ttsEnable));
     }
 
-    public static int getTtsDelay()
-    {
+    public static int getTtsDelay() {
         return ttsDelay;
     }
 
@@ -980,8 +971,7 @@ public class ConfigurationUtils
      *
      * @param delay is the amount of time to wait before start the TTS
      */
-    public static void setTtsDelay(int delay)
-    {
+    public static void setTtsDelay(int delay) {
         ttsDelay = delay;
         mConfigService.setProperty(pTTSDelay, delay);
     }
@@ -992,8 +982,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
      */
-    public static boolean isSendMessageDeliveryReceipt()
-    {
+    public static boolean isSendMessageDeliveryReceipt() {
         return isSendMessageDeliveryReceipt;
     }
 
@@ -1003,8 +992,7 @@ public class ConfigurationUtils
      * @param isDeliveryReceipt {@code true} to indicate that message delivery receipts are enabled,
      * {@code false} otherwise.
      */
-    public static void setSendMessageDeliveryReceipt(boolean isDeliveryReceipt)
-    {
+    public static void setSendMessageDeliveryReceipt(boolean isDeliveryReceipt) {
         isSendMessageDeliveryReceipt = isDeliveryReceipt;
         mConfigService.setProperty(pMessageDeliveryReceipt, Boolean.toString(isDeliveryReceipt));
         updateDeliveryReceiptFeature(isDeliveryReceipt);
@@ -1016,8 +1004,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
      */
-    public static boolean isSendChatStateNotifications()
-    {
+    public static boolean isSendChatStateNotifications() {
         return isSendChatStateNotifications;
     }
 
@@ -1027,8 +1014,7 @@ public class ConfigurationUtils
      * @param isChatStateNotification {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
      */
-    public static void setSendChatStateNotifications(boolean isChatStateNotification)
-    {
+    public static void setSendChatStateNotifications(boolean isChatStateNotification) {
         isSendChatStateNotifications = isChatStateNotification;
         mConfigService.setProperty(pTypingNotification, Boolean.toString(isChatStateNotification));
         updateChatStateCapsFeature(isChatStateNotification);
@@ -1040,8 +1026,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
      */
-    public static boolean isSendThumbnail()
-    {
+    public static boolean isSendThumbnail() {
         return isSendThumbnail;
     }
 
@@ -1051,8 +1036,7 @@ public class ConfigurationUtils
      * @param sendThumbnail {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
      */
-    public static void setSendThumbnail(boolean sendThumbnail)
-    {
+    public static void setSendThumbnail(boolean sendThumbnail) {
         isSendThumbnail = sendThumbnail;
         mConfigService.setProperty(pSendThumbnail, Boolean.toString(isSendThumbnail));
     }
@@ -1064,10 +1048,10 @@ public class ConfigurationUtils
      * 3. size <= acceptFileSize
      *
      * @param size current file size
+     *
      * @return true is auto accept to download
      */
-    public static boolean isAutoAcceptFile(long size)
-    {
+    public static boolean isAutoAcceptFile(long size) {
         return (size > 0) && (acceptFileSize != 0) && (size <= acceptFileSize);
     }
 
@@ -1076,8 +1060,7 @@ public class ConfigurationUtils
      *
      * @return the auto accept file size.
      */
-    public static long getAutoAcceptFileSize()
-    {
+    public static long getAutoAcceptFileSize() {
         return acceptFileSize;
     }
 
@@ -1086,8 +1069,7 @@ public class ConfigurationUtils
      *
      * @param fileSize indicates if the maximum file size for auto accept.
      */
-    public static void setAutoAcceptFileSizeSize(int fileSize)
-    {
+    public static void setAutoAcceptFileSizeSize(int fileSize) {
         acceptFileSize = fileSize;
         mConfigService.setProperty(pAcceptFileSize, Integer.toString(acceptFileSize));
     }
@@ -1098,8 +1080,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "isPresenceSubscribeAuto" property is true, otherwise - return FALSE.
      */
-    public static boolean isPresenceSubscribeAuto()
-    {
+    public static boolean isPresenceSubscribeAuto() {
         return isPresenceSubscribeAuto;
     }
 
@@ -1109,8 +1090,7 @@ public class ConfigurationUtils
      * @param presenceSubscribeAuto {@code true} to indicate that chat state notifications are enabled,
      * {@code false} otherwise.
      */
-    public static void setPresenceSubscribeAuto(boolean presenceSubscribeAuto)
-    {
+    public static void setPresenceSubscribeAuto(boolean presenceSubscribeAuto) {
         isPresenceSubscribeAuto = presenceSubscribeAuto;
         mConfigService.setProperty(pPresenceSubscribeAuto, Boolean.toString(presenceSubscribeAuto));
         if (presenceSubscribeAuto)
@@ -1126,8 +1106,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if the "isMoveContactConfirmationRequested" property is true, otherwise - returns FALSE
      */
-    public static boolean isMoveContactConfirmationRequested()
-    {
+    public static boolean isMoveContactConfirmationRequested() {
         return isMoveContactConfirmationRequested;
     }
 
@@ -1138,8 +1117,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "isMultiChatWindowEnabled" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isMultiChatWindowEnabled()
-    {
+    public static boolean isMultiChatWindowEnabled() {
         return isMultiChatWindowEnabled;
     }
 
@@ -1151,8 +1129,7 @@ public class ConfigurationUtils
      * @return {@code true} if the "isPrivateMessagingInChatRoomDisabled" property is true,
      * otherwise - returns {@code false}.
      */
-    public static boolean isPrivateMessagingInChatRoomDisabled()
-    {
+    public static boolean isPrivateMessagingInChatRoomDisabled() {
         return isPrivateMessagingInChatRoomDisabled;
     }
 
@@ -1161,8 +1138,7 @@ public class ConfigurationUtils
      *
      * @param isEnabled indicates if the chat window could contain multiple chats or only one chat.
      */
-    public static void setMultiChatWindowEnabled(boolean isEnabled)
-    {
+    public static void setMultiChatWindowEnabled(boolean isEnabled) {
         isMultiChatWindowEnabled = isEnabled;
         mConfigService.setProperty(pMultiChatWindowEnabled, Boolean.toString(isMultiChatWindowEnabled));
     }
@@ -1175,8 +1151,7 @@ public class ConfigurationUtils
      * @return {@code true} if the "isLeaveChatRoomOnWindowCloseEnabled" property is true,
      * otherwise - returns {@code false}.
      */
-    public static boolean isLeaveChatRoomOnWindowCloseEnabled()
-    {
+    public static boolean isLeaveChatRoomOnWindowCloseEnabled() {
         return isLeaveChatRoomOnWindowCloseEnabled;
     }
 
@@ -1185,8 +1160,7 @@ public class ConfigurationUtils
      *
      * @param isLeave indicates whether to leave chat room on window close.
      */
-    public static void setLeaveChatRoomOnWindowClose(boolean isLeave)
-    {
+    public static void setLeaveChatRoomOnWindowClose(boolean isLeave) {
         isLeaveChatRoomOnWindowCloseEnabled = isLeave;
         mConfigService.setProperty(pLeaveChatRoomOnWindowClose, Boolean.toString(isLeaveChatRoomOnWindowCloseEnabled));
     }
@@ -1197,8 +1171,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "isHistoryShown" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isHistoryShown()
-    {
+    public static boolean isHistoryShown() {
         return isHistoryShown;
     }
 
@@ -1209,8 +1182,7 @@ public class ConfigurationUtils
      * @return {@code true} if the "isRecentMessagesShown" property is true, otherwise {@code false}
      * .
      */
-    public static boolean isRecentMessagesShown()
-    {
+    public static boolean isRecentMessagesShown() {
         return isRecentMessagesShown;
     }
 
@@ -1219,8 +1191,7 @@ public class ConfigurationUtils
      *
      * @param isShown indicates if the message history is shown
      */
-    public static void setHistoryShown(boolean isShown)
-    {
+    public static void setHistoryShown(boolean isShown) {
         isHistoryShown = isShown;
         mConfigService.setProperty(pMessageHistoryShown, Boolean.toString(isHistoryShown));
     }
@@ -1230,8 +1201,7 @@ public class ConfigurationUtils
      *
      * @param isShown indicates if the recent messages is shown
      */
-    public static void setRecentMessagesShown(boolean isShown)
-    {
+    public static void setRecentMessagesShown(boolean isShown) {
         isRecentMessagesShown = isShown;
         // configService.setProperty(MessageHistoryService.PNAME_IS_RECENT_MESSAGES_DISABLED,
         // Boolean.toString(!isRecentMessagesShown));
@@ -1242,8 +1212,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "isWindowDecorated" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isWindowDecorated()
-    {
+    public static boolean isWindowDecorated() {
         return isWindowDecorated;
     }
 
@@ -1252,8 +1221,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "isChatToolbarVisible" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isChatToolbarVisible()
-    {
+    public static boolean isChatToolbarVisible() {
         return isChatToolbarVisible;
     }
 
@@ -1263,8 +1231,7 @@ public class ConfigurationUtils
      * @return {@code true}if the "isChatStyleBarVisible" property is true, otherwise - returns {@code false}
      * .
      */
-    public static boolean isChatStyleBarVisible()
-    {
+    public static boolean isChatStyleBarVisible() {
         return isChatStyleBarVisible;
     }
 
@@ -1273,8 +1240,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "isChatSimpleTheme" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isChatSimpleThemeEnabled()
-    {
+    public static boolean isChatSimpleThemeEnabled() {
         return isChatSimpleThemeEnabled;
     }
 
@@ -1283,8 +1249,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "ADD_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isAddContactDisabled()
-    {
+    public static boolean isAddContactDisabled() {
         return isAddContactDisabled;
     }
 
@@ -1293,8 +1258,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "MERGE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isMergeContactDisabled()
-    {
+    public static boolean isMergeContactDisabled() {
         return isMergeContactDisabled;
     }
 
@@ -1304,8 +1268,7 @@ public class ConfigurationUtils
      * @return {@code true} if the "CREATE_GROUP_DISABLED" property is true, otherwise - returns {@code false}
      * .
      */
-    public static boolean isCreateGroupDisabled()
-    {
+    public static boolean isCreateGroupDisabled() {
         return isCreateGroupDisabled;
     }
 
@@ -1315,8 +1278,7 @@ public class ConfigurationUtils
      * @return {@code true} if the "FLATTEN_GROUP_ENABLED" property is true, otherwise - returns {@code false}
      * .
      */
-    public static boolean isFlattenGroupEnabled()
-    {
+    public static boolean isFlattenGroupEnabled() {
         return isFlattenGroupEnabled;
     }
 
@@ -1325,8 +1287,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "GO_TO_CHATROOM_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isGoToChatroomDisabled()
-    {
+    public static boolean isGoToChatroomDisabled() {
         return isGoToChatRoomDisabled;
     }
 
@@ -1335,8 +1296,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "REMOVE_CONTACT_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isRemoveContactDisabled()
-    {
+    public static boolean isRemoveContactDisabled() {
         return isRemoveContactDisabled;
     }
 
@@ -1345,8 +1305,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "CONTACT_MOVE_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isContactMoveDisabled()
-    {
+    public static boolean isContactMoveDisabled() {
         return isContactMoveDisabled;
     }
 
@@ -1355,8 +1314,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "CONTACT_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isContactRenameDisabled()
-    {
+    public static boolean isContactRenameDisabled() {
         return isContactRenameDisabled;
     }
 
@@ -1365,8 +1323,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "GROUP_REMOVE_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isGroupRemoveDisabled()
-    {
+    public static boolean isGroupRemoveDisabled() {
         return isGroupRemoveDisabled;
     }
 
@@ -1375,8 +1332,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "GROUP_RENAME_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isGroupRenameDisabled()
-    {
+    public static boolean isGroupRenameDisabled() {
         return isGroupRenameDisabled;
     }
 
@@ -1385,8 +1341,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "PRESET_STATUS_MESSAGES" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isPresetStatusMessagesEnabled()
-    {
+    public static boolean isPresetStatusMessagesEnabled() {
         return isPresetStatusMessagesEnabled;
     }
 
@@ -1395,8 +1350,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if the "ADVANCED_CONFIG_DISABLED" property is true, otherwise - returns {@code false}.
      */
-    public static boolean isAdvancedAccountConfigDisabled()
-    {
+    public static boolean isAdvancedAccountConfigDisabled() {
         return isAdvancedAccountConfigDisabled;
     }
 
@@ -1405,8 +1359,7 @@ public class ConfigurationUtils
      *
      * @return <code>true</code> if the chat room configuration is disabled, <code>false</code> - otherwise
      */
-    public static boolean isChatRoomConfigDisabled()
-    {
+    public static boolean isChatRoomConfigDisabled() {
         return isChatRoomConfigDisabled;
     }
 
@@ -1415,8 +1368,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font family
      */
-    public static String getChatDefaultFontFamily()
-    {
+    public static String getChatDefaultFontFamily() {
         return defaultFontFamily;
     }
 
@@ -1425,8 +1377,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font size
      */
-    public static int getChatDefaultFontSize()
-    {
+    public static int getChatDefaultFontSize() {
         if (StringUtils.isNotEmpty(defaultFontSize))
             return Integer.parseInt(defaultFontSize);
         return -1;
@@ -1437,8 +1388,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font color
      */
-    public static Color getChatDefaultFontColor()
-    {
+    public static Color getChatDefaultFontColor() {
         return defaultFontColor == -1 ? null : new Color(defaultFontColor);
     }
 
@@ -1447,8 +1397,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font bold
      */
-    public static boolean isChatFontBold()
-    {
+    public static boolean isChatFontBold() {
         return isDefaultFontBold;
     }
 
@@ -1457,8 +1406,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font italic
      */
-    public static boolean isChatFontItalic()
-    {
+    public static boolean isChatFontItalic() {
         return isDefaultFontItalic;
     }
 
@@ -1467,8 +1415,7 @@ public class ConfigurationUtils
      *
      * @return the default chat font underline
      */
-    public static boolean isChatFontUnderline()
-    {
+    public static boolean isChatFontUnderline() {
         return isDefaultFontUnderline;
     }
 
@@ -1477,8 +1424,7 @@ public class ConfigurationUtils
      *
      * @param disabled the new value to set
      */
-    public static void setAdvancedAccountConfigDisabled(boolean disabled)
-    {
+    public static void setAdvancedAccountConfigDisabled(boolean disabled) {
         isAdvancedAccountConfigDisabled = disabled;
         mConfigService.setProperty("gui.account.ADVANCED_CONFIG_DISABLED",
                 Boolean.toString(isAdvancedAccountConfigDisabled));
@@ -1491,8 +1437,7 @@ public class ConfigurationUtils
      *
      * @return "Enter" or "CTRL-Enter" message commands.
      */
-    public static String getSendMessageCommand()
-    {
+    public static String getSendMessageCommand() {
         return sendMessageCommand;
     }
 
@@ -1501,8 +1446,7 @@ public class ConfigurationUtils
      *
      * @param newMessageCommand the command used to send a message ( it could be ENTER_COMMAND or CTRL_ENTER_COMMAND)
      */
-    public static void setSendMessageCommand(String newMessageCommand)
-    {
+    public static void setSendMessageCommand(String newMessageCommand) {
         sendMessageCommand = newMessageCommand;
         mConfigService.setProperty(pMsgCommand, newMessageCommand);
     }
@@ -1513,8 +1457,7 @@ public class ConfigurationUtils
      *
      * @return group name of the last selected group when adding contact.
      */
-    public static String getLastContactParent()
-    {
+    public static String getLastContactParent() {
         return lastContactParent;
     }
 
@@ -1523,8 +1466,7 @@ public class ConfigurationUtils
      *
      * @return the call conference provider used for the last conference call
      */
-    public static ProtocolProviderService getLastCallConferenceProvider()
-    {
+    public static ProtocolProviderService getLastCallConferenceProvider() {
         if (lastCallConferenceProvider != null)
             return lastCallConferenceProvider;
 
@@ -1536,10 +1478,10 @@ public class ConfigurationUtils
      * Returns the protocol provider associated with the given <code>accountId</code>.
      *
      * @param savedAccountId the identifier of the account
+     *
      * @return the protocol provider associated with the given <code>accountId</code>
      */
-    private static ProtocolProviderService findProviderFromAccountId(String savedAccountId)
-    {
+    private static ProtocolProviderService findProviderFromAccountId(String savedAccountId) {
         ProtocolProviderService protocolProvider = null;
 
         for (ProtocolProviderFactory providerFactory : UtilActivator.getProtocolProviderFactories().values()) {
@@ -1563,8 +1505,7 @@ public class ConfigurationUtils
      *
      * @return the number of messages from chat history that would be shown in the chat window.
      */
-    public static String getWebPage()
-    {
+    public static String getWebPage() {
         WebViewFragment.initWebView();
         return StringUtils.isBlank(mWebPage)
                 ? aTalkApp.getResString(R.string.service_gui_settings_WEBVIEW_SUMMARY) : mWebPage;
@@ -1575,8 +1516,7 @@ public class ConfigurationUtils
      *
      * @param webPage the web page for access.
      */
-    public static void setWebPage(String webPage)
-    {
+    public static void setWebPage(String webPage) {
         mWebPage = StringUtils.isEmpty(webPage) ? webPage : webPage.trim();
         mConfigService.setProperty(pWebPage, webPage);
     }
@@ -1586,8 +1526,7 @@ public class ConfigurationUtils
      *
      * @return the number of messages from chat history that would be shown in the chat window.
      */
-    public static int getChatHistorySize()
-    {
+    public static int getChatHistorySize() {
         return chatHistorySize;
     }
 
@@ -1596,8 +1535,7 @@ public class ConfigurationUtils
      *
      * @param historySize indicates if the history logging is enabled.
      */
-    public static void setChatHistorySize(int historySize)
-    {
+    public static void setChatHistorySize(int historySize) {
         chatHistorySize = historySize;
         mConfigService.setProperty(pChatHistorySize, Integer.toString(chatHistorySize));
     }
@@ -1607,8 +1545,7 @@ public class ConfigurationUtils
      *
      * @return the preferred height of the chat write area.
      */
-    public static int getChatWriteAreaSize()
-    {
+    public static int getChatWriteAreaSize() {
         return chatWriteAreaSize;
     }
 
@@ -1617,8 +1554,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if transparent windows are enabled, {@code false} otherwise.
      */
-    public static boolean isTransparentWindowEnabled()
-    {
+    public static boolean isTransparentWindowEnabled() {
         return isTransparentWindowEnabled;
     }
 
@@ -1627,8 +1563,7 @@ public class ConfigurationUtils
      *
      * @return the transparency value for all transparent windows.
      */
-    public static int getWindowTransparency()
-    {
+    public static int getWindowTransparency() {
         return windowTransparency;
     }
 
@@ -1637,8 +1572,7 @@ public class ConfigurationUtils
      *
      * @return the last opened directory of the send file file chooser
      */
-    public static String getSendFileLastDir()
-    {
+    public static String getSendFileLastDir() {
         return sendFileLastDir;
     }
 
@@ -1647,8 +1581,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if phone numbers should be normalized, {@code false} otherwise.
      */
-    public static boolean isNormalizePhoneNumber()
-    {
+    public static boolean isNormalizePhoneNumber() {
         return isNormalizePhoneNumber;
     }
 
@@ -1657,8 +1590,7 @@ public class ConfigurationUtils
      *
      * @param isNormalize indicates to the user interface whether all dialed phone numbers should be normalized
      */
-    public static void setNormalizePhoneNumber(boolean isNormalize)
-    {
+    public static void setNormalizePhoneNumber(boolean isNormalize) {
         isNormalizePhoneNumber = isNormalize;
         mConfigService.setProperty("gui.NORMALIZE_PHONE_NUMBER", Boolean.toString(isNormalize));
     }
@@ -1668,8 +1600,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if window alerter is enables, {@code false} otherwise.
      */
-    public static boolean isAlerterEnabled()
-    {
+    public static boolean isAlerterEnabled() {
         return alerterEnabled;
     }
 
@@ -1678,14 +1609,12 @@ public class ConfigurationUtils
      *
      * @param isEnabled indicates whether to enable or disable alerter.
      */
-    public static void setAlerterEnabled(boolean isEnabled)
-    {
+    public static void setAlerterEnabled(boolean isEnabled) {
         alerterEnabled = isEnabled;
         mConfigService.setProperty(ALERTER_ENABLED_PROP, Boolean.toString(isEnabled));
     }
 
-    public static void setQuiteHour(String property, Object value)
-    {
+    public static void setQuiteHour(String property, Object value) {
         if (value instanceof Boolean) {
             setQuiteHoursEnable(Boolean.parseBoolean(value.toString()));
         }
@@ -1702,8 +1631,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if Quite Hours is enables, {@code false} otherwise.
      */
-    public static boolean isQuiteHoursEnable()
-    {
+    public static boolean isQuiteHoursEnable() {
         return isQuiteHoursEnable;
     }
 
@@ -1712,8 +1640,7 @@ public class ConfigurationUtils
      *
      * @param isEnabled indicates whether to enable or disable quite hours.
      */
-    public static void setQuiteHoursEnable(boolean isEnabled)
-    {
+    public static void setQuiteHoursEnable(boolean isEnabled) {
         isQuiteHoursEnable = isEnabled;
         mConfigService.setProperty(pQuiteHoursEnable, Boolean.toString(isEnabled));
     }
@@ -1723,8 +1650,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} get the Quite Hours start time.
      */
-    public static long getQuiteHoursStart()
-    {
+    public static long getQuiteHoursStart() {
         return quiteHoursStart;
     }
 
@@ -1733,8 +1659,7 @@ public class ConfigurationUtils
      *
      * @param time is the quite hours start time.
      */
-    public static void setQuiteHoursStart(long time)
-    {
+    public static void setQuiteHoursStart(long time) {
         quiteHoursStart = time;
         mConfigService.setProperty(pQuiteHoursStart, time);
     }
@@ -1744,8 +1669,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} get the Quite Hours end time.
      */
-    public static long getQuiteHoursEnd()
-    {
+    public static long getQuiteHoursEnd() {
         return quiteHoursEnd;
     }
 
@@ -1754,8 +1678,7 @@ public class ConfigurationUtils
      *
      * @param time is the quite hours end time.
      */
-    public static void setQuiteHoursEnd(long time)
-    {
+    public static void setQuiteHoursEnd(long time) {
         quiteHoursEnd = time;
         mConfigService.setProperty(pQuiteHoursEnd, time);
     }
@@ -1766,8 +1689,7 @@ public class ConfigurationUtils
      *
      * @return TRUE if "sendTypingNotifications" property is true, otherwise - return FALSE.
      */
-    public static boolean isHeadsUpEnable()
-    {
+    public static boolean isHeadsUpEnable() {
         return isHeadsUpEnable;
     }
 
@@ -1777,8 +1699,7 @@ public class ConfigurationUtils
      * @param headsUp {@code true} to indicate HeadUp notifications are enabled,
      * {@code false} otherwise.
      */
-    public static void setHeadsUp(boolean headsUp)
-    {
+    public static void setHeadsUp(boolean headsUp) {
         isHeadsUpEnable = headsUp;
         mConfigService.setProperty(pHeadsUpEnable, Boolean.toString(isHeadsUpEnable));
     }
@@ -1790,8 +1711,7 @@ public class ConfigurationUtils
      * @return {@code true} if a string with a alphabetical character might be considered as
      * a phone number. {@code false} otherwise.
      */
-    public static boolean acceptPhoneNumberWithAlphaChars()
-    {
+    public static boolean acceptPhoneNumberWithAlphaChars() {
         return acceptPhoneNumberWithAlphaChars;
     }
 
@@ -1801,8 +1721,7 @@ public class ConfigurationUtils
      * @param accept indicates to the user interface whether a string with alphabetical characters might be
      * accepted as a phone number.
      */
-    public static void setAcceptPhoneNumberWithAlphaChars(boolean accept)
-    {
+    public static void setAcceptPhoneNumberWithAlphaChars(boolean accept) {
         acceptPhoneNumberWithAlphaChars = accept;
         mConfigService.setProperty("gui.ACCEPT_PHONE_NUMBER_WITH_ALPHA_CHARS",
                 Boolean.toString(acceptPhoneNumberWithAlphaChars));
@@ -1813,8 +1732,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} if status changed should be shown in chat history area, {@code false} otherwise.
      */
-    public static boolean isShowStatusChangedInChat()
-    {
+    public static boolean isShowStatusChangedInChat() {
         return showStatusChangedInChat;
     }
 
@@ -1823,8 +1741,7 @@ public class ConfigurationUtils
      *
      * @return whether allow to use additional phone numbers to route video calls and desktop sharing through it.
      */
-    public static boolean isRouteVideoAndDesktopUsingPhoneNumberEnabled()
-    {
+    public static boolean isRouteVideoAndDesktopUsingPhoneNumberEnabled() {
         return routeVideoAndDesktopUsingPhoneNumber;
     }
 
@@ -1833,8 +1750,7 @@ public class ConfigurationUtils
      *
      * @return whether allow user to select account when only a single account is available.
      */
-    public static boolean isHideAccountSelectionWhenPossibleEnabled()
-    {
+    public static boolean isHideAccountSelectionWhenPossibleEnabled() {
         return hideAccountSelectionWhenPossible;
     }
 
@@ -1843,8 +1759,7 @@ public class ConfigurationUtils
      *
      * @return whether to hide account statuses.
      */
-    public static boolean isHideAccountStatusSelectorsEnabled()
-    {
+    public static boolean isHideAccountStatusSelectorsEnabled() {
         return hideAccountStatusSelectors;
     }
 
@@ -1853,8 +1768,7 @@ public class ConfigurationUtils
      *
      * @return whether to hide extended away status.
      */
-    public static boolean isHideExtendedAwayStatus()
-    {
+    public static boolean isHideExtendedAwayStatus() {
         return hideExtendedAwayStatus;
     }
 
@@ -1863,8 +1777,7 @@ public class ConfigurationUtils
      *
      * @return whether creation of separate submenu for auto answer is disabled.
      */
-    public static boolean isAutoAnswerDisableSubmenu()
-    {
+    public static boolean isAutoAnswerDisableSubmenu() {
         return autoAnswerDisableSubmenu;
     }
 
@@ -1873,8 +1786,7 @@ public class ConfigurationUtils
      *
      * @return <code>true</code> if the single window interface is enabled, <code>false</code> - otherwise
      */
-    public static boolean isSingleWindowInterfaceEnabled()
-    {
+    public static boolean isSingleWindowInterfaceEnabled() {
         return isSingleWindowInterfaceEnabled;
     }
 
@@ -1883,8 +1795,7 @@ public class ConfigurationUtils
      *
      * @return whether addresses will be shown in call history tooltips.
      */
-    public static boolean isHideAddressInCallHistoryTooltipEnabled()
-    {
+    public static boolean isHideAddressInCallHistoryTooltipEnabled() {
         return isHideAddressInCallHistoryTooltipEnabled;
     }
 
@@ -1893,8 +1804,7 @@ public class ConfigurationUtils
      *
      * @return whether to display the text notifying that a message is sms.
      */
-    public static boolean isSmsNotifyTextDisabled()
-    {
+    public static boolean isSmsNotifyTextDisabled() {
         return isSmsNotifyTextDisabled;
     }
 
@@ -1903,8 +1813,7 @@ public class ConfigurationUtils
      *
      * @return whether domain will be shown in receive call dialog.
      */
-    public static boolean isHideDomainInReceivedCallDialogEnabled()
-    {
+    public static boolean isHideDomainInReceivedCallDialogEnabled() {
         return isHideDomainInReceivedCallDialogEnabled;
     }
 
@@ -1913,8 +1822,7 @@ public class ConfigurationUtils
      *
      * @return {@code true} to show it, and {@code false} otherwise.
      */
-    public static boolean showMasterPasswordWarning()
-    {
+    public static boolean showMasterPasswordWarning() {
         return showMasterPasswordWarning;
     }
 
@@ -1923,8 +1831,7 @@ public class ConfigurationUtils
      *
      * @param value the new value to set.
      */
-    public static void setShowMasterPasswordWarning(boolean value)
-    {
+    public static void setShowMasterPasswordWarning(boolean value) {
         showMasterPasswordWarning = value;
         mConfigService.setProperty(MASTER_PASS_WARNING_PROP, value);
     }
@@ -1934,8 +1841,7 @@ public class ConfigurationUtils
      *
      * @param isEnabled {@code true} to indicate that the single window interface is enabled, <code>false</code> - otherwise
      */
-    public static void setSingleWindowInterfaceEnabled(boolean isEnabled)
-    {
+    public static void setSingleWindowInterfaceEnabled(boolean isEnabled) {
         isSingleWindowInterfaceEnabled = isEnabled;
         mConfigService.setProperty(SINGLE_WINDOW_INTERFACE_ENABLED, isEnabled);
     }
@@ -1945,8 +1851,7 @@ public class ConfigurationUtils
      *
      * @param transparency the transparency value for all transparent windows.
      */
-    public static void setWindowTransparency(int transparency)
-    {
+    public static void setWindowTransparency(int transparency) {
         windowTransparency = transparency;
     }
 
@@ -1955,8 +1860,7 @@ public class ConfigurationUtils
      *
      * @param isShowOffline {@code true} to indicate that the offline users should be shown, {@code false} otherwise.
      */
-    public static void setShowOffline(boolean isShowOffline)
-    {
+    public static void setShowOffline(boolean isShowOffline) {
         ConfigurationUtils.isShowOffline = isShowOffline;
         mConfigService.setProperty("gui.showOffline", Boolean.toString(isShowOffline));
     }
@@ -1966,8 +1870,7 @@ public class ConfigurationUtils
      *
      * @param isCallPanelShown {@code true} to indicate that the call panel should be shown, {@code false} otherwise.
      */
-    public static void setShowCallPanel(boolean isCallPanelShown)
-    {
+    public static void setShowCallPanel(boolean isCallPanelShown) {
         ConfigurationUtils.isCallPanelShown = isCallPanelShown;
         mConfigService.setProperty("gui.showCallPanel", Boolean.toString(isCallPanelShown));
     }
@@ -1977,8 +1880,7 @@ public class ConfigurationUtils
      *
      * @param isVisible {@code true} to indicate that the application should be shown, {@code false} otherwise.
      */
-    public static void setApplicationVisible(boolean isVisible)
-    {
+    public static void setApplicationVisible(boolean isVisible) {
         // If we're already in the desired visible state, don't change anything.
         if (isApplicationVisible == isVisible)
             return;
@@ -1993,8 +1895,7 @@ public class ConfigurationUtils
      * @param isWarningShown indicates if the message warning the user that the application would not be closed if
      * she clicks the X button would be shown again.
      */
-    public static void setQuitWarningShown(boolean isWarningShown)
-    {
+    public static void setQuitWarningShown(boolean isWarningShown) {
         isQuitWarningShown = isWarningShown;
         mConfigService.setProperty("gui.quitWarningShown", Boolean.toString(isQuitWarningShown));
     }
@@ -2004,8 +1905,7 @@ public class ConfigurationUtils
      *
      * @param handler the handler which will be used
      */
-    public static void setPopupHandlerConfig(String handler)
-    {
+    public static void setPopupHandlerConfig(String handler) {
         mConfigService.setProperty("systray.POPUP_HANDLER", handler);
     }
 
@@ -2014,8 +1914,7 @@ public class ConfigurationUtils
      *
      * @param groupName the group name of the selected group when adding last contact
      */
-    public static void setLastContactParent(String groupName)
-    {
+    public static void setLastContactParent(String groupName) {
         lastContactParent = groupName;
         mConfigService.setProperty("gui.addcontact.lastContactParent", groupName);
     }
@@ -2025,8 +1924,7 @@ public class ConfigurationUtils
      *
      * @param isRequested indicates if a confirmation would be requested from user during the move contact process.
      */
-    public static void setMoveContactConfirmationRequested(boolean isRequested)
-    {
+    public static void setMoveContactConfirmationRequested(boolean isRequested) {
         isMoveContactConfirmationRequested = isRequested;
         mConfigService.setProperty("gui.isMoveContactConfirmationRequested",
                 Boolean.toString(isMoveContactConfirmationRequested));
@@ -2037,8 +1935,7 @@ public class ConfigurationUtils
      *
      * @param isTransparent indicates if the transparency is enabled in the application.
      */
-    public static void setTransparentWindowEnabled(boolean isTransparent)
-    {
+    public static void setTransparentWindowEnabled(boolean isTransparent) {
         isTransparentWindowEnabled = isTransparent;
         mConfigService.setProperty(pTransparentWindowEnabled, Boolean.toString(isTransparentWindowEnabled));
     }
@@ -2048,8 +1945,7 @@ public class ConfigurationUtils
      *
      * @param isVisible indicates if the chat toolbar is visible.
      */
-    public static void setChatToolbarVisible(boolean isVisible)
-    {
+    public static void setChatToolbarVisible(boolean isVisible) {
         isChatToolbarVisible = isVisible;
         mConfigService.setProperty("gui.chat.ChatWindow.showToolbar", Boolean.toString(isChatToolbarVisible));
     }
@@ -2059,8 +1955,7 @@ public class ConfigurationUtils
      *
      * @param isEnabled indicates if the chat simple theme is enabled
      */
-    public static void setChatSimpleThemeEnabled(boolean isEnabled)
-    {
+    public static void setChatSimpleThemeEnabled(boolean isEnabled) {
         isChatSimpleThemeEnabled = isEnabled;
         mConfigService.setProperty(CHAT_SIMPLE_THEME_ENABLED_PROP, Boolean.toString(isChatSimpleThemeEnabled));
     }
@@ -2070,8 +1965,7 @@ public class ConfigurationUtils
      *
      * @param isVisible indicates if the chat styleBar is visible.
      */
-    public static void setChatStyleBarVisible(boolean isVisible)
-    {
+    public static void setChatStyleBarVisible(boolean isVisible) {
         isChatStyleBarVisible = isVisible;
         mConfigService.setProperty("gui.chat.ChatWindow.showStylebar", Boolean.toString(isChatStyleBarVisible));
     }
@@ -2081,8 +1975,7 @@ public class ConfigurationUtils
      *
      * @param size the new size to set
      */
-    public static void setChatWriteAreaSize(int size)
-    {
+    public static void setChatWriteAreaSize(int size) {
         chatWriteAreaSize = size;
         mConfigService.setProperty(pChatWriteAreaSize, Integer.toString(chatWriteAreaSize));
     }
@@ -2092,8 +1985,7 @@ public class ConfigurationUtils
      *
      * @param lastDir last download directory
      */
-    public static void setSendFileLastDir(String lastDir)
-    {
+    public static void setSendFileLastDir(String lastDir) {
         sendFileLastDir = lastDir;
         mConfigService.setProperty("gui.chat.filetransfer.SEND_FILE_LAST_DIR", lastDir);
     }
@@ -2103,8 +1995,7 @@ public class ConfigurationUtils
      *
      * @param protocolProvider the call conference provider used for the last conference call
      */
-    public static void setLastCallConferenceProvider(ProtocolProviderService protocolProvider)
-    {
+    public static void setLastCallConferenceProvider(ProtocolProviderService protocolProvider) {
         lastCallConferenceProvider = protocolProvider;
         mConfigService.setProperty("gui.call.lastCallConferenceProvider",
                 protocolProvider.getAccountID().getAccountUniqueID());
@@ -2115,8 +2006,7 @@ public class ConfigurationUtils
      *
      * @param fontFamily the default font family name
      */
-    public static void setChatDefaultFontFamily(String fontFamily)
-    {
+    public static void setChatDefaultFontFamily(String fontFamily) {
         defaultFontFamily = fontFamily;
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_FAMILY", fontFamily);
     }
@@ -2126,8 +2016,7 @@ public class ConfigurationUtils
      *
      * @param fontSize the default font size
      */
-    public static void setChatDefaultFontSize(int fontSize)
-    {
+    public static void setChatDefaultFontSize(int fontSize) {
         defaultFontSize = String.valueOf(fontSize);
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_SIZE", fontSize);
     }
@@ -2137,8 +2026,7 @@ public class ConfigurationUtils
      *
      * @param isBold indicates if the default chat font is bold
      */
-    public static void setChatFontIsBold(boolean isBold)
-    {
+    public static void setChatFontIsBold(boolean isBold) {
         isDefaultFontBold = isBold;
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_BOLD", isBold);
     }
@@ -2148,8 +2036,7 @@ public class ConfigurationUtils
      *
      * @param isItalic indicates if the default chat font is italic
      */
-    public static void setChatFontIsItalic(boolean isItalic)
-    {
+    public static void setChatFontIsItalic(boolean isItalic) {
         isDefaultFontItalic = isItalic;
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_ITALIC", isItalic);
     }
@@ -2159,8 +2046,7 @@ public class ConfigurationUtils
      *
      * @param isUnderline indicates if the default chat font is underline
      */
-    public static void setChatFontIsUnderline(boolean isUnderline)
-    {
+    public static void setChatFontIsUnderline(boolean isUnderline) {
         isDefaultFontUnderline = isUnderline;
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_UNDERLINE", isUnderline);
     }
@@ -2170,8 +2056,7 @@ public class ConfigurationUtils
      *
      * @param fontColor the default font color
      */
-    public static void setChatDefaultFontColor(Color fontColor)
-    {
+    public static void setChatDefaultFontColor(Color fontColor) {
         defaultFontColor = fontColor.getRGB();
         mConfigService.setProperty("gui.chat.DEFAULT_FONT_COLOR", defaultFontColor);
     }
@@ -2179,8 +2064,7 @@ public class ConfigurationUtils
     /**
      * Initialize aTalk app Theme;default to Theme.DARK if not defined
      */
-    public static void initAppTheme()
-    {
+    public static void initAppTheme() {
         Theme theme;
         int themeValue = mConfigService.getInt(SettingsFragment.P_KEY_THEME, Theme.DARK.ordinal());
         if (themeValue == Theme.DARK.ordinal() || themeValue == android.R.style.Theme) {
@@ -2200,8 +2084,7 @@ public class ConfigurationUtils
      * @param property the property name in the contact options
      * @param value the value of the contact options property if null, property will be removed
      */
-    public static void updateContactProperty(Jid contactJid, String property, String value)
-    {
+    public static void updateContactProperty(Jid contactJid, String property, String value) {
         JSONObject options = getContactOptions(contactJid);
         try {
             if (value == null)
@@ -2224,10 +2107,10 @@ public class ConfigurationUtils
      *
      * @param contactJid the identifier/BareJid of the contact table to retrieve
      * @param property the property name in the contact options
+     *
      * @return the value of the contact options property, saved via the <code>ConfigurationService</code>.
      */
-    public static String getContactProperty(Jid contactJid, String property)
-    {
+    public static String getContactProperty(Jid contactJid, String property) {
         JSONObject options = getContactOptions(contactJid);
         try {
             return options.getString(property);
@@ -2241,10 +2124,10 @@ public class ConfigurationUtils
      * Returns the options saved in <code>ConfigurationService</code> associated with the <code>Contact</code>.
      *
      * @param contactJid the identifier/BareJid of the contact table to update
+     *
      * @return the contact options saved in <code>ConfigurationService</code>.
      */
-    private static JSONObject getContactOptions(Jid contactJid)
-    {
+    private static JSONObject getContactOptions(Jid contactJid) {
         // mDB is null when access during restoring process
         if (mDB == null)
             mDB = DatabaseBackend.getWritableDB();
@@ -2275,8 +2158,7 @@ public class ConfigurationUtils
      * @param oldChatRoomId the old identifier of the chat room
      * @param newChatRoomId the new identifier of the chat room  = newChatRoomName
      */
-    public static void saveChatRoom(ProtocolProviderService protocolProvider, String oldChatRoomId, String newChatRoomId)
-    {
+    public static void saveChatRoom(ProtocolProviderService protocolProvider, String oldChatRoomId, String newChatRoomId) {
         String[] columns = {ChatSession.SESSION_UUID};
         String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
         String[] args = {accountUid, oldChatRoomId};
@@ -2319,8 +2201,7 @@ public class ConfigurationUtils
      * @param protocolProvider the protocol provider to which the chat room belongs
      * @param chatRoomId the identifier of the chat room to remove
      */
-    public static void removeChatRoom(ProtocolProviderService protocolProvider, String chatRoomId)
-    {
+    public static void removeChatRoom(ProtocolProviderService protocolProvider, String chatRoomId) {
         String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
         String[] args = {accountUid, chatRoomId};
 
@@ -2336,8 +2217,7 @@ public class ConfigurationUtils
      * @param chatRoomStatus the new status of the chat room
      */
     public static void updateChatRoomStatus(ProtocolProviderService protocolProvider,
-            String chatRoomId, String chatRoomStatus)
-    {
+            String chatRoomId, String chatRoomStatus) {
         updateChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS, chatRoomStatus);
     }
 
@@ -2346,10 +2226,10 @@ public class ConfigurationUtils
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the identifier of the chat room
+     *
      * @return the last chat room status, saved through the <code>ConfigurationService</code>.
      */
-    public static String getChatRoomStatus(ProtocolProviderService protocolProvider, String chatRoomId)
-    {
+    public static String getChatRoomStatus(ProtocolProviderService protocolProvider, String chatRoomId) {
         return getChatRoomProperty(protocolProvider, chatRoomId, ChatRoom.CHATROOM_LAST_STATUS);
     }
 
@@ -2362,8 +2242,7 @@ public class ConfigurationUtils
      * @param value the value of the property if null, property will be removed
      */
     public static void updateChatRoomProperty(ProtocolProviderService protocolProvider,
-            String chatRoomId, String property, String value)
-    {
+            String chatRoomId, String property, String value) {
         JSONObject attributes = getChatRoomAttributes(protocolProvider, chatRoomId);
         try {
             if (value == null)
@@ -2389,11 +2268,11 @@ public class ConfigurationUtils
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the identifier of the chat room
      * @param property the property name, saved through the <code>ConfigurationService</code>.
+     *
      * @return the value of the property, saved through the <code>ConfigurationService</code>.
      */
     public static String getChatRoomProperty(ProtocolProviderService protocolProvider,
-            String chatRoomId, String property)
-    {
+            String chatRoomId, String property) {
         JSONObject attributes = getChatRoomAttributes(protocolProvider, chatRoomId);
         try {
             return attributes.getString(property);
@@ -2409,10 +2288,10 @@ public class ConfigurationUtils
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomId the chat room id
+     *
      * @return the chat room prefix saved in <code>ConfigurationService</code>.
      */
-    private static JSONObject getChatRoomAttributes(ProtocolProviderService protocolProvider, String chatRoomId)
-    {
+    private static JSONObject getChatRoomAttributes(ProtocolProviderService protocolProvider, String chatRoomId) {
         //mDB is null when access during restoring process
         if (mDB == null)
             mDB = DatabaseBackend.getWritableDB();
@@ -2446,10 +2325,10 @@ public class ConfigurationUtils
      *
      * @param protocolProvider the protocol provider, to which the chat room belongs
      * @param chatRoomID the chat room id (cmeng: can contain account serviceName e.g. example.org??)
+     *
      * @return the chatRoom sessionUid saved in <code>ConfigurationService</code>.
      */
-    public static String getChatRoomPrefix(ProtocolProviderService protocolProvider, String chatRoomID)
-    {
+    public static String getChatRoomPrefix(ProtocolProviderService protocolProvider, String chatRoomID) {
         AccountID accountID = protocolProvider.getAccountID();
         MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
         String sessionUuid = mhs.getSessionUuidByJid(accountID, chatRoomID);
@@ -2468,8 +2347,7 @@ public class ConfigurationUtils
      * @param groupID the identifier of the group (prefixed with group)
      * @param isCollapsed indicates if the group is collapsed or expanded
      */
-    public static void setContactListGroupCollapsed(String groupID, boolean isCollapsed)
-    {
+    public static void setContactListGroupCollapsed(String groupID, boolean isCollapsed) {
         String prefix = "gui.contactlist.groups";
         List<String> groups = mConfigService.getPropertyNamesByPrefix(prefix, true);
 
@@ -2496,10 +2374,10 @@ public class ConfigurationUtils
      * Returns <code>true</code> if the group given by <code>groupID</code> is collapsed or <code>false</code> otherwise.
      *
      * @param groupID the identifier of the group
+     *
      * @return <code>true</code> if the group given by <code>groupID</code> is collapsed or <code>false</code> otherwise
      */
-    public static boolean isContactListGroupCollapsed(String groupID)
-    {
+    public static boolean isContactListGroupCollapsed(String groupID) {
         String prefix = "gui.contactlist.groups";
 
         List<String> groups = mConfigService.getPropertyNamesByPrefix(prefix, true);
@@ -2519,8 +2397,7 @@ public class ConfigurationUtils
      *
      * @return <code>true</code> if the account manual configuration and creation is disabled, otherwise return <code>false</code>
      */
-    public static boolean isShowAccountConfig()
-    {
+    public static boolean isShowAccountConfig() {
         final String SHOW_ACCOUNT_CONFIG_PROP = "gui.configforms.SHOW_ACCOUNT_CONFIG";
         boolean defaultValue = !Boolean.parseBoolean(UtilActivator.getResources()
                 .getSettingsString("gui.account.ACCOUNT_CONFIG_DISABLED"));
@@ -2530,10 +2407,8 @@ public class ConfigurationUtils
     /**
      * Listens for changes of the properties.
      */
-    private static class ConfigurationChangeListener implements PropertyChangeListener
-    {
-        public void propertyChange(PropertyChangeEvent evt)
-        {
+    private static class ConfigurationChangeListener implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
             // All properties we're interested in here are Strings.
             if (!(evt.getNewValue() instanceof String))
                 return;
@@ -2620,10 +2495,10 @@ public class ConfigurationUtils
      * Returns the package name under which we would store information for the given factory.
      *
      * @param factory the <code>ProtocolProviderFactory</code>, which package name we're looking for
+     *
      * @return the package name under which we would store information for the given factory
      */
-    public static String getFactoryImplPackageName(ProtocolProviderFactory factory)
-    {
+    public static String getFactoryImplPackageName(ProtocolProviderFactory factory) {
         String className = factory.getClass().getName();
         return className.substring(0, className.lastIndexOf('.'));
     }
@@ -2633,8 +2508,7 @@ public class ConfigurationUtils
      *
      * @return the client port
      */
-    public static int getClientPort()
-    {
+    public static int getClientPort() {
         return mConfigService.getInt(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, 5060);
     }
 
@@ -2643,8 +2517,7 @@ public class ConfigurationUtils
      *
      * @param port the port to set
      */
-    public static void setClientPort(int port)
-    {
+    public static void setClientPort(int port) {
         mConfigService.setProperty(ProtocolProviderFactory.PREFERRED_CLEAR_PORT_PROPERTY_NAME, port);
     }
 
@@ -2653,8 +2526,7 @@ public class ConfigurationUtils
      *
      * @return the client secure port
      */
-    public static int getClientSecurePort()
-    {
+    public static int getClientSecurePort() {
         return mConfigService.getInt(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, 5061);
     }
 
@@ -2663,8 +2535,7 @@ public class ConfigurationUtils
      *
      * @param port the port to set
      */
-    public static void setClientSecurePort(int port)
-    {
+    public static void setClientSecurePort(int port) {
         mConfigService.setProperty(ProtocolProviderFactory.PREFERRED_SECURE_PORT_PROPERTY_NAME, port);
     }
 
@@ -2673,8 +2544,7 @@ public class ConfigurationUtils
      *
      * @return the list of enabled SSL protocols
      */
-    public static String[] getEnabledSslProtocols()
-    {
+    public static String[] getEnabledSslProtocols() {
         String enabledSslProtocols = mConfigService.getString("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
         if (StringUtils.isBlank(enabledSslProtocols)) {
             SSLSocket temp;
@@ -2694,8 +2564,7 @@ public class ConfigurationUtils
      *
      * @return the list of available SSL protocols
      */
-    public static String[] getAvailableSslProtocols()
-    {
+    public static String[] getAvailableSslProtocols() {
         SSLSocket temp;
         try {
             temp = (SSLSocket) SSLSocketFactory.getDefault().createSocket();
@@ -2711,8 +2580,7 @@ public class ConfigurationUtils
      *
      * @param enabledProtocols the list of enabled SSL protocols to set
      */
-    public static void setEnabledSslProtocols(String[] enabledProtocols)
-    {
+    public static void setEnabledSslProtocols(String[] enabledProtocols) {
         if (enabledProtocols == null || enabledProtocols.length == 0)
             mConfigService.removeProperty("gov.nist.javax.sip.TLS_CLIENT_PROTOCOLS");
         else {
@@ -2729,8 +2597,7 @@ public class ConfigurationUtils
      * @return <code>true</code> if the account associated with <code>protocolProvider</code> has at least
      * one video format enabled in it's configuration, <code>false</code> otherwise.
      */
-    public static boolean hasEnabledVideoFormat(ProtocolProviderService protocolProvider)
-    {
+    public static boolean hasEnabledVideoFormat(ProtocolProviderService protocolProvider) {
         Map<String, String> accountProperties = protocolProvider.getAccountID().getAccountProperties();
 
         EncodingConfiguration encodingConfiguration;
@@ -2750,8 +2617,7 @@ public class ConfigurationUtils
      *
      * @param isDeliveryReceiptEnable indicates whether Message Delivery Receipt feature is enable or disable
      */
-    private static void updateDeliveryReceiptFeature(boolean isDeliveryReceiptEnable)
-    {
+    private static void updateDeliveryReceiptFeature(boolean isDeliveryReceiptEnable) {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
 
         for (ProtocolProviderService pps : ppServices) {
@@ -2778,8 +2644,7 @@ public class ConfigurationUtils
      *
      * @param isChatStateEnable indicates whether ChatState feature is enable or disable
      */
-    private static void updateChatStateCapsFeature(boolean isChatStateEnable)
-    {
+    private static void updateChatStateCapsFeature(boolean isChatStateEnable) {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
             XMPPConnection connection = pps.getConnection();
@@ -2811,10 +2676,10 @@ public class ConfigurationUtils
      *
      * @param propertyName of the value to retrieve
      * @param defValue default value to use
+     *
      * @return the retrieve value
      */
-    public static String getProperty(String propertyName, String defValue)
-    {
+    public static String getProperty(String propertyName, String defValue) {
         Object objValue = sqlStore.getProperty(propertyName);
         return (objValue == null)
                 ? defValue

@@ -1075,7 +1075,7 @@ public class ChatPanel implements Chat, MessageListener {
                 activity.runOnUiThread(() -> {
                     PresenceStatus presenceStatus = chatTransport.getStatus();
                     ActionBarUtil.setSubtitle(activity, presenceStatus.getStatusName());
-                    ActionBarUtil.setStatus(activity, presenceStatus.getStatusIcon());
+                    ActionBarUtil.setStatusIcon(activity, presenceStatus.getStatusIcon());
                 });
             }
         }

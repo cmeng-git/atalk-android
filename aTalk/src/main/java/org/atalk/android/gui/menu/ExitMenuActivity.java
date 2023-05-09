@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.android.gui.menu;
@@ -18,44 +18,39 @@ import org.atalk.service.osgi.OSGiActivity;
  *
  * @author Pawel Domas
  */
-public abstract class ExitMenuActivity extends OSGiActivity
-{
+public abstract class ExitMenuActivity extends OSGiActivity {
     @Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-	}
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.exit_menu, menu);
+        getMenuInflater().inflate(R.menu.exit_menu, menu);
+        return true;
+    }
 
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId()) {
-			// Shutdown application
-			case R.id.menu_exit:
-				aTalkApp.shutdownApplication();
-				break;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Shutdown application
+            case R.id.menu_exit:
+                aTalkApp.shutdownApplication();
+                break;
             case R.id.online_help:
                 About.atalkUrlAccess(this, getString(R.string.FAQ_Link));
                 break;
             case R.id.about:
                 startActivity(About.class);
                 break;
-			// delete database
-			case R.id.del_database:
-				ServerPersistentStoresRefreshDialog.deleteDB();
+            // delete database
+            case R.id.del_database:
+                ServerPersistentStoresRefreshDialog.deleteDB();
                 break;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-		return true;
-	}
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
 }

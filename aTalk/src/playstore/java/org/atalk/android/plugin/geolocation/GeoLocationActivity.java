@@ -29,6 +29,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapsSdkInitializedCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 import timber.log.Timber;
@@ -56,6 +57,7 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
     protected void onResume()
     {
         super.onResume();
+        setMainTitle(R.string.service_gui_GEO_SMAP);
         mSVP = null;
     }
 

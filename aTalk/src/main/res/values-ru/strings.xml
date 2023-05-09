@@ -284,12 +284,11 @@
     <string name="service_gui_GEO_LOCATION">Местоположение:</string>
     <string name="service_gui_GEO_LONGITUDE">Долгота:</string>
     <string name="service_gui_GEO_SEND">Отправить GPS-местоположение</string>
-    <string name="service_gui_GEO_SHOW">StreetViews &amp; Карта</string>
+    <string name="service_gui_GEO_SMAP">StreetViews &amp; Карта</string>
     <string name="service_gui_GPS_SHARE">Делитесь геолокациями</string>
     <string name="apply_new_location_setting">Нажмите кнопку «Следуй за мной», чтобы применить новые настройки</string>
     <string name="btn_center_map_description">Сосредоточиться на моем местоположении</string>
     <string name="btn_follow_me_description">Следуй за мной</string>
-    <string name="show_google_map">StreetView &amp; Карта</string>
     <string name="single_location_fix">Исправление одного местоположения</string>
     <string name="start_follow_me">Подписывайтесь на меня (%1$dm) @%2$dS</string>
     <string name="stop_follow_me">Прекрати следовать за мной (%1$dm) @%2$dS</string>

@@ -6,7 +6,7 @@
         android:title="@string/pref_cat_MESSAGING_SECURITY_OPTIONS">
 
         <CheckBoxPreference
-            android:key="@string/pref_key_crypto_enable"
+            android:key="pref.key.crypto.enable"
             android:summaryOff="@string/service_gui_settings_CRYPTO_ENABLE_OFF"
             android:summaryOn="@string/service_gui_settings_CRYPTO_ENABLE_ON"
             android:title="@string/service_gui_settings_CRYPTO_ENABLE_TITLE" />
@@ -16,7 +16,7 @@
         android:title="@string/pref_cat_OMEMO_SECURITY_SETTINGS">
 
         <CheckBoxPreference
-            android:key="@string/pref_key_omemo_key_blind_trust"
+            android:key="pref.key.omemo.key.blind.trust"
             android:summary="@string/pref_omemo_blind_trust_before_verification_summary"
             android:title="@string/pref_omemo_blind_trust_before_verification"/>
         <PreferenceScreen

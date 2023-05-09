@@ -25,14 +25,6 @@ import java.util.Map;
 public class EncodingConfigurationImpl extends EncodingConfiguration
 {
     /**
-     * The indicator which determines whether the G.729 codec is enabled.
-     *
-     * WARNING: The use of G.729 may require a license fee and/or royalty fee in some countries and
-     * is licensed by <a href="http://www.sipro.com">SIPRO Lab Telecom</a>.
-     */
-    public static final boolean G729 = false;
-
-    /**
      * Constructor. Loads the default preferences.
      */
     public EncodingConfigurationImpl()
@@ -46,9 +38,9 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
      */
     private void initializeFormatPreferences()
     {
-        // first init default preferences for video codecs
-        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1300);
-        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1200);
+        // first init default preferences for video codecs; use Vp8 over VP9 (not very stable)
+        setEncodingPreference("VP8", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1300);
+        setEncodingPreference("VP9", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1200);
         setEncodingPreference("H264", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 1100);
         setEncodingPreference("JPEG", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 950);
         setEncodingPreference("H261", VideoMediaFormatImpl.DEFAULT_CLOCK_RATE, 800);
@@ -57,7 +49,7 @@ public class EncodingConfigurationImpl extends EncodingConfiguration
         setEncodingPreference("opus", 48000, 750);
         setEncodingPreference("SILK", 24000, 714);
         setEncodingPreference("SILK", 16000, 713);
-        // setEncodingPreference("G722", 8000 /* actually, 16 kHz */, 705);
+        setEncodingPreference("G722", 8000 /* actually, 16 kHz */, 705);
         setEncodingPreference("speex", 32000, 701);
         setEncodingPreference("speex", 16000, 700);
         setEncodingPreference("PCMU", 8000, 650);

@@ -295,11 +295,11 @@
         <activity android:name=".gui.settings.notification.NotificationDetails" />
         <!-- Basic settings -->
         <activity
-            android:name=".gui.settings.BasicSettingsActivity" />
+            android:name=".gui.settings.CodecSettingsActivity" />
         <!-- Opus settings -->
         <activity-alias
             android:name=".gui.settings.OpusSettings"
-            android:targetActivity=".gui.settings.BasicSettingsActivity">
+            android:targetActivity=".gui.settings.CodecSettingsActivity">
             <meta-data
                 android:name="android.preference"
                 android:resource="@xml/opus_preferences" />
@@ -307,7 +307,7 @@
         <!-- Silk settings -->
         <activity-alias
             android:name=".gui.settings.SilkSettings"
-            android:targetActivity=".gui.settings.BasicSettingsActivity">
+            android:targetActivity=".gui.settings.CodecSettingsActivity">
             <meta-data
                 android:name="android.preference"
                 android:resource="@xml/silk_preferences" />

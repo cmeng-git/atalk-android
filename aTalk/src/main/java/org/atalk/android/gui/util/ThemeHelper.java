@@ -58,7 +58,7 @@ public class ThemeHelper
      */
     public static void setTheme(Context ctx, Theme theme)
     {
-        setAppTheme(theme);
+        mTheme = theme;
         ctx.setTheme(getAppThemeResourceId(theme));
     }
 

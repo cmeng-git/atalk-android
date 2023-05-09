@@ -33,63 +33,63 @@ import timber.log.Timber;
  */
 public class SipPreferenceFragment extends AccountPreferenceFragment
 {
-    private static final String PREF_KEY_USER_ID = aTalkApp.getResString(R.string.pref_key_user_id);
+    private static final String PREF_KEY_USER_ID = "pref_key_user_id";
 
-    private static final String PREF_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
+    private static final String PREF_KEY_SERVER_ADDRESS = "pref_key_server_address";
 
-    private static final String PREF_KEY_AUTH_NAME = aTalkApp.getResString(R.string.pref_key_auth_name);
+    private static final String PREF_KEY_AUTH_NAME = "pref_key_auth_name";
 
     /*
-     * private static final String PREF_KEY_DEFAULT_DOMAIN = aTalkApp.getResString(R.string.pref_key_default_domain);
+     * private static final String PREF_KEY_DEFAULT_DOMAIN = "pref_key_default_domain";
      */
 
-    private static final String PREF_KEY_TLS_CERT_ID = aTalkApp.getResString(R.string.pref_key_client_tls_cert);
+    private static final String PREF_KEY_TLS_CERT_ID = "pref_key_client_tls_cert";
 
-    private static final String PREF_KEY_PROXY_AUTO_CONFIG = aTalkApp.getResString(R.string.pref_key_proxy_auto_config);
+    private static final String PREF_KEY_PROXY_AUTO_CONFIG = "pref_key_proxy_auto_config";
 
-    private static final String PREF_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
+    private static final String PREF_KEY_SERVER_PORT = "pref_key_server_port";
 
-    private static final String PREF_KEY_PROXY_ADDRESS = aTalkApp.getResString(R.string.pref_key_proxy_address);
+    private static final String PREF_KEY_PROXY_ADDRESS = "pref_key_ProxyAddress";
 
-    private static final String PREF_KEY_PREFERRED_TRANSPORT = aTalkApp.getResString(R.string.pref_key_preferred_transport);
+    private static final String PREF_KEY_PREFERRED_TRANSPORT = "pref_key_preferred_transport";
 
-    private static final String PREF_KEY_PROXY_PORT = aTalkApp.getResString(R.string.pref_key_proxy_port);
+    private static final String PREF_KEY_PROXY_PORT = "pref_key_ProxyPort";
 
-    private static final String PREF_KEY_IS_PRESENCE_EN = aTalkApp.getResString(R.string.pref_key_is_presence_enabled);
+    private static final String PREF_KEY_IS_PRESENCE_EN = "pref_key_is_presence_enabled";
 
-    private static final String PREF_KEY_FORCE_P2P = aTalkApp.getResString(R.string.pref_key_force_p2p);
+    private static final String PREF_KEY_FORCE_P2P = "pref_key_force_p2p";
 
-    private static final String PREF_KEY_POLLING_PERIOD = aTalkApp.getResString(R.string.pref_key_polling_period);
+    private static final String PREF_KEY_POLLING_PERIOD = "pref_key_polling_period";
 
-    private static final String PREF_KEY_SUBSCRIPTION_PERIOD = aTalkApp.getResString(R.string.pref_key_subscription_period);
+    private static final String PREF_KEY_SUBSCRIPTION_PERIOD = "pref_key_subscription_period";
 
-    private static final String PREF_KEY_KEEP_ALIVE_METHOD = aTalkApp.getResString(R.string.pref_key_keep_alive_method);
+    private static final String PREF_KEY_KEEP_ALIVE_METHOD = "pref_key_keep_alive_method";
 
-    private static final String PREF_KEY_PING_INTERVAL = aTalkApp.getResString(R.string.pref_key_ping_interval);
+    private static final String PREF_KEY_PING_INTERVAL = "pref_key_ping_interval";
 
-    private static final String PREF_KEY_DTMF_METHOD = aTalkApp.getResString(R.string.pref_key_dtmf_method);
+    private static final String PREF_KEY_DTMF_METHOD = "pref_key_dtmf_method";
 
-    private static final String PREF_KEY_MWI_EN = aTalkApp.getResString(R.string.pref_key_mwi_enabled);
+    private static final String PREF_KEY_MWI_EN = "pref_key_mwi_enabled";
 
-    private static final String PREF_KEY_VOICE_MAIL_URI = aTalkApp.getResString(R.string.pref_key_voicemail_uri);
+    private static final String PREF_KEY_VOICE_MAIL_URI = "pref_key_voicemail_uri";
 
-    private static final String PREF_KEY_VOICE_MAIL_CHECK_URI = aTalkApp.getResString(R.string.pref_key_voicemail_check_uri);
+    private static final String PREF_KEY_VOICE_MAIL_CHECK_URI = "pref_key_voicemail_check_uri";
 
-    private static final String PREF_KEY_CONTACT_LIST_TYPE = aTalkApp.getResString(R.string.pref_key_contact_list_type);
+    private static final String PREF_KEY_CONTACT_LIST_TYPE = "pref_key_contact_list_type";
 
-    private static final String PREF_KEY_CLIST_SERVER_URI = aTalkApp.getResString(R.string.pref_key_clist_server_uri);
+    private static final String PREF_KEY_CLIST_SERVER_URI = "pref_key_clist_server_uri";
 
-    private static final String PREF_KEY_CLIST_USE_SIP_CREDENTIALS = aTalkApp.getResString(R.string.pref_key_clist_use_sip_credentials);
+    private static final String PREF_KEY_CLIST_USE_SIP_CREDENTIALS = "pref_key_clist_use_sip_credentials";
 
-    private static final String PREF_KEY_CLIST_USER = aTalkApp.getResString(R.string.pref_key_clist_user);
+    private static final String PREF_KEY_CLIST_USER = "pref_key_clist_user";
 
-    private static final String PREF_KEY_CLIST_PASSWORD = aTalkApp.getResString(R.string.pref_key_clist_password);
+    private static final String PREF_KEY_CLIST_PASSWORD = "pref_key_clist_password";
 
-    private static final String PREF_KEY_DISPLAYNAME = aTalkApp.getResString(R.string.pref_key_display_name);
+    private static final String PREF_KEY_DISPLAYNAME = "pref_key_display_name";
 
-    private static final String PREF_KEY_PASSWORD = aTalkApp.getResString(R.string.pref_key_password);
+    private static final String PREF_KEY_PASSWORD = "pref_key_password";
 
-    private static final String PREF_KEY_STORE_PASSWORD = aTalkApp.getResString(R.string.pref_key_store_password);
+    private static final String PREF_KEY_STORE_PASSWORD = "pref_key_store_password";
 
     /**
      * Creates new instance.
@@ -289,93 +289,95 @@ public class SipPreferenceFragment extends AccountPreferenceFragment
 
         SIPAccountRegistration reg = (SIPAccountRegistration) getAccountRegistration();
 
-        if (key.equals(PREF_KEY_PASSWORD)) {
-            reg.setPassword(prefs.getString(PREF_KEY_PASSWORD, null));
-        }
-        else if (key.equals(PREF_KEY_DISPLAYNAME)) {
-            reg.setAccountDisplayName(prefs.getString(PREF_KEY_DISPLAYNAME, null));
-        }
-        else if (key.equals(PREF_KEY_STORE_PASSWORD)) {
-            reg.setRememberPassword(prefs.getBoolean(PREF_KEY_STORE_PASSWORD, true));
-        }
-        else if (key.equals(PREF_KEY_SERVER_ADDRESS)) {
-            // reg.setServerAddress(
-            // prefs.getString(PREF_KEY_SERVER_ADDRESS, null));
-            // Can not be changed
-        }
-        else if (key.equals(PREF_KEY_USER_ID)) {
-            // User id can not be changed
-        }
-        else if (key.equals(PREF_KEY_SERVER_PORT)) {
-            reg.setServerPort(prefs.getString(PREF_KEY_SERVER_PORT, null));
-        }
-        else if (key.equals(PREF_KEY_AUTH_NAME)) {
-            reg.setAuthorizationName(prefs.getString(PREF_KEY_AUTH_NAME, null));
-        }
-        else if (key.equals(PREF_KEY_TLS_CERT_ID)) {
-            reg.setTlsClientCertificate(prefs.getString(PREF_KEY_TLS_CERT_ID, null));
-        }
-        else if (key.equals(PREF_KEY_PROXY_AUTO_CONFIG)) {
-            reg.setProxyAutoConfigure(prefs.getBoolean(PREF_KEY_PROXY_AUTO_CONFIG, true));
-        }
-        else if (key.equals(PREF_KEY_PROXY_ADDRESS)) {
-            reg.setProxy(prefs.getString(PREF_KEY_PROXY_ADDRESS, null));
-        }
-        else if (key.equals(PREF_KEY_PROXY_PORT)) {
-            reg.setProxyPort(prefs.getString(PREF_KEY_PROXY_PORT, null));
-        }
-        else if (key.equals(PREF_KEY_PREFERRED_TRANSPORT)) {
-            reg.setPreferredTransport(prefs.getString(PREF_KEY_PREFERRED_TRANSPORT, null));
-        }
-        else if (key.equals(PREF_KEY_KEEP_ALIVE_METHOD)) {
-            reg.setKeepAliveMethod(prefs.getString(PREF_KEY_KEEP_ALIVE_METHOD, null));
-        }
-        else if (key.equals(PREF_KEY_PING_INTERVAL)) {
-            reg.setPingInterval(prefs.getString(PREF_KEY_PING_INTERVAL, null));
-        }
-        else if (key.equals(PREF_KEY_MWI_EN)) {
-            reg.setMessageWaitingIndications(prefs.getBoolean(PREF_KEY_MWI_EN, true));
-        }
-        else if (key.equals(PREF_KEY_VOICE_MAIL_URI)) {
-            reg.setVoicemailURI(prefs.getString(PREF_KEY_VOICE_MAIL_URI, null));
-        }
-        else if (key.equals(PREF_KEY_VOICE_MAIL_CHECK_URI)) {
-            reg.setVoicemailCheckURI(prefs.getString(PREF_KEY_VOICE_MAIL_CHECK_URI, null));
-        }
-        else if (key.equals(PREF_KEY_DTMF_METHOD)) {
-            reg.setDTMFMethod(prefs.getString(PREF_KEY_DTMF_METHOD, null));
-        }
-        else if (key.equals(PREF_KEY_IS_PRESENCE_EN)) {
-            reg.setEnablePresence(prefs.getBoolean(PREF_KEY_IS_PRESENCE_EN, true));
-        }
-        else if (key.equals(PREF_KEY_FORCE_P2P)) {
-            reg.setForceP2PMode(prefs.getBoolean(PREF_KEY_FORCE_P2P, false));
-        }
-        else if (key.equals(PREF_KEY_POLLING_PERIOD)) {
-            reg.setPollingPeriod(prefs.getString(PREF_KEY_POLLING_PERIOD, null));
-        }
-        else if (key.equals(PREF_KEY_SUBSCRIPTION_PERIOD)) {
-            reg.setSubscriptionExpiration(prefs.getString(PREF_KEY_SUBSCRIPTION_PERIOD, null));
-        }
-        else if (key.equals(PREF_KEY_CONTACT_LIST_TYPE)) {
-            updateContactListViews();
+        switch (key) {
+            case PREF_KEY_PASSWORD:
+                reg.setPassword(prefs.getString(PREF_KEY_PASSWORD, null));
+                break;
+            case PREF_KEY_DISPLAYNAME:
+                reg.setAccountDisplayName(prefs.getString(PREF_KEY_DISPLAYNAME, null));
+                break;
+            case PREF_KEY_STORE_PASSWORD:
+                reg.setRememberPassword(prefs.getBoolean(PREF_KEY_STORE_PASSWORD, true));
+                break;
+            case PREF_KEY_SERVER_ADDRESS:
+                // reg.setServerAddress(
+                // prefs.getString(PREF_KEY_SERVER_ADDRESS, null));
+                // Can not be changed
+                break;
+            case PREF_KEY_USER_ID:
+                // User id can not be changed
+                break;
+            case PREF_KEY_SERVER_PORT:
+                reg.setServerPort(prefs.getString(PREF_KEY_SERVER_PORT, null));
+                break;
+            case PREF_KEY_AUTH_NAME:
+                reg.setAuthorizationName(prefs.getString(PREF_KEY_AUTH_NAME, null));
+                break;
+            case PREF_KEY_TLS_CERT_ID:
+                reg.setTlsClientCertificate(prefs.getString(PREF_KEY_TLS_CERT_ID, null));
+                break;
+            case PREF_KEY_PROXY_AUTO_CONFIG:
+                reg.setProxyAutoConfigure(prefs.getBoolean(PREF_KEY_PROXY_AUTO_CONFIG, true));
+                break;
+            case PREF_KEY_PROXY_ADDRESS:
+                reg.setProxy(prefs.getString(PREF_KEY_PROXY_ADDRESS, null));
+                break;
+            case PREF_KEY_PROXY_PORT:
+                reg.setProxyPort(prefs.getString(PREF_KEY_PROXY_PORT, null));
+                break;
+            case PREF_KEY_PREFERRED_TRANSPORT:
+                reg.setPreferredTransport(prefs.getString(PREF_KEY_PREFERRED_TRANSPORT, null));
+                break;
+            case PREF_KEY_KEEP_ALIVE_METHOD:
+                reg.setKeepAliveMethod(prefs.getString(PREF_KEY_KEEP_ALIVE_METHOD, null));
+                break;
+            case PREF_KEY_PING_INTERVAL:
+                reg.setPingInterval(prefs.getString(PREF_KEY_PING_INTERVAL, null));
+                break;
+            case PREF_KEY_MWI_EN:
+                reg.setMessageWaitingIndications(prefs.getBoolean(PREF_KEY_MWI_EN, true));
+                break;
+            case PREF_KEY_VOICE_MAIL_URI:
+                reg.setVoicemailURI(prefs.getString(PREF_KEY_VOICE_MAIL_URI, null));
+                break;
+            case PREF_KEY_VOICE_MAIL_CHECK_URI:
+                reg.setVoicemailCheckURI(prefs.getString(PREF_KEY_VOICE_MAIL_CHECK_URI, null));
+                break;
+            case PREF_KEY_DTMF_METHOD:
+                reg.setDTMFMethod(prefs.getString(PREF_KEY_DTMF_METHOD, null));
+                break;
+            case PREF_KEY_IS_PRESENCE_EN:
+                reg.setEnablePresence(prefs.getBoolean(PREF_KEY_IS_PRESENCE_EN, true));
+                break;
+            case PREF_KEY_FORCE_P2P:
+                reg.setForceP2PMode(prefs.getBoolean(PREF_KEY_FORCE_P2P, false));
+                break;
+            case PREF_KEY_POLLING_PERIOD:
+                reg.setPollingPeriod(prefs.getString(PREF_KEY_POLLING_PERIOD, null));
+                break;
+            case PREF_KEY_SUBSCRIPTION_PERIOD:
+                reg.setSubscriptionExpiration(prefs.getString(PREF_KEY_SUBSCRIPTION_PERIOD, null));
+                break;
+            case PREF_KEY_CONTACT_LIST_TYPE:
+                updateContactListViews();
 
-            ListPreference lp = findPreference(PREF_KEY_CONTACT_LIST_TYPE);
-            int cListTypeIdx = lp.findIndexOfValue(lp.getValue());
-            getSipWizard().getRegistration().setXCapEnable(cListTypeIdx == 1);
-            getSipWizard().getRegistration().setXiVOEnable(cListTypeIdx == 2);
-        }
-        else if (key.equals(PREF_KEY_CLIST_SERVER_URI)) {
-            reg.setClistOptionServerUri(prefs.getString(PREF_KEY_CLIST_SERVER_URI, null));
-        }
-        else if (key.equals(PREF_KEY_CLIST_USE_SIP_CREDENTIALS)) {
-            reg.setClistOptionUseSipCredentials(prefs.getBoolean(PREF_KEY_CLIST_USE_SIP_CREDENTIALS, true));
-        }
-        else if (key.equals(PREF_KEY_CLIST_USER)) {
-            reg.setClistOptionUser(prefs.getString(PREF_KEY_CLIST_USER, null));
-        }
-        else if (key.equals(PREF_KEY_CLIST_PASSWORD)) {
-            reg.setClistOptionPassword(prefs.getString(PREF_KEY_CLIST_PASSWORD, null));
+                ListPreference lp = findPreference(PREF_KEY_CONTACT_LIST_TYPE);
+                int cListTypeIdx = lp.findIndexOfValue(lp.getValue());
+                getSipWizard().getRegistration().setXCapEnable(cListTypeIdx == 1);
+                getSipWizard().getRegistration().setXiVOEnable(cListTypeIdx == 2);
+                break;
+            case PREF_KEY_CLIST_SERVER_URI:
+                reg.setClistOptionServerUri(prefs.getString(PREF_KEY_CLIST_SERVER_URI, null));
+                break;
+            case PREF_KEY_CLIST_USE_SIP_CREDENTIALS:
+                reg.setClistOptionUseSipCredentials(prefs.getBoolean(PREF_KEY_CLIST_USE_SIP_CREDENTIALS, true));
+                break;
+            case PREF_KEY_CLIST_USER:
+                reg.setClistOptionUser(prefs.getString(PREF_KEY_CLIST_USER, null));
+                break;
+            case PREF_KEY_CLIST_PASSWORD:
+                reg.setClistOptionPassword(prefs.getString(PREF_KEY_CLIST_PASSWORD, null));
+                break;
         }
     }
 

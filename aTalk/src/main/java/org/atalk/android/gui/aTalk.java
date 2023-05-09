@@ -19,6 +19,7 @@ package org.atalk.android.gui;
 import android.Manifest;
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,7 +36,6 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -49,7 +49,6 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.atalk.impl.neomedia.device.AndroidCameraSystem;
 import org.atalk.persistance.migrations.MigrateDir;
@@ -94,8 +93,9 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      */
     public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
 
-    private static Boolean mPrefChange = false;
-
+    public final static int Theme_Change = 1;
+    public final static int Locale_Change = 2;
+    public static int mPrefChange = 0;
     private static final ArrayList<aTalk> mInstances = new ArrayList<>();
 
     /**
@@ -211,30 +211,46 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     @Override
     protected void onResume() {
         super.onResume();
+        /*
+         * Need to restart whole app to make aTalkApp Locale change working
+         * Note: Start aTalk Activity does not apply to aTalkApp Application class.
+         */
+        if (mPrefChange >= Locale_Change) {
+            PackageManager pm = getPackageManager();
+            Intent intent = pm.getLaunchIntentForPackage(getPackageName());
+            // ProcessPhoenix.triggerRebirth(this, intent);
+            ComponentName componentName = intent.getComponent();
+            Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+            startActivity(mainIntent);
+            Runtime.getRuntime().exit(0);
+        }
         // Re-init aTalk to refresh the newly user selected language and theme;
         // else the main option menu is not updated
-        if (mPrefChange) {
-            mPrefChange = false;
+        else if (mPrefChange == Theme_Change) {
+            mPrefChange = 0;
             finish();
             startActivity(aTalk.class);
-        } else {
-            /*
-             * Must perform Locale change here instead of in aTalkApp (and must make reference to aTalkApp context);
-             * else selected locale resources are only partially being updated.
-             */
-            String language = ConfigurationUtils.getProperty(getString(R.string.pref_key_locale), "");
-            LocaleHelper.setLocale(language);
         }
     }
 
     /*
      * If the user is currently looking at the first page, allow the system to handle the
-     * Back button. This call finish() on this activity and pops the back stack.
+     * Back button. If Telephony fragment is shown, backKey closes the fragment only.
+     * The call finish() on this activity and pops the back stack.
      */
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
-            super.onBackPressed();
+            // mTelephony is not null if Telephony is closed by Cancel button.
+            if (mTelephony != null) {
+                if (!mTelephony.closeFragment()) {
+                    super.onBackPressed();
+                }
+                mTelephony = null;
+            }
+            else {
+                super.onBackPressed();
+            }
         }
         else {
             // Otherwise, select the previous page.
@@ -263,8 +279,11 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         }
     }
 
-    public static void setPrefChange(boolean state) {
-        mPrefChange = state;
+    public static void setPrefChange(int change) {
+        if (Locale_Change == change)
+            aTalkApp.showToastMessage(R.string.service_gui_settings_Restart_Hint);
+
+        mPrefChange |= change;
     }
 
     /**
@@ -348,6 +367,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         public int getCount() {
             return NUM_PAGES;
         }
+
     }
 
     /**
@@ -355,7 +375,7 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      *
      * @param position position in the mFragmentTags
      *
-     * @return the requested fragment for the specified postion or null
+     * @return the requested fragment for the specified position or null
      */
     public static Fragment getFragment(int position) {
         String tag = mFragmentTags.get(position);
@@ -363,10 +383,11 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     public static aTalk getInstance() {
-        return mInstances.get(0);
+        return mInstances.isEmpty() ? null : mInstances.get(0);
     }
 
     // =========== Runtime permission handlers ==========
+
     /**
      * Check the WRITE_EXTERNAL_STORAGE state; proceed to request for permission if requestPermission == true.
      * Require to support WRITE_EXTERNAL_STORAGE pending aTalk installed API version.
@@ -380,18 +401,20 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return true;
         }
-        return hasPermission(callBack, requestPermission,  PRC_WRITE_EXTERNAL_STORAGE,
+        return hasPermission(callBack, requestPermission, PRC_WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     public static boolean hasPermission(Activity callBack, boolean requestPermission, int requestCode, String permission) {
         // Timber.d(new Exception(),"Callback: %s => %s (%s)", callBack, permission, requestPermission);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(mInstances.get(0), permission) != PackageManager.PERMISSION_GRANTED) {
-                if (requestPermission) {
+            // Do not use getInstance() as mInstances may be empty
+            if (ActivityCompat.checkSelfPermission(aTalkApp.getInstance(), permission) != PackageManager.PERMISSION_GRANTED) {
+                if (requestPermission && (callBack != null)) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(callBack, permission)) {
                         ActivityCompat.requestPermissions(callBack, new String[]{permission}, requestCode);
-                    } else {
+                    }
+                    else {
                         showHintMessage(requestCode, permission);
                     }
                 }
@@ -412,11 +435,12 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     public static void showHintMessage(int requestCode, String permission) {
         if (requestCode == PRC_RECORD_AUDIO) {
-                aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
+            aTalkApp.showToastMessage(R.string.audio_permission_denied_feedback);
         }
         else if (requestCode == PRC_CAMERA) {
-                aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
-        } else {
+            aTalkApp.showToastMessage(R.string.camera_permission_denied_feedback);
+        }
+        else {
             aTalkApp.showToastMessage(aTalkApp.getResString(R.string.permission_rationale_title) + ": " + permission);
         }
     }

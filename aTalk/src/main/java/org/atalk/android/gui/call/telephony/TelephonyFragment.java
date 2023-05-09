@@ -56,6 +56,7 @@ import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTe
  */
 public class TelephonyFragment extends OSGiFragment
 {
+    public static final String TELEPHONY_TAG = "telephonyFragment";
     private static String mLastJid = null;
     private static String mDomainJid;
 
@@ -253,10 +254,14 @@ public class TelephonyFragment extends OSGiFragment
         closeFragment();
     }
 
-    private void closeFragment()
+    public boolean closeFragment()
     {
-        Fragment phoneFragment = getParentFragmentManager().findFragmentById(android.R.id.content);
-        if (phoneFragment != null)
+        Fragment phoneFragment = fragmentActivity.getSupportFragmentManager().findFragmentByTag(TELEPHONY_TAG);
+        if (phoneFragment != null) {
             fragmentActivity.getSupportFragmentManager().beginTransaction().remove(phoneFragment).commit();
+            return true;
+        }
+        return false;
     }
 }
+

@@ -6,8 +6,22 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.5 (03/29/2023)" versioncode="301051">
+    <release version="3.1.6 (05/09/2023)" versioncode="301060">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Extend Locale support to aTalkApp, and all other activities previously not included</change>
+        <change>User Locale change requires to restart aTalk for aTalkApp (Application class) to take effect</change>
+        <change>Show title on all user preference setting menu for easy user reference/identification</change>
+        <change>Specify all preferences 'Key' identifiers in source; remove pref_ key settings reference in String_NT;
+          aTalkApp instance may not have initialised before the preference key is accessed</change>
+        <change>Back-Key activation will close the Telephony fragment if active, instead of exit aTalk</change>
+        <change>Add additional audio codecs support: G722 and G729</change>
+        <change>Set use priority preference of VP8 codec over VP9 (jni codec not very stable)</change>
+        <change>Update library fmj:1.0.1-jitsi to fmj:1.0.2-jitsi</change>
+        <change>Fix all ANR/Crash cases reported from aTalk v3.1.5</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.5 (03/29/2023)" versioncode="301051">
         <change>Upgrade aTalk to support android Tiramisu API-33. Need POST_NOTIFICATION, and to handle WRITE_EXTERNAL_STORAGE permission pending android API</change>
         <change>Always show video call option: When user starts video call, perform runtime CAMERA permission request if it was not granted</change>
         <change>Enhance aTalk incoming call (via jingleMessage or legacy jingleRtp) handling for all the various android states i.e. device locked, aTalk in background etc</change>

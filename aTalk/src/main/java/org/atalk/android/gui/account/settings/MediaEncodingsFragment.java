@@ -6,12 +6,17 @@
 package org.atalk.android.gui.account.settings;
 
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.widgets.TouchInterceptor;
-import org.atalk.service.osgi.OSGiFragment;
+import org.atalk.service.osgi.OSGiPreferenceFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -23,7 +28,7 @@ import java.util.List;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class MediaEncodingsFragment extends OSGiFragment implements TouchInterceptor.DropListener
+public class MediaEncodingsFragment extends OSGiPreferenceFragment implements TouchInterceptor.DropListener
 {
     /**
      * Argument key for list of encodings as strings (see {@link MediaEncodingActivity} for utility methods.)
@@ -87,10 +92,15 @@ public class MediaEncodingsFragment extends OSGiFragment implements TouchInterce
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Bundle state = savedInstanceState == null ? getArguments() : savedInstanceState;
+        Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
 
-        encodings = (List<String>) state.get(ARG_ENCODINGS);
-        priorities = (List<Integer>) state.get(ARG_PRIORITIES);
+        encodings = (List<String>) bundle.get(ARG_ENCODINGS);
+        priorities = (List<Integer>) bundle.get(ARG_PRIORITIES);
+
+        if (encodings.contains("VP8/90000"))
+            setPrefTitle(R.string.service_gui_settings_VIDEO_CODECS_TITLE);
+        else
+            setPrefTitle(R.string.service_gui_settings_AUDIO_CODECS_TITLE);
 
         View content = inflater.inflate(R.layout.encoding, container, false);
 

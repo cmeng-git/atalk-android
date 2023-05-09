@@ -44,7 +44,7 @@ public class AddContactActivity extends OSGiActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_contact);
-        setTitle(R.string.service_gui_ADD_CONTACT);
+        setMainTitle(R.string.service_gui_ADD_CONTACT);
         initAccountSpinner();
         initContactGroupSpinner();
     }

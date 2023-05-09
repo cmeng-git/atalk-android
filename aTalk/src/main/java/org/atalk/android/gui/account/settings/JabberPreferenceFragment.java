@@ -43,19 +43,19 @@ import timber.log.Timber;
 public class JabberPreferenceFragment extends AccountPreferenceFragment
 {
     // PreferenceScreen and PreferenceCategories for Account Settings...
-    static private final String P_KEY_TELEPHONY = aTalkApp.getResString(R.string.pref_screen_jbr_tele);
-    static private final String P_KEY_CALL_ENCRYPT = aTalkApp.getResString(R.string.pref_key_enable_encryption);
-    static private final String P_KEY_AUDIO_ENC = aTalkApp.getResString(R.string.pref_cat_audio_encoding);
-    static private final String P_KEY_VIDEO_ENC = aTalkApp.getResString(R.string.pref_cat_video_encoding);
+    private static final String P_KEY_TELEPHONY = "pref.screen.jbr.telephony";
+    private static final String P_KEY_CALL_ENCRYPT = "pref_key_enable_encryption";
+    private static final String P_KEY_AUDIO_ENC = "pref_cat_enc_audio";
+    private static final String P_KEY_VIDEO_ENC = "pref_cat_enc_video";
 
     // Account Settings
-    private static final String P_KEY_USER_ID = aTalkApp.getResString(R.string.pref_key_user_id);
-    private static final String P_KEY_PASSWORD = aTalkApp.getResString(R.string.pref_key_password);
-    private static final String P_KEY_STORE_PASSWORD = aTalkApp.getResString(R.string.pref_key_store_password);
-    static private final String P_KEY_DNSSEC_MODE = aTalkApp.getResString(R.string.pref_key_dnssec_mode);
+    private static final String P_KEY_USER_ID = "pref_key_user_id";
+    private static final String P_KEY_PASSWORD = "pref_key_password";
+    private static final String P_KEY_STORE_PASSWORD = "pref_key_store_password";
+    private static final String P_KEY_DNSSEC_MODE = "dns.DNSSEC_MODE";
 
     // Proxy
-    private static final String P_KEY_PROXY_CONFIG = aTalkApp.getResString(R.string.pref_key_bosh_configuration);
+    private static final String P_KEY_PROXY_CONFIG = "Bosh_Configuration";
 
     /*
      * A new instance of AccountID and is not the same as accountID.

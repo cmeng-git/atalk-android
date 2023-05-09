@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_general"
+        android:key="pref.cat.settings.general"
         android:title="@string/service_gui_settings_GENERAL">
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_show_atalk_icon"
+            android:key="org.atalk.android.show_icon"
             android:summaryOff="@string/service_gui_settings_SHOW_ICON_SUMMARY_OFF"
             android:summaryOn="@string/service_gui_settings_SHOW_ICON_SUMMARY_ON"
             android:title="@string/service_gui_settings_SHOW_ICON" />
 
         <!-- aTalk auto start on next system reboot -->
         <CheckBoxPreference
-            android:key="@string/pref_key_atalk_auto_start"
+            android:key="org.atalk.android.auto_start"
             android:summaryOff="@string/service_gui_settings_AUTO_START_SUMMARY_DISABLE"
             android:summaryOn="@string/service_gui_settings_AUTO_START_SUMMARY_ENABLE"
             android:title="@string/service_gui_settings_AUTO_START" />
@@ -23,7 +23,7 @@
             android:dialogMessage="@string/service_gui_settings_WEBVIEW_DLG_TITLE"
             android:hint="https://demo.agayon.be/"
             android:inputType="textWebEditText"
-            android:key="@string/pref_key_webview_PAGE"
+            android:key="gui.WEB_PAGE_ACCESS"
             android:summary="@string/service_gui_settings_WEBVIEW_SUMMARY"
             android:title="@string/service_gui_settings_WEBVIEW_TITLE" />
 
@@ -31,7 +31,7 @@
             android:dialogTitle="@string/service_gui_settings_LOCALE"
             android:entries="@array/settings_language_entries"
             android:entryValues="@array/settings_language_values"
-            android:key="@string/pref_key_locale"
+            android:key="pref.key.locale"
             android:persistent="false"
             android:title="@string/service_gui_settings_LOCALE" />
 
@@ -39,7 +39,7 @@
             android:dialogTitle="@string/settings_theme_label"
             android:entries="@array/settings_theme_entries"
             android:entryValues="@array/settings_theme_values"
-            android:key="@string/pref_key_theme"
+            android:key="pref.key.theme"
             android:persistent="false"
             android:title="@string/settings_theme_label" />
 
@@ -47,7 +47,7 @@
 
     <!-- Chat Security Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_security"
+        android:key="pref.cat.settings.security"
         android:title="@string/service_gui_settings_SECURITY">
 
         <!-- Chat Security Setting -->
@@ -64,65 +64,65 @@
         <Preference
             android:summary="@string/service_gui_settings_SSL_CERTIFICATE_SUMMARY"
             android:title="@string/service_gui_settings_SSL_CERTIFICATE">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="org.atalk.impl.androidcertdialog.ConnectionInfo"
-            android:targetPackage="org.atalk.android" />
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="org.atalk.impl.androidcertdialog.ConnectionInfo"
+                android:targetPackage="org.atalk.android" />
         </Preference>
 
     </PreferenceCategory>
 
     <!-- Message settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_msg"
+        android:key="pref.cat.settings.msg"
         android:title="@string/service_gui_settings_MSG">
 
         <!-- Group messages in one window -->
         <!--
             <CheckBoxPreference
 			android:title="@string/service_gui_settings_MULTICHAT_WINDOW"
-			android:key="@string/pref_key_multichat_window"
+			android:key="pref.key.multichat_window"
 			android:summaryOn="@string/service_gui_settings_MULTICHAT_ON"
 			android:summaryOff="@string/service_gui_settings_MULTICHAT_OFF"
 			/>
         -->
         <!-- Log chat history -->
         <CheckBoxPreference
-            android:key="@string/pref_key_history_logging"
+            android:key="pref.key.msg.history_logging"
             android:summaryOff="@string/service_gui_settings_HISTORY_LOG_OFF"
             android:summaryOn="@string/service_gui_settings_HISTORY_LOG_ON"
             android:title="@string/service_gui_settings_HISTORY_LOGGING" />
 
         <!-- Show x recent messages in new chats -->
         <CheckBoxPreference
-            android:key="@string/pref_key_show_history"
+            android:key="pref.key.msg.show_history"
             android:summaryOff="@string/service_gui_settings_DISABLED_STR"
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_SHOW_HISTORY" />
 
         <EditTextPreference
-            android:dependency="@string/pref_key_show_history"
+            android:dependency="pref.key.msg.show_history"
             android:dialogMessage="@string/service_gui_settings_CHAT_HISTORY_DLG_TITLE"
             android:inputType="number"
-            android:key="@string/pref_key_chat_history_size"
+            android:key="pref.key.msg.chat_history_size"
             android:title="@string/service_gui_settings_CHAT_HISTORY_SIZE" />
 
         <!-- Tell others when we have received and read the messages -->
         <CheckBoxPreference
-            android:key="@string/pref_key_message_delivery_receipt"
+            android:key="pref.key.message_delivery_receipt"
             android:summary="@string/service_gui_settings_MESSAGE_DELIVERY_RECEIPT_SUMMARY"
             android:title="@string/service_gui_settings_MESSAGE_DELIVERY_RECEIPT" />
 
         <!-- Tell others when we are writing to them -->
         <CheckBoxPreference
-            android:key="@string/pref_key_chat_state_notifications"
+            android:key="pref.key.msg.chat_state_notifications"
             android:summaryOff="@string/service_gui_settings_DISABLED_STR"
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_TYPING_NOTIFICATIONS" />
 
         <!-- Send file transfer thumbnail preview -->
         <CheckBoxPreference
-            android:key="@string/pref_key_send_thumbnail"
+            android:key="pref.key.send_thumbnail"
             android:summaryOff="@string/service_gui_settings_DISABLED_STR"
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_THUMBNAIL_OPTION" />
@@ -131,12 +131,12 @@
         <ListPreference
             android:entries="@array/filesizes"
             android:entryValues="@array/filesizes_values"
-            android:key="@string/pref_key_auto_accept_file"
+            android:key="pref.key.auto_accept_file"
             android:title="@string/service_gui_settings_ACCEPT_FILE" />
 
         <!-- Presence Subscription Mode - Auto or Manual -->
         <CheckBoxPreference
-            android:key="@string/pref_key_presence_subscribe_mode"
+            android:key="pref.key.presence_subscribe_mode"
             android:summaryOff="@string/service_gui_settings_PRESENCE_SUBSCRIBE_MANUAL"
             android:summaryOn="@string/service_gui_settings_PRESENCE_SUBSCRIBE_AUTO"
             android:title="@string/service_gui_settings_PRESENCE_SUBSCRIBE_APPROVAL_MODE" />
@@ -145,7 +145,7 @@
         Use task bar / dock alerts on incoming calls and chats not implemented on Android
 		<CheckBoxPreference
 			android:title="@string/service_gui_settings_CHAT_ALERTS"
-			android:key="@string/pref_key_chat_alerts"
+			android:key="pref.key.chat_alerts"
 			android:summaryOn="@string/service_gui_settings_ENABLED_STR"
 			android:summaryOff="@string/service_gui_settings_DISABLED_STR"
 			/>
@@ -154,17 +154,17 @@
 
     <!-- Notifications -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_notifications"
+        android:key="pref.cat.settings.notifications"
         android:title="@string/service_gui_settings_NOTIFICATIONS">
 
         <!-- Popup notifications type -->
         <ListPreference
-            android:key="@string/pref_key_popup_handler"
+            android:key="pref.key.notification.popup_handler"
             android:title="@string/service_gui_settings_POPUP_HANDLER" />
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="@string/pref_key_heads_up_enable"
+            android:key="pref.key.notification.heads_up_enable"
             android:summary="@string/pref_headsup_notifications_summary"
             android:title="@string/pref_headsup_notifications" />
 
@@ -186,7 +186,7 @@
 
         <!-- Auto Software Version Check -->
         <!-- CheckBoxPreference
-            android:key="@string/pref_key_auto_update_check_enable"
+            android:key="pref.key.auto_update_check_enable"
             android:summaryOff="@string/service_gui_settings_DISABLED_STR"
             android:summaryOn="@string/service_gui_settings_ENABLED_STR"
             android:title="@string/service_gui_settings_auto_update_check_status" /-->
@@ -194,15 +194,15 @@
 
     <!-- Media Call Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_media_call"
+        android:key="pref.cat.settings.media_call"
         android:title="@string/service_gui_settings_MEDIA_CALL">
         <!-- Video Sections -->
         <ListPreference
-            android:key="@string/pref_key_video_camera"
+            android:key="pref.key.video.camera"
             android:title="@string/service_gui_settings_CAMERA" />
 
         <ListPreference
-            android:key="@string/pref_key_video_resolution"
+            android:key="pref.key.video.resolution"
             android:title="@string/service_gui_settings_VIDEO_RESOLUTION" />
 
         <Preference
@@ -235,17 +235,17 @@
 
     <!-- Phone Call Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_call"
+        android:key="pref.cat.settings.call"
         android:title="@string/service_gui_settings_CALL">
 
         <CheckBoxPreference
-            android:key="@string/pref_key_normalize_pnumber"
+            android:key="pref.key.call.remove.special"
             android:summaryOff="@string/service_gui_settings_NORMALIZE_OFF"
             android:summaryOn="@string/service_gui_settings_NORMALIZE_ON"
             android:title="@string/service_gui_settings_NORMALIZE_NUMBER" />
 
         <CheckBoxPreference
-            android:key="@string/pref_key_accept_alpha_pnumbers"
+            android:key="pref.key.call.convert.letters"
             android:summaryOff="@string/service_gui_settings_ALLOW_ALPHA_OFF"
             android:summaryOn="@string/service_gui_settings_ALLOW_ALPHA_ON"
             android:title="@string/service_gui_settings_ALLOW_ALPHA_PNUMBER" />
@@ -253,7 +253,7 @@
 
     <!-- Advanced Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_advanced"
+        android:key="pref.cat.settings.advanced"
         android:title="@string/service_gui_settings_ADVANCED">
 
         <Preference

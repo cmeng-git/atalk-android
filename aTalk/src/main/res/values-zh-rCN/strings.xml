@@ -284,12 +284,11 @@
     <string name="service_gui_GEO_LONGITUDE">经度：</string>
     <string name="service_gui_GEO_ALTITUDE">海拔：</string>
     <string name="service_gui_GEO_SEND">发送 GPS 位置</string>
-    <string name="service_gui_GEO_SHOW">街景 &amp; 地图</string>
+    <string name="service_gui_GEO_SMAP">街景 &amp; 地图</string>
     <string name="service_gui_GPS_SHARE">分享地理位置</string>
     <string name="apply_new_location_setting">点击“跟随我”按钮应用新设置</string>
     <string name="btn_center_map_description">以我的位置为中心</string>
     <string name="btn_follow_me_description">跟踪</string>
-    <string name="show_google_map">街景 &amp; 地图</string>
     <string name="single_location_fix">单个位置更新</string>
     <string name="start_follow_me">跟踪设置 (%1$dm) @%2$dS</string>
     <string name="stop_follow_me">停止跟踪 (%1$dm) @%2$dS</string>

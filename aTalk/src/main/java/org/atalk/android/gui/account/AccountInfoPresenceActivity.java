@@ -188,7 +188,8 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     protected void onCreate(android.os.Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        // Set the main layout
+
+       // Set the main layout
         setContentView(R.layout.account_info_presence_status);
         mButtonContainer = findViewById(R.id.button_Container);
 
@@ -241,6 +242,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // setPrefTitle(R.string.plugin_accountinfo_TITLE);
+        ActionBarUtil.setTitle(this, getString(R.string.plugin_accountinfo_TITLE));
+
+    }
+
+    @Override
     protected void stop(BundleContext bundleContext)
             throws Exception
     {
@@ -286,8 +295,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
 
         // Account properties
-        String title = mAccount.getAccountName();
-        ActionBarUtil.setTitle(this, title);
+        ActionBarUtil.setSubtitle(this, mAccount.getAccountName());
 
         // Create spinner with status list
         Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
@@ -300,7 +308,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
         // Selects current status
         PresenceStatus presenceStatus = accountPresence.getPresenceStatus();
-        ActionBarUtil.setStatus(this, presenceStatus.getStatusIcon());
+        ActionBarUtil.setStatusIcon(this, presenceStatus.getStatusIcon());
 
         statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus), false);
         statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()

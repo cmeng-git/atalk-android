@@ -17,7 +17,6 @@ import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.MultiSelectListPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.UtilActivator;
@@ -27,6 +26,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,19 +62,19 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
      */
     private static final String defaultCiphers = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
 
-    private static final String PREF_KEY_SEC_ENABLED = aTalkApp.getResString(R.string.pref_key_enable_encryption);
+    private static final String PREF_KEY_SEC_ENABLED = "pref_key_enable_encryption";
 
-    private static final String PREF_KEY_SEC_PROTO_DIALOG = aTalkApp.getResString(R.string.pref_key_enc_protocols_dialog);
+    private static final String PREF_KEY_SEC_PROTO_DIALOG = "pref_key_enc_protos_dialog";
 
-    private static final String PREF_KEY_SEC_SIPZRTP_ATTR = aTalkApp.getResString(R.string.pref_key_enc_sipzrtp_attr);
+    private static final String PREF_KEY_SEC_SIPZRTP_ATTR = "pref_key_enc_sipzrtp_attr";
 
-    private static final String PREF_KEY_SEC_CIPHER_SUITES = aTalkApp.getResString(R.string.pref_key_enc_cipher_suites);
+    private static final String PREF_KEY_SEC_CIPHER_SUITES = "pref_key_ecn_cipher_suites";
 
-    private static final String PREF_KEY_SEC_SAVP_OPTION = aTalkApp.getResString(R.string.pref_key_enc_savp_option);
+    private static final String PREF_KEY_SEC_SAVP_OPTION = "pref_key_enc_savp_option";
 
-    private static final String PREF_KEY_SEC_RESET_ZID = aTalkApp.getResString(R.string.pref_key_zid_reset);
+    private static final String PREF_KEY_SEC_RESET_ZID = "pref.key.zid.reset";
 
-    private static final String PREF_KEY_SEC_DTLS_CERT_SA = aTalkApp.getResString(R.string.pref_key_enc_dtls_cert_sa);
+    private static final String PREF_KEY_SEC_DTLS_CERT_SA = "pref_key_enc_dtls_cert_signature_algorithm";
 
     private static final String[] cryptoSuiteEntries = {
             SrtpCryptoSuite.AES_256_CM_HMAC_SHA1_80,
@@ -133,7 +133,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
     /**
      * Fragment handles {@link Preference}s used for manipulating security settings.
      */
-    public static class SecurityPreferenceFragment extends PreferenceFragmentCompat
+    public static class SecurityPreferenceFragment extends OSGiPreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         private static final String STATE_SEC_REG = "security_reg";
@@ -150,6 +150,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
         {
+            setPrefTitle(R.string.service_gui_settings_MESSAGING_SECURITY_TITLE);
             if (savedInstanceState == null) {
                 Intent intent = getActivity().getIntent();
                 securityReg = (SecurityAccountRegistration) intent.getSerializableExtra(EXTR_KEY_SEC_REGISTRATION);

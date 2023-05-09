@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.6 (301060)
+Release Date:   05/09/2023
+Author:         cmeng
+- Extend Locale support to aTalkApp (Application class), and all other activities previously not included.
+  e.g. PermissionsActivity, Splash, About, GeoLocationBase etc
+- User Locale change required to restart aTalk for aTalkApp (Application class) to take effect.
+- Show title on all user preference setting menu for easy user reference/identification
+- Specify all preferences 'Key' identifiers in source; remove all pref_ key settings in String_NT
+  aTalkApp instance may not have initialised before the preference key is accessed.
+- aTalk#Backkey activation will close the Telephony fragment if active.
+- Add additional audio codecs support: G722 and G729 (royalty-free); and clean up neomedia/ffmpeg code
+- Set use priority preference of VP8 codec over VP9 (jni codec not very stable)
+- Update library fmj:1.0.1-jitsi to fmj:1.0.2-jitsi
+- Fix all ANR/Crash cases reported from aTalk v3.1.5 (20230509)
+
+=========================================================================
 Version:        3.1.5 (301051)
 Release Date:   03/29/20238
 Author:         cmeng

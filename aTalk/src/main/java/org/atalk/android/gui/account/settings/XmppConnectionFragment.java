@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.preference.ListPreference;
-import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
@@ -23,8 +22,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,31 +39,31 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class XmppConnectionFragment extends PreferenceFragmentCompat
+public class XmppConnectionFragment extends OSGiPreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     // Account General
-    private static final String P_KEY_GMAIL_NOTIFICATIONS = aTalkApp.getResString(R.string.pref_key_gmail_notifications);
-    private static final String P_KEY_GOOGLE_CONTACTS_ENABLED = aTalkApp.getResString(R.string.pref_key_google_contact_enabled);
-    private static final String P_KEY_DTMF_METHOD = aTalkApp.getResString(R.string.pref_key_dtmf_method);
+    private static final String P_KEY_GMAIL_NOTIFICATIONS = "pref_key_gmail_notifications";
+    private static final String P_KEY_GOOGLE_CONTACTS_ENABLED = "pref_key_google_contact_enabled";
+    private static final String P_KEY_DTMF_METHOD = "pref_key_dtmf_method";
 
     // Client TLS certificate
-    private static final String P_KEY_TLS_CERT_ID = aTalkApp.getResString(R.string.pref_key_client_tls_cert);
+    private static final String P_KEY_TLS_CERT_ID = "pref_key_client_tls_cert";
 
     // Server Options
-    private static final String P_KEY_IS_KEEP_ALIVE_ENABLE = aTalkApp.getResString(R.string.pref_key_is_keep_alive_enable);
-    public static final String P_KEY_PING_INTERVAL = aTalkApp.getResString(R.string.pref_key_ping_interval);
-    private static final String P_KEY_IS_PING_AUTO_TUNE_ENABLE = aTalkApp.getResString(R.string.pref_key_ping_auto_tune_enable);
-    private static final String P_KEY_IS_SERVER_OVERRIDDEN = aTalkApp.getResString(R.string.pref_key_is_server_overridden);
-    public static final String P_KEY_SERVER_ADDRESS = aTalkApp.getResString(R.string.pref_key_server_address);
-    public static final String P_KEY_SERVER_PORT = aTalkApp.getResString(R.string.pref_key_server_port);
-    private static final String P_KEY_MINIMUM_TLS_VERSION = aTalkApp.getResString(R.string.pref_key_minimum_TLS_version);
-    private static final String P_KEY_ALLOW_NON_SECURE_CONN = aTalkApp.getResString(R.string.pref_key_allow_non_secure_conn);
+    private static final String P_KEY_IS_KEEP_ALIVE_ENABLE = "pref_key_is_keep_alive_enable";
+    public static final String P_KEY_PING_INTERVAL = "pref_key_ping_interval";
+    private static final String P_KEY_IS_PING_AUTO_TUNE_ENABLE = "pref_key_ping_auto_tune_enable";
+    private static final String P_KEY_IS_SERVER_OVERRIDDEN = "pref_key_is_server_overridden";
+    public static final String P_KEY_SERVER_ADDRESS = "pref_key_server_address";
+    public static final String P_KEY_SERVER_PORT = "pref_key_server_port";
+    private static final String P_KEY_MINIMUM_TLS_VERSION = "pref_key_minimum_TLS_version";
+    private static final String P_KEY_ALLOW_NON_SECURE_CONN = "pref_key_allow_non_secure_conn";
 
     // Jabber Resource
-    private static final String P_KEY_AUTO_GEN_RESOURCE = aTalkApp.getResString(R.string.pref_key_auto_gen_resource);
-    private static final String P_KEY_RESOURCE_NAME = aTalkApp.getResString(R.string.pref_key_resource_name);
-    private static final String P_KEY_RESOURCE_PRIORITY = aTalkApp.getResString(R.string.pref_key_resource_priority);
+    private static final String P_KEY_AUTO_GEN_RESOURCE = "pref_key_auto_gen_resource";
+    private static final String P_KEY_RESOURCE_NAME = "pref_key_resource_name";
+    private static final String P_KEY_RESOURCE_PRIORITY = "pref_key_resource_priority";
 
     /*
      * A new instance of AccountID and is not the same as accountID.
@@ -90,6 +89,7 @@ public class XmppConnectionFragment extends PreferenceFragmentCompat
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
         setPreferencesFromResource(R.xml.xmpp_connection_preferences, rootKey);
+        setPrefTitle(R.string.service_gui_JBR_CONNECTION);
 
         String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
@@ -240,7 +240,7 @@ public class XmppConnectionFragment extends PreferenceFragmentCompat
             jbrReg.setDTMFMethod(shPrefs.getString(P_KEY_DTMF_METHOD, null));
         }
         else if (key.equals(P_KEY_IS_KEEP_ALIVE_ENABLE)) {
-            jbrReg.setKeepAliveOption(shPrefs.getBoolean(P_KEY_IS_KEEP_ALIVE_ENABLE, false));
+            jbrReg.setKeepAliveOption(shPrefs.getBoolean(P_KEY_IS_KEEP_ALIVE_ENABLE, true));
         }
         else if (key.equals(P_KEY_PING_INTERVAL)) {
             jbrReg.setPingInterval(shPrefs.getString(P_KEY_PING_INTERVAL,

@@ -8,9 +8,9 @@ package org.atalk.service.osgi;
 import android.content.Context;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -19,18 +19,16 @@ import org.osgi.framework.BundleContext;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OSGiFragment extends Fragment implements OSGiUiPart
-{
+public class OSGiFragment extends Fragment implements OSGiUiPart {
     private OSGiActivity osGiActivity;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NotNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        this.osGiActivity = (OSGiActivity) getActivity();
+        osGiActivity = (OSGiActivity) getActivity();
         if (osGiActivity != null)
             osGiActivity.registerOSGiFragment(this);
     }
@@ -39,8 +37,7 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
      * {@inheritDoc}
      */
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         osGiActivity.unregisterOSGiFragment(this);
         super.onDetach();
     }
@@ -49,16 +46,14 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
      * {@inheritDoc}
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
      * {@inheritDoc}
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -68,8 +63,7 @@ public class OSGiFragment extends Fragment implements OSGiUiPart
      *
      * @param action <code>Runnable</code> action to execute on UI thread.
      */
-    public void runOnUiThread(Runnable action)
-    {
+    public void runOnUiThread(Runnable action) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             action.run();
             return;

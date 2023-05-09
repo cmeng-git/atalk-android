@@ -34,8 +34,7 @@ import java.util.*;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class DialogActivity extends OSGiActivity
-{
+public class DialogActivity extends OSGiActivity {
     /**
      * Dialog title extra.
      */
@@ -137,8 +136,7 @@ public class DialogActivity extends OSGiActivity
      * then the new dialog is not disposed.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         setContentView(R.layout.alert_dialog);
@@ -219,14 +217,12 @@ public class DialogActivity extends OSGiActivity
      *
      * @return dialog content fragment.
      */
-    public Fragment getContentFragment()
-    {
+    public Fragment getContentFragment() {
         return getSupportFragmentManager().findFragmentById(R.id.alertContent);
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (!cancelable &&
                 keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
@@ -239,9 +235,7 @@ public class DialogActivity extends OSGiActivity
      *
      * @param v the confirm button view.
      */
-    @SuppressWarnings("unused")
-    public void onOkClicked(View v)
-    {
+    public void onOkClicked(View v) {
         if (mListener != null) {
             if (!mListener.onConfirmClicked(this)) {
                 return;
@@ -256,9 +250,7 @@ public class DialogActivity extends OSGiActivity
      *
      * @param v the cancel button view.
      */
-    @SuppressWarnings("unused")
-    public void onCancelClicked(View v)
-    {
+    public void onCancelClicked(View v) {
         finish();
     }
 
@@ -266,8 +258,7 @@ public class DialogActivity extends OSGiActivity
      * Removes listener from the map.
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         /*
          * cmeng: cannot do here as this is triggered when dialog is obscured by other activity
@@ -295,6 +286,7 @@ public class DialogActivity extends OSGiActivity
 
     /**
      * Get the listener Id for the dialog
+     *
      * @return the current mListenerId
      */
     public long getListenerID() {
@@ -304,18 +296,15 @@ public class DialogActivity extends OSGiActivity
     /**
      * Broadcast Receiver to act on command received in #intent.getExtra()
      */
-    class CommandDialogListener extends BroadcastReceiver
-    {
+    class CommandDialogListener extends BroadcastReceiver {
         private final long mDialogId;
 
-        CommandDialogListener(long dialogId)
-        {
+        CommandDialogListener(long dialogId) {
             mDialogId = dialogId;
         }
 
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             if (intent.getLongExtra(EXTRA_DIALOG_ID, -1) == mDialogId) {
                 if (ACTION_CLOSE_DIALOG.equals(intent.getAction())) {
                     // Unregistered listener and finish this activity with dialogId
@@ -344,8 +333,7 @@ public class DialogActivity extends OSGiActivity
      *
      * @param dialogId dialog identifier returned when the dialog was created.
      */
-    public static void closeDialog(long dialogId)
-    {
+    public static void closeDialog(long dialogId) {
         Intent intent = new Intent(ACTION_CLOSE_DIALOG);
         intent.putExtra(EXTRA_DIALOG_ID, dialogId);
         localBroadcastManager.sendBroadcast(intent);
@@ -357,8 +345,7 @@ public class DialogActivity extends OSGiActivity
      *
      * @param dialogId dialog identifier returned when the dialog was created.
      */
-    public static void focusDialog(long dialogId)
-    {
+    public static void focusDialog(long dialogId) {
         Intent intent = new Intent(ACTION_FOCUS_DIALOG);
         intent.putExtra(EXTRA_DIALOG_ID, dialogId);
         localBroadcastManager.sendBroadcast(intent);
@@ -370,10 +357,10 @@ public class DialogActivity extends OSGiActivity
      * @param ctx Android context.
      * @param title dialog title that will be used
      * @param message dialog message that wil be used.
+     *
      * @return an <code>Intent</code> that will display a dialog.
      */
-    public static Intent getDialogIntent(Context ctx, String title, String message)
-    {
+    public static Intent getDialogIntent(Context ctx, String title, String message) {
         Intent alert = new Intent(ctx, DialogActivity.class);
         alert.putExtra(EXTRA_TITLE, title);
         alert.putExtra(EXTRA_MESSAGE, message);
@@ -388,8 +375,7 @@ public class DialogActivity extends OSGiActivity
      * @param title the dialog title that will be used.
      * @param message the dialog message that will be used.
      */
-    public static void showDialog(Context ctx, String title, String message)
-    {
+    public static void showDialog(Context ctx, String title, String message) {
         Intent alert = getDialogIntent(ctx, title, message);
         ctx.startActivity(alert);
     }
@@ -403,8 +389,7 @@ public class DialogActivity extends OSGiActivity
      * @param messageId the message identifier in the resources
      * @param arg optional arg for the message expansion.
      */
-    public static void showDialog(Context ctx, int titleId, int messageId, Object... arg)
-    {
+    public static void showDialog(Context ctx, int titleId, int messageId, Object... arg) {
         Intent alert = getDialogIntent(ctx, ctx.getString(titleId), ctx.getString(messageId, arg));
         ctx.startActivity(alert);
     }
@@ -419,8 +404,7 @@ public class DialogActivity extends OSGiActivity
      * @param listener the confirm action listener.
      */
     public static long showConfirmDialog(Context context, String title, String message,
-            String confirmTxt, DialogListener listener)
-    {
+            String confirmTxt, DialogListener listener) {
         Intent alert = new Intent(context, DialogActivity.class);
 
         long listenerId = System.currentTimeMillis();
@@ -449,9 +433,8 @@ public class DialogActivity extends OSGiActivity
      * @param arg optional arg for the message resource arg.
      */
     public static void showConfirmDialog(Context context, int title, int message,
-            int confirmTxt, DialogListener listener, Object... arg)
-    {
-        Resources res = aTalkApp.getAppResources();
+            int confirmTxt, DialogListener listener, Object... arg) {
+        Resources res = context.getResources();
         showConfirmDialog(context, res.getString(title), res.getString(message, arg),
                 res.getString(confirmTxt), listener);
     }
@@ -471,12 +454,12 @@ public class DialogActivity extends OSGiActivity
      */
     public static long showCustomDialog(Context context, String title, String fragmentClass,
             Bundle fragmentArguments, String confirmTxt,
-            DialogListener listener, Map<String, Serializable> extraArguments)
-    {
+            DialogListener listener, Map<String, Serializable> extraArguments) {
         Intent alert = new Intent(context, DialogActivity.class);
         long dialogId = System.currentTimeMillis();
 
         alert.putExtra(EXTRA_DIALOG_ID, dialogId);
+
         if (listener != null) {
             listenersMap.put(dialogId, listener);
             alert.putExtra(EXTRA_LISTENER_ID, dialogId);
@@ -504,11 +487,11 @@ public class DialogActivity extends OSGiActivity
      * Waits until the dialog with given <code>dialogId</code> is opened.
      *
      * @param dialogId the id of the dialog we want to wait for.
+     *
      * @return <code>true</code> if dialog has been opened or <code>false</code> if the dialog had not
      * been opened within 10 seconds after call to this method.
      */
-    public static boolean waitForDialogOpened(long dialogId)
-    {
+    public static boolean waitForDialogOpened(long dialogId) {
         synchronized (displayedDialogs) {
             if (!displayedDialogs.contains(dialogId)) {
                 try {
@@ -527,8 +510,7 @@ public class DialogActivity extends OSGiActivity
     /**
      * The listener that will be notified when user clicks the confirm button or dismisses the dialog.
      */
-    public interface DialogListener
-    {
+    public interface DialogListener {
         /**
          * Fired when user clicks the dialog's confirm button.
          *

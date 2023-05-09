@@ -32,12 +32,12 @@ public class ServerListActivity extends OSGiActivity
     /**
      * Request code when launched for STUN servers list edit
      */
-    public static int REQUEST_EDIT_STUN_TURN = 1;
+    public static int RCODE_STUN_TURN = 1;
 
     /**
      * Request code used when launched for Jingle Nodes edit
      */
-    public static int REQUEST_EDIT_JINGLE_NODES = 2;
+    public static int RCODE_JINGLE_NODES = 2;
 
     /**
      * Request code intent's extra key
@@ -57,7 +57,7 @@ public class ServerListActivity extends OSGiActivity
     /**
      * The list model for currently edited items
      */
-    private ServerItemAdapter adapter;
+    private ServerItemAdapter mAdapter;
 
     @Override
     protected void start(BundleContext bundleContext)
@@ -68,18 +68,20 @@ public class ServerListActivity extends OSGiActivity
         Intent intent = getIntent();
         this.registration = (JabberAccountRegistration) intent.getSerializableExtra(JABBER_REGISTRATION_KEY);
         int listType = intent.getIntExtra(REQUEST_CODE_KEY, -1);
-        if (listType == REQUEST_EDIT_STUN_TURN) {
-            this.adapter = new StunServerAdapter(this, registration);
+        if (listType == RCODE_STUN_TURN) {
+            mAdapter = new StunServerAdapter(this, registration);
+            setMainTitle(R.string.service_gui_STUN_TURN_SERVER);
         }
-        else if (listType == REQUEST_EDIT_JINGLE_NODES) {
-            this.adapter = new JingleNodeAdapter(this, registration);
+        else if (listType == RCODE_JINGLE_NODES) {
+            mAdapter = new JingleNodeAdapter(this, registration);
+            setMainTitle(R.string.service_gui_JBR_JINGLE_NODES);
         }
         else {
             throw new IllegalArgumentException();
         }
 
         ListFragment listFragment = new ServerListFragment();
-        listFragment.setListAdapter(adapter);
+        listFragment.setListAdapter(mAdapter);
         // Display the fragment as the main content.
         getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, listFragment)
@@ -115,7 +117,7 @@ public class ServerListActivity extends OSGiActivity
      */
     void showServerEditDialog(int listPosition)
     {
-        DialogFragment securityDialog = adapter.createItemEditDialogFragment(listPosition);
+        DialogFragment securityDialog = mAdapter.createItemEditDialogFragment(listPosition);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         securityDialog.show(ft, "ServerItemDialogFragment");

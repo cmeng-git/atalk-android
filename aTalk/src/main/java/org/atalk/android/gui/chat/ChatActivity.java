@@ -798,7 +798,7 @@ public class ChatActivity extends OSGiActivity
                 ActionBarUtil.setAvatar(this, chatSession.getChatAvatar());
                 PresenceStatus status = chatSession.getCurrentChatTransport().getStatus();
                 if (status != null) {
-                    ActionBarUtil.setStatus(this, status.getStatusIcon());
+                    ActionBarUtil.setStatusIcon(this, status.getStatusIcon());
 
                     if (!status.isOnline()) {
                         getLastSeen(status);
@@ -816,7 +816,7 @@ public class ChatActivity extends OSGiActivity
 
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
                 ActionBarUtil.setAvatar(this, R.drawable.ic_chatroom);
-                ActionBarUtil.setStatus(this, ccSession.getChatStatusIcon());
+                ActionBarUtil.setStatusIcon(this, ccSession.getChatStatusIcon());
                 ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
             }
         }

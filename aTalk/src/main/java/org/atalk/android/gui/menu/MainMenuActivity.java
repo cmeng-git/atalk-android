@@ -73,15 +73,14 @@ import java.util.List;
  *
  * @author Eng Chong Meng
  */
-
 @SuppressLint("Registered")
-public class MainMenuActivity extends ExitMenuActivity implements ServiceListener, ContactPresenceStatusListener
-{
+public class MainMenuActivity extends ExitMenuActivity implements ServiceListener, ContactPresenceStatusListener {
     /**
      * Common options menu items.
      */
     protected MenuItem mShowHideOffline;
     protected MenuItem mOnOffLine;
+    protected TelephonyFragment mTelephony = null;
 
     /**
      * Video bridge conference call menu. In the case of more than one account.
@@ -109,27 +108,24 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         if (AndroidGUIActivator.bundleContext != null) {
             AndroidGUIActivator.bundleContext.addServiceListener(this);
-            if ((videoBridgeMenuItem != null) && (menuVbItem == null)) {
+            if (menuVbItem == null) {
                 initVideoBridge();
             }
         }
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         // FFR v3.0.5: NullPointerException; may have stop() in AndroidGUIActivator
         if (AndroidGUIActivator.bundleContext != null)
@@ -142,8 +138,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * @param menu the options menu
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
 
@@ -187,8 +182,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * features/info (long list)
      * TODO: cmeng: Need more works for multiple accounts where not all servers support videoBridge
      */
-    private void initVideoBridge_task()
-    {
+    private void initVideoBridge_task() {
         final boolean enableMenu;
         if (menuVbItem == null)
             this.menuVbItem = new VideoBridgeProviderMenuItem();
@@ -230,9 +224,8 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * May takes time as some servers have many features & slow response.
      * Auto cancel after menu is displayed - end of fetching cycle
      */
-    private void initVideoBridge()
-    {
-        if (disableMediaServiceOnFault)
+    private void initVideoBridge() {
+        if (disableMediaServiceOnFault || (videoBridgeMenuItem == null))
             return;
 
         final ProgressDialog progressDialog;
@@ -259,8 +252,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         }).start();
     }
 
-    public MenuItem getMenuItemOnOffLine()
-    {
+    public MenuItem getMenuItemOnOffLine() {
         return mOnOffLine;
     }
 
@@ -270,8 +262,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      * @param item the item that has been selected
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.search:
@@ -293,8 +284,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 startActivity(intent);
                 break;
             case R.id.telephony:
-                TelephonyFragment extPhone = new TelephonyFragment();
-                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, extPhone).commit();
+                mTelephony = new TelephonyFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, mTelephony, TelephonyFragment.TELEPHONY_TAG).commit();
                 break;
             case R.id.muc_bookmarks:
                 ChatRoomBookmarksDialog chatRoomBookmarksDialog = new ChatRoomBookmarksDialog(this);
@@ -350,19 +342,16 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     /**
      * The <code>VideoBridgeProviderMenuItem</code> for each protocol provider.
      */
-    private class VideoBridgeProviderMenuItem
-    {
+    private class VideoBridgeProviderMenuItem {
         private ProtocolProviderService preselectedProvider;
         private List<ProtocolProviderService> videoBridgeProviders;
 
         /**
          * Creates an instance of <code>VideoBridgeProviderMenuItem</code>
-         * <p>
-         * // @param preselectedProvider
-         * the <code>ProtocolProviderService</code> that provides the video bridge
+         *
+         * // @param preselectedProvider the <code>ProtocolProviderService</code> that provides the video bridge
          */
-        public VideoBridgeProviderMenuItem()
-        {
+        public VideoBridgeProviderMenuItem() {
             preselectedProvider = null;
             videoBridgeProviders = null;
         }
@@ -370,8 +359,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         /**
          * Opens a conference invite dialog when this menu is selected.
          */
-        public void actionPerformed()
-        {
+        public void actionPerformed() {
             ConferenceCallInviteDialog inviteDialog = null;
             if (preselectedProvider != null)
                 inviteDialog = new ConferenceCallInviteDialog(mContext, preselectedProvider, true);
@@ -382,13 +370,11 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 inviteDialog.show();
         }
 
-        public void setPreselectedProvider(ProtocolProviderService protocolProvider)
-        {
+        public void setPreselectedProvider(ProtocolProviderService protocolProvider) {
             this.preselectedProvider = protocolProvider;
         }
 
-        public void setVideoBridgeProviders(List<ProtocolProviderService> videoBridgeProviders)
-        {
+        public void setVideoBridgeProviders(List<ProtocolProviderService> videoBridgeProviders) {
             this.videoBridgeProviders = videoBridgeProviders;
         }
     }
@@ -398,8 +384,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      *
      * @return a list of all available video bridge providers
      */
-    private List<ProtocolProviderService> getVideoBridgeProviders()
-    {
+    private List<ProtocolProviderService> getVideoBridgeProviders() {
         List<ProtocolProviderService> activeBridgeProviders = new ArrayList<>();
 
         for (ProtocolProviderService videoBridgeProvider
@@ -407,8 +392,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             OperationSetVideoBridge videoBridgeOpSet
                     = videoBridgeProvider.getOperationSet(OperationSetVideoBridge.class);
 
-            // Check if the video bridge is actually active before adding it to the list of
-            // active providers.
+            // Check if the video bridge is actually active before adding it to the list of active providers.
             if (videoBridgeOpSet.isActive())
                 activeBridgeProviders.add(videoBridgeProvider);
         }
@@ -421,8 +405,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
      *
      * @param event The <code>ServiceEvent</code> object.
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         ServiceReference serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to know
@@ -439,24 +422,19 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         switch (event.getType()) {
             case ServiceEvent.REGISTERED:
             case ServiceEvent.UNREGISTERING:
-                OSGiActivity.uiHandler.post(() -> {
-                    if (videoBridgeMenuItem != null) {
-                        initVideoBridge();
-                    }
-                });
+                if (videoBridgeMenuItem != null) {
+                    OSGiActivity.uiHandler.post(this::initVideoBridge);
+                }
                 break;
         }
     }
 
     @Override
-    public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent evt)
-    {
+    public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent evt) {
         // cmeng - how to add the listener onResume - multiple protocol providers???
         OSGiActivity.uiHandler.post(() -> {
             Contact sourceContact = evt.getSourceContact();
-            if (videoBridgeMenuItem != null) {
-                initVideoBridge();
-            }
+            initVideoBridge();
         });
     }
 }

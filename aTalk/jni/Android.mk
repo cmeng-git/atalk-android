@@ -5,7 +5,7 @@
 # See terms of license at gnu.org.
 #
 # After build outputs should be moved from libs/armeabi to lib/native/armeabi
-# cmeng - build.gradle auto install *.so to libs/$(TARGET_ARCH_ABI)
+# cmeng - build.gradle auto install *.so to build/ndkBuild/..../$(TARGET_ARCH_ABI)
 
 ROOT := $(call my-dir)
 LOCAL_PATH := $(call my-dir)
@@ -70,18 +70,18 @@ include $(OPUS_DIR)/Android.mk
 # ================================= Speex =============================================
 ### Speex shared library build - with speex: v1.2.0rc1 (last to support resampler.c) + v1.2.1 (update) and libogg: v1.3.5
 LOCAL_PATH := $(ROOT)
+include $(CLEAR_VARS)
 SPEEX_DIR  := speex
-include ./speex/Android.mk
+include $(SPEEX_DIR)/Android.mk
 
 # ================================= G722 ==============================================
-### Refer to libjitsi and jitsi-lgpl-dependency for support if so required
-### G722 library build (cmeng - removed support for jn722, incomplete libjn722.so provided)
+### G722 shared library build base on local source: Support only arm architectures
+### Refer to libjitsi and jitsi-lgpl-dependency for support
 # https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.722-201209-I!!SOFT-ZST-E&type=items
-# LOCAL_PATH := $(ROOT)
-# include $(CLEAR_VARS)
-# LOCAL_MODULE := jng722
-# LOCAL_SRC_FILES := libjng722.so
-# include $(PREBUILT_SHARED_LIBRARY)
+LOCAL_PATH := $(ROOT)
+include $(CLEAR_VARS)
+G722_DIR  := g722
+include $(G722_DIR)/Android.mk
 
 # ================================= OpenSSL ===========================================
 ### OpenSSL shared library build (version 1.1.1t)

@@ -15,7 +15,6 @@ import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageSe
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiPreferenceActivity;
@@ -35,6 +34,7 @@ public class ProvisioningSettings extends OSGiPreferenceActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setMainTitle(R.string.plugin_provisioning_PROVISIONING);
         getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
@@ -44,17 +44,17 @@ public class ProvisioningSettings extends OSGiPreferenceActivity
         /**
          * Used preference keys
          */
-        private final static String P_KEY_PROVISIONING_METHOD = aTalkApp.getResString(R.string.pref_key_provisioning_METHOD);
+        private final static String P_KEY_PROVISIONING_METHOD = "plugin.provisioning.METHOD";
 
-        private final static String P_KEY_USER = aTalkApp.getResString(R.string.pref_key_provisioning_USERNAME);
+        private final static String P_KEY_USER = "plugin.provisioning.auth.USERNAME";
 
-        private final static String P_KEY_PASS = aTalkApp.getResString(R.string.pref_key_provisioning_PASSWORD);
+        private final static String P_KEY_PASS = "plugin.provisioning.auth";
 
-        private final static String P_KEY_FORGET_PASS = aTalkApp.getResString(R.string.pref_key_provisioning_FORGET_PASSWORD);
+        private final static String P_KEY_FORGET_PASS = "pref.key.provisioning.forget_password";
 
-        private final static String P_KEY_UUID = aTalkApp.getResString(R.string.pref_key_provisioning_UUID);
+        private final static String P_KEY_UUID = "net.java.sip.communicator.UUID";
 
-        private final static String P_KEY_URL = aTalkApp.getResString(R.string.pref_key_provisioning_URL);
+        private final static String P_KEY_URL = "plugin.provisioning.URL";
 
         /**
          * Username edit text

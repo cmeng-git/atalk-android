@@ -32,8 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.geolocation.GeoLocationRequest.GeoLocationRequestBuilder;
@@ -47,7 +47,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class GeoLocationBase extends AppCompatActivity implements View.OnClickListener,
+public class GeoLocationBase extends BaseActivity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener, GeoLocationListener
 {
     public static final String SHARE_ALLOW = "Share_Allow";
@@ -85,6 +85,7 @@ public class GeoLocationBase extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setMainTitle(R.string.service_gui_GEO_LOCATION);
         isFollowMe = (mGeoLocationDelegate != null);
         if (isFollowMe) {
             mGeoLocationDelegate.unregisterLocationBroadcastReceiver();

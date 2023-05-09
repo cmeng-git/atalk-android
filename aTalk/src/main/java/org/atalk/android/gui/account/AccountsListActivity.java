@@ -76,6 +76,8 @@ public class AccountsListActivity extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setMainTitle(R.string.service_gui_ACCOUNT);
+
         if (AndroidGUIActivator.bundleContext == null) {
             // No OSGi Exists
             Timber.e("OSGi not initialized");

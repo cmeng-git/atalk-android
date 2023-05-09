@@ -23,9 +23,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
+import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import timber.log.Timber;
 
@@ -34,7 +34,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class Splash extends AppCompatActivity
+public class Splash extends BaseActivity
 {
     private static boolean mFirstRun = true;
     private ProgressBar mActionBarProgress;

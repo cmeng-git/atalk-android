@@ -70,6 +70,7 @@ public class TTSActivity extends OSGiActivity implements TextToSpeech.OnInitList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tts_main);
+        setMainTitle(R.string.service_gui_TTS_SETTINGS);
 
         mTtsText = findViewById(R.id.tts_text);
         mTtsText.addTextChangedListener(mTextWatcher);

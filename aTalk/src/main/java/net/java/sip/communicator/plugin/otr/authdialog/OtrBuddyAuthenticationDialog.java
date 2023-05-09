@@ -47,7 +47,7 @@ public class OtrBuddyAuthenticationDialog extends SIPCommDialog
      */
     private void initComponents()
     {
-        this.setTitle(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.TITLE"));
+        setTitle(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.TITLE"));
         TransparentPanel mainPanel = new TransparentPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

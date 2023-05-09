@@ -367,7 +367,7 @@ public class NetworkAddressManagerServiceImpl implements NetworkAddressManagerSe
 
         // if preferredPort is not in the allowed range, place it at min.
         if (minPort > preferredPort || preferredPort > maxPort) {
-            throw new IllegalArgumentException("preferredPort (" + preferredPort
+            throw new IllegalArgumentException("preferred Port (" + preferredPort
                     + ") must be between minPort (" + minPort + ") and maxPort (" + maxPort + ")");
         }
 

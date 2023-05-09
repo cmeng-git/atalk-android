@@ -14,7 +14,6 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
-import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -22,8 +21,8 @@ import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistrati
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.settings.util.SummaryMapper;
+import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 import timber.log.Timber;
 
@@ -32,29 +31,19 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class IceFragment extends PreferenceFragmentCompat
+public class IceFragment extends OSGiPreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    /**
-     * The key identifying edit jingle nodes request
-     */
-    private static final int EDIT_JINGLE_NODES = 3;
-
-    /**
-     * The key identifying edit STUN servers list request
-     */
-    private static final int EDIT_STUN_TURN = 4;
-
     // ICE (General)
-    private static final String P_KEY_ICE_ENABLED = aTalkApp.getResString(R.string.pref_key_ice_enabled);
-    private static final String P_KEY_UPNP_ENABLED = aTalkApp.getResString(R.string.pref_key_upnp_enabled);
-    private static final String P_KEY_AUTO_DISCOVER_STUN = aTalkApp.getResString(R.string.pref_key_auto_discover_stun);
-    private static final String P_KEY_STUN_TURN_SERVERS = aTalkApp.getResString(R.string.pref_key_stun_turn_servers);
+    private static final String P_KEY_ICE_ENABLED = "pref_key_ice_enabled";
+    private static final String P_KEY_UPNP_ENABLED = "pref_key_upnp_enabled";
+    private static final String P_KEY_AUTO_DISCOVER_STUN = "pref_key_auto_discover_stun";
+    private static final String P_KEY_STUN_TURN_SERVERS = "pref_key_stun_turn_servers";
 
     // Jingle Nodes
-    private static final String P_KEY_USE_JINGLE_NODES = aTalkApp.getResString(R.string.pref_key_use_jingle_nodes);
-    private static final String P_KEY_AUTO_RELAY_DISCOVERY = aTalkApp.getResString(R.string.pref_key_auto_relay_dicovery);
-    private static final String P_KEY_JINGLE_NODES_LIST = aTalkApp.getResString(R.string.pref_key_jingle_node_list);
+    private static final String P_KEY_USE_JINGLE_NODES = "pref_key_use_jingle_nodes";
+    private static final String P_KEY_AUTO_RELAY_DISCOVERY = "pref_key_auto_relay_discovery";
+    private static final String P_KEY_JINGLE_NODES_LIST = "pref_key_jingle_node_list";
 
     /*
      * A new instance of AccountID and is not the same as accountID.
@@ -77,6 +66,7 @@ public class IceFragment extends PreferenceFragmentCompat
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
         setPreferencesFromResource(R.xml.ice_preferences, rootKey);
+        setPrefTitle(R.string.service_gui_JBR_ICE_SUMMARY);
 
         String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
@@ -131,7 +121,7 @@ public class IceFragment extends PreferenceFragmentCompat
     {
         Intent intent = new Intent(mActivity, ServerListActivity.class);
         intent.putExtra(ServerListActivity.JABBER_REGISTRATION_KEY, jbrReg);
-        intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.REQUEST_EDIT_STUN_TURN);
+        intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.RCODE_STUN_TURN);
         getStunServes.launch(intent);
     }
 
@@ -161,7 +151,7 @@ public class IceFragment extends PreferenceFragmentCompat
     {
         Intent intent = new Intent(mActivity, ServerListActivity.class);
         intent.putExtra(ServerListActivity.JABBER_REGISTRATION_KEY, jbrReg);
-        intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.REQUEST_EDIT_JINGLE_NODES);
+        intent.putExtra(ServerListActivity.REQUEST_CODE_KEY, ServerListActivity.RCODE_JINGLE_NODES);
         getJingleNodes.launch(intent);
     }
 

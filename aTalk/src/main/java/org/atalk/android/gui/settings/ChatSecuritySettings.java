@@ -15,7 +15,6 @@ import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.PreferenceUtil;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiActivity;
@@ -30,7 +29,7 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
 public class ChatSecuritySettings extends OSGiActivity
 {
     // Preference mKeys
-    static private final String P_KEY_CRYPTO_ENABLE = aTalkApp.getResString(R.string.pref_key_crypto_enable);
+    static private final String P_KEY_CRYPTO_ENABLE = "pref.key.crypto.enable";
 
     private static final String AUTO_INIT_OTR_PROP = "otr.AUTO_INIT_PRIVATE_MESSAGING";
 
@@ -40,8 +39,7 @@ public class ChatSecuritySettings extends OSGiActivity
     private static final String OTR_MANDATORY_PROP = "otr.PRIVATE_MESSAGING_MANDATORY";
 
     // OMEMO Security section
-    static private final String P_KEY_OMEMO_KEY_BLIND_TRUST
-            = aTalkApp.getResString(R.string.pref_key_omemo_key_blind_trust);
+    static private final String P_KEY_OMEMO_KEY_BLIND_TRUST = "pref.key.omemo.key.blind.trust";
 
     static private ConfigurationService mConfig = null;
 
@@ -56,6 +54,7 @@ public class ChatSecuritySettings extends OSGiActivity
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
         }
+        setMainTitle(R.string.service_gui_settings_MESSAGING_SECURITY_TITLE);
     }
 
     /**
@@ -93,8 +92,8 @@ public class ChatSecuritySettings extends OSGiActivity
 
             // cmeng: remove unused preferences
             SharedPreferences.Editor mEditor = shPrefs.edit();
-            mEditor.remove(getResources().getString(R.string.pref_key_otr_auto));
-            mEditor.remove(getResources().getString(R.string.pref_key_crypto_require));
+            mEditor.remove("pref.key.crypto.auto");
+            mEditor.remove("pref.key.crypto.require");
             mEditor.commit();
 
             // cmeng: Purge all the unnecessary OTR implementations for aTalk - will be removed in future release

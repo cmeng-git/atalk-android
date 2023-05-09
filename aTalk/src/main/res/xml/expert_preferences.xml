@@ -6,48 +6,48 @@
 
     <!-- Video Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_video"
+        android:key="pref.cat.settings.video"
         android:title="@string/service_gui_settings_VIDEO">
 
         <CheckBoxPreference
-            android:key="@string/pref_key_video_limit_fps"
+            android:key="pref.key.video.limit_fps"
             android:summaryOff="@string/service_gui_settings_LIMIT_FPS_OFF"
             android:summaryOn="@string/service_gui_settings_LIMIT_FPS_ON"
             android:title="@string/service_gui_settings_VIDEO_FRAME_RATE" />
 
         <EditTextPreference
-            android:dependency="@string/pref_key_video_limit_fps"
+            android:dependency="pref.key.video.limit_fps"
             android:dialogMessage="@string/service_gui_settings_VIDEO_FPS_DESC"
             android:inputType="number"
-            android:key="@string/pref_key_video_target_fps"
+            android:key="pref.key.video.frame_rate"
             android:title="@string/service_gui_settings_VIDEO_TARGET_FPS" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_video_hw_encode"
+            android:key="neomedia.android.hw_encode"
             android:title="@string/service_gui_settings_HW_ENCODE" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:dependency="@string/pref_key_video_hw_encode"
-            android:key="@string/pref_key_video_surface_encode"
+            android:dependency="neomedia.android.hw_encode"
+            android:key="neomedia.android.surface_encode"
             android:title="@string/service_gui_settings_DIRECT_SURFACE_ENCODE" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:key="@string/pref_key_video_hw_decode"
+            android:key="neomedia.android.hw_decode"
             android:title="@string/service_gui_settings_HW_DECODE" />
 
         <org.atalk.android.gui.settings.widget.ConfigCheckBox
-            android:dependency="@string/pref_key_video_hw_decode"
-            android:key="@string/pref_key_video_surface_decode"
+            android:dependency="neomedia.android.hw_decode"
+            android:key="neomedia.android.surface_decode"
             android:title="@string/service_gui_settings_DIRECT_SURFACE_DECODE" />
 
         <EditTextPreference
             android:inputType="number"
-            android:key="@string/pref_key_video_max_bandwidth"
+            android:key="pref.key.video.max_bandwidth"
             android:title="@string/service_gui_settings_VIDEO_MAX_BANDWIDTH" />
 
         <EditTextPreference
             android:inputType="number"
-            android:key="@string/pref_key_video_bitrate"
+            android:key="pref.key.video.bitrate"
             android:title="@string/service_gui_settings_VIDEO_BITRATE" />
 
         <Preference
@@ -62,23 +62,23 @@
 
     <!-- Audio Settings -->
     <PreferenceCategory
-        android:key="@string/pref_cat_settings_audio"
+        android:key="pref.cat.settings.audio"
         android:title="@string/service_gui_settings_AUDIO">
 
         <CheckBoxPreference
-            android:key="@string/pref_key_audio_echo_cancel"
+            android:key="pref.key.audio.echo_cancel"
             android:summaryOff="@string/service_gui_settings_ECHO_CANCEL_OFF"
             android:summaryOn="@string/service_gui_settings_ECHO_CANCEL_ON"
             android:title="@string/service_gui_settings_ECHO_CANCEL" />
 
         <CheckBoxPreference
-            android:key="@string/pref_key_audio_agc"
+            android:key="pref.key.audio.agc"
             android:summaryOff="@string/service_gui_settings_AGC_OFF"
             android:summaryOn="@string/service_gui_settings_AGC_ON"
             android:title="@string/service_gui_settings_AGC" />
 
         <CheckBoxPreference
-            android:key="@string/pref_key_audio_denoise"
+            android:key="pref.key.audio.denoise"
             android:summaryOff="@string/service_gui_settings_DENOISE_OFF"
             android:summaryOn="@string/service_gui_settings_DENOISE_ON"
             android:title="@string/service_gui_settings_DENOISE" />

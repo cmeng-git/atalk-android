@@ -28,13 +28,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.LauncherActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
-import org.atalk.android.gui.util.LocaleHelper;
-import org.atalk.android.gui.util.ThemeHelper;
 import org.atalk.android.plugin.errorhandler.ExceptionHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -51,8 +50,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class OSGiActivity extends AppCompatActivity
-{
+public class OSGiActivity extends BaseActivity {
     private BundleActivator bundleActivator;
 
     private BundleContext bundleContext;
@@ -85,26 +83,20 @@ public class OSGiActivity extends AppCompatActivity
      * Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        // Always call setTheme() method in baseclass and before super.onCreate()
-        ThemeHelper.setTheme(this);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // Hooks the exception handler to the UI thread
         ExceptionHandler.checkAndAttachExceptionHandler();
         configureToolBar();
-        super.onCreate(savedInstanceState);
 
-        ServiceConnection serviceConnection = new ServiceConnection()
-        {
-            public void onServiceConnected(ComponentName name, IBinder service)
-            {
+        ServiceConnection serviceConnection = new ServiceConnection() {
+            public void onServiceConnected(ComponentName name, IBinder service) {
                 if (this == OSGiActivity.this.serviceConnection)
                     setService((BundleContextHolder) service);
             }
 
-            public void onServiceDisconnected(ComponentName name)
-            {
+            public void onServiceDisconnected(ComponentName name) {
                 if (this == OSGiActivity.this.serviceConnection)
                     setService(null);
             }
@@ -122,21 +114,12 @@ public class OSGiActivity extends AppCompatActivity
         this.registerReceiver(exitListener, new IntentFilter(aTalkApp.ACTION_EXIT));
     }
 
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         aTalkApp.setCurrentActivity(this);
     }
 
-    @Override
-    protected void attachBaseContext(Context base)
-    {
-        LocaleHelper.setLocale(base);
-        super.attachBaseContext(base);
-    }
-
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         aTalkApp.setCurrentActivity(this);
         // If OSGi service is running check for send logs
@@ -145,8 +128,7 @@ public class OSGiActivity extends AppCompatActivity
         }
     }
 
-    protected void onPause()
-    {
+    protected void onPause() {
         // Clear the references to this activity.
         clearReferences();
         super.onPause();
@@ -156,8 +138,7 @@ public class OSGiActivity extends AppCompatActivity
      * Called when an activity is destroyed.
      */
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         // Unregisters exit action listener
         unregisterReceiver(exitListener);
         ServiceConnection serviceConnection = this.serviceConnection;
@@ -172,8 +153,7 @@ public class OSGiActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    public void configureToolBar()
-    {
+    private void configureToolBar() {
         // Find the toolbar view inside the activity layout - aTalk cannot use ToolBar; has layout problems
         // Toolbar toolbar = findViewById(R.id.my_toolbar);
         // if (toolbar != null)
@@ -205,8 +185,7 @@ public class OSGiActivity extends AppCompatActivity
      * Checks if the crash has occurred since the aTalk was last started. If it's true asks the
      * user about eventual logs report.
      */
-    private void checkForSendLogsDialog()
-    {
+    private void checkForSendLogsDialog() {
         // Checks if aTalk has previously crashed and asks the user user about log reporting
         if (!ExceptionHandler.hasCrashed()) {
             return;
@@ -224,8 +203,7 @@ public class OSGiActivity extends AppCompatActivity
                 .create().show();
     }
 
-    private void setService(BundleContextHolder service)
-    {
+    private void setService(BundleContextHolder service) {
         if (this.service != service) {
             if ((this.service != null) && (bundleActivator != null)) {
                 try {
@@ -244,17 +222,14 @@ public class OSGiActivity extends AppCompatActivity
             this.service = service;
             if (this.service != null) {
                 if (bundleActivator == null) {
-                    bundleActivator = new BundleActivator()
-                    {
+                    bundleActivator = new BundleActivator() {
                         public void start(BundleContext bundleContext)
-                                throws Exception
-                        {
+                                throws Exception {
                             internalStart(bundleContext);
                         }
 
                         public void stop(BundleContext bundleContext)
-                                throws Exception
-                        {
+                                throws Exception {
                             internalStop(bundleContext);
                         }
                     };
@@ -268,11 +243,11 @@ public class OSGiActivity extends AppCompatActivity
      * Starts this osgi activity.
      *
      * @param bundleContext the osgi <code>BundleContext</code>
+     *
      * @throws Exception
      */
     private void internalStart(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         this.bundleContext = bundleContext;
         boolean start = false;
         try {
@@ -288,11 +263,11 @@ public class OSGiActivity extends AppCompatActivity
      * Stops this osgi activity.
      *
      * @param bundleContext the osgi <code>BundleContext</code>
+     *
      * @throws Exception
      */
     private void internalStop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         if (this.bundleContext != null) {
             if (bundleContext == null)
                 bundleContext = this.bundleContext;
@@ -303,8 +278,7 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     protected void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         // Starts children OSGI fragments.
         for (OSGiUiPart osGiFragment : osgiFragments) {
             osGiFragment.start(bundleContext);
@@ -318,8 +292,7 @@ public class OSGiActivity extends AppCompatActivity
     }
 
     protected void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         // Stops children OSGI fragments.
         for (OSGiUiPart osGiFragment : osgiFragments) {
             osGiFragment.stop(bundleContext);
@@ -331,8 +304,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @param fragment child <code>OSGiUiPart</code> contained in this <code>Activity</code>.
      */
-    public void registerOSGiFragment(OSGiUiPart fragment)
-    {
+    public void registerOSGiFragment(OSGiUiPart fragment) {
         osgiFragments.add(fragment);
 
         if (bundleContext != null) {
@@ -350,8 +322,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @param fragment the <code>OSGiUiPart</code> that will be unregistered.
      */
-    public void unregisterOSGiFragment(OSGiUiPart fragment)
-    {
+    public void unregisterOSGiFragment(OSGiUiPart fragment) {
         if (bundleContext != null) {
             try {
                 fragment.stop(bundleContext);
@@ -367,8 +338,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @param activityClass the activity class
      */
-    protected void startActivity(Class<?> activityClass)
-    {
+    protected void startActivity(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
         startActivity(intent);
     }
@@ -376,8 +346,7 @@ public class OSGiActivity extends AppCompatActivity
     /**
      * Start the application notification settings page
      */
-    public void openNotificationSettings()
-    {
+    public void openNotificationSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
@@ -395,8 +364,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @param activityClass the activity class
      */
-    protected void switchActivity(Class<?> activityClass)
-    {
+    protected void switchActivity(Class<?> activityClass) {
         startActivity(activityClass);
         finish();
     }
@@ -406,8 +374,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @param activityIntent the next activity <code>Intent</code>
      */
-    protected void switchActivity(Intent activityIntent)
-    {
+    protected void switchActivity(Intent activityIntent) {
         startActivity(activityIntent);
         finish();
     }
@@ -417,8 +384,7 @@ public class OSGiActivity extends AppCompatActivity
      * Account setting must back to its previous menu (BackKey) to properly save changes
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             Intent upIntent = NavUtils.getParentActivityIntent(this);
             if (upIntent != null) {
@@ -443,8 +409,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @return OSGI <code>BundleContext</code>.
      */
-    protected BundleContext getBundleContext()
-    {
+    protected BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -453,8 +418,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @return the content <code>View</code>.
      */
-    protected View getContentView()
-    {
+    protected View getContentView() {
         return findViewById(android.R.id.content);
     }
 
@@ -464,8 +428,7 @@ public class OSGiActivity extends AppCompatActivity
      *
      * @return <code>true</code> if restore <code>Intent</code> has been posted.
      */
-    protected boolean postRestoreIntent()
-    {
+    protected boolean postRestoreIntent() {
         // Restore after OSGi startup
         if (AndroidGUIActivator.bundleContext == null) {
             Intent intent = new Intent(aTalkApp.getGlobalContext(), LauncherActivity.class);
@@ -480,17 +443,14 @@ public class OSGiActivity extends AppCompatActivity
     /**
      * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this <code>Activity</code>
      */
-    class ExitActionListener extends BroadcastReceiver
-    {
+    class ExitActionListener extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             finish();
         }
     }
 
-    private void clearReferences()
-    {
+    private void clearReferences() {
         AppCompatActivity currentActivity = aTalkApp.getCurrentActivity();
         if (currentActivity != null && currentActivity.equals(this))
             aTalkApp.setCurrentActivity(null);

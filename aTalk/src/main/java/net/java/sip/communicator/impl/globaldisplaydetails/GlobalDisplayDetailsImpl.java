@@ -5,21 +5,37 @@
  */
 package net.java.sip.communicator.impl.globaldisplaydetails;
 
+import static org.atalk.android.gui.call.CallUIUtils.DEFAULT_PERSONAL_PHOTO;
+
 import android.text.TextUtils;
 
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
-import net.java.sip.communicator.service.globaldisplaydetails.event.*;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalAvatarChangeEvent;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayDetailsListener;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayNameChangeEvent;
+import net.java.sip.communicator.service.protocol.AccountInfoUtils;
+import net.java.sip.communicator.service.protocol.OperationSetAvatar;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails;
+import net.java.sip.communicator.service.protocol.event.AvatarEvent;
+import net.java.sip.communicator.service.protocol.event.AvatarListener;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeListener;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>GlobalDisplayNameImpl</code> offers generic access to a global display name for the local user.
@@ -30,8 +46,7 @@ import java.util.*;
  * @author Eng Chong Meng
  */
 public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
-        RegistrationStateChangeListener, ServerStoredDetailsChangeListener, AvatarListener
-{
+        RegistrationStateChangeListener, ServerStoredDetailsChangeListener, AvatarListener {
     /**
      * Property to disable auto displayName update.
      */
@@ -75,8 +90,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     /**
      * Creates an instance of <code>GlobalDisplayDetailsImpl</code>.
      */
-    public GlobalDisplayDetailsImpl()
-    {
+    public GlobalDisplayDetailsImpl() {
         provisionedDisplayName
                 = GlobalDisplayDetailsActivator.getConfigurationService().getString(GLOBAL_DISPLAY_NAME_PROP, null);
 
@@ -89,10 +103,10 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      * Returns default display name for the given provider or the user defined display name.
      *
      * @param pps the given protocol provider service
+     *
      * @return default display name.
      */
-    public String getDisplayName(ProtocolProviderService pps)
-    {
+    public String getDisplayName(ProtocolProviderService pps) {
         // assume first registered provider if null;
         if (pps == null) {
             Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
@@ -122,8 +136,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @return a byte array containing the global avatar for the local user
      */
-    public byte[] getDisplayAvatar(ProtocolProviderService pps)
-    {
+    public byte[] getDisplayAvatar(ProtocolProviderService pps) {
         // assume first registered provider if null;
         if (pps == null) {
             Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
@@ -142,8 +155,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param l the <code>GlobalDisplayDetailsListener</code> to add
      */
-    public void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l)
-    {
+    public void addGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l) {
         synchronized (displayDetailsListeners) {
             if (!displayDetailsListeners.contains(l))
                 displayDetailsListeners.add(l);
@@ -156,8 +168,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param l the <code>GlobalDisplayDetailsListener</code> to remove
      */
-    public void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l)
-    {
+    public void removeGlobalDisplayDetailsListener(GlobalDisplayDetailsListener l) {
         synchronized (displayDetailsListeners) {
             displayDetailsListeners.remove(l);
         }
@@ -168,8 +179,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param evt the <code>RegistrationStateChangeEvent</code> that notified us of the change
      */
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         ProtocolProviderService protocolProvider = evt.getProvider();
         if (evt.getNewState().equals(RegistrationState.REGISTERED)) {
             /*
@@ -222,13 +232,11 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param event the event containing the new image
      */
-    public void avatarChanged(AvatarEvent event)
-    {
+    public void avatarChanged(AvatarEvent event) {
         globalAvatar = event.getNewAvatar();
         // If there is no avatar image set, then displays the default one.
         if (globalAvatar == null) {
-            globalAvatar = GlobalDisplayDetailsActivator.getResources()
-                    .getImageInBytes(aTalkApp.getResString(R.string.service_gui_DEFAULT_USER_PHOTO));
+            globalAvatar = GlobalDisplayDetailsActivator.getResources().getImageInBytes(DEFAULT_PERSONAL_PHOTO);
         }
 
         // AvatarCacheUtils.cacheAvatar(event.getSourceProvider(), globalAvatar);
@@ -243,9 +251,8 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param evt the <code>ServerStoredDetailsChangeEvent</code> the event for name change.
      */
-    public void serverStoredDetailsChanged(ServerStoredDetailsChangeEvent evt)
-    {
-        if(StringUtils.isNotEmpty(provisionedDisplayName))
+    public void serverStoredDetailsChanged(ServerStoredDetailsChangeEvent evt) {
+        if (StringUtils.isNotEmpty(provisionedDisplayName))
             return;
 
         if (((evt.getEventID() == ServerStoredDetailsChangeEvent.DETAIL_ADDED)
@@ -264,8 +271,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     /**
      * Queries the operations sets to obtain names and display info. Queries are done in separate thread.
      */
-    private class UpdateAccountInfo extends Thread
-    {
+    private class UpdateAccountInfo extends Thread {
         /**
          * The protocol provider.
          */
@@ -291,16 +297,14 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
          * if they already have values.
          */
         UpdateAccountInfo(ProtocolProviderService protocolProvider,
-                OperationSetServerStoredAccountInfo accountInfoOpSet, boolean isUpdate)
-        {
+                OperationSetServerStoredAccountInfo accountInfoOpSet, boolean isUpdate) {
             this.protocolProvider = protocolProvider;
             this.accountInfoOpSet = accountInfoOpSet;
             this.isUpdate = isUpdate;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             // globalAvatar = AvatarCacheUtils.getCachedAvatar(protocolProvider);
             BareJid userId = protocolProvider.getAccountID().getBareJid();
             globalAvatar = AvatarManager.getAvatarImageByJid(userId);
@@ -350,8 +354,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
          * Called on the event dispatching thread (not on the worker thread) after the
          * <code>construct</code> method has returned.
          */
-        protected void setGlobalDisplayName()
-        {
+        protected void setGlobalDisplayName() {
             String accountName = null;
             if (StringUtils.isNotEmpty(currentFirstName)) {
                 accountName = currentFirstName;
@@ -385,8 +388,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param displayName the new display name
      */
-    private void fireGlobalDisplayNameEvent(String displayName)
-    {
+    private void fireGlobalDisplayNameEvent(String displayName) {
         List<GlobalDisplayDetailsListener> listeners;
         synchronized (displayDetailsListeners) {
             listeners = Collections.unmodifiableList(displayDetailsListeners);
@@ -404,8 +406,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      *
      * @param avatar the new avatar
      */
-    private void fireGlobalAvatarEvent(byte[] avatar)
-    {
+    private void fireGlobalAvatarEvent(byte[] avatar) {
         List<GlobalDisplayDetailsListener> listeners;
         synchronized (displayDetailsListeners) {
             listeners = Collections.unmodifiableList(displayDetailsListeners);

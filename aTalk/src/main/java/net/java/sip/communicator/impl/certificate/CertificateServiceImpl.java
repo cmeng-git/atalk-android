@@ -670,7 +670,7 @@ public class CertificateServiceImpl implements CertificateService, PropertyChang
         {
             // check and default configurations for property if missing default is null - false
             String defaultAlwaysTrustMode = CertificateVerificationActivator.getResources()
-                    .getSettingsString(CertificateService.PNAME_ALWAYS_TRUST);
+                    .getSettingsString(PNAME_ALWAYS_TRUST);
             if (config.getBoolean(PNAME_ALWAYS_TRUST, Boolean.parseBoolean(defaultAlwaysTrustMode)))
                 return;
 

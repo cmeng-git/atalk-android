@@ -42,7 +42,7 @@ public class SmpAuthenticateBuddyDialog extends SIPCommDialog
 
     private void initComponents()
     {
-        this.setTitle(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.TITLE"));
+        setTitle(OtrActivator.resourceService.getI18NString("plugin.otr.authbuddydialog.TITLE"));
 
         // The main panel that contains all components.
         JPanel mainPanel = new TransparentPanel();

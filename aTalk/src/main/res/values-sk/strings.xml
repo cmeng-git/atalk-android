@@ -283,12 +283,11 @@
     <string name="service_gui_GEO_LOCATION">Poloha:</string>
     <string name="service_gui_GEO_LONGITUDE">Zemepisná dĺžka:</string>
     <string name="service_gui_GEO_SEND">Poslať GPS-polohu</string>
-    <string name="service_gui_GEO_SHOW">Street View &amp; mapa</string>
+    <string name="service_gui_GEO_SMAP">Street View &amp; mapa</string>
     <string name="service_gui_GPS_SHARE">Zdieľajte geografické polohy</string>
     <string name="apply_new_location_setting">Kliknutím na tlačidlo \"Nasledujte ma\" použijete nové nastavenie</string>
     <string name="btn_center_map_description">Vycentrujte na moju polohu</string>
     <string name="btn_follow_me_description">Nasledujte ma</string>
-    <string name="show_google_map">Pohľad z ulice &amp; mapa</string>
     <string name="single_location_fix">Oprava jedného miesta</string>
     <string name="start_follow_me">Nasleduj ma (%1$dm) @%2$dS</string>
     <string name="stop_follow_me">Prestaň ma sledovať (%1$dm) @%2$dS</string>

@@ -26,11 +26,10 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-import androidx.fragment.app.FragmentActivity;
-
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
+import org.atalk.android.BaseActivity;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -42,8 +41,7 @@ import de.cketti.library.changelog.ChangeLog;
  *
  * @author Eng Chong Meng
  */
-public class About extends FragmentActivity implements View.OnClickListener
-{
+public class About extends BaseActivity implements View.OnClickListener {
     private static final String[][] USED_LIBRARIES = new String[][]{
             new String[]{"Android Support Library", "https://developer.android.com/topic/libraries/support-library/index.html"},
             new String[]{"android-betterpickers", "https://github.com/code-troopers/android-betterpickers"},
@@ -167,14 +165,13 @@ public class About extends FragmentActivity implements View.OnClickListener
                     "li { margin-left: 0px; font-size: 0.9em;}" + "\n" +
                     "ul { padding-left: 2em; }";
 
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about);
         // crash if enabled under FragmentActivity
         // requestWindowFeature(Window.FEATURE_LEFT_ICON);
         // setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_info);
-        setTitle(getString(R.string.AboutDialog_title));
+        setMainTitle(R.string.AboutDialog_title);
 
         View atakUrl = findViewById(R.id.atalk_link);
         atakUrl.setOnClickListener(this);
@@ -210,18 +207,15 @@ public class About extends FragmentActivity implements View.OnClickListener
     }
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ok_button:
                 finish();
                 break;
             case R.id.check_new_version:
-                new Thread()
-                {
+                new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         UpdateService updateService
                                 = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
                         if (updateService != null) {
@@ -247,8 +241,7 @@ public class About extends FragmentActivity implements View.OnClickListener
         }
     }
 
-    public static void atalkUrlAccess(Context context, String url)
-    {
+    public static void atalkUrlAccess(Context context, String url) {
         if (url == null)
             url = context.getString(R.string.AboutDialog_Link);
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -256,8 +249,7 @@ public class About extends FragmentActivity implements View.OnClickListener
         context.startActivity(intent);
     }
 
-    private String getAboutInfo()
-    {
+    private String getAboutInfo() {
         StringBuilder html = new StringBuilder()
                 .append("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>")
                 .append("<html><head><style type=\"text/css\">")
