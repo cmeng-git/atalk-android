@@ -1,7 +1,7 @@
 package org.atalk.android;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.content.Context;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     @Override
     protected void attachBaseContext(Context base) {
-        LocaleHelper context = LocaleHelper.setLocale(base);
+        Context context = LocaleHelper.setLocale(base);
         super.attachBaseContext(context);
     }
 

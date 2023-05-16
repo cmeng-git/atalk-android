@@ -6,8 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.6 (05/09/2023)" versioncode="301060">
+    <release version="3.1.7 (05/16/2023)" versioncode="301070">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>LocaleHelper must not return ContextWrapper instance and use in supper.attachBaseContext(instance);
+            ActivityThread.handleReceiver re-cast app.getBaseContext() to ContextImpl, and both ContextImpl and ContextWrapper are subclass of Context
+            giving rise to java.lang.ClassCastException</change>
+    </release>
+
+    <release version="3.1.6 (05/09/2023)" versioncode="301060">
         <change>Extend Locale support to aTalkApp, and all other activities previously not included</change>
         <change>User Locale change requires to restart aTalk for aTalkApp (Application class) to take effect</change>
         <change>Show title on all user preference setting menu for easy user reference/identification</change>

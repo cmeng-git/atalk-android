@@ -17,7 +17,6 @@
 package org.atalk.android.gui.util;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
@@ -26,13 +25,9 @@ import android.text.TextUtils;
 import java.util.Locale;
 
 /**
- * Implementation of ContextWrapper for Application class proper Locale setting
+ * Implementation of LocaleHelper for Application/Activity class proper Locale setting
  */
-public class LocaleHelper extends ContextWrapper {
-
-    public LocaleHelper(Context base) {
-        super(base);
-    }
+public class LocaleHelper {
 
     // Default to system locale language; get init from DB by aTalkApp first call
     private static String mLanguage = "";
@@ -42,17 +37,17 @@ public class LocaleHelper extends ContextWrapper {
      *
      * @param ctx Context
      */
-    public static LocaleHelper setLocale(Context ctx) {
+    public static Context setLocale(Context ctx) {
         return wrap(ctx, mLanguage);
     }
 
     /**
      * Set the locale as per specified language; must use Application instance
      *
-     * @param ctx BaseContext
+     * @param ctx Base Context
      * @param language the new UI language
      */
-    public static LocaleHelper setLocale(Context ctx, String language) {
+    public static Context setLocale(Context ctx, String language) {
         mLanguage = language;
         return wrap(ctx, language);
     }
@@ -70,9 +65,9 @@ public class LocaleHelper extends ContextWrapper {
      *
      * @param context Context
      * @param language the new UI language
-     * #return The new PbContext for use by caller
+     * #return The new Configured Context for use by caller
      */
-    public static LocaleHelper wrap(Context context, String language) {
+    public static Context wrap(Context context, String language) {
         Configuration config = context.getResources().getConfiguration();
 
         Locale locale;
@@ -97,8 +92,7 @@ public class LocaleHelper extends ContextWrapper {
             config.locale = locale;
         }
 
-        context = context.createConfigurationContext(config);
         // Timber.d(new Exception(), "set locale: %s: %s", language, context);
-        return new LocaleHelper(context);
+        return context.createConfigurationContext(config);
     }
 }

@@ -1,5 +1,15 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.1.7 (301070)
+Release Date:   05/16/2023
+Author:         cmeng
+- LocaleHelper must return only Context and not ContextWrapper instance; instance is use in supper.attachBaseContext(instance);
+  However ActivityThread.handleReceiver cast ContextImpl context = (ContextImpl) app.getBaseContext();
+  and both the ContextImpl and ContextWrapper are subclass of Context.
+  giving rise to java.lang.ClassCastException in android.app.ActivityThread.handleReceiver (ActivityThread.java:4084)
+- The above problem does not happen/observed during actual app debug on emulator or actual device. But Crashes in FFR.
+
+=========================================================================
 Version:        3.1.6 (301060)
 Release Date:   05/09/2023
 Author:         cmeng
