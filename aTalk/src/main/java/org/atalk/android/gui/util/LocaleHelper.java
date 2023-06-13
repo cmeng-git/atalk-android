@@ -25,7 +25,9 @@ import android.text.TextUtils;
 import java.util.Locale;
 
 /**
- * Implementation of LocaleHelper for Application/Activity class proper Locale setting
+ * Implementation of LocaleHelper to support proper Locale setting for Application/Activity classes.
+ *
+ * @author Eng Chong Meng
  */
 public class LocaleHelper {
 
@@ -63,9 +65,9 @@ public class LocaleHelper {
     /**
      * Update the app local as per specified language.
      *
-     * @param context Context
+     * @param context Base Context (ContextImpl)
      * @param language the new UI language
-     * #return The new Configured Context for use by caller
+     * #return The new ContextImpl for use by caller
      */
     public static Context wrap(Context context, String language) {
         Configuration config = context.getResources().getConfiguration();

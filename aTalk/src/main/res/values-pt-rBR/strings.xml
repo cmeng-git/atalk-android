@@ -451,6 +451,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">A verificação do captcha falhou</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">O tempo %1$s do desafio captcha da sala expirou;\npor favor, volte para a sala e tente novamente.</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Iniciar conversa</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Conceder privilégios de proprietário</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Revogar privilégios de proprietário</string>
+    <string name="service_gui_CR_MEMBER_KICK">Remover do bate-papo em grupo</string>
+
     <string name="service_gui_INVITATION">Mensagem de convite:</string>
     <string name="service_gui_INVITATION_RECEIVED">Convite recebido</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s convidou você a participar na sala %2$s. Você pode aceitar, recusar ou ignorar este convite.</string>

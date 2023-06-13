@@ -77,11 +77,11 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     /**
      * A map of <JID, ChatRoomProviderWrapper>
      */
-    private Map<String, ChatRoomProviderWrapper> mucRCProviderList = new LinkedHashMap<>();
+    private final Map<String, ChatRoomProviderWrapper> mucRCProviderList = new LinkedHashMap<>();
 
     private List<String> chatRoomList = new ArrayList<>();
 
-    private Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
+    private final Map<String, ChatRoomWrapper> chatRoomWrapperList = new LinkedHashMap<>();
 
     /**
      * Constructs the <code>ChatInviteDialog</code>.

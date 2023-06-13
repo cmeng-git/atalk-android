@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.Chat;
@@ -298,6 +299,19 @@ public class ChatSessionManager {
             chatId = ((MetaContact) descriptor).getMetaUID();
             chatMode = MC_CHAT;
         }
+        else if (descriptor instanceof Contact) {
+            Contact contact = (Contact) descriptor;
+            String accountUuid = contact.getProtocolProvider().getAccountID().getAccountUuid();
+            String contactJid = contact.getAddress();
+            String metaUuid = MclStorageManager.getMetaUuid(accountUuid, contactJid);
+            if (metaUuid != null) {
+                chatId = metaUuid;
+                chatMode = MC_CHAT;
+            }
+            else {
+                return null;
+            }
+        }
         else if (descriptor instanceof ChatRoomWrapper) {
             chatId = ((ChatRoomWrapper) descriptor).getChatRoomID();
             chatMode = MUC_CC;
@@ -367,6 +381,7 @@ public class ChatSessionManager {
     }
 
     // ###########################################################
+
     /**
      * Finds the chat for given <code>Contact</code>.
      *

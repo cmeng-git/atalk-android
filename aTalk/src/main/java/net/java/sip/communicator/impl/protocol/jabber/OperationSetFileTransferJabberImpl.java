@@ -250,7 +250,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         Jid contactJid = contact.getJid();  // bareJid from the roster unless is volatile contact
 
         OperationSetMultiUserChat mucOpSet = mPPS.getOperationSet(OperationSetMultiUserChat.class);
-        if ((mucOpSet == null) || !mucOpSet.isPrivateMessagingContact(contact.getAddress())) {
+        if ((mucOpSet == null) || !mucOpSet.isPrivateMessagingContact(contactJid)) {
             List<Presence> presences = Roster.getInstanceFor(mPPS.getConnection()).getPresences(contactJid.asBareJid());
             int bestPriority = -128;
             PresenceStatus pStatus = null;
@@ -275,7 +275,6 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
                 }
             }
         }
-
         // Force to null if contact is offline i.e does not resolved to an EntityFullJid.
         return (contactJid instanceof EntityFullJid) ? (EntityFullJid) contactJid : null;
     }

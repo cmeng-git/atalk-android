@@ -437,6 +437,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA timeout tantangan;\nsilakan bergabung kembali dengan chatRoom dan coba lagi.</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Mulai percakapan</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Berikan hak istimewa pemilik</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Cabut hak istimewa pemilik</string>
+    <string name="service_gui_CR_MEMBER_KICK">Hapus dari obrolan grup</string>
+
     <string name="service_gui_INVITATION">Pesan undangan:</string>
     <string name="service_gui_INVITATION_RECEIVED">Undangan diterima</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s telah mengundang Anda untuk bergabung dengan ruang obrolan %2$s. Anda dapat menerima, menolak, atau mengabaikan undangan ini.</string>

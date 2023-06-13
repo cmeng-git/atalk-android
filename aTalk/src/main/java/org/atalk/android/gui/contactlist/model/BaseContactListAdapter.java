@@ -488,10 +488,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             Contact contact = metaContact.getDefaultContact();
             Boolean isAudioCall = null;
 
-            if (view.getId() == R.id.contact_view) {
-                contactListFragment.startChat(metaContact);
-            }
-            else if (contact != null) {
+            if (contact != null) {
                 Jid jid = contact.getJid();
                 String JidAddress = contact.getAddress();
 

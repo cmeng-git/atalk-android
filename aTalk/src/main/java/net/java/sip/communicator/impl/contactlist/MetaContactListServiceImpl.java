@@ -737,7 +737,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         ProtocolProviderService provider = contact.getProtocolProvider();
         OperationSetMultiUserChat opSetMUC = provider.getOperationSet(OperationSetMultiUserChat.class);
-        if (opSetMUC != null && opSetMUC.isPrivateMessagingContact(contact.getAddress())) {
+        if (opSetMUC != null && opSetMUC.isPrivateMessagingContact(contact.getJid())) {
             MetaContactImpl metaContactImpl = new MetaContactImpl();
             MetaContactGroupImpl newParentMetaGroupImpl = (MetaContactGroupImpl) newParentMetaGroup;
 
@@ -818,7 +818,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         ProtocolProviderService provider = contact.getProtocolProvider();
 
         OperationSetMultiUserChat opSetMUC = provider.getOperationSet(OperationSetMultiUserChat.class);
-        if (opSetMUC != null && opSetMUC.isPrivateMessagingContact(contact.getAddress())) {
+        if (opSetMUC != null && opSetMUC.isPrivateMessagingContact(contact.getJid())) {
             addNewContactToMetaContact(provider, newParentMetaContact, contact.getPersistableAddress());
             return;
         }
@@ -836,8 +836,8 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         MetaContactImpl currentParentMetaContact = (MetaContactImpl) findMetaContactByContact(contact);
         MetaContactGroup newParentGroup = findParentMetaContactGroup(newParentMetaContact);
-        ContactGroup parentProtoGroup = resolveProtoPath(contact.getProtocolProvider(),
-                (MetaContactGroupImpl) newParentGroup);
+        ContactGroup parentProtoGroup
+                = resolveProtoPath(contact.getProtocolProvider(), (MetaContactGroupImpl) newParentGroup);
 
         // if the contact is not currently in the proto group corresponding to its new metaContact
         // group parent then move it

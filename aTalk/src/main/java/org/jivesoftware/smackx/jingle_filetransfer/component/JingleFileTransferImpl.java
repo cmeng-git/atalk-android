@@ -35,8 +35,6 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.JingleFileTransfer
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
 import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
 
-import timber.log.Timber;
-
 /**
  * An abstract class implementation for JingleFileTransfer.
  * JingleSessionListener listen for remote user cancel while in active file streaming.
@@ -191,7 +189,6 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 default:
                     break;
             }
-            Timber.d("mState set to: %s ,= %s", mState, reason);
             JingleSessionImpl.removeJingleSessionListener(this);
         }
     };

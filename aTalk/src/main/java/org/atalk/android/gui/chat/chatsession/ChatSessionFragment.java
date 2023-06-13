@@ -720,7 +720,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     /**
      * ActionMode with multi-selection implementation for chatListView
      */
-    private AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener() {
+    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener() {
         int cPos;
         int headerCount;
         int checkListSize;

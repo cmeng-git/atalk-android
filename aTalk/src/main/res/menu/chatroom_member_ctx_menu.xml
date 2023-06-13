@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/chatroom_start_im"
+        android:title="@string/service_gui_CR_MEMBER_START_CONVERSATION">
+    </item>
+    <item
+        android:id="@+id/chatroom_manage_privilege"
+        android:title="@string/service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">
+    </item>
+    <item
+        android:id="@+id/chatroom_kick"
+        android:title="@string/service_gui_CR_MEMBER_KICK">
+    </item>
+</menu>

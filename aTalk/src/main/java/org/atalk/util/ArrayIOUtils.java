@@ -20,127 +20,102 @@ package org.atalk.util;
  * <code>byte</code> arrays and primitive types such as <code>short</code>.
  *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
-public class ArrayIOUtils
-{
+public class ArrayIOUtils {
 
-	/**
-	 * Reads an integer from a specific series of bytes starting the reading at
-	 * a specific offset in it.
-	 *
-	 * @param in
-	 * 		the series of bytes to read an integer from
-	 * @param inOffset
-	 * 		the offset in <code>in</code> at which the reading of the
-	 * 		integer is to start
-	 * @return an integer read from the specified series of bytes starting at
-	 * the specified offset in it
-	 */
-	public static int readInt(byte[] in, int inOffset)
-	{
-		return
-				(in[inOffset + 3] << 24)
-						| ((in[inOffset + 2] & 0xFF) << 16)
-						| ((in[inOffset + 1] & 0xFF) << 8)
-						| (in[inOffset] & 0xFF);
-	}
+    /**
+     * Reads an integer from a specific series of bytes starting the reading at
+     * a specific offset in it.
+     *
+     * @param in the series of bytes to read an integer from
+     * @param inOffset the offset in <code>in</code> at which the reading of the
+     * integer is to start
+     *
+     * @return an integer read from the specified series of bytes starting at
+     * the specified offset in it
+     */
+    public static int readInt(byte[] in, int inOffset) {
+        return
+                (in[inOffset + 3] << 24)
+                        | ((in[inOffset + 2] & 0xFF) << 16)
+                        | ((in[inOffset + 1] & 0xFF) << 8)
+                        | (in[inOffset] & 0xFF);
+    }
 
-	/**
-	 * Reads a short integer from a specific series of bytes starting the
-	 * reading at a specific offset in it. The difference with
-	 * {@link #readShort(byte[], int)} is that the read short integer is an
-	 * <code>int</code> which has been formed by reading two bytes, not a <code>short</code>.
-	 *
-	 * @param in
-	 * 		the series of bytes to read the short integer from
-	 * @param inOffset
-	 * 		the offset in <code>in</code> at which the reading of the
-	 * 		short integer is to start
-	 * @return a short integer in the form of <code>int</code> read from the
-	 * specified series of bytes starting at the specified offset in it
-	 */
-	public static int readInt16(byte[] in, int inOffset)
-	{
-		return ((in[inOffset + 1] << 8) | (in[inOffset] & 0xFF));
-	}
+    /**
+     * Reads a short integer from a specific series of bytes starting the
+     * reading at a specific offset in it. The difference with
+     * {@link #readShort(byte[], int)} is that the read short integer is an
+     * <code>int</code> which has been formed by reading two bytes, not a <code>short</code>.
+     *
+     * @param in the series of bytes to read the short integer from
+     * @param inOffset the offset in <code>in</code> at which the reading of the short integer is to start
+     *
+     * @return a short integer in the form of <code>int</code> read from the
+     * specified series of bytes starting at the specified offset in it
+     */
+    public static int readInt16(byte[] in, int inOffset) {
+        return ((in[inOffset + 1] << 8) | (in[inOffset] & 0xFF));
+    }
 
-	/**
-	 * Reads a short integer from a specific series of bytes starting the
-	 * reading at a specific offset in it.
-	 *
-	 * @param in
-	 * 		the series of bytes to read the short integer from
-	 * @param inOffset
-	 * 		the offset in <code>in</code> at which the reading of the
-	 * 		short integer is to start
-	 * @return a short integer in the form of <code>short</code> read from the
-	 * specified series of bytes starting at the specified offset in it
-	 */
-	public static short readShort(byte[] in, int inOffset)
-	{
-		return (short) readInt16(in, inOffset);
-	}
+    /**
+     * Reads a short integer from a specific series of bytes starting the
+     * reading at a specific offset in it.
+     *
+     * @param in the series of bytes to read the short integer from
+     * @param inOffset the offset in <code>in</code> at which the reading of the
+     * short integer is to start
+     *
+     * @return a short integer in the form of <code>short</code> read from the
+     * specified series of bytes starting at the specified offset in it
+     */
+    public static short readShort(byte[] in, int inOffset) {
+        return (short) readInt16(in, inOffset);
+    }
 
-	/**
-	 * Converts an integer to a series of bytes and writes the result into a specific output
-	 * array of bytes starting the writing at a specific offset in it.
-	 *
-	 * @param in
-	 * 		the integer to be written out as a series of bytes
-	 * @param out
-	 * 		the output to receive the conversion of the specified
-	 * 		integer to a series of bytes
-	 * @param outOffset
-	 * 		the offset in <code>out</code> at which the writing of the
-	 * 		result of the conversion is to be started
-	 */
-	public static void writeInt(int in, byte[] out, int outOffset)
-	{
-		out[outOffset] = (byte) (in & 0xFF);
-		out[outOffset + 1] = (byte) ((in >>> 8) & 0xFF);
-		out[outOffset + 2] = (byte) ((in >>> 16) & 0xFF);
-		out[outOffset + 3] = (byte) (in >> 24);
-	}
+    /**
+     * Converts an integer to a series of bytes and writes the result into a specific output
+     * array of bytes starting the writing at a specific offset in it.
+     *
+     * @param in the integer to be written out as a series of bytes
+     * @param out the output to receive the conversion of the specified integer to a series of bytes
+     * @param outOffset the offset in <code>out</code> at which the writing of the
+     * result of the conversion is to be started
+     */
+    public static void writeInt(int in, byte[] out, int outOffset) {
+        out[outOffset] = (byte) (in & 0xFF);
+        out[outOffset + 1] = (byte) ((in >>> 8) & 0xFF);
+        out[outOffset + 2] = (byte) ((in >>> 16) & 0xFF);
+        out[outOffset + 3] = (byte) (in >> 24);
+    }
 
-	/**
-	 * Converts a short integer to a series of bytes and writes the result into
-	 * a specific output array of bytes starting the writing at a specific
-	 * offset in it. The difference with {@link #writeShort(short, byte[], int)}
-	 * is that the input is an <code>int</code> and just two bytes of it are written.
-	 *
-	 * @param in
-	 * 		the short integer to be written out as a series of bytes
-	 * 		specified as an integer i.e. the value to be converted is contained in
-	 * 		only two of the four bytes made available by the integer
-	 * @param out
-	 * 		the output to receive the conversion of the specified short
-	 * 		integer to a series of bytes
-	 * @param outOffset
-	 * 		the offset in <code>out</code> at which the writing of the
-	 * 		result of the conversion is to be started
-	 */
-	public static void writeInt16(int in, byte[] out, int outOffset)
-	{
-		out[outOffset] = (byte) (in & 0xFF);
-		out[outOffset + 1] = (byte) (in >> 8);
-	}
+    /**
+     * Converts a short integer to a series of bytes and writes the result into
+     * a specific output array of bytes starting the writing at a specific
+     * offset in it. The difference with {@link #writeShort(short, byte[], int)}
+     * is that the input is an <code>int</code> and just two bytes of it are written.
+     *
+     * @param in the short integer to be written out as a series of bytes specified as an integer
+	 * i.e. the value to be converted is contained in only two of the four bytes made available by the integer
+     * @param out the output to receive the conversion of the specified short integer to a series of bytes
+     * @param outOffset the offset in <code>out</code> at which the writing of the
+     * result of the conversion is to be started
+     */
+    public static void writeInt16(int in, byte[] out, int outOffset) {
+        out[outOffset] = (byte) (in & 0xFF);
+        out[outOffset + 1] = (byte) (in >> 8);
+    }
 
-	/**
-	 * Converts a short integer to a series of bytes and writes the result into
-	 * a specific output array of bytes starting the writing at a specific offset in it.
-	 *
-	 * @param in
-	 * 		the short integer to be written out as a series of bytes
-	 * 		specified as <code>short</code>
-	 * @param out
-	 * 		the output to receive the conversion of the specified short
-	 * 		integer to a series of bytes
-	 * @param outOffset
-	 * 		the offset in <code>out</code> at which the writing of
-	 * 		the result of the conversion is to be started
-	 */
-	public static void writeShort(short in, byte[] out, int outOffset)
-	{
-		writeInt16(in, out, outOffset);
-	}
+    /**
+     * Converts a short integer to a series of bytes and writes the result into
+     * a specific output array of bytes starting the writing at a specific offset in it.
+     *
+     * @param in the short integer to be written out as a series of bytes specified as <code>short</code>
+     * @param out the output to receive the conversion of the specified short integer to a series of bytes
+     * @param outOffset the offset in <code>out</code> at which the writing of the result of the conversion is to be started
+     */
+    public static void writeShort(short in, byte[] out, int outOffset) {
+        writeInt16(in, out, outOffset);
+    }
 }

@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.*;
 
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.List;
@@ -135,11 +136,12 @@ public interface OperationSetMultiUserChat extends OperationSet
     boolean isMultiChatSupportedByContact(Contact contact);
 
     /**
-     * Checks if the contact address is associated with private messaging contact or not.
+     * Checks if the contact Jid is associated with private messaging contact or not.
      *
-     * @return <code>true</code> if the contact address is associated with private messaging contact and <code>false</code> if not.
+     * @return <code>true</code> if the contact Jid not null and is associated with
+     * private messaging contact and <code>false</code> if not.
      */
-    boolean isPrivateMessagingContact(String contactAddress);
+    boolean isPrivateMessagingContact(Jid contactJid);
 
     /**
      * Adds a listener that will be notified of changes in our participation in a chat room such as

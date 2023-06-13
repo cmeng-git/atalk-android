@@ -1,11 +1,12 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.service.neomedia.control;
 
 import javax.media.*;
+
 import java.util.*;
 
 /**
@@ -13,13 +14,11 @@ import java.util.*;
  *
  * @author Damian Minkov
  */
-public interface AdvancedAttributesAwareCodec extends Control
-{
-	/**
-	 * Sets the additional attributes to <code>attributes</code>
-	 *
-	 * @param attributes
-	 *        The additional attributes to set
-	 */
-	public void setAdvancedAttributes(Map<String, String> attributes);
+public interface AdvancedAttributesAwareCodec extends Control {
+    /**
+     * Sets the additional attributes to <code>attributes</code>
+     *
+     * @param attributes The additional attributes to set
+     */
+    public void setAdvancedAttributes(Map<String, String> attributes);
 }

@@ -156,8 +156,7 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialog.CaptchaDialogListener
-{
+public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialog.CaptchaDialogListener {
     /**
      * The multi user chat smack object that we encapsulate in this room.
      */
@@ -303,8 +302,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param multiUserChat MultiUserChat
      * @param provider a reference to the currently valid jabber protocol mProvider.
      */
-    public ChatRoomJabberImpl(MultiUserChat multiUserChat, ProtocolProviderServiceJabberImpl provider)
-    {
+    public ChatRoomJabberImpl(MultiUserChat multiUserChat, ProtocolProviderServiceJabberImpl provider) {
         mMultiUserChat = multiUserChat;
         mPPS = provider;
 
@@ -336,8 +334,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param message Stanza Message containing captcha challenge info
      */
-    public void initCaptchaProcess(final Message message)
-    {
+    public void initCaptchaProcess(final Message message) {
         // Set flag to ignore reply timeout
         captchaMessage = message;
         mCaptchaState = CaptchaDialog.awaiting;
@@ -363,11 +360,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Captcha dialog callback on user response to the challenge
      *
      * @param state Captcha dialog response state from server/user
+     *
      * @see CaptchaDialog state
      */
     @Override
-    public void onResult(int state)
-    {
+    public void onResult(int state) {
         mCaptchaState = state;
         switch (mCaptchaState) {
             case CaptchaDialog.validated:
@@ -412,8 +409,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param msgType messageType
      */
     @Override
-    public void addMessage(String message, int msgType)
-    {
+    public void addMessage(String message, int msgType) {
         Chat chatPanel = MUCActivator.getUIService().getChat(ChatRoomJabberImpl.this);
         chatPanel.addMessage(mMultiUserChat.getRoom().toString(), new Date(), msgType, IMessage.ENCODE_PLAIN, message);
     }
@@ -423,8 +419,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param message chatRoom message
      */
-    public void processMessage(Message message)
-    {
+    public void processMessage(Message message) {
         messageListener.processMessage(message);
     }
 
@@ -435,8 +430,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener the <code>ChatRoomChangeListener</code> that is to be registered for
      * <code>ChatRoomChangeEvent</code>-s.
      */
-    public void addPropertyChangeListener(ChatRoomPropertyChangeListener listener)
-    {
+    public void addPropertyChangeListener(ChatRoomPropertyChangeListener listener) {
         synchronized (propertyChangeListeners) {
             if (!propertyChangeListeners.contains(listener))
                 propertyChangeListeners.add(listener);
@@ -448,8 +442,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param listener the <code>ChatRoomChangeListener</code> to remove.
      */
-    public void removePropertyChangeListener(ChatRoomPropertyChangeListener listener)
-    {
+    public void removePropertyChangeListener(ChatRoomPropertyChangeListener listener) {
         synchronized (propertyChangeListeners) {
             propertyChangeListeners.remove(listener);
         }
@@ -462,8 +455,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> that is to be registered for
      * <code>ChatRoomMemberPropertyChangeEvent</code>s.
      */
-    public void addMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener)
-    {
+    public void addMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener) {
         synchronized (memberPropChangeListeners) {
             if (!memberPropChangeListeners.contains(listener))
                 memberPropChangeListeners.add(listener);
@@ -476,8 +468,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param listener the <code>ChatRoomMemberPropertyChangeListener</code> to remove.
      */
-    public void removeMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener)
-    {
+    public void removeMemberPropertyChangeListener(ChatRoomMemberPropertyChangeListener listener) {
         synchronized (memberPropChangeListeners) {
             memberPropChangeListeners.remove(listener);
         }
@@ -490,8 +481,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener a <code>MessageListener</code> that would be notified every time a new message is received
      * on this chat room.
      */
-    public void addMessageListener(ChatRoomMessageListener listener)
-    {
+    public void addMessageListener(ChatRoomMessageListener listener) {
         synchronized (messageListeners) {
             if (!messageListeners.contains(listener))
                 messageListeners.add(listener);
@@ -503,8 +493,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param listener the <code>MessageListener</code> to remove from this room
      */
-    public void removeMessageListener(ChatRoomMessageListener listener)
-    {
+    public void removeMessageListener(ChatRoomMessageListener listener) {
         synchronized (messageListeners) {
             messageListeners.remove(listener);
         }
@@ -516,8 +505,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param listener a participant status listener.
      */
-    public void addMemberPresenceListener(ChatRoomMemberPresenceListener listener)
-    {
+    public void addMemberPresenceListener(ChatRoomMemberPresenceListener listener) {
         synchronized (memberListeners) {
             if (!memberListeners.contains(listener))
                 memberListeners.add(listener);
@@ -530,8 +518,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param listener a participant status listener.
      */
-    public void removeMemberPresenceListener(ChatRoomMemberPresenceListener listener)
-    {
+    public void removeMemberPresenceListener(ChatRoomMemberPresenceListener listener) {
         synchronized (memberListeners) {
             memberListeners.remove(listener);
         }
@@ -542,8 +529,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param call the call to add
      */
-    public synchronized void addConferenceCall(CallJabberImpl call)
-    {
+    public synchronized void addConferenceCall(CallJabberImpl call) {
         if (!chatRoomConferenceCalls.contains(call))
             chatRoomConferenceCalls.add(call);
     }
@@ -553,8 +539,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param call the call to remove.
      */
-    public synchronized void removeConferenceCall(CallJabberImpl call)
-    {
+    public synchronized void removeConferenceCall(CallJabberImpl call) {
         chatRoomConferenceCalls.remove(call);
     }
 
@@ -564,10 +549,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param content message content value
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      * @param subject a <code>String</code> subject or <code>null</code> for now subject.
+     *
      * @return the newly created message.
      */
-    public IMessage createMessage(String content, int encType, String subject)
-    {
+    public IMessage createMessage(String content, int encType, String subject) {
         return new MessageJabberImpl(content, encType, subject, null);
     }
 
@@ -576,10 +561,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * content type and encoding.
      *
      * @param messageText the string content of the message.
+     *
      * @return IMessage the newly created message
      */
-    public IMessage createMessage(String messageText)
-    {
+    public IMessage createMessage(String messageText) {
         return new MessageJabberImpl(messageText, IMessage.ENCODE_PLAIN, "", null);
     }
 
@@ -588,8 +573,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return a List of <code>Member</code> corresponding to all room members.
      */
-    public List<ChatRoomMember> getMembers()
-    {
+    public List<ChatRoomMember> getMembers() {
         synchronized (members) {
             return new LinkedList<>(members.values());
         }
@@ -600,8 +584,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return int the number of <code>Contact</code>s, currently participating in this room.
      */
-    public int getMembersCount()
-    {
+    public int getMembersCount() {
         return mMultiUserChat.getOccupantsCount();
     }
 
@@ -610,8 +593,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return a <code>String</code> containing the name of this <code>ChatRoom</code>.
      */
-    public String getName()
-    {
+    public String getName() {
         return mMultiUserChat.getRoom().toString();
     }
 
@@ -620,8 +602,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return a <code>EntityBareJid</code> containing the identifier of this <code>ChatRoom</code>.
      */
-    public EntityBareJid getIdentifier()
-    {
+    public EntityBareJid getIdentifier() {
         return mMultiUserChat.getRoom();
     }
 
@@ -630,13 +611,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return the nickname currently being used by the local user in the context of the local chat room.
      */
-    public Resourcepart getUserNickname()
-    {
+    public Resourcepart getUserNickname() {
         return mMultiUserChat.getNickname();
     }
 
-    private String getAccountId(ChatRoom chatRoom)
-    {
+    private String getAccountId(ChatRoom chatRoom) {
         AccountID accountId = chatRoom.getParentProvider().getAccountID();
         return accountId.getAccountJid();
     }
@@ -645,11 +624,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Finds private messaging contact by nickname. If the contact doesn't exists a new volatile contact is created.
      *
      * @param nickname the nickname of the contact.
+     *
      * @return the contact instance.
      */
     @Override
-    public Contact getPrivateContactByNickname(String nickname)
-    {
+    public Contact getPrivateContactByNickname(String nickname) {
         OperationSetPersistentPresenceJabberImpl opSetPersPresence = (OperationSetPersistentPresenceJabberImpl)
                 mPPS.getOperationSet(OperationSetPersistentPresence.class);
         Jid jid;
@@ -673,8 +652,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @return the room subject or <code>null</code> if the user hasn't joined the room or the room
      * does not have a subject yet.
      */
-    public String getSubject()
-    {
+    public String getSubject() {
         return mMultiUserChat.getSubject();
     }
 
@@ -685,8 +663,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param reason a reason, subject, or welcome message that would tell the the user why they are being invited.
      */
     public void invite(EntityBareJid userJid, String reason)
-            throws NotConnectedException, InterruptedException
-    {
+            throws NotConnectedException, InterruptedException {
         if (TextUtils.isEmpty(XmppStringUtils.parseLocalpart(userJid.toString()))) {
             aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, userJid);
         }
@@ -701,8 +678,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return true if currently we're currently in this chat room and false otherwise.
      */
-    public boolean isJoined()
-    {
+    public boolean isJoined() {
         return mMultiUserChat.isJoined();
     }
 
@@ -713,8 +689,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     public boolean join()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS));
     }
 
@@ -722,11 +697,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Joins this chat room so that the user would start receiving events and messages for it.
      *
      * @param password the password to use when authenticating on the chatRoom.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     public boolean join(byte[] password)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return joinAs(JabberActivator.getGlobalDisplayDetailsService().getDisplayName(mPPS), password);
     }
 
@@ -735,11 +710,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * start receiving events and messages for it.
      *
      * @param nickname the nickname can be jid or just nick.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     public boolean joinAs(String nickname)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         return joinAs(nickname, null);
     }
 
@@ -749,11 +724,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param nickname the nickname can be jid or just nick.
      * @param password a password necessary to authenticate when joining the room.
+     *
      * @throws OperationFailedException with the corresponding code if an error occurs while joining the room.
      */
     public boolean joinAs(final String nickname, final byte[] password)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         assertConnected();
         boolean retry = true;
         String errorMessage = aTalkApp.getResString(R.string.service_gui_CHATROOM_JOIN_FAILED, nickname, getName());
@@ -843,8 +818,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Process to perform upon a successful join room request
      */
-    private void onJoinSuccess()
-    {
+    private void onJoinSuccess() {
         // update members list only on successful joining chatRoom
         ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mPPS.getOurJID());
         synchronized (members) {
@@ -885,10 +859,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Returns that <code>ChatRoomJabberRole</code> instance corresponding to the <code>smackRole</code> string.
      *
      * @param mucRole the smack mRole as returned by <code>Occupant.getRole()</code>.
+     *
      * @return ChatRoomMemberRole
      */
-    public static ChatRoomMemberRole smackRoleToScRole(MUCRole mucRole, MUCAffiliation affiliation)
-    {
+    public static ChatRoomMemberRole smackRoleToScRole(MUCRole mucRole, MUCAffiliation affiliation) {
         if (affiliation != null) {
             if (affiliation == MUCAffiliation.admin) {
                 return ChatRoomMemberRole.ADMINISTRATOR;
@@ -913,10 +887,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Returns the <code>ChatRoomMember</code> corresponding to the given smack participant.
      *
      * @param participant the EntityFullJid participant (e.g. sc-testroom@conference.voipgw.fr/userNick)
+     *
      * @return the <code>ChatRoomMember</code> corresponding to the given smack participant
      */
-    public ChatRoomMemberJabberImpl findMemberFromParticipant(Jid participant)
-    {
+    public ChatRoomMemberJabberImpl findMemberFromParticipant(Jid participant) {
         if (participant == null) {
             return null;
         }
@@ -925,7 +899,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         synchronized (members) {
             for (ChatRoomMemberJabberImpl member : members.values()) {
                 if (participantNick.equals(member.getNickAsResourcepart())
-                        || participant.equals(member.getJabberID()))
+                        || participant.equals(member.getJabberId()))
                     return member;
             }
         }
@@ -937,11 +911,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param reason the reason for destroying.
      * @param roomName the chat Room Name (e.g. sc-testroom@conference.voipgw.fr)
+     *
      * @return <code>true</code> if the room is destroyed.
      */
     public boolean destroy(String reason, EntityBareJid roomName)
-            throws XMPPException
-    {
+            throws XMPPException {
         try {
             mMultiUserChat.destroy(reason, roomName);
         } catch (NoResponseException | NotConnectedException | InterruptedException e) {
@@ -955,8 +929,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Leave this chat room with no alternative room address to join.
      */
-    public void leave()
-    {
+    public void leave() {
         this.leave(null, aTalkApp.getResString(R.string.service_gui_LEAVE_ROOM));
     }
 
@@ -966,8 +939,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param alternateAddress alternate chatRoom to join
      * @param reason reason for leaving the room
      */
-    private void leave(EntityBareJid alternateAddress, String reason)
-    {
+    private void leave(EntityBareJid alternateAddress, String reason) {
         OperationSetBasicTelephonyJabberImpl basicTelephony
                 = (OperationSetBasicTelephonyJabberImpl) mPPS.getOperationSet(OperationSetBasicTelephony.class);
         if (basicTelephony != null && publishedConference != null) {
@@ -1043,11 +1015,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Construct the <code>message</code> for the required ENCODE mode for sending.
      *
      * @param message the <code>IMessage</code> to send.
+     *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     public void sendMessage(IMessage message)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         mEncType = message.getEncType();
         String content = message.getContent();
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
@@ -1081,11 +1053,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Sends the <code>message</code> with the json-message extension to the destination indicated by the <code>to</code> contact.
      *
      * @param json the json message to be sent.
+     *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     public void sendJsonMessage(String json)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage()
                 .addExtension(new JsonMessageExtension(json));
         sendMessage(messageBuilder);
@@ -1095,11 +1067,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Sends the <code>message</code> to the destination <code>multiUserChat</code> chatRoom.
      *
      * @param messageBuilder the {@link Message} to be sent.
+     *
      * @throws OperationFailedException if sending the message fails for some reason.
      */
     private void sendMessage(MessageBuilder messageBuilder)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             assertConnected();
             mMultiUserChat.sendMessage(messageBuilder);
@@ -1110,8 +1082,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
     }
 
-    public void sendMessage(IMessage message, final OmemoManager omemoManager)
-    {
+    public void sendMessage(IMessage message, final OmemoManager omemoManager) {
         EntityBareJid entityBareJid = mMultiUserChat.getRoom();
         String msgContent = message.getContent();
         String errMessage = null;
@@ -1156,7 +1127,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         } catch (NoOmemoSupportException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, "NoOmemoSupportException");
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException
-                | XMPPErrorException | IOException e) {
+                 | XMPPErrorException | IOException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -1173,20 +1144,17 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Omemo listener callback on user authentication for undecided omemoDevices
      */
-    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener
-    {
+    private class OmemoAuthenticateListener implements OmemoAuthenticateDialog.AuthenticateListener {
         IMessage message;
         OmemoManager omemoManager;
 
-        OmemoAuthenticateListener(IMessage message, OmemoManager omemoManager)
-        {
+        OmemoAuthenticateListener(IMessage message, OmemoManager omemoManager) {
             this.message = message;
             this.omemoManager = omemoManager;
         }
 
         @Override
-        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices)
-        {
+        public void onAuthenticate(boolean allTrusted, Set<OmemoDevice> omemoDevices) {
             if (allTrusted) {
                 sendMessage(message, omemoManager);
             }
@@ -1205,11 +1173,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Sets the subject of this chat room.
      *
      * @param subject the new subject that we'd like this room to have
+     *
      * @throws OperationFailedException throws Operation Failed Exception
      */
     public void setSubject(String subject)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             mMultiUserChat.changeSubject(subject);
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
@@ -1224,8 +1192,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return a reference to the <code>ProtocolProviderService</code> instance that created this room.
      */
-    public ProtocolProviderService getParentProvider()
-    {
+    public ProtocolProviderService getParentProvider() {
         return mPPS;
     }
 
@@ -1237,8 +1204,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return ChatRoomMemberRole
      */
-    public ChatRoomMemberRole getUserRole()
-    {
+    public ChatRoomMemberRole getUserRole() {
         if (mUserRole == null) {
             // return role as GUEST if participant has not joined the chatRoom i.e. nickName == null
             Resourcepart nick = mMultiUserChat.getNickname();
@@ -1264,8 +1230,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param role the new mRole to be set for the local user
      */
-    public void setLocalUserRole(ChatRoomMemberRole role)
-    {
+    public void setLocalUserRole(ChatRoomMemberRole role) {
         setLocalUserRole(role, false);
     }
 
@@ -1275,8 +1240,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param role the new mRole to be set for the local user
      * @param isInitial if <code>true</code> this is initial mRole set.
      */
-    private void setLocalUserRole(ChatRoomMemberRole role, boolean isInitial)
-    {
+    private void setLocalUserRole(ChatRoomMemberRole role, boolean isInitial) {
         fireLocalUserRoleEvent(getUserRole(), role, isInitial);
 
         // update only after getUserRole() to local variable and save to database
@@ -1289,66 +1253,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Instances of this class should be registered as <code>ParticipantStatusListener</code> in smack
      * and translates events .
      */
-    private class MemberListener implements ParticipantStatusListener
-    {
-        /**
-         * Called when an administrator or owner banned a participant from the room. This means
-         * that banned participant will no longer be able to join the room unless the ban has been
-         * removed.
-         *
-         * @param participant the participant that was banned from the room (e.g.
-         * room@conference.jabber.org/nick).
-         * @param actor the administrator that banned the occupant (e.g. user@host.org).
-         * @param reason the reason provided by the administrator to ban the occupant.
-         */
-        @Override
-        public void banned(EntityFullJid participant, Jid actor, String reason)
-        {
-            Timber.i("%s has been banned from chat room: %s", participant, getName());
-
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null) {
-                Resourcepart nick = participant.getResourceOrThrow();
-                synchronized (members) {
-                    members.remove(nick);
-                }
-                banList.put(nick, member);
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.OUTCAST);
-            }
-        }
-
-        /**
-         * Called when an owner grants administrator privileges to a user. This means that the user
-         * will be able to perform administrative functions such as banning users and edit
-         * moderator list.
-         *
-         * @param participant the participant that was granted administrator privileges (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void adminGranted(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.ADMINISTRATOR);
-        }
-
-        /**
-         * Called when an owner revokes administrator privileges from a user. This means that the
-         * user will no longer be able to perform administrative functions such as banning users
-         * and edit moderator list.
-         *
-         * @param participant the participant that was revoked administrator privileges (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void adminRevoked(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
-        }
-
+    private class MemberListener implements ParticipantStatusListener {
         /**
          * Called when a new room occupant has joined the room. Note: Take in consideration that
          * when you join a room you will receive the list of current occupants in the room. This
@@ -1358,8 +1263,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * room@conference.jabber.org/nick).
          */
         @Override
-        public void joined(EntityFullJid participant)
-        {
+        public void joined(EntityFullJid participant) {
             Timber.i("%s has joined chatRoom: %s", participant, getName());
 
             // We try to get the nickname of the participantName in case it's in the form john@servicename.com,
@@ -1385,15 +1289,14 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         /**
-         * Called when a room occupant has left the room on its own. This means that the occupant
-         * was neither kicked nor banned from the room.
+         * Called when a room occupant has left the room on its own.
+         * This means that the occupant was neither being kicked nor banned from the room.
          *
-         * @param participant the participant that has left the room on its own. (e.g.
-         * room@conference.jabber.org/nick).
+         * @param participant the participant that has left the room on its own.
+         * (e.g. room@conference.jabber.org/nick).
          */
         @Override
-        public void left(EntityFullJid participant)
-        {
+        public void left(EntityFullJid participant) {
             Timber.i("%s has left the chat room: %s", participant, getName());
 
             ChatRoomMember member = findMemberFromParticipant(participant);
@@ -1406,6 +1309,192 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         }
 
         /**
+         * Called when a room participant has been kicked from the room.
+         * This means that the kicked participant is no longer participating in the room.
+         *
+         * @param participant the participant that was kicked from the room (e.g. room@conference.jabber.org/nick).
+         * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
+         * @param reason the reason provided by the actor to kick the occupant from the room.
+         */
+        @Override
+        public void kicked(EntityFullJid participant, Jid actor, String reason) {
+            ChatRoomMember member = findMemberFromParticipant(participant);
+            if (member != null) {
+                synchronized (members) {
+                    members.remove(participant.getResourceOrThrow());
+                }
+                fireMemberPresenceEvent(member, actor, ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED, reason);
+            }
+        }
+
+        /**
+         * Called when a moderator grants voice to a visitor. This means that the visitor can now
+         * participate in the moderated room sending messages to all occupants.
+         *
+         * @param participant the participant that was granted voice in the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void voiceGranted(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
+        }
+
+        /**
+         * Called when a moderator revokes voice from a participant. This means that the
+         * participant in the room was able to speak and now is a visitor that can't send
+         * messages to the room occupants.
+         *
+         * @param participant the participant that was revoked voice from the room e.g. room@conference.jabber.org/nick
+         */
+        @Override
+        public void voiceRevoked(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.SILENT_MEMBER);
+        }
+
+        /**
+         * Called when an administrator or owner banned a participant from the room. This means
+         * that banned participant will no longer be able to join the room unless the ban has been
+         * removed.
+         *
+         * @param participant the participant that was banned from the room (e.g.
+         * room@conference.jabber.org/nick).
+         * @param actor the administrator that banned the occupant (e.g. user@host.org).
+         * @param reason the reason provided by the administrator to ban the occupant.
+         */
+        @Override
+        public void banned(EntityFullJid participant, Jid actor, String reason) {
+            Timber.i("%s has been banned from chat room: %s", participant, getName());
+
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null) {
+                Resourcepart nick = participant.getResourceOrThrow();
+                synchronized (members) {
+                    members.remove(nick);
+                }
+                banList.put(nick, member);
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.OUTCAST);
+            }
+        }
+
+        /**
+         * Called when an administrator grants a user membership to the room. This means that the
+         * user will be able to join the members-only room.
+         *
+         * @param participant the participant that was granted membership in the room e.g. room@conference.jabber.org/nick
+         */
+        @Override
+        public void membershipGranted(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
+        }
+
+        /**
+         * Called when an administrator revokes a user membership to the room. This means that the
+         * user will not be able to join the members-only room.
+         *
+         * @param participant the participant that was revoked membership from the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void membershipRevoked(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.GUEST);
+        }
+
+        /**
+         * Called when an administrator grants moderator privileges to a user. This means that the
+         * user will be able to kick users, grant and revoke voice, invite other users, modify
+         * room's subject plus all the participants privileges.
+         *
+         * @param participant the participant that was granted moderator privileges in the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void moderatorGranted(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MODERATOR);
+        }
+
+        /**
+         * Called when an administrator revokes moderator privileges from a user. This means that
+         * the user will no longer be able to kick users, grant and revoke voice, invite other
+         * users, modify room's subject plus all the participants privileges.
+         *
+         * @param participant the participant that was revoked moderator privileges in the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void moderatorRevoked(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
+        }
+
+        /**
+         * Called when an owner grants a user ownership on the room. This means that the user will
+         * be able to change defining room features as well as perform all administrative functions.
+         *
+         * @param participant the participant that was granted ownership on the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void ownershipGranted(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.OWNER);
+        }
+
+        /**
+         * Called when an owner revokes a user ownership on the room. This means that the user will
+         * no longer be able to change defining room features as well as perform all administrative functions.
+         *
+         * @param participant the participant that was revoked ownership on the room (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        public void ownershipRevoked(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
+        }
+
+        /**
+         * Called when an owner grants administrator privileges to a user. This means that the user
+         * will be able to perform administrative functions such as banning users and edit
+         * moderator list.
+         *
+         * @param participant the participant that was granted administrator privileges
+         * (e.g. room@conference.jabber.org/nick).
+         */
+        @Override
+        public void adminGranted(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.ADMINISTRATOR);
+        }
+
+        /**
+         * Called when an owner revokes administrator privileges from a user. This means that the
+         * user will no longer be able to perform administrative functions such as banning users
+         * and edit moderator list.
+         *
+         * @param participant the participant that was revoked administrator privileges (e.g.
+         * room@conference.jabber.org/nick).
+         */
+        @Override
+        public void adminRevoked(EntityFullJid participant) {
+            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
+            if (member != null)
+                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
+        }
+
+        /**
          * Called when a participant changed his/her nickname in the room. The new participant's
          * nickname will be informed with the next available presence.
          *
@@ -1413,8 +1502,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param newNickname the new nickname that the participant decided to use.
          */
         @Override
-        public void nicknameChanged(EntityFullJid participant, Resourcepart newNickname)
-        {
+        public void nicknameChanged(EntityFullJid participant, Resourcepart newNickname) {
             ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
             if (member == null)
                 return;
@@ -1435,146 +1523,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     participant.getResourceOrThrow(), newNickname);
             fireMemberPropertyChangeEvent(evt);
         }
-
-        /**
-         * Called when an owner revokes a user ownership on the room. This means that the user will
-         * no longer be able to change defining room features as well as perform all administrative functions.
-         *
-         * @param participant the participant that was revoked ownership on the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        public void ownershipRevoked(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
-        }
-
-        /**
-         * Called when a room participant has been kicked from the room. This means that the kicked
-         * participant is no longer participating in the room.
-         *
-         * @param participant the participant that was kicked from the room (e.g. room@conference.jabber.org/nick).
-         * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
-         * @param reason the reason provided by the actor to kick the occupant from the room.
-         */
-        @Override
-        public void kicked(EntityFullJid participant, Jid actor, String reason)
-        {
-            ChatRoomMember member = findMemberFromParticipant(participant);
-            if (member != null) {
-                synchronized (members) {
-                    members.remove(participant.getResourceOrThrow());
-                }
-                fireMemberPresenceEvent(member, actor, ChatRoomMemberPresenceChangeEvent.MEMBER_KICKED, reason);
-            }
-        }
-
-        /**
-         * Called when an administrator grants moderator privileges to a user. This means that the
-         * user will be able to kick users, grant and revoke voice, invite other users, modify
-         * room's subject plus all the participants privileges.
-         *
-         * @param participant the participant that was granted moderator privileges in the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void moderatorGranted(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MODERATOR);
-        }
-
-        /**
-         * Called when a moderator revokes voice from a participant. This means that the
-         * participant in the room was able to speak and now is a visitor that can't send
-         * messages to the room occupants.
-         *
-         * @param participant the participant that was revoked voice from the room e.g. room@conference.jabber.org/nick
-         */
-        @Override
-        public void voiceRevoked(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.SILENT_MEMBER);
-        }
-
-        /**
-         * Called when an administrator grants a user membership to the room. This means that the
-         * user will be able to join the members-only room.
-         *
-         * @param participant the participant that was granted membership in the room e.g. room@conference.jabber.org/nick
-         */
-        @Override
-        public void membershipGranted(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
-        }
-
-        /**
-         * Called when an administrator revokes moderator privileges from a user. This means that
-         * the user will no longer be able to kick users, grant and revoke voice, invite other
-         * users, modify room's subject plus all the participants privileges.
-         *
-         * @param participant the participant that was revoked moderator privileges in the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void moderatorRevoked(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
-        }
-
-        /**
-         * Called when a moderator grants voice to a visitor. This means that the visitor can now
-         * participate in the moderated room sending messages to all occupants.
-         *
-         * @param participant the participant that was granted voice in the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void voiceGranted(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.MEMBER);
-        }
-
-        /**
-         * Called when an administrator revokes a user membership to the room. This means that the
-         * user will not be able to join the members-only room.
-         *
-         * @param participant the participant that was revoked membership from the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void membershipRevoked(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.GUEST);
-        }
-
-        /**
-         * Called when an owner grants a user ownership on the room. This means that the user will
-         * be able to change defining room features as well as perform all administrative functions.
-         *
-         * @param participant the participant that was granted ownership on the room (e.g.
-         * room@conference.jabber.org/nick).
-         */
-        @Override
-        public void ownershipGranted(EntityFullJid participant)
-        {
-            ChatRoomMemberJabberImpl member = findMemberFromParticipant(participant);
-            if (member != null)
-                fireMemberRoleEvent(member, member.getCurrentRole(), ChatRoomMemberRole.OWNER);
-        }
     }
 
     /**
@@ -1584,8 +1532,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener a local user mRole listener.
      */
     @Override
-    public void addLocalUserRoleListener(ChatRoomLocalUserRoleListener listener)
-    {
+    public void addLocalUserRoleListener(ChatRoomLocalUserRoleListener listener) {
         synchronized (localUserRoleListeners) {
             if (!localUserRoleListeners.contains(listener))
                 localUserRoleListeners.add(listener);
@@ -1599,8 +1546,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener a local user mRole listener.
      */
     @Override
-    public void removeLocalUserRoleListener(ChatRoomLocalUserRoleListener listener)
-    {
+    public void removeLocalUserRoleListener(ChatRoomLocalUserRoleListener listener) {
         synchronized (localUserRoleListeners) {
             localUserRoleListeners.remove(listener);
         }
@@ -1611,8 +1557,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param ext the extension we want to add.
      */
-    public void addPresencePacketExtensions(ExtensionElement ext)
-    {
+    public void addPresencePacketExtensions(ExtensionElement ext) {
         synchronized (presencePacketExtensions) {
             if (!presencePacketExtensions.contains(ext))
                 presencePacketExtensions.add(ext);
@@ -1624,8 +1569,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param ext the extension we want to remove.
      */
-    public void removePresencePacketExtensions(ExtensionElement ext)
-    {
+    public void removePresencePacketExtensions(ExtensionElement ext) {
         synchronized (presencePacketExtensions) {
             presencePacketExtensions.remove(ext);
         }
@@ -1637,8 +1581,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener a member mRole listener.
      */
     @Override
-    public void addMemberRoleListener(ChatRoomMemberRoleListener listener)
-    {
+    public void addMemberRoleListener(ChatRoomMemberRoleListener listener) {
         synchronized (memberRoleListeners) {
             if (!memberRoleListeners.contains(listener))
                 memberRoleListeners.add(listener);
@@ -1652,8 +1595,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param listener a member mRole listener.
      */
     @Override
-    public void removeMemberRoleListener(ChatRoomMemberRoleListener listener)
-    {
+    public void removeMemberRoleListener(ChatRoomMemberRoleListener listener) {
         synchronized (memberRoleListeners) {
             memberRoleListeners.remove(listener);
         }
@@ -1665,8 +1607,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @return a list of all banned participants
      */
     @Override
-    public Iterator<ChatRoomMember> getBanList()
-    {
+    public Iterator<ChatRoomMember> getBanList() {
         return banList.values().iterator();
     }
 
@@ -1675,12 +1616,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * throws an OperationFailedException.
      *
      * @param nickname the new nickname within the room.
+     *
      * @throws OperationFailedException if the new nickname already exist in this room
      */
     @Override
     public void setUserNickname(String nickname)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         // parseLocalPart or take nickname as it
         String sNickname = nickname.split("@")[0];
 
@@ -1688,7 +1629,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             mNickName = Resourcepart.from(sNickname);
             mMultiUserChat.changeNickname(mNickName);
         } catch (XMPPException | NoResponseException | NotConnectedException | XmppStringprepException
-                | MultiUserChatException.MucNotJoinedException | InterruptedException e) {
+                 | MultiUserChatException.MucNotJoinedException | InterruptedException e) {
 
             String msg = "Failed to change nickname for chat room: " + getName() + " => " + e.getMessage();
             Timber.e("%s", msg);
@@ -1701,16 +1642,16 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param member the <code>ChatRoomMember</code> to be banned.
      * @param reason the reason why the user was banned.
+     *
      * @throws OperationFailedException if an error occurs while banning a user. In particular, an error can occur if a
      * moderator or a user with an affiliation of "owner" or "admin" was tried to be banned
      * or if the user that is banning have not enough permissions to ban.
      */
     @Override
     public void banParticipant(ChatRoomMember member, String reason)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
-            Jid jid = ((ChatRoomMemberJabberImpl) member).getJabberID();
+            Jid jid = ((ChatRoomMemberJabberImpl) member).getJabberId();
             mMultiUserChat.banUser(jid, reason);
         } catch (XMPPErrorException e) {
             Timber.e(e, "Failed to ban participant.");
@@ -1735,19 +1676,19 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param member the <code>ChatRoomMember</code> to kick from the room
      * @param reason the reason why the participant is being kicked from the room
+     *
      * @throws OperationFailedException if an error occurs while kicking the participant. In particular, an error can occur
      * if a moderator or a user with an affiliation of "owner" or "admin" was intended to be kicked;
      * or if the participant that intended to kick another participant does not have kicking privileges;
      */
     @Override
     public void kickParticipant(ChatRoomMember member, String reason)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         try {
             Resourcepart nick = ((ChatRoomMemberJabberImpl) member).getNickAsResourcepart();
             mMultiUserChat.kickParticipant(nick, reason);
         } catch (XMPPErrorException e) {
-            Timber.e(e, "Failed to kick participant.");
+            Timber.e(e, "Failed to kick participant: %s.", e.getMessage());
 
             // If a moderator or a user with an affiliation of "owner" or "admin" was intended to be kicked.
             if (e.getStanzaError().getCondition().equals(Condition.not_allowed)) {
@@ -1762,12 +1703,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         OperationFailedException.NOT_ENOUGH_PRIVILEGES);
             }
             else {
-                throw new OperationFailedException("An error occurred while trying to kick the participant.",
-                        OperationFailedException.GENERAL_ERROR);
+                throw new OperationFailedException("An error occurred while trying to kick the participant. "
+                        + e.getMessage(), OperationFailedException.GENERAL_ERROR);
             }
         } catch (NoResponseException | NotConnectedException | InterruptedException e) {
-            throw new OperationFailedException("An error occurred while trying to kick the participant.",
-                    OperationFailedException.GENERAL_ERROR);
+            throw new OperationFailedException("An error occurred while trying to kick the participant. "
+                    + e.getMessage(), OperationFailedException.GENERAL_ERROR);
         }
     }
 
@@ -1780,8 +1721,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param eventID the identifier of the event
      * @param eventReason the reason of the event
      */
-    private void fireMemberPresenceEvent(ChatRoomMember member, String eventID, String eventReason)
-    {
+    private void fireMemberPresenceEvent(ChatRoomMember member, String eventID, String eventReason) {
         ChatRoomMemberPresenceChangeEvent evt
                 = new ChatRoomMemberPresenceChangeEvent(this, member, eventID, eventReason);
 
@@ -1805,10 +1745,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param eventID the identifier of the event
      * @param eventReason the reason of this event
      */
-    private void fireMemberPresenceEvent(ChatRoomMember member, Jid actor, String eventID, String eventReason)
-    {
-        ChatRoomMemberPresenceChangeEvent evt = new ChatRoomMemberPresenceChangeEvent(this, member,
-                actor, eventID, eventReason);
+    private void fireMemberPresenceEvent(ChatRoomMember member, Jid actor, String eventID, String eventReason) {
+        ChatRoomMemberPresenceChangeEvent evt
+                = new ChatRoomMemberPresenceChangeEvent(this, member, actor, eventID, eventReason);
 
         Timber.log(TimberLog.FINER, "Will dispatch the following ChatRoom event: %s", evt);
 
@@ -1828,8 +1767,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param previousRole the previous mRole that member had
      * @param newRole the new mRole the member get
      */
-    private void fireMemberRoleEvent(ChatRoomMember member, ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole)
-    {
+    private void fireMemberRoleEvent(ChatRoomMember member, ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole) {
         member.setRole(newRole);
         ChatRoomMemberRoleChangeEvent evt = new ChatRoomMemberRoleChangeEvent(this, member, previousRole, newRole);
 
@@ -1848,8 +1786,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param evt the <code>EventObject</code> that we'd like delivered to all registered message listeners.
      */
-    void fireMessageEvent(EventObject evt)
-    {
+    void fireMessageEvent(EventObject evt) {
         Iterable<ChatRoomMessageListener> listeners;
         synchronized (messageListeners) {
             listeners = new ArrayList<>(messageListeners);
@@ -1878,12 +1815,12 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param cd the description of the conference to announce
      * @param name the name of the conference
+     *
      * @return the <code>ConferenceDescription</code> that was announced (e.g. <code>cd</code> on
      * success or <code>null</code> on failure)
      */
     @Override
-    public ConferenceDescription publishConference(ConferenceDescription cd, String name)
-    {
+    public ConferenceDescription publishConference(ConferenceDescription cd, String name) {
         if (publishedConference != null) {
             cd = publishedConference;
             cd.setAvailable(false);
@@ -1938,10 +1875,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param namespace the namespace of <code>ExtensionElement</code>.
      * @param matchElementName if {@code true} only extensions matching both the element name and namespace will be matched
      * and removed. Otherwise, only the namespace will be matched.
+     *
      * @return whether packet was modified.
      */
-    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName)
-    {
+    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace, boolean matchElementName) {
         boolean modified = false;
         if (StringUtils.isEmpty(namespace)) {
             return modified;
@@ -1979,8 +1916,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param extension the <code>ConferenceDescriptionPacketExtension<code> to set, or <code>null</code> to not set one.
      * @param namespace the namespace of <code>ExtensionElement</code>.
      */
-    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace)
-    {
+    private static boolean setPacketExtension(Stanza packet, ExtensionElement extension, String namespace) {
         return setPacketExtension(packet, extension, namespace, false);
     }
 
@@ -1989,8 +1925,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param newStatus the new status message to be published in the MUC.
      */
-    public void publishPresenceStatus(String newStatus)
-    {
+    public void publishPresenceStatus(String newStatus) {
         if (lastPresenceSent != null) {
             lastPresenceSent.setStatus(newStatus);
             try {
@@ -2006,8 +1941,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param extension the <code>ExtensionElement</code> to be included in MUC presence.
      */
-    public void sendPresenceExtension(ExtensionElement extension)
-    {
+    public void sendPresenceExtension(ExtensionElement extension) {
         if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, extension, extension.getNamespace(), true)) {
             try {
                 sendLastPresence();
@@ -2022,8 +1956,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param extension the <code>PacketExtension</code> to be removed from the MUC presence.
      */
-    public void removePresenceExtension(ExtensionElement extension)
-    {
+    public void removePresenceExtension(ExtensionElement extension) {
         if (lastPresenceSent != null && setPacketExtension(lastPresenceSent, null, extension.getNamespace())) {
             try {
                 sendLastPresence();
@@ -2039,8 +1972,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return the ids of the users that has the member mRole in the room.
      */
-    public List<Jid> getMembersWhiteList()
-    {
+    public List<Jid> getMembersWhiteList() {
         List<Jid> res = new ArrayList<>();
         try {
             for (Affiliate a : mMultiUserChat.getMembers()) {
@@ -2058,8 +1990,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param members the ids of user to have member mRole.
      */
-    public void setMembersWhiteList(List<Jid> members)
-    {
+    public void setMembersWhiteList(List<Jid> members) {
         try {
             List<Jid> membersToRemove = getMembersWhiteList();
             membersToRemove.removeAll(members);
@@ -2070,7 +2001,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             if (members.size() > 0)
                 mMultiUserChat.grantMembership(members);
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException e) {
+                 | InterruptedException e) {
             Timber.e(e, "Cannot modify members list");
         }
     }
@@ -2082,8 +2013,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @throws NotConnectedException
      * @throws InterruptedException
      */
-    private void sendLastPresence() throws NotConnectedException, InterruptedException
-    {
+    private void sendLastPresence() throws NotConnectedException, InterruptedException {
         // The initial presence sent by smack contains an empty "x" extension.
         // If this extension is included in a subsequent stanza, it indicates that the client lost its
         // synchronization and causes the MUC service to re-send the presence of each occupant in the room.
@@ -2100,8 +2030,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * A listener that listens for packets of type Message and fires an event to notifier
      * interesting parties that a message was received.
      */
-    private class MucMessageListener implements MessageListener
-    {
+    private class MucMessageListener implements MessageListener {
         /**
          * The timestamp of the last history message sent to the UI. Do not send earlier or
          * messages with the same timestamp.
@@ -2119,8 +2048,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param message Smack Message to process.
          */
         @Override
-        public void processMessage(Message message)
-        {
+        public void processMessage(Message message) {
             // Leave handling of omemo messages to onOmemoMessageReceived()
             if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL))
                 return;
@@ -2291,8 +2219,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * A listener that is fired anytime a MUC room changes its subject.
      */
-    private class MucSubjectUpdatedListener implements SubjectUpdatedListener
-    {
+    private class MucSubjectUpdatedListener implements SubjectUpdatedListener {
         /**
          * Notification that subject has changed
          *
@@ -2300,8 +2227,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param from the sender from room participants
          */
         @Override
-        public void subjectUpdated(String subject, EntityFullJid from)
-        {
+        public void subjectUpdated(String subject, EntityFullJid from) {
             // only fire event if subject has really changed, not for new one
             if ((subject != null) && !subject.equals(oldSubject)) {
                 Timber.d("ChatRoom subject updated to '%s'", subject);
@@ -2318,8 +2244,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * A listener that is fired anytime self status in a room is changed, such as the
      * user being kicked, banned, or granted admin permissions.
      */
-    private class LocalUserStatusListener implements UserStatusListener
-    {
+    private class LocalUserStatusListener implements UserStatusListener {
         /**
          * Called when a moderator kicked your user from the room. This means that you are no
          * longer participating in the room.
@@ -2328,8 +2253,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param reason the reason provided by the actor to kick you from the room.
          */
         @Override
-        public void kicked(Jid actor, String reason)
-        {
+        public void kicked(Jid actor, String reason) {
+            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_KICK);
             opSetMuc.fireLocalUserPresenceEvent(ChatRoomJabberImpl.this,
                     LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_KICKED, reason);
             leave();
@@ -2340,8 +2265,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * moderated room before and now you can participate in the room by sending messages to all occupants.
          */
         @Override
-        public void voiceGranted()
-        {
+        public void voiceGranted() {
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2350,8 +2274,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * room able to speak and now you are a visitor that can't send messages to the room occupants.
          */
         @Override
-        public void voiceRevoked()
-        {
+        public void voiceRevoked() {
             setLocalUserRole(ChatRoomMemberRole.SILENT_MEMBER);
         }
 
@@ -2363,8 +2286,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param reason the reason provided by the administrator to banned you.
          */
         @Override
-        public void banned(Jid actor, String reason)
-        {
+        public void banned(Jid actor, String reason) {
             opSetMuc.fireLocalUserPresenceEvent(ChatRoomJabberImpl.this,
                     LocalUserChatRoomPresenceChangeEvent.LOCAL_USER_DROPPED, reason);
             leave();
@@ -2375,8 +2297,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * you will be able to join the members-only room.
          */
         @Override
-        public void membershipGranted()
-        {
+        public void membershipGranted() {
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2385,8 +2306,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * you will not be able to join the members-only room.
          */
         @Override
-        public void membershipRevoked()
-        {
+        public void membershipRevoked() {
             setLocalUserRole(ChatRoomMemberRole.GUEST);
         }
 
@@ -2396,8 +2316,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * room's subject plus all the participants privileges.
          */
         @Override
-        public void moderatorGranted()
-        {
+        public void moderatorGranted() {
             setLocalUserRole(ChatRoomMemberRole.MODERATOR);
         }
 
@@ -2407,8 +2326,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * users, modify room's subject plus all the participants privileges.
          */
         @Override
-        public void moderatorRevoked()
-        {
+        public void moderatorRevoked() {
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2418,8 +2336,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * functions.
          */
         @Override
-        public void ownershipGranted()
-        {
+        public void ownershipGranted() {
+            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE);
             setLocalUserRole(ChatRoomMemberRole.OWNER);
         }
 
@@ -2429,8 +2347,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * administrative functions.
          */
         @Override
-        public void ownershipRevoked()
-        {
+        public void ownershipRevoked() {
+            aTalkApp.showToastMessage(R.string.service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE);
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2440,8 +2358,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * moderator list.
          */
         @Override
-        public void adminGranted()
-        {
+        public void adminGranted() {
             setLocalUserRole(ChatRoomMemberRole.ADMINISTRATOR);
         }
 
@@ -2451,8 +2368,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * edit moderator list.
          */
         @Override
-        public void adminRevoked()
-        {
+        public void adminRevoked() {
             setLocalUserRole(ChatRoomMemberRole.MEMBER);
         }
 
@@ -2463,8 +2379,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          * @param reason the reason why the room was destroyed, may be null.
          */
         @Override
-        public void roomDestroyed(MultiUserChat alternateMUC, String reason)
-        {
+        public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
             Timber.d("CharRoom destroyed, alternate MUC: %s. Reason: %s", alternateMUC, reason);
         }
     }
@@ -2472,14 +2387,20 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Creates the corresponding ChatRoomLocalUserRoleChangeEvent and notifies all
      * <code>ChatRoomLocalUserRoleListener</code>s that local user's mRole has been changed in this
-     * <code>ChatRoom</code>.
+     * <code>ChatRoom</code>. Need to update LocalUser member Role in members list.
      *
      * @param previousRole the previous mRole that local user had
      * @param newRole the new mRole the local user gets
      * @param isInitial if <code>true</code> this is initial mRole set.
      */
-    private void fireLocalUserRoleEvent(ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole, boolean isInitial)
-    {
+    private void fireLocalUserRoleEvent(ChatRoomMemberRole previousRole, ChatRoomMemberRole newRole, boolean isInitial) {
+        if (mNickName != null) {
+            ChatRoomMemberJabberImpl mUserLocal = members.get(mNickName);
+            if (mUserLocal != null) {
+                mUserLocal.setRole(newRole);
+            }
+        }
+
         ChatRoomLocalUserRoleChangeEvent evt
                 = new ChatRoomLocalUserRoleChangeEvent(this, previousRole, newRole, isInitial);
 
@@ -2499,8 +2420,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param evt the <code>PropertyChangeEvent</code> that we'd like delivered to all registered property
      * change listeners.
      */
-    private void firePropertyChangeEvent(PropertyChangeEvent evt)
-    {
+    private void firePropertyChangeEvent(PropertyChangeEvent evt) {
         Iterable<ChatRoomPropertyChangeListener> listeners;
         synchronized (propertyChangeListeners) {
             listeners = new ArrayList<>(propertyChangeListeners);
@@ -2522,8 +2442,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @param evt the <code>ChatRoomMemberPropertyChangeEvent</code> that we'd like deliver to all
      * registered member property change listeners.
      */
-    private void fireMemberPropertyChangeEvent(ChatRoomMemberPropertyChangeEvent evt)
-    {
+    private void fireMemberPropertyChangeEvent(ChatRoomMemberPropertyChangeEvent evt) {
         Iterable<ChatRoomMemberPropertyChangeListener> listeners;
         synchronized (memberPropChangeListeners) {
             listeners = new ArrayList<>(memberPropChangeListeners);
@@ -2538,8 +2457,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
      */
     private void assertConnected()
-            throws IllegalStateException
-    {
+            throws IllegalStateException {
         if (mPPS == null)
             throw new IllegalStateException("The mProvider must be non-null and signed on the "
                     + "service before being able to communicate.");
@@ -2557,8 +2475,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * @throws OperationFailedException if the user doesn't have permissions to see and change chat room configuration
      */
     public ChatRoomConfigurationForm getConfigurationForm()
-            throws OperationFailedException, InterruptedException
-    {
+            throws OperationFailedException, InterruptedException {
         // The corresponding configuration form.
         ChatRoomConfigurationFormJabberImpl configForm;
         Form smackConfigForm;
@@ -2585,8 +2502,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return false to indicate that the Jabber protocol implementation doesn't support system rooms.
      */
-    public boolean isSystem()
-    {
+    public boolean isSystem() {
         return false;
     }
 
@@ -2597,8 +2513,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return true if this chat room is persistent, false otherwise
      */
-    public boolean isPersistent()
-    {
+    public boolean isPersistent() {
         boolean persistent = false;
         EntityBareJid room = mMultiUserChat.getRoom();
         try {
@@ -2620,10 +2535,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * Finds the member of this chat room corresponding to the given nick name.
      *
      * @param nickName the nick name to search for.
+     *
      * @return the member of this chat room corresponding to the given nick name.
      */
-    public ChatRoomMemberJabberImpl findMemberForNickName(Resourcepart nickName)
-    {
+    public ChatRoomMemberJabberImpl findMemberForNickName(Resourcepart nickName) {
         synchronized (members) {
             return members.get(nickName);
         }
@@ -2636,12 +2551,13 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to grant administrator privileges (e.g. "user@host.org").
      */
-    public void grantAdmin(Jid jid)
-    {
+    public void grantAdmin(String jid) {
         try {
-            mMultiUserChat.grantAdmin(jid);
+            mMultiUserChat.grantAdmin(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
             Timber.e(ex, "An error occurs granting administrator privileges to a user.");
+        } catch (XmppStringprepException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -2652,11 +2568,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to grant membership privileges (e.g. "user@host.org").
      */
-    public void grantMembership(Jid jid)
-    {
+    public void grantMembership(String jid) {
         try {
-            mMultiUserChat.grantMembership(jid);
-        } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException ex) {
+            mMultiUserChat.grantMembership(JidCreate.from(jid));
+        } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException |
+                 XmppStringprepException ex) {
             Timber.e(ex, "An error occurs granting membership to a user");
         }
     }
@@ -2668,12 +2584,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param nickname the nickname of the occupant to grant moderator privileges.
      */
-    public void grantModerator(String nickname)
-    {
+    public void grantModerator(String nickname) {
         try {
             mMultiUserChat.grantModerator(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException
-                | XmppStringprepException ex) {
+                 | XmppStringprepException ex) {
             Timber.e(ex, "An error occurs granting moderator privileges to a user");
         }
     }
@@ -2685,12 +2600,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to grant ownership privileges (e.g. "user@host.org").
      */
-    public void grantOwnership(String jid)
-    {
+    public void grantOwnership(String jid) {
         try {
             mMultiUserChat.grantOwnership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException
-                | XmppStringprepException | IllegalArgumentException ex) {
+                 | XmppStringprepException | IllegalArgumentException ex) {
             Timber.e(ex, "An error occurs granting ownership privileges to a user");
         }
     }
@@ -2707,12 +2621,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * this room (i.e. Forbidden error); or a 400 error can occur if the provided nickname is
      * not present in the room.
      */
-    public void grantVoice(String nickname)
-    {
+    public void grantVoice(String nickname) {
         try {
             mMultiUserChat.grantVoice(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException | XmppStringprepException ex) {
+                 | InterruptedException | XmppStringprepException ex) {
             Timber.e(ex, "An error occurs granting voice to a visitor");
         }
     }
@@ -2724,12 +2637,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to grant administrator privileges (e.g. "user@host.org").
      */
-    public void revokeAdmin(String jid)
-    {
+    public void revokeAdmin(String jid) {
         try {
             mMultiUserChat.revokeAdmin((EntityJid) JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | XmppStringprepException | IllegalArgumentException | InterruptedException ex) {
+                 | XmppStringprepException | IllegalArgumentException | InterruptedException ex) {
             Timber.e(ex, "n error occurs revoking administrator privileges to a user");
         }
     }
@@ -2742,12 +2654,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to revoke membership (e.g. "user@host.org").
      */
-    public void revokeMembership(String jid)
-    {
+    public void revokeMembership(String jid) {
         try {
             mMultiUserChat.revokeMembership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException | IllegalArgumentException | XmppStringprepException ex) {
+                 | InterruptedException | IllegalArgumentException | XmppStringprepException ex) {
             Timber.e(ex, "An error occurs revoking membership to a user");
         }
     }
@@ -2760,12 +2671,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param nickname the nickname of the occupant to revoke moderator privileges.
      */
-    public void revokeModerator(String nickname)
-    {
+    public void revokeModerator(String nickname) {
         try {
             mMultiUserChat.revokeModerator(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException | XmppStringprepException ex) {
+                 | InterruptedException | XmppStringprepException ex) {
             Timber.e(ex, "An error occurs revoking moderator privileges from a user");
         }
     }
@@ -2777,12 +2687,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param jid the bare XMPP user ID of the user to revoke ownership (e.g. "user@host.org").
      */
-    public void revokeOwnership(String jid)
-    {
+    public void revokeOwnership(String jid) {
         try {
             mMultiUserChat.revokeOwnership(JidCreate.from(jid));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException | XmppStringprepException | IllegalArgumentException ex) {
+                 | InterruptedException | XmppStringprepException | IllegalArgumentException ex) {
             Timber.e(ex, "An error occurs revoking ownership privileges from a user");
         }
     }
@@ -2799,12 +2708,11 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * was tried to revoke his voice (i.e. Not Allowed error); or a 400 error can occur if
      * the provided nickname is not present in the room.
      */
-    public void revokeVoice(String nickname)
-    {
+    public void revokeVoice(String nickname) {
         try {
             mMultiUserChat.revokeVoice(Resourcepart.from(nickname));
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException | XmppStringprepException ex) {
+                 | InterruptedException | XmppStringprepException ex) {
             Timber.i(ex, "An error occurs revoking voice from a participant");
         }
     }
@@ -2814,23 +2722,20 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @return the MultiUserChat instance used in the protocol stack.
      */
-    public MultiUserChat getMultiUserChat()
-    {
+    public MultiUserChat getMultiUserChat() {
         return mMultiUserChat;
     }
 
     /**
      * Class implementing MultiUserChat#PresenceListener
      */
-    private class ParticipantListener implements PresenceListener
-    {
+    private class ParticipantListener implements PresenceListener {
         /**
          * Processes an incoming presence packet from participantListener.
          *
          * @param presence the presence packet.
          */
-        public void processPresence(Presence presence)
-        {
+        public void processPresence(Presence presence) {
             if (MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF.accept(presence))
                 processOwnPresence(presence);
             else
@@ -2843,8 +2748,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          *
          * @param presence the packet to process.
          */
-        private void processOwnPresence(Presence presence)
-        {
+        private void processOwnPresence(Presence presence) {
             MUCUser mucUser = presence.getExtension(MUCUser.class);
             if (mucUser != null) {
                 // lastPresenceSent = presence;
@@ -2857,8 +2761,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     try {
                         TextSingleFormField formField
                                 = FormField.buildHiddenFormType("http://jabber.org/protocol/muc#roomconfig");
-                        DataForm dataForm = DataForm.builder(DataForm.Type.form)
-                                .addField(formField).build();
+                        DataForm dataForm = DataForm.builder(DataForm.Type.form).addField(formField).build();
                         mMultiUserChat.sendConfigurationForm(new FillableForm(dataForm));
 
                         // Sending null also picked up the options OperationSetMultiUserChatJabberImpl#createChatRoom and sent
@@ -2866,6 +2769,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
                         Timber.e(e, "Failed to send config form.");
                     }
+
+                    // Update mNickName here as it is used in fireLocalUserRoleEvent before joinAs() is triggered.
+                    EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
+                    mNickName = from.getResourceOrEmpty();
 
                     opSetMuc.addSmackInvitationRejectionListener(mMultiUserChat, ChatRoomJabberImpl.this);
                     if (affiliation == MUCAffiliation.owner) {
@@ -2875,8 +2782,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                         setLocalUserRole(ChatRoomMemberRole.MODERATOR, true);
                 }
                 else {
-                    // this is the presence for our own initial mRole and affiliation, as
-                    // smack do not fire any initial events lets check it and fire events
+                    // this is the presence for our own initial mRole and affiliation,
+                    // as smack do not fire any initial events lets check it and fire events
                     if (role == MUCRole.moderator
                             || affiliation == MUCAffiliation.owner
                             || affiliation == MUCAffiliation.admin) {
@@ -2909,48 +2816,39 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         /**
          * Process a <code>Presence</code> packet sent by one of the other room occupants.
          */
-        private void processOtherPresence(Presence presence)
-        {
+        private void processOtherPresence(Presence presence) {
             Jid from = presence.getFrom();
             Resourcepart participantNick = null;
             if (from != null) {
                 participantNick = from.getResourceOrNull();
             }
+
             ChatRoomMemberJabberImpl member = (participantNick == null) ? null : members.get(participantNick);
-
-            ConferenceDescriptionExtension cdExt
-                    = presence.getExtension(ConferenceDescriptionExtension.class);
-            if (presence.isAvailable() && cdExt != null) {
-                ConferenceDescription cd = new ConferenceDescription(
-                        cdExt.getUri(),
-                        cdExt.getCallId(),
-                        cdExt.getPassword());
-                cd.setAvailable(cdExt.isAvailable());
-                cd.setDisplayName(getName());
-                for (TransportExtension t
-                        : cdExt.getChildExtensionsOfType(TransportExtension.class)) {
-                    cd.addTransport(t.getNamespace());
-                }
-                if (!processConferenceDescription(cd, participantNick))
-                    return;
-
-                if (member != null) {
-                    Timber.d("Received %s from %s in %s", cd, participantNick, mMultiUserChat.getRoom());
-                    fireConferencePublishedEvent(member, cd, ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED);
-                }
-                else {
-                    Timber.w("Received a ConferenceDescription from an unknown member (%s) in %s",
-                            participantNick, mMultiUserChat.getRoom());
-                }
-            }
-
             // if member wasn't just created, we should potentially modify some elements
             if (member == null) {
+                Timber.w("Received presence from an unknown member %s (%s)",
+                        participantNick, mMultiUserChat.getRoom());
                 return;
             }
 
+            ConferenceDescriptionExtension cdExt = presence.getExtension(ConferenceDescriptionExtension.class);
+            if (presence.isAvailable() && cdExt != null) {
+                ConferenceDescription cd = new ConferenceDescription(cdExt.getUri(), cdExt.getCallId(), cdExt.getPassword());
+                cd.setAvailable(cdExt.isAvailable());
+                cd.setDisplayName(getName());
+                for (TransportExtension t : cdExt.getChildExtensionsOfType(TransportExtension.class)) {
+                    cd.addTransport(t.getNamespace());
+                }
+
+                if (!processConferenceDescription(cd, participantNick))
+                    return;
+
+                Timber.d("Received %s from %s in %s", cd, participantNick, mMultiUserChat.getRoom());
+                fireConferencePublishedEvent(member, cd, ChatRoomConferencePublishedEvent.CONFERENCE_DESCRIPTION_RECEIVED);
+            }
+
             // For 4.4.3-master (20200416): presence.getExtension(Nick.class); => IllegalArgumentException
-            Nick nickExt = (Nick) presence.getExtensionElement(Nick.ELEMENT_NAME, Nick.NAMESPACE);
+            Nick nickExt = (Nick) presence.getExtension(Nick.QNAME);
             if (nickExt != null) {
                 member.setDisplayName(nickExt.getName());
             }
@@ -2979,8 +2877,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Listens for rejection message and delivers system message when received.
      */
-    private class InvitationRejectionListeners implements InvitationRejectionListener
-    {
+    private class InvitationRejectionListeners implements InvitationRejectionListener {
         /**
          * Listens for rejection message and delivers system message when received.
          * Called when the invitee declines the invitation.
@@ -2992,8 +2889,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
          */
 
         public void invitationDeclined(EntityBareJid invitee, String reason,
-                Message message, MUCUser.Decline rejection)
-        {
+                Message message, MUCUser.Decline rejection) {
             // MUCUser mucUser = packet.getExtension(MUCUser.class);
             MUCUser mucUser = MUCUser.from(message);
 
@@ -3021,8 +2917,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      * We use this to make sure that our outgoing <tt>Presence</tt> packets contain the correct
      * <tt>ConferenceAnnouncementPacketExtension</tt> and custom extensions.
      */
-    private void presenceIntercept(PresenceBuilder presenceBuilder)
-    {
+    private void presenceIntercept(PresenceBuilder presenceBuilder) {
         if (publishedConferenceExt != null) {
             presenceBuilder.overrideExtension(publishedConferenceExt);
         }
@@ -3040,12 +2935,10 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
     /**
      * Stores the last sent presence.
      */
-    private class LastPresenceListener implements StanzaListener
-    {
+    private class LastPresenceListener implements StanzaListener {
         @Override
         public void processStanza(Stanza packet)
-                throws NotConnectedException, InterruptedException, NotLoggedInException
-        {
+                throws NotConnectedException, InterruptedException, NotLoggedInException {
             lastPresenceSent = (Presence) packet;
         }
     }
@@ -3056,8 +2949,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param chatRoomMember the chatRoomMember of the contact.
      */
-    public void updatePrivateContactPresenceStatus(ChatRoomMember chatRoomMember)
-    {
+    public void updatePrivateContactPresenceStatus(ChatRoomMember chatRoomMember) {
         OperationSetPersistentPresenceJabberImpl presenceOpSet = (OperationSetPersistentPresenceJabberImpl)
                 mPPS.getOperationSet(OperationSetPersistentPresence.class);
         ContactJabberImpl contact
@@ -3070,8 +2962,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      *
      * @param contact the contact.
      */
-    public void updatePrivateContactPresenceStatus(Contact contact)
-    {
+    public void updatePrivateContactPresenceStatus(Contact contact) {
         if (contact == null)
             return;
 

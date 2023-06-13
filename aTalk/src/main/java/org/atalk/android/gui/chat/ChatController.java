@@ -12,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,7 +82,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     /**
      * The chat fragment used by this instance.
      */
-    private final ChatFragment chatFragment;
+    private final ChatFragment mChatFragment;
     /**
      * Parent activity: ChatActivity pass in from ChatFragment.
      */
@@ -178,7 +176,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public ChatController(Activity activity, ChatFragment fragment) {
         parent = activity;
-        this.chatFragment = fragment;
+        mChatFragment = fragment;
         // Do not use aTalk.getInstance, may not have initialized
         isAudioAllowed = aTalk.hasPermission(parent, false,
                 aTalk.PRC_RECORD_AUDIO, Manifest.permission.RECORD_AUDIO);
@@ -192,7 +190,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             isAttached = true;
 
             // Timber.d("ChatController attached to %s", chatFragment.hashCode());
-            chatPanel = chatFragment.getChatPanel();
+            chatPanel = mChatFragment.getChatPanel();
 
             // Gets message edit view
             msgEdit = parent.findViewById(R.id.chatWriteText);
@@ -268,9 +266,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     @SuppressLint("ClickableViewAccessibility")
     private void initChatController() {
-        if (!chatFragment.isVisible()) {
+        if (!mChatFragment.isVisible()) {
             Timber.w("Skip init current Chat Transport to: %s; with visible State: %s",
-                    mChatTransport, chatFragment.isVisible());
+                    mChatTransport, mChatFragment.isVisible());
             return;
         }
 
@@ -324,7 +322,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         // Sometimes it seems the chatPanel is not inSync with the chatSession or initialized,
         // i.e Conference instead of MetaContact; and may also be null, so check to ensure
         if (chatPanel == null)
-            chatPanel = chatFragment.getChatPanel();
+            chatPanel = mChatFragment.getChatPanel();
 
         String correctionUID = chatPanel.getCorrectionUID();
 
@@ -376,7 +374,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             cancelCorrection();
             return;
         }
-        ChatFragment.ChatListAdapter chatListAdapter = chatFragment.getChatListAdapter();
+        ChatFragment.ChatListAdapter chatListAdapter = mChatFragment.getChatListAdapter();
 
         // Position must be aligned to the number of header views included
         int headersCount = ((ListView) adapter).getHeaderViewsCount();
@@ -643,7 +641,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
      */
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            if (chatFragment != null) {
+            if (mChatFragment != null) {
                 sendBtn.performClick();
             }
             return true;
@@ -809,6 +807,35 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
+     * Insert/remove the buddy nickname into the sending text.
+     * @param buddy occupant jid
+     */
+    public void insertTo(String buddy) {
+        if (buddy != null) {
+            String nickName = buddy.replaceAll("(\\w+)[:|@].*", "$1");
+
+            String editText = ViewUtil.toString(msgEdit);
+            if (editText == null) {
+                nickName += ": ";
+            }
+            else if (editText.contains(nickName)) {
+                nickName = editText.replace(nickName, "")
+                        .replace(", ", "");
+                if (nickName.length() == 1)
+                    nickName = "";
+            }
+            else if (editText.contains(":")) {
+                nickName = editText.replace(":", ", " + nickName + ": ");
+            }
+            else {
+                nickName = editText + " " + nickName;
+            }
+
+            msgEdit.setText(nickName);
+        }
+    }
+
+    /**
      * Updates visibility state of cancel correction button and toggles bg color of the message edit field.
      */
     private void updateCorrectionState() {
@@ -817,7 +844,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
         msgEditBg.setBackgroundColor(parent.getResources().getColor(bgColorId));
         cancelCorrectionBtn.setVisibility(correctionMode ? View.VISIBLE : View.GONE);
-        chatFragment.getChatListView().invalidateViews();
+        mChatFragment.getChatListView().invalidateViews();
     }
 
     @Override

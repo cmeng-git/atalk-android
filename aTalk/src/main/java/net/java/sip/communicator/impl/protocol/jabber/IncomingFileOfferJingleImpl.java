@@ -85,7 +85,7 @@ public class IncomingFileOfferJingleImpl implements IncomingFileTransferRequest 
 
         mOffer = offer;
         mJingleFile = mOffer.getMetadata();
-        HashElement hashElement = mJingleFile.getHashElement();
+        HashElement hashElement = mJingleFile.getHash();
         mId = (hashElement != null) ? hashElement.getHashB64()
                 : String.valueOf(System.currentTimeMillis()) + hashCode();
 

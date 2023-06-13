@@ -431,7 +431,7 @@ public interface ChatRoom
      *
      * @param address the user address of the user to grant administrator privileges (e.g. "user@host.org").
      */
-    void grantAdmin(Jid address);
+    void grantAdmin(String address);
 
     /**
      * Grants membership to a user. Only administrators are able to grant membership. A user that
@@ -440,7 +440,7 @@ public interface ChatRoom
      *
      * @param address the user address of the user to grant membership privileges (e.g. "user@host.org").
      */
-    void grantMembership(Jid address);
+    void grantMembership(String address);
 
     /**
      * Grants moderator privileges to a participant or visitor. Room administrators may grant

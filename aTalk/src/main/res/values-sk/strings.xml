@@ -450,6 +450,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Overenie CAPTCHA zlyhalo</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s CAPTCHA vypršal časový limit výzvy;\nProsim znovu sa pripojte k diskusnej miestnosti a skúste to znova.</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Začnite konverzáciu</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Udeliť privilégiá vlastníka</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Zrušte oprávnenia vlastníka</string>
+    <string name="service_gui_CR_MEMBER_KICK">Odstrániť zo skupinového četu</string>
+
     <string name="service_gui_INVITATION">Pozvánka:</string>
     <string name="service_gui_INVITATION_RECEIVED">Pozvánka bola prijatá</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">Používateľ %1$s vás pozval do diskusnej miestnosti %2$s. Túto pozvánku môžete prijať, odmietnuť alebo ignorovať.</string>

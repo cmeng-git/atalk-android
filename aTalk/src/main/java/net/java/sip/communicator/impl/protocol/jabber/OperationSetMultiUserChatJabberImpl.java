@@ -124,8 +124,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param roomProperties properties specifying how the room should be created.
      *
      * @return ChatRoom the chat room that we've just created.
-     * @throws OperationFailedException       if the room couldn't be created for some reason (e.g. room already exists; user
-     *                                        already joined to an existent room or user has no permissions to create a chat room).
+     * @throws OperationFailedException if the room couldn't be created for some reason (e.g. room already exists; user
+     * already joined to an existent room or user has no permissions to create a chat room).
      * @throws OperationNotSupportedException if chat room creation is not supported by this server
      */
     public ChatRoom createChatRoom(String roomName, Map<String, Object> roomProperties)
@@ -258,7 +258,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param roomName the name of the <code>ChatRoom</code> that we're looking for.
      *
      * @return the <code>ChatRoom</code> named <code>roomName</code>
-     * @throws OperationFailedException       if an error occurs while trying to discover the room on the server.
+     * @throws OperationFailedException if an error occurs while trying to discover the room on the server.
      * @throws OperationNotSupportedException if the server does not support multi user chat
      */
     public synchronized ChatRoom findRoom(String roomName)
@@ -340,7 +340,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      *
      * @return a <code>java.util.List</code> of the name <code>String</code>s for chat rooms that are
      * currently available on the server that this protocol provider is connected to.
-     * @throws OperationFailedException       if we failed retrieving this list from the server.
+     * @throws OperationFailedException if we failed retrieving this list from the server.
      * @throws OperationNotSupportedException if the server does not support multi user chat
      */
     public List<EntityBareJid> getExistingChatRooms()
@@ -366,7 +366,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     Map<EntityBareJid, HostedRoom> hostedRooms = mMucMgr.getRoomsHostedBy(serviceName);
                     list.addAll(hostedRooms.keySet());
                 } catch (XMPPException | NoResponseException | NotConnectedException | IllegalArgumentException
-                        | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
+                         | MultiUserChatException.NotAMucServiceException | InterruptedException ex) {
                     Timber.e("Failed to retrieve room for %s : %s", serviceName, ex.getMessage());
                 }
             }
@@ -386,19 +386,13 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     }
 
     /**
-     * Checks if the contact address is associated with private messaging contact or not.
+     * Checks if the contact Jid is associated with private messaging contact or not.
      *
-     * @return <code>true</code> if the contact address is associated with private messaging contact
-     * and <code>false</code> if not.
+     * @return <code>true</code> if the contact Jid not null and is associated with
+     * private messaging contact and <code>false</code> if not.
      */
-    public boolean isPrivateMessagingContact(String contactAddress) {
-        try {
-            Jid jid = JidCreate.from(contactAddress);
-            return opSetPersPresence.isPrivateMessagingContact(jid);
-        } catch (XmppStringprepException | IllegalArgumentException e) {
-            Timber.e(e, "%s is not a valid JID", contactAddress);
-            return false;
-        }
+    public boolean isPrivateMessagingContact(Jid contactJid) {
+        return (contactJid != null) && opSetPersPresence.isPrivateMessagingContact(contactJid);
     }
 
     /**
@@ -497,7 +491,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param chatRoomMember the member we're looking for
      *
      * @return a list of all currently joined chat rooms
-     * @throws OperationFailedException       if the operation fails
+     * @throws OperationFailedException if the operation fails
      * @throws OperationNotSupportedException if the operation is not supported
      */
     public List<String> getCurrentlyJoinedChatRooms(ChatRoomMember chatRoomMember)
@@ -511,7 +505,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                     joinedRooms.add(joinedRoom.toString());
                 }
             } catch (NoResponseException | XMPPErrorException | NotConnectedException
-                    | XmppStringprepException | InterruptedException e) {
+                     | XmppStringprepException | InterruptedException e) {
                 throw new OperationFailedException("Could not get list of joined rooms",
                         OperationFailedException.GENERAL_ERROR, e);
             }
@@ -818,7 +812,8 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 encType |= IMessage.ENCODE_HTML;
                 newMessage = new MessageJabberImpl(xhtmlMessage.getBody(), encType, null, msgID);
             } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
-                    | NoRawSessionException | CryptoFailedException | XmlPullParserException | SmackParsingException e) {
+                     | NoRawSessionException | CryptoFailedException | XmlPullParserException |
+                     SmackParsingException e) {
                 Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
             }
         }

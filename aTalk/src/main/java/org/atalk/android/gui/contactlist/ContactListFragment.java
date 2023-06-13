@@ -584,24 +584,20 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
      */
-    public boolean startChat(MetaContact metaContact)
+    public void startChat(MetaContact metaContact)
     {
         if (metaContact.getDefaultContact() == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
-            return false;
         }
 
         // Default for domainJid - always show chat session
         if (metaContact.getDefaultContact().getJid() instanceof DomainJid) {
             startChatActivity(metaContact);
-            return true;
         }
 
         if (!metaContact.getContactsForOperationSet(OperationSetBasicInstantMessaging.class).isEmpty()) {
             startChatActivity(metaContact);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -614,6 +610,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
 
         if (chatIntent != null) {
+            // Get share object parameters for use with chatIntent if any.
             Intent shareIntent = ShareActivity.getShareIntent(chatIntent);
             if (shareIntent != null) {
                 chatIntent = shareIntent;

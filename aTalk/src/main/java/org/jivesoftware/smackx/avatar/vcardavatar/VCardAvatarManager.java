@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.*;
@@ -260,18 +261,18 @@ public class VCardAvatarManager extends AvatarManager
         }
 
         // Do not process <presence/>s send by chatRoom participants
-        Set<EntityBareJid> chatRooms = mucManager.getJoinedRooms();
-        if (chatRooms.contains(jidFrom.asEntityBareJidIfPossible())) {
-            // LOGGER.log(Level.INFO, "Skip process presence from chatRoom participant: " + jidFrom);
+        MUCUser mucUser = stanza.getExtension(MUCUser.class);
+        if (mucUser != null) {
+            LOGGER.log(Level.INFO, "Skip process avatar: " + stanza.getStanzaId() + " => " + jidFrom);
             return;
         }
 
-        // Retrieves the user current avatarHash
-        String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
-
-        // Get the stanza extension which contains the photo tag.
+        // Get the stanza extension which contains the photo tag; ignore if from MUCUser.
         VCardTempXUpdate vCardXExtension = stanza.getExtension(VCardTempXUpdate.class);
         if (vCardXExtension != null) {
+            // Retrieves the user current avatarHash
+            String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
+
             /*
              * Retrieved avatarHash info may contains [null | "" | "{avatarHash}"
              * null => no <photo/>

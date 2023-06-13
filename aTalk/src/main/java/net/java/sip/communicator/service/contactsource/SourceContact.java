@@ -27,8 +27,7 @@ import java.util.List;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface SourceContact
-{
+public interface SourceContact {
     /**
      * Returns the display name of this search contact. This is a user-friendly name that could
      * be shown in the user interface.
@@ -76,6 +75,7 @@ public interface SourceContact
      * Returns a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class.
      *
      * @param operationSet the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s supporting the given <code>OperationSet</code> class
      */
     List<ContactDetail> getContactDetails(Class<? extends OperationSet> operationSet);
@@ -84,6 +84,7 @@ public interface SourceContact
      * Returns a list of all <code>ContactDetail</code>s corresponding to the given category.
      *
      * @param category the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ContactDetail</code>s corresponding to the given category
      * @throws OperationNotSupportedException if categories aren't supported for call history records
      */
@@ -94,6 +95,7 @@ public interface SourceContact
      * Returns the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class.
      *
      * @param operationSet the <code>OperationSet</code> class, for which we would like to obtain a <code>ContactDetail</code>
+     *
      * @return the preferred <code>ContactDetail</code> for a given <code>OperationSet</code> class
      */
     ContactDetail getPreferredContactDetail(Class<? extends OperationSet> operationSet);
@@ -118,6 +120,7 @@ public interface SourceContact
      * Gets the user data associated with this instance and a specific key.
      *
      * @param key the key of the user data associated with this instance to be retrieved
+     *
      * @return an <code>Object</code> which represents the value associated with this instance and
      * the specified <code>key</code>; <code>null</code> if no association with the specified
      * <code>key</code> exists in this instance

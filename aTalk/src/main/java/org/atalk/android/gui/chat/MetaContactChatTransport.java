@@ -170,6 +170,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (presenceOpSet != null)
             presenceOpSet.addContactPresenceStatusListener(this);
 
+        // Timber.d("Transport mContact: %s (%s)", mContact, mContact instanceof VolatileContactJabberImpl);
         isChatStateSupported = (mPPS.getOperationSet(OperationSetChatStateNotifications.class) != null);
 
         // checking these can be slow so make sure they are run in new thread

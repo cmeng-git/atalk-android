@@ -19,8 +19,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.view.*;
-import android.widget.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.Surface;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -35,20 +44,31 @@ import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
 import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.sf.fmj.utility.IOUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.*;
+import org.atalk.android.MyGlideApp;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.chat.conference.ChatInviteDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
-import org.atalk.android.gui.chatroomslist.*;
+import org.atalk.android.gui.chatroomslist.ChatRoomConfiguration;
+import org.atalk.android.gui.chatroomslist.ChatRoomDestroyDialog;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoChangeDialog;
+import org.atalk.android.gui.chatroomslist.ChatRoomInfoDialog;
 import org.atalk.android.gui.contactlist.model.MetaContactRenderer;
 import org.atalk.android.gui.dialogs.AttachOptionDialog;
 import org.atalk.android.gui.dialogs.AttachOptionItem;
@@ -65,7 +85,9 @@ import org.atalk.crypto.CryptoFragment;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
 import org.json.JSONException;
@@ -73,11 +95,16 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -90,8 +117,7 @@ import timber.log.Timber;
  */
 public class ChatActivity extends OSGiActivity
         implements OnPageChangeListener, TaskCompleted, GeoLocationActivity.LocationListener,
-        ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener
-{
+        ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener {
     private static final int REQUEST_CODE_OPEN_FILE = 105;
     private static final int REQUEST_CODE_SHARE_WITH = 200;
     private static final int REQUEST_CODE_FORWARD = 201;
@@ -180,8 +206,7 @@ public class ChatActivity extends OSGiActivity
      * Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         // Use SOFT_INPUT_ADJUST_PAN mode only in horizontal orientation, which doesn't provide
         // enough space to write messages comfortably. Adjust pan is causing copy-paste options
         // not being displayed as well as the action bar which contains few useful options.
@@ -234,14 +259,12 @@ public class ChatActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent, null);
     }
 
-    private void handleIntent(Intent intent, Bundle savedInstanceState)
-    {
+    private void handleIntent(Intent intent, Bundle savedInstanceState) {
         String chatId;
 
         // resume chat using previous setup conditions
@@ -284,8 +307,7 @@ public class ChatActivity extends OSGiActivity
      * Set lastSelectedIdx = -1 so {@link #updateSelectedChatInfo(int)} is always executed on onResume
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (currentChatId != null) {
             lastSelectedIdx = -1; // always force update on resume
@@ -301,8 +323,7 @@ public class ChatActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         // Must reset unread message counter on chatSession closed
         // Otherwise, value not clear when user enter and exit chatSession without page slide
         if (selectedChatPanel != null) {
@@ -322,8 +343,7 @@ public class ChatActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
+    protected void onSaveInstanceState(Bundle outState) {
         outState.putString(ChatSessionManager.CHAT_IDENTIFIER, currentChatId);
         outState.putInt(ChatSessionManager.CHAT_MODE, currentChatMode);
         outState.putInt(ChatSessionManager.CHAT_MSGTYPE, mCurrentChatType);
@@ -331,8 +351,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         if (chatPagerAdapter != null) {
             chatPagerAdapter.dispose();
@@ -346,8 +365,7 @@ public class ChatActivity extends OSGiActivity
      * Must check chatFragment for non-null before proceed
      * User by ShareUtil to toggle media preview if any
      */
-    public void toggleInputMethod()
-    {
+    public void toggleInputMethod() {
         ChatFragment chatFragment;
         if ((chatFragment = chatPagerAdapter.getCurrentChatFragment()) != null)
             chatFragment.getChatController().updateSendModeState();
@@ -358,8 +376,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param chatId the id of the chat to set.
      */
-    private void setCurrentChatId(String chatId)
-    {
+    private void setCurrentChatId(String chatId) {
         currentChatId = chatId;
         ChatSessionManager.setCurrentChatId(chatId);
 
@@ -389,8 +406,7 @@ public class ChatActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Close the activity when back button is pressed
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (chatRoomConfig != null) {
@@ -426,8 +442,7 @@ public class ChatActivity extends OSGiActivity
      * @param menu the options menu
      */
     @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu)
-    {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         this.mMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chat_menu, menu);
@@ -452,8 +467,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     // Enable option items only applicable to the specific chatSession
-    private void setOptionItem()
-    {
+    private void setOptionItem() {
         if ((mMenu != null) && (selectedChatPanel != null)) {
             // Enable/disable certain menu items based on current transport type
             ChatSession chatSession = selectedChatPanel.getChatSession();
@@ -511,8 +525,7 @@ public class ChatActivity extends OSGiActivity
         }
     }
 
-    private void setupChatRoomOptionItem()
-    {
+    private void setupChatRoomOptionItem() {
         if ((mMenu != null) && (selectedChatPanel != null)) {
             ChatSession chatSession = selectedChatPanel.getChatSession();
             // Proceed only if it is an instance of ConferenceChatSession
@@ -560,8 +573,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserPresenceChanged(LocalUserChatRoomPresenceChangeEvent evt) {
         runOnUiThread(this::setupChatRoomOptionItem);
     }
 
@@ -571,8 +583,7 @@ public class ChatActivity extends OSGiActivity
      * @param item the item that has been selected
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // NPE from field
         if ((selectedChatPanel == null) || (selectedChatPanel.getChatSession() == null))
             return super.onOptionsItemSelected(item);
@@ -673,7 +684,7 @@ public class ChatActivity extends OSGiActivity
                             ChatRoomMemberJabberImpl occupant = (ChatRoomMemberJabberImpl) member;
                             memberList.append(occupant.getNickName())
                                     .append(" - ")
-                                    .append(occupant.getJabberID())
+                                    .append(occupant.getJabberId())
                                     .append(" (")
                                     .append(member.getRole().getRoleName())
                                     .append(")")
@@ -729,8 +740,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs)
-    {
+    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
         if (result == EntityListHelper.CURRENT_ENTITY) {
             chatPagerAdapter.getCurrentChatFragment().onClearCurrentEntityChatHistory(deletedUUIDs);
         }
@@ -744,8 +754,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    public void onPageScrollStateChanged(int state)
-    {
+    public void onPageScrollStateChanged(int state) {
     }
 
     /**
@@ -756,21 +765,18 @@ public class ChatActivity extends OSGiActivity
      * @param posOffsetPixels the offset of the newly selected position in pixels
      */
     @Override
-    public void onPageScrolled(int pos, float posOffset, int posOffsetPixels)
-    {
+    public void onPageScrolled(int pos, float posOffset, int posOffsetPixels) {
     }
 
     @Override
-    public void onPageSelected(int pos)
-    {
+    public void onPageSelected(int pos) {
         updateSelectedChatInfo(pos);
     }
 
     /**
      * Update the selected chat fragment actionBar info when user changes chat session.
      */
-    private void updateSelectedChatInfo(int newIdx)
-    {
+    private void updateSelectedChatInfo(int newIdx) {
         // Updates only when newIdx value changes, as there are too many notifications fired when the page is scrolled
         if (lastSelectedIdx != newIdx) {
             lastSelectedIdx = newIdx;
@@ -825,8 +831,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Fetch and display the contact lastSeen elapsed Time; run in new thread to avoid ANR
      */
-    public void getLastSeen(PresenceStatus status)
-    {
+    public void getLastSeen(PresenceStatus status) {
         // a. happen if the contact remove presence subscription while still in chat session
         // b. LastActivity does not apply to DomainBareJid
         if (mRecipient != null && !(mRecipient.getJid() instanceof DomainBareJid)) {
@@ -882,8 +887,7 @@ public class ChatActivity extends OSGiActivity
         ActionBarUtil.setSubtitle(this, status.getStatusName());
     }
 
-    public void sendAttachment(AttachOptionItem attachOptionItem)
-    {
+    public void sendAttachment(AttachOptionItem attachOptionItem) {
         Uri fileUri;
 
         switch (attachOptionItem) {
@@ -930,8 +934,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Opens a FileChooserDialog to let the user pick attachments
      */
-    private ActivityResultLauncher<String> getAttachments()
-    {
+    private ActivityResultLauncher<String> getAttachments() {
         return registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
             if (uris != null) {
                 List<Attachment> attachments = Attachment.of(this, uris);
@@ -946,8 +949,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Callback from camera capture a photo with success status true or false
      */
-    private ActivityResultLauncher<Uri> takePhoto()
-    {
+    private ActivityResultLauncher<Uri> takePhoto() {
         return registerForActivityResult(new ActivityResultContracts.TakePicture(), success -> {
             if (success) {
                 Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
@@ -963,8 +965,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Callback from camera capture a video with return thumbnail
      */
-    private ActivityResultLauncher<Uri> takeVideo()
-    {
+    private ActivityResultLauncher<Uri> takeVideo() {
         return registerForActivityResult(new ActivityResultContracts.TakeVideo(), thumbnail -> {
             if (mCameraFilePath.length() != 0) {
                 Uri uri = FileBackend.getUriForFile(this, mCameraFilePath);
@@ -978,8 +979,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == RESULT_OK) {
             String filePath;
@@ -1050,8 +1050,7 @@ public class ChatActivity extends OSGiActivity
      * @param locAddress Geo Location Address
      */
     @Override
-    public void onResult(Location location, String locAddress)
-    {
+    public void onResult(Location location, String locAddress) {
         String msg = String.format(Locale.US, "%s\ngeo: %s,%s,%.03fm", locAddress,
                 location.getLatitude(), location.getLongitude(), location.getAltitude());
         selectedChatPanel.sendMessage(msg, IMessage.ENCODE_PLAIN);
@@ -1064,8 +1063,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param file the file to open
      */
-    public void openDownloadable(File file, View view)
-    {
+    public void openDownloadable(File file, View view) {
         if (!file.exists()) {
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
             return;
@@ -1107,8 +1105,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param videoUrl the video url link
      */
-    public void playMediaOrActionView(Uri videoUrl)
-    {
+    public void playMediaOrActionView(Uri videoUrl) {
         String mediaUrl = videoUrl.toString();
         String mimeType = FileBackend.getMimeType(this, videoUrl);
         if ((!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio")))
@@ -1139,8 +1136,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param videoUrl url for playback
      */
-    private void playEmbeddedExo(String videoUrl)
-    {
+    private void playEmbeddedExo(String videoUrl) {
         Bundle bundle = new Bundle();
         bundle.putString(ATTR_MEDIA_URL, videoUrl);
         mPlayerContainer.setVisibility(View.VISIBLE);
@@ -1164,8 +1160,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Release the exoPlayer resource on end
      */
-    public void releasePlayer()
-    {
+    public void releasePlayer() {
         // remove the existing player view
         Fragment playerView = getSupportFragmentManager().findFragmentById(R.id.player_container);
         if (playerView != null)
@@ -1190,8 +1185,7 @@ public class ChatActivity extends OSGiActivity
      * @param configUpdates room configuration user selected fields for update
      */
     @Override
-    public void onConfigComplete(Map<String, Object> configUpdates)
-    {
+    public void onConfigComplete(Map<String, Object> configUpdates) {
         chatRoomConfig = null;
         cryptoFragment.updateOmemoSupport();
     }
@@ -1206,21 +1200,18 @@ public class ChatActivity extends OSGiActivity
      * "thumbnail_height":360,"version":"1.0","html":"\n<iframe width=\" 480\" height=\"270\"
      * src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>\n"}
      */
-    private class MediaShareAsynTask extends AsyncTask<String, Void, String>
-    {
+    private class MediaShareAsynTask extends AsyncTask<String, Void, String> {
         private String mUrl;
 
         @Override
-        protected String doInBackground(String... params)
-        {
+        protected String doInBackground(String... params) {
             mUrl = params[0];
             // mUrl = "https://vimeo.com/45196609";  // invalid link
             return getUrlInfo(mUrl);
         }
 
         @Override
-        protected void onPostExecute(String result)
-        {
+        protected void onPostExecute(String result) {
             String urlInfo = null;
             if (!TextUtils.isEmpty(result)) {
                 try {
@@ -1250,8 +1241,7 @@ public class ChatActivity extends OSGiActivity
          * @param urlString url string
          * @return Jason String
          */
-        private String getUrlInfo(String urlString)
-        {
+        private String getUrlInfo(String urlString) {
             // Server that provides the media info for the supported services
             String URL_EMBBED = "https://noembed.com/embed?url=";
 
@@ -1284,8 +1274,7 @@ public class ChatActivity extends OSGiActivity
      *
      * @param resId the Id of the message to show
      */
-    private void showToastMessage(int resId)
-    {
+    private void showToastMessage(int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
     }
 

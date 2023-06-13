@@ -5,7 +5,13 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ChatRoomMemberPresenceChangeEvent;
 
 import org.jivesoftware.smack.packet.Presence;
@@ -125,7 +131,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
      *
      * @return the jabber id.
      */
-    public Jid getJabberID()
+    public Jid getJabberId()
     {
         return jabberJid;
     }

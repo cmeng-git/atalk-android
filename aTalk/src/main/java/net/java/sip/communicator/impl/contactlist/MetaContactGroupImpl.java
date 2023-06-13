@@ -319,12 +319,12 @@ public class MetaContactGroupImpl implements MetaContactGroup
      */
     public MetaContact getMetaContact(ProtocolProviderService provider, String contactID)
     {
-        Iterator<MetaContact> contactsIter = getChildContacts();
-        while (contactsIter.hasNext()) {
-            MetaContact contact = contactsIter.next();
+        Iterator<MetaContact> metaContactsIter = getChildContacts();
+        while (metaContactsIter.hasNext()) {
+            MetaContact metaContact = metaContactsIter.next();
 
-            if (contact.getContact(contactID, provider) != null)
-                return contact;
+            if (metaContact.getContact(contactID, provider) != null)
+                return metaContact;
         }
         return null;
 
@@ -343,10 +343,10 @@ public class MetaContactGroupImpl implements MetaContactGroup
         Iterator<MetaContact> contactsIter = getChildContacts();
 
         while (contactsIter.hasNext()) {
-            MetaContact mContact = contactsIter.next();
+            MetaContact metaContact = contactsIter.next();
 
-            if (mContact.getMetaUID().equals(metaUID))
-                return mContact;
+            if (metaContact.getMetaUID().equals(metaUID))
+                return metaContact;
         }
 
         // if we didn't find it here, let's try in the subgroups
@@ -355,10 +355,10 @@ public class MetaContactGroupImpl implements MetaContactGroup
         while (groupsIter.hasNext()) {
             MetaContactGroupImpl mGroup = (MetaContactGroupImpl) groupsIter.next();
 
-            MetaContact mContact = mGroup.findMetaContactByMetaUID(metaUID);
+            MetaContact metaContact = mGroup.findMetaContactByMetaUID(metaUID);
 
-            if (mContact != null)
-                return mContact;
+            if (metaContact != null)
+                return metaContact;
         }
         return null;
     }

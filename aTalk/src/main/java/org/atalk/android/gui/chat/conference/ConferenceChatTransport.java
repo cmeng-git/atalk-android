@@ -176,6 +176,7 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @param messageText The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
+     * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
      */
     public void sendInstantMessage(String messageText, int encType)
             throws Exception {

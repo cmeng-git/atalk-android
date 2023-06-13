@@ -75,13 +75,21 @@ SPEEX_DIR  := speex
 include $(SPEEX_DIR)/Android.mk
 
 # ================================= G722 ==============================================
-### G722 shared library build base on local source: Support only arm architectures
+### G722 shared library build base on local source
 ### Refer to libjitsi and jitsi-lgpl-dependency for support
 # https://www.itu.int/rec/dologin_pub.asp?lang=e&id=T-REC-G.722-201209-I!!SOFT-ZST-E&type=items
 LOCAL_PATH := $(ROOT)
 include $(CLEAR_VARS)
 G722_DIR  := g722
 include $(G722_DIR)/Android.mk
+
+# ================================= G729 ==============================================
+### G722 shared library build base on https://gitlab.linphone.org/BC/public/bcg729
+# https://www.linphone.org/technical-corner/bcg729
+#LOCAL_PATH := $(ROOT)
+#include $(CLEAR_VARS)
+#G729_DIR  := g729
+#include $(G729_DIR)/Android.mk
 
 # ================================= OpenSSL ===========================================
 ### OpenSSL shared library build (version 1.1.1t)

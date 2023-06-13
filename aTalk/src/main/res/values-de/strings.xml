@@ -435,7 +435,12 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Die CAPTCHA-Überprüfung ist fehlgeschlagen</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s Zeitlimit für die ChatRoom-CAPTCHA-Herausforderung;\nTreten Sie dem ChatRoom erneut bei und versuchen Sie es erneut.</string>
 
-	<string name="service_gui_INVITATION">Einladungsnachricht:</string>
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Gespräch beginnen</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Gewähren Sie Eigentümerrechte</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Eigentümerrechte entziehen</string>
+    <string name="service_gui_CR_MEMBER_KICK">Aus Gruppenchat entfernen</string>
+
+    <string name="service_gui_INVITATION">Einladungsnachricht:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Einladung empfangen</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s hat dich eingeladen dem Chatraum %2$s beizutreten. Du kannst zustimmen, ablehnen oder ignorieren.</string>
 	<string name="service_gui_INVITATION_REJECTED">%1$s hat deine Einladung zum Chatraum abgelehnt. Begründung: %2$s.</string>

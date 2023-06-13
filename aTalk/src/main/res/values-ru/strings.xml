@@ -437,7 +437,12 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">Не удалось выполнить проверку CAPTCHA</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s тайм-аут вызова ChatRoom CAPTCHA;\nпожалуйста, присоединитесь к chatRoom и попробуйте снова.</string>
 
-	<string name="service_gui_INVITATION">Пригласительное сообщение:</string>
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Начать разговор</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Предоставить права владельца</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Отменить привилегии владельца</string>
+    <string name="service_gui_CR_MEMBER_KICK">Удалить из группового чата</string>
+
+    <string name="service_gui_INVITATION">Пригласительное сообщение:</string>
 	<string name="service_gui_INVITATION_RECEIVED">Приглашение получено</string>
 	<string name="service_gui_INVITATION_RECEIVED_MSG">%1$s приглашает вас войти в чат-комнату %2$S. Вы можете принять, отклонить или проигнорировать это приглашение.</string>
 	<string name="service_gui_INVITATION_REJECTED">%1$s отклонил ваше приглашение присоединиться к чату. Причина: %2$s.</string>

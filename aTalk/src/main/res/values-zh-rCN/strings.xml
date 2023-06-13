@@ -451,6 +451,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">验证码验证失败</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s 聊天室验证码挑战超时；\n请重新加入聊天室并重试。</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">开始对话</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">授予所有者权限</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">撤销所有者权限</string>
+    <string name="service_gui_CR_MEMBER_KICK">从群聊中移除</string>
+
     <string name="service_gui_INVITATION">邀请信息：</string>
     <string name="service_gui_INVITATION_RECEIVED">收到邀请</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s 邀请您加入 %2$s 聊天室。您可以接受、拒绝或忽略此邀请。</string>

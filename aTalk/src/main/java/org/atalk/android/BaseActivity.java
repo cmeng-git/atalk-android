@@ -14,7 +14,6 @@ import org.atalk.android.gui.util.ThemeHelper;
  * All app activities must extend BaseActivity inorder to support Theme and locale.
  */
 public class BaseActivity extends AppCompatActivity {
-
     /**
      * Override AppCompatActivity#onCreate() to support Theme setting
      * Must setTheme() before super.onCreate(), otherwise user selected Theme is not working
@@ -28,8 +27,7 @@ public class BaseActivity extends AppCompatActivity {
 
     /**
      * Override AppCompatActivity#attachBaseContext() to support Locale setting.
-     * Language value is already initialized in Hymnchtv Application class.
-     *
+     * Language value is initialized in Application class with user selected language.
      */
     @Override
     protected void attachBaseContext(Context base) {

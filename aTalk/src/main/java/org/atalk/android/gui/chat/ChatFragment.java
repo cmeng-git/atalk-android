@@ -54,6 +54,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -68,10 +69,14 @@ import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPres
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
@@ -92,6 +97,7 @@ import net.java.sip.communicator.util.StatusUtil;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.chat.filetransfer.FileHistoryConversation;
 import org.atalk.android.gui.chat.filetransfer.FileHttpDownloadConversation;
@@ -1561,9 +1567,11 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         || messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
                         || messageViewHolder.viewType == CORRECTED_MESSAGE_VIEW) {
 
-                    String jid = chatMessage.getSender();
+                    String sender = chatMessage.getSenderName();
+                    messageViewHolder.mSender = sender;
+
                     if (messageViewHolder.viewType == INCOMING_MESSAGE_VIEW) {
-                        messageViewHolder.jidView.setText(chatMessage.getSenderName() + ":");
+                        messageViewHolder.jidView.setText(sender + ":");
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
                     }
                     if (messageViewHolder.viewType == OUTGOING_MESSAGE_VIEW
@@ -1571,7 +1579,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         setEncState(messageViewHolder.encStateView, msgDisplay.getEncryption());
                         setMessageReceiptStatus(messageViewHolder.msgReceiptView, msgDisplay.getReceiptStatus());
                     }
-                    updateStatusAndAvatarView(messageViewHolder, jid);
+                    updateStatusAndAvatarView(messageViewHolder, sender);
 
                     if (messageViewHolder.showMapButton != null) {
                         if (msgDisplay.hasLatLng()) {
@@ -1624,6 +1632,18 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 messageViewHolder.timeView = convertView.findViewById(R.id.incomingTimeView);
                 messageViewHolder.chatStateView = convertView.findViewById(R.id.chatStateImageView);
                 messageViewHolder.showMapButton = convertView.findViewById(R.id.showMapButton);
+
+                // Option available for conference session
+                if (mChatMetaContact == null) {
+                    messageViewHolder.avatarView.setOnClickListener(v -> {
+                        mChatController.insertTo(messageViewHolder.mSender);
+                    });
+
+                    messageViewHolder.avatarView.setOnLongClickListener(v -> {
+                        showPopupMenuForContact(v, messageViewHolder.mSender);
+                        return true;
+                    });
+                }
             }
             else if (viewType == OUTGOING_MESSAGE_VIEW || viewType == CORRECTED_MESSAGE_VIEW) {
                 if (viewType == OUTGOING_MESSAGE_VIEW) {
@@ -1652,11 +1672,102 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         }
 
         /**
+         * Inflates chatRoom Item popup menu.
+         * Avoid using android contextMenu (in fragment) - truncated menu list
+         *
+         * @param avatar click view.
+         * @param contactJid an instance of ChatRoomWrapper.
+         */
+        private void showPopupMenuForContact(View avatar, String contactJid) {
+            if (contactJid == null)
+                return;
+
+            String nickName = contactJid.replaceAll("(\\w+)[:|@].*", "$1");
+            ChatRoom chatRoom = ((ChatRoomWrapper) chatPanel.getDescriptor()).getChatRoom();
+
+            ChatRoomMember mOccupant = null;
+            ChatRoomMemberRole mUserRole = chatRoom.getUserRole();
+            ;
+            List<ChatRoomMember> occupants = chatRoom.getMembers();
+            for (ChatRoomMember occupant : occupants) {
+                if (nickName.equals(occupant.getNickName())) {
+                    mOccupant = occupant;
+                    break;
+                }
+            }
+            if (mOccupant == null)
+                return;
+            ChatRoomMemberRole mMemberRole = mOccupant.getRole();
+
+            // Inflate chatRoom list popup menu
+            PopupMenu popup = new PopupMenu(mContext, avatar);
+            Menu menu = popup.getMenu();
+            popup.getMenuInflater().inflate(R.menu.chatroom_member_ctx_menu, menu);
+
+            MenuItem menuManage = menu.findItem(R.id.chatroom_manage_privilege);
+            MenuItem menuKick = menu.findItem(R.id.chatroom_kick);
+
+            menuManage.setVisible(ChatRoomMemberRole.OWNER == mUserRole);
+            menuKick.setVisible((ChatRoomMemberRole.OWNER == mUserRole
+                    || ChatRoomMemberRole.ADMINISTRATOR == mUserRole)
+                    && ChatRoomMemberRole.OWNER != mMemberRole
+                    && ChatRoomMemberRole.ADMINISTRATOR != mMemberRole);
+
+            if (menuManage.isVisible()) {
+                menuManage.setTitle(ChatRoomMemberRole.OWNER == mMemberRole
+                        ? R.string.service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE
+                        : R.string.service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE);
+            }
+
+            ChatRoomMember finalOccupant = mOccupant;
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.chatroom_start_im:
+                        Contact contact = getContact(contactJid);
+                        Intent chatIntent = ChatSessionManager.getChatIntent(contact);
+                        if (chatIntent != null) {
+                            startActivity(chatIntent);
+                        }
+                        else {
+                            aTalkApp.showToastMessage(R.string.service_gui_SEND_MESSAGE_NOT_SUPPORTED, contactJid);
+                            // Show ContactList UI for user selection if groupChat contact is anonymous.
+                            Intent intent = new Intent(mContext, aTalk.class);
+                            intent.setAction(Intent.ACTION_SENDTO);
+                            startActivity(intent);
+                        }
+                        break;
+
+                    case R.id.chatroom_manage_privilege:
+                        if (ChatRoomMemberRole.OWNER == finalOccupant.getRole()) {
+                            chatRoom.revokeAdmin(contactJid);
+
+                        }
+                        else {
+                            chatRoom.grantOwnership(contactJid);
+                        }
+                        break;
+
+                    case R.id.chatroom_kick:
+                        try {
+                            chatRoom.kickParticipant(finalOccupant, "");
+                        } catch (OperationFailedException e) {
+                            // throw new RuntimeException(e);
+                            aTalkApp.showToastMessage(e.getMessage());
+                        }
+                        break;
+                }
+                return true;
+            });
+            popup.show();
+        }
+
+        /**
          * Updates status and avatar views on given <code>MessageViewHolder</code>.
          *
          * @param viewHolder the <code>MessageViewHolder</code> to update.
+         * @param sender the <code>ChatMessage</code> sender.
          */
-        private void updateStatusAndAvatarView(MessageViewHolder viewHolder, String jabberID) {
+        private void updateStatusAndAvatarView(MessageViewHolder viewHolder, String sender) {
             Drawable avatar = null;
             Drawable status = null;
             if (viewHolder.viewType == INCOMING_MESSAGE_VIEW) {
@@ -1671,8 +1782,8 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     status = MetaContactRenderer.getStatusDrawable(metaContact);
                 }
                 else {
-                    if (jabberID != null) {
-                        Contact contact = getContact(jabberID);
+                    if (sender != null) {
+                        Contact contact = getContact(sender);
                         // If we have found a contact the we set also its avatar and status.
                         if (contact != null) {
                             avatar = MetaContactRenderer.getCachedAvatarFromBytes(contact.getImage());
@@ -2141,27 +2252,28 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         public TextView fileXferError = null;
         public TextView fileXferSpeed = null;
         public TextView estTimeRemain = null;
+        public String mSender = "";
     }
 
-    //    class IdRow2 // need to include in MessageViewHolder for stealth support
-    //    {
-    //        public int mId;
-    //        public View mRow;
-    //        public int mCountDownValue;
-    //        public boolean deleteFlag;
-    //        public boolean mStartCountDown;
-    //        public boolean mFileIsOpened;
-    //
-    //        public IdRow2(int id, View row, int startValue)
-    //        {
-    //            mId = id;
-    //            mRow = row;
-    //            mCountDownValue = startValue;
-    //            deleteFlag = false;
-    //            mStartCountDown = false;
-    //            mFileIsOpened = false;
-    //        }
-    //    }
+//    class IdRow2 // need to include in MessageViewHolder for stealth support
+//    {
+//        public int mId;
+//        public View mRow;
+//        public int mCountDownValue;
+//        public boolean deleteFlag;
+//        public boolean mStartCountDown;
+//        public boolean mFileIsOpened;
+//
+//        public IdRow2(int id, View row, int startValue)
+//        {
+//            mId = id;
+//            mRow = row;
+//            mCountDownValue = startValue;
+//            deleteFlag = false;
+//            mStartCountDown = false;
+//            mFileIsOpened = false;
+//        }
+//    }
 
     /**
      * Loads the history in an asynchronous thread and then adds the history messages to the user interface.
@@ -2611,6 +2723,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
         @Override
         protected void onCancelled() {
         }
+
     }
 
     @Override

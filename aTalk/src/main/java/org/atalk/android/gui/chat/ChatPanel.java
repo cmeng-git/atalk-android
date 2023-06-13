@@ -640,11 +640,17 @@ public class ChatPanel implements Chat, MessageListener {
                     mMHS.saveMamIfNotExit(omemoManager, this, forwardedList);
                 }
                 omemoManager.resumeStanzaAndPEPListeners();
-            } else {
+            }
+            else {
+                if (mamDate == null) {
+                    Calendar c = Calendar.getInstance(TimeZone.getDefault());
+                    mamDate = c.getTime();
+                }
                 mMHS.setMamDate(mChatId, mamDate);
             }
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException // | IOException
-                | SmackException.NotConnectedException | InterruptedException | SmackException.NotLoggedInException e) {
+                 | SmackException.NotConnectedException | InterruptedException |
+                 SmackException.NotLoggedInException e) {
             Timber.e("MAM query: %s", e.getMessage());
         }
         return true;
@@ -806,8 +812,14 @@ public class ChatPanel implements Chat, MessageListener {
         }
         messageSpeak(chatMessage, 2 * ttsDelay);  // for chatRoom
 
-        for (ChatSessionListener l : msgListeners) {
-            l.messageAdded(chatMessage);
+        // Just show a ToastMessage if no ChatSessionListener to display the messages usually ChatMessage.MESSAGE_ERROR
+        if (msgListeners.isEmpty()) {
+            aTalkApp.showToastMessage(chatMessage.getMessage());
+        }
+        else {
+            for (ChatSessionListener l : msgListeners) {
+                l.messageAdded(chatMessage);
+            }
         }
     }
 
@@ -816,6 +828,7 @@ public class ChatPanel implements Chat, MessageListener {
      * Otherwise duplicated messages when share link
      *
      * @param newMsg the next message to cache.
+     *
      * @return true if newMsg added successfully to the msgCache
      */
     public boolean cacheNextMsg(ChatMessageImpl newMsg) {
@@ -825,7 +838,8 @@ public class ChatPanel implements Chat, MessageListener {
             synchronized (cacheLock) {
                 return (cacheUpdated = msgCache.add(newMsg));
             }
-        } else {
+        }
+        else {
             cacheBlocked = false;
             cacheUpdated = null;
         }
@@ -908,7 +922,7 @@ public class ChatPanel implements Chat, MessageListener {
         // Do not use addMessage to avoid TTS activation for outgoing file message
         ChatMessageImpl chatMsg = new ChatMessageImpl(sendTo, sendTo, date, messageType,
                 IMessage.ENCODE_PLAIN, filePath, msgUuid, ChatMessage.DIR_OUT);
-        if (!cacheNextMsg(chatMsg) ) {
+        if (!cacheNextMsg(chatMsg)) {
             Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUuid);
         }
         for (ChatSessionListener l : msgListeners) {
@@ -931,7 +945,7 @@ public class ChatPanel implements Chat, MessageListener {
     public void addFTReceiveRequest(OperationSetFileTransfer opSet, IncomingFileTransferRequest request, Date date) {
         Contact sender = request.getSender();
         String senderName = sender.getAddress();
-        String msgUuid =  request.getID();
+        String msgUuid = request.getID();
         String msgContent = aTalkApp.getResString(R.string.xFile_FILE_TRANSFER_REQUEST_RECEIVED, date.toString(), senderName);
 
         int msgType = ChatMessage.MESSAGE_FILE_TRANSFER_RECEIVE;
@@ -940,7 +954,7 @@ public class ChatPanel implements Chat, MessageListener {
                 msgContent, msgUuid, ChatMessage.DIR_IN, opSet, request, null);
 
         // Do not use addMessage to avoid TTS activation for incoming file message
-        if (!cacheNextMsg(chatMsg) ) {
+        if (!cacheNextMsg(chatMsg)) {
             Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, msgUuid);
         }
         for (ChatSessionListener l : msgListeners) {
@@ -972,7 +986,7 @@ public class ChatPanel implements Chat, MessageListener {
             // message on first onAttach or not in focus
 
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageReceivedEvent);
-            if (!cacheNextMsg(chatMessage) ) {
+            if (!cacheNextMsg(chatMessage)) {
                 Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
             }
             for (MessageListener l : msgListeners) {
@@ -995,7 +1009,7 @@ public class ChatPanel implements Chat, MessageListener {
                 return;
 
             ChatMessageImpl chatMessage = ChatMessageImpl.getMsgForEvent(messageDeliveredEvent);
-            if (!cacheNextMsg(chatMessage) ) {
+            if (!cacheNextMsg(chatMessage)) {
                 Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
             }
             for (MessageListener l : msgListeners) {

@@ -452,6 +452,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">The CAPTCHA verification has failed</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s chatRoom CAPTCHA challenge timeout;\nplease rejoin chatRoom and try again.</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Start conversation</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Grant owner privileges</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Revoke owner privileges</string>
+    <string name="service_gui_CR_MEMBER_KICK">Remove from group chat</string>
+
     <string name="service_gui_INVITATION">Invitation message:</string>
     <string name="service_gui_INVITATION_RECEIVED">Invitation received</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s has invited you to join %2$s chat room. You could accept, reject or ignore this invitation.</string>

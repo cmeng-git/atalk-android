@@ -6,8 +6,22 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.1.7 (05/16/2023)" versioncode="301070">
+    <release version="3.2.0 (06/14/2023)" versioncode="302000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add options for participant in group chat:
+            Start conversation; Grant/Revoke owner privileges; Remove from group chat; Copy nick name in send message entry</change>
+        <change>Start conversation if participant is not anonymous, else show contact list UI for user selection</change>
+        <change>Show toast messages for local user role changes, and being removed from group chat</change>
+        <change>Ensure 'ChatRoom Occupant' info for local user role changes are properly updated for display</change>
+        <change>Use sender Jid in MUC session to properly retrieve sender avatar for display</change>
+        <change>Add support to receive and display of 'PrivateMessaging' in a new IM chat session</change>
+        <change>Do not throw RuntimeException when perform chatRoom kick Participant in ChatFragment. Just show the error message to user</change>
+        <change>Do not proceed to auto download photo for MUCUser in 'contact photo presence process'</change>
+        <change>Do not send chat state notifications to a Jabber Volatile Contact</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.1.7 (05/16/2023)" versioncode="301070">
         <change>LocaleHelper must not return ContextWrapper instance and use in supper.attachBaseContext(instance);
             ActivityThread.handleReceiver re-cast app.getBaseContext() to ContextImpl, and both ContextImpl and ContextWrapper are subclass of Context
             giving rise to java.lang.ClassCastException</change>

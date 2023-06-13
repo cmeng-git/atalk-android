@@ -27,13 +27,13 @@ public interface Contact
     String PROTOCOL_PROVIDER = "protocolProvider";
     String CONTACT_JID = "contactJid";
     String SVR_DISPLAY_NAME = "svrDisplayName";
-    String KEYS = "keys";        // all secured keys
+    String OPTIONS = "options"; // subscriptions
     String PHOTO_URI = "photoUri";
     String AVATAR_HASH = "avatarHash";
-    String OPTIONS = "options"; // subscriptions
     String LAST_PRESENCE = "lastPresence";        // last use resource
     String PRESENCE_STATUS = "presenceStatus";  // 0 ~ 100
     String LAST_SEEN = "lastSeen";
+    String KEYS = "keys";        // all secured keys
 
 //	String CONTACT_ADDRESS = "contactAddress";
 //	String IS_PERSISTENT = "is_persistent";

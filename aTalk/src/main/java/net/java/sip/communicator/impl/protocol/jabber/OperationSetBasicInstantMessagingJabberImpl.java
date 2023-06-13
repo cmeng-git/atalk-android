@@ -73,6 +73,7 @@ import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
+import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
@@ -482,6 +483,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             if (ConfigurationUtils.isSendChatStateNotifications()) {
                 ChatStateExtension extActive = new ChatStateExtension(ChatState.active);
                 messageBuilder.addExtension(extActive);
+                // messageBuilder.addExtension(new MUCUser());
             }
 
             try {
@@ -500,7 +502,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param to the <code>Contact</code> to send <code>message</code> to
      * @param message the <code>IMessage</code> to send.
      *
-     * @throws java.lang.IllegalStateException    if the underlying stack is not registered and initialized.
+     * @throws java.lang.IllegalStateException if the underlying stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance of ContactImpl.
      */
     public void sendInstantMessage(Contact to, IMessage message) {
@@ -515,7 +517,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * @param resource the resource to which the message should be send
      * @param message the <code>IMessage</code> to send.
      *
-     * @throws java.lang.IllegalStateException    if the underlying ICQ stack is not registered and initialized.
+     * @throws java.lang.IllegalStateException if the underlying ICQ stack is not registered and initialized.
      * @throws java.lang.IllegalArgumentException if <code>to</code> is not an instance belonging to the underlying implementation.
      */
     @Override
@@ -595,7 +597,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             Context ctx = aTalkApp.getGlobalContext();
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
-        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException | IOException e) {
+        } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException |
+                 IOException e) {
             errMessage = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_SETUP_FAILED, e.getMessage());
         } catch (SmackException.NotLoggedInException e) {
             errMessage = aTalkApp.getResString(R.string.service_gui_MSG_SEND_CONNECTION_PROBLEM);
@@ -779,7 +782,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             }
             Timber.i("Successfully setting carbon new state for: %s to %s", userJid, isCarbonEnabled);
         } catch (NoResponseException | InterruptedException | NotConnectedException
-                | XMPPException.XMPPErrorException e) {
+                 | XMPPException.XMPPErrorException e) {
             Timber.e("Failed to set carbon state for: %s to %S\n%s", userJid, enableCarbon, e.getMessage());
         }
     }
@@ -810,7 +813,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             return;
 
         // Return if it is for group chat
-        if (message.hasExtension("x", "http://jabber.org/protocol/muc#user"))
+        if (Message.Type.groupchat == message.getType())
             return;
 
         String msgBody = message.getBody();
@@ -820,14 +823,14 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         Jid userFullJId = isForwardedSentMessage ? message.getTo() : message.getFrom();
         BareJid userBareID = userFullJId.asBareJid();
 
-        boolean isPrivateMessaging = false;
         ChatRoomJabberImpl privateContactRoom = null;
-        OperationSetMultiUserChatJabberImpl mucOpSet
-                = (OperationSetMultiUserChatJabberImpl) mPPS.getOperationSet(OperationSetMultiUserChat.class);
-        if (mucOpSet != null) {
-            privateContactRoom = mucOpSet.getChatRoom(userBareID);
-            if (privateContactRoom != null) {
-                isPrivateMessaging = true;
+        boolean isPrivateMessaging = message.hasExtension(MUCUser.QNAME);
+        if (isPrivateMessaging) {
+            OperationSetMultiUserChatJabberImpl mucOpSet
+                    = (OperationSetMultiUserChatJabberImpl) mPPS.getOperationSet(OperationSetMultiUserChat.class);
+            if (mucOpSet != null) {
+                privateContactRoom = mucOpSet.getChatRoom(userBareID);
+                userFullJId = privateContactRoom.findMemberFromParticipant(userFullJId).getJabberId();
             }
         }
 
@@ -836,16 +839,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         String correctedMessageUID = getCorrectionMessageId(message);
 
         // Get the message type i.e. OTR or NONE; for chat message encryption indication
-        int encryption = msgBody.startsWith("?OTR") ? IMessage.ENCRYPTION_OTR : IMessage.ENCRYPTION_NONE;
-        int encType;
+        int encType = msgBody.startsWith("?OTR") ? IMessage.ENCRYPTION_OTR : IMessage.ENCRYPTION_NONE;
 
         // set up default in case XHTMLExtension contains no message
         // if msgBody contains markup text then set as ENCODE_HTML mode
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
-            encType = encryption | IMessage.ENCODE_HTML;
-        }
-        else {
-            encType = encryption | IMessage.ENCODE_PLAIN;
+            encType |= IMessage.ENCODE_HTML;
         }
 
         // isCarbon only valid if from onCarbonCopyReceived i.e. chat == null;
@@ -857,12 +856,12 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         // check if the message is available in xhtml
         String xhtmString = XhtmlUtil.getXhtmlExtension(message);
         if (xhtmString != null) {
-            encType = encryption | IMessage.ENCODE_HTML;
+            encType |= IMessage.ENCODE_HTML;
             newMessage = createMessageWithUID(xhtmString, encType, msgID);
         }
         newMessage.setRemoteMsgId(message.getStanzaId());
 
-        // cmeng: do not really matter if it is fullJid or bareJid. bareJid is used always.
+        // cmeng: source contact will have contact Jid if isPrivateMessaging.
         Contact sourceContact = opSetPersPresence.findContactByJid(isPrivateMessaging ? userFullJId : userBareID);
         if (message.getType() == Message.Type.error) {
             // error which is multi-chat and we don't know about the contact is a muc message
@@ -871,7 +870,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             StanzaError error = message.getError();
             int errorResultCode = MessageDeliveryFailedEvent.UNKNOWN_ERROR;
 
-            if (isPrivateMessaging && sourceContact == null) {
+            if (isPrivateMessaging && (privateContactRoom != null) && (sourceContact == null)) {
                 if ((error != null) && (Condition.forbidden == error.getCondition())) {
                     errorResultCode = MessageDeliveryFailedEvent.FORBIDDEN;
                 }
@@ -1068,9 +1067,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         if (msgBody.matches(ChatMessage.HTML_MARKUP)) {
             encType |= IMessage.ENCODE_HTML;
         }
-        else {
-            encType |= IMessage.ENCODE_PLAIN;
-        }
         IMessage newMessage = createMessageWithUID(msgBody, encType, msgID);
 
         // check if the message is available in xhtml
@@ -1084,7 +1080,8 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
                 encType |= IMessage.ENCODE_HTML;
                 newMessage = createMessageWithUID(xhtmlMessage.getBody(), encType, msgID);
             } catch (SmackException.NotLoggedInException | IOException | CorruptedOmemoKeyException
-                    | NoRawSessionException | CryptoFailedException | XmlPullParserException | SmackParsingException e) {
+                     | NoRawSessionException | CryptoFailedException
+                     | XmlPullParserException | SmackParsingException e) {
                 Timber.e("Error decrypting xhtmlExtension message %s:", e.getMessage());
             }
         }

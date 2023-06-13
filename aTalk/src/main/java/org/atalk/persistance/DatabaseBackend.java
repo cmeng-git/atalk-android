@@ -155,6 +155,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * Get an instance of the DataBaseBackend and create one if new
      *
      * @param context context
+     *
      * @return DatabaseBackend instance
      */
     public static synchronized DatabaseBackend getInstance(Context context) {
@@ -404,8 +405,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public List<AccountID> getAccounts(ProtocolProviderFactory factory) {
-        List<AccountID> accountIDs = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
+        List<AccountID> accountIDs = new ArrayList<>();
         String[] args = {factory.getProtocolName()};
 
         Cursor cursor = db.query(AccountID.TABLE_NAME, null, AccountID.PROTOCOL + "=?",
@@ -874,12 +875,12 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeIdentityKey(OmemoDevice device, IdentityKey identityKey, String fingerprint,
-                                 FingerprintStatus status) {
+            FingerprintStatus status) {
         storeIdentityKey(device, fingerprint, Base64.encodeToString(identityKey.serialize(), Base64.DEFAULT), status);
     }
 
     private void storeIdentityKey(OmemoDevice device, String fingerprint,
-                                  String base64Serialized, FingerprintStatus status) {
+            String base64Serialized, FingerprintStatus status) {
         SQLiteDatabase db = this.getWritableDatabase();
         String bareJid = device.getJid().toString();
         String deviceId = Integer.toString(device.getDeviceId());
@@ -917,7 +918,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 key = cursor.getString(cursor.getColumnIndex(SQLiteOmemoStore.IDENTITY_KEY));
                 if (StringUtils.isNotEmpty(key)) {
                     identityKeys.add(new IdentityKey(Base64.decode(key, Base64.DEFAULT), 0));
-                } else {
+                }
+                else {
                     Timber.d("Missing key (possibly pre-verified) in database for account: %s", device.getJid());
                 }
             } catch (InvalidKeyException e) {
@@ -947,7 +949,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             int deviceId = cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.DEVICE_ID));
             if (cursor.getInt(cursor.getColumnIndex(SQLiteOmemoStore.ACTIVE)) == 1) {
                 activeDevices.add(deviceId);
-            } else {
+            }
+            else {
                 inActiveDevices.add(deviceId);
             }
         }
@@ -1090,7 +1093,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             status = FingerprintStatus.fromCursor(cursor);
-        } else {
+        }
+        else {
             status = null;
         }
         cursor.close();
@@ -1315,6 +1319,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * Fetch all the contacts of the specified accountUuid
      *
      * @param accountUuid Account Uuid
+     *
      * @return List of contacts for the specified accountUuid
      */
     public List<String> getContactsForAccount(String accountUuid) {

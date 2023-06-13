@@ -4,16 +4,15 @@
  * Distributable under LGPL license.
  * See terms of license at gnu.org.
  */
-#include "JNIDecoder.h"
-
 #include <inttypes.h>
 #include <stdint.h>
 
+#include "JNIDecoder.h"
 #include "g722/telephony.h"
 #include "g722/g722_enc_dec.h"
 
 JNIEXPORT void JNICALL
-Java_org_atalk_impl_neomedia_codec_audio_g722_JNIDecoder_g722_1decoder_1close
+Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1close
     (JNIEnv *jniEnv, jclass clazz, jlong decoder)
 {
     g722_decode_state_t *d = (g722_decode_state_t *) (intptr_t) decoder;
@@ -23,14 +22,14 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_JNIDecoder_g722_1decoder_1close
 }
 
 JNIEXPORT jlong JNICALL
-Java_org_atalk_impl_neomedia_codec_audio_g722_JNIDecoder_g722_1decoder_1open
+Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1open
     (JNIEnv *jniEnv, jclass clazz)
 {
     return (jlong) (intptr_t) g722_decode_init(NULL, 64000, 0);
 }
 
 JNIEXPORT void JNICALL
-Java_org_atalk_impl_neomedia_codec_audio_g722_JNIDecoder_g722_1decoder_1process
+Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1process
     (JNIEnv *jniEnv, jclass clazz,
     jlong decoder,
     jbyteArray input, jint inputOffset,

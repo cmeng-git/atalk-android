@@ -454,6 +454,11 @@
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_VERIFICATION_FAILED">La verificación de CAPTCHA ha fallado</string>
     <string name="service_gui_CHATROOM_JOIN_CAPTCHA_AWAITING">%1$s timeout de CAPTCHA de sala;\npor favor, vuelva a unirse a sala y vuelva a intentarlo.</string>
 
+    <string name="service_gui_CR_MEMBER_START_CONVERSATION">Iniciar conversación</string>
+    <string name="service_gui_CR_MEMBER_GRANT_OWNER_PRIVILEGE">Otorgar privilegios de propietario</string>
+    <string name="service_gui_CR_MEMBER_REVOKE_OWNER_PRIVILEGE">Revocar privilegios de propietario</string>
+    <string name="service_gui_CR_MEMBER_KICK">Eliminar del chat grupal</string>
+
     <string name="service_gui_INVITATION">Mensaje de invitación:</string>
     <string name="service_gui_INVITATION_RECEIVED">Invitación recibida</string>
     <string name="service_gui_INVITATION_RECEIVED_MSG">%1$s te ha invitado a la sala de charla %2$s. Puedes aceptar, rechazar o ignorar esta invitación.</string>

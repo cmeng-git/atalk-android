@@ -16,6 +16,8 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import static net.java.sip.communicator.service.contactlist.MetaContactGroup.TBL_CHILD_CONTACTS;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,20 +26,31 @@ import androidx.annotation.NonNull;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.contactlist.event.*;
+import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactGroupEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactListListener;
+import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactMovedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
+import net.java.sip.communicator.service.contactlist.event.ProtoContactEvent;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactGroup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.persistance.DatabaseBackend;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.service.contactlist.MetaContactGroup.TBL_CHILD_CONTACTS;
 
 /**
  * The class handles read / write operations over a  persistent copy of the meta contacts and
@@ -55,6 +68,8 @@ import static net.java.sip.communicator.service.contactlist.MetaContactGroup.TBL
  */
 public class MclStorageManager implements MetaContactListListener
 {
+    public static final String JABBER = "Jabber";
+
     /**
      * The property to enable multi tenant mode. When changing profiles/accounts the table
      * can be filled with groups and contacts from protocol provider we do not know about. This
@@ -92,6 +107,7 @@ public class MclStorageManager implements MetaContactListListener
      * tables that correspond to a provider caring the specified <code>accountID</code>.
      *
      * @param accountUuid the identifier of the account whose contacts we're interested in.
+     * @param accountUid a String identifier prefix with e.g. "jabber:" followed by BareJid.
      */
     void extractContactsForAccount(String accountUuid, String accountUid)
     {
@@ -151,6 +167,7 @@ public class MclStorageManager implements MetaContactListListener
      * null for the top-level groups.
      *
      * @param accountUuid a String identifier i.e. prefix with "acc" of the account whose contacts we're interested in.
+     * @param accountUid a String identifier prefix with e.g. "jabber:" followed by BareJid.
      */
     private void processGroupContact(String accountUuid, String accountUid)
     {
@@ -202,6 +219,7 @@ public class MclStorageManager implements MetaContactListListener
                 protoGroupsMap.put(protoGroupUID, newProtoGroup);
             }
         }
+        cursor.close();
 
         args = new String[]{accountUuid};
         String innerJoin = " INNER JOIN " + Contact.TABLE_NAME + " ON "
@@ -376,10 +394,10 @@ public class MclStorageManager implements MetaContactListListener
             mDB.insert(TBL_CHILD_CONTACTS, null, mcValues);
 
             // Create the contact entry only if not found in contacts table
-            if (findContactEntry("Jabber", contactJid) == null) {
+            if (findContactEntry(JABBER, contactJid) == null) {
                 contentValues.clear();
                 contentValues.put(Contact.CONTACT_UUID, mcUid);
-                contentValues.put(Contact.PROTOCOL_PROVIDER, "Jabber");
+                contentValues.put(Contact.PROTOCOL_PROVIDER, JABBER);
                 contentValues.put(Contact.CONTACT_JID, contactJid);
 
                 String svrDisplayName = (isUserDefined) ? contactJid : displayName;
@@ -797,8 +815,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // cmeng - need to remove from contacts table if not found in childContacts table
         if (findProtoContactEntry(null, contactJid) == 0) {
-            String protocolProvider = "Jabber";
-            args = new String[]{protocolProvider, contactJid};
+            args = new String[]{JABBER, contactJid};
             mDB.delete(Contact.TABLE_NAME, Contact.PROTOCOL_PROVIDER + "=? AND "
                     + Contact.CONTACT_JID + "=?", args);
         }
@@ -855,10 +872,10 @@ public class MclStorageManager implements MetaContactListListener
         mDB.insert(TBL_CHILD_CONTACTS, null, mcValues);
 
         // Create the contact entry only if not found in contacts table
-        if (findContactEntry("Jabber", contactJid) == null) {
+        if (findContactEntry(JABBER, contactJid) == null) {
             mcValues.clear();
             mcValues.put(Contact.CONTACT_UUID, mcUid);
-            mcValues.put(Contact.PROTOCOL_PROVIDER, "Jabber");
+            mcValues.put(Contact.PROTOCOL_PROVIDER, JABBER);
             mcValues.put(Contact.CONTACT_JID, contactJid);
             mcValues.put(Contact.SVR_DISPLAY_NAME, contact.getDisplayName());
             mDB.insert(Contact.TABLE_NAME, null, mcValues);
@@ -874,7 +891,7 @@ public class MclStorageManager implements MetaContactListListener
     {
         // Just logged in an internal err if rename contact not found
         Contact contact = evt.getProtoContact();
-        if ((contact == null) || (findContactEntry("Jabber", contact.getAddress()) == null)) {
+        if ((contact == null) || (findContactEntry(JABBER, contact.getAddress()) == null)) {
             MetaContact metaContact = evt.getParent();
             String metaContactUid = metaContact.getMetaUID();
 
@@ -886,7 +903,7 @@ public class MclStorageManager implements MetaContactListListener
         // update the svrDisplayName for the specific contact
         String svrDisplayName = contact.getDisplayName();
         if (StringUtils.isNotEmpty(svrDisplayName)) {
-            String[] args = {"Jabber", contact.getAddress()};
+            String[] args = {JABBER, contact.getAddress()};
             mcValues.clear();
             mcValues.put(Contact.SVR_DISPLAY_NAME, svrDisplayName);
 
@@ -985,8 +1002,7 @@ public class MclStorageManager implements MetaContactListListener
 
         // cmeng - need to remove from contacts if none found in contactList
         if (findProtoContactEntry(null, contactJid) == 0) {
-            String protocolProvider = "Jabber";
-            args = new String[]{protocolProvider, contactJid};
+            args = new String[]{JABBER, contactJid};
             mDB.delete(Contact.TABLE_NAME, Contact.PROTOCOL_PROVIDER + "=? AND "
                     + Contact.CONTACT_JID + "=?", args);
         }
@@ -1014,6 +1030,31 @@ public class MclStorageManager implements MetaContactListListener
         }
         cursor.close();
         return contactUuid;
+    }
+
+    /**
+     * Get the metaUuid for the given accountUuid and contactJid; start Chat session in muc.
+     *
+     * @param accountUuid the protocol user AccountUuid 
+     * @param contactJid ContactJid associated with the user account
+     *
+     * @return the metaUuid for start ChatActivity
+     */
+    public static String getMetaUuid(String accountUuid, String contactJid) {
+
+        String[] columns = {MetaContactGroup.MC_UID};
+        String[] args = {accountUuid, contactJid};
+
+         Cursor cursor = mDB.query(TBL_CHILD_CONTACTS, columns,
+                 MetaContactGroup.ACCOUNT_UUID + "=? AND " + MetaContactGroup.CONTACT_JID + "=?",
+                    args, null, null, null);
+
+        String metaUuid = null;
+        while (cursor.moveToNext()) {
+            metaUuid = cursor.getString(0);
+        }
+        cursor.close();
+        return metaUuid;
     }
 
     /**

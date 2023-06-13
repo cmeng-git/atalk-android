@@ -351,16 +351,17 @@ public class OperationSetBasicTelephonyJabberImpl
         boolean alwaysCallGtalk = ((bypassDomain != null)
                 && bypassDomain.equals(XmppStringUtils.parseDomain(calleeAddress))) || isGoogleVoice;
 
-        boolean isPrivateMessagingContact = false;
-        OperationSetMultiUserChat mucOpSet = getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
-        if (mucOpSet != null)
-            isPrivateMessagingContact = mucOpSet.isPrivateMessagingContact(calleeAddress);
-
         Jid calleeJid = null;
         try {
             calleeJid = JidCreate.from(calleeAddress);
         } catch (XmppStringprepException | IllegalArgumentException e) {
             e.printStackTrace();
+        }
+
+        boolean isPrivateMessagingContact = false;
+        OperationSetMultiUserChat mucOpSet = getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
+        if (mucOpSet != null) {
+            isPrivateMessagingContact = mucOpSet.isPrivateMessagingContact(calleeJid);
         }
 
         // Throw exception if the call is none of the above criteria check

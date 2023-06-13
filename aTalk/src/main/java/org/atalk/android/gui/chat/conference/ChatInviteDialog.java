@@ -28,6 +28,9 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactsource.SourceContact;
+import net.java.sip.communicator.service.gui.ContactList;
+import net.java.sip.communicator.service.gui.UIContact;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 
 import org.atalk.android.R;
@@ -232,35 +235,35 @@ public class ChatInviteDialog extends Dialog
         return true;
     }
 
-//    /**
-//     * The <code>ChatInviteContactListFilter</code> is <code>InviteContactListFilter</code> which doesn't list
-//     * contact that don't have persistence addresses (for example private messaging contacts are not listed).
-//     */
-//    private class ChatInviteContactListFilter // extends InviteContactListFilter
-//    {
-//        /**
-//         * The Multi User Chat operation set instance.
-//         */
-//        private OperationSetMultiUserChat opSetMUC;
-//
-//        /**
-//         * Creates an instance of <code>InviteContactListFilter</code>.
-//         *
-//         * @param sourceContactList the contact list to filter
-//         */
-//        public ChatInviteContactListFilter(ContactList sourceContactList)
-//        {
-//            // super(sourceContactList);
-//            opSetMUC = inviteChatTransport.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
-//        }
-//
-//        // @Override
+    /**
+     * The <code>ChatInviteContactListFilter</code> is <code>InviteContactListFilter</code> which doesn't list
+     * contact that don't have persistence addresses (for example private messaging contacts are not listed).
+     */
+    private class ChatInviteContactListFilter // extends InviteContactListFilter
+    {
+        /**
+         * The Multi User Chat operation set instance.
+         */
+        private OperationSetMultiUserChat opSetMUC;
+
+        /**
+         * Creates an instance of <code>InviteContactListFilter</code>.
+         *
+         * @param sourceContactList the contact list to filter
+         */
+        public ChatInviteContactListFilter(ContactList sourceContactList)
+        {
+            // super(sourceContactList);
+            opSetMUC = inviteChatTransport.getProtocolProvider().getOperationSet(OperationSetMultiUserChat.class);
+        }
+
+        // @Override
 //        public boolean isMatching(UIContact uiContact)
 //        {
 //            SourceContact contact = (SourceContact) uiContact.getDescriptor();
 //            return !opSetMUC.isPrivateMessagingContact(contact.getContactAddress());
 //        }
-//    }
+    }
 
     /**
      * Invites the contacts to the chat conference.

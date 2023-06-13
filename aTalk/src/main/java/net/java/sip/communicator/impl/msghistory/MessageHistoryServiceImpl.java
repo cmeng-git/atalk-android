@@ -705,7 +705,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             mamDate = cursor.getString(0);
         }
         cursor.close();
-        return new Date(Long.parseLong(mamDate));
+        return mamDate.equals("-1") ? null : new Date(Long.parseLong(mamDate));
     }
 
     /**
@@ -1623,29 +1623,23 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      */
     private void writeMessage(String chatId, String direction, Object sender,
             IMessage message, Date msgTimestamp, int msgType) {
-        String entityJid = null;
-        String jid = null;
+        String jid = "";
+        String entityJid;
         if (sender instanceof ChatRoom) { // ChatRoomJabberImpl
             ChatRoom chatRoom = (ChatRoom) sender;
             AccountID accountId = chatRoom.getParentProvider().getAccountID();
             jid = accountId.getAccountJid();
-            // jid = ((ChatRoomJabberImpl) chatRoom).findMemberForNickName(nick).getJabberID();
-            entityJid = chatRoom.getUserNickname().toString();
-            // entityJid = chatRoom.getName() + "/" + nick;
-
         }
         else if (sender instanceof AdHocChatRoom) {
             AdHocChatRoom chatRoom = (AdHocChatRoom) sender;
             AccountID accountId = chatRoom.getParentProvider().getAccountID();
             jid = accountId.getAccountJid();
-            // nick = parentProvider().getInfoRetriever().getNickName(accountId); // for icq
-            entityJid = jid.split("@")[0];
-            // entityJid = chatRoom.getName() + "/" + nick;
         }
         else if (sender instanceof Jid) {
-            entityJid = ((Jid) sender).asBareJid().toString();
             jid = sender.toString();
         }
+        // Strip off the resourcePart
+        entityJid = jid.replaceAll("(\\w+)/.*", "$1");
 
         contentValues.clear();
         contentValues.put(ChatMessage.SESSION_UUID, chatId);
@@ -1673,14 +1667,14 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         if (from == null)
             return;
 
-        String nick = from.getNickName();
         // String entityJid = from.getChatRoom().getName() + "/" + nick;
         String jid = from.getContactAddress();  // contact entityFullJid
+        String entityJid = jid.replaceAll("(\\w+)/.*", "$1");
 
         contentValues.clear();
         contentValues.put(ChatMessage.SESSION_UUID, chatId);
         contentValues.put(ChatMessage.TIME_STAMP, msgTimestamp.getTime());
-        contentValues.put(ChatMessage.ENTITY_JID, nick);
+        contentValues.put(ChatMessage.ENTITY_JID, entityJid);
         contentValues.put(ChatMessage.JID, jid);
 
         writeMessageToDB(message, direction, msgType);

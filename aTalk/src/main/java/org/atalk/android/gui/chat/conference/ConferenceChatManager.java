@@ -233,7 +233,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         // Contact contact = sourceMember.getContact();
         // String jabberID = (contact == null) ? displayName : contact.getAddress();
         String jabberID = sourceMember.getContactAddress();
-        String displayName = sourceMember.getNickName();
+        String displayName = jabberID.replaceAll("(\\w+)/.*", "$1");
 
         chatPanel.addMessage(jabberID, displayName, evt.getTimestamp(), messageType, message, null);
     }

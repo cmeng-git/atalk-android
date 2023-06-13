@@ -1,6 +1,6 @@
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
- * 
+ *
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.g729;
@@ -14,134 +14,142 @@ import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.util.ArrayIOUtils;
 
 /**
- *
  * @author Lyubomir Marinov
+ * @author Eng Chong Meng
  */
-public class JavaDecoder extends AbstractCodec2
-{
-	private static final short BIT_0 = Ld8k.BIT_0;
+public class JavaDecoder extends AbstractCodec2 {
+    private static final short BIT_0 = Ld8k.BIT_0;
 
-	private static final short BIT_1 = Ld8k.BIT_1;
+    private static final short BIT_1 = Ld8k.BIT_1;
 
-	private static final int L_FRAME = Ld8k.L_FRAME;
+    private static final int L_FRAME = Ld8k.L_FRAME;
 
-	private static final int SERIAL_SIZE = Ld8k.SERIAL_SIZE;
+    private static final int SERIAL_SIZE = Ld8k.SERIAL_SIZE;
 
-	private static final short SIZE_WORD = Ld8k.SIZE_WORD;
+    private static final short SIZE_WORD = Ld8k.SIZE_WORD;
 
-	private static final short SYNC_WORD = Ld8k.SYNC_WORD;
+    private static final short SYNC_WORD = Ld8k.SYNC_WORD;
 
-	private static final int INPUT_FRAME_SIZE_IN_BYTES = L_FRAME / 8;
+    private static final int INPUT_FRAME_SIZE_IN_BYTES = L_FRAME / 8;
 
-	private static final int OUTPUT_FRAME_SIZE_IN_BYTES = 2 * L_FRAME;
+    private static final int OUTPUT_FRAME_SIZE_IN_BYTES = 2 * L_FRAME;
 
-	private Decoder decoder;
+    private Decoder decoder;
 
-	private short[] serial;
+    private short[] serial;
 
-	private short[] sp16;
+    private short[] sp16;
 
-	/**
-	 * Initializes a new {@code JavaDecoder} instance.
-	 */
-	public JavaDecoder()
-	{
-		super("G.729 Decoder", AudioFormat.class, new AudioFormat[] { new AudioFormat(
-			AudioFormat.LINEAR, 8000, 16, 1, AudioFormat.LITTLE_ENDIAN, AudioFormat.SIGNED,
-			/* frameSizeInBits */Format.NOT_SPECIFIED,
-			/* frameRate */Format.NOT_SPECIFIED, Format.byteArray) });
+    static final Format[] SUPPORTED_INPUT_FORMATS = new Format[]{
+            new AudioFormat(
+                    AudioFormat.G729_RTP,
+                    8000,
+                    Format.NOT_SPECIFIED /* sampleSizeInBits */,
+                    1)
+    };
 
-		inputFormats = new AudioFormat[] { new AudioFormat(AudioFormat.G729_RTP, 8000,
-			AudioFormat.NOT_SPECIFIED, 1) };
-	}
+    static final Format[] SUPPORTED_OUTPUT_FORMATS = new Format[]{
+            new AudioFormat(
+                    AudioFormat.LINEAR,
+                    8000,
+                    16,
+                    1,
+                    AudioFormat.LITTLE_ENDIAN,
+                    AudioFormat.SIGNED,
+                    Format.NOT_SPECIFIED /* frameSizeInBits */,
+                    Format.NOT_SPECIFIED /* frameRate */,
+                    Format.byteArray) /* frameRate */
+    };
 
-	private void depacketize(byte[] inFrame, int inFrameOffset, short[] serial)
-	{
-		serial[0] = SYNC_WORD;
-		serial[1] = SIZE_WORD;
-		for (int s = 0; s < L_FRAME; s++) {
-			int in = inFrame[inFrameOffset + s / 8];
+    /**
+     * Initializes a new {@code JavaDecoder} instance.
+     */
+    public JavaDecoder() {
+        super("G.729 Decoder", AudioFormat.class, SUPPORTED_OUTPUT_FORMATS);
+        inputFormats = SUPPORTED_INPUT_FORMATS;
+    }
 
-			in &= 1 << (7 - (s % 8));
-			serial[2 + s] = (0 != in) ? BIT_1 : BIT_0;
-		}
-	}
+    /**
+     * Implements AbstractCodecExt#doClose().
+     */
+    @Override
+    protected void doClose() {
+        serial = null;
+        sp16 = null;
+        decoder = null;
+    }
 
-	/*
-	 * Implements AbstractCodecExt#doClose().
-	 */
-	@Override
-	protected void doClose()
-	{
-		serial = null;
-		sp16 = null;
-		decoder = null;
-	}
+    /**
+     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
+     * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
+     * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
+     *
+     * @throws ResourceUnavailableException if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
+     * @see AbstractCodecExt#doOpen()
+     */
+    @Override
+    protected void doOpen()
+            throws ResourceUnavailableException {
+        serial = new short[SERIAL_SIZE];
+        sp16 = new short[L_FRAME];
+        decoder = new Decoder();
+    }
 
-	/**
-	 * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
-	 * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
-	 * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
-	 * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
-	 *
-	 * @throws ResourceUnavailableException
-	 *         if any of the resources that this <code>Codec</code> needs to operate cannot be acquired
-	 * @see AbstractCodecExt#doOpen()
-	 */
-	@Override
-	protected void doOpen()
-		throws ResourceUnavailableException
-	{
-		serial = new short[SERIAL_SIZE];
-		sp16 = new short[L_FRAME];
-		decoder = new Decoder();
-	}
+    private void depacketize(byte[] inFrame, int inFrameOffset, short[] serial) {
+        serial[0] = SYNC_WORD;
+        serial[1] = SIZE_WORD;
+        for (int s = 0; s < L_FRAME; s++) {
+            int in = inFrame[inFrameOffset + s / 8];
 
-	/*
-	 * Implements AbstractCodecExt#doProcess(Buffer, Buffer).
-	 */
-	@Override
-	protected int doProcess(Buffer inBuffer, Buffer outBuffer)
-	{
-		int inLength = inBuffer.getLength();
-		/*
-		 * Decode as many G.729 frames as possible in one go in order to mitigate an issue with
-		 * sample rate conversion which leads to audio glitches.
-		 */
-		int frameCount = inLength / INPUT_FRAME_SIZE_IN_BYTES;
+            in &= 1 << (7 - (s % 8));
+            serial[2 + s] = (0 != in) ? BIT_1 : BIT_0;
+        }
+    }
 
-		if (frameCount < 1) {
-			discardOutputBuffer(outBuffer);
-			return BUFFER_PROCESSED_OK | OUTPUT_BUFFER_NOT_FILLED;
-		}
+    /**
+     * Implements AbstractCodec2#doProcess(Buffer, Buffer).
+     */
+    @Override
+    protected int doProcess(Buffer inBuffer, Buffer outBuffer) {
+        int inLength = inBuffer.getLength();
+        /*
+         * Decode as many G.729 frames as possible in one go in order to mitigate an issue with
+         * sample rate conversion which leads to audio glitches.
+         */
+        int frameCount = inLength / INPUT_FRAME_SIZE_IN_BYTES;
 
-		byte[] in = (byte[]) inBuffer.getData();
-		int inOffset = inBuffer.getOffset();
+        if (frameCount < 1) {
+            discardOutputBuffer(outBuffer);
+            return BUFFER_PROCESSED_OK | OUTPUT_BUFFER_NOT_FILLED;
+        }
 
-		int outOffset = outBuffer.getOffset();
-		int outLength = OUTPUT_FRAME_SIZE_IN_BYTES * frameCount;
-		byte[] out = validateByteArraySize(outBuffer, outOffset + outLength, false);
+        byte[] in = (byte[]) inBuffer.getData();
+        int inOffset = inBuffer.getOffset();
 
-		for (int i = 0; i < frameCount; i++) {
-			depacketize(in, inOffset, serial);
-			inLength -= INPUT_FRAME_SIZE_IN_BYTES;
-			inOffset += INPUT_FRAME_SIZE_IN_BYTES;
+        int outOffset = outBuffer.getOffset();
+        int outLength = OUTPUT_FRAME_SIZE_IN_BYTES * frameCount;
+        byte[] out = validateByteArraySize(outBuffer, outOffset + outLength, false);
 
-			decoder.process(serial, sp16);
+        for (int i = 0; i < frameCount; i++) {
+            depacketize(in, inOffset, serial);
+            inLength -= INPUT_FRAME_SIZE_IN_BYTES;
+            inOffset += INPUT_FRAME_SIZE_IN_BYTES;
 
-			writeShorts(sp16, out, outOffset);
-			outOffset += OUTPUT_FRAME_SIZE_IN_BYTES;
-		}
-		inBuffer.setLength(inLength);
-		inBuffer.setOffset(inOffset);
-		outBuffer.setLength(outLength);
+            decoder.process(serial, sp16);
 
-		return BUFFER_PROCESSED_OK;
-	}
+            writeShorts(sp16, out, outOffset);
+            outOffset += OUTPUT_FRAME_SIZE_IN_BYTES;
+        }
+        inBuffer.setLength(inLength);
+        inBuffer.setOffset(inOffset);
+        outBuffer.setLength(outLength);
 
-	private static void writeShorts(short[] in, byte[] out, int outOffset)
-	{
-		for (int i = 0, o = outOffset; i < in.length; i++, o += 2)
-			ArrayIOUtils.writeShort(in[i], out, o);
-	}
+        return BUFFER_PROCESSED_OK;
+    }
+
+    private static void writeShorts(short[] in, byte[] out, int outOffset) {
+        for (int i = 0, o = outOffset; i < in.length; i++, o += 2)
+            ArrayIOUtils.writeShort(in[i], out, o);
+    }
 }

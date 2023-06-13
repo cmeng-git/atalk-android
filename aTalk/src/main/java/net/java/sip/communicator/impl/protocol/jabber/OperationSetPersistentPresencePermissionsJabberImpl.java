@@ -29,7 +29,7 @@ public class OperationSetPersistentPresencePermissionsJabberImpl implements Oper
     /**
      * List of group names to be considered as readonly.
      */
-    private List<String> readonlyGroups = new ArrayList<String>();
+    private List<String> readonlyGroups = new ArrayList<>();
 
     /**
      * The parent provider.

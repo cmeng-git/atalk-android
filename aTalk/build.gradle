@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 301070
-        versionName "3.1.7"
+        versionCode 302000
+        versionName "3.2.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -236,10 +236,10 @@ dependencies {
 
     // Upgrade android libraries to 1.5.x create problem. Required API-33
     // See https://issuetracker.google.com/issues/240473335
-    implementation 'androidx.activity:activity:1.7.1'
+    implementation 'androidx.activity:activity:1.7.2'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment:1.5.7'
+    implementation 'androidx.fragment:fragment:1.6.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -263,7 +263,7 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.6'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
     // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
     implementation 'com.google.android.material:material:1.6.1'
 

@@ -194,6 +194,10 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
             String query = intent.getStringExtra(SearchManager.QUERY);
             Timber.w("Search intent not handled for query: %s", query);
         }
+        // Start aTalk with contactList UI for IM setup
+        if (Intent.ACTION_SENDTO.equals(action)) {
+            mPager.setCurrentItem(0);
+        }
     }
 
     @Override

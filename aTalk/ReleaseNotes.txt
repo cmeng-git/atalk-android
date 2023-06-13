@@ -1,5 +1,32 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.2.0 (302000)
+Release Date:   06/14/2023
+Author:         cmeng
+- Add options for participants in group chat:
+  a. Start conversation
+  b. Grant/Revoke owner privileges
+  c. Remove from group chat
+  d. Copy nick name in send message entry
+- Start IM if participant is not anonymous, else show contact list UI for user selection.
+- ChatSessionManager#getChatIntent(): add support to get chatIntent for a given Contact.
+- Show toast messages for local user role changes, and being removed from group chat.
+- Ensure 'ChatRoom Occupant' info for local user role changes are properly updated for display.
+- Use sender Jid in MUC session to properly retrieve sender avatar for display; Jid is saved in DB messages.
+- Add support to receive and display of 'PrivateMessaging' in a new IM chat session:
+  * OperationSetChatStateNotificationsJabberImpl#stateChanged(Chat chat, ChatState state, Message message)
+  * OperationSetBasicInstantMessagingJabberImpl#newIncomingMessage(EntityBareJid from, Message message, Chat chat)
+- OperationSetBasicInstantMessagingJabberImpl#newIncomingMessage must use Message.Type.groupchat to filter groupChat.
+  "http://jabber.org/protocol/muc#user" is used for privateMessaging.
+- Do not throw RuntimeException when perform chatRoom.kick Participant in ChatFragment. Just show the error message to user.
+- VCardAvatarManager#processContactPhotoPresence: Do not proceed to auto download photo for MUCUser in 'contact photo presence process'.
+- Make JingleFile extends JingleFileTransferChild for proper QName extraction.
+- OperationSetMultiUserChatJabberImpl#isPrivateMessagingContact: Change method to use the contact Jid instead of contact address.
+- OperationSetChatStateNotificationsJabberImpl#sendChatStateNotification: Do not send chat state notifications to a Jabber Volatile Contact.
+- Rename G722 class names to confirm with other codecs.
+- Add bcg729 JNI library support - implementation incomplete (not use), continue to use JavaDecode/JavaEncoder instead.
+
+=========================================================================
 Version:        3.1.7 (301070)
 Release Date:   05/16/2023
 Author:         cmeng
