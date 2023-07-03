@@ -141,8 +141,11 @@ public class MediaUtils {
          * As of January 1, 2017, the patent terms of most licensed patents under the G.729 Consortium
          * have expired, the remaining unexpired patents are usable on a royalty-free basis.
          */
+        // Set the encoder option according to user configuration; default to enable if none found.
+        ConfigurationService cfg = LibJitsi.getConfigurationService();
+        boolean g729Vad = cfg.getBoolean(Constants.PROP_G729_VAD, true);
         Map<String, String> g729FormatParams = new HashMap<>();
-        g729FormatParams.put("annexb", "no");
+        g729FormatParams.put("annexb", g729Vad ? "yes" : "no");
 
         addMediaFormats(
                 (byte) SdpConstants.G729,
@@ -179,7 +182,6 @@ public class MediaUtils {
                 MediaType.VIDEO,
                 Constants.FLEXFEC_03);
 
-        ConfigurationService cfg = LibJitsi.getConfigurationService();
         boolean advertiseFEC = cfg.getBoolean(Constants.PROP_SILK_ADVERSISE_FEC, false);
         Map<String, String> silkFormatParams = new HashMap<>();
         if (advertiseFEC) {

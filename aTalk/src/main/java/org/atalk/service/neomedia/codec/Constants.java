@@ -155,6 +155,16 @@ public class Constants
     public static final String PROP_SILK_FEC_SAT = "neomedia.codec.audio.silk.encoder.SPEECH_ACTIVITY_THRESHOLD";
 
     /**
+     * The name of the property used to control the G729 encoder "VAD" setting
+     * G.729b provides a silence compression method that enables a voice activity detection (VAD) module.
+     * It is used to detect voice activity in the signal. It also includes a discontinuous transmission (DTX) module
+     * which decides on updating the background noise parameters for non speech (noisy frames).
+     *
+     *  VAD enanbleVAD : flag set to 1: VAD/DTX is enabled
+     */
+    public static final String PROP_G729_VAD = "neomedia.codec.audio.g729.encoder.VAD";
+
+    /**
      * The name of the RED RTP format (RFC2198)
      */
     public static final String RED = "red";

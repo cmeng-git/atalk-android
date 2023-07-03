@@ -86,10 +86,10 @@ include $(G722_DIR)/Android.mk
 # ================================= G729 ==============================================
 ### G722 shared library build base on https://gitlab.linphone.org/BC/public/bcg729
 # https://www.linphone.org/technical-corner/bcg729
-#LOCAL_PATH := $(ROOT)
-#include $(CLEAR_VARS)
-#G729_DIR  := g729
-#include $(G729_DIR)/Android.mk
+LOCAL_PATH := $(ROOT)
+include $(CLEAR_VARS)
+G729_DIR  := g729
+include $(G729_DIR)/Android.mk
 
 # ================================= OpenSSL ===========================================
 ### OpenSSL shared library build (version 1.1.1t)

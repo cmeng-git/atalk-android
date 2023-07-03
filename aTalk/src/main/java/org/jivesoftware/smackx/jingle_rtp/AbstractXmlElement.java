@@ -314,11 +314,11 @@ public class AbstractXmlElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
         if (xmlCache != null) {
             return xmlCache;
         }
-        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
         addExtraAttributes(xml);
 
         for (Map.Entry<String, String> entry : attributes.entrySet()) {

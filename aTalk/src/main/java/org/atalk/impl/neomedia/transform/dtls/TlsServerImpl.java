@@ -51,9 +51,9 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  * @See <a href="https://www.rfc-editor.org/rfc/rfc6347">Datagram Transport Layer Security Version 1.2</a>
  * @See <a href="https://www.rfc-editor.org/rfc/rfc5246">The Transport Layer Security (TLS) Protocol Version 1.2</a>
+ * or https://www.ietf.org/rfc/rfc5246.html
  */
-public class TlsServerImpl extends DefaultTlsServer
-{
+public class TlsServerImpl extends DefaultTlsServer {
     /**
      * @see TlsServer#getCertificateRequest()
      */
@@ -73,7 +73,7 @@ public class TlsServerImpl extends DefaultTlsServer
     /**
      * The <code>PacketTransformer</code> which has initialized this instance.
      */
-    private final DtlsPacketTransformer packetTransformer;
+    private final DtlsPacketTransformer mPacketTransformer;
 
     /**
      * @see DefaultTlsServer#getRSAEncryptionCredentials()
@@ -95,10 +95,9 @@ public class TlsServerImpl extends DefaultTlsServer
      *
      * @param packetTransformer the <code>PacketTransformer</code> which is initializing the new instance
      */
-    public TlsServerImpl(DtlsPacketTransformer packetTransformer)
-    {
+    public TlsServerImpl(DtlsPacketTransformer packetTransformer) {
         super(new BcTlsCrypto(new SecureRandom()));
-        this.packetTransformer = packetTransformer;
+        mPacketTransformer = packetTransformer;
     }
 
     /**
@@ -106,8 +105,7 @@ public class TlsServerImpl extends DefaultTlsServer
      *
      * @return the <code>SRTPProtectionProfile</code> negotiated between this DTLS-SRTP server and its client
      */
-    private int getChosenProtectionProfile()
-    {
+    private int getChosenProtectionProfile() {
         return chosenProtectionProfile;
     }
 
@@ -127,14 +125,16 @@ public class TlsServerImpl extends DefaultTlsServer
      * CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
      */
     @Override
-    public int[] getSupportedCipherSuites()
-    {
-        int[] suites = new int[]{
-                // Required by Conversations 2.10.10 (webrtc-m104.aar), but it cannot support ECDSA signed certificate
+    public int[] getSupportedCipherSuites() {
+        // [52393, 49196, 49195]
+        int[] cipherSuites_ecdsa = new int[]{
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
                 CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+        };
 
+        // [52392, 49200, 49199, 49192, 49191, 49172, 49171, 52394, 159, 158, 107, 103, 57, 51]
+        int[] cipherSuites_rsa = new int[]{
                 CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
                 CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
@@ -152,14 +152,22 @@ public class TlsServerImpl extends DefaultTlsServer
                 CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA
         };
 
-        // Do not offer CipherSuite.TLS_ECDHE_ECDSA.. if the local certificateType is rsa_sign
+        /*
+         * Do not offer CipherSuite.TLS_ECDHE_ECDSA... if the local certificateType is rsa_signed,
+         * i.e. user has selected e.g. SHA256withRSA. This is used in certificate generation, and its
+         * fingerPrint is advertised in jingle session-initiate. Changing the signer will cause fingerPrint
+         * mismatch error in DtlsControlImpl#verifyAndValidateCertificate(Certificate certificate).
+         *
+         * Note: conversations/webrtc offers CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, but webrtc:113.0.0
+         * does not support SignatureAndHashAlgorithm for ECDSASignerCredential and failed decode_error(50)
+         * See BC TlsUtils#isValidSignatureAlgorithmForServerKeyExchangeshort signatureAlgorithm, int keyExchangeAlgorithm)
+         * for matching between SignatureAlgorithm and KeyExchangeAlgorithm.
+         */
         if (getDtlsControl().getCertificateInfo().getCertificateType() == ClientCertificateType.rsa_sign) {
-            int len = suites.length - 3;
-            int[] cipherSuites = new int[len];
-            System.arraycopy(suites, 3, cipherSuites, 0, len);
-            return TlsUtils.getSupportedCipherSuites(getCrypto(), cipherSuites);
+            return TlsUtils.getSupportedCipherSuites(getCrypto(), cipherSuites_rsa);
+        } else {
+            return TlsUtils.getSupportedCipherSuites(getCrypto(), cipherSuites_ecdsa);
         }
-        return TlsUtils.getSupportedCipherSuites(getCrypto(), suites);
     }
 
     /**
@@ -167,8 +175,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * The implementation of <code>TlsServerImpl</code> always returns <code>ProtocolVersion.DTLSv12 & DTLSv10</code>
      */
     @Override
-    protected ProtocolVersion[] getSupportedVersions()
-    {
+    protected ProtocolVersion[] getSupportedVersions() {
         return ProtocolVersion.DTLSv12.downTo(ProtocolVersion.DTLSv10);
     }
 
@@ -177,22 +184,19 @@ public class TlsServerImpl extends DefaultTlsServer
      *
      * @return the <code>DtlsControl</code> implementation associated with this instance
      */
-    private DtlsControlImpl getDtlsControl()
-    {
-        return packetTransformer.getDtlsControl();
+    private DtlsControlImpl getDtlsControl() {
+        return mPacketTransformer.getDtlsControl();
     }
 
-    private Properties getProperties()
-    {
-        return packetTransformer.getProperties();
+    private Properties getProperties() {
+        return mPacketTransformer.getProperties();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CertificateRequest getCertificateRequest()
-    {
+    public CertificateRequest getCertificateRequest() {
         if (certificateRequest == null) {
             short[] certificateTypes = new short[]{ClientCertificateType.rsa_sign,
                     ClientCertificateType.dss_sign, ClientCertificateType.ecdsa_sign};
@@ -235,8 +239,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * implemented by <code>DefaultTlsServer</code>.
      */
     @Override
-    protected TlsCredentialedDecryptor getRSAEncryptionCredentials()
-    {
+    protected TlsCredentialedDecryptor getRSAEncryptionCredentials() {
         if (rsaEncryptionCredentials == null) {
             CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
             Certificate certificate = certInfo.getCertificate();
@@ -260,8 +263,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * @return TlsCredentialedSigner: rsaSignerCredentials
      */
     @Override
-    protected TlsCredentialedSigner getRSASignerCredentials()
-    {
+    protected TlsCredentialedSigner getRSASignerCredentials() {
         if (rsaSignerCredentials == null) {
             CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
             Certificate certificate = certInfo.getCertificate();
@@ -290,9 +292,9 @@ public class TlsServerImpl extends DefaultTlsServer
      * @return TlsCredentialedSigner: ecdsaSignerCredentials
      */
     @Override
-    protected TlsCredentialedSigner getECDSASignerCredentials()
-    {
+    protected TlsCredentialedSigner getECDSASignerCredentials() {
         if (ecdsaSignerCredentials == null) {
+            // CertificateInfo certInfo = getDtlsControl().getCertificateInfo(getAlgorithmName("ECDSA"));
             CertificateInfo certInfo = getDtlsControl().getCertificateInfo();
             Certificate certificate = certInfo.getCertificate();
 
@@ -307,19 +309,17 @@ public class TlsServerImpl extends DefaultTlsServer
             ecdsaSignerCredentials = new BcDefaultTlsCredentialedSigner(
                     cryptoParams, (BcTlsCrypto) crypto, privateKey, certificate, sigAndHashAlg);
         }
-        Timber.d("ECDSASignerCredentials: %s", ecdsaSignerCredentials.getSignatureAndHashAlgorithm());
         return ecdsaSignerCredentials;
     }
-
 
     /**
      * Obtain the SignatureAndHashAlgorithm based on the given certificate
      *
      * @param certificate containing info for SignatureAndHashAlgorithm
+     *
      * @return SignatureAndHashAlgorithm
      */
-    public static SignatureAndHashAlgorithm getSigAndHashAlg(Certificate certificate)
-    {
+    public static SignatureAndHashAlgorithm getSigAndHashAlg(Certificate certificate) {
         // FIXME ed448/ed25519? multiple certificates?
         String algName = new DefaultAlgorithmNameFinder().getAlgorithmName(
                 new ASN1ObjectIdentifier(certificate.getCertificateAt(0).getSigAlgOID())
@@ -374,8 +374,7 @@ public class TlsServerImpl extends DefaultTlsServer
     @Override
     @SuppressWarnings("rawtypes")
     public Hashtable getServerExtensions()
-            throws IOException
-    {
+            throws IOException {
         Hashtable serverExtensions = getServerExtensionsOverride();
         if (isSrtpDisabled()) {
             return serverExtensions;
@@ -422,8 +421,7 @@ public class TlsServerImpl extends DefaultTlsServer
      */
     @SuppressWarnings("rawtypes")
     private Hashtable getServerExtensionsOverride()
-            throws IOException
-    {
+            throws IOException {
         if (encryptThenMACOffered && allowEncryptThenMAC()) {
             /*
              * draft-ietf-tls-encrypt-then-mac-03 3. If a server receives an encrypt-then-MAC
@@ -469,8 +467,7 @@ public class TlsServerImpl extends DefaultTlsServer
      * out for the purposes of <code>SrtpListener</code>.
      */
     @Override
-    public void init(TlsServerContext context)
-    {
+    public void init(TlsServerContext context) {
         super.init(context);
     }
 
@@ -481,20 +478,18 @@ public class TlsServerImpl extends DefaultTlsServer
      * @return {@code true} for pure DTLS without SRTP extensions or
      * {@code false} for DTLS/SRTP
      */
-    private boolean isSrtpDisabled()
-    {
+    private boolean isSrtpDisabled() {
         return getProperties().isSrtpDisabled();
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * Forwards to {@link #packetTransformer}.
+     * Forwards to {@link #mPacketTransformer}.
      */
     @Override
-    public void notifyAlertRaised(short alertLevel, short alertDescription, String message, Throwable cause)
-    {
-        packetTransformer.notifyAlertRaised(this, alertLevel, alertDescription, message, cause);
+    public void notifyAlertRaised(short alertLevel, short alertDescription, String message, Throwable cause) {
+        mPacketTransformer.notifyAlertRaised(this, alertLevel, alertDescription, message, cause);
     }
 
     /**
@@ -502,10 +497,9 @@ public class TlsServerImpl extends DefaultTlsServer
      */
     @Override
     public void notifyHandshakeComplete()
-            throws IOException
-    {
+            throws IOException {
         super.notifyHandshakeComplete();
-        packetTransformer.initializeSRTPTransformer(getChosenProtectionProfile(), context);
+        mPacketTransformer.initializeSRTPTransformer(getChosenProtectionProfile(), context);
     }
 
     /**
@@ -513,8 +507,7 @@ public class TlsServerImpl extends DefaultTlsServer
      */
     @Override
     public void notifyClientCertificate(Certificate clientCertificate)
-            throws IOException
-    {
+            throws IOException {
         try {
             getDtlsControl().verifyAndValidateCertificate(clientCertificate);
         } catch (Exception e) {
@@ -533,8 +526,7 @@ public class TlsServerImpl extends DefaultTlsServer
      */
     @Override
     public void processClientExtensions(Hashtable clientExtensions)
-            throws IOException
-    {
+            throws IOException {
         if (isSrtpDisabled()) {
             super.processClientExtensions(clientExtensions);
             return;

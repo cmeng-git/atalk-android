@@ -14,7 +14,7 @@ extern "C" {
  * Signature: ()J
  */
 JNIEXPORT jlong JNICALL Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1open
-        (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     org_atalk_impl_neomedia_codec_audio_g729_JNIEncoder
@@ -29,8 +29,8 @@ JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1
  * Method:    g729_encoder_process
  * Signature: (J[BI[BII)V
  */
-JNIEXPORT void JNICALL Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1process
-  (JNIEnv *, jclass, jlong, jcharArray, jbyteArray, jint);
+JNIEXPORT jint JNICALL Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1process
+  (JNIEnv *, jclass, jlong, jshortArray, jbyteArray);
 
 #ifdef __cplusplus
 }

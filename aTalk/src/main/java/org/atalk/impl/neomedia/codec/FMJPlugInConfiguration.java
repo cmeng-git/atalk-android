@@ -57,11 +57,13 @@ public class FMJPlugInConfiguration
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaDecoder",
             "org.atalk.impl.neomedia.codec.audio.ilbc.JavaEncoder",
 
-            "org.atalk.impl.neomedia.codec.audio.g729.JavaDecoder",
-            "org.atalk.impl.neomedia.codec.audio.g729.JavaEncoder",
+            // g722
+            "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoder",
+            "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoder",
 
-            "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoderImpl",
-            "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoderImpl",
+            // g729
+            "org.atalk.impl.neomedia.codec.audio.g729.JNIDecoder",
+            "org.atalk.impl.neomedia.codec.audio.g729.JNIEncoder",
 
             // gsm
             "org.atalk.impl.neomedia.codec.audio.gsm.Decoder",

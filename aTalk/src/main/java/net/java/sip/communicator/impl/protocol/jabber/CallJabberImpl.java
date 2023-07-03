@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.CallPeerState;
@@ -939,7 +939,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                 && accountID.isEncryptionProtocolEnabled(SrtpControlType.DTLS_SRTP)
                 && protocolProvider.isFeatureSupported(jvb,
                 ProtocolProviderServiceJabberImpl.URN_XMPP_JINGLE_DTLS_SRTP)) {
-            String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+            String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_AND_HASH_ALGORITHM);
             DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
 
             CallPeerMediaHandlerJabberImpl mediaHandler = peer.getMediaHandler();

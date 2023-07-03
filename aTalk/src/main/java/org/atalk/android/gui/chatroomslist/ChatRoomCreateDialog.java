@@ -55,8 +55,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener, AdapterView.OnItemClickListener
-{
+public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListener, AdapterView.OnItemClickListener {
     private static final String CHATROOM = "chatroom";
 
     private final MainMenuActivity mParent;
@@ -88,16 +87,14 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      *
      * @param mContext the <code>ChatPanel</code> corresponding to the <code>ChatRoom</code>, where the contact is invited.
      */
-    public ChatRoomCreateDialog(Context mContext)
-    {
+    public ChatRoomCreateDialog(Context mContext) {
         super(mContext);
         mParent = (MainMenuActivity) mContext;
         mucService = MUCActivator.getMUCService();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.service_gui_CHATROOM_CREATE_JOIN);
         this.setContentView(R.layout.muc_room_create_dialog);
@@ -131,8 +128,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     // add items into accountsSpinner dynamically
-    private void initAccountSpinner()
-    {
+    private void initAccountSpinner() {
         String mAccount;
         List<String> ppsList = new ArrayList<>();
 
@@ -156,11 +152,9 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      * Creates the providers comboBox and filling its content with the current available chatRooms.
      * Add all available server's chatRooms to the chatRoomList when providers changed.
      */
-    private class initComboBox extends AsyncTask<Void, Void, List<String>>
-    {
+    private class initComboBox extends AsyncTask<Void, Void, List<String>> {
         @Override
-        protected List<String> doInBackground(Void... params)
-        {
+        protected List<String> doInBackground(Void... params) {
             chatRoomList.clear();
             chatRoomWrapperList.clear();
 
@@ -188,8 +182,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
 
         @Override
-        protected void onPostExecute(List<String> result)
-        {
+        protected void onPostExecute(List<String> result) {
             super.onPostExecute(result);
             if (chatRoomList.size() == 0)
                 chatRoomList.add(CHATROOM);
@@ -204,16 +197,14 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
     }
 
-    private void closeDialog()
-    {
+    private void closeDialog() {
         this.cancel();
     }
 
     /**
      * Updates the enable/disable state of the OK button.
      */
-    private void updateJoinButtonEnableState()
-    {
+    private void updateJoinButtonEnableState() {
         String nickName = ViewUtil.toString(nicknameField);
         String chatRoomField = chatRoomComboBox.getText();
 
@@ -229,14 +220,12 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id)
-    {
+    public void onItemSelected(AdapterView<?> adapter, View view, int pos, long id) {
         new initComboBox().execute();
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent)
-    {
+    public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
 
@@ -249,8 +238,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      * @param id The row id of the item that was clicked.
      */
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ChatRoomWrapper chatRoomWrapper = chatRoomWrapperList.get(chatRoomList.get(position));
         if (chatRoomWrapper != null) {
             // Timber.d("ComboBox Item clicked: %s; %s", position, chatRoomWrapper.getChatRoomName());
@@ -271,9 +259,11 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     /**
      * Sets the default value in the nickname field based on selected chatRoomWrapper stored value of PPS
      */
-    private void setDefaultNickname()
-    {
-        String chatRoom = chatRoomComboBox.getText().replaceAll("\\s", "");
+    private void setDefaultNickname() {
+        String chatRoom = chatRoomComboBox.getText();
+        if (!TextUtils.isEmpty(chatRoom)) {
+            chatRoom = chatRoom.replaceAll("\\s", "");
+        }
         ChatRoomWrapper chatRoomWrapper = chatRoomWrapperList.get(chatRoom);
 
         String nickName = null;
@@ -298,8 +288,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      *
      * @param subject the (chat room) subject to be displayed in this <code>ChatRoomSubjectPanel</code>
      */
-    public void setSubject(String subject)
-    {
+    public void setSubject(String subject) {
         subjectField.setText(subject);
     }
 
@@ -308,8 +297,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      *
      * @return the selected provider
      */
-    private ChatRoomProviderWrapper getSelectedProvider()
-    {
+    private ChatRoomProviderWrapper getSelectedProvider() {
         String key = (String) accountsSpinner.getSelectedItem();
         return mucRCProviderList.get(key);
     }
@@ -319,8 +307,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      *
      * @param chatRoom the chat room name.
      */
-    public void setChatRoomField(String chatRoom)
-    {
+    public void setChatRoomField(String chatRoom) {
         this.chatRoomComboBox.setText(chatRoom);
         updateJoinButtonEnableState();
     }
@@ -328,13 +315,16 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
     /**
      * Invites the contacts to the chat conference.
      */
-    private boolean createOrJoinChatRoom()
-    {
+    private boolean createOrJoinChatRoom() {
         // allow nickName to contain spaces
         String nickName = ViewUtil.toString(nicknameField);
         String password = ViewUtil.toString(passwordField);
         String subject = ViewUtil.toString(subjectField);
-        String chatRoomID = chatRoomComboBox.getText().replaceAll("\\s", "");
+
+        String chatRoomID = chatRoomComboBox.getText();
+        if (!TextUtils.isEmpty(chatRoomID)) {
+            chatRoomID = chatRoomID.replaceAll("\\s", "");
+        }
         boolean savePassword = mSavePasswordCheckBox.isChecked();
 
         Collection<String> contacts = new ArrayList<>();
@@ -375,7 +365,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                     bookmarkManager.addBookmarkedConference(subject, entityBareJid, true,
                             chatRoomWrapper.getNickResource(), password);
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                        | XMPPException.XMPPErrorException | InterruptedException e) {
+                         | XMPPException.XMPPErrorException | InterruptedException e) {
                     Timber.w("Failed to add new Bookmarks: %s", e.getMessage());
                 }
 

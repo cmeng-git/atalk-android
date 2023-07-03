@@ -136,7 +136,7 @@ public class TlsClientImpl extends DefaultTlsClient
     @Override
     public void notifyHandshakeComplete()
     {
-        if (mPacketTransformer.getProperties().isSrtpDisabled()) {
+        if (isSrtpDisabled()) {
             // SRTP is disabled, nothing to do. Why did we get here in the first place?
             return;
         }

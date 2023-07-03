@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 
 import net.java.sip.communicator.util.UtilActivator;
 
@@ -104,7 +104,7 @@ public abstract class SecurityAccountRegistration implements Serializable
         }};
 
         randomZIDSalt();
-        mTlsCertificateSA = DEFAULT_SIGNATURE_ALGORITHM;
+        mTlsCertificateSA = DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
         mSdesCipherSuites = UtilActivator.getResources().getSettingsString(SDesControl.SDES_CIPHER_SUITES);
     }
 
@@ -347,7 +347,7 @@ public abstract class SecurityAccountRegistration implements Serializable
 
         // Load DTLS_SRTP TlsCertificateSA from DB or use DEFAULT_SIGNATURE_ALGORITHM if none is defined
         mTlsCertificateSA = accountID.getAccountPropertyString(
-                ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+                ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_AND_HASH_ALGORITHM);
 
         // Load SDES encryption parameters
         setSavpOption(accountID.getAccountPropertyInt(ProtocolProviderFactory.SAVP_OPTION, ProtocolProviderFactory.SAVP_OFF));

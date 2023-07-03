@@ -35,12 +35,9 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1encoder_1process
     jbyteArray output, jint outputOffset, jint outputLength)
 {
     jbyte *outputPtr = (*jniEnv)->GetByteArrayElements(jniEnv, output, NULL);
-
     if (outputPtr)
     {
-        jbyte *inputPtr
-            = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, input, NULL);
-
+        jbyte *inputPtr = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, input, NULL);
         if (inputPtr)
         {
             g722_encode(
@@ -48,10 +45,8 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1encoder_1process
                     (uint8_t *) (outputPtr + outputOffset),
                     (const int16_t *) (inputPtr + inputOffset),
                     2 * (outputLength / sizeof(uint8_t)));
-            (*jniEnv)->ReleasePrimitiveArrayCritical(
-                    jniEnv,
-                    input, inputPtr,
-                    JNI_ABORT);
+
+            (*jniEnv)->ReleasePrimitiveArrayCritical(jniEnv, input, inputPtr, JNI_ABORT);
         }
         (*jniEnv)->ReleaseByteArrayElements(jniEnv, output, outputPtr, 0);
     }

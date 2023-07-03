@@ -39,9 +39,7 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1process
 
     if (outputPtr)
     {
-        jbyte *inputPtr
-            = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, input, NULL);
-
+        jbyte *inputPtr = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, input, NULL);
         if (inputPtr)
         {
             g722_decode(
@@ -49,10 +47,8 @@ Java_org_atalk_impl_neomedia_codec_audio_g722_G722_g722_1decoder_1process
                     (int16_t *) (outputPtr + outputOffset),
                     (const uint8_t *) (inputPtr + inputOffset),
                     outputLength / (sizeof(int16_t) * 2));
-            (*jniEnv)->ReleasePrimitiveArrayCritical(
-                    jniEnv,
-                    input, inputPtr,
-                    JNI_ABORT);
+
+            (*jniEnv)->ReleasePrimitiveArrayCritical(jniEnv, input, inputPtr, JNI_ABORT);
         }
         (*jniEnv)->ReleaseByteArrayElements(jniEnv, output, outputPtr, 0);
     }

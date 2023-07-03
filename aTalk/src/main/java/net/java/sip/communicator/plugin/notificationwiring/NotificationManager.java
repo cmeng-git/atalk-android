@@ -116,6 +116,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      * Default event type for outgoing calls.
      */
     public static final String OUTGOING_CALL = "OutgoingCall";
+
     /**
      * Default event type for proactive notifications (chat state notifications when chatting).
      */

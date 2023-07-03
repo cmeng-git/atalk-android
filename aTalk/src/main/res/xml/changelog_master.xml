@@ -6,8 +6,22 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.2.0 (06/14/2023)" versioncode="302000">
+    <release version="3.2.1 (07/03/2023)" versioncode="302010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Replace java implemented g729 codec with JNI native codec bcg729, supporting voice activity detection (VAD) and discontinuous transmission (DTX)</change>
+        <change>Fix incorrect g722 codecs entries in FMJPluginConfiguration settings</change>
+        <change>Jingle.Group.Content element does not contains attribute 'creator'; remove null check for this attribute in JingleContent.build()</change>
+        <change>Add support to handle embedded Transport-info in the session-accept from pidgin</change>
+        <change>Interchange the call receive popup message buttons locations between 'Dismiss' and 'Answer'</change>
+        <change>For Conversations 2.12.2 dtls media call compatibility with aTalk; use RSA 'TLS Certificate Signature Algorithm' only e.g. "SHA256withRSA".
+            webrtc-113.0.0 does not support certificate with ECDSA SignatureAndHashAlgorithm</change>
+        <change>aTalk to aTalk support certificates with ECDSA or RSA; select ECDSA for better secure DTLS encryption call e.g. "SHA256withECDSA"</change>
+        <change>TlsServerImpl will offer only cipherSuites according to the user selected 'TLS Certificate Signature Algorithm'</change>
+        <change>Show toast message for any DTLS handshake fatal error to user</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.2.0 (06/14/2023)" versioncode="302000">
         <change>Add options for participant in group chat:
             Start conversation; Grant/Revoke owner privileges; Remove from group chat; Copy nick name in send message entry</change>
         <change>Start conversation if participant is not anonymous, else show contact list UI for user selection</change>

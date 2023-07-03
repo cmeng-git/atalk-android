@@ -947,7 +947,6 @@ public class ZRTPTransformEngine extends SinglePacketTransformer implements Srtp
     public void sendInfo(ZrtpCodes.MessageSeverity severity, EnumSet<?> subCode)
     {
         final String[] version_and_hash = zrtpEngine.getPeerHelloHashSep();
-
         if (version_and_hash != null
                 && receivedSignaledZRTPVersion != null
                 && receivedSignaledZRTPHashValue != null) {

@@ -20,7 +20,6 @@ import javax.media.format.AudioFormat;
  */
 public class JNIDecoder extends AbstractCodec2
 {
-
     /**
      * The list of <code>Format</code>s of audio data supported as input by <code>JNIDecoder</code> instances.
      */
@@ -41,7 +40,6 @@ public class JNIDecoder extends AbstractCodec2
                     Format.NOT_SPECIFIED,
                     Format.byteArray)
     };
-
     static {
         Speex.assertSpeexIsFunctional();
         double[] SUPPORTED_INPUT_SAMPLE_RATES = JNIEncoder.SUPPORTED_INPUT_SAMPLE_RATES;

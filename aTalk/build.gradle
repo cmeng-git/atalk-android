@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 302000
-        versionName "3.2.0"
+        versionCode 302010
+        versionName "3.2.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -491,7 +491,7 @@ dependencies {
 //}
 
 /*
- * The task downloads both libOpus and libSpeex source per the specified version in the scripts.
+ * The task downloads both libOpus, libSpeex, and bcg729 sources per the specified version in the scripts.
  * Build of the dynamic libraries *.so for openssl, vpx, ffmpeg and the two libs etc are performed by android NDKBuild.
  * This task must be executed at least once prior to aTalk apk build process.
  */

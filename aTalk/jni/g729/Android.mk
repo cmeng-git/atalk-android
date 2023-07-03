@@ -24,7 +24,6 @@ LOCAL_SRC_FILES := \
     bcg729/src/LPSynthesisFilter.c \
     bcg729/src/LSPQuantization.c \
     bcg729/src/adaptativeCodebookSearch.c \
-    bcg729/src/cng.c \
     bcg729/src/codebooks.c \
     bcg729/src/computeAdaptativeCodebookGain.c \
     bcg729/src/computeLP.c \
@@ -34,7 +33,6 @@ LOCAL_SRC_FILES := \
     bcg729/src/decodeGains.c \
     bcg729/src/decodeLSP.c \
     bcg729/src/decoder.c \
-    bcg729/src/dtx.c \
     bcg729/src/encoder.c \
     bcg729/src/findOpenLoopPitchDelay.c \
     bcg729/src/fixedCodebookSearch.c \
@@ -45,7 +43,9 @@ LOCAL_SRC_FILES := \
     bcg729/src/preProcessing.c \
     bcg729/src/qLSP2LP.c \
     bcg729/src/utils.c \
+    bcg729/src/cng.c \
     bcg729/src/vad.c \
+    bcg729/src/dtx.c \
     JNIDecoder.c \
     JNIEncoder.c
 

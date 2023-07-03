@@ -161,19 +161,19 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                             .setOngoing(true)
                             .setAutoCancel(false);  // must not allow user to cancel, else no UI to take call
 
-                    // Build answer call action
-                    NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
-                            R.drawable.ic_call_light,
-                            aTalkApp.getResString(R.string.service_gui_ANSWER),
-                            fullScreenPendingIntent).build();
-                    mBuilder.addAction(answerAction);
-
                     // Build end call action
                     NotificationCompat.Action dismissAction = new NotificationCompat.Action.Builder(
                             R.drawable.ic_call_end_light,
                             aTalkApp.getResString(R.string.service_gui_DISMISS),
                             createDismissIntent(nId)).build();
                     mBuilder.addAction(dismissAction);
+
+                    // Build answer call action
+                    NotificationCompat.Action answerAction = new NotificationCompat.Action.Builder(
+                            R.drawable.ic_call_light,
+                            aTalkApp.getResString(R.string.service_gui_ANSWER),
+                            fullScreenPendingIntent).build();
+                    mBuilder.addAction(answerAction);
                 }
                 break;
 

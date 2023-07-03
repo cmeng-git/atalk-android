@@ -5,6 +5,7 @@
  */
 package org.atalk.impl.neomedia.transform.dtls;
 
+import org.atalk.android.aTalkApp;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.RTPConnectorOutputStream;
@@ -433,10 +434,11 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 }
             }
             else {
-                msg += " Received fatal alert " + alertDescription + ".";
+                msg += " Received fatal alert: " + tfa.getMessage() + ".";
             }
         }
         Timber.e(ioe, "%s", msg);
+        aTalkApp.showToastMessage(msg);
         return false;
     }
 
@@ -862,7 +864,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     break;
                 } catch (IOException ioe) {
                     if (handleRunInConnectThreadException(ioe,
-                            "Failed to connect this DTLS client to DTLS server!", i)) {
+                            "Failed to connect DTLS client to server!", i)) {
                         break;
                     }
                 }
@@ -882,7 +884,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     break;
                 } catch (IOException ioe) {
                     if (handleRunInConnectThreadException(ioe,
-                            "Failed to accept a connection from a DTLS client!", i)) {
+                            "Failed to accept DTLS client connection!", i)) {
                         break;
                     }
                 }

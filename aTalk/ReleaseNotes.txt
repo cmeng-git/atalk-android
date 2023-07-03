@@ -1,5 +1,29 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.2.1 (302010)
+Release Date:   07/03/2023
+Author:         cmeng
+- Add JNI native library support for audio codec G729.1 using BCG729 source from:
+  * see https://www.rfc-editor.org/rfc/rfc5459.html & https://datatracker.ietf.org/doc/html/rfc4749
+  * https://gitlab.linphone.org/BC/public/bcg729/-/archive/release/1.1.1/bcg729-1.1.1.tar.gz
+  * Bcg729 is an opensource implementation of both encoder and decoder of the ITU G729 Annex A/B speech codec.
+- Replace G729 Java Codec with JNI Codec BCG729, supporting voice activity detection (VAD) and discontinuous transmission (DTX).
+- Fix incorrect g722 codecs entries in FMJPluginConfiguration settings, should be:
+  * "org.atalk.impl.neomedia.codec.audio.g722.JNIDecoder",
+  * "org.atalk.impl.neomedia.codec.audio.g722.JNIEncoder",
+- Jingle.Group.Content element does not contains attribute 'creator';
+  remove null check for this attribute in JingleContent.build()
+- Add support to handle embedded Transport-info in the session-accept of pidgin, before process Jingle SessionAccept.
+- Interchange the call receive popup message buttons locations between 'Dismiss' and 'Answer'.
+- For Conversations 2.12.2 dtls media call compatibility with aTalk; use RSA 'TLS Certificate Signature Algorithm' only e.g. "SHA256withRSA"
+  webrtc-113.0.0 does not support certificate with ECDSA SignatureAndHashAlgorithm.
+- aTalk to aTalk support certificates with ECDSA or RSA; select ECDSA for better secure DTLS encryption call e.g. "SHA256withECDSA".
+- TlsServerImpl will offer only cipherSuites according to the user selected 'TLS Certificate Signature Algorithm'
+- See TlsUtils#isValidSignatureAlgorithmForServerKeyExchangeshort signatureAlgorithm, int keyExchangeAlgorithm)
+  for matching between SignatureAlgorithm and KeyExchangeAlgorithm
+- Show toast message for any DTLS Fatal error to user.
+
+=========================================================================
 Version:        3.2.0 (302000)
 Release Date:   06/14/2023
 Author:         cmeng

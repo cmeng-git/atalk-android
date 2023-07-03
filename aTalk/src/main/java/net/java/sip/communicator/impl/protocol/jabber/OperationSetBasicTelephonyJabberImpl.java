@@ -55,6 +55,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.confdesc.CallIdExtension;
+import org.jivesoftware.smackx.confdesc.TransportExtension;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleUtil;
@@ -942,6 +943,8 @@ public class OperationSetBasicTelephonyJabberImpl
         switch (action) {
             case session_accept:
                 jingleSI = null;
+                // Allow to processTransportInfo any embedded Transport-info; before processSessionAccept.
+                processTransportInfo(callPeer, jingle);
                 processSessionAccept(callPeer, jingle);
                 break;
 
@@ -1026,7 +1029,7 @@ public class OperationSetBasicTelephonyJabberImpl
 
     // Flag to indicate if the transport-info for session-accept has been processed.
     // Only start to process jingleSA after at least one candidate/mediaType has been processed.
-    private boolean mTIProcess = false;
+    private boolean mTIProcessed = false;
     private Jingle jingleSA = null;
 
     // A reference of the media to be processed for transport-info to avoid media prune by ice4j;
@@ -1046,7 +1049,7 @@ public class OperationSetBasicTelephonyJabberImpl
      * @see IceUdpTransportManager#startConnectivityEstablishment(Map remote)
      */
     private void processSessionAccept(CallPeerJabberImpl callPeer, Jingle jingle) {
-        if (!mTIProcess) {
+        if (!mTIProcessed) {
             jingleSA = jingle;
         }
         else {
@@ -1189,11 +1192,11 @@ public class OperationSetBasicTelephonyJabberImpl
             for (JingleContent content : jingleTransport.getContents()) {
                 contentMedias.remove(content.getName());
             }
-            mTIProcess = contentMedias.isEmpty();
+            mTIProcessed = contentMedias.isEmpty();
 
             try {
-                Timber.d("### Process Jingle transport-info (session-accept) media: %s; %s",
-                        contentMedias, jingleSA);
+                Timber.d("### Process Jingle transport-info (session-accept) media: %s; %s, %s",
+                        contentMedias, mTIProcessed, jingleSA);
                 // For testing of clone function only: cmeng 20220302
 //                JingleContent content = jingleTransport.getContents().get(0);
 //                IceUdpTransport transport = content.getFirstChildElement(IceUdpTransport.class);

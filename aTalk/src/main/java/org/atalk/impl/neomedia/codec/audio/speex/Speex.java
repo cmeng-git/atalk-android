@@ -54,7 +54,6 @@ public final class Speex
 	{
 		speex_lib_get_mode(SPEEX_MODEID_NB);
 	}
-
 	public static native void speex_bits_destroy(long bits);
 
 	public static native long speex_bits_init();

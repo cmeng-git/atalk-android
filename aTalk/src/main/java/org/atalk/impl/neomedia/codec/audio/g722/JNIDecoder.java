@@ -25,6 +25,8 @@ import javax.media.format.*;
  * @author Lyubomir Marinov
  */
 public class JNIDecoder extends AbstractCodec2 {
+    private long decoder;
+
     static final Format[] SUPPORTED_INPUT_FORMATS = new Format[]{
             new AudioFormat(
                     Constants.G722_RTP,
@@ -45,8 +47,6 @@ public class JNIDecoder extends AbstractCodec2 {
                     Format.NOT_SPECIFIED /* frameRate */,
                     Format.byteArray)
     };
-
-    private long decoder;
 
     /**
      * Initializes a new {@code JNIDecoderImpl} instance.

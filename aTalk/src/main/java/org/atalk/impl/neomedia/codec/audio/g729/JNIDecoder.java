@@ -1,20 +1,11 @@
 /*
- * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.g729;
+
+import static org.atalk.impl.neomedia.codec.audio.g729.G729.L_FRAME;
 
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.util.ArrayIOUtils;
@@ -29,25 +20,13 @@ import javax.media.format.AudioFormat;
  * @author Eng Chong Meng
  */
 public class JNIDecoder extends AbstractCodec2 {
-    private static final short BIT_0 = Ld8k.BIT_0;
-
-    private static final short BIT_1 = Ld8k.BIT_1;
-
-    private static final int L_FRAME = Ld8k.L_FRAME;
-
-    private static final int SERIAL_SIZE = Ld8k.SERIAL_SIZE;
-
-    private static final short SIZE_WORD = Ld8k.SIZE_WORD;
-
-    private static final short SYNC_WORD = Ld8k.SYNC_WORD;
-
     private static final int INPUT_FRAME_SIZE_IN_BYTES = L_FRAME / 8;
 
     private static final int OUTPUT_FRAME_SIZE_IN_BYTES = 2 * L_FRAME;
 
     private long decoder;
 
-    private short[] serial;
+    private byte[] bitStream;
 
     private short[] sp16;
 
@@ -86,10 +65,12 @@ public class JNIDecoder extends AbstractCodec2 {
     @Override
     protected void doClose() {
         G729.g729_decoder_close(decoder);
+        sp16 = null;
+        bitStream = null;
     }
 
     /**
-     * Opens this <code>Codec</code> and acquires the resources that it needs to operate. A call to
+     * Open this <code>Codec</code> and acquire the resources that it needs to operate. A call to
      * {@link PlugIn#open()} on this instance will result in a call to <code>doOpen</code> only if
      * {@link AbstractCodec#opened} is <code>false</code>. All required input and/or output formats are
      * assumed to have been set on this <code>Codec</code> before <code>doOpen</code> is called.
@@ -100,23 +81,12 @@ public class JNIDecoder extends AbstractCodec2 {
     @Override
     protected void doOpen()
             throws ResourceUnavailableException {
-        serial = new short[SERIAL_SIZE];
         sp16 = new short[L_FRAME];
+        bitStream = new byte[INPUT_FRAME_SIZE_IN_BYTES];
         decoder = G729.g729_decoder_open();
     }
 
-    private void depacketize(byte[] inFrame, int inFrameOffset, short[] serial) {
-        serial[0] = SYNC_WORD;
-        serial[1] = SIZE_WORD;
-        for (int s = 0; s < L_FRAME; s++) {
-            int in = inFrame[inFrameOffset + s / 8];
-
-            in &= 1 << (7 - (s % 8));
-            serial[2 + s] = (0 != in) ? BIT_1 : BIT_0;
-        }
-    }
-
-    /* ****************************************************************************/
+    //****************************************************************************/
     /* bcg729Decoder :                                                           */
     /*    parameters:                                                            */
     /*      -(i) decoderChannelContext : the channel context data                */
@@ -127,8 +97,7 @@ public class JNIDecoder extends AbstractCodec2 {
     /*      -(i) rfc3389PayloadFlag: true when CN payload follow rfc3389         */
     /*      -(o) signal : a decoded frame 80 samples (16 bits PCM)               */
     /*                                                                           */
-    //*****************************************************************************/
-    // void bcg729Decoder(bcg729DecoderChannelContextStruct *decoderChannelContext, const uint8_t bitStream[], uint8_t bitStreamLength, uint8_t frameErasureFlag, uint8_t SIDFrameFlag, uint8_t rfc3389PayloadFlag, int16_t signal[])
+    //****************************************************************************/
     /**
      * Implements AbstractCodec2#doProcess(Buffer, Buffer).
      */
@@ -151,36 +120,26 @@ public class JNIDecoder extends AbstractCodec2 {
 
         int outOffset = outBuffer.getOffset();
         int outLength = OUTPUT_FRAME_SIZE_IN_BYTES * frameCount;
-        byte[] out = // new char[]{};
-            validateByteArraySize(outBuffer, outOffset + outLength, false);
+        byte[] out = validateByteArraySize(outBuffer, outOffset + outLength, false);
 
         for (int i = 0; i < frameCount; i++) {
-            depacketize(in, inOffset, serial);
+            System.arraycopy(in, inOffset, bitStream, 0, INPUT_FRAME_SIZE_IN_BYTES);
+
             inLength -= INPUT_FRAME_SIZE_IN_BYTES;
             inOffset += INPUT_FRAME_SIZE_IN_BYTES;
 
-            // void bcg729Decoder(bcg729DecoderChannelContextStruct *decoderChannelContext,
-            // const uint8_t bitStream[],
-            // uint8_t bitStreamLength,
-            // uint8_t frameErasureFlag,
-            // uint8_t SIDFrameFlag,
-            // uint8_t rfc3389PayloadFlag,
-            // int16_t signal[])
-
-            G729.g729_decoder_process(
-                    decoder, in, 10, in, 0, 0, out);
+//            if ((i % 50) == 0 || frameCount < 5) {
+//                Timber.w("G729 Decode a frame: %s", bytesToHex(bitStream, 10));
+//            }
+            G729.g729_decoder_process(decoder, bitStream, INPUT_FRAME_SIZE_IN_BYTES, 0, 0, 0, sp16);
 
             writeShorts(sp16, out, outOffset);
             outOffset += OUTPUT_FRAME_SIZE_IN_BYTES;
         }
 
-        // outBuffer.setDuration( (outLength * 1000000L) / (16L /* kHz */ * 2L /* sampleSizeInBits / 8 */));
-        // outBuffer.setFormat(getOutputFormat());
-
         inBuffer.setLength(inLength);
         inBuffer.setOffset(inOffset);
         outBuffer.setLength(outLength);
-
         return BUFFER_PROCESSED_OK;
     }
 

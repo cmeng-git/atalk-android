@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Meaning of the colors:</br><br/>
  * * blue - codec will be used in call<br/>
  * * white / black - one of the codecs for particular media type, but it won't be used
- * as there is another codec before it on the list<br/>
+ *   as there is another codec before it on the list<br/>
  * * grey500 - codec is banned and won't be used<br/>
  *
  * Click on codec to toggle it's banned state. Changes are not persistent between

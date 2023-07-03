@@ -6,7 +6,7 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
-import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_ALGORITHM;
+import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIGNATURE_AND_HASH_ALGORITHM;
 import static org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl.generateMyZid;
 
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -1153,8 +1153,8 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             target = transportManager.getStreamTarget(mediaType);
         }
 
-        // cmeng - get transport candidate from session-accept may produce null as <transport/> child element can
-        // be null if candidates are sent separately. No reliable, fixed with above
+        // cmeng - get transport candidate from session-accept may produce null as <transport/> child
+        // element can be null if candidates are sent separately. No reliable, fixed with above
         // if (target == null)
         //    target = JingleUtils.extractDefaultTarget(content);
         Timber.d("### Process media content for: sender = %s: %s => %s", sender, mediaType, target);
@@ -1818,7 +1818,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                         setup = DtlsControl.Setup.ACTPASS;
                     }
                     else { // cmeng: must update transport-info with ufrag and pwd
-                        String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+                        String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_AND_HASH_ALGORITHM);
                         DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
 
                         dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);
@@ -1926,7 +1926,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
                 addFingerprintToLocalTransport = addDtlsSrtpAdvertisedEncryption(false, remoteContent, mediaType, false);
             }
             if (addFingerprintToLocalTransport) {
-                String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_ALGORITHM);
+                String tlsCertSA = accountID.getAccountPropertyString(ProtocolProviderFactory.DTLS_CERT_SIGNATURE_ALGORITHM, DEFAULT_SIGNATURE_AND_HASH_ALGORITHM);
                 DtlsControlImpl.setTlsCertificateSA(tlsCertSA);
 
                 DtlsControl dtlsControl = (DtlsControl) srtpControls.getOrCreate(mediaType, SrtpControlType.DTLS_SRTP, null);

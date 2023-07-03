@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "### Fetching aTalk jni libraries source for speex, ogg, and opus ###"
+echo "### Fetching aTalk jni libraries source for speex, ogg, opus and bcg729 ###"
 
 pushd opus || exit
   echo "### Fetching opus library source v1.3.1 ###"
@@ -12,7 +12,7 @@ pushd speex || exit
   ./init_libSpeexOgg.sh
 popd || return
 
-#pushd g729 || exit
-#  echo "### Fetching g729 (bcg729-1.1.1) libraries source ###"
-#  ./init_libbcg722.sh
-#popd || return
+pushd g729 || exit
+  echo "### Fetching g729 (bcg729-1.1.1) libraries source ###"
+  ./init_libbcg729.sh
+popd || return

@@ -20,9 +20,9 @@
 
 JNIEXPORT jlong JNICALL
 Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1open
-        (JNIEnv *jniEnv, jclass clazz)
+    (JNIEnv *jniEnv, jclass clazz, jint enableVAD)
 {
-    return (jlong) (intptr_t) initBcg729EncoderChannel(0);
+    return (jlong) (intptr_t) initBcg729EncoderChannel(enableVAD);
 }
 
 JNIEXPORT void JNICALL
@@ -33,26 +33,18 @@ Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1close
     closeBcg729EncoderChannel(encoderChannelContext);
 }
 
-JNIEXPORT void JNICALL
+JNIEXPORT jint JNICALL
 Java_org_atalk_impl_neomedia_codec_audio_g729_G729_g729_1encoder_1process
-    (JNIEnv *jniEnv, jclass clazz, jlong encoder, jcharArray inputFrame, jbyteArray bitStream, jint bsLength)
+    (JNIEnv *jniEnv, jclass clazz, jlong encoder, jshortArray inputFrame, jbyteArray bitStream)
 {
     bcg729EncoderChannelContextStruct *encoderChannelContext = (bcg729EncoderChannelContextStruct *) (intptr_t) encoder;
-    jboolean *bsPtr = (jboolean*) (*jniEnv)->GetByteArrayElements(jniEnv, bitStream, NULL);
 
-    // jbyte *outputPtr = (*jniEnv)->GetByteArrayElements(jniEnv, output, NULL);
-    if (bsPtr)
-    {
-        jshort *inFramePtr = (*jniEnv)->GetPrimitiveArrayCritical(jniEnv, inputFrame, NULL);
-        if (inFramePtr)
-        {
-			bcg729Encoder(encoderChannelContext, inFramePtr, bsPtr, (jboolean *) &bsLength);
+    jbyte *bsPtr = (*jniEnv)->GetByteArrayElements(jniEnv, bitStream, NULL);
+    jshort *inFramePtr = (*jniEnv)->GetShortArrayElements(jniEnv, inputFrame, NULL);
+    jint bitStreamLength = 0;
 
-            (*jniEnv)->ReleasePrimitiveArrayCritical(
-                    jniEnv,
-                    inputFrame, inFramePtr,
-                    JNI_ABORT);
-        }
-        // (*jniEnv)->ReleaseByteArrayElements(jniEnv, output, outputPtr, 0);
-    }
+    bcg729Encoder(encoderChannelContext, inFramePtr, bsPtr, &bitStreamLength);
+    (*jniEnv)->ReleaseByteArrayElements(jniEnv, bitStream, bsPtr, 0);
+
+    return bitStreamLength;
 }
