@@ -17,10 +17,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoomInvitation;
+import net.java.sip.communicator.service.protocol.ChatRoomInvitation;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

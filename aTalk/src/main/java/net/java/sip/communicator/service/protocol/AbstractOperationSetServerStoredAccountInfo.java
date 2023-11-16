@@ -3,7 +3,9 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import timber.log.Timber;
 

@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import javax.media.rtp.*;
+import javax.media.rtp.RTPConnector;
 
 /**
  * Describes an <code>RTPConnector</code> associated with an endpoint from and to which an

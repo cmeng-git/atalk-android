@@ -28,7 +28,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import org.atalk.android.R;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import timber.log.Timber;
 

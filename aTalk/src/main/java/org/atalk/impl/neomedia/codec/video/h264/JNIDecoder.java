@@ -7,7 +7,6 @@ package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.iharder.Base64;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
@@ -17,6 +16,7 @@ import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.KeyFrameControl;
 
+import java.awt.Dimension;
 import java.io.ByteArrayOutputStream;
 
 import javax.media.Buffer;

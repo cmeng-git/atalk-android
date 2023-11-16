@@ -6,19 +6,12 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import net.java.sip.communicator.plugin.desktoputil.*;
-
-import java.awt.Component;
-
-import java.util.*;
-
 /**
  * The <code>UIGroup</code> represents the user interface contact list group.
  *
  * @author Yana Stamcheva
  */
-public abstract class UIGroup
-{
+public abstract class UIGroup {
     /**
      * The preferred height of this group in the contact list.
      */
@@ -28,12 +21,12 @@ public abstract class UIGroup
      * The display details of this group.
      */
     private String displayDetails = "";
-    
+
     /**
      * The maximum number of contacts in the contact source.
      */
     public static int MAX_GROUPS = 10000000;
-    
+
     /**
      * The maximum number of contacts in the group.
      */
@@ -62,8 +55,7 @@ public abstract class UIGroup
      *
      * @return the display details of this contact
      */
-    public String getDisplayDetails()
-    {
+    public String getDisplayDetails() {
         return displayDetails;
     }
 
@@ -72,8 +64,7 @@ public abstract class UIGroup
      *
      * @return the display details of this group
      */
-    public void setDisplayDetails(String displayDetails)
-    {
+    public void setDisplayDetails(String displayDetails) {
         this.displayDetails = displayDetails;
     }
 
@@ -122,19 +113,11 @@ public abstract class UIGroup
     public abstract String getId();
 
     /**
-     * Returns the right button menu for this group.
-     *
-     * @return the right button menu component for this group
-     */
-    public abstract Component getRightButtonMenu();
-
-    /**
      * Returns the preferred height of this group in the contact list.
      *
      * @return the preferred height of this group in the contact list
      */
-    public int getPreferredHeight()
-    {
+    public int getPreferredHeight() {
         return preferredGroupHeight;
     }
 
@@ -144,18 +127,7 @@ public abstract class UIGroup
      * @param preferredHeight the preferred height of this group in the contact
      * list
      */
-    public void setPreferredHeight(int preferredHeight)
-    {
+    public void setPreferredHeight(int preferredHeight) {
         this.preferredGroupHeight = preferredHeight;
-    }
-
-    /**
-     * Returns all custom action buttons for this group.
-     *
-     * @return a list of all custom action buttons for this group
-     */
-    public Collection<SIPCommButton> getCustomActionButtons()
-    {
-        return null;
     }
 }

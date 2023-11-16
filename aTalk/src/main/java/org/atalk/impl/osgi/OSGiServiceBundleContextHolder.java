@@ -11,7 +11,9 @@ import org.atalk.service.osgi.BundleContextHolder;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import timber.log.Timber;
 

@@ -15,11 +15,15 @@ package net.java.sip.communicator.service.protocol.sip;
 
 import android.content.ContentValues;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A SIP extension of the account ID property.
@@ -69,12 +73,9 @@ public class SipAccountID extends AccountID
 	/**
 	 * Creates a SIP account id from the specified ide and account properties.
 	 *
-	 * @param userID
-	 *        the user id part of the SIP uri identifying this contact.
-	 * @param accountProperties
-	 *        any other properties necessary for the account.
-	 * @param serverName
-	 *        the name of the server that the user belongs to.
+	 * @param userID the user id part of the SIP uri identifying this contact.
+	 * @param accountProperties  any other properties necessary for the account.
+	 * @param serverName the name of the server that the user belongs to.
 	 */
 	protected SipAccountID(String userID, Map<String, String> accountProperties, String serverName)
 	{
@@ -86,7 +87,7 @@ public class SipAccountID extends AccountID
 	 */
 	public SipAccountID()
 	{
-		super(null, new HashMap<String, String>(), ProtocolNames.SIP, null);
+		super(null, new HashMap<>(), ProtocolNames.SIP, null);
 	}
 
 	/**

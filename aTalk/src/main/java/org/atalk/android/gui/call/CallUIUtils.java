@@ -1,11 +1,11 @@
 package org.atalk.android.gui.call;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.R;
-import org.atalk.android.aTalkApp;
 
 import java.util.Iterator;
 

@@ -1,10 +1,8 @@
 package javax.swing;
 
-
-import net.java.sip.communicator.plugin.desktoputil.SelectedObject;
-
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
+
 import javax.swing.event.EventListenerList;
 
 public class JMenuItem implements Accessible {
@@ -69,11 +67,6 @@ public class JMenuItem implements Accessible {
 	public boolean isVisible() {
 		// TODO Auto-generated method stub - cmeng
 		return false;
-	}
-
-	public void setSelected(SelectedObject selectedObject) {
-		// TODO Auto-generated method stub - cmeng
-		
 	}
 
 	public void setSelected(boolean paramBoolean) {

@@ -16,8 +16,6 @@
 
 package org.atalk.service.neomedia;
 
-import java.util.*;
-
 /**
  * @author Boris Grozev
  */

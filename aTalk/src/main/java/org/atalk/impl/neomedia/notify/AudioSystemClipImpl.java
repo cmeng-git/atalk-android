@@ -13,7 +13,11 @@ import org.atalk.service.audionotifier.AudioNotifierService;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Codec;
+import javax.media.Format;
+import javax.media.Renderer;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;
@@ -150,6 +154,7 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
                     }
                 }
             }
+
             Buffer rendererBuffer = buffer;
             Buffer resamplerBuffer;
             rendererBuffer.setFormat(rendererFormat);
@@ -230,8 +235,11 @@ public class AudioSystemClipImpl extends AbstractSCAudioClip
              * XXX We do not know whether the Renderer implementation of the stop method will wait
              * for the playback to complete.
              */
-            if (success && (audioStreamFormat != null) && (audioStreamLength > 0)
-                    && (rendererProcessStartTime > 0) && isStarted()) {
+            if (success
+                    && (audioStreamFormat != null)
+                    && (audioStreamLength > 0)
+                    && (rendererProcessStartTime > 0)
+                    && isStarted()) {
                 long audioStreamDuration = (audioStreamFormat.computeDuration(audioStreamLength) + 999999) / 1000000;
                 if (audioStreamDuration > 0) {
                     /*

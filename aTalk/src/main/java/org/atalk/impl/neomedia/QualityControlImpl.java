@@ -5,10 +5,11 @@
  */
 package org.atalk.impl.neomedia;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
+
+import java.awt.Dimension;
 
 import timber.log.Timber;
 
@@ -89,16 +90,6 @@ class QualityControlImpl implements QualityControl
     }
 
     /**
-     * Does nothing specific locally.
-     *
-     * @param preset the max preset
-     */
-    public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
-    {
-        setRemoteSendMaxPreset(preset);
-    }
-
-    /**
      * Changes remote send preset, the one we will receive.
      *
      * @param preset
@@ -106,6 +97,17 @@ class QualityControlImpl implements QualityControl
     public void setRemoteSendMaxPreset(QualityPreset preset)
     {
         this.maxPreset = preset;
+    }
+
+    /**
+     * Does nothing specific locally.
+     *
+     * @param preset the max preset
+     */
+    @Override
+    public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
+    {
+        setRemoteSendMaxPreset(preset);
     }
 
     /**

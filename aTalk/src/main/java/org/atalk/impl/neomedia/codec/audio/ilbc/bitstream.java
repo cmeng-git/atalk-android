@@ -129,10 +129,9 @@ class bitstream
 				buffer[buffer_pos] = 0;
 			}
 
-			posLeft = 8 - pos;
 
 			/* Insert index into the bitstream */
-
+			posLeft = 8 - pos;
 			if (bitno <= posLeft) {
 				buffer[buffer_pos] |= (byte) (index << (posLeft - bitno));
 				pos += bitno;

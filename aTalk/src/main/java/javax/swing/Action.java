@@ -1,7 +1,6 @@
 package javax.swing;
 
 import java.awt.event.ActionListener;
-
 import java.beans.PropertyChangeListener;
 
 public abstract interface Action extends ActionListener {

@@ -20,7 +20,12 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>ContactDetail</code> is a detail of a <code>SourceContact</code>

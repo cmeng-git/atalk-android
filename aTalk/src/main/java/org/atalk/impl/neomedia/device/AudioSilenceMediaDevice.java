@@ -17,8 +17,10 @@ package org.atalk.impl.neomedia.device;
 
 import org.atalk.service.neomedia.MediaDirection;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.Player;
+import javax.media.Processor;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
 
 /**
  * Implements a <code>MediaDevice</code> which provides silence in the form of audio

@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import android.media.audiofx.*;
+import android.media.audiofx.AcousticEchoCanceler;
+import android.media.audiofx.AutomaticGainControl;
+import android.media.audiofx.NoiseSuppressor;
 
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AudioTrackRenderer;
 import org.atalk.service.neomedia.codec.Constants;
@@ -15,7 +17,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.Renderer;
 import javax.media.format.AudioFormat;
 
 /**
@@ -76,8 +80,7 @@ public class AudioRecordSystem extends AudioSystem
             double sampleRate = Constants.AUDIO_SAMPLE_RATES[i];
 
             // Certain sample rates do not seem to be supported by android.
-            if (sampleRate == 48000)
-                continue;
+            //??? if (sampleRate == 48000) continue; cmeng (20231021)
 
             formats.add(new AudioFormat(AudioFormat.LINEAR,
                     sampleRate,

@@ -6,7 +6,9 @@
 package net.java.sip.communicator.plugin.provisioning;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.ConfigurationForm;
+import net.java.sip.communicator.service.gui.LazyConfigurationForm;
+import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 import net.java.sip.communicator.service.provisioning.ProvisioningService;
@@ -14,7 +16,9 @@ import net.java.sip.communicator.service.provisioning.ProvisioningService;
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

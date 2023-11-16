@@ -6,7 +6,9 @@
 package org.atalk.impl.androidresources;
 
 import android.content.Context;
-import android.content.res.*;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -18,8 +20,14 @@ import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
 import java.util.Locale;
 import java.util.ResourceBundle;
 

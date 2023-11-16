@@ -14,7 +14,9 @@ import android.widget.Spinner;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

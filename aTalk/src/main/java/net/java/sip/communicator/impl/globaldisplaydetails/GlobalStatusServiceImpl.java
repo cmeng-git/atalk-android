@@ -6,12 +6,18 @@
 package net.java.sip.communicator.impl.globaldisplaydetails;
 
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
-import net.java.sip.communicator.util.account.*;
+import net.java.sip.communicator.util.account.AccountStatusUtils;
+import net.java.sip.communicator.util.account.AccountUtils;
+import net.java.sip.communicator.util.account.LoginManager;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
@@ -21,8 +27,6 @@ import org.atalk.service.configuration.ConfigurationService;
 import java.util.Collection;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredProviders;
 
 /**
  * Global statuses service impl - The ActionBar status indicator acts both as global presence
@@ -68,7 +72,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
     public PresenceStatus getGlobalPresenceStatus()
     {
         int status = PresenceStatus.OFFLINE;
-        Collection<ProtocolProviderService> pProviders = getRegisteredProviders();
+        Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
         // If we don't have registered providers we return offline status.
         if (pProviders.isEmpty())
             return getPresenceStatus(status);

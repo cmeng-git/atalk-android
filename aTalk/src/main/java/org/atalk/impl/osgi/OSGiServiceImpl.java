@@ -21,13 +21,24 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.BundleContextHolder;
 import org.atalk.service.osgi.OSGiService;
 import org.atalk.util.OSUtils;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 /**

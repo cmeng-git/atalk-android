@@ -18,7 +18,9 @@
 package org.atalk.persistance;
 
 import android.annotation.SuppressLint;
-import android.content.*;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
@@ -27,7 +29,10 @@ import android.text.TextUtils;
 
 import org.atalk.android.gui.share.Attachment;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import timber.log.Timber;
 

@@ -16,13 +16,15 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.jmfext.media.protocol.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.BufferTransferHandler;

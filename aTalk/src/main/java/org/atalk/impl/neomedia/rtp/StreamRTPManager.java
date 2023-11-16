@@ -7,7 +7,9 @@ package org.atalk.impl.neomedia.rtp;
 
 import org.atalk.impl.neomedia.jmfext.media.rtp.RTPSessionMgr;
 import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.RTPTranslator;
+import org.atalk.service.neomedia.SSRCFactory;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -15,7 +17,15 @@ import java.util.Vector;
 import javax.media.Format;
 import javax.media.format.UnsupportedFormatException;
 import javax.media.protocol.DataSource;
-import javax.media.rtp.*;
+import javax.media.rtp.GlobalReceptionStats;
+import javax.media.rtp.GlobalTransmissionStats;
+import javax.media.rtp.RTPConnector;
+import javax.media.rtp.RTPManager;
+import javax.media.rtp.ReceiveStreamListener;
+import javax.media.rtp.RemoteListener;
+import javax.media.rtp.SendStream;
+import javax.media.rtp.SendStreamListener;
+import javax.media.rtp.SessionListener;
 
 import timber.log.Timber;
 

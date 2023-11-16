@@ -1,10 +1,14 @@
 package org.atalk.persistance.migrations;
 
+import static org.atalk.persistance.DatabaseBackend.CREATE_IDENTITIES_STATEMENT;
+import static org.atalk.persistance.DatabaseBackend.CREATE_OMEMO_DEVICES_STATEMENT;
+import static org.atalk.persistance.DatabaseBackend.CREATE_PREKEYS_STATEMENT;
+import static org.atalk.persistance.DatabaseBackend.CREATE_SESSIONS_STATEMENT;
+import static org.atalk.persistance.DatabaseBackend.CREATE_SIGNED_PREKEYS_STATEMENT;
+
 import android.database.sqlite.SQLiteDatabase;
 
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
-
-import static org.atalk.persistance.DatabaseBackend.*;
 
 public class MigrationTo2
 {

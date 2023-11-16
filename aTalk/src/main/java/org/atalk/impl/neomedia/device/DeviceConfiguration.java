@@ -6,7 +6,6 @@
 package org.atalk.impl.neomedia.device;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;
@@ -17,12 +16,21 @@ import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.PlugInManager;
+import javax.media.Renderer;
 import javax.media.format.VideoFormat;
 
 import timber.log.Timber;
@@ -734,7 +742,8 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
     {
         String propertyName = ev.getPropertyName();
 
-        if (AUDIO_CAPTURE_DEVICE.equals(propertyName) || AUDIO_NOTIFY_DEVICE.equals(propertyName)
+        if (AUDIO_CAPTURE_DEVICE.equals(propertyName)
+                || AUDIO_NOTIFY_DEVICE.equals(propertyName)
                 || AUDIO_PLAYBACK_DEVICE.equals(propertyName)) {
             /*
              * The current audioSystem may represent a default/automatic selection which may have
@@ -872,8 +881,7 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
                 throw new IllegalStateException(MediaServiceImpl.DISABLE_SET_AUDIO_SYSTEM_PNAME);
             }
 
-            // Removes the registration to change listener only if this audio
-            // system does not support reinitialize.
+            // Removes the registration to change listener only if this audio system does not support reinitialize.
             if ((this.audioSystem != null)
                     && (this.audioSystem.getFeatures() & DeviceSystem.FEATURE_REINITIALIZE) == 0) {
                 this.audioSystem.removePropertyChangeListener(this);

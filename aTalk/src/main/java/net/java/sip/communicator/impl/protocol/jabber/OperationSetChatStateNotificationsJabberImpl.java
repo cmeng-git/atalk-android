@@ -16,8 +16,16 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.event.ChatStateNotificationEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 
 import org.atalk.android.gui.chat.MetaContactChatTransport;
@@ -26,11 +34,17 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.chatstates.*;
+import org.jivesoftware.smackx.chatstates.ChatState;
+import org.jivesoftware.smackx.chatstates.ChatStateListener;
+import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.xevent.*;
-import org.jxmpp.jid.*;
+import org.jivesoftware.smackx.xevent.MessageEventManager;
+import org.jivesoftware.smackx.xevent.MessageEventNotificationListener;
+import org.jivesoftware.smackx.xevent.MessageEventRequestListener;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 
 import java.util.List;
 

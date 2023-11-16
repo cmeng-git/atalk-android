@@ -9,9 +9,9 @@ package net.java.sip.communicator.service.gui.event;
 import net.java.sip.communicator.service.gui.Chat;
 
 import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-
 import java.util.List;
+
+import javax.swing.JMenuItem;
 
 /**
  * Listens for the chat's right click menu becoming visible so menu items can be offered.

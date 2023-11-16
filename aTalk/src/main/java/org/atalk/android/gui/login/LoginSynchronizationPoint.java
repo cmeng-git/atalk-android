@@ -21,7 +21,9 @@ import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJab
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;

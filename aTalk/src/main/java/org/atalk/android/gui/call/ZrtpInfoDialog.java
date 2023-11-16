@@ -7,22 +7,34 @@ package org.atalk.android.gui.call;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityMessageEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import java.awt.Component;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 
+import java.awt.Component;
 import java.util.Iterator;
 import java.util.List;
 

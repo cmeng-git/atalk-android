@@ -5,7 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallPeerConferenceListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityStatusEvent;
+import net.java.sip.communicator.service.protocol.event.ConferenceMembersSoundLevelListener;
+import net.java.sip.communicator.service.protocol.event.SoundLevelListener;
 
 import org.jxmpp.jid.Jid;
 
@@ -35,12 +40,12 @@ public interface CallPeer
      * marking the beginning of a participation in a <code>Call</code> or that such a transition may
      * have happened but the time of its occurrence is unknown.
      */
-    public static long CALL_DURATION_START_TIME_UNKNOWN = 0;
+    long CALL_DURATION_START_TIME_UNKNOWN = 0;
 
     /**
      * The mute property name.
      */
-    public static final String MUTE_PROPERTY_NAME = "Mute";
+    String MUTE_PROPERTY_NAME = "Mute";
 
     /**
      * Adds a specific <code>CallPeerConferenceListener</code> to the list of listeners interested in

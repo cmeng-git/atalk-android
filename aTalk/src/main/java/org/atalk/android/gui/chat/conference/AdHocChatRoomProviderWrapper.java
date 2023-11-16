@@ -5,12 +5,12 @@
  */
 package org.atalk.android.gui.chat.conference;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.java.sip.communicator.service.protocol.AdHocChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolIcon;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Valentin Martinet

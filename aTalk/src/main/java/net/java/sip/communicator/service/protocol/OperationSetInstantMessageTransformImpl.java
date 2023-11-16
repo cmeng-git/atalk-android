@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @author George Politis

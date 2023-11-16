@@ -20,7 +20,11 @@ import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChang
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -158,8 +162,7 @@ public class NetworkEventDispatcher implements Runnable
 
                     //store the ref of the listener in case someone resets
                     //it before we've had a chance to notify it.
-                    listenersCopy = new ArrayList
-                            <NetworkConfigurationChangeListener>(listeners);
+                    listenersCopy = new ArrayList<>(listeners);
 
                     Iterator<Map.Entry<ChangeEvent, Integer>> iter =
                             eventsToDispatch.entrySet().iterator();

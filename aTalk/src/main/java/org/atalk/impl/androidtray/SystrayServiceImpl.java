@@ -58,7 +58,7 @@ public class SystrayServiceImpl extends AbstractSystrayService
      */
     public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler)
     {
-        PopupMessageHandler oldHandler = getActivePopupHandler();
+        PopupMessageHandler oldHandler = getActivePopupMessageHandler();
 
         if (oldHandler != null)
             oldHandler.removePopupMessageListener(popupMessageListener);

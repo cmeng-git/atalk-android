@@ -13,9 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.event.UserSearchProviderListener;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import java.util.List;
 
 /**
  * This operation set provides interface for user search service.

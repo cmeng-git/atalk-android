@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.history.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.history.HistoryQuery;
 
-import net.java.sip.communicator.service.history.*;
+import java.util.EventObject;
 
 /**
  * The <code>HistoryQueryStatusEvent</code> is triggered each time a <code>HistoryQuery</code> changes its status. Possible

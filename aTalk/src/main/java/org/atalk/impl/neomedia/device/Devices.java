@@ -5,12 +5,14 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import java.util.*;
-
-import javax.media.*;
-
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.media.MediaLocator;
 
 /**
  * Manages the list of active (currently plugged-in) capture/notify/playback devices and manages
@@ -189,7 +191,7 @@ public abstract class Devices
             }
         }
 
-        // Else if nothing was found, then returns null.
+        // if nothing was found, then returns null.
         return null;
     }
 

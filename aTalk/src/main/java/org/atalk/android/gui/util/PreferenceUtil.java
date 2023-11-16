@@ -5,7 +5,10 @@
  */
 package org.atalk.android.gui.util;
 
-import androidx.preference.*;
+import androidx.preference.CheckBoxPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.PreferenceScreen;
 
 /**
  * Utility class exposing methods to operate on <code>Preference</code> subclasses.

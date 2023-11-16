@@ -17,7 +17,9 @@ package net.java.sip.communicator.impl.provdisc.dhcp;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.*;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import timber.log.Timber;
 

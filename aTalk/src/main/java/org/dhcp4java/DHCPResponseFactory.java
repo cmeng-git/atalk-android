@@ -18,8 +18,6 @@
  */
 package org.dhcp4java;
 
-import java.net.*;
-
 import static org.dhcp4java.DHCPConstants.BOOTREPLY;
 import static org.dhcp4java.DHCPConstants.DHCPACK;
 import static org.dhcp4java.DHCPConstants.DHCPDISCOVER;
@@ -32,6 +30,10 @@ import static org.dhcp4java.DHCPConstants.DHO_DHCP_MESSAGE;
 import static org.dhcp4java.DHCPConstants.DHO_DHCP_SERVER_IDENTIFIER;
 import static org.dhcp4java.DHCPConstants.INADDR_ANY;
 import static org.dhcp4java.DHCPConstants.INADDR_BROADCAST;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 /**
  * This class provides some standard factories for DHCP responses.
@@ -67,7 +69,7 @@ public final class DHCPResponseFactory
      * @param options
      * @return the newly created OFFER Packet
      */
-    public static final DHCPPacket makeDHCPOffer(
+    public static DHCPPacket makeDHCPOffer(
             DHCPPacket request,
             InetAddress offeredAddress,
             int leaseTime,

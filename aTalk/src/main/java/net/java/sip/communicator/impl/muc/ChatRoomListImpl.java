@@ -18,12 +18,20 @@ package net.java.sip.communicator.impl.muc;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.service.muc.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapperListener;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
-import net.java.sip.communicator.util.Logger;
 
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.persistance.DatabaseBackend;
@@ -31,9 +39,15 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import timber.log.Timber;
 

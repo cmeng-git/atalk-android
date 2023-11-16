@@ -8,8 +8,8 @@ package org.atalk.impl.neomedia.device;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
-import org.atalk.util.MediaType;
 import org.atalk.service.resources.ResourceManagementService;
+import org.atalk.util.MediaType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +19,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
-import javax.sound.sampled.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.MediaLocator;
+import javax.media.Renderer;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import timber.log.Timber;
 

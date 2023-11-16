@@ -1,6 +1,7 @@
 package net.java.sip.communicator.plugin.otr.authdialog;
 
 import java.awt.Color;
+
 import javax.swing.JTextArea;
 
 /**

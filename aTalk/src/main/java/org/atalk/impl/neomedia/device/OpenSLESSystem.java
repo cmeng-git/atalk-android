@@ -13,7 +13,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.Renderer;
 import javax.media.format.AudioFormat;
 
 /**

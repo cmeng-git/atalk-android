@@ -15,10 +15,17 @@
  */
 package org.atalk.util.swing;
 
-import java.awt.*;
-import javax.swing.JLabel;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import javax.swing.JLabel;
 
 /**
  * Implements the <code>LayoutManager</code> which lays out the local and remote videos in a video <code>Call</code>.
@@ -27,8 +34,7 @@ import java.util.*;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public class VideoLayout extends FitLayout
-{
+public class VideoLayout extends FitLayout {
     /**
      * The video canvas constraint.
      */
@@ -106,8 +112,7 @@ public class VideoLayout extends FitLayout
      * @param conference <code>true</code> if the new instance will be dedicated to
      * a conference; otherwise, <code>false</code>
      */
-    public VideoLayout(boolean conference)
-    {
+    public VideoLayout(boolean conference) {
         this.conference = conference;
     }
 
@@ -118,8 +123,7 @@ public class VideoLayout extends FitLayout
      * @param comp the component to add
      */
     @Override
-    public void addLayoutComponent(String name, Component comp)
-    {
+    public void addLayoutComponent(String name, Component comp) {
         super.addLayoutComponent(name, comp);
         synchronized (constraints) {
             constraints.put(comp, name);
@@ -154,12 +158,12 @@ public class VideoLayout extends FitLayout
      * the aspect ratio to be compared to the aspect ratio of <code>size</code>
      * @param height the height which defines in combination with <code>width</code>
      * the aspect ratio to be compared to the aspect ratio of <code>size</code>
+     *
      * @return <code>true</code> if the aspect ratio of <code>size</code> is to be
      * considered equal to the aspect ratio of <code>width</code> and
      * <code>height</code>; otherwise, <code>false</code>
      */
-    public static boolean areAspectRatiosEqual(Dimension size, int width, int height)
-    {
+    public static boolean areAspectRatiosEqual(Dimension size, int width, int height) {
         if ((size.height == 0) || (height == 0))
             return false;
         else {
@@ -175,11 +179,11 @@ public class VideoLayout extends FitLayout
      * Determines how may columns to use for the grid display of specific remote visual/video <code>Component</code>s.
      *
      * @param remotes the remote visual/video <code>Component</code>s to be displayed in a grid
+     *
      * @return the number of columns to use for the grid display of the
      * specified remote visual/video <code>Component</code>s
      */
-    private int calculateColumnCount(List<Component> remotes)
-    {
+    private int calculateColumnCount(List<Component> remotes) {
         int remoteCount = remotes.size();
 
         if (remoteCount == 1)
@@ -196,8 +200,7 @@ public class VideoLayout extends FitLayout
      * @return the remote video component
      */
     @Override
-    protected Component getComponent(Container parent)
-    {
+    protected Component getComponent(Container parent) {
         return (remotes.size() == 1) ? remotes.get(0) : null;
     }
 
@@ -205,10 +208,10 @@ public class VideoLayout extends FitLayout
      * Returns the constraints for the given component.
      *
      * @param c the component for which constraints we're looking for
+     *
      * @return the constraints for the given component
      */
-    public Object getComponentConstraints(Component c)
-    {
+    public Object getComponentConstraints(Component c) {
         synchronized (constraints) {
             return constraints.get(c);
         }
@@ -219,8 +222,7 @@ public class VideoLayout extends FitLayout
      *
      * @return the local video component
      */
-    public Component getLocal()
-    {
+    public Component getLocal() {
         return local;
     }
 
@@ -229,8 +231,7 @@ public class VideoLayout extends FitLayout
      *
      * @return the local video close button
      */
-    public Component getLocalCloseButton()
-    {
+    public Component getLocalCloseButton() {
         return closeButton;
     }
 
@@ -241,8 +242,7 @@ public class VideoLayout extends FitLayout
      * @param parent the <code>Container</code> to lay out
      */
     @Override
-    public void layoutContainer(Container parent)
-    {
+    public void layoutContainer(Container parent) {
         /*
          * XXX The methods layoutContainer and preferredLayoutSize must be kept in sync.
          */
@@ -310,8 +310,7 @@ public class VideoLayout extends FitLayout
                 if (column == 0) {
                     bounds.x = 0;
                     /*
-                     * Eventually, there may be empty cells in the last row.
-                     * Center the non-empty cells horizontally.
+                     * Eventually, there may be empty cells in the last row. Center the non-empty cells horizontally.
                      */
                     if (row == rowsMinus1) {
                         int available = remoteCount - i;
@@ -406,11 +405,11 @@ public class VideoLayout extends FitLayout
      * Returns the preferred layout size for the given container.
      *
      * @param parent the container which preferred layout size we're looking for
+     *
      * @return a Dimension containing, the preferred layout size for the given container
      */
     @Override
-    public Dimension preferredLayoutSize(Container parent)
-    {
+    public Dimension preferredLayoutSize(Container parent) {
         List<Component> visibleRemotes = new ArrayList<Component>();
         List<Component> remotes;
         Component local = getLocal();
@@ -546,8 +545,7 @@ public class VideoLayout extends FitLayout
      * @param comp the component to remove from the layout
      */
     @Override
-    public void removeLayoutComponent(Component comp)
-    {
+    public void removeLayoutComponent(Component comp) {
         super.removeLayoutComponent(comp);
 
         synchronized (constraints) {

@@ -16,7 +16,10 @@
 package net.java.sip.communicator.impl.muc;
 
 import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
  * Source contact for the chat rooms.

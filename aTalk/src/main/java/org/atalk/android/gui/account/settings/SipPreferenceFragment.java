@@ -6,6 +6,7 @@
 package org.atalk.android.gui.account.settings;
 
 import android.content.SharedPreferences;
+
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
 
@@ -13,7 +14,11 @@ import net.java.sip.communicator.plugin.sipaccregwizz.AccountRegistrationImpl;
 import net.java.sip.communicator.plugin.sipaccregwizz.SIPAccountRegistrationActivator;
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.service.protocol.sip.SIPAccountRegistration;
 
 import org.atalk.android.R;

@@ -20,14 +20,25 @@ package org.ice4j.ice.harvest;
 import androidx.annotation.NonNull;
 
 import org.atalk.util.logging.Logger;
-import org.bitlet.weupnp.*;
+import org.bitlet.weupnp.GatewayDevice;
+import org.bitlet.weupnp.GatewayDiscover;
+import org.bitlet.weupnp.PortMappingEntry;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.*;
-import org.ice4j.socket.*;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.ComponentSocket;
+import org.ice4j.ice.HostCandidate;
+import org.ice4j.ice.LocalCandidate;
+import org.ice4j.ice.UPNPCandidate;
+import org.ice4j.socket.IceSocketWrapper;
+import org.ice4j.socket.IceUdpSocketWrapper;
+import org.ice4j.socket.MultiplexingDatagramSocket;
 
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Implements a <code>CandidateHarvester</code> which gathers <code>Candidate</code>s

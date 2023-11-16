@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
 
 /**
  * A <code>ChatRoomPropertyChangeEvent</code> is issued whenever a chat room property has changed. Event

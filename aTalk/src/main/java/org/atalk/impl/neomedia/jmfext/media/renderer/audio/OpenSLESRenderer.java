@@ -12,7 +12,12 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource;
 import org.atalk.service.neomedia.BasicVolumeControl;
 import org.atalk.service.neomedia.codec.Constants;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.PlugIn;
+import javax.media.Renderer;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**

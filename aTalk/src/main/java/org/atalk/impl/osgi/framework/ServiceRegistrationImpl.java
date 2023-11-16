@@ -6,32 +6,31 @@
  */
 package org.atalk.impl.osgi.framework;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.ServiceRegistration;
-
 /**
  *
  * @author Lyubomir Marinov
  */
-public class ServiceRegistrationImpl implements ServiceRegistration
+public class ServiceRegistrationImpl implements ServiceRegistration<Object>
 {
-    private static final Comparator<String> CASE_INSENSITIVE_COMPARATOR
-			= (s1, s2) -> s1.compareToIgnoreCase(s2);
-
+    private static final Comparator<String> CASE_INSENSITIVE_COMPARATOR = String::compareToIgnoreCase;
     private static final Map<String, Object> EMPTY_PROPERTIES = newCaseInsensitiveMapInstance();
+
     private final BundleImpl bundle;
-    private final String[] classNames;
-    private final Map<String, Object> properties;
-    private Object service;
     private final Long serviceId;
+    private final String[] classNames;
+    private final Object service;
+    private final Map<String, Object> properties;
     private final ServiceReferenceImpl serviceReference = new ServiceReferenceImpl();
 
     public ServiceRegistrationImpl(BundleImpl bundle, long serviceId,
@@ -42,8 +41,9 @@ public class ServiceRegistrationImpl implements ServiceRegistration
         this.classNames = classNames;
         this.service = service;
 
-        if ((properties == null) || properties.isEmpty())
-                this.properties = EMPTY_PROPERTIES;
+        if ((properties == null) || properties.isEmpty()) {
+            this.properties = EMPTY_PROPERTIES;
+        }
         else {
             Enumeration<String> keys = properties.keys();
             Map<String, Object> thisProperties = newCaseInsensitiveMapInstance();
@@ -62,39 +62,45 @@ public class ServiceRegistrationImpl implements ServiceRegistration
         }
     }
 
-    public ServiceReferenceImpl getReference()
-    {
+    @Override
+    public ServiceReference<Object> getReference() {
         return serviceReference;
     }
 
-    public ServiceReference getReference(Class<?> clazz)
+//    @Override
+//    public ServiceReferenceImpl getReference()
+//    {
+//        return serviceReference;
+//    }
+
+    public ServiceReference<?> getReference(Class<?> clazz)
     {
         return serviceReference;
     }
 
     private static Map<String, Object> newCaseInsensitiveMapInstance()
     {
-        return new TreeMap<String, Object>(CASE_INSENSITIVE_COMPARATOR);
+        return new TreeMap<>(CASE_INSENSITIVE_COMPARATOR);
     }
 
+    @Override
     public void setProperties(Dictionary properties)
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void unregister()
     {
         bundle.getFramework().unregisterService(bundle, this);
     }
 
-    class ServiceReferenceImpl implements ServiceReference
+    class ServiceReferenceImpl implements ServiceReference<Object>
     {
         public int compareTo(Object other)
         {
-            Long thisServiceId = ServiceRegistrationImpl.this.serviceId;
             Long otherServiceId = ((ServiceRegistrationImpl) other).serviceId;
-
-            return otherServiceId.compareTo(thisServiceId);
+            return otherServiceId.compareTo(serviceId);
         }
 
         public Bundle getBundle()
@@ -105,7 +111,6 @@ public class ServiceRegistrationImpl implements ServiceRegistration
         public Object getProperty(String key)
         {
             Object value;
-
             if (Constants.OBJECTCLASS.equalsIgnoreCase(key))
                 value = classNames;
             else if (Constants.SERVICE_ID.equalsIgnoreCase(key))
@@ -158,10 +163,9 @@ public class ServiceRegistrationImpl implements ServiceRegistration
         }
 
         // for osgi 8.0.0
-//        @Override
-//        public Object adapt(Class type)
-//        {
-//            return null;
-//        }
+        @Override
+        public <A> A adapt(Class<A> type) {
+            return null;
+        }
     }
 }

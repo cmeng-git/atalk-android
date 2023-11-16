@@ -18,14 +18,6 @@
  */
 package org.dhcp4java;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import timber.log.Timber;
-
 import static org.dhcp4java.DHCPConstants.BOOTREPLY;
 import static org.dhcp4java.DHCPConstants.DHO_DHCP_MESSAGE_TYPE;
 import static org.dhcp4java.DHCPConstants.DHO_END;
@@ -38,6 +30,27 @@ import static org.dhcp4java.DHCPConstants._DHCP_DEFAULT_MAX_LEN;
 import static org.dhcp4java.DHCPConstants._DHCP_MAX_MTU;
 import static org.dhcp4java.DHCPConstants._HTYPE_NAMES;
 import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
+
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * The basic class for manipulating DHCP packets.

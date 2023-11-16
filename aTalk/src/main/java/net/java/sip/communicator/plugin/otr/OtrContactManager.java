@@ -6,12 +6,17 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;

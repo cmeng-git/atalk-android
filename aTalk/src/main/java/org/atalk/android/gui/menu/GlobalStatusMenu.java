@@ -1,15 +1,32 @@
 package org.atalk.android.gui.menu;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.*;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
+import android.widget.ScrollView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
-import net.java.sip.communicator.service.protocol.*;
+import androidx.fragment.app.FragmentActivity;
+
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
@@ -22,12 +39,18 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.StatusListAdapter;
 import org.atalk.android.gui.widgets.ActionMenuItem;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.beans.PropertyChangeEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import androidx.fragment.app.FragmentActivity;
 import timber.log.Timber;
 
 public class GlobalStatusMenu extends OSGiActivity

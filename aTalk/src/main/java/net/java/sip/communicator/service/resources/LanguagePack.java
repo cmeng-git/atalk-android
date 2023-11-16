@@ -15,7 +15,10 @@
  */
 package net.java.sip.communicator.service.resources;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Damian Minkov

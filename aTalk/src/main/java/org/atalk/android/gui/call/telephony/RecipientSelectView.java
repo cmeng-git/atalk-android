@@ -10,9 +10,21 @@ import android.provider.ContactsContract.Contacts;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.ListPopupWindow;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
 
 import com.tokenautocomplete.TokenCompleteTextView;
 
@@ -20,14 +32,12 @@ import org.apache.james.mime4j.util.CharsetUtil;
 import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.app.LoaderManager.LoaderCallbacks;
-import androidx.loader.content.Loader;
 import timber.log.Timber;
 
 public class RecipientSelectView extends TokenCompleteTextView<RecipientSelectView.Recipient>

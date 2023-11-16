@@ -7,8 +7,12 @@ package org.atalk.impl.configuration;
 
 import org.atalk.service.configuration.ConfigVetoableChangeListener;
 
-import java.beans.*;
-import java.util.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * This is a utility class that can be used by objects that support constrained properties. You

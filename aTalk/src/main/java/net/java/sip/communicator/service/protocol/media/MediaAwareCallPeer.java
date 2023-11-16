@@ -59,7 +59,9 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  */
-public abstract class MediaAwareCallPeer<T extends MediaAwareCall<?, ?, V>, U extends CallPeerMediaHandler<?>,
+public abstract class MediaAwareCallPeer<
+        T extends MediaAwareCall<?, ?, V>,
+        U extends CallPeerMediaHandler<?>,
         V extends ProtocolProviderService> extends AbstractCallPeer<T, V>
         implements SrtpListener, CallPeerConferenceListener, CsrcAudioLevelListener, SimpleAudioLevelListener
 {

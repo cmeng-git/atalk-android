@@ -4,10 +4,10 @@
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
 
-import java.util.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_int32_MAX;
+
+import java.util.Arrays;
 
 /**
  *

@@ -12,7 +12,7 @@ if [[ $# -eq 2 ]]; then
 fi
 
 # Auto fetch and unarchive both ffmpeg and x264 from online repository per specified versions below
-VERSION_FFMPEG=5.1.2
+VERSION_FFMPEG=5.1.4
 VERSION_X264=164
 
 ./init_libs_ffmpeg_x264.sh $VERSION_FFMPEG $VERSION_X264

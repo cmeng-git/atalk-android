@@ -5,10 +5,10 @@
  */
 package org.atalk.service.neomedia.event;
 
-import java.util.*;
-
 import org.atalk.service.neomedia.AudioMediaStream;
 import org.atalk.service.neomedia.DTMFRtpTone;
+
+import java.util.EventObject;
 
 /**
  * This event represents starting or ending reception of a specific <code>DTMFRtpTone</code>.

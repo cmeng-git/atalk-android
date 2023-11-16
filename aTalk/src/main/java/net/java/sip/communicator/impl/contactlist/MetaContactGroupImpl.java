@@ -15,15 +15,23 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Vector;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

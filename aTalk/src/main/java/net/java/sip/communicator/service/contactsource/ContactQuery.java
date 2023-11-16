@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * The <code>ContactQuery</code> corresponds to a particular query made through the

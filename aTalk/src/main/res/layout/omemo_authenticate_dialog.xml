@@ -47,7 +47,7 @@
             android:id="@+id/okButton"
             style="@style/ButtonTop"
             android:onClick="onOkClicked"
-            android:text="@string/plugin_otr_authbuddydialog_VERIRY_BUDDY" />
+            android:text="@string/omemo_authbuddydialog_VERIRY_BUDDY" />
     </LinearLayout>
 
 </LinearLayout>

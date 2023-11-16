@@ -6,8 +6,13 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.ice4j.TransportAddress;
-import org.ice4j.ice.*;
-import org.ice4j.socket.*;
+import org.ice4j.ice.CandidateExtendedType;
+import org.ice4j.ice.CandidateType;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.LocalCandidate;
+import org.ice4j.socket.IceSocketWrapper;
+import org.ice4j.socket.IceUdpSocketWrapper;
+import org.ice4j.socket.MultiplexingDatagramSocket;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.net.SocketException;

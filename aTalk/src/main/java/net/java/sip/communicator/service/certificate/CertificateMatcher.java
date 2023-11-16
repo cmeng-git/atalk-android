@@ -15,7 +15,8 @@
  */
 package net.java.sip.communicator.service.certificate;
 
-import java.security.cert.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 /**
  * Interface to verify X.509 certificate

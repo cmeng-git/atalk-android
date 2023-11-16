@@ -7,7 +7,6 @@
 package net.java.sip.communicator.plugin.otr;
 
 import net.java.otr4j.io.SerializationConstants;
-import net.java.sip.communicator.impl.protocol.jabber.MessageJabberImpl;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
@@ -17,8 +16,6 @@ import net.java.sip.communicator.service.protocol.TransformLayer;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
 import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-
-import org.jxmpp.jid.Jid;
 
 import java.util.Date;
 

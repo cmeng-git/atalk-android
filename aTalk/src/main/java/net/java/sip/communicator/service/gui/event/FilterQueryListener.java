@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.FilterQuery;
 
 /**
  * The <code>FilterQueryListener</code> is notified when a filter query finishes.

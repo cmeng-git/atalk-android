@@ -198,6 +198,7 @@ public abstract class AbstractContactQuery<T extends ContactSourceService>
      * <code>QUERY_XXX</code> constants defined by <code>ContactQuery</code>
      * @see ContactQuery#getStatus()
      */
+    @Override
     public int getStatus()
     {
         return status;

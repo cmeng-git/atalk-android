@@ -12,8 +12,13 @@ import android.widget.Spinner;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
-import net.java.sip.communicator.service.contactlist.event.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactListAdapter;
+import net.java.sip.communicator.service.contactlist.event.ProtoContactEvent;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
@@ -24,7 +29,9 @@ import org.atalk.android.gui.account.AccountsListAdapter;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import timber.log.Timber;
 

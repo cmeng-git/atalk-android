@@ -5,10 +5,12 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import javax.media.*;
+import org.atalk.impl.neomedia.codec.FFmpeg;
 
 import java.awt.Dimension;
-import org.atalk.impl.neomedia.codec.FFmpeg;
+
+import javax.media.Buffer;
+import javax.media.Format;
 
 /**
  * Represents a pointer to a native FFmpeg <code>AVFrame</code> object.

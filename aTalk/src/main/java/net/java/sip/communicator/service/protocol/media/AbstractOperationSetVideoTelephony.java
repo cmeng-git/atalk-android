@@ -18,8 +18,8 @@ import org.atalk.service.neomedia.MediaUseCase;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
 import org.atalk.service.neomedia.VideoMediaStream;
-import org.atalk.util.event.VideoListener;
 import org.atalk.util.MediaType;
+import org.atalk.util.event.VideoListener;
 
 import java.awt.Component;
 import java.beans.PropertyChangeListener;
@@ -38,8 +38,10 @@ import java.util.List;
  * @author Emil Ivov
  * @author Sebastien Vincent
  */
-public abstract class AbstractOperationSetVideoTelephony<T extends OperationSetBasicTelephony<U>,
-        U extends ProtocolProviderService, V extends MediaAwareCall<W, T, U>,
+public abstract class AbstractOperationSetVideoTelephony<
+        T extends OperationSetBasicTelephony<U>,
+        U extends ProtocolProviderService,
+        V extends MediaAwareCall<W, T, U>,
         W extends MediaAwareCallPeer<V, ?, U>>
         implements OperationSetVideoTelephony
 {

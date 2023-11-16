@@ -7,7 +7,9 @@ package org.atalk.impl.fileaccess;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.service.configuration.ConfigurationService;
-import org.atalk.service.fileaccess.*;
+import org.atalk.service.fileaccess.FailSafeTransaction;
+import org.atalk.service.fileaccess.FileAccessService;
+import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
 
 import java.io.File;

@@ -4,8 +4,10 @@
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLAWW;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_int16_MAX;
 
 class A2NLSF_constants
 {

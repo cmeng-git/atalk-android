@@ -31,6 +31,7 @@ extern "C" {
 
 #include "./vpx_codec.h"
 #include "./vpx_ext_ratectrl.h"
+#include "./vpx_tpl.h"
 
 /*! Temporal Scalability: Maximum length of the sequence defining frame
  * layer membership
@@ -57,9 +58,9 @@ extern "C" {
  * types, removing or reassigning enums, adding/removing/rearranging
  * fields to structures
  */
-#define VPX_ENCODER_ABI_VERSION \
-  (15 + VPX_CODEC_ABI_VERSION + \
-   VPX_EXT_RATECTRL_ABI_VERSION) /**<\hideinitializer*/
+#define VPX_ENCODER_ABI_VERSION                                \
+  (16 + VPX_CODEC_ABI_VERSION + VPX_EXT_RATECTRL_ABI_VERSION + \
+   VPX_TPL_ABI_VERSION) /**<\hideinitializer*/
 
 /*! \brief Encoder capabilities bitfield
  *
@@ -858,7 +859,7 @@ typedef struct vpx_svc_parameters {
 
 /*!\brief Initialize an encoder instance
  *
- * Initializes a encoder context using the given interface. Applications
+ * Initializes an encoder context using the given interface. Applications
  * should call the vpx_codec_enc_init convenience macro instead of this
  * function directly, to ensure that the ABI version number parameter
  * is properly initialized.
@@ -866,6 +867,9 @@ typedef struct vpx_svc_parameters {
  * If the library was configured with --disable-multithread, this call
  * is not thread safe and should be guarded with a lock if being used
  * in a multithreaded context.
+ *
+ * If vpx_codec_enc_init_ver() fails, it is not necessary to call
+ * vpx_codec_destroy() on the encoder context.
  *
  * \param[in]    ctx     Pointer to this instance's context.
  * \param[in]    iface   Pointer to the algorithm interface to use.
@@ -906,7 +910,7 @@ vpx_codec_err_t vpx_codec_enc_init_ver(vpx_codec_ctx_t *ctx,
  * \param[in]    ver     ABI version number. Must be set to
  *                       VPX_ENCODER_ABI_VERSION
  * \retval #VPX_CODEC_OK
- *     The decoder algorithm initialized.
+ *     The encoder algorithm has been initialized.
  * \retval #VPX_CODEC_MEM_ERROR
  *     Memory allocation failed.
  */

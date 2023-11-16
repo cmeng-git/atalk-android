@@ -7,7 +7,8 @@ package org.atalk.impl.neomedia.rtp.translator;
 
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 
-import javax.media.protocol.*;
+import javax.media.protocol.PushBufferStream;
+import javax.media.protocol.PushSourceStream;
 
 /**
  * Describes a <code>PushSourceStream</code> associated with an endpoint from which an

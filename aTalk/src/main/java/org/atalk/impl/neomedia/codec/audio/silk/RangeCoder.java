@@ -5,8 +5,14 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_ARITHM_BYTES;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_CDF_OUT_OF_RANGE;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_DECODER_CHECK_FAILED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_DEC_PAYLOAD_TOO_LONG;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_NORMALIZATION_FAILED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_WRITE_BEYOND_BUFFER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.RANGE_CODER_ZERO_INTERVAL_WIDTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_Silk_CLZ32;
 
 /**
  * Range coder

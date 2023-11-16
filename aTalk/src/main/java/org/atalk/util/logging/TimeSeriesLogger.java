@@ -20,8 +20,6 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-import timber.log.Timber;
-
 /**
  * @author George Politis
  * @author Eng Chong Meng

@@ -47,7 +47,7 @@ public interface IntConsumer
      */
     void accept(int value);
 
-    /**
+    /*
      * Returns a composed {@code IntConsumer} that performs, in sequence, this
      * operation followed by the {@code after} operation. If performing either
      * operation throws an exception, it is relayed to the caller of the

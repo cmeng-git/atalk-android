@@ -11,19 +11,40 @@ import org.atalk.impl.neomedia.control.ReadOnlyBufferControlDelegate;
 import org.atalk.impl.neomedia.control.ReadOnlyFormatControlDelegate;
 import org.atalk.impl.neomedia.device.MediaDeviceImpl;
 import org.atalk.impl.neomedia.device.ReceiveStreamPushBufferDataSource;
-import org.atalk.impl.neomedia.protocol.*;
+import org.atalk.impl.neomedia.protocol.BufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.CachingPushBufferStream;
+import org.atalk.impl.neomedia.protocol.PullBufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.PushBufferDataSourceAdapter;
+import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
+import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
 import org.atalk.util.OSUtils;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.media.Buffer;
+import javax.media.CaptureDeviceInfo;
 import javax.media.Controls;
-import javax.media.*;
+import javax.media.Format;
+import javax.media.Time;
 import javax.media.control.BufferControl;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
+import javax.media.protocol.PullDataSource;
+import javax.media.protocol.PullSourceStream;
+import javax.media.protocol.PushBufferStream;
+import javax.media.protocol.PushDataSource;
+import javax.media.protocol.PushSourceStream;
+import javax.media.protocol.SourceStream;
 
 import timber.log.Timber;
 
@@ -602,8 +623,7 @@ public class AudioMixer
                     InStreamDesc inStreamDesc = getExistingInStreamDesc(inStream, existingInStreams);
 
                     if (inStreamDesc == null)
-                        inStreamDesc = createInStreamDesc(new PullBufferStreamAdapter(inStream,
-                                inFormat), inDataSourceDesc);
+                        inStreamDesc = createInStreamDesc(new PullBufferStreamAdapter(inStream, inFormat), inDataSourceDesc);
                     inStreams.add(inStreamDesc);
                 }
                 return true;

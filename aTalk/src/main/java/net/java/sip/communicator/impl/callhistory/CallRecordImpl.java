@@ -15,8 +15,10 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
-import net.java.sip.communicator.service.callhistory.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.callhistory.CallPeerRecord;
+import net.java.sip.communicator.service.callhistory.CallRecord;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import java.util.Date;
 
@@ -61,7 +63,7 @@ public class CallRecordImpl extends CallRecord
         for (CallPeerRecord item : peerRecords)
         {
             CallPeerRecordImpl itemImpl = (CallPeerRecordImpl) item;
-            if (item.getEndTime() == null)
+            if (itemImpl.getEndTime() == null)
                 itemImpl.setEndTime(endTime);
         }
     }

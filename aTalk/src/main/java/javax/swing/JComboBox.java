@@ -1,9 +1,8 @@
 package javax.swing;
 
-import java.beans.PropertyChangeListener;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
 
 
 public class JComboBox extends JComponent implements Accessible {

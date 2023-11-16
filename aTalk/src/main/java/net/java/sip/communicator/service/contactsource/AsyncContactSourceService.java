@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 /**
  * Declares the interface of a <code>ContactSourceService</code> which performs

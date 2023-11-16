@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
 
 /**
  * NLSF stabilizer: - Moves NLSFs further apart if they are too close - Moves NLSFs away from

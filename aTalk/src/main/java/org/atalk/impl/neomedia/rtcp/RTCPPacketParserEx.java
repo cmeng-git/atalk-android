@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPCompoundPacket;
+import net.sf.fmj.media.rtp.RTCPPacket;
+import net.sf.fmj.media.rtp.RTCPPacketParser;
 import net.sf.fmj.media.rtp.util.BadFormatException;
 import net.sf.fmj.media.rtp.util.UDPPacket;
 
@@ -15,7 +17,10 @@ import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;
 import org.atalk.util.RTPUtils;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 import timber.log.Timber;
 
@@ -101,8 +106,7 @@ public class RTCPPacketParserEx extends RTCPPacketParser
             }
             else {
                 int fmt = firstbyte & 0x1f;
-                switch (fmt) {
-                    case RTCPREMBPacket.FMT: // REMB
+                if (fmt == RTCPREMBPacket.FMT) { // REMB
 /*
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -121,32 +125,31 @@ public class RTCPPacketParserEx extends RTCPPacketParser
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |  ...                                                          |
  */
-                        RTCPREMBPacket remb = new RTCPREMBPacket(base);
+                    RTCPREMBPacket remb = new RTCPREMBPacket(base);
 
-                        remb.senderSSRC = senderSSRC;
-                        remb.sourceSSRC = sourceSSRC;
+                    remb.senderSSRC = senderSSRC;
+                    remb.sourceSSRC = sourceSSRC;
 
-                        // Unique identifier 'R' 'E' 'M' 'B'
-                        in.readInt();
+                    // Unique identifier 'R' 'E' 'M' 'B'
+                    in.readInt();
 
-                        int destlen = in.readUnsignedByte();
+                    int destlen = in.readUnsignedByte();
 
-                        byte[] buf = new byte[3];
-                        in.read(buf);
-                        remb.exp = (buf[0] & 0xFC) >> 2;
-                        remb.mantissa = ((buf[0] & 0x3) << 16) & 0xFF0000
-                                | (buf[1] << 8) & 0x00FF00
-                                | buf[2] & 0x0000FF;
+                    byte[] buf = new byte[3];
+                    in.read(buf);
+                    remb.exp = (buf[0] & 0xFC) >> 2;
+                    remb.mantissa = ((buf[0] & 0x3) << 16) & 0xFF0000
+                            | (buf[1] << 8) & 0x00FF00
+                            | buf[2] & 0x0000FF;
 
-                        remb.dest = new long[destlen];
-                        for (int i = 0; i < remb.dest.length; i++)
-                            remb.dest[i] = in.readInt() & 0xffffffffL;
+                    remb.dest = new long[destlen];
+                    for (int i = 0; i < remb.dest.length; i++)
+                        remb.dest[i] = in.readInt() & 0xffffffffL;
 
-                        return remb;
-                    default:
-                        return parseRTCPFBPacket(base, firstbyte, RTCPFBPacket.PSFB, length, in,
-                                senderSSRC, sourceSSRC);
+                    return remb;
                 }
+                return parseRTCPFBPacket(base, firstbyte, RTCPFBPacket.PSFB, length, in,
+                        senderSSRC, sourceSSRC);
             }
         }
         else if (type == RTCPExtendedReport.XR) {

@@ -284,11 +284,11 @@ public final class DHCPConstants {
      * allowing reverse lookup
      */
     static {
-    	Map<Byte, String> bootNames  = new LinkedHashMap<Byte, String>();
-    	Map<Byte, String> htypeNames = new LinkedHashMap<Byte, String>();
-        Map<Byte, String> dhcpCodes  = new LinkedHashMap<Byte, String>();
-        Map<Byte, String> dhoNames   = new LinkedHashMap<Byte, String>();
-        Map<String, Byte> dhoNamesRev = new LinkedHashMap<String, Byte>();
+    	Map<Byte, String> bootNames  = new LinkedHashMap<>();
+    	Map<Byte, String> htypeNames = new LinkedHashMap<>();
+        Map<Byte, String> dhcpCodes  = new LinkedHashMap<>();
+        Map<Byte, String> dhoNames   = new LinkedHashMap<>();
+        Map<String, Byte> dhoNamesRev = new LinkedHashMap<>();
         
         // do some introspection to list constants
         Field[] fields = DHCPConstants.class.getDeclaredFields();

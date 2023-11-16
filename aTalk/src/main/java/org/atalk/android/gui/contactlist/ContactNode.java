@@ -12,7 +12,8 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.ContactListNode;
+import net.java.sip.communicator.service.gui.UIContact;
 
 /**
  * The <code>ContactNode</code> is a <code>ContactListNode</code> corresponding to a given <code>UIContact</code>.

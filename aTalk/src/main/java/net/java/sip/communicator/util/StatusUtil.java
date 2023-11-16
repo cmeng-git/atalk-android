@@ -3,8 +3,6 @@ package net.java.sip.communicator.util;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 
-import timber.log.Timber;
-
 public class StatusUtil
 {
     /**

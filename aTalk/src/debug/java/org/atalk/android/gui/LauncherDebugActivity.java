@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidnotification.NotificationHelper;
-import org.atalk.impl.androidupdate.OnlineUpdateService;
+import org.atalk.impl.appupdate.OnlineUpdateService;
 import org.atalk.service.SystemEventReceiver;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiService;

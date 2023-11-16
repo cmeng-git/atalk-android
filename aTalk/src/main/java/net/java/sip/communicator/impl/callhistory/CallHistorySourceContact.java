@@ -17,8 +17,19 @@ package net.java.sip.communicator.impl.callhistory;
 
 import net.java.sip.communicator.service.callhistory.CallPeerRecord;
 import net.java.sip.communicator.service.callhistory.CallRecord;
-import net.java.sip.communicator.service.contactsource.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.contactsource.ContactDetail;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
 import net.java.sip.communicator.util.DataObject;
 import net.java.sip.communicator.util.GuiUtils;
@@ -26,7 +37,11 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>CallHistorySourceContact</code> is an implementation of the

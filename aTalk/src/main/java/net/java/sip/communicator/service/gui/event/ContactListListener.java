@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Listens for events coming from mouse events over the contact list. For

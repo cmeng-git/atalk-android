@@ -16,17 +16,30 @@
 package org.atalk.android.gui.chat.conference;
 
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomParticipantPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomParticipantPresenceListener;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatContact;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.ChatSessionChangeListener;
+import org.atalk.android.gui.chat.ChatTransport;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 
 /**
  * An implementation of <code>ChatSession</code> for ad-hoc conference chatting.

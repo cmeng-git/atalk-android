@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.audio.gsm;
 
-import org.rubycoder.gsm.*;
+import org.rubycoder.gsm.GSMEncoder;
 
 /**
  * GSMEncoderUtil class

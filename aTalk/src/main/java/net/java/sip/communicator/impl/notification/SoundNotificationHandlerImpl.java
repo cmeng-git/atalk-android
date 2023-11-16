@@ -6,15 +6,24 @@
 package net.java.sip.communicator.impl.notification;
 
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationData;
+import net.java.sip.communicator.service.notification.SoundNotificationAction;
+import net.java.sip.communicator.service.notification.SoundNotificationHandler;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.service.audionotifier.*;
+import org.atalk.service.audionotifier.AbstractSCAudioClip;
+import org.atalk.service.audionotifier.AudioNotifierService;
+import org.atalk.service.audionotifier.SCAudioClip;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 import timber.log.Timber;
@@ -77,7 +86,8 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
         // no further communicating can be done after the notification.
         // So we skip playing notification if we have a call running
         ConfigurationService cfg = NotificationActivator.getConfigurationService();
-        if (cfg != null && cfg.getBoolean(PROP_DISABLE_NOTIFICATION_DURING_CALL, false)
+        if (cfg != null
+                && cfg.getBoolean(PROP_DISABLE_NOTIFICATION_DURING_CALL, false)
                 && SCAudioClipDevice.PLAYBACK.equals(device)) {
             UIService uiService = NotificationActivator.getUIService();
             if (!uiService.getInProgressCalls().isEmpty())
@@ -251,8 +261,8 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
             // load the method java.awt.Toolkit.getDefaultToolkit().beep();
             // use reflection to be sure it will not throw exception in Android
             try {
-                Method getDefaultToolkitMethod = Class.forName("java.awt.Toolkit").getMethod("getDefaultToolkit");
-                toolkit = getDefaultToolkitMethod.invoke(null);
+                Method defaultToolkit = Class.forName("java.awt.Toolkit").getMethod("getDefaultToolkit");
+                toolkit = defaultToolkit.invoke(null);
                 beepMethod = toolkit.getClass().getMethod("beep");
             } catch (Throwable t) {
                 Timber.e(t, "Cannot load awt.Toolkit");
@@ -284,7 +294,7 @@ public class SoundNotificationHandlerImpl implements SoundNotificationHandler
     /**
      * Enumerates the types of devices on which <code>SCAudioClip</code>s may be played back.
      */
-    private static enum SCAudioClipDevice
+    private enum SCAudioClipDevice
     {
         NOTIFICATION, PC_SPEAKER, PLAYBACK
     }

@@ -7,7 +7,10 @@ package org.atalk.impl.androidnotification;
 
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.plugin.notificationwiring.SoundProperties;
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationService;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationAction;
+import net.java.sip.communicator.service.notification.SoundNotificationAction;
+import net.java.sip.communicator.service.notification.VibrateNotificationAction;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.osgi.framework.BundleActivator;

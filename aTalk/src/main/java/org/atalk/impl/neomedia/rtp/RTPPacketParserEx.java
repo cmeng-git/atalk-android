@@ -13,7 +13,9 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.util.*;
+import net.sf.fmj.media.rtp.util.BadFormatException;
+import net.sf.fmj.media.rtp.util.RTPPacket;
+import net.sf.fmj.media.rtp.util.UDPPacket;
 
 import org.atalk.service.neomedia.RawPacket;
 

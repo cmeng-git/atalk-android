@@ -9,13 +9,16 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Contacts.Data;
 
+import androidx.annotation.Nullable;
+import androidx.loader.content.AsyncTaskLoader;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.*;
-
-import androidx.annotation.Nullable;
-import androidx.loader.content.AsyncTaskLoader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RecipientLoader extends AsyncTaskLoader<List<RecipientSelectView.Recipient>>
 {

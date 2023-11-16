@@ -5,9 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.FileTransfer;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * The <code>FileTransferCreatedEvent</code> indicates the creation of a file transfer.

@@ -16,7 +16,7 @@
 
 package org.atalk.util.collections;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * A constructable implementation of Map.Entry (none is provided by the

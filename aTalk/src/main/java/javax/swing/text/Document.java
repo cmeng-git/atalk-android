@@ -1,10 +1,10 @@
 package javax.swing.text;
 
-import java.util.Dictionary;
-
+import org.atalk.android.gui.util.event.EventListenerList;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ.Content;
 
-import org.atalk.android.gui.util.event.EventListenerList;
+import java.util.Dictionary;
+
 import javax.swing.event.DocumentListener;
 
 

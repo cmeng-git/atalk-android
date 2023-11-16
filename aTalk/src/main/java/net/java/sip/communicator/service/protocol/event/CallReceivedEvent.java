@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.Call;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * A class representing the event of a call reception.

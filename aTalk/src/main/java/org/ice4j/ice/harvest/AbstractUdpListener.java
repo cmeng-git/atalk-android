@@ -18,15 +18,27 @@
 package org.ice4j.ice.harvest;
 
 import org.atalk.util.logging.Logger;
-import org.ice4j.*;
-import org.ice4j.attribute.*;
-import org.ice4j.message.*;
-import org.ice4j.util.*;
+import org.ice4j.StackProperties;
+import org.ice4j.Transport;
+import org.ice4j.TransportAddress;
+import org.ice4j.attribute.Attribute;
+import org.ice4j.attribute.UsernameAttribute;
+import org.ice4j.message.Message;
+import org.ice4j.util.QueueStatistics;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class which holds a {@link DatagramSocket} and runs a thread

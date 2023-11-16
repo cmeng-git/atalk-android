@@ -374,6 +374,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     break;
                 }
             }
+
             if (yield) {
                 yield = false;
                 Thread.yield();
@@ -514,6 +515,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
+
             case SRTPProtectionProfile.SRTP_AES128_CM_HMAC_SHA1_32:
                 cipher = SrtpPolicy.AESCM_ENCRYPTION;
                 cipher_key_length = 128 / 8;
@@ -523,6 +525,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 RTP_auth_tag_length = 32 / 8;
                 RTCP_auth_tag_length = 80 / 8;
                 break;
+
             case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_80:
                 cipher = SrtpPolicy.NULL_ENCRYPTION;
                 cipher_key_length = 0;
@@ -531,6 +534,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 auth_key_length = 160 / 8;
                 RTP_auth_tag_length = RTCP_auth_tag_length = 80 / 8;
                 break;
+
             case SRTPProtectionProfile.SRTP_NULL_HMAC_SHA1_32:
                 cipher = SrtpPolicy.NULL_ENCRYPTION;
                 cipher_key_length = 0;
@@ -560,6 +564,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 RTP_auth_tag_length = 0;    // NA
                 RTCP_auth_tag_length = 0;   // NA
                 break;
+
             case SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM:
                 Timber.w("Unsupported RFC-7714 SRTP profile: %s", SRTPProtectionProfile.SRTP_AEAD_AES_256_GCM);
                 cipher = SrtpPolicy.AESCM_ENCRYPTION;
@@ -583,7 +588,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
          * Available on TlsSession (the session keeps a copy of the master secret after handshake completion)
          */
         int length = 2 * (cipher_key_length + cipher_salt_length);
-        byte[] keyingMaterial = null;
+        byte[] keyingMaterial;
         try {
             // must call via notifyHandshakeComplete() callback, otherwise sp.getMasterSecret() == null
             keyingMaterial = tlsContext.exportKeyingMaterial(ExporterLabel.dtls_srtp, null, length);
@@ -622,6 +627,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 auth_key_length,
                 RTCP_auth_tag_length,
                 cipher_salt_length);
+
         SrtpPolicy srtpPolicy = new SrtpPolicy(
                 cipher,
                 cipher_key_length,
@@ -629,18 +635,21 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                 auth_key_length,
                 RTP_auth_tag_length,
                 cipher_salt_length);
+
         SrtpContextFactory clientSRTPContextFactory = new SrtpContextFactory(
                 /* sender */ tlsContext instanceof TlsClientContext,
                 client_write_SRTP_master_key,
                 client_write_SRTP_master_salt,
                 srtpPolicy,
                 srtcpPolicy);
+
         SrtpContextFactory serverSRTPContextFactory = new SrtpContextFactory(
                 /* sender */ tlsContext instanceof TlsServerContext,
                 server_write_SRTP_master_key,
                 server_write_SRTP_master_salt,
                 srtpPolicy,
                 srtcpPolicy);
+
         SrtpContextFactory forwardSRTPContextFactory;
         SrtpContextFactory reverseSRTPContextFactory;
 
@@ -811,9 +820,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
             try {
                 do {
                     int receiveLimit = mDtlsTransport.getReceiveLimit();
-                    // FIXME This is at best inefficient, but it is not meant as
-                    // a long-term solution. A major refactoring is planned,
-                    // which will probably make this code obsolete.
+                    // FIXME This is at best inefficient, but it is not meant as a long-term solution.
+                    // A major refactoring is planned, which will probably make this code obsolete.
                     byte[] buf = new byte[receiveLimit];
                     RawPacket p = new RawPacket(buf, 0, buf.length);
 
@@ -863,8 +871,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     mDtlsTransport = dtlsClientProtocol.connect(tlsClient, datagramTransport);
                     break;
                 } catch (IOException ioe) {
-                    if (handleRunInConnectThreadException(ioe,
-                            "Failed to connect DTLS client to server!", i)) {
+                    if (handleRunInConnectThreadException(ioe, "Failed to connect DTLS client to server!", i)) {
                         break;
                     }
                 }
@@ -883,8 +890,7 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
                     mDtlsTransport = dtlsServerProtocol.accept(tlsServer, datagramTransport);
                     break;
                 } catch (IOException ioe) {
-                    if (handleRunInConnectThreadException(ioe,
-                            "Failed to accept DTLS client connection!", i)) {
+                    if (handleRunInConnectThreadException(ioe, "Failed to accept DTLS client connection!", i)) {
                         break;
                     }
                 }
@@ -1408,8 +1414,8 @@ public class DtlsPacketTransformer implements PacketTransformer, PropertyChangeL
     }
 
     /**
-     * Copied from AbstractTlsContext#exportKeyingMaterial and modified to work with an externally provided masterSecret value.
-     * One without the Extemded Master Password
+     * Copied from AbstractTlsContext#exportKeyingMaterial and modified to work with an externally
+     * provided masterSecret value. One without the Extended Master Password
      */
     private static byte[] exportKeyingMaterial(TlsContext tlsContext, String asciiLabel, byte[] context_value, int length)
     {

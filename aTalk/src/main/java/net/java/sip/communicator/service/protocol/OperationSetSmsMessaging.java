@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Provides basic functionality for sending and receiving SMS Messages.

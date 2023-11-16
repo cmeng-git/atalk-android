@@ -32,8 +32,8 @@ import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.logging.Logger;
 import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.logging.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class RtxTransformer implements TransformEngine
     /**
      * The <code>MediaStream</code> for the transformer.
      */
-    private MediaStreamImpl mediaStream;
+    private final MediaStreamImpl mediaStream;
 
     /**
      * Maps an RTX SSRC to the last RTP sequence number sent with that SSRC.
@@ -352,8 +352,7 @@ public class RtxTransformer implements TransformEngine
      */
     private long getPrimarySsrc(long rtxSSRC)
     {
-        MediaStreamTrackReceiver receiver
-                = mediaStream.getMediaStreamTrackReceiver();
+        MediaStreamTrackReceiver receiver = mediaStream.getMediaStreamTrackReceiver();
 
         if (receiver == null) {
             Timber.d("Dropping an incoming RTX packet from an unknown source.");
@@ -383,8 +382,8 @@ public class RtxTransformer implements TransformEngine
     {
         Timber.d("%s nack_received,stream = %d; ssrc = %s; lost_packets = %s",
                 Logger.Category.STATISTICS, mediaStream.hashCode(), mediaSSRC, lostPackets);
-        RawPacketCache cache = getCache();
 
+        RawPacketCache cache = getCache();
         if (cache != null) {
             // Retransmitted packets need to be inserted:
             // * after SSRC-rewriting (the external transform engine)
@@ -520,8 +519,7 @@ public class RtxTransformer implements TransformEngine
                         bytes -= len;
                     }
                     else {
-                        // Don't break as we might be able to squeeze in the
-                        // next packet.
+                        // Don't break as we might be able to squeeze in the next packet.
                     }
                 }
             }

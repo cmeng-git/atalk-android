@@ -5,7 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.android.gui.account.settings.BoshProxyDialog;
 import org.atalk.service.configuration.ConfigurationService;
@@ -14,7 +18,10 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -107,7 +114,7 @@ public class JabberAccountID extends AccountID
     }
 
     /**
-     * Default constructor for serialization purposes.
+     * Default constructor for serialization purposes. Do not removed - required by serialization
      */
     public JabberAccountID()
     {
@@ -123,8 +130,8 @@ public class JabberAccountID extends AccountID
     public void updateJabberAccountID(String userId)
     {
         if (userId != null) {
-            this.userID = userId;
-            this.accountUID = getProtocolName() + ":" + userID;
+            this.mUserID = userId;
+            this.accountUID = getProtocolName() + ":" + mUserID;
             mAccountProperties.put(USER_ID, userId);
             try {
                 userBareJid = JidCreate.bareFrom(userId);

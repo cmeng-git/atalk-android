@@ -1,9 +1,8 @@
 package java.awt.geom;
 
-import java.io.Serializable;
-
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.io.Serializable;
 
 public abstract class Line2D implements Shape, Cloneable
 {

@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
 
 public class LPCStabilize
 {

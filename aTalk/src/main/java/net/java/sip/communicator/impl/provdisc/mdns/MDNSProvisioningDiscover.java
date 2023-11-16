@@ -19,7 +19,9 @@ import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;

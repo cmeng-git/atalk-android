@@ -7,13 +7,18 @@ package org.atalk.impl.neomedia.codec.audio.opus;
 
 import net.sf.fmj.media.AbstractCodec;
 
-import java.awt.Component;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FECDecoderControl;
 
-import javax.media.*;
+import java.awt.Component;
+
+import javax.media.Buffer;
+import javax.media.Control;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;

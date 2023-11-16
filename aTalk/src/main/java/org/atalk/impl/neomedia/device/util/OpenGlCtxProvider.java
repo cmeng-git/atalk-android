@@ -6,9 +6,14 @@
 package org.atalk.impl.neomedia.device.util;
 
 import android.app.Activity;
-import android.graphics.*;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
-import android.view.*;
+import android.view.Surface;
+import android.view.TextureView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.plugin.timberlog.TimberLog;

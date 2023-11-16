@@ -24,7 +24,7 @@ public interface OperationSetTelephonyConferencing extends OperationSet
      * @throws OperationFailedException if establishing the conference call fails
      * @throws OperationNotSupportedException if the provider does not have any conferencing features.
      */
-    public Call createConfCall(String[] callees)
+    Call createConfCall(String[] callees)
             throws OperationFailedException, OperationNotSupportedException,
             XmppStringprepException;
 
@@ -38,7 +38,7 @@ public interface OperationSetTelephonyConferencing extends OperationSet
      * @throws OperationFailedException if establishing the conference call fails
      * @throws OperationNotSupportedException if the provider does not have any conferencing features.
      */
-    public Call createConfCall(String[] callees, CallConference conference)
+    Call createConfCall(String[] callees, CallConference conference)
             throws OperationFailedException, OperationNotSupportedException,
             XmppStringprepException;
 
@@ -54,7 +54,7 @@ public interface OperationSetTelephonyConferencing extends OperationSet
      * @throws OperationFailedException if inviting the specified callee to the specified call fails
      * @throws OperationNotSupportedException if allowing additional callees to a pre-established call is not supported.
      */
-    public CallPeer inviteCalleeToCall(String uri, Call call)
+    CallPeer inviteCalleeToCall(String uri, Call call)
             throws OperationFailedException, OperationNotSupportedException, XmppStringprepException;
 
     /**
@@ -64,5 +64,5 @@ public interface OperationSetTelephonyConferencing extends OperationSet
      * @param chatRoom the <code>ChatRoom</code> for which to set up a conference.
      * @return a <code>ConferenceDescription</code> corresponding to the created conference.
      */
-    public ConferenceDescription setupConference(ChatRoom chatRoom);
+    ConferenceDescription setupConference(ChatRoom chatRoom);
 }

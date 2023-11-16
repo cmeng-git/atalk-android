@@ -15,8 +15,8 @@ import org.atalk.service.neomedia.RTPTranslator;
 import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
-import org.atalk.util.OSUtils;
 import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.beans.PropertyChangeEvent;

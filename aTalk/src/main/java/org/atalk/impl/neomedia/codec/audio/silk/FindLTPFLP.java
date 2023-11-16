@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.LTP_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
 
 /**
  *

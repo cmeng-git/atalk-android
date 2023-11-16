@@ -5,14 +5,15 @@
  */
 package org.atalk.impl.neomedia;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.media.*;
-
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.media.Buffer;
 
 /**
  *

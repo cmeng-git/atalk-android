@@ -13,9 +13,12 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>AdHocChatRoomMessageDeliveredEvent</code>s confirm successful delivery of an instant message.

@@ -13,7 +13,7 @@
             android:launchMode="singleTask" />
 
         <service
-            android:name="org.atalk.impl.androidupdate.OnlineUpdateService"
+            android:name="org.atalk.impl.appupdate.OnlineUpdateService"
             android:enabled="true" />
 
     </application>

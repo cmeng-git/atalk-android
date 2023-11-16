@@ -5,7 +5,8 @@
  */
 package org.atalk.service.neomedia.recording;
 
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaException;
+import org.atalk.service.neomedia.MediaStream;
 
 import java.io.IOException;
 import java.util.List;

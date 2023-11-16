@@ -9,7 +9,9 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Control;
+import javax.media.Controls;
+import javax.media.Format;
 import javax.media.control.FormatControl;
 
 /**

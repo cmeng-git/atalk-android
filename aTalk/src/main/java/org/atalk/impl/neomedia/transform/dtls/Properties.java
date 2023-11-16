@@ -116,7 +116,7 @@ class Properties extends PropertyChangeNotifier
      */
     public void put(String name, Object value)
     {
-        // XXX ConcurrentHashMap does't allow null values and we want to allow
+        // XXX ConcurrentHashMap doesn't allow null values and we want to allow
         // them. (It doesn't allow null keys either and we don't want to allow them.)
         Object oldValue = (value == null)
                 ? properties.remove(name) : properties.put(name, value);

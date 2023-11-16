@@ -6,9 +6,11 @@
  */
 package net.java.sip.communicator.plugin.desktoputil;
 
-import java.awt.event.ActionListener;
-import javax.swing.JCheckBox;
 import org.atalk.util.OSUtils;
+
+import java.awt.event.ActionListener;
+
+import javax.swing.JCheckBox;
 
 /**
  * @author Lubomir Marinov

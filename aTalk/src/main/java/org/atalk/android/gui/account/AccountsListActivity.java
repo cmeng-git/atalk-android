@@ -6,15 +6,27 @@
 package org.atalk.android.gui.account;
 
 import android.content.Intent;
-import android.os.*;
-import android.view.*;
-import android.widget.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentTransaction;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 

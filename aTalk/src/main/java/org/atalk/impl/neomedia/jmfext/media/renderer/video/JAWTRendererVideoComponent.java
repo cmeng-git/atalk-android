@@ -5,9 +5,13 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.video;
 
-import java.awt.*;
 import org.atalk.impl.neomedia.codec.video.SwScale;
 import org.atalk.util.OSUtils;
+
+import java.awt.Canvas;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Graphics;
 
 /**
  * Implements an AWT <code>Component</code> in which <code>JAWTRenderer</code> paints.

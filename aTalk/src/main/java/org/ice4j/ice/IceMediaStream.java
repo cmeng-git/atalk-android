@@ -17,12 +17,20 @@
  */
 package org.ice4j.ice;
 
-import java.beans.*;
-import java.util.*;
-
-import org.atalk.util.collections.JMap;
 import org.atalk.util.logging2.Logger;
-import org.ice4j.*;
+import org.ice4j.StackProperties;
+import org.ice4j.TransportAddress;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * The class represents a media stream from the ICE perspective, i.e. a
@@ -32,14 +40,13 @@ import org.ice4j.*;
  * @author Namal Senarathne
  * @author Eng Chong Meng
  */
-public class IceMediaStream
-{
+public class IceMediaStream {
     /**
      * The property name that we use when delivering events notifying listeners
      * that the consent freshness of a pair has changed.
      */
     public static final String PROPERTY_PAIR_CONSENT_FRESHNESS_CHANGED
-        = "PairConsentFreshnessChanged";
+            = "PairConsentFreshnessChanged";
 
     /**
      * The property name that we use when delivering events notifying listeners
@@ -65,10 +72,10 @@ public class IceMediaStream
      * @param name the name of the media stream
      * @param parentAgent the agent that is handling the session that this
      * media stream is a part of
+     *
      * @return IceMediaStream
      */
-    public static IceMediaStream build(Agent parentAgent, String name)
-    {
+    public static IceMediaStream build(Agent parentAgent, String name) {
         return new IceMediaStream(parentAgent, name);
     }
 
@@ -117,7 +124,7 @@ public class IceMediaStream
      * Agent} and following the various events it may be generating.
      */
     private final List<PropertyChangeListener> streamListeners
-        = new LinkedList<>();
+            = new LinkedList<>();
 
     /**
      * The maximum number of candidate pairs that we should have in our check
@@ -152,8 +159,7 @@ public class IceMediaStream
      * @param parentAgent the agent that is handling the session that this
      * media stream is a part of
      */
-    protected IceMediaStream(Agent parentAgent, String name)
-    {
+    protected IceMediaStream(Agent parentAgent, String name) {
         logger = parentAgent.getLogger().createChildLogger(IceMediaStream.class.getName(), Collections.singletonMap("name", name));
         this.name = name;
         this.parentAgent = parentAgent;
@@ -176,14 +182,12 @@ public class IceMediaStream
      */
     protected Component createComponent(
             KeepAliveStrategy keepAliveStrategy,
-            boolean useComponentSocket)
-    {
+            boolean useComponentSocket) {
         Component component;
 
-        synchronized (components)
-        {
+        synchronized (components) {
             component
-                = new Component(
+                    = new Component(
                     ++lastComponentID,
                     this,
                     keepAliveStrategy,
@@ -200,8 +204,7 @@ public class IceMediaStream
      *
      * @return the name of this <tt>IceMediaStream</tt>.
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -211,15 +214,14 @@ public class IceMediaStream
      * @return a <tt>String</tt> representation of this media stream.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder buff
-            = new StringBuilder( "media stream:")
+                = new StringBuilder("media stream:")
                 .append(getName());
 
         buff.append(" (component count=")
-            .append(getComponentCount())
-            .append(")");
+                .append(getComponentCount())
+                .append(")");
 
         for (Component cmp : getComponents())
             buff.append("\n").append(cmp);
@@ -233,13 +235,11 @@ public class IceMediaStream
      *
      * @param id the identifier of the component we are looking for.
      *
-     * @return  the <tt>Component</tt> with the specified <tt>id</tt> or
+     * @return the <tt>Component</tt> with the specified <tt>id</tt> or
      * <tt>null</tt> if no such component exists in this stream.
      */
-    public Component getComponent(int id)
-    {
-        synchronized(components)
-        {
+    public Component getComponent(int id) {
+        synchronized (components) {
             return components.get(id);
         }
     }
@@ -251,10 +251,8 @@ public class IceMediaStream
      * @return a non-null list of <tt>Component</tt>s currently registered with
      * this stream.
      */
-    public List<Component> getComponents()
-    {
-        synchronized(components)
-        {
+    public List<Component> getComponents() {
+        synchronized (components) {
             return new ArrayList<>(components.values());
         }
     }
@@ -266,10 +264,8 @@ public class IceMediaStream
      * @return the number of <tt>Component</tt>s currently registered with this
      * stream.
      */
-    public int getComponentCount()
-    {
-        synchronized(components)
-        {
+    public int getComponentCount() {
+        synchronized (components) {
             return components.size();
         }
     }
@@ -281,10 +277,8 @@ public class IceMediaStream
      * @return a non-null list of IDs corresponding to the <tt>Component</tt>s
      * currently registered with this stream.
      */
-    public List<Integer> getComponentIDs()
-    {
-        synchronized(components)
-        {
+    public List<Integer> getComponentIDs() {
+        synchronized (components) {
             return new ArrayList<>(components.keySet());
         }
     }
@@ -294,8 +288,7 @@ public class IceMediaStream
      *
      * @return a reference to the <tt>Agent</tt> that this stream belongs to.
      */
-    public Agent getParentAgent()
-    {
+    public Agent getParentAgent() {
         return parentAgent;
     }
 
@@ -303,12 +296,10 @@ public class IceMediaStream
      * Removes this stream and all <tt>Candidate</tt>s associated with its child
      * <tt>Component</tt>s.
      */
-    protected void free()
-    {
+    protected void free() {
         List<Component> components;
 
-        synchronized (this.components)
-        {
+        synchronized (this.components) {
             components = getComponents();
             this.components.clear();
         }
@@ -331,10 +322,8 @@ public class IceMediaStream
      *
      * @param component the <tt>Component</tt> we'd like to remove and free.
      */
-    public void removeComponent(Component component)
-    {
-        synchronized (components)
-        {
+    public void removeComponent(Component component) {
+        synchronized (components) {
             components.remove(component.getComponentID());
         }
         /*
@@ -351,11 +340,9 @@ public class IceMediaStream
      * Creates, initializes and orders the list of candidate pairs that would
      * be used for the connectivity checks for all components in this stream.
      */
-    protected void initCheckList()
-    {
+    protected void initCheckList() {
         //first init the check list.
-        synchronized(checkList)
-        {
+        synchronized (checkList) {
             checkList.clear();
             createCheckList(checkList);
 
@@ -371,8 +358,7 @@ public class IceMediaStream
      *
      * @param checkList the list that we need to update with the new pairs.
      */
-    protected void createCheckList(List<CandidatePair> checkList)
-    {
+    protected void createCheckList(List<CandidatePair> checkList) {
         for (Component cmp : getComponents())
             createCheckList(cmp, checkList);
     }
@@ -385,33 +371,28 @@ public class IceMediaStream
      * pair and extract.
      * @param checkList the list that we need to update with the new pairs.
      */
-    private void createCheckList(final Component           component,
-                                 final List<CandidatePair> checkList)
-    {
+    private void createCheckList(final Component component,
+            final List<CandidatePair> checkList) {
         List<LocalCandidate> localCnds = component.getLocalCandidates();
         List<RemoteCandidate> remoteCnds = component.getRemoteCandidates();
         LocalCandidate upnpBase = null;
 
-        for (LocalCandidate lc : localCnds)
-        {
+        for (LocalCandidate lc : localCnds) {
             // XXX do we assume a single UPNPCandidate here?
             if (lc instanceof UPNPCandidate)
                 upnpBase = lc.getBase();
         }
 
-        for (LocalCandidate localCnd : localCnds)
-        {
+        for (LocalCandidate localCnd : localCnds) {
             // Don't take into consideration UPnP base candidate
             if (localCnd == upnpBase)
                 continue;
 
-            for (RemoteCandidate remoteCnd : remoteCnds)
-            {
+            for (RemoteCandidate remoteCnd : remoteCnds) {
                 if (localCnd.canReach(remoteCnd)
-                        && remoteCnd.getTransportAddress().getPort() != 0)
-                {
+                        && remoteCnd.getTransportAddress().getPort() != 0) {
                     CandidatePair pair
-                        = getParentAgent()
+                            = getParentAgent()
                             .createCandidatePair(localCnd, remoteCnd);
                     checkList.add(pair);
                 }
@@ -424,57 +405,51 @@ public class IceMediaStream
      * priority. If two pairs have identical priority, the ordering amongst
      * them is arbitrary.
      */
-    private void orderCheckList()
-    {
+    private void orderCheckList() {
         Collections.sort(checkList, CandidatePair.comparator);
     }
 
     /**
-     *  Removes or, as per the ICE spec, "prunes" pairs that we don't need to
-     *  run checks for. For example, since we cannot send requests directly
-     *  from a reflexive candidate, but only from its base, we go through the
-     *  sorted list of candidate pairs and in every pair where the local
-     *  candidate is server reflexive, we replace the local server reflexive
-     *  candidate with its base. Once this has been done, we remove each pair
-     *  where the local and remote candidates are identical to the local and
-     *  remote candidates of a pair higher up on the priority list.
-     *  <br>
-     *  In addition, in order to limit the attacks described in Section 18.5.2
-     *  of the ICE spec, we limit the total number of pairs and hence
-     *  (connectivity checks) to a specific value, (a total of 100 by default).
+     * Removes or, as per the ICE spec, "prunes" pairs that we don't need to
+     * run checks for. For example, since we cannot send requests directly
+     * from a reflexive candidate, but only from its base, we go through the
+     * sorted list of candidate pairs and in every pair where the local
+     * candidate is server reflexive, we replace the local server reflexive
+     * candidate with its base. Once this has been done, we remove each pair
+     * where the local and remote candidates are identical to the local and
+     * remote candidates of a pair higher up on the priority list.
+     * <br>
+     * In addition, in order to limit the attacks described in Section 18.5.2
+     * of the ICE spec, we limit the total number of pairs and hence
+     * (connectivity checks) to a specific value, (a total of 100 by default).
      *
      * @param checkList the checklist to prune
      */
-    protected void pruneCheckList(List<CandidatePair> checkList)
-    {
+    protected void pruneCheckList(List<CandidatePair> checkList) {
         //a list that we only use for storing pairs that we've already gone
         //through. The list is destroyed at the end of this method.
         List<CandidatePair> tmpCheckList = new ArrayList<>(checkList.size());
 
         Iterator<CandidatePair> ckListIter = checkList.iterator();
 
-        while (ckListIter.hasNext())
-        {
+        while (ckListIter.hasNext()) {
             CandidatePair pair = ckListIter.next();
 
             //drop all pairs above MAX_CHECK_LIST_SIZE.
-            if (tmpCheckList.size() > maxCheckListSize)
-            {
+            if (tmpCheckList.size() > maxCheckListSize) {
                 ckListIter.remove();
                 continue;
             }
 
             //replace local server reflexive candidates with their base.
             LocalCandidate localCnd = pair.getLocalCandidate();
-            if ( localCnd.getType()
-                        == CandidateType.SERVER_REFLEXIVE_CANDIDATE)
-            {
+            if (localCnd.getType()
+                    == CandidateType.SERVER_REFLEXIVE_CANDIDATE) {
                 pair.setLocalCandidate(localCnd.getBase());
 
                 //if the new pair corresponds to another one with a higher
                 //priority, then remove it.
-                if (tmpCheckList.contains(pair))
-                {
+                if (tmpCheckList.contains(pair)) {
                     ckListIter.remove();
                     continue;
                 }
@@ -491,8 +466,7 @@ public class IceMediaStream
      * @return the list of <tt>CandidatePair</tt>s to be used in checks for
      * this stream.
      */
-    public CheckList getCheckList()
-    {
+    public CheckList getCheckList() {
         return checkList;
     }
 
@@ -501,8 +475,7 @@ public class IceMediaStream
      *
      * @param nSize the size of our check list.
      */
-    protected void setMaxCheckListSize(int nSize)
-    {
+    protected void setMaxCheckListSize(int nSize) {
         this.maxCheckListSize = nSize;
     }
 
@@ -515,19 +488,16 @@ public class IceMediaStream
      * @param address the {@link TransportAddress} we are looking for.
      * @param base an optional base to match.
      *
-     * @return  the local <tt>LocalCandidate</tt> with the specified
+     * @return the local <tt>LocalCandidate</tt> with the specified
      * <tt>address</tt> if it belongs to any of this stream's components
      * or <tt>null</tt> otherwise.
      */
-    public LocalCandidate findLocalCandidate(TransportAddress address, LocalCandidate base)
-    {
-        for (Component component : components.values())
-        {
+    public LocalCandidate findLocalCandidate(TransportAddress address, LocalCandidate base) {
+        for (Component component : components.values()) {
             LocalCandidate localCandidate
                     = component.findLocalCandidate(address, base);
 
-            if (localCandidate != null)
-            {
+            if (localCandidate != null) {
                 return localCandidate;
             }
         }
@@ -545,12 +515,9 @@ public class IceMediaStream
      * @return the local <tt>Candidate</tt> with the specified
      * <tt>remoteAddress</tt> if it belongs to any of this stream's {@link
      * Component}s or <tt>null</tt> if it doesn't.
-     *
      */
-    public RemoteCandidate findRemoteCandidate(TransportAddress remoteAddress)
-    {
-        for ( Component cmp : components.values())
-        {
+    public RemoteCandidate findRemoteCandidate(TransportAddress remoteAddress) {
+        for (Component cmp : components.values()) {
             RemoteCandidate cnd = cmp.findRemoteCandidate(remoteAddress);
 
             if (cnd != null)
@@ -575,17 +542,13 @@ public class IceMediaStream
      * stream contain such a pair.
      */
     public CandidatePair findCandidatePair(TransportAddress localAddress,
-                                           TransportAddress remoteAddress)
-    {
-        synchronized(checkList)
-        {
-            for (CandidatePair pair : checkList)
-            {
+            TransportAddress remoteAddress) {
+        synchronized (checkList) {
+            for (CandidatePair pair : checkList) {
                 if (pair.getLocalCandidate().getTransportAddress()
-                            .equals(localAddress)
+                        .equals(localAddress)
                         && pair.getRemoteCandidate().getTransportAddress()
-                                .equals(remoteAddress))
-                {
+                        .equals(remoteAddress)) {
                     return pair;
                 }
             }
@@ -600,23 +563,20 @@ public class IceMediaStream
      *
      * @param localUFrag local user fragment
      * @param remoteUFrag remote user fragment
+     *
      * @return the {@link CandidatePair} with the specified remote and local
      * addresses or <tt>null</tt> if neither of the {@link CheckList}s in this
      * stream contain such a pair.
      */
     public CandidatePair findCandidatePair(String localUFrag,
-                                           String remoteUFrag)
-    {
-        synchronized(checkList)
-        {
-            for (CandidatePair pair : checkList)
-            {
+            String remoteUFrag) {
+        synchronized (checkList) {
+            for (CandidatePair pair : checkList) {
                 LocalCandidate local = pair.getLocalCandidate();
                 RemoteCandidate remote = pair.getRemoteCandidate();
 
                 if (local.getUfrag().equals(remoteUFrag)
-                        && remote.getUfrag().equals(localUFrag))
-                {
+                        && remote.getUfrag().equals(localUFrag)) {
                     return pair;
                 }
             }
@@ -629,12 +589,10 @@ public class IceMediaStream
      *
      * @return the number of host {@link Candidate}s in this stream.
      */
-    protected int countHostCandidates()
-    {
+    protected int countHostCandidates() {
         int num = 0;
 
-        synchronized (components)
-        {
+        synchronized (components) {
             for (Component cmp : components.values())
                 num += cmp.countLocalHostCandidates();
         }
@@ -649,10 +607,8 @@ public class IceMediaStream
      *
      * @param candidatePair the pair that we'd like to add to this streams.
      */
-    protected void addToCheckList(CandidatePair candidatePair)
-    {
-        synchronized(checkList)
-        {
+    protected void addToCheckList(CandidatePair candidatePair) {
+        synchronized (checkList) {
             checkList.add(candidatePair);
         }
     }
@@ -663,10 +619,8 @@ public class IceMediaStream
      *
      * @param pair the {@link CandidatePair} to add to our valid list.
      */
-    protected void addToValidList(CandidatePair pair)
-    {
-        synchronized (validList)
-        {
+    protected void addToValidList(CandidatePair pair) {
+        synchronized (validList) {
             if (!validList.contains(pair))
                 validList.add(pair);
         }
@@ -684,12 +638,9 @@ public class IceMediaStream
      * @return <tt>true</tt> if this stream's <tt>validList</tt> contains a
      * pair with the specified <tt>foundation</tt> and <tt>false</tt> otherwise.
      */
-    protected boolean validListContainsFoundation(String foundation)
-    {
-        synchronized(validList)
-        {
-            for (CandidatePair pair : validList)
-            {
+    protected boolean validListContainsFoundation(String foundation) {
+        synchronized (validList) {
+            for (CandidatePair pair : validList) {
                 if (pair.getFoundation().equals(foundation))
                     return true;
             }
@@ -709,15 +660,11 @@ public class IceMediaStream
      * pair that is nominated for the specified <tt>Component</tt> and
      * <tt>false</tt> otherwise.
      */
-    protected boolean validListContainsNomineeForComponent(Component component)
-    {
-        synchronized (validList)
-        {
-            for (CandidatePair pair : validList)
-            {
+    protected boolean validListContainsNomineeForComponent(Component component) {
+        synchronized (validList) {
+            for (CandidatePair pair : validList) {
                 if (pair.isNominated()
-                        && pair.getParentComponent() == component)
-                {
+                        && pair.getParentComponent() == component) {
                     return true;
                 }
             }
@@ -734,12 +681,9 @@ public class IceMediaStream
      * one {@link CandidatePair} for each {@link Component} of the stream and
      * <tt>false</tt> otherwise.
      */
-    protected boolean validListContainsAllComponents()
-    {
-        for (Component cmp : getComponents())
-        {
-            if (getValidPair(cmp) == null)
-            {
+    protected boolean validListContainsAllComponents() {
+        for (Component cmp : getComponents()) {
+            if (getValidPair(cmp) == null) {
                 //it looks like there's at least one component we don't have a
                 //valid candidate for.
                 return false;
@@ -757,14 +701,11 @@ public class IceMediaStream
      * CandidatePair} in the valid list for every {@link Component} of this
      * stream and <tt>false</tt> otherwise.
      */
-    protected boolean allComponentsAreNominated()
-    {
+    protected boolean allComponentsAreNominated() {
         List<Component> components = getComponents();
 
-        synchronized (validList)
-        {
-            for (CandidatePair pair : validList)
-            {
+        synchronized (validList) {
+            for (CandidatePair pair : validList) {
                 if (pair.isNominated())
                     components.remove(pair.getParentComponent());
             }
@@ -782,10 +723,8 @@ public class IceMediaStream
      * CandidatePair} who doesn't have a selected address yet, and <tt>true</tt>
      * otherwise.
      */
-    protected boolean allComponentsHaveSelected()
-    {
-        for (Component component : getComponents())
-        {
+    protected boolean allComponentsHaveSelected() {
+        for (Component component : getComponents()) {
             if (component.getSelectedPair() == null)
                 return false;
         }
@@ -802,12 +741,9 @@ public class IceMediaStream
      * @return a valid {@link CandidatePair} for the specified
      * <tt>component</tt> if at least one exists, and <tt>null</tt> otherwise.
      */
-    protected CandidatePair getValidPair(Component component)
-    {
-        synchronized (validList)
-        {
-            for (CandidatePair pair : validList)
-            {
+    protected CandidatePair getValidPair(Component component) {
+        synchronized (validList) {
+            for (CandidatePair pair : validList) {
                 if (pair.getParentComponent() == component)
                     return pair;
             }
@@ -823,10 +759,8 @@ public class IceMediaStream
      *
      * @param l the listener to register.
      */
-    public void addPairChangeListener(PropertyChangeListener l)
-    {
-        synchronized (streamListeners)
-        {
+    public void addPairChangeListener(PropertyChangeListener l) {
+        synchronized (streamListeners) {
             if (!streamListeners.contains(l))
                 streamListeners.add(l);
         }
@@ -838,10 +772,8 @@ public class IceMediaStream
      *
      * @param l the listener to remove.
      */
-    public void removePairStateChangeListener(PropertyChangeListener l)
-    {
-        synchronized (streamListeners)
-        {
+    public void removePairStateChangeListener(PropertyChangeListener l) {
+        synchronized (streamListeners) {
             streamListeners.remove(l);
         }
     }
@@ -856,21 +788,17 @@ public class IceMediaStream
      * @param newValue the new value of the property that changed.
      */
     protected void firePairPropertyChange(CandidatePair source,
-                                          String        propertyName,
-                                          Object        oldValue,
-                                          Object        newValue)
-    {
+            String propertyName,
+            Object oldValue,
+            Object newValue) {
         PropertyChangeListener[] ls;
 
-        synchronized (streamListeners)
-        {
-            ls
-                = streamListeners.toArray(
-                        new PropertyChangeListener[streamListeners.size()]);
+        synchronized (streamListeners) {
+            ls = streamListeners.toArray(new PropertyChangeListener[0]);
         }
 
         PropertyChangeEvent ev
-            = new PropertyChangeEvent(source, propertyName, oldValue, newValue);
+                = new PropertyChangeEvent(source, propertyName, oldValue, newValue);
 
         for (PropertyChangeListener l : ls)
             l.propertyChange(ev);
@@ -881,8 +809,7 @@ public class IceMediaStream
      *
      * @param remoteUfrag the user name that we received from the remote peer.
      */
-    public void setRemoteUfrag(String remoteUfrag)
-    {
+    public void setRemoteUfrag(String remoteUfrag) {
         this.remoteUfrag = remoteUfrag;
     }
 
@@ -893,8 +820,7 @@ public class IceMediaStream
      * @return the user name that we received from the remote peer or
      * <tt>null</tt> if we haven't received a user name from them yet.
      */
-    public String getRemoteUfrag()
-    {
+    public String getRemoteUfrag() {
         return remoteUfrag;
     }
 
@@ -904,8 +830,7 @@ public class IceMediaStream
      * @param remotePassword the user name that we received from the remote
      * peer.
      */
-    public void setRemotePassword(String remotePassword)
-    {
+    public void setRemotePassword(String remotePassword) {
         this.remotePassword = remotePassword;
     }
 
@@ -916,13 +841,11 @@ public class IceMediaStream
      * @return the password that we received from the remote peer or
      * <tt>null</tt> if we haven't received a password from them yet.
      */
-    public String getRemotePassword()
-    {
+    public String getRemotePassword() {
         return remotePassword;
     }
 
-    public Logger getLogger()
-    {
+    public Logger getLogger() {
         return logger;
     }
 }

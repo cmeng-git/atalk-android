@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.service.history;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * The standard Java Iterator is uni-directional, allowing the user to explore the contents of a collection in one way

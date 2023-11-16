@@ -11,10 +11,19 @@ import org.atalk.impl.neomedia.control.ControlsAdapter;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 
-import javax.media.*;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.NoProcessorException;
+import javax.media.Processor;
+import javax.media.Time;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullDataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushDataSource;
+import javax.media.protocol.SourceStream;
 
 /**
  * Represents a <code>DataSource</code> which transcodes the tracks of a specific input

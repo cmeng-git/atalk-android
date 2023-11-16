@@ -26,8 +26,6 @@ import android.widget.ExpandableListView;
 
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 
-import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
-
 /**
  * Implements contact groups expand memory.
  *

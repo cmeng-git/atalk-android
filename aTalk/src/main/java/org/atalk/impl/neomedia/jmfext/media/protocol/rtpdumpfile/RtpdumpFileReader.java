@@ -16,7 +16,9 @@ package org.atalk.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
 import org.atalk.service.neomedia.RawPacket;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * This class represent a rtpdump file and provide an API to get the payload of the rtp packet it

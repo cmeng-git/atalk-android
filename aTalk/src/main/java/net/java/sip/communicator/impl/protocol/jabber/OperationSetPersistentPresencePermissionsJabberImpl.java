@@ -5,9 +5,16 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresencePermissions;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Implements group edit permissions.

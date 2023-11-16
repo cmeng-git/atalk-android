@@ -17,9 +17,14 @@
  */
 package org.ice4j;
 
-import org.ice4j.ice.*;
+import org.ice4j.ice.Agent;
+import org.ice4j.ice.CandidatePair;
+import org.ice4j.ice.Component;
+import org.ice4j.ice.IceMediaStream;
+import org.ice4j.ice.KeepAliveStrategy;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

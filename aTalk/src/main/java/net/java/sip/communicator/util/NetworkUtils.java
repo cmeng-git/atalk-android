@@ -23,13 +23,29 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.minidns.dnsqueryresult.DnsQueryResult;
 import org.minidns.hla.ResolverApi;
 import org.minidns.hla.ResolverResult;
-import org.minidns.record.*;
+import org.minidns.record.A;
+import org.minidns.record.AAAA;
+import org.minidns.record.Data;
+import org.minidns.record.Record;
 import org.minidns.record.Record.TYPE;
+import org.minidns.record.SRV;
 import org.minidns.util.InetAddressUtil;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.*;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import timber.log.Timber;
 

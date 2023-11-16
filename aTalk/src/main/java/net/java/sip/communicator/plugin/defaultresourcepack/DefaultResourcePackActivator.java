@@ -13,13 +13,20 @@
  */
 package net.java.sip.communicator.plugin.defaultresourcepack;
 
-import net.java.sip.communicator.service.resources.*;
+import net.java.sip.communicator.service.resources.ColorPack;
+import net.java.sip.communicator.service.resources.ImagePack;
+import net.java.sip.communicator.service.resources.ResourcePack;
+import net.java.sip.communicator.service.resources.SettingsPack;
+import net.java.sip.communicator.service.resources.SoundPack;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import timber.log.Timber;
 

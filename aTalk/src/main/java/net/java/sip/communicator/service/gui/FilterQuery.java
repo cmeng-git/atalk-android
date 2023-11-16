@@ -6,8 +6,8 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import net.java.sip.communicator.service.contactsource.*;
-import net.java.sip.communicator.service.gui.event.*;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.gui.event.FilterQueryListener;
 
 /**
  * The <code>FilterQuery</code> gives information about a current filtering.

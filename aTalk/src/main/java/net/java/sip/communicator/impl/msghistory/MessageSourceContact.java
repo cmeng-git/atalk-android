@@ -7,11 +7,25 @@
 package net.java.sip.communicator.impl.msghistory;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactDetail;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.msghistory.MessageSourceContactPresenceStatus;
 import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.DataObject;
 
@@ -19,7 +33,14 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represents a contact source displaying a recent message for contact.
@@ -106,20 +127,19 @@ public class MessageSourceContact extends DataObject
     }
 
     /**
-     * Make sure the content of the message is not too long, as it will fill up tooltips and ui
-     * components.
+     * Make sure the content of the message is not too long, as it will fill up tooltips and ui components.
      */
     private void updateMessageContent()
     {
         if (isToday(timestamp)) {
             // just hour
-            this.messageContent = new SimpleDateFormat(TODAY_DATE_FORMAT).format(timestamp)
+            this.messageContent = new SimpleDateFormat(TODAY_DATE_FORMAT, Locale.US).format(timestamp)
                     + this.messageContent;
 
         }
         else {
             // just date
-            this.messageContent = new SimpleDateFormat(PAST_DATE_FORMAT).format(timestamp)
+            this.messageContent = new SimpleDateFormat(PAST_DATE_FORMAT, Locale.US).format(timestamp)
                     + this.messageContent;
         }
 
@@ -251,13 +271,13 @@ public class MessageSourceContact extends DataObject
         Map<Class<? extends OperationSet>, ProtocolProviderService> preferredProviders;
         ProtocolProviderService preferredProvider = this.ppService;
 
-        OperationSetContactCapabilities capOpSet
-                = preferredProvider.getOperationSet(OperationSetContactCapabilities.class);
-        Map<String, OperationSet> opsetCapabilities = null;
-        if (capOpSet != null && contact != null)
-            opsetCapabilities = capOpSet.getSupportedOperationSets(contact);
-
         if (preferredProvider != null) {
+            OperationSetContactCapabilities capOpSet
+                    = preferredProvider.getOperationSet(OperationSetContactCapabilities.class);
+            Map<String, OperationSet> opsetCapabilities = null;
+            if (capOpSet != null && contact != null)
+                opsetCapabilities = capOpSet.getSupportedOperationSets(contact);
+
             preferredProviders = new Hashtable<>();
 
             LinkedList<Class<? extends OperationSet>> supportedOpSets = new LinkedList<>();

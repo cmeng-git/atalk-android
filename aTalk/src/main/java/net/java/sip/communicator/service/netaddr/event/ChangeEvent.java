@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.netaddr.event;
 
-import java.net.*;
+import java.net.InetAddress;
 
 /**
  * A ChangeEvent is fired on change of the network configuration of the computer.

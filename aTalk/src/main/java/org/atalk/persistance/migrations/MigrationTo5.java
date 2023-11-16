@@ -1,12 +1,12 @@
 package org.atalk.persistance.migrations;
 
+import static org.atalk.persistance.DatabaseBackend.CREATE_OMEMO_DEVICES_STATEMENT;
+
 import android.database.sqlite.SQLiteDatabase;
 
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 
 import timber.log.Timber;
-
-import static org.atalk.persistance.DatabaseBackend.CREATE_OMEMO_DEVICES_STATEMENT;
 
 public class MigrationTo5
 {

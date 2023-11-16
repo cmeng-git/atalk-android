@@ -5,13 +5,8 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
-import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.setUncommittedChanges;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -60,7 +55,7 @@ public class TelephonyFragment extends OSGiPreferenceFragment
         setPreferencesFromResource(R.xml.telephony_preference, rootKey);
         setPrefTitle(R.string.service_gui_JBR_TELEPHONY);
 
-        String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
+        String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
 
         ProtocolProviderService pps = AccountUtils.getRegisteredProviderForAccount(account);

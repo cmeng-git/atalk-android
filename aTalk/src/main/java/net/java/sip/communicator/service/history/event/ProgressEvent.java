@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.history.event;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * A "ProgressEvent" event gets delivered through the search process of HistoryReader Service. The event is created with

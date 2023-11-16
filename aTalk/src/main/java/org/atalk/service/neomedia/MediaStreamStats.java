@@ -5,9 +5,11 @@
  */
 package org.atalk.service.neomedia;
 
-import java.awt.Dimension;
-import org.atalk.service.neomedia.rtp.*;
+import org.atalk.service.neomedia.rtp.RTCPPacketListener;
+import org.atalk.service.neomedia.rtp.RTCPReports;
 import org.atalk.service.neomedia.stats.MediaStreamStats2;
+
+import java.awt.Dimension;
 
 /**
  * Class used to compute stats concerning a MediaStream.

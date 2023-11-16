@@ -974,7 +974,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint for %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Remote fingerprint for %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Authenticate Buddy</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">verified that this is in fact the correct fingerprint for %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Automatically initiate private messaging</string>
     <string name="plugin_otr_configform_CB_ENABLE">Enable private messaging</string>
@@ -1015,6 +1014,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Authenticate Buddy</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">You have unauthenticated buddies. Unverified buddies cannot receive OMEMO message. Check to authenticate.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
     <string name="omemo_identity_keypairs_missing">Create OMEMO IdentityKeyPairs for: %1$s</string>
     <string name="omemo_identity_key_invalid">Invalid IdentityKey for omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey for %1$s is missing.\nProceed to download from server.</string>
@@ -1453,8 +1453,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">RTP pacing threshold (kBytes/s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Target frame rate (per sec.)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Message encryption security settings</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Messaging Security</string>
 

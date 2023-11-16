@@ -5,10 +5,14 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.FRAME_LENGTH_MS;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MIN_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Set decoder sampling rate.

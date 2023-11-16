@@ -43,7 +43,7 @@ public interface TransformLayer
 	 *         transformed message or <code>null</code> if the <code>TransportLayer</code> has determined
 	 *         that this message event should not be delivered to the upper layers.
 	 */
-	public MessageReceivedEvent messageReceived(MessageReceivedEvent evt);
+	MessageReceivedEvent messageReceived(MessageReceivedEvent evt);
 
 	/**
 	 * Called when the underlying implementation has just been asked by other bundles to send an
@@ -62,7 +62,7 @@ public interface TransformLayer
 	 *         <code>TransportLayer</code> has determined that there are no message event that should be
 	 *         delivered to the upper layers.
 	 */
-	public MessageDeliveredEvent[] messageDeliveryPending(MessageDeliveredEvent evt);
+	MessageDeliveredEvent[] messageDeliveryPending(MessageDeliveredEvent evt);
 
 	/**
 	 * Called when the underlying implementation has received an indication that a message, sent
@@ -80,7 +80,7 @@ public interface TransformLayer
 	 *         the transformed message or <code>null</code> if the <code>TransportLayer</code> has
 	 *         determined that this message event should not be delivered to the upper layers.
 	 */
-	public MessageDeliveredEvent messageDelivered(MessageDeliveredEvent evt);
+	MessageDeliveredEvent messageDelivered(MessageDeliveredEvent evt);
 
 	/**
 	 * Called to indicated that delivery of a message sent earlier has failed. Reason code and
@@ -99,5 +99,5 @@ public interface TransformLayer
 	 *         the transformed message or <code>null</code> if the <code>TransportLayer</code> has
 	 *         determined that this message event should not be delivered to the upper layers.
 	 */
-	public MessageDeliveryFailedEvent messageDeliveryFailed(MessageDeliveryFailedEvent evt);
+	MessageDeliveryFailedEvent messageDeliveryFailed(MessageDeliveryFailedEvent evt);
 }

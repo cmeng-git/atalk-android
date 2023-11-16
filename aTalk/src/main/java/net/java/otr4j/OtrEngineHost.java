@@ -6,7 +6,9 @@
  */
 package net.java.otr4j;
 
-import net.java.otr4j.session.*;
+import net.java.otr4j.session.FragmenterInstructions;
+import net.java.otr4j.session.InstanceTag;
+import net.java.otr4j.session.SessionID;
 
 import java.security.KeyPair;
 

@@ -26,8 +26,7 @@ public interface PacketTransformer
 	/**
 	 * Reverse-transforms each packet in an array of packets. Null values must be ignored.
 	 *
-	 * @param pkts
-	 *        the transformed packets to be restored.
+	 * @param pkts the transformed packets to be restored.
 	 * @return the restored packets.
 	 */
 	RawPacket[] reverseTransform(RawPacket[] pkts);
@@ -35,8 +34,7 @@ public interface PacketTransformer
 	/**
 	 * Transforms each packet in an array of packets. Null values must be ignored.
 	 *
-	 * @param pkts
-	 *        the packets to be transformed
+	 * @param pkts the packets to be transformed
 	 * @return the transformed packets
 	 */
 	RawPacket[] transform(RawPacket[] pkts);

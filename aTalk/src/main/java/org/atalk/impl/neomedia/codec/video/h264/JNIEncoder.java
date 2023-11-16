@@ -6,7 +6,6 @@
 package org.atalk.impl.neomedia.codec.video.h264;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
@@ -20,6 +19,7 @@ import org.atalk.service.neomedia.control.KeyFrameControl;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageListener;
 
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
 

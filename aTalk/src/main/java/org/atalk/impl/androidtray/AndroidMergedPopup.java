@@ -5,12 +5,12 @@
  */
 package org.atalk.impl.androidtray;
 
+import androidx.core.app.NotificationCompat;
+
 import net.java.sip.communicator.service.systray.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.core.app.NotificationCompat;
 
 /**
  * Popup notification that consists of few merged previous popups.

@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore;
 
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.android.aTalkApp;
 import org.atalk.persistance.FileBackend;
-import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 
 import java.io.File;

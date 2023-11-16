@@ -8,10 +8,19 @@ package org.atalk.android.gui;
 import android.graphics.Point;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.gui.Chat;
+import net.java.sip.communicator.service.gui.Container;
+import net.java.sip.communicator.service.gui.ExportedWindow;
+import net.java.sip.communicator.service.gui.PopupDialog;
+import net.java.sip.communicator.service.gui.UIService;
+import net.java.sip.communicator.service.gui.WindowID;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
 import net.java.sip.communicator.util.account.LoginManager;
 
 import org.atalk.android.aTalkApp;
@@ -19,9 +28,11 @@ import org.atalk.android.gui.call.CallManager;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
-import java.awt.Dimension;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Android <code>UIService</code> stub. Currently used only for supplying the

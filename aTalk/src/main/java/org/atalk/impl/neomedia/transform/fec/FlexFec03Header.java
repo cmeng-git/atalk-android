@@ -15,7 +15,7 @@
  */
 package org.atalk.impl.neomedia.transform.fec;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Model of the data contained in the FlexFEC -03 header

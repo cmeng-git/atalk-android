@@ -6,7 +6,8 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 
 /**
  * The user interface representation of a contact source.

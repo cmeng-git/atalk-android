@@ -13,7 +13,10 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A generic implementation of <code>ExtensionElement</code>. The purpose of this class is quite similar

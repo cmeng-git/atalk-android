@@ -57,7 +57,7 @@ public class VersionServiceImpl extends AbstractVersionService
 
             // cmeng - version must all be digits, otherwise no online update
             CURRENT_VERSION = (VersionImpl) parseVersionString(versionName);
-            Timber.i("Device installed with aTalk-android version: %s, version code: %s",
+            Timber.i("Device installed with aTalk version: %s, version code: %s",
                     CURRENT_VERSION, versionCode);
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);

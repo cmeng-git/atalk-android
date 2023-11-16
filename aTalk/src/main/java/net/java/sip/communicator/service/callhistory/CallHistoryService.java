@@ -19,7 +19,9 @@ import net.java.sip.communicator.service.callhistory.event.CallHistoryPeerRecord
 import net.java.sip.communicator.service.callhistory.event.CallHistorySearchProgressListener;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The Call History Service stores info about calls made from various protocols

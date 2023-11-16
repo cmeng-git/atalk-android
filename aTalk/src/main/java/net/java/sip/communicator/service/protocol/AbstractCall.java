@@ -9,7 +9,10 @@ import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Provides implementations for some of the methods in the <code>Call</code> abstract class to facilitate implementations.

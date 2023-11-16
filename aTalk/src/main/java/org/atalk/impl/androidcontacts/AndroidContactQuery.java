@@ -10,7 +10,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.AbstractContactQuery;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

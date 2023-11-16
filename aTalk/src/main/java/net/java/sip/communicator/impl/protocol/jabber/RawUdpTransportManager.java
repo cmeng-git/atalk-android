@@ -13,13 +13,13 @@ import org.atalk.service.neomedia.StreamConnector;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.CandidateType;
+import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
-import org.jivesoftware.smackx.jingle_rtp.JingleUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;

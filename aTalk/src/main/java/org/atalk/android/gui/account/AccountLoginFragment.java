@@ -6,11 +6,19 @@
 package org.atalk.android.gui.account;
 
 import android.accounts.Account;
-import android.accounts.*;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 
@@ -25,7 +33,11 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.plugin.certconfig.CertConfigActivator;
 import org.atalk.service.osgi.OSGiFragment;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The <code>AccountLoginFragment</code> is used for creating new account, but can be also used to obtain

@@ -9,7 +9,8 @@ package net.java.sip.communicator.service.gui.event;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The <code>MetaContactQuery</code> corresponds to a particular query made through

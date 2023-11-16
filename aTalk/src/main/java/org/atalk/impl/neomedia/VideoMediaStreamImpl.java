@@ -42,10 +42,10 @@ import org.atalk.service.neomedia.device.ScreenDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.BandwidthEstimator;
 import org.atalk.util.OSUtils;
+import org.atalk.util.concurrent.RecurringRunnableExecutor;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 import org.atalk.util.event.VideoNotifierSupport;
-import org.atalk.util.concurrent.RecurringRunnableExecutor;
 
 import java.awt.Component;
 import java.awt.Dimension;

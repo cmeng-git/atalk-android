@@ -7,7 +7,9 @@ package org.atalk.impl.neomedia.jmfext.media.protocol;
 
 import net.sf.fmj.media.util.RTPInfo;
 
-import org.atalk.impl.neomedia.control.*;
+import org.atalk.impl.neomedia.control.AbstractControls;
+import org.atalk.impl.neomedia.control.AbstractFormatControl;
+import org.atalk.impl.neomedia.control.ControlsAdapter;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -15,12 +17,16 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Vector;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
 import javax.media.Controls;
-import javax.media.*;
+import javax.media.Format;
+import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 import javax.media.control.FrameRateControl;
-import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.SourceStream;
 
 import timber.log.Timber;
 

@@ -7,8 +7,12 @@ package org.atalk.android.gui.account;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import net.java.sip.communicator.impl.configuration.ConfigurationActivator;
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -18,7 +22,10 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.CollectionAdapter;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiActivity;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 
 import java.util.ArrayList;
 import java.util.Collection;

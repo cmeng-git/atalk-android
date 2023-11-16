@@ -6,9 +6,13 @@
 package org.atalk.impl.neomedia.device.util;
 
 import android.graphics.SurfaceTexture;
-import android.opengl.*;
+import android.opengl.GLES11Ext;
+import android.opengl.GLES20;
+import android.opengl.Matrix;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
 /**
  * Code for rendering a texture onto a surface using OpenGL ES 2.0.

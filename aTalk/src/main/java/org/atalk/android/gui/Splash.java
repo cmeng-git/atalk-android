@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 
 import timber.log.Timber;
 

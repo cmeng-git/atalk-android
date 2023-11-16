@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.impl.notification;
 
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.CommandNotificationAction;
+import net.java.sip.communicator.service.notification.CommandNotificationHandler;
+import net.java.sip.communicator.service.notification.NotificationAction;
 
 import org.apache.commons.lang3.StringUtils;
 

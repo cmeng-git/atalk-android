@@ -1,8 +1,7 @@
 package javax.swing;
 
-import java.util.Hashtable;
-
 import java.awt.Font;
+import java.util.Hashtable;
 
 public class UIDefaults extends Hashtable<Object, Object> {
 	private static final Object PENDING = new String("Pending");

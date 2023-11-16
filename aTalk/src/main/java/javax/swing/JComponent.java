@@ -1,17 +1,18 @@
 package javax.swing;
 
 import org.atalk.android.gui.util.event.EventListenerList;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
-import javax.swing.border.Border;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import javax.swing.border.Border;
 
 public abstract class JComponent extends Container implements Serializable {
 	

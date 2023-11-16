@@ -7,14 +7,26 @@ package org.atalk.impl.osgi.framework;
 
 import org.atalk.impl.osgi.framework.launch.FrameworkImpl;
 import org.atalk.impl.osgi.framework.startlevel.BundleStartLevelImpl;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -210,7 +222,7 @@ public class BundleImpl implements Bundle
             return Class.forName(name);
         } catch (ClassNotFoundException e) {
             // Tries to load class from library dex file
-            Timber.e(e, "Tries to load class from library dex file: %s", name);
+            Timber.e(e, "Tries to load class: %s", name);
             return null;
             // return LibDexLoader.instance.loadClass(name);
         }
@@ -274,7 +286,7 @@ public class BundleImpl implements Bundle
                 bundleActivator = (BundleActivator) loadClass(location.replace('/', '.')).newInstance();
                 bundleActivator.start(getBundleContext());
             } catch (Throwable t) {
-                Timber.e(t, "Error starting bundle: %s", bundleActivator);
+                Timber.e(t, "Error starting bundle: %s", location);
 
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;

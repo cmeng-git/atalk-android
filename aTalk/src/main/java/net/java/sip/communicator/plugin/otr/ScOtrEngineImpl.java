@@ -6,17 +6,33 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import net.java.otr4j.*;
+import net.java.otr4j.OtrEngineHost;
+import net.java.otr4j.OtrEngineListener;
+import net.java.otr4j.OtrException;
+import net.java.otr4j.OtrPolicy;
+import net.java.otr4j.OtrPolicyImpl;
+import net.java.otr4j.OtrSessionManager;
+import net.java.otr4j.OtrSessionManagerImpl;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
 import net.java.otr4j.crypto.OtrCryptoException;
-import net.java.otr4j.session.*;
+import net.java.otr4j.session.FragmenterInstructions;
+import net.java.otr4j.session.InstanceTag;
+import net.java.otr4j.session.Session;
+import net.java.otr4j.session.SessionID;
+import net.java.otr4j.session.SessionStatus;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.plugin.otr.authdialog.SmpAuthenticateBuddyDialog;
 import net.java.sip.communicator.plugin.otr.authdialog.SmpProgressDialog;
 import net.java.sip.communicator.service.browserlauncher.BrowserLauncherService;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessagingTransport;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -27,7 +43,16 @@ import org.osgi.framework.ServiceListener;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;

@@ -12,7 +12,10 @@ import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**

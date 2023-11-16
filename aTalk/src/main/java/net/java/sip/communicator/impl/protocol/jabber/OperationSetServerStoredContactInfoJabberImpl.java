@@ -9,7 +9,12 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import timber.log.Timber;
 

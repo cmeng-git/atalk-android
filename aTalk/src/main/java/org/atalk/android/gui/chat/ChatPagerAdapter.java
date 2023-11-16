@@ -7,13 +7,15 @@ package org.atalk.android.gui.chat;
 
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 
 import java.util.List;
-
-import androidx.fragment.app.*;
-import androidx.viewpager.widget.PagerAdapter;
 
 /**
  * A pager adapter used to display active chats.

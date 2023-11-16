@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import androidx.annotation.NonNull;
+
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.PulseAudioRenderer;
 import org.atalk.impl.neomedia.pulseaudio.PA;
@@ -14,10 +16,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.Renderer;
 import javax.media.format.AudioFormat;
-
-import androidx.annotation.NonNull;
 
 /**
  * Implements an <code>AudioSystem</code> using the native PulseAudio API/library.

@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.service.calendar;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import java.util.Map;
 

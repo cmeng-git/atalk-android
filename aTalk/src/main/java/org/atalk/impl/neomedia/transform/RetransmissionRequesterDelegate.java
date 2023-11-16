@@ -21,10 +21,10 @@ import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.util.RTPUtils;
-import org.atalk.util.logging.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.atalk.util.TimeProvider;
 import org.atalk.util.concurrent.RecurringRunnable;
+import org.atalk.util.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -350,8 +350,7 @@ public class RetransmissionRequesterDelegate implements RecurringRunnable
                     if (rtt > 0) {
 
                         // firstRequestSentAt is if we created a Request, but
-                        // haven't yet sent a NACK. Assume a delta of 0 in that
-                        // case.
+                        // haven't yet sent a NACK. Assume a delta of 0 in that case.
                         long firstRequestSentAt = r.firstRequestSentAt;
                         long delta = firstRequestSentAt > 0
                                 ? timeProvider.currentTimeMillis() - r.firstRequestSentAt : 0;

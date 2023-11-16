@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.GenericEventListener;
 
 /**
  * Provides notification for custom/generic events and possibility to generate such events.

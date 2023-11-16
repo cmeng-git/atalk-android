@@ -7,9 +7,15 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.certificate.CertificateService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
+import net.java.sip.communicator.service.protocol.UserCredentials;
 
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SASLAuthentication;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.provided.SASLExternalMechanism;
 import org.jxmpp.jid.parts.Resourcepart;

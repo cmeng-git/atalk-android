@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TimePicker;
 
-import androidx.preference.*;
+import androidx.preference.PreferenceDialogFragmentCompat;
 
 /**
  * This module is for managing the visual aspect of the dialog TimePreference UI display.

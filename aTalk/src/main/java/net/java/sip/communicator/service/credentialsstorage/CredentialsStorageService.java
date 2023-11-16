@@ -15,8 +15,6 @@
  */
 package net.java.sip.communicator.service.credentialsstorage;
 
-import net.java.sip.communicator.service.protocol.AccountID;
-
 /**
  * Loads and saves user credentials from/to the persistent storage
  * (configuration file in the default implementation).

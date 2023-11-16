@@ -10,7 +10,11 @@ import net.sf.fmj.media.AbstractPlugIn;
 
 import java.awt.Dimension;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Effect;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.YUVFormat;
 
 /**

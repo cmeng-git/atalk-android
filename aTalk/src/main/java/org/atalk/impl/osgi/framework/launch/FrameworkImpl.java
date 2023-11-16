@@ -9,13 +9,31 @@ package org.atalk.impl.osgi.framework.launch;
 import org.atalk.impl.osgi.framework.BundleImpl;
 import org.atalk.impl.osgi.framework.ServiceRegistrationImpl;
 import org.atalk.impl.osgi.framework.startlevel.FrameworkStartLevelImpl;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Filter;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceFactory;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -139,15 +157,14 @@ public class FrameworkImpl extends BundleImpl implements Framework
         return bundles;
     }
 
-    public Collection<ServiceReference> getServiceReferences(BundleImpl origin, Class<?> clazz, String className,
+    public Collection<ServiceReference<?>> getServiceReferences(BundleImpl origin, Class<?> clazz, String className,
             Filter filter, boolean checkAssignable)
             throws InvalidSyntaxException
     {
-        Filter classNameFilter
-                = FrameworkUtil.createFilter('('
+        Filter classNameFilter = FrameworkUtil.createFilter('('
                 + Constants.OBJECTCLASS + '=' + ((className == null) ? '*' : className)
                 + ')');
-        List<ServiceReference> serviceReferences = new LinkedList<>();
+        List<ServiceReference<?>> serviceReferences = new LinkedList<>();
 
         synchronized (serviceRegistrations) {
             for (ServiceRegistrationImpl serviceRegistration : serviceRegistrations) {
@@ -155,7 +172,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
 
                 if (classNameFilter.match(serviceReference)
                         && ((filter == null) || (filter.match(serviceReference)))) {
-                    ServiceReference serviceReferenceS = serviceRegistration.getReference(clazz);
+                    ServiceReference<?> serviceReferenceS = serviceRegistration.getReference(clazz);
                     if (serviceReferenceS != null)
                         serviceReferences.add(serviceReferenceS);
                 }
@@ -213,6 +230,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         return bundle;
     }
 
+    // public ServiceRegistration<?> registerService(BundleImpl origin, Class<?> clazz, String[] classNames,
     public ServiceRegistration registerService(BundleImpl origin, Class<?> clazz, String[] classNames,
             Object service, Dictionary<String, ?> properties)
     {
@@ -246,8 +264,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
             serviceId = nextServiceId++;
         }
 
-        ServiceRegistrationImpl serviceRegistration
-                = new ServiceRegistrationImpl(origin, serviceId, classNames, service, properties);
+        ServiceRegistrationImpl serviceRegistration = new ServiceRegistrationImpl(origin, serviceId, classNames, service, properties);
         synchronized (serviceRegistrations) {
             serviceRegistrations.add(serviceRegistration);
         }
@@ -417,7 +434,7 @@ public class FrameworkImpl extends BundleImpl implements Framework
         }.start();
     }
 
-    public void unregisterService(BundleImpl origin, ServiceRegistration<?> serviceRegistration)
+    public void unregisterService(BundleImpl origin, ServiceRegistrationImpl serviceRegistration)
     {
         boolean removed;
         synchronized (serviceRegistrations) {

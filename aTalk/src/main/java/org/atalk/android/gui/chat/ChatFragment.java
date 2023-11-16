@@ -1597,7 +1597,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // check and make link clickable if it is not an HTTP file link
                 Spannable body = (Spannable) msgDisplay.getBody(messageViewHolder.messageView);
 
-                // OTR system messages must use setMovementMethod to make the link clickable
+                // All system messages must use setMovementMethod to make the link clickable
                 if (messageViewHolder.viewType == SYSTEM_MESSAGE_VIEW) {
                     messageViewHolder.messageView.setMovementMethod(LinkMovementMethod.getInstance());
                 }

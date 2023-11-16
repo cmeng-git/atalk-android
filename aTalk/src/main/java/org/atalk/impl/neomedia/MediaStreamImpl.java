@@ -67,10 +67,10 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.format.MediaFormat;
-import org.atalk.util.RTPUtils;
-import org.atalk.util.logging.DiagnosticContext;
 import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.MediaType;
+import org.atalk.util.RTPUtils;
+import org.atalk.util.logging.DiagnosticContext;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -865,8 +865,8 @@ public class MediaStreamImpl extends AbstractMediaStream
         StreamRTPManager rtpManager = getRTPManager();
         MediaDeviceSession deviceSession = getDeviceSession();
         DataSource dataSource = (deviceSession == null) ? null : deviceSession.getOutputDataSource();
-        int streamCount;
 
+        int streamCount;
         if (dataSource instanceof PushBufferDataSource) {
             PushBufferStream[] streams = ((PushBufferDataSource) dataSource).getStreams();
             streamCount = (streams == null) ? 0 : streams.length;
@@ -1330,7 +1330,6 @@ public class MediaStreamImpl extends AbstractMediaStream
     private MediaDirection getDeviceDirection()
     {
         MediaDeviceSession deviceSession = getDeviceSession();
-
         return (deviceSession == null) ? MediaDirection.SENDRECV : deviceSession.getDevice().getDirection();
     }
 
@@ -1712,7 +1711,6 @@ public class MediaStreamImpl extends AbstractMediaStream
          */
         return Collections.unmodifiableList(remoteSourceIDs);
     }
-
 
     /**
      * Gets the <code>RTPConnector</code> through which this instance sends and receives RTP and RTCP traffic.
@@ -2307,7 +2305,6 @@ public class MediaStreamImpl extends AbstractMediaStream
                 format = null;
                 startedDirection = MediaDirection.INACTIVE;
             }
-
             deviceSession = abstractMediaDevice.createSession();
 
             /*

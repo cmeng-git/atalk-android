@@ -15,7 +15,9 @@
  */
 package org.atalk.service.libjitsi;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * Activates libjitsi in an OSGi environment.

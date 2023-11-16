@@ -18,7 +18,12 @@ package net.java.sip.communicator.impl.sysactivity;
 import net.java.sip.communicator.service.sysactivity.SystemActivityChangeListener;
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -32,8 +37,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class SystemActivityEventDispatcher implements Runnable
-{
+public class SystemActivityEventDispatcher implements Runnable {
     /**
      * A list of listeners registered for system activity events.
      */
@@ -52,7 +56,7 @@ public class SystemActivityEventDispatcher implements Runnable
     /**
      * The events to dispatch.
      */
-    private Map<SystemActivityEvent, Integer> eventsToDispatch = new LinkedHashMap<>();
+    private final Map<SystemActivityEvent, Integer> eventsToDispatch = new LinkedHashMap<>();
 
     /**
      * Registers a listener that would be notified of changes that have occurred
@@ -62,8 +66,7 @@ public class SystemActivityEventDispatcher implements Runnable
      * the underlying system.
      */
     public void addSystemActivityChangeListener(
-            SystemActivityChangeListener listener)
-    {
+            SystemActivityChangeListener listener) {
         synchronized (listeners) {
             if (!listeners.contains(listener)) {
                 listeners.add(listener);
@@ -81,8 +84,7 @@ public class SystemActivityEventDispatcher implements Runnable
      *
      * @param listener the listener to remove.
      */
-    public void removeSystemActivityChangeListener(SystemActivityChangeListener listener)
-    {
+    public void removeSystemActivityChangeListener(SystemActivityChangeListener listener) {
         synchronized (listeners) {
             listeners.remove(listener);
         }
@@ -91,8 +93,7 @@ public class SystemActivityEventDispatcher implements Runnable
     /**
      * Interrupts this dispatcher so that it would no longer disptach events.
      */
-    public void stop()
-    {
+    public void stop() {
         synchronized (eventsToDispatch) {
             stopped = true;
             eventsToDispatch.notifyAll();
@@ -106,8 +107,7 @@ public class SystemActivityEventDispatcher implements Runnable
      *
      * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to all registered message listeners.
      */
-    protected void fireSystemActivityEvent(SystemActivityEvent evt)
-    {
+    protected void fireSystemActivityEvent(SystemActivityEvent evt) {
         fireSystemActivityEvent(evt, 0);
     }
 
@@ -118,8 +118,7 @@ public class SystemActivityEventDispatcher implements Runnable
      * @param evt the <code>SystemActivityEvent</code> that we'd like delivered to
      * all registered message listeners.
      */
-    protected void fireSystemActivityEventCurrentThread(SystemActivityEvent evt)
-    {
+    protected void fireSystemActivityEventCurrentThread(SystemActivityEvent evt) {
         List<SystemActivityChangeListener> listenersCopy = new ArrayList<>(listeners);
         for (int i = 0; i < listenersCopy.size(); i++) {
             fireSystemActivityEvent(
@@ -135,8 +134,7 @@ public class SystemActivityEventDispatcher implements Runnable
      * all registered message listeners.
      * @param wait time in ms. to wait before firing the event.
      */
-    protected void fireSystemActivityEvent(SystemActivityEvent evt, int wait)
-    {
+    protected void fireSystemActivityEvent(SystemActivityEvent evt, int wait) {
         synchronized (eventsToDispatch) {
             eventsToDispatch.put(evt, wait);
 
@@ -156,8 +154,7 @@ public class SystemActivityEventDispatcher implements Runnable
      * the listener.
      * @param listener that will receive the event.
      */
-    private void fireSystemActivityEvent(SystemActivityEvent evt, SystemActivityChangeListener listener)
-    {
+    private void fireSystemActivityEvent(SystemActivityEvent evt, SystemActivityChangeListener listener) {
         Timber.d("Dispatching SystemActivityEvent Listeners=" + listeners.size() + " evt=" + evt);
 
         if ((evt.getEventID() == SystemActivityEvent.EVENT_NETWORK_CHANGE
@@ -175,8 +172,7 @@ public class SystemActivityEventDispatcher implements Runnable
     /**
      * Runs the waiting thread.
      */
-    public void run()
-    {
+    public void run() {
         try {
             stopped = false;
 
@@ -188,7 +184,7 @@ public class SystemActivityEventDispatcher implements Runnable
                     if (eventsToDispatch.size() == 0) {
                         try {
                             eventsToDispatch.wait();
-                        } catch (InterruptedException iex) {
+                        } catch (InterruptedException ignore) {
                         }
                     }
 
@@ -199,7 +195,7 @@ public class SystemActivityEventDispatcher implements Runnable
 
                     //store the ref of the listener in case someone resets
                     //it before we've had a chance to notify it.
-                    listenersCopy = new ArrayList<SystemActivityChangeListener>(listeners);
+                    listenersCopy = new ArrayList<>(listeners);
 
                     Iterator<Map.Entry<SystemActivityEvent, Integer>> iter = eventsToDispatch.entrySet().iterator();
                     if (iter.hasNext()) {
@@ -213,7 +209,7 @@ public class SystemActivityEventDispatcher implements Runnable
                         synchronized (this) {
                             try {
                                 wait(eventToProcess.getValue());
-                            } catch (Throwable t) {
+                            } catch (Throwable ignore) {
                             }
                         }
 

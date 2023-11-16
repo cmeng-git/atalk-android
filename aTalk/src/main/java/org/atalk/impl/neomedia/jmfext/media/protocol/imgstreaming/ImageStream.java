@@ -5,13 +5,19 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.imgstreaming;
 
+import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.neomedia.codec.video.AVFrame;
+import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
+import org.atalk.impl.neomedia.codec.video.ByteBuffer;
+import org.atalk.impl.neomedia.imgstreaming.DesktopInteract;
+import org.atalk.impl.neomedia.imgstreaming.DesktopInteractImpl;
+import org.atalk.impl.neomedia.imgstreaming.ImgStreamingUtils;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferStream;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferStream;
+import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.impl.neomedia.codec.video.*;
-import org.atalk.impl.neomedia.imgstreaming.*;
-import org.atalk.impl.neomedia.jmfext.media.protocol.*;
-
 import java.io.IOException;
 
 import javax.media.Buffer;

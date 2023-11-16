@@ -5,21 +5,22 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2;
 
-import java.io.*;
-
-import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
-
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.codec.video.ByteBuffer;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferStream;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferStream;
 import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
+
+import java.awt.Dimension;
+import java.io.IOException;
+
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.control.FormatControl;
+import javax.media.format.VideoFormat;
 
 /**
  * Implements a <code>PullBufferStream</code> using the Video for Linux Two API Specification.

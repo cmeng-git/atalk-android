@@ -18,11 +18,20 @@
 package org.ice4j.ice;
 
 import org.atalk.util.logging2.Logger;
-import org.ice4j.*;
-import org.ice4j.attribute.*;
-import org.ice4j.message.*;
-import org.ice4j.security.*;
-import org.ice4j.stack.*;
+import org.ice4j.StunMessageEvent;
+import org.ice4j.attribute.Attribute;
+import org.ice4j.attribute.AttributeFactory;
+import org.ice4j.attribute.ErrorCodeAttribute;
+import org.ice4j.attribute.IceControlAttribute;
+import org.ice4j.attribute.PriorityAttribute;
+import org.ice4j.attribute.UsernameAttribute;
+import org.ice4j.message.Message;
+import org.ice4j.message.MessageFactory;
+import org.ice4j.message.Request;
+import org.ice4j.message.Response;
+import org.ice4j.security.CredentialsAuthority;
+import org.ice4j.stack.RequestListener;
+import org.ice4j.stack.StunStack;
 
 /**
  * The class that would be handling and responding to incoming connectivity

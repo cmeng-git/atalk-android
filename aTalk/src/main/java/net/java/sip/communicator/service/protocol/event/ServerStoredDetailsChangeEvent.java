@@ -13,9 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * Instances of this class represent a change in the server stored details change that triggered

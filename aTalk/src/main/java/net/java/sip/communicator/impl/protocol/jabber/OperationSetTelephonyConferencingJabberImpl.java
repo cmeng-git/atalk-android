@@ -5,14 +5,25 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.jivesoftware.smackx.coin.CoinIQ;
-import org.jivesoftware.smackx.coin.CoinExtension;
-import org.jivesoftware.smackx.jingle.JingleManager;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.service.protocol.media.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.CallPeerState;
+import net.java.sip.communicator.service.protocol.CallState;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallChangeListener;
+import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.media.AbstractOperationSetTelephonyConferencing;
+import net.java.sip.communicator.service.protocol.media.ConferenceInfoDocument;
+import net.java.sip.communicator.service.protocol.media.MediaAwareCallConference;
+import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 
 import org.atalk.util.xml.XMLException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -21,11 +32,20 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.coin.CoinExtension;
+import org.jivesoftware.smackx.coin.CoinIQ;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jxmpp.jid.*;
+import org.jivesoftware.smackx.jingle.JingleManager;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 

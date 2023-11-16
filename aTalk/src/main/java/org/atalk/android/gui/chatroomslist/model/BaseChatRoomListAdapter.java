@@ -19,8 +19,16 @@ package org.atalk.android.gui.chatroomslist.model;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
+import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentTransaction;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -42,7 +50,6 @@ import org.jxmpp.jid.EntityBareJid;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**

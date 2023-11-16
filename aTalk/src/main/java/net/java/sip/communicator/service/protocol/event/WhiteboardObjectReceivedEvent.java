@@ -13,10 +13,12 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.WhiteboardSession;
+import net.java.sip.communicator.service.protocol.whiteboardobjects.WhiteboardObject;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.whiteboardobjects.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>WhiteboardObjectReceivedEvent</code> indicates reception of a new <code>WhiteboardObject</code> in

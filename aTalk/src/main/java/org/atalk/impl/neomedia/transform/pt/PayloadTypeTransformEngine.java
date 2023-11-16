@@ -7,10 +7,13 @@ package org.atalk.impl.neomedia.transform.pt;
 
 import net.sf.fmj.media.rtp.RTPHeader;
 
-import org.atalk.impl.neomedia.transform.*;
+import org.atalk.impl.neomedia.transform.PacketTransformer;
+import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
+import org.atalk.impl.neomedia.transform.TransformEngine;
 import org.atalk.service.neomedia.RawPacket;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * We use this engine to change payload types of outgoing RTP packets if needed. This is necessary

@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.history;
 
-import java.util.*;
+import java.util.NoSuchElementException;
 
 /**
  *

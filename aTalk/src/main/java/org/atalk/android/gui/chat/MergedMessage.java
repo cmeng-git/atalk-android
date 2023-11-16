@@ -10,7 +10,9 @@ import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Class merges consecutive <code>ChatMessage</code> instances.

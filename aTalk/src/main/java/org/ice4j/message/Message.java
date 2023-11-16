@@ -17,12 +17,25 @@
  */
 package org.ice4j.message;
 
-import java.util.*;
-import java.util.logging.*;
+import org.ice4j.StackProperties;
+import org.ice4j.StunException;
+import org.ice4j.attribute.Attribute;
+import org.ice4j.attribute.AttributeDecoder;
+import org.ice4j.attribute.AttributeFactory;
+import org.ice4j.attribute.ContentDependentAttribute;
+import org.ice4j.attribute.FingerprintAttribute;
+import org.ice4j.stack.StunStack;
+import org.ice4j.stack.TransactionID;
 
-import org.ice4j.*;
-import org.ice4j.attribute.*;
-import org.ice4j.stack.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents a STUN message. Messages are TLV (type-length-value)

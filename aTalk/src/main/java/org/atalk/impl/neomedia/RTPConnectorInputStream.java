@@ -12,9 +12,9 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 import org.atalk.impl.neomedia.protocol.PushBufferStreamAdapter;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ArrayUtils;
 import org.atalk.util.concurrent.MonotonicAtomicLong;
 import org.ice4j.socket.DatagramPacketFilter;
-import org.atalk.util.ArrayUtils;
 
 import java.io.Closeable;
 import java.io.IOException;

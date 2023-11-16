@@ -5,7 +5,10 @@
  */
 package net.java.sip.communicator.impl.notification;
 
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationData;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationAction;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationHandler;
 import net.java.sip.communicator.service.systray.PopupMessage;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;

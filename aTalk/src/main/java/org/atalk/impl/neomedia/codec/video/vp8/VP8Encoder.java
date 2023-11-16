@@ -6,12 +6,13 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp8;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.video.VPX;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.codec.Constants;
+
+import java.awt.Dimension;
 
 import javax.media.Buffer;
 import javax.media.Format;

@@ -15,13 +15,20 @@
  */
 package net.java.sip.communicator.impl.callhistory;
 
-import net.java.sip.communicator.service.callhistory.*;
-import net.java.sip.communicator.service.callhistory.event.*;
+import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
+import net.java.sip.communicator.service.callhistory.CallRecord;
+import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryListener;
+import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryStatusEvent;
+import net.java.sip.communicator.service.callhistory.event.CallRecordEvent;
 import net.java.sip.communicator.service.history.HistoryQuery;
-import net.java.sip.communicator.service.history.event.*;
+import net.java.sip.communicator.service.history.event.HistoryQueryListener;
+import net.java.sip.communicator.service.history.event.HistoryQueryStatusEvent;
+import net.java.sip.communicator.service.history.event.HistoryRecordEvent;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * @author Yana Stamcheva

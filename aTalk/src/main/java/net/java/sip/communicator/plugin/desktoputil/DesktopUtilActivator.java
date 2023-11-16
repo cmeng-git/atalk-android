@@ -25,8 +25,6 @@ import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FileAccessService;
@@ -35,8 +33,11 @@ import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.security.cert.Certificate;
+
+import javax.swing.ImageIcon;
 
 public class DesktopUtilActivator implements BundleActivator, VerifyCertificateDialogService
 {

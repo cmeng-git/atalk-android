@@ -225,7 +225,6 @@ public abstract class AbstractTrackStats
         return interval;
     }
 
-
     /**
      * Sets the last jitter that was sent/received.
      *

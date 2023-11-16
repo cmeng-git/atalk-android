@@ -1,15 +1,13 @@
 package java.awt;
 
+import org.atalk.impl.neomedia.jmfext.media.renderer.video.JAWTRendererVideoComponent;
+
+import java.awt.event.ContainerListener;
 import java.io.ObjectStreamField;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import net.java.sip.communicator.plugin.desktoputil.SIPCommCheckBox;
-
-import java.awt.event.ContainerListener;
-import org.atalk.impl.neomedia.jmfext.media.renderer.video.JAWTRendererVideoComponent;
 
 public class Container extends Component {
 	private static final Component[] EMPTY_ARRAY = null;
@@ -121,11 +119,6 @@ public class Container extends Component {
 	public Component[] getComponents()
 	{
 		return new Component[0];
-	}
-
-	public static void add(SIPCommCheckBox cbEnable) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public Insets getInsets() {

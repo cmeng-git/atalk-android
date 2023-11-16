@@ -6,9 +6,9 @@
  */
 package org.atalk.android.gui.chat;
 
-import javax.swing.Icon;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
 
-import net.java.sip.communicator.service.protocol.*;
+import javax.swing.Icon;
 
 /**
  * The <code>ChatSessionRenderer</code> is the connector between the

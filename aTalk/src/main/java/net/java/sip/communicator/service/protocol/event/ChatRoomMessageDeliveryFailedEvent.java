@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import java.util.EventObject;
 

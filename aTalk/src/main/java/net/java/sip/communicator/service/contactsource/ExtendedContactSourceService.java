@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 /**
  * The <code>ExtendedContactSourceService</code> as its name states it, extends the

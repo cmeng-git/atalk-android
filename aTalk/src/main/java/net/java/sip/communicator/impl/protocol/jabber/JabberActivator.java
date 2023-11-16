@@ -11,7 +11,9 @@ import net.java.sip.communicator.service.googlecontacts.GoogleContactsService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.hid.HIDService;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 
@@ -19,7 +21,10 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.service.version.VersionService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import java.util.Hashtable;
 

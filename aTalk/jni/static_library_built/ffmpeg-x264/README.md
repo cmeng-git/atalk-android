@@ -1,7 +1,7 @@
 ## Build scripts for ffmpeg-x264 with android-ndk for aTalk
 The scripts are used to build ffmpeg-x264 for aTalk >= v2.6.1 i.e. libjnffmpeg.so<br/>
 aTalk v2.9.4 and above are compatible with ffmpeg-v4.4.2 and libx264-163.3060<br/>
-aTalk v3.1.4 and above are compatible with ffmpeg-v5.1.2 and libx264-164.3095
+aTalk v3.1.4 and above are compatible with ffmpeg-v5.1.4 and libx264-164.3095
 
 ### Source files:
 The ffmpeg-v5.1.2 and libx264-v164 source are downloaded using the init_libs_ffmpeg_x264.sh scripts:<br/>

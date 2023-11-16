@@ -21,11 +21,17 @@
 
 package net.java.otr4j.crypto;
 
-import net.java.otr4j.io.*;
+import net.java.otr4j.io.OtrInputStream;
+import net.java.otr4j.io.OtrOutputStream;
+import net.java.otr4j.io.SerializationUtils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class SM
 {

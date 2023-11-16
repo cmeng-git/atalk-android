@@ -34,7 +34,7 @@ public class MessageDeliveryFailedEvent extends EventObject
     /**
      * The contact that this message has been sent to.
      */
-    private Contact to = null;
+    private Contact to;
 
     /**
      * Set when no other error code can describe the exception that occurred.

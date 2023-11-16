@@ -6,9 +6,10 @@
  */
 package net.java.sip.communicator.service.msghistory;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * Adds advanced operation to the message service like inserting/editing messages. Can be used to insert messages when

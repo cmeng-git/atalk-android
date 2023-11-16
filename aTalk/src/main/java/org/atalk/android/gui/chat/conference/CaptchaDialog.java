@@ -25,20 +25,23 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.*;
-
-import androidx.appcompat.widget.ViewUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.util.ViewUtil;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bob.element.BoBDataExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaExtension;
 import org.jivesoftware.smackx.captcha.packet.CaptchaIQ;
@@ -47,7 +50,9 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import timber.log.Timber;

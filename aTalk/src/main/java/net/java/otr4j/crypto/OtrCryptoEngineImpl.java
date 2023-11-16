@@ -10,20 +10,35 @@ import net.java.otr4j.io.SerializationUtils;
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.SICBlockCipher;
-import org.bouncycastle.crypto.params.*;
+import org.bouncycastle.crypto.params.DSAParameters;
+import org.bouncycastle.crypto.params.DSAPrivateKeyParameters;
+import org.bouncycastle.crypto.params.DSAPublicKeyParameters;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.crypto.signers.DSASigner;
 import org.bouncycastle.util.BigIntegers;
 
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.security.*;
-import java.security.interfaces.*;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 
 import javax.crypto.KeyAgreement;
 import javax.crypto.Mac;
 import javax.crypto.interfaces.DHPublicKey;
-import javax.crypto.spec.*;
+import javax.crypto.spec.DHParameterSpec;
+import javax.crypto.spec.DHPublicKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author George Politis

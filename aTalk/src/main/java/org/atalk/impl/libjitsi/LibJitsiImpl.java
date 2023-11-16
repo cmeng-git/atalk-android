@@ -47,7 +47,7 @@ public class LibJitsiImpl extends LibJitsi
     }
 
     /**
-     * Gets a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
+     * Get a service of a specific type associated with this implementation of the <code>libjitsi</code> library.
      *
      * @param serviceClass the type of the service to be retrieved
      * @return a service of the specified type if there is such an association known to this

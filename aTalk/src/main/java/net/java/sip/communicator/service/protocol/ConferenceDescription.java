@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A description of a conference call that can be dialed into. Contains an URI and additional

@@ -535,7 +535,7 @@ public class Aes
                     Class<?> clazz = Class.forName("sun.security.pkcs11.SunPKCS11");
 
                     if (Provider.class.isAssignableFrom(clazz)) {
-                        Constructor<?> contructor = clazz.getConstructor(String.class);
+                        Constructor<?> constructor = clazz.getConstructor(String.class);
 
                         // The SunPKCS11 Config name should be unique in order
                         // to avoid repeated initialization exceptions.
@@ -547,7 +547,7 @@ public class Aes
                         if (name == null || name.length() == 0)
                             name = "org.atalk.impl.neomedia.transform.srtp";
 
-                        provider = (Provider) contructor.newInstance("--name=" + name + "\\n"
+                        provider = (Provider) constructor.newInstance("--name=" + name + "\\n"
                                 + "nssDbMode=noDb\\n" + "attributes=compatibility");
                     }
                 } finally {

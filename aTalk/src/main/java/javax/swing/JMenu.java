@@ -1,7 +1,5 @@
 package javax.swing;
 
-import net.java.sip.communicator.plugin.desktoputil.SIPCommMenu;
-
 import java.awt.Graphics;
 
 public class JMenu extends JMenuItem implements Accessible {
@@ -19,11 +17,6 @@ public class JMenu extends JMenuItem implements Accessible {
 	}
 
 	public void add(JCheckBoxMenuItem cbEnable) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void add(SIPCommMenu separateMenu) {
 		// TODO Auto-generated method stub
 		
 	}

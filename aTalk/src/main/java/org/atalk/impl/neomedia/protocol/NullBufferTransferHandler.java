@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.protocol;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.Buffer;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Implements a <code>BufferTransferHandler</code> which reads from a specified

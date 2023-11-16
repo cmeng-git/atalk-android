@@ -7,7 +7,8 @@ package org.atalk.android.gui.actionbar;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 

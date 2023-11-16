@@ -6,8 +6,10 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -222,7 +224,7 @@ public class JingleNodesServiceDiscovery implements Runnable
         items.setTo(startPoint);
         StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(items);
 
-        DiscoverItems result = null;
+        DiscoverItems result;
         try {
             result = collector.nextResult(Math.round(SmackConfiguration.getDefaultReplyTimeout() * 1.5));
         } finally {

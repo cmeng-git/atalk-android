@@ -7,7 +7,14 @@ package org.atalk.android.gui.contactlist.model;
 
 import android.os.Handler;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactChangedEvent;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.ContactQueryListener;
+import net.java.sip.communicator.service.contactsource.ContactQueryStatusEvent;
+import net.java.sip.communicator.service.contactsource.ContactReceivedEvent;
+import net.java.sip.communicator.service.contactsource.ContactRemovedEvent;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.android.gui.AndroidGUIActivator;

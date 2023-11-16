@@ -15,12 +15,7 @@
  */
 package org.atalk.util.logging;
 
-import android.annotation.SuppressLint;
-
-import androidx.core.util.TimeUtils;
-
-import java.io.PrintWriter;
-import java.time.*;
+import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -97,7 +92,7 @@ public class DiagnosticContext extends ConcurrentHashMap<String, Object>
 //        String time;
 //        return new TimeSeriesPoint(this)
 //            .addField("series", timeSeriesName)
-//            // .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
+//            .addField("time", TimeUtils.formatTimeAsFullMillis(ts.getEpochSecond(), ts.getNano()));
 //    }
 
     public static class TimeSeriesPoint extends HashMap<String, Object>

@@ -13,7 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
  * A Contact property change event is issued whenever a contact property has changed. Event codes

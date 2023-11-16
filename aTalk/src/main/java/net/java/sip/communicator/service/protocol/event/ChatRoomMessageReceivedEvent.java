@@ -16,7 +16,9 @@ package net.java.sip.communicator.service.protocol.event;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.persistance.FileBackend;

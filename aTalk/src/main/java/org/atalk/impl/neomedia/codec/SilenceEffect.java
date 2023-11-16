@@ -7,7 +7,10 @@ package org.atalk.impl.neomedia.codec;
 
 import java.util.Arrays;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Effect;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;

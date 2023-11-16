@@ -35,7 +35,7 @@ public abstract class AbstractQualityControlWrapper<T extends MediaAwareCallPeer
     /**
      * The currently used video quality preset.
      */
-    protected QualityPreset remoteSendMaxPreset = null;
+    private QualityPreset remoteSendMaxPreset = null;
 
     /**
      * The frame rate.
@@ -148,6 +148,7 @@ public abstract class AbstractQualityControlWrapper<T extends MediaAwareCallPeer
      * @param preset the desired video settings
      * @throws MediaException
      */
+    @Override
     public abstract void setPreferredRemoteSendMaxPreset(QualityPreset preset)
             throws MediaException;
 }

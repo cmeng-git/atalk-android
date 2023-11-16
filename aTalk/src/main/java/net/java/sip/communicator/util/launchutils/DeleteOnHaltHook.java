@@ -6,8 +6,12 @@
  */
 package net.java.sip.communicator.util.launchutils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * In the fashion of <code>java.io.DeleteOnExitHook</code>, provides a way to delete

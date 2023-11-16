@@ -6,7 +6,9 @@
 package org.atalk.impl.neomedia.jmfext.media.protocol;
 
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Provides a base implementation of <code>PushBufferStream</code> in order to facilitate implementers

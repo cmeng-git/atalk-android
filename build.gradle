@@ -31,6 +31,7 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 21
+    // aTalk SDE is not compatible with API-34; missing dx, dx.jar and aapt2 not compatible
     compileSdk = 33
     buildTools = '33.0.2'
 }

@@ -5,13 +5,23 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import net.java.otr4j.crypto.*;
+import net.java.otr4j.crypto.OtrCryptoEngineImpl;
+import net.java.otr4j.crypto.OtrCryptoException;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
 
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * @author George Politis

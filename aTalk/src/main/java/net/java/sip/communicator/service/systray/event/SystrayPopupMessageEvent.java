@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.systray.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * The <code>SystrayPopupMessageEvent</code>s are posted when user clicks on the

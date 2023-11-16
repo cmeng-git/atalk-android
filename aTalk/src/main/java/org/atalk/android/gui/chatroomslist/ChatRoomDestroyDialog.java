@@ -18,7 +18,9 @@ package org.atalk.android.gui.chatroomslist;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
@@ -37,9 +39,6 @@ import org.atalk.service.osgi.OSGiFragment;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import static org.atalk.android.R.id.ReasonDestroy;
-import static org.atalk.android.R.id.VenueAlternate;
 
 /**
  * ChatRoom destroy dialog allowing user to provide a reason and an alternate venue.
@@ -100,8 +99,8 @@ public class ChatRoomDestroyDialog extends OSGiFragment
         public boolean onConfirmClicked(DialogActivity dialog)
         {
             View view = dialog.getContentFragment().getView();
-            String reason = ViewUtil.toString(view.findViewById(ReasonDestroy));
-            String venue = ViewUtil.toString(view.findViewById(VenueAlternate));
+            String reason = ViewUtil.toString(view.findViewById(R.id.ReasonDestroy));
+            String venue = ViewUtil.toString(view.findViewById(R.id.VenueAlternate));
 
             EntityBareJid entityBareJid = null;
             if (venue != null) {

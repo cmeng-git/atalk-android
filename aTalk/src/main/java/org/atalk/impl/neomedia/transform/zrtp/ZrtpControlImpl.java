@@ -408,7 +408,7 @@ public class ZrtpControlImpl extends AbstractSrtpControl<ZRTPTransformEngine> im
      * @param accountID Use the ZID salt value for this account
      * @return the found or new ZIDSalt
      */
-    private static String getAccountZIDSalt(AccountID accountID)
+    public static String getAccountZIDSalt(AccountID accountID)
     {
         String ZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
         if (ZIDSalt == null) {

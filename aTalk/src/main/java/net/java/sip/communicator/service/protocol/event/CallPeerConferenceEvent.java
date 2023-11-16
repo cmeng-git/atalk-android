@@ -5,9 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.ConferenceMember;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * Represents an event fired by a <code>CallPeer</code> to notify interested

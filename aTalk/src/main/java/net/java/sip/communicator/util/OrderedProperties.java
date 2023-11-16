@@ -6,7 +6,12 @@
  */
 package net.java.sip.communicator.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * Implementation of Properties that keep order of couples [key, value] added.

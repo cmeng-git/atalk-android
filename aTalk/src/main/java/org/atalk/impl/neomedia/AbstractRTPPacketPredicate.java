@@ -14,9 +14,9 @@
 package org.atalk.impl.neomedia;
 
 import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.function.Predicate;
-import org.atalk.util.ByteArrayBuffer;
 // import java.util.function.Predicate; => need API-24
 
 

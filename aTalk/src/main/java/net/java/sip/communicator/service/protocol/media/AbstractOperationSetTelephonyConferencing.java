@@ -31,8 +31,8 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeL
 
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaStream;
-import org.atalk.util.xml.XMLException;
 import org.atalk.util.MediaType;
+import org.atalk.util.xml.XMLException;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,18 +58,18 @@ import timber.log.Timber;
  * @param <MediaAwareCallT>
  * @param <MediaAwareCallPeerT>
  * @param <CalleeAddressT>
+ *
  * @author Lyubomir Marinov
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProviderServiceT
-        extends ProtocolProviderService, OperationSetBasicTelephonyT
-        extends OperationSetBasicTelephony<ProtocolProviderServiceT>, MediaAwareCallT
-        extends MediaAwareCall<MediaAwareCallPeerT, OperationSetBasicTelephonyT, ProtocolProviderServiceT>, MediaAwareCallPeerT
-        extends MediaAwareCallPeer<MediaAwareCallT, ?, ProtocolProviderServiceT>, CalleeAddressT>
+public abstract class AbstractOperationSetTelephonyConferencing<
+        ProtocolProviderServiceT extends ProtocolProviderService,
+        OperationSetBasicTelephonyT extends OperationSetBasicTelephony<ProtocolProviderServiceT>,
+        MediaAwareCallT extends MediaAwareCall<MediaAwareCallPeerT, OperationSetBasicTelephonyT, ProtocolProviderServiceT>,
+        MediaAwareCallPeerT extends MediaAwareCallPeer<MediaAwareCallT, ?, ProtocolProviderServiceT>, CalleeAddressT>
         implements OperationSetTelephonyConferencing, RegistrationStateChangeListener,
-        PropertyChangeListener, CallListener, CallChangeListener
-{
+        PropertyChangeListener, CallListener, CallChangeListener {
     /**
      * The name of the conference-info XML element <code>display-text</code>.
      */
@@ -127,8 +127,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * <code>CallPeer</code> so that NOTIFY requests can be sent from a conference focus to its
      * conference members to update them with the latest information about the <code>CallPeer</code>.
      */
-    private final CallPeerListener callPeerListener = new CallPeerAdapter()
-    {
+    private final CallPeerListener callPeerListener = new CallPeerAdapter() {
         /**
          * Indicates that a change has occurred in the status of the source <code>CallPeer</code>.
          *
@@ -137,8 +136,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
          *        its previous and its new status
          */
         @Override
-        public void peerStateChanged(CallPeerChangeEvent evt)
-        {
+        public void peerStateChanged(CallPeerChangeEvent evt) {
             CallPeer peer = evt.getSourceCallPeer();
 
             if (peer != null) {
@@ -171,8 +169,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * of the new instance and for which the new instance is to provide telephony
      * conferencing services
      */
-    protected AbstractOperationSetTelephonyConferencing(ProtocolProviderServiceT parentProvider)
-    {
+    protected AbstractOperationSetTelephonyConferencing(ProtocolProviderServiceT parentProvider) {
         this.parentProvider = parentProvider;
         this.parentProvider.addRegistrationStateChangeListener(this);
     }
@@ -186,8 +183,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param newValue the new value of the <code>basicTelephony</code> property
      */
     protected void basicTelephonyChanged(OperationSetBasicTelephonyT oldValue,
-            OperationSetBasicTelephonyT newValue)
-    {
+            OperationSetBasicTelephonyT newValue) {
         if (oldValue != null)
             oldValue.removeCallListener(this);
         if (newValue != null)
@@ -199,8 +195,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param event a <code>CallEvent</code> which specified the newly-established <code>Call</code>
      */
-    protected void callBegun(CallEvent event)
-    {
+    protected void callBegun(CallEvent event) {
         Call call = event.getSourceCall();
 
         call.addCallChangeListener(this);
@@ -222,8 +217,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param event a <code>CallEvent</code> which specified the <code>Call</code> which has just ended
      */
-    public void callEnded(CallEvent event)
-    {
+    public void callEnded(CallEvent event) {
         Call call = event.getSourceCall();
 
         /*
@@ -247,8 +241,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been added to
      * a <code>Call</code>
      */
-    public void callPeerAdded(CallPeerEvent event)
-    {
+    public void callPeerAdded(CallPeerEvent event) {
         MediaAwareCallPeer<?, ?, ?> callPeer = (MediaAwareCallPeer<?, ?, ?>) event
                 .getSourceCallPeer();
 
@@ -264,8 +257,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been removed
      * from a <code>Call</code>
      */
-    public void callPeerRemoved(CallPeerEvent event)
-    {
+    public void callPeerRemoved(CallPeerEvent event) {
         @SuppressWarnings("unchecked")
         MediaAwareCallPeerT callPeer = (MediaAwareCallPeerT) event.getSourceCallPeer();
 
@@ -281,8 +273,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param event a <code>CallPeerEvent</code> which specifies the <code>CallPeer</code> which has been added to
      * or removed from a <code>Call</code>
      */
-    private void callPeersChanged(CallPeerEvent event)
-    {
+    private void callPeersChanged(CallPeerEvent event) {
         notifyAll(event.getSourceCall());
     }
 
@@ -294,8 +285,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * state, the very state which has been changed and the values of the state before and
      * after the change
      */
-    public void callStateChanged(CallChangeEvent event)
-    {
+    public void callStateChanged(CallChangeEvent event) {
         if (CallChangeEvent.CALL_PARTICIPANTS_CHANGE.equals(event.getPropertyName())) {
             notifyAll(event.getSourceCall());
         }
@@ -305,13 +295,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * Creates a conference call with the specified callees as call peers.
      *
      * @param callees the list of addresses that we should call
+     *
      * @return the newly created conference call containing all CallPeers
      * @throws OperationFailedException if establishing the conference call fails
      * @see OperationSetTelephonyConferencing#createConfCall(String[])
      */
     public Call createConfCall(String[] callees)
-            throws OperationFailedException, XmppStringprepException
-    {
+            throws OperationFailedException, XmppStringprepException {
         return createConfCall(callees, null);
     }
 
@@ -321,12 +311,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param callees the list of addresses that we should call
      * @param conference the <code>CallConference</code> which represents the state of the telephony conference
      * into which the specified callees are to be invited
+     *
      * @return the newly-created conference call containing all <code>CallPeer</code>s
      * @throws OperationFailedException if establishing the conference <code>Call</code> fails
      */
     public Call createConfCall(String[] callees, CallConference conference)
-            throws OperationFailedException, XmppStringprepException
-    {
+            throws OperationFailedException, XmppStringprepException {
         List<CalleeAddressT> calleeAddresses = new ArrayList<>(callees.length);
 
         for (String callee : callees)
@@ -362,6 +352,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param calleeAddress the address of the callee to be invited to the specified existing <code>Call</code>
      * @param call the existing <code>Call</code> to invite the callee with the specified address to
+     *
      * @return a new <code>CallPeer</code> instance which describes the signaling and the media
      * streaming of the newly-invited callee within the specified <code>Call</code>
      * @throws OperationFailedException if inviting the specified callee to the specified <code>Call</code> fails
@@ -377,13 +368,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @return the <code>OperationSetBasicTelephony</code> implementation which this instance uses to
      * carry out tasks such as establishing <code>Call</code>s
      */
-    public OperationSetBasicTelephonyT getBasicTelephony()
-    {
+    public OperationSetBasicTelephonyT getBasicTelephony() {
         return basicTelephony;
     }
 
-    private void getEndpointMediaProperties(Node endpoint, Map<String, Object> properties)
-    {
+    private void getEndpointMediaProperties(Node endpoint, Map<String, Object> properties) {
         NodeList endpointChildList = endpoint.getChildNodes();
         int endpoingChildCount = endpointChildList.getLength();
 
@@ -427,11 +416,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param endpoint an XML <code>Node</code> which represents the <code>endpoint</code> XML element from which to
      * get the text content of its <code>status</code> XML element
+     *
      * @return the text content of the <code>status</code> XML element of the specified
      * <code>endpoint</code> XML element if any; otherwise, <code>null</code>
      */
-    private String getEndpointStatus(Node endpoint)
-    {
+    private String getEndpointStatus(Node endpoint) {
         NodeList childNodes = endpoint.getChildNodes();
         int childCount = childNodes.getLength();
 
@@ -452,11 +441,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * <code>mediaType</code> is to be returned
      * @param mediaType the <code>MediaType</code> of the specified <code>callPeer</code>'s media whose remote SSRC is
      * to be returned
+     *
      * @return the remote SSRC to be reported in the conference-info XML for the specified
      * <code>callPeer</code>'s media of the specified <code>mediaType</code>
      */
-    protected long getRemoteSourceID(MediaAwareCallPeer<?, ?, ?> callPeer, MediaType mediaType)
-    {
+    protected long getRemoteSourceID(MediaAwareCallPeer<?, ?, ?> callPeer, MediaType mediaType) {
         long remoteSourceID = callPeer.getMediaHandler().getRemoteSSRC(mediaType);
 
         if (remoteSourceID != -1) {
@@ -487,8 +476,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param event a <code>CallEvent</code> which specifies the newly-received incoming <code>Call</code>
      */
-    public void incomingCallReceived(CallEvent event)
-    {
+    public void incomingCallReceived(CallEvent event) {
         callBegun(event);
     }
 
@@ -500,12 +488,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param uri the callee to invite to an existing conf call.
      * @param call the call that we should invite the callee to.
+     *
      * @return the CallPeer object corresponding to the callee represented by the specified uri.
      * @throws OperationFailedException if inviting the specified callee to the specified call fails
      */
     public CallPeer inviteCalleeToCall(String uri, Call call)
-            throws OperationFailedException, XmppStringprepException
-    {
+            throws OperationFailedException, XmppStringprepException {
         CalleeAddressT calleeAddress = parseAddressString(uri);
         @SuppressWarnings("unchecked")
         MediaAwareCallT mediaAwareCallT = (MediaAwareCallT) call;
@@ -523,8 +511,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * conference-related information
      */
     @SuppressWarnings("rawtypes")
-    protected void notifyAll(Call call)
-    {
+    protected void notifyAll(Call call) {
         CallConference conference = call.getConference();
 
         if (conference == null)
@@ -562,8 +549,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param event a <code>CallEvent</code> which specifies the newly-created outgoing <code>Call</code>
      */
-    public void outgoingCallCreated(CallEvent event)
-    {
+    public void outgoingCallCreated(CallEvent event) {
         callBegun(event);
     }
 
@@ -575,6 +561,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param calleeAddressString a <code>String</code> value which represents a callee address to be parsed into an object
      * which is to actually represent the callee during the invitation to a conference
      * <code>Call</code>
+     *
      * @return an object which is to actually represent the specified <code>calleeAddressString</code>
      * during the invitation to a conference <code>Call</code>
      * @throws OperationFailedException if parsing the specified <code>calleeAddressString</code> fails
@@ -588,10 +575,10 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param ev a <code>PropertyChangeEvent</code> which describes the source of the event, the name of
      * the property which has changed its value and the old and new values of the property
+     *
      * @see PropertyChangeListener#propertyChange(PropertyChangeEvent)
      */
-    public void propertyChange(PropertyChangeEvent ev)
-    {
+    public void propertyChange(PropertyChangeEvent ev) {
         String propertyName = ev.getPropertyName();
 
         if (CallPeerMediaHandler.AUDIO_LOCAL_SSRC.equals(propertyName)
@@ -616,8 +603,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * the registration state of the <code>ProtocolProviderService</code> this
      * <code>RegistrationStateChangeListener</code> listens to
      */
-    public void registrationStateChanged(RegistrationStateChangeEvent event)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent event) {
         RegistrationState newState = event.getNewState();
 
         if (RegistrationState.REGISTERED.equals(newState)) {
@@ -654,8 +640,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * state.
      */
     private int setConferenceInfoDocument(MediaAwareCallPeerT callPeer,
-            ConferenceInfoDocument confInfo)
-    {
+            ConferenceInfoDocument confInfo) {
         NodeList usersList = confInfo.getDocument().getElementsByTagName(ELEMENT_USERS);
         List<ConferenceMember> conferenceMembers = callPeer.getConferenceMembers();
         ConferenceMember[] toRemove = conferenceMembers.toArray(new ConferenceMember[0]);
@@ -766,14 +751,14 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param conferenceInfoXML the conference-info XML document sent by <code>callPeer</code> in order to update the
      * conference-related information of the local peer represented by the associated
      * <code>Call</code>
+     *
      * @return the value of the <code>version</code> attribute of the <code>conference-info</code> XML
      * element of the specified <code>conferenceInfoXML</code> if it was successfully parsed and
      * represented in the specified <code>callPeer</code>
      * @throws XMLException If <code>conferenceInfoXML</code> couldn't be parsed as a <code>ConferenceInfoDocument</code>
      */
     protected int setConferenceInfoXML(MediaAwareCallPeerT callPeer, String conferenceInfoXML)
-            throws XMLException
-    {
+            throws XMLException {
         ConferenceInfoDocument confInfo = new ConferenceInfoDocument(conferenceInfoXML);
 
         /*
@@ -836,10 +821,10 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param address the <code>String</code> value representing an address from which any parameters are to be
      * removed
+     *
      * @return a <code>String</code> representing the specified <code>address</code> without any parameters
      */
-    public static String stripParametersFromAddress(String address)
-    {
+    public static String stripParametersFromAddress(String address) {
         if (address != null) {
             int parametersBeginIndex = address.indexOf(';');
 
@@ -857,8 +842,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @return a <code>ConferenceInfoDocument</code> which describes the current state of the conference
      * in which this <code>CallPeer</code> participates.
      */
-    protected ConferenceInfoDocument getCurrentConferenceInfo(MediaAwareCallPeer<?, ?, ?> callPeer)
-    {
+    protected ConferenceInfoDocument getCurrentConferenceInfo(MediaAwareCallPeer<?, ?, ?> callPeer) {
         ConferenceInfoDocument confInfo;
         try {
             confInfo = new ConferenceInfoDocument();
@@ -899,8 +883,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * peer.
      */
     private void addPeerToConferenceInfo(ConferenceInfoDocument confInfo,
-            MediaAwareCallPeer<?, ?, ?> callPeer, boolean remote)
-    {
+            MediaAwareCallPeer<?, ?, ?> callPeer, boolean remote) {
         String entity = remote ? callPeer.getEntity() : getLocalEntity(callPeer);
         Timber.i("### Gettting entity (remote): %s (%s)", entity, remote);
         ConferenceInfoDocument.User user = confInfo.addNewUser(entity);
@@ -974,6 +957,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * for the local peer, in a Conference Information document to be sent to <code>callPeer</code>
      *
      * @param callPeer The <code>CallPeer</code> for which we are creating a Conference Information document.
+     *
      * @return a string to be used for the <code>entity</code> attribute of the <code>user</code> element
      * for the local peer, in a Conference Information document to be sent to
      * <code>callPeer</code>
@@ -995,11 +979,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param callPeer the <code>CallPeer</code> which is to get its state described in a <code>status</code> XML
      * element of an <code>endpoint</code> XML element
+     *
      * @return the <code>EndpointStatusType</code> to use when describing <code>callPeer</code> in a
      * Conference Information document.
      */
-    private ConferenceInfoDocument.EndpointStatusType getEndpointStatus(CallPeer callPeer)
-    {
+    private ConferenceInfoDocument.EndpointStatusType getEndpointStatus(CallPeer callPeer) {
         CallPeerState callPeerState = callPeer.getState();
 
         if (CallPeerState.ALERTING_REMOTE_SIDE.equals(callPeerState))
@@ -1039,6 +1023,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     /**
      * @param from A document with state <code>full</code> from which to generate a "diff".
      * @param to A document with state <code>full</code> to which to generate a "diff"
+     *
      * @return a <code>ConferenceInfoDocument</code>, such that when it is applied to <code>from</code>
      * using the procedure defined in section 4.6 of RFC4575, the result is <code>to</code>. May
      * return <code>null</code> if <code>from</code> and <code>to</code> are not found to be different
@@ -1046,8 +1031,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      */
     protected ConferenceInfoDocument getConferenceInfoDiff(ConferenceInfoDocument from,
             ConferenceInfoDocument to)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         if (from.getState() != ConferenceInfoDocument.State.FULL)
             throw new IllegalArgumentException("The 'from' document needs to have state=full");
         if (to.getState() != ConferenceInfoDocument.State.FULL)
@@ -1076,10 +1060,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
         diff.setEntity(to.getEntity());
 
         boolean needsPartial = false;
-        boolean hasDifference = false;
-        if (!from.getEntity().equals(to.getEntity()) || from.getUserCount() != to.getUserCount()) {
-            hasDifference = true;
-        }
+        boolean hasDifference = !from.getEntity().equals(to.getEntity()) || from.getUserCount() != to.getUserCount();
 
         // find users which have been removed in 'to'
         for (ConferenceInfoDocument.User user : from.getUsers()) {
@@ -1135,13 +1116,13 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @param diff the partial conference-info XML document sent by <code>callPeer</code> in order to update
      * the conference-related information of the local peer represented by the associated
      * <code>Call</code>
+     *
      * @return the value of the <code>version</code> attribute of the <code>conference-info</code> XML
      * element of the specified <code>conferenceInfoXML</code> if it was successfully parsed and
      * represented in the specified <code>callPeer</code>
      */
     private int updateConferenceInfoDocument(MediaAwareCallPeerT callPeer,
-            ConferenceInfoDocument diff)
-    {
+            ConferenceInfoDocument diff) {
         // "apply" diff to ourDocument, result is in newDocument
         ConferenceInfoDocument ourDocument = callPeer.getLastConferenceInfoReceived();
         ConferenceInfoDocument newDocument;
@@ -1225,11 +1206,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     /**
      * @param a A document with state <code>full</code> which to compare to <code>b</code>
      * @param b A document with state <code>full</code> which to compare to <code>a</code>
+     *
      * @return <code>false</code> if the two documents are found to be different, <code>true</code>
      * otherwise (that is, it can return true for non-identical documents).
      */
-    private boolean conferenceInfoDocumentsMatch(ConferenceInfoDocument a, ConferenceInfoDocument b)
-    {
+    private boolean conferenceInfoDocumentsMatch(ConferenceInfoDocument a, ConferenceInfoDocument b) {
         if (a.getState() != ConferenceInfoDocument.State.FULL)
             throw new IllegalArgumentException("The 'a' document needs to have state=full");
         if (b.getState() != ConferenceInfoDocument.State.FULL)
@@ -1255,11 +1236,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param a A <code>ConferenceInfoDocument.User</code> to compare
      * @param b A <code>ConferenceInfoDocument.User</code> to compare
+     *
      * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
      * is significant for our needs, <code>true</code> otherwise.
      */
-    private boolean usersMatch(ConferenceInfoDocument.User a, ConferenceInfoDocument.User b)
-    {
+    private boolean usersMatch(ConferenceInfoDocument.User a, ConferenceInfoDocument.User b) {
         if (a == null && b == null)
             return true;
         else if (a == null || b == null)
@@ -1285,12 +1266,12 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param a A <code>ConferenceInfoDocument.Endpoint</code> to compare
      * @param b A <code>ConferenceInfoDocument.Endpoint</code> to compare
+     *
      * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
      * is significant for our needs, <code>true</code> otherwise.
      */
     private boolean endpointsMatch(ConferenceInfoDocument.Endpoint a,
-            ConferenceInfoDocument.Endpoint b)
-    {
+            ConferenceInfoDocument.Endpoint b) {
         if (a == null && b == null)
             return true;
         else if (a == null || b == null)
@@ -1315,11 +1296,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      *
      * @param a A <code>ConferenceInfoDocument.Media</code> to compare
      * @param b A <code>ConferenceInfoDocument.Media</code> to compare
+     *
      * @return <code>false</code> if <code>a</code> and <code>b</code> are found to be different in a way that
      * is significant for our needs, <code>true</code> otherwise.
      */
-    private boolean mediasMatch(ConferenceInfoDocument.Media a, ConferenceInfoDocument.Media b)
-    {
+    private boolean mediasMatch(ConferenceInfoDocument.Media a, ConferenceInfoDocument.Media b) {
         if (a == null && b == null)
             return true;
         else if (a == null || b == null)
@@ -1338,11 +1319,11 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
     /**
      * @param a A <code>String</code> to compare to <code>b</code>
      * @param b A <code>String</code> to compare to <code>a</code>
+     *
      * @return <code>true</code> if and only if <code>a</code> and <code>b</code> are both <code>null</code>, or
      * they are equal as <code>String</code>s
      */
-    private boolean stringsMatch(String a, String b)
-    {
+    private boolean stringsMatch(String a, String b) {
         if (a == null && b == null)
             return true;
         else if (a == null || b == null)
@@ -1357,8 +1338,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * @return <code>true</code> if sending of RFC4575 partial notifications is enabled in the
      * configuration.
      */
-    private boolean isPartialNotificationEnabled()
-    {
+    private boolean isPartialNotificationEnabled() {
         String s = parentProvider.getAccountID().getAccountProperties().get(PARTIAL_NOTIFICATIONS_PROP_NAME);
 
         return (s == null || Boolean.parseBoolean(s));
@@ -1370,8 +1350,7 @@ public abstract class AbstractOperationSetTelephonyConferencing<ProtocolProvider
      * Unimplemented by default, returns <code>null</code>.
      */
     @Override
-    public ConferenceDescription setupConference(ChatRoom chatRoom)
-    {
+    public ConferenceDescription setupConference(ChatRoom chatRoom) {
         return null;
     }
 }

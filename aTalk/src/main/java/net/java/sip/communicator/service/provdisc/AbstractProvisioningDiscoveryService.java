@@ -15,9 +15,11 @@
  */
 package net.java.sip.communicator.service.provdisc;
 
-import java.util.*;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
 
-import net.java.sip.communicator.service.provdisc.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract base class of ProvisioningDiscoveryService that ease implementation

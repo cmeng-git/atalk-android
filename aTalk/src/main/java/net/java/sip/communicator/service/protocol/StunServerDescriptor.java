@@ -5,18 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_ADDRESS;
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_IS_TURN_SUPPORTED;
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_PASSWORD;
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_PORT;
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_TURN_PROTOCOL;
 import static net.java.sip.communicator.service.protocol.ProtocolProviderFactory.STUN_USERNAME;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * A <code>StunServerDescriptor</code> stores information necessary to create a STUN or TURN candidate

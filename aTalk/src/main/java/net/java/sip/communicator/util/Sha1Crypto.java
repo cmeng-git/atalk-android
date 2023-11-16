@@ -6,8 +6,9 @@
  */
 package net.java.sip.communicator.util;
 
-import java.io.*;
-import java.security.*;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Sha1Crypto
 {

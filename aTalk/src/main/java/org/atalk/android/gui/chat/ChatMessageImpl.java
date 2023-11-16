@@ -11,8 +11,17 @@ import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AccountInfoUtils;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.atalk.android.R;

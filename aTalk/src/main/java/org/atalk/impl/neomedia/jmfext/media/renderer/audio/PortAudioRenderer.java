@@ -5,21 +5,28 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.audio;
 
-import java.awt.Component;
 import org.atalk.impl.neomedia.control.DiagnosticsControl;
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.PortAudioSystem;
+import org.atalk.impl.neomedia.device.UpdateAvailableDeviceListListener;
 import org.atalk.impl.neomedia.jmfext.media.protocol.portaudio.DataSource;
 import org.atalk.impl.neomedia.jmfext.media.protocol.portaudio.PortAudioStream;
 import org.atalk.impl.neomedia.portaudio.Pa;
 import org.atalk.impl.neomedia.portaudio.PortAudioException;
 import org.atalk.service.neomedia.BasicVolumeControl;
 
+import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.MediaLocator;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;
@@ -371,8 +378,7 @@ public class PortAudioRenderer extends AbstractAudioRenderer<PortAudioSystem>
                  * The maximum output channels may be a lot and checking all of them will take a
                  * lot of time. Besides, we currently support at most 2.
                  */
-                int maxOutputChannels = Math.min(Pa.DeviceInfo_getMaxOutputChannels(deviceInfo),
-                        2);
+                int maxOutputChannels = Math.min(Pa.DeviceInfo_getMaxOutputChannels(deviceInfo), 2);
                 List<Format> supportedInputFormats
                         = new ArrayList<>(SUPPORTED_INPUT_FORMATS.length);
 

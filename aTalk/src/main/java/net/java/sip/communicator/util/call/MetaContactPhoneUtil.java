@@ -7,14 +7,25 @@
 package net.java.sip.communicator.util.call;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.OperationSetDesktopSharingServer;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo.DetailsResponseListener;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Utility class used to check if there is a telephony service, video calls and

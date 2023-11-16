@@ -10,7 +10,11 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeL
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

@@ -13,9 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.OperationSetWhiteboarding;
+import net.java.sip.communicator.service.protocol.WhiteboardSession;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * Dispatched to notify interested parties that a change in our presence in the source whiteboard

@@ -22,10 +22,20 @@ import net.java.sip.communicator.service.sysactivity.SystemActivityNotifications
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.net.*;
-import java.util.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -40,7 +50,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
     /**
      * The current active interfaces.
      */
-    private Map<String, List<InetAddress>> activeInterfaces = new HashMap<>();
+    private final Map<String, List<InetAddress>> activeInterfaces = new HashMap<>();
 
     /**
      * Interval between check of network configuration.
@@ -60,7 +70,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
     /**
      * The thread dispatcher of network change events.
      */
-    private NetworkEventDispatcher eventDispatcher = new NetworkEventDispatcher();
+    private final NetworkEventDispatcher eventDispatcher = new NetworkEventDispatcher();
 
     /**
      * Inits configuration watcher.
@@ -178,7 +188,7 @@ public class NetworkConfigurationWatcher implements SystemActivityChangeListener
      */
     public void serviceChanged(ServiceEvent serviceEvent)
     {
-        ServiceReference serviceRef = serviceEvent.getServiceReference();
+        ServiceReference<?> serviceRef = serviceEvent.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know we are shutting down

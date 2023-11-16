@@ -5,13 +5,25 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
+import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Vector;
 
 import timber.log.Timber;
 

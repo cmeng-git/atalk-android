@@ -16,7 +16,9 @@
 package net.java.sip.communicator.service.contactlist;
 
 import net.java.sip.communicator.service.contactlist.event.MetaContactListListener;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import java.util.Iterator;
 

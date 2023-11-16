@@ -10,9 +10,10 @@ import android.opengl.GLSurfaceView;
 import android.view.View;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.service.neomedia.ViewAccessor;
+
 import java.awt.Component;
 import java.awt.Graphics;
-import org.atalk.service.neomedia.ViewAccessor;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

@@ -1,7 +1,7 @@
 package javax.swing;
 
-import java.awt.Window;
 import java.awt.Image;
+import java.awt.Window;
 
 public class SwingUtilities
 {

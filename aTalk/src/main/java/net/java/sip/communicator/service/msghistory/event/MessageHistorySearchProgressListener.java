@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.msghistory.event;
 
-import net.java.sip.communicator.service.history.event.*;
+import net.java.sip.communicator.service.history.event.HistorySearchProgressListener;
 
 /**
  * When searching into the message history a ProgressEvent is fired whenever the progress is changed. Its fired through

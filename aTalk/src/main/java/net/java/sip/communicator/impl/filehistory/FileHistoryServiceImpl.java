@@ -26,8 +26,16 @@ import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
+import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -38,10 +46,17 @@ import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jxmpp.util.XmppStringUtils;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Iterator;
 
 import timber.log.Timber;
 

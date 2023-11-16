@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ThemeHelper;

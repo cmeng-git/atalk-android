@@ -8,7 +8,9 @@ package net.java.sip.communicator.impl.filehistory;
 import net.java.sip.communicator.service.filehistory.FileHistoryService;
 import net.java.sip.communicator.service.history.HistoryService;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

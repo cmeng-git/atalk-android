@@ -8,7 +8,12 @@ package org.atalk.android.gui.contactlist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnGroupClickListener;
@@ -17,12 +22,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.PopupMenu.OnMenuItemClickListener;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.*;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Chat;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AuthorizationRequest;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +44,13 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.account.Account;
 import org.atalk.android.gui.account.AccountInfoPresenceActivity;
+import org.atalk.android.gui.account.AndroidLoginRenderer;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
-import org.atalk.android.gui.contactlist.model.*;
+import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
+import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
+import org.atalk.android.gui.contactlist.model.QueryContactListAdapter;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.share.ShareActivity;
 import org.atalk.android.gui.util.EntityListHelper;
@@ -523,8 +538,9 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             @Override
             public void run()
             {
-                AuthorizationRequest request = AndroidGUIActivator.getLoginRenderer()
-                        .getAuthorizationHandler().createAuthorizationRequest(contact);
+                AndroidLoginRenderer loginRenderer = AndroidGUIActivator.getLoginRenderer();
+                AuthorizationRequest request = (loginRenderer == null) ?
+                        null : loginRenderer.getAuthorizationHandler().createAuthorizationRequest(contact);
                 if (request == null)
                     return;
 

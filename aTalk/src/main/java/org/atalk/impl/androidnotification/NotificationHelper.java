@@ -18,16 +18,20 @@
 package org.atalk.impl.androidnotification;
 
 import android.annotation.TargetApi;
-import android.app.*;
-import android.content.*;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.Intent;
 import android.os.Build;
 import android.provider.Settings;
+
+import androidx.annotation.RequiresApi;
 
 import org.atalk.android.R;
 
 import java.util.List;
-
-import androidx.annotation.RequiresApi;
 
 /**
  * Helper class to manage notification channels, and create notifications.

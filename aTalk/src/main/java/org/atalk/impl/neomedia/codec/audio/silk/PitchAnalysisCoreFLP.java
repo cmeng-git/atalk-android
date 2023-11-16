@@ -5,9 +5,22 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.PitchEstDefinesFLP.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_D_SRCH_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_FRAME_LENGTH_MS;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MAX_DECIMATE_STATE_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MAX_LAG;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MAX_LAG_MS;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MIN_LAG_MS;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_CBKS_STAGE2;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_CBKS_STAGE2_EXT;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_CBKS_STAGE3_MAX;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_STAGE3_LAGS;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
+import static org.atalk.impl.neomedia.codec.audio.silk.PitchEstDefinesFLP.PITCH_EST_FLP_FLATCONTOUR_BIAS;
+import static org.atalk.impl.neomedia.codec.audio.silk.PitchEstDefinesFLP.PITCH_EST_FLP_PREVLAG_BIAS;
+import static org.atalk.impl.neomedia.codec.audio.silk.PitchEstDefinesFLP.PITCH_EST_FLP_SHORTLAG_BIAS;
 
 /**
  * Pitch analysis.

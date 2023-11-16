@@ -16,15 +16,28 @@
  */
 package org.atalk.crypto;
 
-import android.content.*;
+import static org.atalk.android.R.id.fingerprint;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import net.java.sip.communicator.plugin.otr.*;
+import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.plugin.otr.OtrContactManager;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
+import net.java.sip.communicator.plugin.otr.ScOtrKeyManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -41,23 +54,20 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.omemo.OmemoManager;
-import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
-import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
-import org.jivesoftware.smackx.omemo.signal.SignalOmemoKeyUtil;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
-import org.whispersystems.libsignal.IdentityKey;
 
-import java.io.IOException;
-import java.util.*;
-
-import timber.log.Timber;
-
-import static org.atalk.android.R.id.fingerprint;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Settings screen with known user account and its associated fingerprints

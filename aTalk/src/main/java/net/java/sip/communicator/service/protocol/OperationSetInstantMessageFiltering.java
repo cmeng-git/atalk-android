@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.EventFilter;
 
 /**
  * An operation set that allows plugins to register filters which could intercept instant messages

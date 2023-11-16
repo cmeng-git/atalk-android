@@ -13,9 +13,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.ChatRoomMember;
+import net.java.sip.communicator.service.protocol.ChatRoomMemberRole;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * Dispatched to notify interested parties that a change in a member role in the source room has

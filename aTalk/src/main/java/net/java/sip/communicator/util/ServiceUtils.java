@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.util;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Gathers utility functions related to OSGi services such as getting a service registered in a BundleContext.

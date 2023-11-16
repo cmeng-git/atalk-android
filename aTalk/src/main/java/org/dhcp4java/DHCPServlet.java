@@ -18,14 +18,6 @@
  */
 package org.dhcp4java;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
-
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.util.Properties;
-
-import timber.log.Timber;
-
 import static org.dhcp4java.DHCPConstants.BOOTREPLY;
 import static org.dhcp4java.DHCPConstants.BOOTREQUEST;
 import static org.dhcp4java.DHCPConstants.DHCPDECLINE;
@@ -33,6 +25,14 @@ import static org.dhcp4java.DHCPConstants.DHCPDISCOVER;
 import static org.dhcp4java.DHCPConstants.DHCPINFORM;
 import static org.dhcp4java.DHCPConstants.DHCPRELEASE;
 import static org.dhcp4java.DHCPConstants.DHCPREQUEST;
+
+import org.atalk.android.plugin.timberlog.TimberLog;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.util.Properties;
+
+import timber.log.Timber;
 
 /**
  * General Interface for a "DHCP Servlet"

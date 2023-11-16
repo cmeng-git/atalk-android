@@ -14,6 +14,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
+
 import net.java.sip.communicator.service.protocol.JingleNodeDescriptor;
 
 import org.atalk.android.R;
@@ -21,9 +24,6 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 
 /**
  * The Jingle Node edit dialog. It used to edit or create new {@link JingleNodeDescriptor}.

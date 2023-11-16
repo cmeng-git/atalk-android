@@ -6,10 +6,15 @@
 package org.atalk.impl.neomedia.transform.sdes;
 
 import org.atalk.impl.neomedia.transform.PacketTransformer;
-import org.atalk.impl.neomedia.transform.srtp.*;
+import org.atalk.impl.neomedia.transform.srtp.SRTCPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SRTPTransformer;
+import org.atalk.impl.neomedia.transform.srtp.SrtpContextFactory;
+import org.atalk.impl.neomedia.transform.srtp.SrtpPolicy;
 import org.atalk.service.neomedia.SrtpControl;
 
-import ch.imvs.sdes4j.srtp.*;
+import ch.imvs.sdes4j.srtp.SrtpCryptoAttribute;
+import ch.imvs.sdes4j.srtp.SrtpCryptoSuite;
+import ch.imvs.sdes4j.srtp.SrtpSessionParam;
 
 /**
  * TransformEngine for SDES based SRTP encryption.

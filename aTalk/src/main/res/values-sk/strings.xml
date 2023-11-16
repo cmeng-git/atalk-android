@@ -972,7 +972,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta za %1$s:%2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Vzdialený odtlačok prsta pre %1$s:%2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Autentifikácia Buddy</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Overte Buddy</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">overil, že toto je v skutočnosti správny odtlačok prsta pre %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Automaticky iniciovať súkromné správy</string>
     <string name="plugin_otr_configform_CB_ENABLE">Povoliť súkromné správy</string>
@@ -1013,6 +1012,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Autentifikácia Buddy</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Máte neoverených kamarátov. Neoverení kamaráti nemôžu prijímať správu OMEMO. Začiarknite na overenie.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Môj odtlačok prsta %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Overte Buddy</string>
     <string name="omemo_identity_keypairs_missing">Vytvorte OMEMO IdentityKeyPair pre: %1$s</string>
     <string name="omemo_identity_key_invalid">Neplatné IdentityKey pre omemoDevice: %1$s.\nVýnimka:%2$s.</string>
     <string name="omemo_identity_key_missing">Chýba OMEMO IdentityKey pre %1$s.\nPokračujte v sťahovaní zo servera.</string>
@@ -1449,8 +1449,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Prah pre RTP tempo (kBytes / s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Cieľová rýchlosť snímok (za sekundu)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Nastavenia zabezpečenia šifrovania správ</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Zabezpečenie správ</string>
 

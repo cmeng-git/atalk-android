@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.WhiteboardParticipant;
 
 /**
  * WhiteboardParticipantChangeEvent-s are triggerred wheneve a change occurs in a

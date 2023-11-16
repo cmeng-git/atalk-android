@@ -1,9 +1,8 @@
 package javax.swing.event;
 
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.EventListener;
-
-import java.awt.event.ActionListener;
 
 public class EventListenerList implements Serializable {
 	private static final Object[] NULL_ARRAY = new Object[0];

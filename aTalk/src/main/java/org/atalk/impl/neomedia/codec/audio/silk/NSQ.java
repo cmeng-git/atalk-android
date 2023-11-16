@@ -5,10 +5,21 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.HARM_SHAPE_FIR_TAPS;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.LTP_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SHAPE_LPC_ORDER_MAX;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SIG_TYPE_UNVOICED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SIG_TYPE_VOICED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLAWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLAWT;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWW;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  *

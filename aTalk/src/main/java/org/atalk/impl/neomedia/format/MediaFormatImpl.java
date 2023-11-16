@@ -423,7 +423,7 @@ public abstract class MediaFormatImpl<T extends Format>
     {
         return (formatParameters == EMPTY_FORMAT_PARAMETERS)
                 ? EMPTY_FORMAT_PARAMETERS
-                : new HashMap<String, String>(formatParameters);
+                : new HashMap<>(formatParameters);
     }
 
     /**

@@ -6,8 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.2.1 (07/03/2023)" versioncode="302010">
+    <release version="3.2.2 (11/16/2023)" versioncode="302020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix xml:lang attribute error in stanza sending when user customizes 'regional preference' settings</change>
+        <change>Fix 'Auto generate resource' when the AUTO_GENERATE_RESOURCE property in DB does not exist</change>
+        <change>Auto return to contactList UI, 3 seconds after call has ended</change>
+        <change>Update osmdroid-android:6.1.14 to 6.1.17</change>
+        <change>Upgrade jni libraries sources: ffmpeg 5.1.2 to 5.1.4; libvpx 1.13.0 to 1.13.1</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.2.1 (07/03/2023)" versioncode="302010">
         <change>Replace java implemented g729 codec with JNI native codec bcg729, supporting voice activity detection (VAD) and discontinuous transmission (DTX)</change>
         <change>Fix incorrect g722 codecs entries in FMJPluginConfiguration settings</change>
         <change>Jingle.Group.Content element does not contains attribute 'creator'; remove null check for this attribute in JingleContent.build()</change>

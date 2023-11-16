@@ -23,12 +23,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;
-import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
+import net.java.sip.communicator.service.muc.MUCService;
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
@@ -46,7 +53,11 @@ import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppStringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -208,7 +219,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         String nickName = ViewUtil.toString(nicknameField);
         String chatRoomField = chatRoomComboBox.getText();
 
-        boolean mEnable = (!TextUtils.isEmpty(chatRoomField) && (nickName != null) && (getSelectedProvider() != null));
+        boolean mEnable = ((chatRoomField!= null) && (nickName != null) && (getSelectedProvider() != null));
         if (mEnable) {
             mJoinButton.setEnabled(true);
             mJoinButton.setAlpha(1.0f);
@@ -261,7 +272,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
      */
     private void setDefaultNickname() {
         String chatRoom = chatRoomComboBox.getText();
-        if (!TextUtils.isEmpty(chatRoom)) {
+        if (chatRoom != null) {
             chatRoom = chatRoom.replaceAll("\\s", "");
         }
         ChatRoomWrapper chatRoomWrapper = chatRoomWrapperList.get(chatRoom);
@@ -322,7 +333,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         String subject = ViewUtil.toString(subjectField);
 
         String chatRoomID = chatRoomComboBox.getText();
-        if (!TextUtils.isEmpty(chatRoomID)) {
+        if (chatRoomID != null) {
             chatRoomID = chatRoomID.replaceAll("\\s", "");
         }
         boolean savePassword = mSavePasswordCheckBox.isChecked();
@@ -330,7 +341,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
-        if (!TextUtils.isEmpty(chatRoomID) && (nickName != null) && (subject != null) && (getSelectedProvider() != null)) {
+        if ((chatRoomID != null) && (nickName != null) && (subject != null) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
             // create new if chatRoom does not exist

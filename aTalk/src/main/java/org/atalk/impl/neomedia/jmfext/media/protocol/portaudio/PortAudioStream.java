@@ -5,20 +5,26 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.portaudio;
 
-import java.awt.Component;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.control.DiagnosticsControl;
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.AudioSystem2;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.device.PortAudioSystem;
+import org.atalk.impl.neomedia.device.UpdateAvailableDeviceListListener;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferStream;
 import org.atalk.impl.neomedia.portaudio.Pa;
 import org.atalk.impl.neomedia.portaudio.PortAudioException;
 import org.atalk.service.neomedia.BasicVolumeControl;
 
+import java.awt.Component;
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 

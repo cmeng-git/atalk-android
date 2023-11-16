@@ -9,7 +9,15 @@ import net.java.otr4j.OtrException;
 import net.java.otr4j.crypto.OtrCryptoEngine;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
 import net.java.otr4j.io.SerializationUtils;
-import net.java.otr4j.io.messages.*;
+import net.java.otr4j.io.messages.AbstractEncodedMessage;
+import net.java.otr4j.io.messages.AbstractMessage;
+import net.java.otr4j.io.messages.DHCommitMessage;
+import net.java.otr4j.io.messages.DHKeyMessage;
+import net.java.otr4j.io.messages.QueryMessage;
+import net.java.otr4j.io.messages.RevealSignatureMessage;
+import net.java.otr4j.io.messages.SignatureM;
+import net.java.otr4j.io.messages.SignatureMessage;
+import net.java.otr4j.io.messages.SignatureX;
 import net.java.otr4j.session.Session.OTRv;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
@@ -19,7 +27,9 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import javax.crypto.interfaces.DHPublicKey;
 

@@ -55,7 +55,7 @@ public class OSGiActivity extends BaseActivity {
 
     private BundleContext bundleContext;
 
-    private BundleContextHolder service;
+    private BundleContextHolder mService;
 
     private ServiceConnection serviceConnection;
 
@@ -153,7 +153,7 @@ public class OSGiActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    private void configureToolBar() {
+    protected void configureToolBar() {
         // Find the toolbar view inside the activity layout - aTalk cannot use ToolBar; has layout problems
         // Toolbar toolbar = findViewById(R.id.my_toolbar);
         // if (toolbar != null)
@@ -204,10 +204,10 @@ public class OSGiActivity extends BaseActivity {
     }
 
     private void setService(BundleContextHolder service) {
-        if (this.service != service) {
-            if ((this.service != null) && (bundleActivator != null)) {
+        if (mService != service) {
+            if ((mService != null) && (bundleActivator != null)) {
                 try {
-                    this.service.removeBundleActivator(bundleActivator);
+                    mService.removeBundleActivator(bundleActivator);
                     bundleActivator = null;
                 } finally {
                     try {
@@ -219,8 +219,8 @@ public class OSGiActivity extends BaseActivity {
                 }
             }
 
-            this.service = service;
-            if (this.service != null) {
+            mService = service;
+            if (mService != null) {
                 if (bundleActivator == null) {
                     bundleActivator = new BundleActivator() {
                         public void start(BundleContext bundleContext)
@@ -234,7 +234,7 @@ public class OSGiActivity extends BaseActivity {
                         }
                     };
                 }
-                this.service.addBundleActivator(bundleActivator);
+                mService.addBundleActivator(bundleActivator);
             }
         }
     }

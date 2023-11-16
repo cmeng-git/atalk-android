@@ -20,15 +20,44 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.event.MetaContactListAdapter;
 import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.msghistory.MessageSourceContactPresenceStatus;
 import net.java.sip.communicator.service.muc.ChatRoomPresenceStatus;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageListener;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomMessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesEvent;
+import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesListener;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
+import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
@@ -40,9 +69,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

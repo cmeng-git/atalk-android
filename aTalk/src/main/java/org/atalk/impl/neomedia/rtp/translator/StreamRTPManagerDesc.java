@@ -5,12 +5,16 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import java.util.*;
-
-import javax.media.*;
-import javax.media.rtp.*;
-
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.media.Format;
+import javax.media.rtp.ReceiveStreamListener;
 
 /**
  * Describes additional information about a <code>StreamRTPManager</code> for the purposes of

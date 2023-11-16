@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
+import net.java.sip.communicator.service.protocol.ChatRoomConfigurationFormField;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -16,7 +18,9 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Vector;
 
 import timber.log.Timber;
 

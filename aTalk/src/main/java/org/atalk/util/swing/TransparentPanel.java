@@ -16,10 +16,12 @@
 package org.atalk.util.swing;
 
 import java.awt.LayoutManager;
+
 import javax.swing.JPanel;
 
 /**
- * Represents a <code>JPanel</code> which sets its <code>opaque</code> property to <code>false</code> during its initialization.
+ * Represents a <code>JPanel</code> which sets its <code>opaque</code> property to <code>false</code>
+ * during its initialization.
  *
  * @author Yana Stamcheva
  */

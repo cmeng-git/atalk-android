@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.gsm;
 
-import org.rubycoder.gsm.*;
+import org.rubycoder.gsm.GSMDecoder;
+import org.rubycoder.gsm.InvalidGSMFrameException;
 
 import timber.log.Timber;
 

@@ -5,10 +5,11 @@
  */
 package org.atalk.impl.neomedia.device;
 
+import org.atalk.service.neomedia.device.ScreenDevice;
+
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
-import org.atalk.service.neomedia.device.ScreenDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;

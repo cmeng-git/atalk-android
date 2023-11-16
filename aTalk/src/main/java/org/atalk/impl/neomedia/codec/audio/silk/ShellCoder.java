@@ -5,8 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SHELL_CODEC_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
 
 /**
  * shell coder; pulse-subframe length is hardcoded.

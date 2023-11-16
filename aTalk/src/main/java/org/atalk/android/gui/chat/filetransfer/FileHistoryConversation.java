@@ -17,7 +17,9 @@
 package org.atalk.android.gui.chat.filetransfer;
 
 import android.graphics.Color;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
@@ -26,7 +28,6 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatFragment;
-import org.atalk.android.gui.chat.ChatFragment.MessageViewHolder;
 import org.atalk.android.gui.chat.ChatMessage;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class FileHistoryConversation extends FileTransferConversation
         return fragmentFHC;
     }
 
-    public View FileHistoryConversationForm(LayoutInflater inflater, MessageViewHolder msgViewHolder,
+    public View FileHistoryConversationForm(LayoutInflater inflater, ChatFragment.MessageViewHolder msgViewHolder,
             ViewGroup container, boolean init)
     {
         View convertView = inflateViewForFileTransfer(inflater, msgViewHolder, container, init);

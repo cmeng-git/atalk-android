@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.CaptureDeviceInfo2;
+import org.atalk.impl.neomedia.device.CoreAudioDevice;
 import org.atalk.service.neomedia.BasicVolumeControl;
 import org.atalk.service.neomedia.VolumeControl;
 

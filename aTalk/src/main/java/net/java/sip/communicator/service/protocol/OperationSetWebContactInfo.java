@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.net.*;
+import java.net.URL;
 
 /**
  * The operation set is a very simplified version of the server stored info operation sets, allowing

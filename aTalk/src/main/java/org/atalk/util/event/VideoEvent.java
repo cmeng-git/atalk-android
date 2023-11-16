@@ -16,7 +16,6 @@
 package org.atalk.util.event;
 
 import java.awt.Component;
-
 import java.util.EventObject;
 
 /**

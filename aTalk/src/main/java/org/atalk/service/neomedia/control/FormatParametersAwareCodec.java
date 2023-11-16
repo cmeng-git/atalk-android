@@ -5,8 +5,9 @@
  */
 package org.atalk.service.neomedia.control;
 
-import javax.media.*;
-import java.util.*;
+import java.util.Map;
+
+import javax.media.Control;
 
 /**
  * An interface used to pass additional format parameters (received via SDP/Jingle) to codecs.

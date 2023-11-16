@@ -17,14 +17,19 @@ package net.java.sip.communicator.impl.resources;
 
 import net.java.sip.communicator.impl.resources.util.SkinJarBuilder;
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.resources.*;
+import net.java.sip.communicator.service.resources.AbstractResourcesService;
+import net.java.sip.communicator.service.resources.ImagePack;
+import net.java.sip.communicator.service.resources.SkinPack;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import javax.swing.ImageIcon;
 import org.osgi.framework.ServiceEvent;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+
+import javax.swing.ImageIcon;
 
 import timber.log.Timber;
 

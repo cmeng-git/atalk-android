@@ -16,13 +16,19 @@
 package org.atalk.impl.neomedia.codec.video.vp9;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Random;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.media.Buffer;

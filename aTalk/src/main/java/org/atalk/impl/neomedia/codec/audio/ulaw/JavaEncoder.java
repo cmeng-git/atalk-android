@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.ulaw;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 public class JavaEncoder extends com.ibm.media.codec.audio.AudioCodec
 {

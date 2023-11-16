@@ -16,14 +16,31 @@
  */
 package org.atalk.android.gui.call.telephony;
 
+import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
+
 import android.content.Context;
 import android.os.Bundle;
-import android.text.*;
-import android.view.*;
-import android.widget.*;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 import net.java.sip.communicator.util.account.AccountUtils;
 
@@ -38,13 +55,9 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.*;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
-import static net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl.GOOGLE_VOICE_DOMAIN;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This activity allows user to make pbx phone call via the selected service gateway.

@@ -819,7 +819,7 @@ public class DtlsControlImpl extends AbstractSrtpControl<DtlsTransformEngine> im
             Map<String, String> remoteFingerprints = this.remoteFingerprints;
 
             if (remoteFingerprints == null) {
-                throw new IOException("No fingerprints declared over the signaling" + " path!");
+                throw new IOException("No fingerprints declared over the signaling path!");
             }
             remoteFingerprint = remoteFingerprints.get(hashFunction);
 

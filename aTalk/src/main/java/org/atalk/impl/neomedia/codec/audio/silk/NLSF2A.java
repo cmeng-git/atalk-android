@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_int16_MAX;
 
 /**
  * conversion between prediction filter coefficients and LSFs order should be even a piecewise

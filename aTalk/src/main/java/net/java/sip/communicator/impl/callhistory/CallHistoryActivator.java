@@ -21,7 +21,10 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Hashtable;
 import java.util.Map;

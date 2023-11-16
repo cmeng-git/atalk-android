@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * The <code>ContainerEvent</code> indicates that a change in a <code>container</code>

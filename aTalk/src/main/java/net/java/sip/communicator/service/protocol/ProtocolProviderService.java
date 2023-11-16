@@ -9,7 +9,9 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeL
 
 import org.jivesoftware.smack.XMPPConnection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The ProtocolProvider interface should be implemented by bundles that wrap Instant Messaging and

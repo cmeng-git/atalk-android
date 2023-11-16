@@ -5,11 +5,20 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import android.app.*;
+import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
+
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 
 import net.java.sip.communicator.service.protocol.StunServerDescriptor;
 
@@ -18,15 +27,10 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jetbrains.annotations.NotNull;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
-
 import inet.ipaddr.HostName;
 import inet.ipaddr.HostNameException;
 import inet.ipaddr.IPAddress;
 import timber.log.Timber;
-
-import static net.java.sip.communicator.service.protocol.jabber.JabberAccountID.DEFAULT_STUN_PORT;
 
 /**
  * The dialog fragment that allows user to edit the STUN server descriptor.

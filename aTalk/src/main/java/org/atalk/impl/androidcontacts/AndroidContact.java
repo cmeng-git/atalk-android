@@ -11,7 +11,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactDetail;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.GenericSourceContact;
 
 import org.atalk.android.aTalkApp;
 

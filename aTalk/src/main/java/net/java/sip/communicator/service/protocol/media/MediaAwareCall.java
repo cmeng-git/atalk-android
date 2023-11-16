@@ -47,14 +47,17 @@ import java.util.List;
  * or <code>OperationSetBasicTelephonySipImpl</code>
  * @param <V> the provider extension class like, for example, <code>ProtocolProviderServiceSipImpl</code> or
  * <code>ProtocolProviderServiceJabberImpl</code>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class MediaAwareCall<T extends MediaAwareCallPeer<?, ?, V>, U extends OperationSetBasicTelephony<V>,
-        V extends ProtocolProviderService> extends AbstractCall<T, V>
-        implements CallPeerListener, PropertyChangeListener, DTMFListener
-{
+public abstract class MediaAwareCall<
+        T extends MediaAwareCallPeer<?, ?, V>,
+        U extends OperationSetBasicTelephony<V>,
+        V extends ProtocolProviderService>
+        extends AbstractCall<T, V>
+        implements CallPeerListener, PropertyChangeListener, DTMFListener {
     /**
      * The name of the property of <code>MediaAwareCall</code> the value of which corresponds to the
      * value returned by {@link #getDefaultDevice(MediaType)}. The <code>oldValue</code> and the

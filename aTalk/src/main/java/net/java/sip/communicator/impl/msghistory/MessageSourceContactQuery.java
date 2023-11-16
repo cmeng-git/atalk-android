@@ -6,8 +6,10 @@
  */
 package net.java.sip.communicator.impl.msghistory;
 
-import net.java.sip.communicator.service.contactsource.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.contactsource.AsyncContactQuery;
+import net.java.sip.communicator.service.contactsource.SourceContact;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
 
 import java.util.EventObject;
 import java.util.regex.Pattern;

@@ -6,7 +6,9 @@
 package org.atalk.impl.neomedia.notify;
 
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.device.NoneAudioSystem;
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.audionotifier.SCAudioClip;
 

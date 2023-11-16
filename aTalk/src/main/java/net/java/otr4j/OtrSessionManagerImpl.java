@@ -7,9 +7,14 @@
 
 package net.java.otr4j;
 
-import net.java.otr4j.session.*;
+import net.java.otr4j.session.Session;
+import net.java.otr4j.session.SessionID;
+import net.java.otr4j.session.SessionImpl;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * @author George Politis

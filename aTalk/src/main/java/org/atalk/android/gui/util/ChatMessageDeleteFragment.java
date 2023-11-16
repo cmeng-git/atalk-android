@@ -17,12 +17,14 @@
 package org.atalk.android.gui.util;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
-
-import androidx.annotation.NonNull;
 
 /**
  * Fragment for history message delete with media delete option

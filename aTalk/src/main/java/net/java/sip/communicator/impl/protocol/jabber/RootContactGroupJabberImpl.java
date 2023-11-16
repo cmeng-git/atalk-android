@@ -5,14 +5,20 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import org.jivesoftware.smack.roster.RosterGroup;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A dummy ContactGroup implementation representing the ContactList root for Jabber contact lists.

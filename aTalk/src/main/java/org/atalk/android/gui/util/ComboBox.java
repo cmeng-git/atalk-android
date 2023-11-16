@@ -22,14 +22,23 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import org.atalk.android.R;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * Custom ComboBox for Android
@@ -41,9 +50,9 @@ public class ComboBox extends LinearLayout
     protected AutoCompleteTextView _text;
     protected List<String> spinnerList;
 
-    private int unit = TypedValue.COMPLEX_UNIT_SP;
-    private float fontSize = 15;
-    private int fontBlack = getResources().getColor(R.color.textColorBlack);
+    private final int unit = TypedValue.COMPLEX_UNIT_SP;
+    private final float fontSize = 15;
+    private final int fontBlack = getResources().getColor(R.color.textColorBlack);
 
     private Context mContext;
     private LayoutInflater inflater;
@@ -146,7 +155,7 @@ public class ComboBox extends LinearLayout
     /**
      * Gets the text in the combo box.
      *
-     * @return Text.
+     * @return Text or null if text isEmpty().
      */
     public String getText()
     {

@@ -9,7 +9,10 @@ import java.io.IOException;
 
 import javax.media.MediaLocator;
 import javax.media.Time;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Implements most of <code>PushBufferDataSource</code> for a particular <code>DataSource</code> and

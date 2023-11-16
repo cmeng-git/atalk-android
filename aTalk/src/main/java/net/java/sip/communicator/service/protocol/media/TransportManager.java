@@ -15,10 +15,10 @@ import org.atalk.service.neomedia.DefaultStreamConnector;
 import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.util.MediaType;
 import org.ice4j.ice.Agent;
 import org.ice4j.ice.IceMediaStream;
 import org.ice4j.ice.LocalCandidate;
-import org.atalk.util.MediaType;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

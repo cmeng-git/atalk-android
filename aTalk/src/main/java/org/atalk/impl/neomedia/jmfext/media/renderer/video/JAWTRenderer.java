@@ -11,12 +11,19 @@ import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 import org.atalk.util.OSUtils;
 import org.atalk.util.swing.VideoLayout;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.RGBFormat;
+import javax.media.format.VideoFormat;
+import javax.media.format.YUVFormat;
 import javax.media.renderer.VideoRenderer;
 import javax.swing.SwingUtilities;
 
@@ -357,12 +364,10 @@ public class JAWTRenderer extends AbstractRenderer<VideoFormat> implements Video
             return BUFFER_PROCESSED_OK;
 
         int bufferLength = buffer.getLength();
-
         if (bufferLength == 0)
             return BUFFER_PROCESSED_OK;
 
         Format format = buffer.getFormat();
-
         if ((format != null)
                 && (format != this.inputFormat)
                 && !format.equals(this.inputFormat)

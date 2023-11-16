@@ -12,9 +12,13 @@ import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.MediaLocator;
 
 import timber.log.Timber;
 

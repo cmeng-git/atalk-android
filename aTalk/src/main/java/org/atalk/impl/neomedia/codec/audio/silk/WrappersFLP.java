@@ -5,7 +5,13 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.LTP_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SHAPE_LPC_ORDER_MAX;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SIG_TYPE_VOICED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.VAD_N_BANDS;
 
 /**
  *

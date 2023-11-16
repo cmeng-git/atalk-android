@@ -5,7 +5,11 @@
  */
 package org.atalk.impl.neomedia.quicktime;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a QTKit capture device which is connected or has been previously connected to the

@@ -7,7 +7,9 @@ package org.atalk.impl.configuration;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.impl.configuration.xml.XMLConfigurationStore;
-import org.atalk.service.configuration.*;
+import org.atalk.service.configuration.ConfigPropertyVetoException;
+import org.atalk.service.configuration.ConfigVetoableChangeListener;
+import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.fileaccess.FailSafeTransaction;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -17,8 +19,21 @@ import org.atalk.util.xml.XMLException;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.beans.PropertyChangeListener;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;

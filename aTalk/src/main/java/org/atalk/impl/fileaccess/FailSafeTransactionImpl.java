@@ -7,7 +7,11 @@ package org.atalk.impl.fileaccess;
 
 import org.atalk.service.fileaccess.FailSafeTransaction;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * A failsafe transaction class. By failsafe we mean here that the file concerned

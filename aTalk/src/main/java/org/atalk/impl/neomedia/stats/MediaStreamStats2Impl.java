@@ -24,7 +24,7 @@ public class MediaStreamStats2Impl extends MediaStreamStatsImpl
     /**
      * Window over which rates will be computed.
      */
-    private static int INTERVAL = 1000;
+    private static final int INTERVAL = 1000;
 
     /**
      * Hold per-SSRC statistics for received streams.

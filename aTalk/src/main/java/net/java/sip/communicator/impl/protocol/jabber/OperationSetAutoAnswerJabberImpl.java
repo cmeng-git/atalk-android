@@ -9,7 +9,6 @@ import net.java.sip.communicator.service.protocol.AbstractOperationSetBasicAutoA
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Call;
 
-import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;

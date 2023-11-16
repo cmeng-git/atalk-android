@@ -545,6 +545,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      * +1 being able to match a click to a message <br/>
      * +1 using a native popup mechanism <br/>
      */
+    @Override
     public int getPreferenceIndex()
     {
         return 3;

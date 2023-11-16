@@ -18,7 +18,15 @@ import net.java.sip.communicator.service.resources.ResourceManagementServiceUtil
 
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * @author Damian Minkov

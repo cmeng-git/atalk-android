@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * The <code>ProtocolIcon</code> interface is meant to be implemented by protocol implementations in

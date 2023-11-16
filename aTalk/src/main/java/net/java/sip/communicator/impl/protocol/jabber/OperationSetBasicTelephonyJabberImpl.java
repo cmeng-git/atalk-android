@@ -55,7 +55,6 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.coin.CoinExtension;
 import org.jivesoftware.smackx.confdesc.CallIdExtension;
-import org.jivesoftware.smackx.confdesc.TransportExtension;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleUtil;
@@ -347,7 +346,6 @@ public class OperationSetBasicTelephonyJabberImpl
         }
         boolean isTelephonyCall = ((telephonyDomain != null) && calleeAddress.endsWith(telephonyDomain));
 
-        // getAccountPropertyString(JabberAccountID.TELEPHONY_BYPASS_GTALK_CAPS);
         String bypassDomain = accountJID.getTelephonyDomainBypassCaps();
         boolean alwaysCallGtalk = ((bypassDomain != null)
                 && bypassDomain.equals(XmppStringUtils.parseDomain(calleeAddress))) || isGoogleVoice;

@@ -6,11 +6,15 @@
 package org.atalk.android.gui.util;
 
 import android.app.Activity;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.BaseAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Convenience class wrapping set of elements into {@link Adapter}

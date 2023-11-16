@@ -12,7 +12,11 @@ import java.io.IOException;
 import javax.media.CaptureDeviceInfo;
 import javax.media.Time;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Represents a <code>PushBufferDataSource</code> which is also a <code>CaptureDevice</code> through

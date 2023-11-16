@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LBRR_DELAY;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SKP_SILK_NO_LBRR;
 
 /**
  *

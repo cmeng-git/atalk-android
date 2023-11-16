@@ -24,12 +24,9 @@ package net.java.sip.communicator.service.update;
 public interface UpdateService
 {
     /**
-     * Checks for updates.
-     *
-     * @param notifyAboutNewestVersion <code>true</code> if the user is to be
-     * notified if they have the newest version already; otherwise, <code>false</code>
+     * Checks for updates and notify user of any new version, and take necessary action.
      */
-    void checkForUpdates(boolean notifyAboutNewestVersion);
+    void checkForUpdates();
 
     /**
      * Determines whether we are currently running the latest version.

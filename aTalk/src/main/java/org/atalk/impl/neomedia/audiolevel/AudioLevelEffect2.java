@@ -7,7 +7,10 @@ package org.atalk.impl.neomedia.audiolevel;
 
 import org.atalk.impl.neomedia.control.ControlsAdapter;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Effect;
+import javax.media.Format;
+import javax.media.PlugIn;
 import javax.media.format.AudioFormat;
 
 /**

@@ -5,9 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EventObject;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import timber.log.Timber;
 

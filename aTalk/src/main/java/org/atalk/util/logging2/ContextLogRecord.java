@@ -16,7 +16,8 @@
 
 package org.atalk.util.logging2;
 
-import java.util.logging.*;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * {@link ContextLogRecord} extends {@link LogRecord} and adds

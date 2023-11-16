@@ -9,7 +9,9 @@ package net.java.sip.communicator.service.systray;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageEvent;
 import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Abstract base implementation of <code>PopupMessageHandler</code> which

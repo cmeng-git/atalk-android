@@ -5,16 +5,23 @@
  */
 package net.java.sip.communicator.impl.history;
 
-import net.java.sip.communicator.service.history.*;
+import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
+
+import net.java.sip.communicator.service.history.HistoryQuery;
+import net.java.sip.communicator.service.history.InteractiveHistoryReader;
 import net.java.sip.communicator.service.history.event.HistoryQueryStatusEvent;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import java.text.*;
-import java.util.*;
-
-import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Vector;
 
 /**
  * The <code>InteractiveHistoryReaderImpl</code> is an implementation of the

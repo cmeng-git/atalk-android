@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui.settings;
 
-import static net.java.sip.communicator.util.account.AccountUtils.getRegisteredProviders;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +27,7 @@ import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
+import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
@@ -644,7 +643,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
      * @param enable mam state to be updated with.
      */
     private void enableMam(boolean enable) {
-        Collection<ProtocolProviderService> providers = getRegisteredProviders();
+        Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : providers) {
             if (pps.isRegistered()) {
                 ProtocolProviderServiceJabberImpl.enableMam(pps.getConnection(), enable);

@@ -5,10 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Encode frame.

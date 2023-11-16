@@ -1,10 +1,9 @@
 package javax.imageio;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
-
-import java.awt.Image;
 
 public final class ImageIO {
 	private static Method readerFormatNamesMethod;

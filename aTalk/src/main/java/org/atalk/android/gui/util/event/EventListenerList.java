@@ -6,9 +6,9 @@
 package org.atalk.android.gui.util.event;
 
 import java.awt.event.ActionListener;
-import javax.swing.event.DocumentListener;
-
 import java.util.ArrayList;
+
+import javax.swing.event.DocumentListener;
 
 /**
  * Utility class to that stores the list of {@link EventListener}s. Provides add/remove

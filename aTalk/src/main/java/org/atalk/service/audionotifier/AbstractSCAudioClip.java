@@ -14,7 +14,9 @@ import android.os.Build;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidresources.AndroidResourceServiceImpl;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
@@ -312,6 +314,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                         interrupted = true;
                     }
                 }
+
                 /*
                  * After this audio has been played once, loopCondition should be consulted to
                  * approve each subsequent iteration of the loop. Before invoking loopCondition
@@ -345,6 +348,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
                      * loopCondition will continue to play it forever.
                      */
                 }
+
                 if (!loop) {
                     /*
                      * The loopCondition failed to successfully and explicitly evaluate to true so
@@ -361,18 +365,18 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     }
 
     // The notification volume for aTalk - no good to implement as it affect all notifications
-//    private void setNotificationVolume() {
-//        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
-//        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-//        Timber.d("Current volume: %s", currentVolume);
-//        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
-//    }
-//
-//    private void restoreNotificationVolume() {
-//        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
-//        Timber.d("Current volume restore: %s", currentVolume);
-//        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, currentVolume, 0);
-//    }
+    //    private void setNotificationVolume() {
+    //        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+    //        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+    //        Timber.d("Current volume: %s", currentVolume);
+    //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
+    //    }
+    //
+    //    private void restoreNotificationVolume() {
+    //        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+    //        Timber.d("Current volume restore: %s", currentVolume);
+    //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, currentVolume, 0);
+    //    }
 
     /**
      * Runs in a background/separate thread dedicated to the actual playback of the android ringtone
@@ -647,6 +651,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     protected void internalStop()
     {
         boolean interrupted = false;
+
         synchronized (sync) {
             started = false;
             sync.notifyAll();

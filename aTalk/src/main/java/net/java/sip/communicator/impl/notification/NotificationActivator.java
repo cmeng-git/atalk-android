@@ -6,13 +6,19 @@
 package net.java.sip.communicator.impl.notification;
 
 import net.java.sip.communicator.service.gui.UIService;
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.CommandNotificationHandler;
+import net.java.sip.communicator.service.notification.LogMessageNotificationHandler;
+import net.java.sip.communicator.service.notification.NotificationService;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationHandler;
+import net.java.sip.communicator.service.notification.SoundNotificationHandler;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.audionotifier.AudioNotifierService;
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

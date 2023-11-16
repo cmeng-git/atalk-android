@@ -16,7 +16,10 @@
 
 package org.atalk.util.collections;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Provides helpers for creating a List easily in place.

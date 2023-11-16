@@ -11,8 +11,10 @@ import org.atalk.service.neomedia.DTMFInbandTone;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
 
 /**
  * Implements a <code>PullBufferDataSource</code> wrapper which provides mute support for the wrapped

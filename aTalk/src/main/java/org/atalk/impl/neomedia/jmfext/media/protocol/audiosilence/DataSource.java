@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 import javax.media.protocol.BufferTransferHandler;

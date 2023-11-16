@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.customcontactactions;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * The <code>CustomContactActionsService</code> can be used to define a set of

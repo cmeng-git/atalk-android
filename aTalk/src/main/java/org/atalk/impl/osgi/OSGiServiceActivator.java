@@ -5,14 +5,14 @@
  */
 package org.atalk.impl.osgi;
 
-import org.atalk.service.osgi.OSGiService;
+import android.content.ComponentName;
+import android.content.Intent;
+
 import org.atalk.service.osgi.BundleContextHolder;
+import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-
-import android.content.ComponentName;
-import android.content.Intent;
 
 /**
  *
@@ -45,7 +45,6 @@ public class OSGiServiceActivator implements BundleActivator
 				this.bundleActivator = bundleActivator;
 
 				boolean started = false;
-
 				try {
 					bundleActivator.start(bundleContext);
 					started = true;

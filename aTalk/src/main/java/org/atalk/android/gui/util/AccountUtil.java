@@ -7,7 +7,9 @@ package org.atalk.android.gui.util;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 

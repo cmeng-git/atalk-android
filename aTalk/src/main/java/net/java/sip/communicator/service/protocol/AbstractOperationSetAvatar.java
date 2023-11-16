@@ -10,7 +10,10 @@ import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetai
 import net.java.sip.communicator.service.protocol.event.AvatarEvent;
 import net.java.sip.communicator.service.protocol.event.AvatarListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -136,7 +139,7 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
         }
 
         if (!listeners.isEmpty()) {
-            AvatarEvent event = new AvatarEvent(this, this.parentProvider, newAvatar);
+            AvatarEvent event = new AvatarEvent(this, parentProvider, newAvatar);
 
             for (AvatarListener l : listeners)
                 l.avatarChanged(event);

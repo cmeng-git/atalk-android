@@ -7,7 +7,8 @@ package org.atalk.impl.neomedia.device;
 
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.conference.AudioMixer;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaDirection;
+import org.atalk.service.neomedia.RTPExtension;
 import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;
 
@@ -17,7 +18,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.Renderer;
 import javax.media.control.BufferControl;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;

@@ -5,10 +5,11 @@
  */
 package org.atalk.impl.neomedia.codec.audio.ulaw;
 
-import javax.media.*;
-import javax.media.format.*;
+import com.sun.media.controls.SilenceSuppressionAdapter;
 
-import com.sun.media.controls.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 public class JavaDecoder extends com.ibm.media.codec.audio.AudioCodec
 {

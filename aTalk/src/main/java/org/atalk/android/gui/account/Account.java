@@ -8,8 +8,21 @@ package org.atalk.android.gui.account;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetAvatar;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolIcon;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.event.AvatarEvent;
+import net.java.sip.communicator.service.protocol.event.AvatarListener;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -24,10 +37,15 @@ import org.atalk.service.resources.ResourceManagementService;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 
 import java.beans.PropertyChangeEvent;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import timber.log.Timber;
 

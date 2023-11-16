@@ -18,9 +18,14 @@ import org.atalk.service.neomedia.MediaConfigurationService;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.atalk.util.OSUtils;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
 
 import timber.log.Timber;
 

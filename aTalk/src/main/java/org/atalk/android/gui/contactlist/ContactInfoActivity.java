@@ -4,14 +4,46 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.InputFilter;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.BinaryDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CityDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CountryDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.EmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FirstNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenderDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.JobTitleDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MiddleNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.NicknameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PostalCodeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ProvinceDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.URLDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkEmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrganizationNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 
 import org.apache.commons.lang3.StringUtils;
 import org.atalk.android.R;
@@ -21,9 +53,12 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.text.DateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import androidx.fragment.app.Fragment;
 import timber.log.Timber;
 
 /**

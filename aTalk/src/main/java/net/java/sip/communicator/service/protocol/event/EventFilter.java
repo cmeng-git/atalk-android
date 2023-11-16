@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * An event filter that decides whether an instant message event should be filtered or not. For

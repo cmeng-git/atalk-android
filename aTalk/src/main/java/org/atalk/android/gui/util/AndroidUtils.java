@@ -5,7 +5,9 @@
  */
 package org.atalk.android.gui.util;
 
-import android.app.*;
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.TransitionDrawable;

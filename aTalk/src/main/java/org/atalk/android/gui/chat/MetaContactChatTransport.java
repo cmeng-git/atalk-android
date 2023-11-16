@@ -408,9 +408,13 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      *
      * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      */
+    @Override
     public boolean allowsFileTransfer() {
-        return (ftOpSet != null)
-                || ((httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered());
+        return (ftOpSet != null) || hasUploadService();
+    }
+
+    private boolean hasUploadService() {
+        return httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -791,7 +795,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
-        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+        if (hasUploadService()) {
             int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {

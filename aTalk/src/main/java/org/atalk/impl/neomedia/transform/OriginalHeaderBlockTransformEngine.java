@@ -96,8 +96,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
     }
 
     /**
-     * Removes any unmodified fields from the OHB header extension of a
-     * {@link RawPacket}.
+     * Removes any unmodified fields from the OHB header extension of a {@link RawPacket}.
      *
      * @param pkt the packet.
      * @param ohb the OHB header extension.
@@ -108,8 +107,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
         int off = ohb.getOffset();
 
         // Make sure it was us who added the OHB (in reverseTransform). If it
-        // came from elsewhere (i.e. the sender), we should handle it in
-        // another way.
+        // came from elsewhere (i.e. the sender), we should handle it in another way.
         int len = ohb.getExtLength();
         if (len != 11) {
             Timber.w("Unexpected OHB length.");
@@ -128,9 +126,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
         long origTs = RTPUtils.readUint32AsLong(buf, off + 4);
         long origSsrc = RTPUtils.readUint32AsLong(buf, off + 8);
 
-        int newLen
-                = getLength(pt != origPt, seq != origSeq,
-                ts != origTs, ssrc != origSsrc);
+        int newLen = getLength(pt != origPt, seq != origSeq, ts != origTs, ssrc != origSsrc);
 
         // If the lengths match, we don't have anything to change.
         if (newLen != len) {
@@ -145,8 +141,7 @@ public class OriginalHeaderBlockTransformEngine extends SinglePacketTransformerA
      * @param seq whether the sequence number was modified.
      * @param ts whether the timestamp was modified.
      * @param ssrc whether the SSRC was modified.
-     * @return the length of the OHB extension, given the fields which differ
-     * from the original packet.
+     * @return the length of the OHB extension, given the fields which differ from the original packet.
      */
     private int getLength(boolean pt, boolean seq, boolean ts, boolean ssrc)
     {

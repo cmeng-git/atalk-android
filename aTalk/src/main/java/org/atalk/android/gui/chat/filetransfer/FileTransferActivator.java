@@ -16,13 +16,24 @@
  */
 package org.atalk.android.gui.chat.filetransfer;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.event.FileTransferCreatedEvent;
+import net.java.sip.communicator.service.protocol.event.FileTransferRequestEvent;
+import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Date;
 

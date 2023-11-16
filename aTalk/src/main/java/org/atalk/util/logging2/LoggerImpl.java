@@ -19,8 +19,11 @@ package org.atalk.util.logging2;
 import org.atalk.util.function.Function;
 import org.atalk.util.function.Supplier;
 
-import java.util.*;
-import java.util.logging.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * Implements {@link Logger} by delegating to a {@link java.util.logging.Logger}.

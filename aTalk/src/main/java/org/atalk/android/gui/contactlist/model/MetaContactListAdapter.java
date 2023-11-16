@@ -7,9 +7,20 @@ package org.atalk.android.gui.contactlist.model;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.contactlist.event.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
+import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactGroupEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactListListener;
+import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactMovedEvent;
+import net.java.sip.communicator.service.contactlist.event.MetaContactRenamedEvent;
+import net.java.sip.communicator.service.contactlist.event.ProtoContactEvent;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 
@@ -19,7 +30,10 @@ import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.PresenceFilter;
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;

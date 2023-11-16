@@ -5,10 +5,14 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord;
 
-import android.annotation.TargetApi;
-import android.media.*;
-import android.media.audiofx.*;
-import android.os.Build;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
+import android.media.audiofx.AcousticEchoCanceler;
+import android.media.audiofx.AudioEffect;
+import android.media.audiofx.AutomaticGainControl;
+import android.media.audiofx.NoiseSuppressor;
 import android.os.Process;
 
 import org.atalk.android.aTalkApp;
@@ -16,12 +20,17 @@ import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.AudioSystem;
-import org.atalk.impl.neomedia.jmfext.media.protocol.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractBufferStream;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferStream;
 import org.atalk.service.neomedia.BasicVolumeControl;
 
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 
 import timber.log.Timber;

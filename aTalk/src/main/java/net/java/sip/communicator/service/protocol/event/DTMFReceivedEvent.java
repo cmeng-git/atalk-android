@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
-
 import org.atalk.service.neomedia.DTMFTone;
+
+import java.util.EventObject;
 
 /**
  * <code>DTMFReceivedEvent</code>s indicate reception of a DTMF tone.

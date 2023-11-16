@@ -11,7 +11,9 @@ import net.java.sip.communicator.util.ScStdOut;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;

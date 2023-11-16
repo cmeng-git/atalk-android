@@ -15,8 +15,8 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import javax.media.*;
-import javax.media.rtp.*;
+import javax.media.Buffer;
+import javax.media.rtp.ReceiveStream;
 
 /**
  *  Represents a listener for every packet which is read by a

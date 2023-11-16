@@ -16,7 +16,9 @@ import org.atalk.android.R;
 import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.menu.ExitMenuActivity;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Map;
 

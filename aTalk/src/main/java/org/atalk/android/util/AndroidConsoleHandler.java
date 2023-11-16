@@ -10,7 +10,10 @@ import android.util.Log;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.logging.*;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 
 /**
  * Android console handler that outputs to <code>android.util.Log</code>.

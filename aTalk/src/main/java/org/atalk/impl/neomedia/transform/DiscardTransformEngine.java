@@ -114,7 +114,8 @@ public class DiscardTransformEngine implements TransformEngine
             }
 
             byte[] buf = pkt.getBuffer();
-            int offset = pkt.getOffset(), length = pkt.getLength();
+            int offset = pkt.getOffset();
+            int length = pkt.getLength();
 
             // The correct thing to do here is a loop because the RTCP packet
             // can be compound. However, in practice we haven't seen multiple

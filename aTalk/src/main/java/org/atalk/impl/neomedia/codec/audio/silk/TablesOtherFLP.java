@@ -5,7 +5,10 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.OFFSET_UVH_Q10;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.OFFSET_UVL_Q10;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.OFFSET_VH_Q10;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.OFFSET_VL_Q10;
 
 /**
  *

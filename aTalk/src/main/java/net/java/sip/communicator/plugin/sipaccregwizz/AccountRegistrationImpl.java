@@ -7,12 +7,18 @@
 package net.java.sip.communicator.plugin.sipaccregwizz;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.sip.SIPAccountRegistration;
 
 import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import timber.log.Timber;

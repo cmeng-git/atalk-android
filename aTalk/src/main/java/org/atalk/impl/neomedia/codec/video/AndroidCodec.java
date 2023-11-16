@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
-import android.media.*;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.view.Surface;
 
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
@@ -14,7 +16,9 @@ import org.atalk.service.neomedia.codec.Constants;
 import java.awt.Dimension;
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 
 import timber.log.Timber;
 

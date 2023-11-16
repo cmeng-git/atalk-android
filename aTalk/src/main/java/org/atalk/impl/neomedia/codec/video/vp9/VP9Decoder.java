@@ -16,13 +16,14 @@
  */
 package org.atalk.impl.neomedia.codec.video.vp9;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.codec.video.VPX;
 import org.atalk.service.neomedia.codec.Constants;
+
+import java.awt.Dimension;
 
 import javax.media.Buffer;
 import javax.media.Format;

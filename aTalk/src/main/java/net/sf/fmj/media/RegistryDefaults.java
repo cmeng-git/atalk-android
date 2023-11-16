@@ -1,17 +1,25 @@
 package net.sf.fmj.media;
 
-import java.util.*;
+import com.lti.utils.OSUtils;
 
-import javax.media.*;
-import javax.media.format.*;
-import javax.media.pim.PlugInManager;
-import javax.media.protocol.*;
-
-import net.sf.fmj.registry.*;
-import net.sf.fmj.utility.*;
+import net.sf.fmj.registry.Registry;
 import net.sf.fmj.utility.PlugInInfo;
+import net.sf.fmj.utility.PlugInUtility;
 
-import com.lti.utils.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
+import javax.media.Format;
+import javax.media.PackageManager;
+import javax.media.format.AudioFormat;
+import javax.media.format.JPEGFormat;
+import javax.media.format.RGBFormat;
+import javax.media.format.VideoFormat;
+import javax.media.format.YUVFormat;
+import javax.media.pim.PlugInManager;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.FileTypeDescriptor;
 
 /**
  * Defaults for the FMJ registry. Broken out into fmj, jmf, and third-party. fmj ones are

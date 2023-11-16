@@ -15,9 +15,13 @@ import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 import org.atalk.service.neomedia.ViewAccessor;
 import org.atalk.service.neomedia.codec.Constants;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 import javax.media.renderer.VideoRenderer;
 

@@ -15,14 +15,19 @@ import androidx.annotation.NonNull;
 import androidx.preference.ListPreference;
 
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.settings.util.SummaryMapper;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

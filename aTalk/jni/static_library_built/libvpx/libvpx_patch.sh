@@ -11,7 +11,7 @@ fi
 if [[ -f ${LIB_VPX}/build/make/version.sh ]]; then
   version=$(${LIB_VPX}/build/make/version.sh --bare ${LIB_VPX})
 else
-  version='v1.12.0'
+  version='v1.13.1'
 fi
 
 

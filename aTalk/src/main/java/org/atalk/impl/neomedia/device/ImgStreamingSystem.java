@@ -9,8 +9,8 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.neomedia.device.ScreenDevice;
-import org.atalk.util.OSUtils;
 import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;

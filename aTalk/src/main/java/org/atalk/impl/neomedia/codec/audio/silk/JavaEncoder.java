@@ -5,14 +5,17 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import java.awt.Component;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 
-import javax.media.*;
+import java.awt.Component;
+
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;
@@ -80,9 +83,9 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
 
     static {
         int supportedCount = SUPPORTED_SAMPLE_RATES.length;
-
         SUPPORTED_INPUT_FORMATS = new Format[supportedCount];
         SUPPORTED_OUTPUT_FORMATS = new Format[supportedCount];
+
         for (int i = 0; i < supportedCount; i++) {
             double supportedSampleRate = SUPPORTED_SAMPLE_RATES[i];
 
@@ -96,6 +99,7 @@ public class JavaEncoder extends AbstractCodec2 implements PacketLossAwareEncode
                     Format.NOT_SPECIFIED /* frameSizeInBits */,
                     Format.NOT_SPECIFIED /* frameRate */,
                     Format.shortArray);
+
             SUPPORTED_OUTPUT_FORMATS[i] = new AudioFormat(
                     Constants.SILK_RTP,
                     supportedSampleRate,

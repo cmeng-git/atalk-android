@@ -533,7 +533,6 @@ public class TlsServerImpl extends DefaultTlsServer {
         }
 
         UseSRTPData useSRTPData = TlsSRTPUtils.getUseSRTPExtension(clientExtensions);
-
         if (useSRTPData == null) {
             String msg = "DTLS extended client hello does not include the use_srtp extension!";
             IOException ioe = new IOException(msg);

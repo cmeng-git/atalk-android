@@ -9,6 +9,7 @@ package net.java.sip.communicator.plugin.desktoputil;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 
 /**

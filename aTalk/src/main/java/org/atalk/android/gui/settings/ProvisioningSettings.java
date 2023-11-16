@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.preference.*;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 

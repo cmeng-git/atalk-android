@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLAWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
 
 /**
  * Resample with a 2x downsampler (optional), a 2nd order AR filter followed by FIR interpolation.

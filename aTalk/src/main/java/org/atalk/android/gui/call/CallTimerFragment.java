@@ -14,7 +14,9 @@ import net.java.sip.communicator.util.GuiUtils;
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiFragment;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import timber.log.Timber;
 

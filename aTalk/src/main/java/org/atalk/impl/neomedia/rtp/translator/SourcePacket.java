@@ -13,7 +13,7 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import javax.media.*;
+import javax.media.Buffer;
 
 /**
  * Privately used by {@link PushSourceStreamImpl} at the time of this writing and extracted into its

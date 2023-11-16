@@ -26,7 +26,9 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.atalk.android.*;
+import org.atalk.android.MyGlideApp;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.android.databinding.MediaPreviewBinding;
 import org.atalk.android.gui.chat.ChatActivity;
 import org.atalk.persistance.FilePathHelper;

@@ -7,7 +7,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.view.inputmethod.*;
+import androidx.core.view.inputmethod.EditorInfoCompat;
+import androidx.core.view.inputmethod.InputConnectionCompat;
+import androidx.core.view.inputmethod.InputContentInfoCompat;
 
 public class ContentEditText extends AppCompatEditText
 {

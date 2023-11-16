@@ -1,5 +1,7 @@
 package java.awt.geom;
 
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -7,9 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.Arrays;
-
-import java.awt.Rectangle;
-import java.awt.Shape;
 
 public abstract class Path2D implements Shape, Cloneable
 {

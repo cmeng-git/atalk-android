@@ -13,9 +13,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.ConferenceMember;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
+import java.util.Map;
 
 /**
  * Notifies interested parties in <code>ConferenceMember</code>s sound level changes. When a

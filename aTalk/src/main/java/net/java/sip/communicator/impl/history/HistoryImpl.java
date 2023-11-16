@@ -5,16 +5,26 @@
  */
 package net.java.sip.communicator.impl.history;
 
-import net.java.sip.communicator.service.history.*;
+import net.java.sip.communicator.service.history.History;
+import net.java.sip.communicator.service.history.HistoryID;
+import net.java.sip.communicator.service.history.HistoryReader;
+import net.java.sip.communicator.service.history.HistoryWriter;
+import net.java.sip.communicator.service.history.InteractiveHistoryReader;
 import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.util.xml.XMLUtils;
 import org.w3c.dom.Document;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.Iterator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import timber.log.Timber;
 

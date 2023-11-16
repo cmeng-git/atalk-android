@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.control;
 
-import javax.media.*;
+import javax.media.Control;
 
 /**
  * An interface used to communicate with a decoder that supports decoding FEC

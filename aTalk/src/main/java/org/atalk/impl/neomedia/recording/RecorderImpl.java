@@ -14,8 +14,8 @@ import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
 import org.atalk.service.neomedia.recording.Synchronizer;
-import org.atalk.util.SoundFileUtils;
 import org.atalk.util.MediaType;
+import org.atalk.util.SoundFileUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

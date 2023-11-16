@@ -17,13 +17,24 @@ package net.java.sip.communicator.impl.callhistory;
 
 import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
 import net.java.sip.communicator.service.callhistory.CallRecord;
-import net.java.sip.communicator.service.callhistory.event.*;
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryListener;
+import net.java.sip.communicator.service.callhistory.event.CallHistoryQueryStatusEvent;
+import net.java.sip.communicator.service.callhistory.event.CallRecordEvent;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.ContactQueryListener;
+import net.java.sip.communicator.service.contactsource.ContactQueryStatusEvent;
+import net.java.sip.communicator.service.contactsource.ContactReceivedEvent;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
+import net.java.sip.communicator.service.contactsource.SourceContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The <code>CallHistoryContactSource</code> is the contact source for the call history.
@@ -208,6 +219,7 @@ public class CallHistoryContactSource implements ContactSourceService
          *
          * @return the status of this query
          */
+        @Override
         public int getStatus()
         {
             return status;

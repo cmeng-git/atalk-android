@@ -17,21 +17,21 @@ public interface QualityControl
 	 * 
 	 * @return the current quality preset.
 	 */
-	public QualityPreset getRemoteReceivePreset();
+	QualityPreset getRemoteReceivePreset();
 
 	/**
 	 * The minimum preset that the remote party is sending and we are receiving.
 	 * 
 	 * @return the minimum remote preset.
 	 */
-	public QualityPreset getRemoteSendMinPreset();
+	QualityPreset getRemoteSendMinPreset();
 
 	/**
 	 * The maximum preset that the remote party is sending and we are receiving.
 	 * 
 	 * @return the maximum preset announced from remote party as send.
 	 */
-	public QualityPreset getRemoteSendMaxPreset();
+	QualityPreset getRemoteSendMaxPreset();
 
 	/**
 	 * Changes remote send preset. This doesn't have impact of current stream. But will have on next
@@ -40,7 +40,7 @@ public interface QualityControl
 	 * @param preset
 	 *        the new preset value.
 	 */
-	public void setRemoteSendMaxPreset(QualityPreset preset);
+	void setRemoteSendMaxPreset(QualityPreset preset);
 
 	/**
 	 * Changes remote send preset and protocols who can handle the changes will implement this for
@@ -50,6 +50,6 @@ public interface QualityControl
 	 *        the new preset.
 	 * @throws MediaException
 	 */
-	public void setPreferredRemoteSendMaxPreset(QualityPreset preset)
+	void setPreferredRemoteSendMaxPreset(QualityPreset preset)
 		throws MediaException;
 }

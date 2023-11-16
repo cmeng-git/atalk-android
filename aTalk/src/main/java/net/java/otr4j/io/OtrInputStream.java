@@ -3,11 +3,17 @@ package net.java.otr4j.io;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
 import net.java.otr4j.io.messages.SignatureX;
 
-import java.io.*;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.*;
-import java.security.interfaces.*;
-import java.security.spec.*;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPublicKey;
+import java.security.spec.DSAPublicKeySpec;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.interfaces.DHPublicKey;
 

@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLABB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SUB_SAT32;
 
 /**
  * Variable order MA filter.

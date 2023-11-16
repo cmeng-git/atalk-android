@@ -474,7 +474,6 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
             }
 
             // msg.addExtension(new Version());
-            // Disable carbon for OTR message
             if (event.isMessageEncrypted() && isCarbonEnabled) {
                 CarbonExtension.Private.addTo(messageBuilder);
             }

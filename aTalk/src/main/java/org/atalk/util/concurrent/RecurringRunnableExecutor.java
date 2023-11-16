@@ -15,7 +15,9 @@
  */
 package org.atalk.util.concurrent;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 

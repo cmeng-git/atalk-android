@@ -3,8 +3,6 @@ package org.atalk.android.gui.widgets;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
-import org.atalk.android.gui.account.Account;
-
 /**
  * Action item, displayed as menu with icon and text.
  *

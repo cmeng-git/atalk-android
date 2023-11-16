@@ -5,8 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio;
 
-import org.atalk.util.ArrayIOUtils;
 import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.util.ArrayIOUtils;
 
 import javax.media.Buffer;
 import javax.media.Format;

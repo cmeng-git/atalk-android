@@ -23,8 +23,7 @@ public class REDFilterTransformEngine extends SinglePacketTransformerAdapter
         implements TransformEngine
 {
     /**
-     * A boolean flag determining whether or not this transformer should strip RED from outgoing
-     * packets.
+     * A boolean flag determining whether or not this transformer should strip RED from outgoing packets.
      */
     private boolean enabled = false;
 
@@ -35,8 +34,7 @@ public class REDFilterTransformEngine extends SinglePacketTransformerAdapter
     private final byte redPayloadType;
 
     /**
-     * Initializes a new <code>REDFilterTransformEngine</code> with the given payload type number for
-     * RED.
+     * Initializes a new <code>REDFilterTransformEngine</code> with the given payload type number for RED.
      *
      * @param redPayloadType the RED payload type number.
      */

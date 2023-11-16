@@ -8,14 +8,19 @@ package org.atalk.android.gui.chatroomslist;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomProviderWrapper;
 import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
 import org.atalk.persistance.DatabaseBackend;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import java.util.List;
 import java.util.Vector;

@@ -17,8 +17,12 @@
 
 package net.java.sip.communicator.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Provides HTML and XML entity utilities.

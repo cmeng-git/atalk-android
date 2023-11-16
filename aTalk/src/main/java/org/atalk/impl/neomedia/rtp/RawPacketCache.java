@@ -20,10 +20,16 @@ import org.atalk.impl.neomedia.transform.CachingTransformer;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.logging.Logger;
 import org.atalk.util.concurrent.MonotonicAtomicLong;
+import org.atalk.util.logging.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 

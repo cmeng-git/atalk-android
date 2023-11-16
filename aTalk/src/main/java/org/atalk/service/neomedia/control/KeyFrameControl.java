@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.control;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Represents a control over the key frame-related logic of a <code>VideoMediaStream</code>.

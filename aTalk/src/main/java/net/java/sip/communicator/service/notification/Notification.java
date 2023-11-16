@@ -5,7 +5,8 @@
  */
 package net.java.sip.communicator.service.notification;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Represents an event notification.

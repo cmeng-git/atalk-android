@@ -14,8 +14,9 @@
 package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.function.Predicate;
 import org.atalk.util.ByteArrayBuffer;
+
+import org.atalk.util.function.Predicate;
 
 // import java.util.function.Predicate;  // cmeng: required API-24
 

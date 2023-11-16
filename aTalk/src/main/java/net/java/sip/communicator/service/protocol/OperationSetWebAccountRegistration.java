@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.net.*;
+import java.net.URL;
 
 /**
  * The operation set is there to propose an extremely simple and light way of registering new

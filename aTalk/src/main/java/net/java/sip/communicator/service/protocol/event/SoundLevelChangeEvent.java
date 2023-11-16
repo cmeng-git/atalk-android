@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * <code>SoundLevelChangeEvent</code>s are triggered whenever a change occurs in the sound level of the

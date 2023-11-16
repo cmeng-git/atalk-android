@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.atalk.android.R;

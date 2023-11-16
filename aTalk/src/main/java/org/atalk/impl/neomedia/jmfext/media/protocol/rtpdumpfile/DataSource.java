@@ -14,7 +14,8 @@
 
 package org.atalk.impl.neomedia.jmfext.media.protocol.rtpdumpfile;
 
-import org.atalk.impl.neomedia.jmfext.media.protocol.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
 
 import javax.media.control.FormatControl;
 

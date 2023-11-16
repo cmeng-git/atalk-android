@@ -33,11 +33,11 @@ import org.atalk.service.neomedia.event.DTMFToneEvent;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
+import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 import org.atalk.util.event.VideoNotifierSupport;
-import org.atalk.util.MediaType;
-import org.atalk.util.event.PropertyChangeNotifier;
 
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;

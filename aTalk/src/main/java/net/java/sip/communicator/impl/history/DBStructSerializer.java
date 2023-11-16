@@ -5,13 +5,6 @@
  */
 package net.java.sip.communicator.impl.history;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-
-import javax.xml.parsers.DocumentBuilder;
-
 import net.java.sip.communicator.service.history.History;
 import net.java.sip.communicator.service.history.HistoryID;
 import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
@@ -22,6 +15,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
 
 /**
  *

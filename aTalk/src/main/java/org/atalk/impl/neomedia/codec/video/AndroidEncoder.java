@@ -7,7 +7,9 @@ package org.atalk.impl.neomedia.codec.video;
 
 import static org.atalk.impl.neomedia.codec.video.CodecInfo.MEDIA_CODEC_TYPE_VP9;
 
-import android.media.*;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaFormat;
 import android.view.Surface;
 
 import org.atalk.android.aTalkApp;
@@ -68,7 +70,7 @@ public class AndroidEncoder extends AndroidCodec
     /**
      * List of vFormats supported by this android device. VP9 encoder only supported on certain android device.
      */
-    private static List<VideoFormat> vFormats = new ArrayList<>();
+    private static final List<VideoFormat> vFormats = new ArrayList<>();
     static {
         if (CodecInfo.getCodecForType(MEDIA_CODEC_TYPE_VP9, true) != null) {
             vFormats.add(new VideoFormat(Constants.VP9));

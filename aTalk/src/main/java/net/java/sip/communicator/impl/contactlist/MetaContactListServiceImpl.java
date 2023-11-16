@@ -1692,8 +1692,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
 
         if (event.getType() == ServiceEvent.REGISTERED) {
             Timber.d("Handling registration of a new Protocol Provider.");
-            // if we have the PROVIDER_MASK property set, make sure that this provider has it and
-            // if not ignore it.
+            // if we have the PROVIDER_MASK property set, make sure that this provider has it and if not ignore it.
             String providerMask = System.getProperty(MetaContactListService.PROVIDER_MASK_PROPERTY);
             if (providerMask != null && providerMask.trim().length() > 0) {
                 String servRefMask = (String) event.getServiceReference().getProperty(

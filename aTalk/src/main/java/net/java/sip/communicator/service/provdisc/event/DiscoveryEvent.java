@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.provdisc.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * Event representing that a provisioning URL has been retrieved.

@@ -7,8 +7,12 @@ package org.atalk.impl.neomedia.protocol;
 
 import java.io.IOException;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.MediaLocator;
+import javax.media.Time;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
 
 /**
  * Implements most of <code>PullBufferDataSource</code> for a particular <code>DataSource</code> and

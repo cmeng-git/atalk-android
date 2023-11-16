@@ -4,9 +4,20 @@
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
 
-import java.util.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.DEC_HP_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.LTP_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_ARITHM_BYTES;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LBRR_DELAY;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SOS;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_MAX_CB_STAGES;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.SHAPE_LPC_ORDER_MAX;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.VAD_N_BANDS;
+
+import java.util.Arrays;
 
 /**
  *

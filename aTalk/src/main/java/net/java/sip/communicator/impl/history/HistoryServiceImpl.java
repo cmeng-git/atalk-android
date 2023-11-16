@@ -18,7 +18,9 @@ package net.java.sip.communicator.impl.history;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import net.java.sip.communicator.service.history.*;
+import net.java.sip.communicator.service.history.History;
+import net.java.sip.communicator.service.history.HistoryID;
+import net.java.sip.communicator.service.history.HistoryService;
 import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -35,8 +37,19 @@ import org.osgi.framework.ServiceReference;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

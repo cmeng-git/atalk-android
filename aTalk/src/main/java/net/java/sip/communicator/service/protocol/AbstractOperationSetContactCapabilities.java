@@ -8,10 +8,11 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesEvent;
 import net.java.sip.communicator.service.protocol.event.ContactCapabilitiesListener;
 
-import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

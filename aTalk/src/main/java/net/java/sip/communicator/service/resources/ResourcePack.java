@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.resources;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * The <code>ResourcePack</code> service.

@@ -5,9 +5,10 @@
  */
 package net.java.sip.communicator.service.protocol.media;
 
-import java.util.*;
-
 import org.atalk.service.neomedia.RTPExtension;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * RFC [RFC 5285] defines a mechanism for attaching multiple extensions to RTP packets. Part of this

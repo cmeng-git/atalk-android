@@ -17,9 +17,21 @@
 package org.atalk.android.gui.login;
 
 import android.os.Bundle;
-import android.text.*;
-import android.view.*;
-import android.widget.*;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 
@@ -27,9 +39,6 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 
 import java.util.Arrays;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 /**
  * The credentials fragment can be used to retrieve username, password, the "store password" option status, login

@@ -11,6 +11,8 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.service.protocol.Call;
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.util.GuiUtils;
@@ -20,8 +22,6 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
 
 import java.util.Iterator;
-
-import androidx.core.content.ContextCompat;
 
 /**
  * Class runs the thread that updates call control notification.

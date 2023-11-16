@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_Silk_CLZ16;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_Silk_CLZ32;
 
 /**
  *

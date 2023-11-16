@@ -65,8 +65,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import javax.swing.JComponent;
-
 import timber.log.Timber;
 
 /**
@@ -299,85 +297,6 @@ public class CallManager
     {
         OperationSetVideoTelephony telephony = call.getProtocolProvider().getOperationSet(OperationSetVideoTelephony.class);
         return (telephony != null) && telephony.isLocalVideoAllowed(call);
-    }
-
-    /**
-     * Creates a call to the given call string. The given component indicates where should be
-     * shown the "call via" menu if needed.
-     *
-     * @param callString the string to call
-     * @param c the component, which indicates where should be shown the "call via" menu if needed
-     */
-    public static void createCall(String callString, JComponent c)
-    {
-        createCall(callString, c, null);
-    }
-
-    /**
-     * Creates a call to the given call string. The given component indicates where should be
-     * shown the "call via" menu if needed.
-     *
-     * @param callString the string to call
-     * @param c the component, which indicates where should be shown the "call via" menu if needed
-     * @param l listener that is notified when the call interface has been started after call was created
-     */
-    public static void createCall(String callString, JComponent c, CallInterfaceListener l)
-    {
-        callString = callString.trim();
-
-        // Removes special characters from phone numbers.
-        if (ConfigurationUtils.isNormalizePhoneNumber() && !NetworkUtils.isValidIPAddress(callString)) {
-            callString = AndroidGUIActivator.getPhoneNumberI18nService().normalize(callString);
-        }
-
-        List<ProtocolProviderService> telephonyProviders = CallManager.getTelephonyProviders();
-        if (telephonyProviders.size() == 1) {
-            CallManager.createCall(telephonyProviders.get(0), callString, false);
-
-            if (l != null)
-                l.callInterfaceStarted();
-        }
-        else if (telephonyProviders.size() > 1) {
-            /*
-             * Allow plugins which do not have a (Jitsi) UI to create calls by automatically
-             * picking up a telephony provider.
-             */
-            if (c == null) {
-                ProtocolProviderService preferredTelephonyProvider = null;
-
-                for (ProtocolProviderService telephonyProvider : telephonyProviders) {
-                    try {
-                        OperationSetPresence presenceOpSet
-                                = telephonyProvider.getOperationSet(OperationSetPresence.class);
-
-                        if ((presenceOpSet != null) && (presenceOpSet.findContactByID(callString) != null)) {
-                            preferredTelephonyProvider = telephonyProvider;
-                            break;
-                        }
-                    } catch (Throwable t) {
-                        if (t instanceof ThreadDeath)
-                            throw (ThreadDeath) t;
-                    }
-                }
-                if (preferredTelephonyProvider == null)
-                    preferredTelephonyProvider = telephonyProviders.get(0);
-
-                CallManager.createCall(preferredTelephonyProvider, callString, false);
-                if (l != null)
-                    l.callInterfaceStarted();
-            }
-            else {
-                ChooseCallAccountPopupMenu chooseAccountDialog
-                        = new ChooseCallAccountPopupMenu(c, callString, telephonyProviders, l);
-
-                // chooseAccountDialog.setLocation(c.getLocation());
-                chooseAccountDialog.showPopupMenu();
-            }
-        }
-        else {
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
-                    R.string.service_gui_WARNING, R.string.service_gui_NO_ONLINE_TELEPHONY_ACCOUNT);
-        }
     }
 
     /**
@@ -924,8 +843,7 @@ public class CallManager
 
                 if (t.getMessage() != null)
                     message += "\n" + t.getMessage();
-                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
-                        aTalkApp.getResString(R.string.service_gui_ERROR), message);
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(), aTalkApp.getResString(R.string.service_gui_ERROR), message);
             }
         }
     }

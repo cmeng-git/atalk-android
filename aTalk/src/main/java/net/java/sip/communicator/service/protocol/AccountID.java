@@ -143,7 +143,7 @@ public class AccountID
     /**
      * A String uniquely identifying the user for this particular account. e.g. abc123@example.org
      */
-    protected String userID;
+    protected String mUserID;
 
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
@@ -180,7 +180,7 @@ public class AccountID
          */
         this.protocolName = protocolName;
         this.protocolDisplayName = getOverriddenProtocolName(accountProperties, protocolName);
-        this.userID = userID;
+        this.mUserID = userID;
         mAccountProperties = new HashMap<>(accountProperties);
         this.serviceName = serviceName;
 
@@ -243,7 +243,7 @@ public class AccountID
      */
     public String getUserID()
     {
-        return userID;
+        return mUserID;
     }
 
     // Override for Jabber implementation for the BareJid e.g. abc123@example.org.
@@ -280,7 +280,7 @@ public class AccountID
         }
 
         // Otherwise construct a display name.
-        String returnValue = userID;
+        String returnValue = mUserID;
         String protocolName = getProtocolDisplayName();
 
         if (StringUtils.isNotEmpty(protocolName)) {
@@ -355,6 +355,7 @@ public class AccountID
      *
      * @param key property key
      * @param defaultValue default value if the property does not exist
+     * will be over driven by setting in atalk-defaults.properties if property does not exist in DB
      * @return property value corresponding to property key
      */
     public boolean getAccountPropertyBoolean(Object key, boolean defaultValue)
@@ -553,7 +554,7 @@ public class AccountID
      */
     public String getAccountJid()
     {
-        return (userID.indexOf('@') > 0) ? userID : (userID + "@" + getService());
+        return (mUserID.indexOf('@') > 0) ? mUserID : (mUserID + "@" + getService());
     }
 
     /**
@@ -1537,7 +1538,7 @@ public class AccountID
         final ContentValues values = new ContentValues();
         values.put(ACCOUNT_UUID, getAccountUuid());
         values.put(PROTOCOL, protocolName);
-        values.put(USER_ID, userID);
+        values.put(USER_ID, mUserID);
         values.put(ACCOUNT_UID, accountUID);
         synchronized (mKeys) {
             values.put(KEYS, mKeys.toString());

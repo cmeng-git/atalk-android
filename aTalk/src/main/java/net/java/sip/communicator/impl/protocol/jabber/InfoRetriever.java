@@ -5,7 +5,38 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CityDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CountryDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.EmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FaxDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FirstNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.JobTitleDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MiddleNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.NameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.NicknameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PagerDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PostalCodeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ProvinceDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.URLDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkCityDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkEmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkMobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrganizationNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPostalCodeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkProvinceDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkVideoDetail;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -16,8 +47,17 @@ import org.jxmpp.jid.EntityBareJid;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.*;
-import java.util.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 

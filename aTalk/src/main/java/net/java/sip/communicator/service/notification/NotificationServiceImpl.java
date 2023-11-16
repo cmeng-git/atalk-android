@@ -5,19 +5,6 @@
  */
 package net.java.sip.communicator.service.notification;
 
-import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
-import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
-import net.java.sip.communicator.service.systray.SystrayService;
-import net.java.sip.communicator.util.ConfigurationUtils;
-
-import org.atalk.android.gui.settings.TimePreference;
-import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.service.configuration.ConfigurationService;
-
-import java.util.*;
-
-import timber.log.Timber;
-
 import static net.java.sip.communicator.service.notification.NotificationAction.ACTION_COMMAND;
 import static net.java.sip.communicator.service.notification.NotificationAction.ACTION_LOG_MESSAGE;
 import static net.java.sip.communicator.service.notification.NotificationAction.ACTION_POPUP_MESSAGE;
@@ -28,6 +15,27 @@ import static net.java.sip.communicator.service.notification.event.NotificationA
 import static net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent.ACTION_REMOVED;
 import static net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent.EVENT_TYPE_ADDED;
 import static net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent.EVENT_TYPE_REMOVED;
+
+import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
+import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
+import net.java.sip.communicator.service.systray.SystrayService;
+import net.java.sip.communicator.util.ConfigurationUtils;
+
+import org.atalk.android.gui.settings.TimePreference;
+import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.service.configuration.ConfigurationService;
+
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Vector;
+
+import timber.log.Timber;
 
 /**
  * The implementation of the <code>NotificationService</code>.

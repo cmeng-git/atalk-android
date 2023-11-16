@@ -6,7 +6,11 @@
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
 import android.graphics.SurfaceTexture;
-import android.hardware.camera2.*;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureRequest;
 import android.media.MediaCodec;
 import android.view.Surface;
 
@@ -17,7 +21,10 @@ import org.atalk.android.gui.call.VideoHandlerFragment;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.video.AndroidEncoder;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.device.util.*;
+import org.atalk.impl.neomedia.device.util.CameraSurfaceRenderer;
+import org.atalk.impl.neomedia.device.util.CodecInputSurface;
+import org.atalk.impl.neomedia.device.util.OpenGLContext;
+import org.atalk.impl.neomedia.device.util.OpenGlCtxProvider;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.awt.Dimension;

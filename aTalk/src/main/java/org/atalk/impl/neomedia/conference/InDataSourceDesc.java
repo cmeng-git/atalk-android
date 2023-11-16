@@ -11,7 +11,10 @@ import org.atalk.impl.neomedia.protocol.TranscodingDataSource;
 import java.io.IOException;
 
 import javax.media.Format;
-import javax.media.protocol.*;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.SourceStream;
 
 import timber.log.Timber;
 

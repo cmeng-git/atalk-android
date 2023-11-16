@@ -19,14 +19,26 @@ package org.atalk.android.plugin.certconfig;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import net.java.sip.communicator.impl.certificate.CertificateVerificationActivator;
-import net.java.sip.communicator.service.certificate.*;
+import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
+import net.java.sip.communicator.service.certificate.CertificateService;
+import net.java.sip.communicator.service.certificate.KeyStoreType;
 import net.java.sip.communicator.service.gui.AuthenticationWindowService;
 
 import org.atalk.android.R;
@@ -37,13 +49,24 @@ import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.security.*;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
-import javax.security.auth.callback.*;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 
 import timber.log.Timber;
 

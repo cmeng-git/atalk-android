@@ -5,7 +5,9 @@
  */
 package org.atalk.service.neomedia.control;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Provides a default implementation of {@link KeyFrameControl}.

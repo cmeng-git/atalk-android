@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
 
 /**
  * Residual energy.

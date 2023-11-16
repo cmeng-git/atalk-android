@@ -7,12 +7,17 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.ChatRoomConfigurationFormField;
 
-import org.jivesoftware.smackx.xdata.*;
+import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormField.Type;
+import org.jivesoftware.smackx.xdata.FormFieldWithOptions;
+import org.jivesoftware.smackx.xdata.ListMultiFormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
-import org.jivesoftware.smackx.xdata.form.Form;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The Jabber protocol implementation of the <code>ChatRoomConfigurationFormField</code>. This

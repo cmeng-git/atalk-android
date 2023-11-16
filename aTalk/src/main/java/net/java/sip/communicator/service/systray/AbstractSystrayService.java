@@ -10,9 +10,15 @@ import net.java.sip.communicator.service.systray.event.SystrayPopupMessageListen
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -37,7 +43,7 @@ public abstract class AbstractSystrayService implements SystrayService
     /**
      * The popup handler currently used to show popup messages
      */
-    private PopupMessageHandler activePopupHandler;
+    private PopupMessageHandler activePopupMessageHandler;
 
     /**
      * A set of usable <code>PopupMessageHandler</code>
@@ -93,13 +99,13 @@ public abstract class AbstractSystrayService implements SystrayService
     }
 
     /**
-     * Returns active <code>PopupMessageHandler</code>.
+     * Get the handler currently used by this implementation to popup message
      *
-     * @return active <code>PopupMessageHandler</code>.
+     * @return the current handler
      */
-    protected PopupMessageHandler getActivePopupHandler()
+    public PopupMessageHandler getActivePopupMessageHandler()
     {
-        return activePopupHandler;
+        return activePopupMessageHandler;
     }
 
     /**
@@ -111,8 +117,8 @@ public abstract class AbstractSystrayService implements SystrayService
     {
         // since popup handler could be loaded and unloaded on the fly,
         // we have to check if we currently have a valid one.
-        if (activePopupHandler != null)
-            activePopupHandler.showPopupMessage(popupMessage);
+        if (activePopupMessageHandler != null)
+            activePopupMessageHandler.showPopupMessage(popupMessage);
     }
 
     /**
@@ -123,8 +129,8 @@ public abstract class AbstractSystrayService implements SystrayService
      */
     public void addPopupMessageListener(SystrayPopupMessageListener listener)
     {
-        if (activePopupHandler != null)
-            activePopupHandler.addPopupMessageListener(listener);
+        if (activePopupMessageHandler != null)
+            activePopupMessageHandler.addPopupMessageListener(listener);
         else {
             if (earlyAddedListeners == null)
                 earlyAddedListeners = new ArrayList<>();
@@ -140,8 +146,8 @@ public abstract class AbstractSystrayService implements SystrayService
      */
     public void removePopupMessageListener(SystrayPopupMessageListener listener)
     {
-        if (activePopupHandler != null)
-            activePopupHandler.removePopupMessageListener(listener);
+        if (activePopupMessageHandler != null)
+            activePopupMessageHandler.removePopupMessageListener(listener);
     }
 
     /**
@@ -152,31 +158,20 @@ public abstract class AbstractSystrayService implements SystrayService
      */
     public PopupMessageHandler setActivePopupMessageHandler(PopupMessageHandler newHandler)
     {
-        PopupMessageHandler oldHandler = activePopupHandler;
+        PopupMessageHandler oldHandler = activePopupMessageHandler;
         Timber.i("setting the following popup handler as active: %s", newHandler);
 
-        activePopupHandler = newHandler;
+        activePopupMessageHandler = newHandler;
         // if we have received calls to addPopupMessageListener before
         // the UIService is registered we should add those listeners
         if (earlyAddedListeners != null) {
-            for (SystrayPopupMessageListener l : earlyAddedListeners)
-                activePopupHandler.addPopupMessageListener(l);
-
+            for (SystrayPopupMessageListener l : earlyAddedListeners) {
+                activePopupMessageHandler.addPopupMessageListener(l);
+            }
             earlyAddedListeners.clear();
             earlyAddedListeners = null;
         }
-
         return oldHandler;
-    }
-
-    /**
-     * Get the handler currently used by this implementation to popup message
-     *
-     * @return the current handler
-     */
-    public PopupMessageHandler getActivePopupMessageHandler()
-    {
-        return activePopupHandler;
     }
 
     /**
@@ -274,8 +269,8 @@ public abstract class AbstractSystrayService implements SystrayService
                     String configuredHandler = cfg.getString("systray.POPUP_HANDLER");
 
                     if ((configuredHandler == null)
-                            && ((getActivePopupHandler() == null)
-                            || (handler.getPreferenceIndex() > getActivePopupHandler().getPreferenceIndex()))) {
+                            && ((activePopupMessageHandler == null)
+                            || (handler.getPreferenceIndex() > activePopupMessageHandler.getPreferenceIndex()))) {
                         // The user doesn't have a preferred handler set and new
                         // handler with better preference index has arrived,
                         // thus setting it as active.
@@ -291,7 +286,7 @@ public abstract class AbstractSystrayService implements SystrayService
                 else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
                     Timber.i("removing the following popup handler : %s", handler);
                     removePopupHandler(handler);
-                    PopupMessageHandler activeHandler = getActivePopupHandler();
+                    PopupMessageHandler activeHandler = activePopupMessageHandler;
                     if (activeHandler == handler) {
                         setActivePopupMessageHandler(null);
 

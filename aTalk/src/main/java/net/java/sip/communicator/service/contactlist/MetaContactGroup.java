@@ -15,12 +15,12 @@
  */
 package net.java.sip.communicator.service.contactlist;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.protocol.ContactGroup;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import java.util.Iterator;
-
-import androidx.annotation.NonNull;
 
 /**
  * <code>MetaContactGroup</code>s are used to merge groups (often originating in different protocols).

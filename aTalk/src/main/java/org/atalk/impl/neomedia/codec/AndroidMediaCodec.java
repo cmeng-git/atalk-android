@@ -5,17 +5,23 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import android.media.*;
+import android.media.MediaCodec;
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
+import android.media.MediaFormat;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.impl.neomedia.codec.video.ByteBuffer;
 import org.atalk.impl.neomedia.jmfext.media.protocol.ByteBufferPool;
 import org.atalk.service.neomedia.codec.Constants;
 
+import java.awt.Dimension;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.Buffer;
 import javax.media.Format;
@@ -30,8 +36,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class AndroidMediaCodec extends AbstractCodec2
-{
+public class AndroidMediaCodec extends AbstractCodec2 {
     /**
      * The interval of time in microseconds to wait for {@link MediaCodec#dequeueInputBuffer(long)}
      * to dequeue an input buffer.
@@ -222,11 +227,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      *
      * @param codecInfo the <code>MediaCodecInfo</code> to invoke the method on
      * @param type the supported/mime type to pass as an argument to the method to be invoked
+     *
      * @return the result of the invocation of the method on the specified <code>codecInfo</code>
      */
     private static MediaCodecInfo.CodecCapabilities getCapabilitiesForType(
-            MediaCodecInfo codecInfo, String type)
-    {
+            MediaCodecInfo codecInfo, String type) {
         MediaCodecInfo.CodecCapabilities capabilities;
 
         try {
@@ -244,11 +249,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      *
      * @param colorFormat the <code>colorFormat</code> value in the terms of Android's <code>MediaCodec</code> class to
      * get an FMJ <code>VideoFormat</code> equivalent of
+     *
      * @return an FMJ <code>VideoFormat</code> instance which represents the same information about
      * media data as (i.e. is equivalent to) the specified <code>colorFormat</code>
      */
-    private static VideoFormat getFmjFormatFromMediaCodecColorFormat(int colorFormat)
-    {
+    private static VideoFormat getFmjFormatFromMediaCodecColorFormat(int colorFormat) {
         int pixfmt = FFmpeg.PIX_FMT_NONE;
 
         for (int i = 0; i < PIX_FMTS_TO_MEDIA_CODEC_COLOR_FORMATS.length; i += 2) {
@@ -267,11 +272,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      *
      * @param type the mime type in the terms of Android's <code>MediaCodec</code> class to get an FMJ
      * <code>Format</code> equivalent of
+     *
      * @return an FMJ <code>Format</code> instance which represents the same information about media
      * data as (i.e. is equivalent to) the specified <code>type</code>
      */
-    private static Format getFmjFormatFromMediaCodecType(String type)
-    {
+    private static Format getFmjFormatFromMediaCodecType(String type) {
         String encoding = null;
 
         for (int i = 0; i < FMJ_ENCODINGS_TO_MEDIA_CODEC_TYPES.length; i += 2) {
@@ -289,12 +294,12 @@ public class AndroidMediaCodec extends AbstractCodec2
      * which is equivalent to a specific FMJ <code>Format</code>.
      *
      * @param format the FMJ <code>Format</code> to get the equivalent to
+     *
      * @return a <code>colorFormat</code> value defined in the terms of Android's <code>MediaCodec</code>
      * class which is equivalent to the specified <code>format</code> or
      * {@link #OMX_COLOR_FormatUnused} if no equivalent is known to <code>AndroidMediaCodec</code>
      */
-    private static int getMediaCodecColorFormatFromFmjFormat(Format format)
-    {
+    private static int getMediaCodecColorFormatFromFmjFormat(Format format) {
         if (format instanceof AVFrameFormat) {
             AVFrameFormat avFrameFormat = (AVFrameFormat) format;
             int pixfmt = avFrameFormat.getPixFmt();
@@ -312,12 +317,12 @@ public class AndroidMediaCodec extends AbstractCodec2
      * equivalent to a specific FMJ <code>Format</code>.
      *
      * @param format the FMJ <code>Format</code> to get the equivalent to
+     *
      * @return a mime type defined in the terms of Android's <code>MediaCodec</code> class which is
      * equivalent to the specified <code>format</code> or <code>null</code> if no equivalent is
      * known to <code>AndroidMediaCodec</code>
      */
-    private static String getMediaCodecTypeFromFmjFormat(Format format)
-    {
+    private static String getMediaCodecTypeFromFmjFormat(Format format) {
         if (format != null) {
             String encoding = format.getEncoding();
 
@@ -336,11 +341,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      * @param format the FMJ <code>Format</code> to be compared to the specified <code>colorFormat</code>
      * @param colorFormat the <code>colorFormat</code> defined in the terms of Android's <code>MediaCodec</code> class
      * to be compared to the specified <code>format</code>
+     *
      * @return <code>true</code> if the specified <code>format</code> matches (i.e. is equivalent to) the
      * specified <code>colorFormat</code>; otherwise, <code>false</code>
      */
-    private static boolean matchesMediaCodecColorFormat(Format format, int colorFormat)
-    {
+    private static boolean matchesMediaCodecColorFormat(Format format, int colorFormat) {
         int formatColorFormat = getMediaCodecColorFormatFromFmjFormat(format);
 
         return (formatColorFormat != OMX_COLOR_FormatUnused) && (formatColorFormat == colorFormat);
@@ -353,11 +358,11 @@ public class AndroidMediaCodec extends AbstractCodec2
      * @param format the FMJ <code>Format</code> to be compared to the specified <code>type</code>
      * @param type the media type defined in the terms of Android's <code>MediaCodec</code> class to be
      * compared to the specified <code>format</code>
+     *
      * @return <code>true</code> if the specified <code>format</code> matches (i.e. is equal to) the
      * specified <code>type</code>; otherwise, <code>false</code>
      */
-    private static boolean matchesMediaCodecType(Format format, String type)
-    {
+    private static boolean matchesMediaCodecType(Format format, String type) {
         String formatType = getMediaCodecTypeFromFmjFormat(format);
         return (formatType != null) && formatType.equals(type);
     }
@@ -415,8 +420,7 @@ public class AndroidMediaCodec extends AbstractCodec2
     /**
      * Initializes a new <code>AndroidMediaCodec</code> instance.
      */
-    public AndroidMediaCodec()
-    {
+    public AndroidMediaCodec() {
         super("MediaCodec", Format.class, SUPPORTED_OUTPUT_FORMATS);
         inputFormats = SUPPORTED_INPUT_FORMATS;
     }
@@ -426,8 +430,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      *
      * Stops and releases {@link #mediaCodec} i.e. prepares it to be garbage collected.
      */
-    protected void doClose()
-    {
+    protected void doClose() {
         if (mediaCodec != null) {
             try {
                 try {
@@ -461,8 +464,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * {@inheritDoc}
      */
     protected void doOpen()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         /*
          * If the inputFormat and outputFormat properties of this Codec have already been assigned
          * suitable values, initialize a MediaCodec instance, configure it and start it. Otherwise,
@@ -496,12 +498,13 @@ public class AndroidMediaCodec extends AbstractCodec2
     /**
      * {@inheritDoc}
      */
-    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer)
-    {
+    protected int doProcess(Buffer inputBuffer, Buffer outputBuffer) {
         Format inputFormat = inputBuffer.getFormat();
 
-        if ((inputFormat != null) && (inputFormat != this.inputFormat)
-                && !inputFormat.equals(inputFormat) && (null == setInputFormat(inputFormat))) {
+        if ((inputFormat != null)
+                && (inputFormat != this.inputFormat)
+                && !inputFormat.equals(inputFormat)
+                && (null == setInputFormat(inputFormat))) {
             return BUFFER_PROCESSED_FAILED;
         }
         inputFormat = this.inputFormat;
@@ -619,8 +622,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * {@inheritDoc}
      */
     @Override
-    protected Format[] getMatchingOutputFormats(Format inputFormat)
-    {
+    protected Format[] getMatchingOutputFormats(Format inputFormat) {
         /*
          * An input Format may be supported by multiple MediaCodecs and, consequently, the output
          * Formats supported by this AndroidMediaCodec is the set of the output formats supported by
@@ -698,8 +700,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * <code>outputFormat</code> properties of this <code>Codec</code> have already been assigned suitable
      * values.
      */
-    private void maybeConfigureAndStart()
-    {
+    private void maybeConfigureAndStart() {
         /*
          * We can discover an appropriate MediaCodec to be wrapped by this instance only if the
          * inputFormat and outputFormat are suitably set.
@@ -848,8 +849,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * <code>inputFormat</code> and <code>outputFormat</code> set on this <code>Codec</code>.
      */
     @Override
-    public Format setInputFormat(Format format)
-    {
+    public Format setInputFormat(Format format) {
         Format oldValue = inputFormat;
         Format setInputFormat = super.setInputFormat(format);
         Format newValue = inputFormat;
@@ -866,8 +866,7 @@ public class AndroidMediaCodec extends AbstractCodec2
      * <code>inputFormat</code> and <code>outputFormat</code> set on this <code>Codec</code>.
      */
     @Override
-    public Format setOutputFormat(Format format)
-    {
+    public Format setOutputFormat(Format format) {
         if (format instanceof AVFrameFormat) {
             AVFrameFormat avFrameFormat = (AVFrameFormat) format;
 

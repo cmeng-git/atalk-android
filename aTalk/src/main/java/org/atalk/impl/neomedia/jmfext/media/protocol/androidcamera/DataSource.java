@@ -5,14 +5,14 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera;
 
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
+import org.atalk.service.neomedia.codec.Constants;
+
 import javax.media.Format;
 import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 import javax.media.format.VideoFormat;
-
-import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
-import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
-import org.atalk.service.neomedia.codec.Constants;
 
 /**
  * Camera data source. Creates <code>PreviewStream</code> or <code>SurfaceStream</code> based on the used encode format.

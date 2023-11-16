@@ -5,8 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_STABILIZE_ITERATIONS;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
 
 /**
  * Convert NLSF parameters to stable AR prediction filter coefficients.

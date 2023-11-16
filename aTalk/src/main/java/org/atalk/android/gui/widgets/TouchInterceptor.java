@@ -7,10 +7,19 @@ package org.atalk.android.gui.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.*;
-import android.widget.*;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
 
 import org.atalk.android.R;
 

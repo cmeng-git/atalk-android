@@ -5,13 +5,14 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.imgstreaming;
 
-import javax.media.*;
-import javax.media.control.*;
-
 import org.atalk.impl.neomedia.control.ImgStreamingControl;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
+
 import java.awt.Component;
+
+import javax.media.MediaLocator;
+import javax.media.control.FormatControl;
 
 /**
  * Implements <code>CaptureDevice</code> and <code>DataSource</code> for the purposes of image and desktop

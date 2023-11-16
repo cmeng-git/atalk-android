@@ -16,9 +16,10 @@
  */
 package org.atalk.impl.androidcertdialog;
 
-import android.app.*;
+import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.CompoundButton;

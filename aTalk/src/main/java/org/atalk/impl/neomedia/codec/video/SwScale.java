@@ -9,13 +9,16 @@ package org.atalk.impl.neomedia.codec.video;
 import net.sf.fmj.media.AbstractCodec;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.control.FrameProcessingControlImpl;
 
+import java.awt.Dimension;
+
 import javax.media.Buffer;
 import javax.media.Format;
-import javax.media.format.*;
+import javax.media.format.RGBFormat;
+import javax.media.format.VideoFormat;
+import javax.media.format.YUVFormat;
 
 import timber.log.Timber;
 
@@ -407,25 +410,25 @@ public class SwScale extends AbstractCodec
     /**
      * Processes (converts color space and/or scales) an input <code>Buffer</code> into an output <code>Buffer</code>.
      *
-     * @param in the input <code>Buffer</code> to process (from)
-     * @param out the output <code>Buffer</code> to process into
+     * @param inBuf the input <code>Buffer</code> to process (from)
+     * @param outBuf the output <code>Buffer</code> to process into
      * @return <code>BUFFER_PROCESSED_OK</code> if <code>in</code> has been successfully processed into <code>out</code>
      */
-    public int process(Buffer in, Buffer out)
+    public int process(Buffer inBuf, Buffer outBuf)
     {
-        if (!checkInputBuffer(in))
+        if (!checkInputBuffer(inBuf))
             return BUFFER_PROCESSED_FAILED;
-        if (isEOM(in)) {
-            propagateEOM(out);
+        if (isEOM(inBuf)) {
+            propagateEOM(outBuf);
             return BUFFER_PROCESSED_OK;
         }
-        if (in.isDiscard() || frameProcessingControl.isMinimalProcessing()) {
-            out.setDiscard(true);
+        if (inBuf.isDiscard() || frameProcessingControl.isMinimalProcessing()) {
+            outBuf.setDiscard(true);
             return BUFFER_PROCESSED_OK;
         }
 
         // Determine the input Format and size.
-        VideoFormat inFormat = (VideoFormat) in.getFormat();
+        VideoFormat inFormat = (VideoFormat) inBuf.getFormat();
         Format thisInFormat = getInputFormat();
 
         if ((inFormat != thisInFormat) && !inFormat.equals(thisInFormat))
@@ -451,7 +454,7 @@ public class SwScale extends AbstractCodec
              * input to the #process method. Anyway, we're trying to use it in
              * case this Codec doesn't have an outputFormat set which is unlikely to ever happen.
              */
-            outFormat = (VideoFormat) out.getFormat();
+            outFormat = (VideoFormat) outBuf.getFormat();
             if (outFormat == null)
                 return BUFFER_PROCESSED_FAILED;
         }
@@ -490,7 +493,7 @@ public class SwScale extends AbstractCodec
             return BUFFER_PROCESSED_FAILED;
 
         Class<?> outDataType = outFormat.getDataType();
-        Object dst = out.getData();
+        Object dst = outBuf.getData();
 
         if (Format.byteArray.equals(outDataType)) {
             if ((dst == null) || (((byte[]) dst).length < dstLength))
@@ -513,7 +516,7 @@ public class SwScale extends AbstractCodec
             return BUFFER_PROCESSED_FAILED;
         }
 
-        Object src = in.getData();
+        Object src = inBuf.getData();
         int srcFmt;
         long srcFrame;
 
@@ -546,18 +549,18 @@ public class SwScale extends AbstractCodec
                     dst, dstFmt, outWidth, outHeight);
         }
 
-        out.setData(dst);
-        out.setDuration(in.getDuration());
-        out.setFlags(in.getFlags());
-        out.setFormat(outFormat);
-        out.setLength(dstLength);
-        out.setOffset(0);
-        out.setSequenceNumber(in.getSequenceNumber());
-        out.setTimeStamp(in.getTimeStamp());
+        outBuf.setData(dst);
+        outBuf.setDuration(inBuf.getDuration());
+        outBuf.setFlags(inBuf.getFlags());
+        outBuf.setFormat(outFormat);
+        outBuf.setLength(dstLength);
+        outBuf.setOffset(0);
+        outBuf.setSequenceNumber(inBuf.getSequenceNumber());
+        outBuf.setTimeStamp(inBuf.getTimeStamp());
 
         // flags
-        int inFlags = in.getFlags();
-        int outFlags = out.getFlags();
+        int inFlags = inBuf.getFlags();
+        int outFlags = outBuf.getFlags();
 
         if ((inFlags & Buffer.FLAG_LIVE_DATA) != 0)
             outFlags |= Buffer.FLAG_LIVE_DATA;
@@ -569,7 +572,7 @@ public class SwScale extends AbstractCodec
             outFlags |= Buffer.FLAG_RTP_TIME;
         if ((inFlags & Buffer.FLAG_SYSTEM_TIME) != 0)
             outFlags |= Buffer.FLAG_SYSTEM_TIME;
-        out.setFlags(outFlags);
+        outBuf.setFlags(outFlags);
 
         return BUFFER_PROCESSED_OK;
     }

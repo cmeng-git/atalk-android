@@ -490,7 +490,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
                 else {
                     if (processorControllerListener != null)
                         processor.removeControllerListener(processorControllerListener);
-                    processor = null;
+                    this.processor = null;
                 }
             }
         }

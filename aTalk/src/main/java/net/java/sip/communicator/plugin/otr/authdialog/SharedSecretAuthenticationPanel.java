@@ -9,8 +9,18 @@ package net.java.sip.communicator.plugin.otr.authdialog;
 import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 
 /**

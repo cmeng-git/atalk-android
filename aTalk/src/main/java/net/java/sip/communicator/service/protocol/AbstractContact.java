@@ -8,7 +8,10 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.event.ContactResourceListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * An abstract base implementation of the {@link Contact} interface which is to aid implementers.

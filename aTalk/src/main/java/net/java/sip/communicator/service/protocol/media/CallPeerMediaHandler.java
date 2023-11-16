@@ -7,6 +7,8 @@ package net.java.sip.communicator.service.protocol.media;
 
 import static org.atalk.impl.neomedia.format.MediaFormatImpl.FORMAT_PARAMETER_ATTR_IMAGEATTR;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.service.protocol.CallPeer;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -37,11 +39,11 @@ import org.atalk.service.neomedia.event.CsrcAudioLevelListener;
 import org.atalk.service.neomedia.event.SimpleAudioLevelListener;
 import org.atalk.service.neomedia.event.SrtpListener;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
+import org.atalk.util.event.PropertyChangeNotifier;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
 import org.atalk.util.event.VideoNotifierSupport;
-import org.atalk.util.MediaType;
-import org.atalk.util.event.PropertyChangeNotifier;
 import org.jxmpp.jid.Jid;
 
 import java.awt.Component;
@@ -129,7 +131,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * List of advertised encryption methods. Indicated before establishing the call.
      */
-    private List<SrtpControlType> advertisedEncryptionMethods = new ArrayList<>();
+    private final List<SrtpControlType> advertisedEncryptionMethods = new ArrayList<>();
 
     /**
      * Determines whether or not streaming local audio is currently enabled.
@@ -259,7 +261,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
     /**
      * Identifier used to group the audio stream and video stream towards the <code>CallPeer</code> in SDP.
      */
-    private String msLabel = UUID.randomUUID().toString();
+    private final String msLabel = UUID.randomUUID().toString();
 
     /**
      * The <code>VideoListener</code> which listens to the video <code>MediaStream</code> of this instance
@@ -271,32 +273,32 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         /**
          * Notifies this <code>VideoListener</code> about a specific <code>VideoEvent</code>. Fires a new
          * <code>VideoEvent</code> which has this <code>CallPeerMediaHandler</code> as its source and
-         * carries the same information as the specified <code>ev</code> i.e. translates the specified
-         * <code>ev</code> into a <code>VideoEvent</code> fired by this <code>CallPeerMediaHandler</code>.
+         * carries the same information as the specified <code>event</code> i.e. translates the specified
+         * <code>event</code> into a <code>VideoEvent</code> fired by this <code>CallPeerMediaHandler</code>.
          *
-         * @param ev the <code>VideoEvent</code> to notify this <code>VideoListener</code> about
+         * @param event the <code>VideoEvent</code> to notify this <code>VideoListener</code> about
          */
-        private void onVideoEvent(VideoEvent ev)
+        private void onVideoEvent(VideoEvent event)
         {
-            VideoEvent clone = ev.clone(CallPeerMediaHandler.this);
+            VideoEvent clone = event.clone(CallPeerMediaHandler.this);
             fireVideoEvent(clone);
             if (clone.isConsumed())
-                ev.consume();
+                event.consume();
         }
 
-        public void videoAdded(VideoEvent ev)
+        public void videoAdded(@NonNull VideoEvent event)
         {
-            onVideoEvent(ev);
+            onVideoEvent(event);
         }
 
-        public void videoRemoved(VideoEvent ev)
+        public void videoRemoved(@NonNull VideoEvent event)
         {
-            onVideoEvent(ev);
+            onVideoEvent(event);
         }
 
-        public void videoUpdate(VideoEvent ev)
+        public void videoUpdate(@NonNull VideoEvent event)
         {
-            onVideoEvent(ev);
+            onVideoEvent(event);
         }
     };
 
@@ -1226,9 +1228,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
      */
     public boolean isRTPTranslationEnabled(MediaType mediaType)
     {
-        T peer = mPeer;
-        MediaAwareCall<?, ?, ?> call = peer.getCall();
-
+        MediaAwareCall<?, ?, ?> call = mPeer.getCall();
         if ((call != null) && call.isConferenceFocus() && !call.isLocalVideoStreaming()) {
             Iterator<?> callPeerIt = call.getCallPeers();
 

@@ -19,7 +19,9 @@ import net.java.sip.communicator.service.protocol.OperationSet;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.util.DataObject;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Implements a generic <code>SourceContact</code> for the purposes of the support

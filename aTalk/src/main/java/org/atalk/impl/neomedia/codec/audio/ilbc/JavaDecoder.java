@@ -5,13 +5,16 @@
  */
 package org.atalk.impl.neomedia.codec.audio.ilbc;
 
-import java.util.*;
-
-import javax.media.*;
-import javax.media.format.*;
-
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.neomedia.codec.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.media.Buffer;
+import javax.media.Codec;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 /**
  * Implements an iLBC decoder and RTP depacketizer as a {@link Codec}.

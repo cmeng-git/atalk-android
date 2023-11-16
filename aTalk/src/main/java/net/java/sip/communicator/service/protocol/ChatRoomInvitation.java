@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.EntityJid;
 
 /**
  * This interface represents an invitation, which is send from a chat room member to another user in

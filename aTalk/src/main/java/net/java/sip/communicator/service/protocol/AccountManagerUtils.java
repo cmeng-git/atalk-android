@@ -5,11 +5,16 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.event.AccountManagerEvent;
+import net.java.sip.communicator.service.protocol.event.AccountManagerListener;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
-import org.osgi.framework.*;
+import java.util.Collection;
 
 /**
  * Provides utilities to aid the manipulation of {@link AccountManager}.

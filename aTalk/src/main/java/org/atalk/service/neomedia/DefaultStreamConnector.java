@@ -8,7 +8,10 @@ package org.atalk.service.neomedia;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
 
 import timber.log.Timber;
 

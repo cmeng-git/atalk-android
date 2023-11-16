@@ -5,10 +5,10 @@
  */
 package org.atalk.impl.neomedia.codec.audio.gsm;
 
-import javax.media.*;
-import javax.media.format.*;
+import net.sf.fmj.media.AbstractPacketizer;
 
-import net.sf.fmj.media.*;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 /**
  * GSM/RTP packetizer Codec.

@@ -7,8 +7,10 @@ package org.atalk.impl.neomedia.protocol;
 
 import java.io.IOException;
 
-import javax.media.*;
-import javax.media.protocol.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.SourceStream;
 
 /**
  * Represents a base class for adapters of <code>SourceStream</code>s, usually ones reading data in

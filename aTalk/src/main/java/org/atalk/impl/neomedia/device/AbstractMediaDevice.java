@@ -12,7 +12,9 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import java.io.IOException;
 import java.util.List;
 
-import javax.media.*;
+import javax.media.Manager;
+import javax.media.Processor;
+import javax.media.Renderer;
 import javax.media.protocol.DataSource;
 
 /**

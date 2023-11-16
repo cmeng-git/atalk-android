@@ -6,8 +6,6 @@
  */
 package net.java.sip.communicator.service.systray;
 
-import javax.swing.JComponent;
-
 /**
  * The <code>PopupMessage</code> class encloses information to show in a popup.
  * While a message title and a message body are mandatory information,
@@ -15,9 +13,9 @@ import javax.swing.JComponent;
  * may be used by a <code>PopupMessageHandler</code> capable to handle it.
  *
  * @author Symphorien Wanko
+ * @author Eng Chong Meng
  */
-public class PopupMessage
-{
+public class PopupMessage {
     /**
      * The type of the event that the popup message for.
      *
@@ -39,11 +37,6 @@ public class PopupMessage
      * An icon representing the contact from which the notification comes.
      */
     private byte[] imageIcon;
-
-    /**
-     * A ready to show <code>JComponet</code> for this <code>PopupMessage</code>.
-     */
-    private JComponent component;
 
     /**
      * The type of the message.
@@ -71,8 +64,7 @@ public class PopupMessage
      * @param title title of the message
      * @param message message to show in the systray
      */
-    public PopupMessage(String title, String message)
-    {
+    public PopupMessage(String title, String message) {
         this.messageTitle = title;
         this.message = message;
     }
@@ -85,8 +77,7 @@ public class PopupMessage
      * @param message the content of the message to display
      * @param messageType the message type; one of XXX_MESSAGE_TYPE constants declared in <code>SystrayService</code>
      */
-    public PopupMessage(String title, String message, int messageType)
-    {
+    public PopupMessage(String title, String message, int messageType) {
         this(title, message);
         this.messageType = messageType;
     }
@@ -99,54 +90,34 @@ public class PopupMessage
      * @param message message to show in the systray
      * @param imageIcon an incon to show in the popup message.
      */
-    public PopupMessage(String title, String message, byte[] imageIcon)
-    {
+    public PopupMessage(String title, String message, byte[] imageIcon) {
         this(title, message);
         this.imageIcon = imageIcon;
     }
 
     /**
-     * Creates a new <code>PopupMessage</code> with the given
-     * <code>JComponent</code> as its content. This constructor also takes a title
-     * and a message as replacements in cases the component is not usable.
-     *
-     * @param component the component to put in the <code>PopupMessage</code>
-     * @param title of the message
-     * @param message message to use in place of the component
-     */
-    public PopupMessage(JComponent component, String title, String message)
-    {
-        this(title, message);
-        this.component = component;
-    }
-
-    /**
-     * Creates a new <code>PopupMessage</code> with the given
-     * <code>JComponent</code> as its content. This constructor also takes a title
-     * and a message as replacements in cases the component is not usable.
+     * Creates a new <code>PopupMessage</code> with the given parameters
+     * as its content. This constructor also takes a title and a message.
      *
      * @param title of the message
      * @param message the message to show in this popup
      * @param tag additional info to be used by the <code>PopupMessageHandler</code>
      */
-    public PopupMessage(String title, String message, Object tag)
-    {
+    public PopupMessage(String title, String message, Object tag) {
         this(title, message);
         this.tag = tag;
     }
 
     /**
-     * Creates a new <code>PopupMessage</code> with the given
-     * <code>JComponent</code> as its content. This constructor also takes a title
-     * and a message as replacements in cases the component is not usable.
+     * Creates a new <code>PopupMessage</code> with the given parameters
+     * as its content. This constructor also takes a title and a message
      *
      * @param title the title of the message
      * @param message the message to show in this popup
      * @param imageIcon the image icon to show in this popup message
      * @param tag additional info to be used by the <code>PopupMessageHandler</code>
      */
-    public PopupMessage(String title, String message, byte[] imageIcon, Object tag)
-    {
+    public PopupMessage(String title, String message, byte[] imageIcon, Object tag) {
         this(title, message, imageIcon);
         this.tag = tag;
     }
@@ -156,8 +127,7 @@ public class PopupMessage
      *
      * @return the eventType of the popup
      */
-    public String getEventType()
-    {
+    public String getEventType() {
         return eventType;
     }
 
@@ -166,8 +136,7 @@ public class PopupMessage
      *
      * @param evtType the event type of the popup.
      */
-    public void setEventType(String evtType)
-    {
+    public void setEventType(String evtType) {
         this.eventType = evtType;
     }
 
@@ -176,8 +145,7 @@ public class PopupMessage
      *
      * @return the message contained in this popup
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
@@ -186,8 +154,7 @@ public class PopupMessage
      *
      * @param message the message to show in the popup
      */
-    public void setMessage(String message)
-    {
+    public void setMessage(String message) {
         this.message = message;
     }
 
@@ -196,8 +163,7 @@ public class PopupMessage
      *
      * @return the title of this popup message
      */
-    public String getMessageTitle()
-    {
+    public String getMessageTitle() {
         return messageTitle;
     }
 
@@ -206,29 +172,8 @@ public class PopupMessage
      *
      * @param messageTitle the title to set
      */
-    public void setMessageTitle(String messageTitle)
-    {
+    public void setMessageTitle(String messageTitle) {
         this.messageTitle = messageTitle;
-    }
-
-    /**
-     * Returns the component contained in this popup message.
-     *
-     * @return the component contained in this popup message.
-     */
-    public JComponent getComponent()
-    {
-        return component;
-    }
-
-    /**
-     * Sets the component to be showed in this popup message.
-     *
-     * @param component the component to set
-     */
-    public void setComponent(JComponent component)
-    {
-        this.component = component;
     }
 
     /**
@@ -236,8 +181,7 @@ public class PopupMessage
      *
      * @return the icon of this popup message
      */
-    public byte[] getIcon()
-    {
+    public byte[] getIcon() {
         return imageIcon;
     }
 
@@ -246,8 +190,7 @@ public class PopupMessage
      *
      * @param imageIcon the icon to set
      */
-    public void setIcon(byte[] imageIcon)
-    {
+    public void setIcon(byte[] imageIcon) {
         this.imageIcon = imageIcon;
     }
 
@@ -256,8 +199,7 @@ public class PopupMessage
      *
      * @return the type of this popup message.
      */
-    public int getMessageType()
-    {
+    public int getMessageType() {
         return messageType;
     }
 
@@ -266,8 +208,7 @@ public class PopupMessage
      *
      * @param messageType the type to set
      */
-    public void setMessageType(int messageType)
-    {
+    public void setMessageType(int messageType) {
         this.messageType = messageType;
     }
 
@@ -276,8 +217,7 @@ public class PopupMessage
      *
      * @return the object used to tag this <code>PopupMessage</code>
      */
-    public Object getTag()
-    {
+    public Object getTag() {
         return tag;
     }
 
@@ -286,8 +226,7 @@ public class PopupMessage
      *
      * @param tag the object to set
      */
-    public void setTag(Object tag)
-    {
+    public void setTag(Object tag) {
         this.tag = tag;
     }
 
@@ -296,8 +235,7 @@ public class PopupMessage
      *
      * @param timeout time value in ms for hiding the popup, -1 for infinity.
      */
-    public void setTimeout(long timeout)
-    {
+    public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
 
@@ -306,8 +244,7 @@ public class PopupMessage
      *
      * @return timeout for hiding the popup if not clicked by the user in ms.
      */
-    public long getTimeout()
-    {
+    public long getTimeout() {
         return timeout;
     }
 
@@ -316,8 +253,7 @@ public class PopupMessage
      *
      * @return name of the popup group.
      */
-    public String getGroup()
-    {
+    public String getGroup() {
         return group;
     }
 
@@ -326,8 +262,7 @@ public class PopupMessage
      *
      * @param group the popup group name to set.
      */
-    public void setGroup(String group)
-    {
+    public void setGroup(String group) {
         this.group = group;
     }
 }

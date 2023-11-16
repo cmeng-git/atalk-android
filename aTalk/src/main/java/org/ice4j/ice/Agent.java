@@ -2066,7 +2066,6 @@ public class Agent
             throws Throwable
     {
         free();
-
         super.finalize();
     }
 

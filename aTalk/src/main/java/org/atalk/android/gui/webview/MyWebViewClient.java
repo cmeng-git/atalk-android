@@ -23,7 +23,10 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.*;
+import android.webkit.HttpAuthHandler;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -131,7 +134,7 @@ public class MyWebViewClient extends WebViewClient
         final EditText usernameInput = authView.findViewById(R.id.username);
         usernameInput.setText(httpAuth[0]);
 
-        mPasswordField = authView.findViewById(R.id.password);
+        mPasswordField = authView.findViewById(R.id.passwordField);
         mPasswordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPasswordField.setText(httpAuth[1]);
 

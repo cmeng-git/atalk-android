@@ -18,13 +18,6 @@
  */
 package org.dhcp4java;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.Map.Entry;
-
-import timber.log.Timber;
-
 import static org.dhcp4java.DHCPConstants.DHO_ALL_SUBNETS_LOCAL;
 import static org.dhcp4java.DHCPConstants.DHO_ARP_CACHE_TIMEOUT;
 import static org.dhcp4java.DHCPConstants.DHO_ASSOCIATED_IP;
@@ -113,6 +106,23 @@ import static org.dhcp4java.DHCPConstants.DHO_WWW_SERVER;
 import static org.dhcp4java.DHCPConstants.DHO_X_DISPLAY_MANAGER;
 import static org.dhcp4java.DHCPConstants._DHCP_CODES;
 import static org.dhcp4java.DHCPConstants._DHO_NAMES;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import timber.log.Timber;
 
 /**
  * Class for manipulating DHCP options (used internally).

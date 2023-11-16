@@ -5,11 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.awt.Component;
 import org.atalk.service.neomedia.QualityControl;
 import org.atalk.service.neomedia.QualityPreset;
 import org.atalk.util.event.VideoListener;
 
+import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.util.List;

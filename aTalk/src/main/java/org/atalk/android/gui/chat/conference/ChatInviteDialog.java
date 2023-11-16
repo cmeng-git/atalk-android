@@ -28,22 +28,29 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.contactsource.SourceContact;
 import net.java.sip.communicator.service.gui.ContactList;
-import net.java.sip.communicator.service.gui.UIContact;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.aTalk;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatPanel;
+import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.chat.MetaContactChatSession;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.contactlist.model.*;
+import org.atalk.android.gui.contactlist.model.BaseContactListAdapter;
+import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
+import org.atalk.android.gui.contactlist.model.MetaGroupExpandHandler;
 import org.atalk.android.gui.util.ViewUtil;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The invite dialog is the one shown when the user clicks on the conference button in the chat toolbar.

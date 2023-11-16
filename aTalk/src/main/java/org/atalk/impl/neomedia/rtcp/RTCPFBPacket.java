@@ -9,9 +9,9 @@ import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPPacket;
 
 import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.RTPUtils;
-import org.atalk.util.ByteArrayBuffer;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

@@ -27,10 +27,14 @@ import org.atalk.android.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.*;
+import java.util.Formatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.security.auth.x500.X500Principal;
 

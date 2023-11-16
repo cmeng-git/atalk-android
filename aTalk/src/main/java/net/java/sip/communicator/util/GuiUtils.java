@@ -8,7 +8,12 @@ package net.java.sip.communicator.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * The <code>StringUtils</code> class is used through this ui implementation for
@@ -390,13 +395,9 @@ public class GuiUtils
         long milPerHour = milPerMin * 60;
 
         long hours = duration / milPerHour;
-        long minutes
-                = (duration - hours * milPerHour) / milPerMin;
-        long seconds
-                = (duration - hours * milPerHour - minutes * milPerMin)
-                / milPerSec;
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        long minutes = (duration - hours * milPerHour) / milPerMin;
+        long seconds = (duration - hours * milPerHour - minutes * milPerMin) / milPerSec;
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     /**

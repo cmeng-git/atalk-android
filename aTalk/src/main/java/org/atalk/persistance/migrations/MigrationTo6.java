@@ -1,7 +1,5 @@
 package org.atalk.persistance.migrations;
 
-import static org.atalk.persistance.DatabaseBackend.CREATE_CHAT_SESSIONS_STATEMENT;
-
 import android.database.sqlite.SQLiteDatabase;
 
 import org.atalk.android.gui.chat.ChatSession;

@@ -14,7 +14,10 @@ import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetai
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -27,9 +30,13 @@ import org.atalk.android.gui.login.AndroidSecurityAuthority;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.MediaService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Creates <code>LoginManager</code> and registers <code>AlertUIService</code>. It's moved here from
@@ -125,7 +132,7 @@ public class AndroidGUIActivator implements BundleActivator
         }
         ConfigurationUtils.loadGuiConfigurations();
 
-        // Register show history settings OTR link listener
+        // Register show history settings OMEMO link listener
         ChatSessionManager.addChatLinkListener(new CryptoFragment.ShowHistoryLinkListener());
     }
 

@@ -18,7 +18,7 @@ package org.atalk.android.gui.chatroomslist.model;
 
 import android.widget.ExpandableListView;
 
-import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 
 /**
  * Implements contact groups expand memory.

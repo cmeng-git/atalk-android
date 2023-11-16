@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 302010
-        versionName "3.2.1"
+        versionCode 302020
+        versionName "3.2.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -234,22 +234,24 @@ dependencies {
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Upgrade android libraries to 1.5.x create problem. Required API-33
-    // See https://issuetracker.google.com/issues/240473335
-    implementation 'androidx.activity:activity:1.7.2'
+    // 1.12.0 is only compatible with API-34
+    implementation 'androidx.core:core-ktx:1.10.1'
+
+    // not compatible with 1.8.0
+    implementation 'androidx.activity:activity-ktx:1.7.2'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment:1.6.0'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     // implementation 'androidx.webkit:webkit:1.4.0'
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
@@ -263,7 +265,7 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
     // implementation 'com.github.hannesa2:jarjar2:1.0.3'
-    implementation 'com.google.android.exoplayer:exoplayer:2.18.7'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
     implementation 'com.google.android.material:material:1.6.1'
 
@@ -340,15 +342,14 @@ dependencies {
     // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
     // implementation 'org.jetbrains:annotations-java5:15.0'
 
-    // osgi v8.0.0 is not compatible with android api-21
-    implementation 'org.osgi:osgi.core:7.0.0'
+    implementation 'org.osgi:osgi.core:8.0.0'
 
     // playstore version use google map services
-    playstoreImplementation "com.google.android.gms:play-services-maps:18.1.0"
-    playstoreImplementation "com.google.android.gms:play-services-panorama:17.0.0"
+    playstoreImplementation "com.google.android.gms:play-services-maps:18.2.0"
+    playstoreImplementation "com.google.android.gms:play-services-panorama:17.1.0"
 
     // fdroid version use osmdroid library
-    fdroidImplementation "org.osmdroid:osmdroid-android:6.1.14"
+    fdroidImplementation 'org.osmdroid:osmdroid-android:6.1.17'
 
     /*
      * https://www.javatips.net/api/jarjar-master/jarjar-gradle/src/main/java/org/anarres/gradle/plugin/jarjar/JarjarController.java
@@ -364,8 +365,11 @@ dependencies {
 
         // remove extracted modules for changes
         classDelete 'net.sf.fmj.media.RegistryDefaults'
+        classDelete 'javax.media.format.RGBFormat'
         classDelete 'javax.media.format.VideoFormat'
+        classDelete 'javax.media.format.YUVFormat'
         classDelete 'javax.media.Manager**'
+        classDelete 'javax.media.Player'
     }
 
 //    implementation jarjar.repackage ("fmj-1.0.1-jitsi.jar", {

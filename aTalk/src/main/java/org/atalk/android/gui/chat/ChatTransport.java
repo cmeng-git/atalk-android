@@ -222,6 +222,13 @@ public interface ChatTransport
     void sendChatStateNotification(ChatState chatState);
 
     /**
+     * Returns {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
+     *
+     * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
+     */
+    boolean allowsFileTransfer();
+
+    /**
      * Returns the maximum file length supported by the protocol in bytes.
      *
      * @return the file length that is supported.

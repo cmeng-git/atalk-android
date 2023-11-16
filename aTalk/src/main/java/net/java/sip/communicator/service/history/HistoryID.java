@@ -72,9 +72,9 @@ public class HistoryID
 		// TODO: Validate: Assert.assertNonNull(id, "Parameter ID should be non-null");
 		// TODO: Validate: Assert.assertTrue(id.length > 0, "ID.length should be > 0");
 
-		for (int i = 0; i < id.length; i++) {
-			if (!HistoryID.isIDValid(id[i])) {
-				throw new IllegalArgumentException("Not a valid ID: " + id[i]);
+		for (String s : id) {
+			if (!HistoryID.isIDValid(s)) {
+				throw new IllegalArgumentException("Not a valid ID: " + s);
 			}
 		}
 		String[] newID = new String[id.length];

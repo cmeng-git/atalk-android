@@ -5,10 +5,13 @@
  */
 package org.atalk.impl.neomedia.codec.audio.alaw;
 
-import javax.media.*;
-import javax.media.format.*;
-
 import org.atalk.service.neomedia.codec.Constants;
+
+import javax.media.Codec;
+import javax.media.Control;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.AudioFormat;
 
 /**
  * Implements an RTP packetizer for the A-law codec.

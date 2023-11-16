@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,6 +48,7 @@ public class IceFragment extends OSGiPreferenceFragment
      * Defined as static, otherwise it may get clear onActivityResult - on some android devices
      */
     private static JabberAccountRegistration jbrReg;
+
     protected AccountPreferenceActivity mActivity;
 
     protected SharedPreferences shPrefs;
@@ -68,7 +67,7 @@ public class IceFragment extends OSGiPreferenceFragment
         setPreferencesFromResource(R.xml.ice_preferences, rootKey);
         setPrefTitle(R.string.service_gui_JBR_ICE_SUMMARY);
 
-        String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
+        String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
 
         ProtocolProviderService pps = AccountUtils.getRegisteredProviderForAccount(account);

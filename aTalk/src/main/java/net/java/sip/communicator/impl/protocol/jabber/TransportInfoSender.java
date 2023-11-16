@@ -5,8 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 /**
  * Represents functionality which allows a <code>TransportManagerJabberImpl</code> implementation to

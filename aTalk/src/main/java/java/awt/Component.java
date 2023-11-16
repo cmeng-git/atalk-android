@@ -3,18 +3,20 @@ package java.awt;
 import android.database.Cursor;
 import android.graphics.Region;
 
-import java.awt.event.*;
-
-import java.beans.*;
+import java.awt.event.ComponentListener;
+import java.awt.event.HierarchyListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
-import java.security.*;
-import java.util.*;
+import java.security.AccessControlContext;
+import java.security.AccessController;
+import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
 
-public class Component implements Serializable
-{
-	transient Container parent;
-  private static final Dimension DEFAULT_MAX_SIZE
-		  = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
+public class Component implements Serializable {
+    transient Container parent;
+    private static final Dimension DEFAULT_MAX_SIZE = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
     /**
      * The x position of the component in the parent's coordinate system.
      */
@@ -40,11 +42,11 @@ public class Component implements Serializable
      * @see #getSize
      */
     int height;
-	
-	int prefWidth;
-	int prefHeight;
-	
-	
+
+    int prefWidth;
+    int prefHeight;
+
+
     /**
      * The foreground color for this component.
      * {@code foreground</code> can be <code>null}.
@@ -53,8 +55,8 @@ public class Component implements Serializable
      * @see #getForeground
      * @see #setForeground
      */
-    Color       foreground;
-	
+    Color foreground;
+
     /**
      * The background color for this component.
      * {@code background</code> can be <code>null}.
@@ -63,7 +65,7 @@ public class Component implements Serializable
      * @see #getBackground
      * @see #setBackground
      */
-    Color       background;
+    Color background;
 
     /**
      * The font used by this component.
@@ -79,7 +81,7 @@ public class Component implements Serializable
      * The font which the peer is currently using.
      * ({@code null} if no peer exists.)
      */
-    Font        peerFont;
+    Font peerFont;
 
     /**
      * The cursor displayed when pointer is over this component.
@@ -98,14 +100,14 @@ public class Component implements Serializable
      * @see #getLocale
      * @see #setLocale
      */
-    Locale      locale;
+    Locale locale;
 
-	boolean ignoreRepaint = false;
-	boolean visible = true;
-	boolean enabled = true;
-	boolean prefSizeIsSet = true;
-	private volatile boolean valid = false;
-	Vector popups;
+    boolean ignoreRepaint = false;
+    boolean visible = true;
+    boolean enabled = true;
+    boolean prefSizeIsSet = true;
+    private volatile boolean valid = false;
+    Vector popups;
 
     /**
      * A component's name.
@@ -138,7 +140,7 @@ public class Component implements Serializable
     private static final int FOCUS_TRAVERSABLE_DEFAULT = 1;
     private static final int FOCUS_TRAVERSABLE_SET = 2;
 
-	private static final int DEFAULT_OPERATION = 3;
+    private static final int DEFAULT_OPERATION = 3;
 
     /**
      * Tracks whether this Component is relying on default focus travesability.
@@ -159,10 +161,10 @@ public class Component implements Serializable
     Set[] focusTraversalKeys;
 
     private static final String[] focusTraversalKeyPropertyNames = {
-        "forwardFocusTraversalKeys",
-        "backwardFocusTraversalKeys",
-        "upCycleFocusTraversalKeys",
-        "downCycleFocusTraversalKeys"
+            "forwardFocusTraversalKeys",
+            "backwardFocusTraversalKeys",
+            "upCycleFocusTraversalKeys",
+            "downCycleFocusTraversalKeys"
     };
 
     /**
@@ -180,7 +182,9 @@ public class Component implements Serializable
      * @see #getTreeLock
      */
     static final Object LOCK = new AWTTreeLock();
-    static class AWTTreeLock {}
+
+    static class AWTTreeLock {
+    }
 
     /*
      * The component's AccessControlContext.
@@ -238,10 +242,12 @@ public class Component implements Serializable
      */
     boolean newEventsOnly = false;
     transient ComponentListener componentListener;
-	transient HierarchyListener hierarchyListener;
-	transient RuntimeException windowClosingException = null;
+    transient HierarchyListener hierarchyListener;
+    transient RuntimeException windowClosingException = null;
 
-    /** Internal, constants for serialization */
+    /**
+     * Internal, constants for serialization
+     */
     final static String actionListenerK = "actionL";
     final static String adjustmentListenerK = "adjustmentL";
     final static String componentListenerK = "componentL";
@@ -260,10 +266,11 @@ public class Component implements Serializable
     final static String hierarchyBoundsListenerK = "hierarchyBoundsL";
     final static String windowStateListenerK = "windowStateL";
     final static String windowFocusListenerK = "windowFocusL";
-	long eventMask = 4096L;
+    long eventMask = 4096L;
 
     /**
      * Static properties for incremental drawing.
+     *
      * @see #imageUpdate
      */
     static boolean isInc;
@@ -272,7 +279,8 @@ public class Component implements Serializable
     /**
      * Ease-of-use constant for {@code getAlignmentY()}.
      * Specifies an alignment to the top of the component.
-     * @see     #getAlignmentY
+     *
+     * @see #getAlignmentY
      */
     public static final float TOP_ALIGNMENT = 0.0f;
 
@@ -280,29 +288,33 @@ public class Component implements Serializable
      * Ease-of-use constant for {@code getAlignmentY} and
      * {@code getAlignmentX}. Specifies an alignment to
      * the center of the component
-     * @see     #getAlignmentX
-     * @see     #getAlignmentY
+     *
+     * @see #getAlignmentX
+     * @see #getAlignmentY
      */
     public static final float CENTER_ALIGNMENT = 0.5f;
 
     /**
      * Ease-of-use constant for {@code getAlignmentY}.
      * Specifies an alignment to the bottom of the component.
-     * @see     #getAlignmentY
+     *
+     * @see #getAlignmentY
      */
     public static final float BOTTOM_ALIGNMENT = 1.0f;
 
     /**
      * Ease-of-use constant for {@code getAlignmentX}.
      * Specifies an alignment to the left side of the component.
-     * @see     #getAlignmentX
+     *
+     * @see #getAlignmentX
      */
     public static final float LEFT_ALIGNMENT = 0.0f;
 
     /**
      * Ease-of-use constant for {@code getAlignmentX}.
      * Specifies an alignment to the right side of the component.
-     * @see     #getAlignmentX
+     *
+     * @see #getAlignmentX
      */
     public static final float RIGHT_ALIGNMENT = 1.0f;
 
@@ -316,9 +328,9 @@ public class Component implements Serializable
      * the {@code changeSupport} field describes them.
      *
      * @serial
-     * @since 1.2
      * @see #addPropertyChangeListener
      * @see #removePropertyChangeListener
+     * @since 1.2
      */
     private PropertyChangeSupport changeSupport;
 
@@ -336,11 +348,13 @@ public class Component implements Serializable
      * initializing final fields.
      */
     private transient Object objectLock = new Object();
+
     Object getObjectLock() {
         return objectLock;
     }
-	boolean isPacked = false;
-	private transient Object privateKey = new Object();
+
+    boolean isPacked = false;
+    private transient Object privateKey = new Object();
     /**
      * Pseudoparameter for direct Geometry API (setLocation, setBounds setSize
      * to signal setBounds what's changing. Should be used under TreeLock.
@@ -379,291 +393,262 @@ public class Component implements Serializable
     // needed in order to make this function work on X11 platforms,
     // where currently there is no chance to interpose on the creation
     // of the peer and therefore the call to XSetBackground.
-	transient boolean backgroundEraseDisabled;
-	private int componentSerializedDataVersion = 4;
-	
-	public void addComponentListener(ComponentListener paramComponentListener) {}
-	public void addHierarchyListener(HierarchyListener paramHierarchyListener) {}
-	
-	public static final int CENTER = 0;
-	public static final int TOP = 1;
-	public static final int LEFT = 2;
-	public static final int BOTTOM = 3;
-	public static final int RIGHT = 4;
-	public static final int NORTH = 1;
-	public static final int NORTH_EAST = 2;
-	public static final int EAST = 3;
-	public static final int SOUTH_EAST = 4;
-	public static final int SOUTH = 5;
-	public static final int SOUTH_WEST = 6;
-	public static final int WEST = 7;
-	public static final int NORTH_WEST = 8;
-	public static final int HORIZONTAL = 0;
-	public static final int VERTICAL = 1;
-	public static final int LEADING = 10;
-	public static final int TRAILING = 11;
-	public static final int NEXT = 12;
-	public static final int PREVIOUS = 13;
-	
-	public Color getBackground()
-	{
-		return null;
-	}
+    transient boolean backgroundEraseDisabled;
+    private int componentSerializedDataVersion = 4;
 
-	  public int getWidth()
-	  {
-	    return this.width;
-	  }
+    public void addComponentListener(ComponentListener paramComponentListener) {
+    }
 
-	  public int getHeight()
-	  {
-	    return this.height;
-	  }
+    public void addHierarchyListener(HierarchyListener paramHierarchyListener) {
+    }
 
-	public String getName()
-	{
-		return null;
-	}
+    public static final int CENTER = 0;
+    public static final int TOP = 1;
+    public static final int LEFT = 2;
+    public static final int BOTTOM = 3;
+    public static final int RIGHT = 4;
+    public static final int NORTH = 1;
+    public static final int NORTH_EAST = 2;
+    public static final int EAST = 3;
+    public static final int SOUTH_EAST = 4;
+    public static final int SOUTH = 5;
+    public static final int SOUTH_WEST = 6;
+    public static final int WEST = 7;
+    public static final int NORTH_WEST = 8;
+    public static final int HORIZONTAL = 0;
+    public static final int VERTICAL = 1;
+    public static final int LEADING = 10;
+    public static final int TRAILING = 11;
+    public static final int NEXT = 12;
+    public static final int PREVIOUS = 13;
 
-	public Container getParent()
-	{
-		return null;
-	}
+    public Color getBackground() {
+        return null;
+    }
 
-	public Dimension getPreferredSize()
-	{
-		return new Dimension(this.prefWidth, this.prefHeight);
-	}
+    public int getWidth() {
+        return this.width;
+    }
 
-	public boolean isDisplayable()
-	{
-		return true;
-	}
+    public int getHeight() {
+        return this.height;
+    }
 
-	public boolean isEnabled()
-	{
-		return false;
-	}
+    public String getName() {
+        return null;
+    }
 
-	public boolean isPreferredSizeSet()
-	{
-		return this.prefSizeIsSet;
-	}
- 
-	public boolean isVisible()
-	{
-		return true;
-	}
+    public Container getParent() {
+        return null;
+    }
 
-	public void paint(Graphics paramGraphics) {}
+    public Dimension getPreferredSize() {
+        return new Dimension(this.prefWidth, this.prefHeight);
+    }
 
-	public void removeHierarchyListener(HierarchyListener paramHierarchyListener) {}
+    public boolean isDisplayable() {
+        return true;
+    }
 
-	public void repaint()
-	{
-		update(null);
-	}
-  
-	public void setBackground(Color paramColor) {}
+    public boolean isEnabled() {
+        return false;
+    }
 
-	public void setEnabled(boolean paramBoolean) {}
-  
-	public void setLocation(int paramInt1, int paramInt2)
-	{
-		move(paramInt1, paramInt2);
-	}
+    public boolean isPreferredSizeSet() {
+        return this.prefSizeIsSet;
+    }
 
-	void setBoundsOp(int paramInt)
-	{
-	  assert (Thread.holdsLock(getTreeLock()));
-	  if (paramInt == 5)
-	  {
-	    this.boundsOp = 3;
-	  }
-	  else
-	  {
-	    if (this.boundsOp != 3)
-	      return;
-	    this.boundsOp = paramInt;
-	  }
-	}				
-	
-	@Deprecated
-	public void move(int paramInt1, int paramInt2)
-	{
-		synchronized (getTreeLock())
-		{
-	    setBoundsOp(1);
-	    setBounds(paramInt1, paramInt2, this.width, this.height);
-	  }
-	}
+    public boolean isVisible() {
+        return true;
+    }
 
-  public Dimension getSize()
-  {
-    return size ();
-  }
-  
-  public Dimension size()
-  {
-    return new Dimension (width, height);
-  }
-  
-	public void setMaximumSize(Dimension paramDimension) {}
+    public void paint(Graphics paramGraphics) {
+    }
 
-	public void setName(String paramString) {}
+    public void removeHierarchyListener(HierarchyListener paramHierarchyListener) {
+    }
 
- 
-	public void setPreferredSize(Dimension paramDimension)
-	{
-		if (paramDimension == null)
-		{
-			this.prefWidth = 0;
-			this.prefHeight = 0;
-			this.prefSizeIsSet = false;
-		}
-		else {
-			this.prefWidth = paramDimension.width;
-			this.prefHeight = paramDimension.height;
-			this.prefSizeIsSet = true;
-		}
-	}
+    public void repaint() {
+        update(null);
+    }
 
-	public void setSize(Dimension paramDimension)
-	{
-		if (paramDimension == null) {
-			setSize(0, 0);
-		} else {
-			setSize(paramDimension.width, paramDimension.height);
-		}
-	}
+    public void setBackground(Color paramColor) {
+    }
 
-	public void setSize(int paramInt1, int paramInt2)
-	{
-		this.width = paramInt1;
-		this.height = paramInt2;
-	}
+    public void setEnabled(boolean paramBoolean) {
+    }
 
-  /**
-   * Tests if this component is opaque. All "heavyweight" (natively-drawn)
-   * components are opaque. A component is opaque if it draws all pixels in
-   * the bounds; a lightweight component is partially transparent if it lets
-   * pixels underneath show through. Subclasses that guarantee that all pixels
-   * will be drawn should override this.
-   *
-   * @return true if this is opaque
-   * @see #isLightweight()
-   * @since 1.2
-   */
-  public boolean isOpaque()
-  {
-    return ! isLightweight();
-  }
+    public void setLocation(int paramInt1, int paramInt2) {
+        move(paramInt1, paramInt2);
+    }
 
-  /**
-   * Return whether the component is lightweight. That means the component has
-   * no native peer, but is displayable. This applies to subclasses of
-   * Component not in this package, such as javax.swing.
-   *
-   * @return true if the component has a lightweight peer
-   * @see #isDisplayable()
-   * @since 1.2
-   */
-  public boolean isLightweight()
-  {
-    return true;
-  }
-  
-	public void setVisible(boolean paramBoolean) {}
+    void setBoundsOp(int paramInt) {
+        assert (Thread.holdsLock(getTreeLock()));
+        if (paramInt == 5) {
+            this.boundsOp = 3;
+        }
+        else {
+            if (this.boundsOp != 3)
+                return;
+            this.boundsOp = paramInt;
+        }
+    }
 
-	public void update(Graphics paramGraphics)
-	{
-		paint(paramGraphics);
-	}
+    @Deprecated
+    public void move(int paramInt1, int paramInt2) {
+        synchronized (getTreeLock()) {
+            setBoundsOp(1);
+            setBounds(paramInt1, paramInt2, this.width, this.height);
+        }
+    }
 
-	public boolean isMinimumSizeSet()
-	{
-	return this.minSizeSet;
-	}
+    public Dimension getSize() {
+        return size();
+    }
 
-	public Dimension getMinimumSize()
-	{
-	return minimumSize();
-	}
+    public Dimension size() {
+        return new Dimension(width, height);
+    }
 
-	@Deprecated
-	public Dimension minimumSize()
-	{
-	  Dimension localDimension = this.minSize;
-	  if ((localDimension == null) || ((!(isMinimumSizeSet()))))
-	    synchronized (getTreeLock())
-	    {
-	      localDimension = this.minSize;
-	    }
-	  return new Dimension(localDimension);
-	}
-	  
-  public Dimension getMaximumSize()
-  {
-    return new Dimension(maximumSizeImpl());
-  }
+    public void setMaximumSize(Dimension paramDimension) {
+    }
 
-  Dimension maximumSizeImpl()
-  {
-    Dimension size;
-    if (maxSizeSet)
-      size = maxSize;
-    else
-      size = DEFAULT_MAX_SIZE;
-    return size;
-  }
-	
-  public boolean isMaximumSizeSet()
-  {
-    return maxSizeSet;
-  }
-  
-	public final Object getTreeLock()
-	{
-	return LOCK;
-	}
-	public void setBounds(int i, int j, int k, int l) {
-		// TODO Auto-generated method stub
-	}
-	public void addNotify()
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public int getX()
-	{
-	  return this.x;
-	}
+    public void setName(String paramString) {
+    }
 
-	public int getY()
-	{
-	  return this.y;
-	}
-	
-  public void addPropertyChangeListener(PropertyChangeListener listener)
-  {
-    if (changeSupport == null)
-      changeSupport = new PropertyChangeSupport(this);
-    changeSupport.addPropertyChangeListener(listener);
-  }
-  
-  public void addPropertyChangeListener(String propertyName,
-                                        PropertyChangeListener listener)
-  {
-    if (changeSupport == null)
-      changeSupport = new PropertyChangeSupport(this);
-    changeSupport.addPropertyChangeListener(propertyName, listener);
-  }
-  
-  public void removePropertyChangeListener(String propertyName,
-      PropertyChangeListener listener)
-	{
-		if (changeSupport != null)
-		changeSupport.removePropertyChangeListener(propertyName, listener);
-	}
+
+    public void setPreferredSize(Dimension paramDimension) {
+        if (paramDimension == null) {
+            this.prefWidth = 0;
+            this.prefHeight = 0;
+            this.prefSizeIsSet = false;
+        }
+        else {
+            this.prefWidth = paramDimension.width;
+            this.prefHeight = paramDimension.height;
+            this.prefSizeIsSet = true;
+        }
+    }
+
+    public void setSize(Dimension paramDimension) {
+        if (paramDimension == null) {
+            setSize(0, 0);
+        }
+        else {
+            setSize(paramDimension.width, paramDimension.height);
+        }
+    }
+
+    public void setSize(int paramInt1, int paramInt2) {
+        this.width = paramInt1;
+        this.height = paramInt2;
+    }
+
+    /**
+     * Tests if this component is opaque. All "heavyweight" (natively-drawn)
+     * components are opaque. A component is opaque if it draws all pixels in
+     * the bounds; a lightweight component is partially transparent if it lets
+     * pixels underneath show through. Subclasses that guarantee that all pixels
+     * will be drawn should override this.
+     *
+     * @return true if this is opaque
+     * @see #isLightweight()
+     * @since 1.2
+     */
+    public boolean isOpaque() {
+        return !isLightweight();
+    }
+
+    /**
+     * Return whether the component is lightweight. That means the component has
+     * no native peer, but is displayable. This applies to subclasses of
+     * Component not in this package, such as javax.swing.
+     *
+     * @return true if the component has a lightweight peer
+     * @see #isDisplayable()
+     * @since 1.2
+     */
+    public boolean isLightweight() {
+        return true;
+    }
+
+    public void setVisible(boolean paramBoolean) {
+    }
+
+    public void update(Graphics paramGraphics) {
+        paint(paramGraphics);
+    }
+
+    public boolean isMinimumSizeSet() {
+        return this.minSizeSet;
+    }
+
+    public Dimension getMinimumSize() {
+        return minimumSize();
+    }
+
+    @Deprecated
+    public Dimension minimumSize() {
+        Dimension localDimension = this.minSize;
+        if ((localDimension == null) || ((!(isMinimumSizeSet()))))
+            synchronized (getTreeLock()) {
+                localDimension = this.minSize;
+            }
+        return new Dimension(localDimension);
+    }
+
+    public Dimension getMaximumSize() {
+        return new Dimension(maximumSizeImpl());
+    }
+
+    Dimension maximumSizeImpl() {
+        Dimension size;
+        if (maxSizeSet)
+            size = maxSize;
+        else
+            size = DEFAULT_MAX_SIZE;
+        return size;
+    }
+
+    public boolean isMaximumSizeSet() {
+        return maxSizeSet;
+    }
+
+    public final Object getTreeLock() {
+        return LOCK;
+    }
+
+    public void setBounds(int i, int j, int k, int l) {
+        // TODO Auto-generated method stub
+    }
+
+    public void addNotify() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return this.y;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (changeSupport == null)
+            changeSupport = new PropertyChangeSupport(this);
+        changeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        if (changeSupport == null)
+            changeSupport = new PropertyChangeSupport(this);
+        changeSupport.addPropertyChangeListener(propertyName, listener);
+    }
+
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        if (changeSupport != null)
+            changeSupport.removePropertyChangeListener(propertyName, listener);
+    }
 }

@@ -13,9 +13,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.OperationSetWhiteboarding;
+import net.java.sip.communicator.service.protocol.WhiteboardSession;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>WhiteboardInvitationRejectedEvent</code>s indicates the reception of a rejection of an

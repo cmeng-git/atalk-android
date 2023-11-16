@@ -44,14 +44,14 @@ public class ChatSessionRecord {
     /**
      * 0 = 1:1 chat or 1 = multi chat session.
      *
-     * @see org.atalk.android.gui.chat.ChatSession#MODE_XXX
+     * @see ChatSession#MODE_XXX
      */
     protected int chatMode;
 
     /**
      * Chat encryption mode: ChatSession.STATUS to store ChatFragment#chatType
      *
-     * @see org.atalk.android.gui.chat.ChatFragment#MSGTYPE_XXX
+     * @see ChatFragment#MSGTYPE_XXX
      */
     protected int chatType;
 

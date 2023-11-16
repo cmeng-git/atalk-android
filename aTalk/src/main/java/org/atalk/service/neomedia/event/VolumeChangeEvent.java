@@ -5,9 +5,9 @@
  */
 package org.atalk.service.neomedia.event;
 
-import java.util.*;
-
 import org.atalk.service.neomedia.VolumeControl;
+
+import java.util.EventObject;
 
 /**
  * Represents the event fired when playback volume value has changed.

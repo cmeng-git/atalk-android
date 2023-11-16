@@ -5,10 +5,14 @@
  */
 package org.atalk.impl.neomedia.transform.srtp.crypto;
 
-import org.bouncycastle.crypto.*;
+import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.params.KeyParameter;
 
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.Key;
 
 import javax.crypto.Cipher;
 import javax.crypto.ShortBufferException;
@@ -76,8 +80,8 @@ public class BlockCipherAdapter implements BlockCipher
                 algorithmName = algorithmName.substring(0, len - 4);
             }
         }
-        this.algorithmName = algorithmName;
 
+        this.algorithmName = algorithmName;
         this.blockSize = cipher.getBlockSize();
     }
 

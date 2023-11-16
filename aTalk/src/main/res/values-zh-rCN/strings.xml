@@ -973,7 +973,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">我的 %1$s 指纹：%2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">%1$s 的远程指纹：%2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">验证好友</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">验证好友</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">已验证这实际上是 %1$s 的正确指纹。</string>
     <string name="plugin_otr_configform_CB_AUTO">自动发起私信</string>
     <string name="plugin_otr_configform_CB_ENABLE">启用私人短信</string>
@@ -1014,6 +1013,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">验证好友</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">您有未经身份验证的好友。未经验证的好友无法收到 OMEMO 短信。检查以进行身份验证。</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">我的指纹 %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">验证好友</string>
     <string name="omemo_identity_keypairs_missing">为 %1$s 创建 OMEMO IdentityKeyPairs</string>
     <string name="omemo_identity_key_invalid">omemoDevice 的 IdentityKey 无效：%1$s。\n异常：%2$s。</string>
     <string name="omemo_identity_key_missing">%1$s 的 OMEMO IdentityKey 丢失。\n继续从服务器下载。</string>
@@ -1452,8 +1452,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">RTP 步调阈值（kBytes/s）</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">目标帧率（每秒）</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">短信加密安全设置</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">短信加密</string>
 

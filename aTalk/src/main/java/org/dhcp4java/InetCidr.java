@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dhcp4java.Util;
-
 /**
  * @author Stephan Hadinger
  * @version 1.00

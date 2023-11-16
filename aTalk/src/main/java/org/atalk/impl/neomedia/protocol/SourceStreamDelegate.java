@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.protocol;
 
-import javax.media.protocol.*;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.Controls;
+import javax.media.protocol.SourceStream;
 
 /**
  * Implements a <code>SourceStream</code> which wraps a specific <code>SourceStream</code>.

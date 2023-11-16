@@ -7,7 +7,13 @@
 package org.atalk.impl.osgi.framework.launch;
 
 import org.atalk.impl.osgi.framework.AsyncExecutor;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.BundleListener;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 
 import java.util.EventListener;
 import java.util.EventObject;

@@ -7,10 +7,10 @@ package org.atalk.impl.neomedia.codec;
 
 import org.atalk.impl.neomedia.MediaUtils;
 import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 
 import java.util.Map;
 

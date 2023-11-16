@@ -1,7 +1,7 @@
 package javax.swing;
 
-import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.Dimension;
 
 public class Box extends JComponent implements Accessible {
 	

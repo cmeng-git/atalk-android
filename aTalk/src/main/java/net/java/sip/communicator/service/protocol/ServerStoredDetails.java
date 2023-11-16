@@ -8,7 +8,11 @@ package net.java.sip.communicator.service.protocol;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * The ServerStoredDetails class contains a relatively large set of details that various protocols
@@ -54,8 +58,8 @@ public class ServerStoredDetails
      */
     public static class GenericDetail
     {
-        protected Object value = null;
-        protected String detailDisplayName = null;
+        protected String detailDisplayName;
+        protected Object value;
 
         /**
          * Instantiates this detail setting its value and display name accordingly.
@@ -66,8 +70,8 @@ public class ServerStoredDetails
          */
         public GenericDetail(String detailDisplayName, Object value)
         {
-            this.value = value;
             this.detailDisplayName = detailDisplayName;
+            this.value = value;
         }
 
         /**
@@ -121,17 +125,13 @@ public class ServerStoredDetails
 
             GenericDetail other = (GenericDetail) obj;
 
-            if (this.detailDisplayName != null // equals DisplayName
+            return this.detailDisplayName != null
                     && other.getDetailDisplayName() != null
                     && this.detailDisplayName.equals(other.getDetailDisplayName())
-                    && // equals not null values
-                    ((this.value != null && (other.getDetailValue() != null)
-                            && this.value.equals(other.getDetailValue()))
-                            || (StringUtils.isEmpty((String) this.value)
-                            && StringUtils.isEmpty((String) other.getDetailValue()))))
-                return true;
-            else
-                return false;
+                    && ((this.value != null && (other.getDetailValue() != null)
+                    && this.value.equals(other.getDetailValue()))
+                    || (StringUtils.isEmpty((String) this.value)
+                    && StringUtils.isEmpty((String) other.getDetailValue())));
         }
 
         @Override

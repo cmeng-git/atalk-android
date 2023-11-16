@@ -5,11 +5,11 @@
  */
 package org.atalk.impl.neomedia;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.GenerateSSRCCause;
 
 import org.atalk.service.neomedia.SSRCFactory;
 
-import java.util.*;
+import java.util.Random;
 
 /**
  * An <code>SSRCFactory</code> implementation which allows the first generated SSRC to be set by the

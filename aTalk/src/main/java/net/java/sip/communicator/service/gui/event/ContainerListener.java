@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Listens for all events caused by a change in the supported containers list.

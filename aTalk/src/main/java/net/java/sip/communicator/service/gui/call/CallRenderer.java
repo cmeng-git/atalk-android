@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui.call;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
 
 /**
  * The <code>CallRenderer</code> represents a renderer for a call. All user

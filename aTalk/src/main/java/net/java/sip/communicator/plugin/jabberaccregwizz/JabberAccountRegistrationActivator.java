@@ -12,7 +12,9 @@ import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Hashtable;
 

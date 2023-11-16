@@ -408,7 +408,7 @@ public class EntityListHelper {
          * @param endDate records on and before the given endDate toe be deleted
          */
         private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs, Date endDate) {
-            this.mCallback = (TaskCompleted) caller;
+            this.mCallback = caller;
             this.callUUIDs = callUUIDs;
             this.mEndDate = endDate;
         }

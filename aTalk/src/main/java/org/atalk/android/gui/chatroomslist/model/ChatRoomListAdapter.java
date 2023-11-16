@@ -18,8 +18,14 @@ package org.atalk.android.gui.chatroomslist.model;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.impl.muc.*;
-import net.java.sip.communicator.service.muc.*;
+import net.java.sip.communicator.impl.muc.ChatRoomWrapperImpl;
+import net.java.sip.communicator.impl.muc.MUCActivator;
+import net.java.sip.communicator.impl.muc.MUCServiceImpl;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeEvent;
+import net.java.sip.communicator.service.muc.ChatRoomListChangeListener;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
+import net.java.sip.communicator.service.muc.ChatRoomProviderWrapperListener;
+import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,11 +35,17 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.model.UIGroupRenderer;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jivesoftware.smackx.bookmarks.BookmarkedConference;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;

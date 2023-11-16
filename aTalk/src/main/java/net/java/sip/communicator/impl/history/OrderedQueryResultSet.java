@@ -1,10 +1,10 @@
 package net.java.sip.communicator.impl.history;
 
+import net.java.sip.communicator.service.history.QueryResultSet;
+
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import net.java.sip.communicator.service.history.QueryResultSet;
 
 /**
  * This implementation is the same as DefaultQueryResultSet but the container holding the records is LinkedList - so

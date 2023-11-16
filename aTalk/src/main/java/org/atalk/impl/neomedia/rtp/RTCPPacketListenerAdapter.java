@@ -15,9 +15,12 @@
  */
 package org.atalk.impl.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.*;
-import org.atalk.impl.neomedia.rtcp.*;
-import org.atalk.service.neomedia.rtp.*;
+import net.sf.fmj.media.rtp.RTCPSRPacket;
+
+import org.atalk.impl.neomedia.rtcp.NACKPacket;
+import org.atalk.impl.neomedia.rtcp.RTCPREMBPacket;
+import org.atalk.impl.neomedia.rtcp.RTCPTCCPacket;
+import org.atalk.service.neomedia.rtp.RTCPPacketListener;
 
 /**
  * @author George Politis

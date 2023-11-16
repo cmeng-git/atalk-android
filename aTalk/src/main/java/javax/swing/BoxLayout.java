@@ -1,14 +1,13 @@
 package javax.swing;
 
 
-import java.io.PrintStream;
-import java.io.Serializable;
-
+import java.awt.AWTError;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager2;
-import java.awt.AWTError;
-import java.awt.Container;
+import java.io.PrintStream;
+import java.io.Serializable;
 
 public class BoxLayout implements LayoutManager2, Serializable {
 		public static final int X_AXIS = 0;

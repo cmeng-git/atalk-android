@@ -6,16 +6,22 @@
 package org.atalk.android.gui.call;
 
 import android.app.Dialog;
-import android.hardware.*;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.jetbrains.annotations.NotNull;
 
-import androidx.fragment.app.*;
 import timber.log.Timber;
 
 /**

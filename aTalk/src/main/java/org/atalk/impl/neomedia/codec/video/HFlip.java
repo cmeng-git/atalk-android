@@ -7,11 +7,15 @@
 package org.atalk.impl.neomedia.codec.video;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 
-import javax.media.*;
+import java.awt.Dimension;
+
+import javax.media.Buffer;
+import javax.media.Effect;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 
 import timber.log.Timber;
 

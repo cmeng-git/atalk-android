@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.pulseaudio;
 
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.MediaServiceImpl;
+import org.atalk.impl.neomedia.MediaUtils;
+import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.device.PulseAudioSystem;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
@@ -16,7 +18,10 @@ import org.atalk.service.neomedia.BasicVolumeControl;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.MediaLocator;
 import javax.media.control.FormatControl;
 import javax.media.format.AudioFormat;
 

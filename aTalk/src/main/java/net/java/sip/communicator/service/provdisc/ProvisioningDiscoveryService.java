@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.provdisc;
 
-import net.java.sip.communicator.service.provdisc.event.*;
+import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
 
 /**
  * Service that allow to retrieve a provisioning URL to configure

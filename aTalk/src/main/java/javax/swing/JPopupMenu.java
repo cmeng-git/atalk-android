@@ -1,7 +1,5 @@
 package javax.swing;
 
-import net.java.sip.communicator.plugin.desktoputil.SelectedObject;
-
 import java.awt.Dimension;
 
 public class JPopupMenu extends JComponent implements Accessible {
@@ -34,11 +32,6 @@ public class JPopupMenu extends JComponent implements Accessible {
 	public boolean isVisible() {
 		// TODO Auto-generated method stub - cmeng
 		return false;
-	}
-
-	public void setSelected(SelectedObject selectedObject) {
-		// TODO Auto-generated method stub - cmeng
-		
 	}
 
 	public Object getItem(int i) {

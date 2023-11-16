@@ -5,8 +5,13 @@
  */
 package org.atalk.impl.fileaccess;
 
-import java.io.*;
-import java.util.logging.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import timber.log.Timber;
 

@@ -13,7 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.jxmpp.jid.Jid;
 

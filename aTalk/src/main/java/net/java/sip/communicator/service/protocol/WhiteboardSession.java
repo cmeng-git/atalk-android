@@ -13,10 +13,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.WhiteboardChangeListener;
+import net.java.sip.communicator.service.protocol.event.WhiteboardObjectListener;
 import net.java.sip.communicator.service.protocol.whiteboardobjects.WhiteboardObject;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * A represenation of a <code>WhiteboardSession</code>.

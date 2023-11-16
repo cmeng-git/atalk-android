@@ -11,11 +11,24 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.*;
-import android.text.*;
-import android.view.*;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,8 +38,35 @@ import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialo
 import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter.CalendarDay;
 import com.yalantis.ucrop.UCrop;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CityDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CountryDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.EmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FirstNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenderDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.JobTitleDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MiddleNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.NicknameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PostalCodeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ProvinceDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.URLDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkEmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrganizationNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -37,7 +77,8 @@ import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.contactlist.ContactInfoActivity;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.util.*;
+import org.atalk.android.gui.util.AndroidImageUtil;
+import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.SoftKeyboard;
@@ -50,7 +91,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import timber.log.Timber;
@@ -1306,6 +1352,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * @param eventObject the instance that has been changed
      * cmeng: may not be required anymore with new implementation
      */
+    @Override
     public void onChangeEvent(final AccountEvent eventObject)
     {
         if (eventObject.getEventType() != AccountEvent.AVATAR_CHANGE) {

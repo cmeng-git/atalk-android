@@ -964,7 +964,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Sidik Saya untuk %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Sidik jari jarak jauh untuk %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Autentikasi Sobat</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verifikasi Sobat</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">memverifikasi bahwa ini sebenarnya adalah sidik jari yang benar untuk %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Secara otomatis memulai pesan pribadi</string>
     <string name="plugin_otr_configform_CB_ENABLE">Aktifkan perpesanan pribadi</string>
@@ -1005,6 +1004,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Otentikasi Sobat</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Anda memiliki teman yang tidak terautentikasi. Teman yang belum diverifikasi tidak dapat menerima pesan OMEMO. Periksa untuk mengautentikasi.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Sidik Jari Saya %1$s:\n %2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Verifikasi Sobat</string>
     <string name="omemo_identity_keypairs_missing">Perbarui OMEMO IdentityKeyPairs untuk: %1$s</string>
     <string name="omemo_identity_key_invalid">IdentitasKey Tidak Valid untuk omemoDevice: %1$s.\nEksepsi: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey untuk %1$s tidak ada.\nLanjutkan untuk mengunduh dari server.</string>
@@ -1443,8 +1443,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Ambang batas proses RTP (kBytes/s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Rasio frame target (per detik)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Pengaturan keamanan enkripsi pesan</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Keamanan Pesan</string>
 

@@ -10,7 +10,11 @@ import net.java.sip.communicator.service.calendar.CalendarService;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 
 import java.util.ArrayList;
 import java.util.List;

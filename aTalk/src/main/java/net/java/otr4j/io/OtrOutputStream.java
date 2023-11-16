@@ -1,13 +1,18 @@
 package net.java.otr4j.io;
 
-import net.java.otr4j.io.messages.*;
+import net.java.otr4j.io.messages.MysteriousT;
+import net.java.otr4j.io.messages.SignatureM;
+import net.java.otr4j.io.messages.SignatureX;
 
 import org.bouncycastle.util.BigIntegers;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.PublicKey;
-import java.security.interfaces.*;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPublicKey;
 
 import javax.crypto.interfaces.DHPublicKey;
 

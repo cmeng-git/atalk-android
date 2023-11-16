@@ -1,7 +1,6 @@
 package java.awt.image;
 
 import java.awt.Image;
-
 import java.util.Hashtable;
 
 public class BufferedImage extends Image

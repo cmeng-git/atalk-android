@@ -8,7 +8,9 @@ package org.atalk.impl.neomedia;
 import org.atalk.service.neomedia.RawPacket;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 
 /**
  * RTPConnectorOutputStream implementation for UDP protocol.

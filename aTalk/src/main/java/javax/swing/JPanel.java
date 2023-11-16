@@ -3,9 +3,9 @@ package javax.swing;
 import net.java.sip.communicator.plugin.desktoputil.SIPCommTextField;
 
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.LayoutManager;
 
 public class JPanel extends JComponent implements Accessible {
 	private static final String uiClassID = "PanelUI";

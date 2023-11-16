@@ -13,9 +13,9 @@ import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.device.MediaDevice;
 import org.atalk.service.neomedia.device.MediaDeviceWrapper;
 import org.atalk.service.neomedia.format.MediaFormat;
+import org.atalk.util.MediaType;
 import org.atalk.util.event.VideoEvent;
 import org.atalk.util.event.VideoListener;
-import org.atalk.util.MediaType;
 
 import java.awt.Component;
 import java.util.LinkedList;

@@ -13,7 +13,7 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import javax.media.*;
+import javax.media.Format;
 
 /**
  * Privately used by {@link OutputDataStreamImpl} at the time of this writing and extracted into its

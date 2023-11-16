@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.ProviderPresenceStatusListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;

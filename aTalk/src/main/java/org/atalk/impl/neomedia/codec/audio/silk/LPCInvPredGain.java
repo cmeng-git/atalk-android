@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_Silk_CLZ32;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_int32_MAX;
 
 /**
  * Compute inverse of LPC prediction gain, and test if LPC coefficients are stable (all poles within

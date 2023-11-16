@@ -6,8 +6,20 @@
 package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetDesktopSharingServer;
+import net.java.sip.communicator.service.protocol.OperationSetMessageCorrection;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.jivesoftware.smack.packet.Presence;
@@ -16,7 +28,10 @@ import org.jivesoftware.smackx.chatstates.ChatStateManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 

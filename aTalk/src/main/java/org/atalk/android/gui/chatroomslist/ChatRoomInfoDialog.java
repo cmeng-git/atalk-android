@@ -16,12 +16,15 @@
  */
 package org.atalk.android.gui.chatroomslist;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;

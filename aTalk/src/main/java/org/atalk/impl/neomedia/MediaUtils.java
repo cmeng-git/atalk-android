@@ -452,7 +452,6 @@ public class MediaUtils {
      * @param clockRates the optional list of clock rates of the <code>MediaFormat</code>s to be associated with
      * <code>rtpPayloadType</code>
      */
-    @SuppressWarnings("unchecked")
     private static void addMediaFormats(
             byte rtpPayloadType,
             String encoding,
@@ -573,7 +572,7 @@ public class MediaUtils {
     /**
      * Creates value of an imgattr.
      *
-     * https://tools.ietf.org/html/rfc6236
+     * <a href="https://tools.ietf.org/html/rfc6236">...</a>
      *
      * @param sendSize maximum size peer can send
      * @param maxRecvSize maximum size peer can display
@@ -581,7 +580,7 @@ public class MediaUtils {
      * @return string that represent imgattr that can be encoded via SIP/SDP or XMPP/Jingle
      */
     public static String createImageAttr(Dimension sendSize, Dimension maxRecvSize) {
-        StringBuffer img = new StringBuffer();
+        StringBuilder img = new StringBuilder();
 
         /* send width */
         if (sendSize != null) {
@@ -647,7 +646,6 @@ public class MediaUtils {
      * <code>format</code> if any; <code>null</code> if there is no such representing
      * <code>MediaFormat</code> in <code>MediaUtils</code>
      */
-    @SuppressWarnings("unchecked")
     public static MediaFormat getMediaFormat(Format format) {
         double clockRate;
 
@@ -729,7 +727,6 @@ public class MediaUtils {
      */
     public static MediaFormat[] getMediaFormats(byte rtpPayloadType) {
         MediaFormat[] mediaFormats = rtpPayloadTypeStrToMediaFormats.get(Byte.toString(rtpPayloadType));
-
         return (mediaFormats == null) ? EMPTY_MEDIA_FORMATS : mediaFormats.clone();
     }
 
@@ -767,7 +764,6 @@ public class MediaUtils {
      *
      * @return a <code>List</code> of <code>MediaFormat</code>s corresponding to the specified encoding (name)
      */
-    @SuppressWarnings("unchecked")
     public static List<MediaFormat> getMediaFormats(String encoding) {
         String jmfEncoding = null;
 
@@ -822,9 +818,6 @@ public class MediaUtils {
         }
         else if (jmfEncoding.equals(Constants.ALAW_RTP)) {
             return SdpConstants.PCMA;
-        }
-        else if (jmfEncoding.equals(AudioFormat.GSM_RTP)) {
-            return SdpConstants.GSM;
         }
         else if (jmfEncoding.equals(AudioFormat.G723_RTP)) {
             return SdpConstants.G723;

@@ -55,13 +55,11 @@ import java.util.logging.Logger;
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public
-class NetAccessManager implements ErrorHandler
-{
+class NetAccessManager implements ErrorHandler {
     /**
      * Our class logger
      */
-    private static final Logger logger
-            = Logger.getLogger(NetAccessManager.class.getName());
+    private static final Logger logger = Logger.getLogger(NetAccessManager.class.getName());
 
     /**
      * Thread pool to execute {@link MessageProcessingTask}s across all
@@ -72,8 +70,7 @@ class NetAccessManager implements ErrorHandler
 
     /**
      * Maximum number of {@link MessageProcessingTask} to keep in object pool.
-     * Each {@link NetAccessManager} has it's own pool, small pool size is
-     * enough to save allocations.
+     * Each {@link NetAccessManager} has it's own pool, small pool size is enough to save allocations.
      */
     private static final int TASK_POOL_SIZE = 8;
 
@@ -81,16 +78,14 @@ class NetAccessManager implements ErrorHandler
      * Pool of <tt>MessageProcessingTask</tt> objects to avoid extra-allocations
      * of processor object per <tt>RawMessage</tt> needed to process.
      */
-    private final ArrayBlockingQueue<MessageProcessingTask> taskPool
-            = new ArrayBlockingQueue<>(TASK_POOL_SIZE);
+    private final ArrayBlockingQueue<MessageProcessingTask> taskPool = new ArrayBlockingQueue<>(TASK_POOL_SIZE);
 
     /**
      * The set of {@link MessageProcessingTask}'s which are not yet finished
      * it's, processing, tracking of active tasks is necessary to properly
      * cancel pending tasks in case {@link #stop()} is called.
      */
-    private final ConcurrentHashMap.KeySetView<MessageProcessingTask, Boolean>
-            activeTasks = ConcurrentHashMap.newKeySet();
+    private final ConcurrentHashMap.KeySetView<MessageProcessingTask, Boolean> activeTasks = ConcurrentHashMap.newKeySet();
 
     /**
      * All <tt>Connectors</tt> currently in use with UDP. The table maps a local
@@ -103,8 +98,7 @@ class NetAccessManager implements ErrorHandler
      * (i.e. 192.168.0.3:5000/tcp has the same hashcode as 192.168.0.3:5000/udp
      * because InetSocketAddress does not take into account transport).
      */
-    private final Map<TransportAddress, Map<TransportAddress, Connector>>
-            udpConnectors = new HashMap<>();
+    private final Map<TransportAddress, Map<TransportAddress, Connector>> udpConnectors = new HashMap<>();
 
     /**
      * All <tt>Connectors</tt> currently in use with TCP. The table maps a local
@@ -117,9 +111,7 @@ class NetAccessManager implements ErrorHandler
      * (i.e. 192.168.0.3:5000/tcp has the same hashcode as 192.168.0.3:5000/udp
      * because InetSocketAddress does not take into account transport).
      */
-    private final Map<TransportAddress, Map<TransportAddress, Connector>>
-            tcpConnectors
-            = new HashMap<>();
+    private final Map<TransportAddress, Map<TransportAddress, Connector>> tcpConnectors = new HashMap<>();
 
     /**
      * The instance that should be notified when an incoming message has been
@@ -154,8 +146,7 @@ class NetAccessManager implements ErrorHandler
      * Callback to be called when scheduled <tt>MessageProcessingTask</tt>
      * completes processing it's <tt>RawMessage</tt>.
      */
-    private final Consumer<MessageProcessingTask> onRawMessageProcessed
-            = messageProcessingTask -> {
+    private final Consumer<MessageProcessingTask> onRawMessageProcessed = messageProcessingTask -> {
 
         activeTasks.remove(messageProcessingTask);
 
@@ -173,8 +164,7 @@ class NetAccessManager implements ErrorHandler
      * instance, is going to be its owner and is the handler that incoming
      * message requests should be passed to
      */
-    NetAccessManager(StunStack stunStack)
-    {
+    NetAccessManager(StunStack stunStack) {
         this(stunStack, null, null);
     }
 
@@ -189,13 +179,11 @@ class NetAccessManager implements ErrorHandler
      * that will handle incoming UDP messages which are not STUN
      * messages and ChannelData messages.
      * @param channelDataEventHandler the <tt>ChannelDataEventHandler</tt> that
-     * will handle incoming UDP messages which are ChannelData
-     * messages.
+     * will handle incoming UDP messages which are ChannelData messages.
      */
     NetAccessManager(StunStack stunStack,
             PeerUdpMessageEventHandler peerUdpMessageEventHandler,
-            ChannelDataEventHandler channelDataEventHandler)
-    {
+            ChannelDataEventHandler channelDataEventHandler) {
         this.stunStack = stunStack;
         this.messageEventHandler = stunStack;
         this.peerUdpMessageEventHandler = peerUdpMessageEventHandler;
@@ -211,8 +199,7 @@ class NetAccessManager implements ErrorHandler
      * <tt>NetAccessManager</tt> which is to be notified when incoming messages
      * have been processed and are ready for delivery
      */
-    MessageEventHandler getMessageEventHandler()
-    {
+    MessageEventHandler getMessageEventHandler() {
         return messageEventHandler;
     }
 
@@ -225,8 +212,7 @@ class NetAccessManager implements ErrorHandler
      * <tt>NetAccessManager</tt> which is to be notified when incoming
      * UDP messages have been processed and are ready for delivery
      */
-    public PeerUdpMessageEventHandler getUdpMessageEventHandler()
-    {
+    public PeerUdpMessageEventHandler getUdpMessageEventHandler() {
         return peerUdpMessageEventHandler;
     }
 
@@ -237,24 +223,19 @@ class NetAccessManager implements ErrorHandler
      *
      * @return the <tt>ChannelDataEventHandler</tt> of this
      * <tt>NetAccessManager</tt> which is to be notified when incoming
-     * ChannelData messages have been processed and are ready for
-     * delivery
+     * ChannelData messages have been processed and are ready for delivery
      */
-    public ChannelDataEventHandler getChannelDataMessageEventHandler()
-    {
+    public ChannelDataEventHandler getChannelDataMessageEventHandler() {
         return channelDataEventHandler;
     }
 
 
     /**
-     * Gets the <tt>StunStack</tt> which has created this instance and is its
-     * owner.
+     * Gets the <tt>StunStack</tt> which has created this instance and is its owner.
      *
-     * @return the <tt>StunStack</tt> which has created this instance and is its
-     * owner
+     * @return the <tt>StunStack</tt> which has created this instance and is its owner
      */
-    StunStack getStunStack()
-    {
+    StunStack getStunStack() {
         return stunStack;
     }
 
@@ -265,20 +246,15 @@ class NetAccessManager implements ErrorHandler
      * @param error the error that has occurred
      */
     @Override
-    public void handleError(String message, Throwable error)
-    {
+    public void handleError(String message, Throwable error) {
         if (isStopped.get()) {
-            logger.log(Level.WARNING,
-                    "Got error when stopped, ignoring: " + message, error);
+            logger.log(Level.WARNING, "Got error when stopped, ignoring: " + message, error);
             return;
         }
-        /**
+        /*
          * apart from logging, i am not sure what else we could do here.
          */
-        logger.log(Level.FINE,
-                "The following error occurred with "
-                        + "an incoming message:",
-                error);
+        logger.log(Level.FINE, "The following error occurred with an incoming message:", error);
     }
 
     /**
@@ -291,11 +267,9 @@ class NetAccessManager implements ErrorHandler
     @Override
     public void handleFatalError(Runnable callingThread,
             String message,
-            Throwable error)
-    {
+            Throwable error) {
         if (isStopped.get()) {
-            logger.log(Level.WARNING,
-                    "Got fatal error when stopped, ignoring: " + message, error);
+            logger.log(Level.WARNING, "Got fatal error when stopped, ignoring: " + message, error);
             return;
         }
 
@@ -303,11 +277,9 @@ class NetAccessManager implements ErrorHandler
             Connector connector = (Connector) callingThread;
 
             //make sure nothing's left and notify user
-            removeSocket(connector.getListenAddress(),
-                    connector.getRemoteAddress());
+            removeSocket(connector.getListenAddress(), connector.getRemoteAddress());
             if (error != null) {
-                logger.log(Level.WARNING, "Removing connector:" + connector,
-                        error);
+                logger.log(Level.WARNING, "Removing connector:" + connector, error);
             }
             else if (logger.isLoggable(Level.FINE)) {
                 logger.fine("Removing connector " + connector);
@@ -325,8 +297,7 @@ class NetAccessManager implements ErrorHandler
      *
      * @param socket the socket that the access point should use.
      */
-    protected void addSocket(IceSocketWrapper socket)
-    {
+    protected void addSocket(IceSocketWrapper socket) {
         //no null check - let it through as a NullPointerException
         Socket tcpSocket = socket.getTCPSocket();
 
@@ -334,8 +305,7 @@ class NetAccessManager implements ErrorHandler
         if (tcpSocket != null) {
             // In case of TCP we can extract the remote address from the actual
             // Socket.
-            remoteAddress
-                    = new TransportAddress(tcpSocket.getInetAddress(),
+            remoteAddress = new TransportAddress(tcpSocket.getInetAddress(),
                     tcpSocket.getPort(),
                     Transport.TCP);
         }
@@ -353,26 +323,20 @@ class NetAccessManager implements ErrorHandler
      * {@link Connector} to be created if it is a TCP socket, or null if it
      * is UDP.
      */
-    protected void addSocket(IceSocketWrapper socket,
-            TransportAddress remoteAddress)
-    {
-        Transport transport
-                = socket.getUDPSocket() != null ? Transport.UDP : Transport.TCP;
-        TransportAddress localAddress
-                = new TransportAddress(
+    protected void addSocket(IceSocketWrapper socket, TransportAddress remoteAddress) {
+        Transport transport = socket.getUDPSocket() != null ? Transport.UDP : Transport.TCP;
+        TransportAddress localAddress = new TransportAddress(
                 socket.getLocalAddress(),
                 socket.getLocalPort(),
                 transport);
 
         final Map<TransportAddress, Map<TransportAddress, Connector>>
-                connectorsMap
-                = (transport == Transport.UDP)
+                connectorsMap = (transport == Transport.UDP)
                 ? udpConnectors
                 : tcpConnectors;
 
         synchronized (connectorsMap) {
-            Map<TransportAddress, Connector> connectorsForLocalAddress
-                    = connectorsMap.get(localAddress);
+            Map<TransportAddress, Connector> connectorsForLocalAddress = connectorsMap.get(localAddress);
 
             if (connectorsForLocalAddress == null) {
                 connectorsForLocalAddress = new HashMap<>();
@@ -380,8 +344,7 @@ class NetAccessManager implements ErrorHandler
             }
 
             if (!connectorsForLocalAddress.containsKey(remoteAddress)) {
-                Connector connector
-                        = new Connector(
+                Connector connector = new Connector(
                         socket,
                         remoteAddress,
                         this::onIncomingRawMessage,
@@ -406,20 +369,16 @@ class NetAccessManager implements ErrorHandler
      * <tt>null</tt> to match the <tt>Connector</tt> with no specified remote
      * address.
      */
-    protected void removeSocket(TransportAddress localAddress,
-            TransportAddress remoteAddress)
-    {
+    protected void removeSocket(TransportAddress localAddress, TransportAddress remoteAddress) {
         Connector connector = null;
 
-        final Map<TransportAddress, Map<TransportAddress, Connector>>
-                connectorsMap
+        final Map<TransportAddress, Map<TransportAddress, Connector>> connectorsMap
                 = (localAddress.getTransport() == Transport.UDP)
                 ? udpConnectors
                 : tcpConnectors;
 
         synchronized (connectorsMap) {
-            Map<TransportAddress, Connector> connectorsForLocalAddress
-                    = connectorsMap.get(localAddress);
+            Map<TransportAddress, Connector> connectorsForLocalAddress = connectorsMap.get(localAddress);
 
             if (connectorsForLocalAddress != null) {
                 connector = connectorsForLocalAddress.get(remoteAddress);
@@ -441,8 +400,7 @@ class NetAccessManager implements ErrorHandler
      * <tt>MessageProcessingTask</tt>.
      */
     @SuppressWarnings("unchecked")
-    public void stop()
-    {
+    public void stop() {
         // Mark NetAccessManager as stopped, it will immediately result in
         // ignoring of all concurrent requests to handle messages
         isStopped.set(true);
@@ -479,8 +437,7 @@ class NetAccessManager implements ErrorHandler
      * address and a particular destination address, or <tt>null</tt> if there's
      * none.
      */
-    private Connector getConnector(TransportAddress localAddress, TransportAddress remoteAddress)
-    {
+    private Connector getConnector(TransportAddress localAddress, TransportAddress remoteAddress) {
         boolean udp = localAddress.getTransport() == Transport.UDP;
         final Map<TransportAddress, Map<TransportAddress, Connector>>
                 connectorsMap
@@ -490,8 +447,7 @@ class NetAccessManager implements ErrorHandler
         Connector connector = null;
 
         synchronized (connectorsMap) {
-            Map<TransportAddress, Connector> connectorsForLocalAddress
-                    = connectorsMap.get(localAddress);
+            Map<TransportAddress, Connector> connectorsForLocalAddress = connectorsMap.get(localAddress);
 
             if (connectorsForLocalAddress != null) {
                 connector = connectorsForLocalAddress.get(remoteAddress);
@@ -511,18 +467,15 @@ class NetAccessManager implements ErrorHandler
      *
      * @param message <tt>RawMessage</tt> to process
      */
-    private void onIncomingRawMessage(final RawMessage message)
-    {
+    private void onIncomingRawMessage(final RawMessage message) {
         if (isStopped.get()) {
             logger.fine("Got RawMessage when stopped, ignore it.");
             return;
         }
 
-        MessageProcessingTask messageProcessingTask
-                = taskPool.poll();
+        MessageProcessingTask messageProcessingTask = taskPool.poll();
         if (messageProcessingTask == null) {
-            messageProcessingTask
-                    = new MessageProcessingTask(this);
+            messageProcessingTask = new MessageProcessingTask(this);
             if (logger.isLoggable(Level.FINEST)) {
                 logger.finest("Allocated new MessageProcessingTask for "
                         + this + " due to absence of available pooled instances");
@@ -549,6 +502,7 @@ class NetAccessManager implements ErrorHandler
      * @param stunMessage the message to send
      * @param srcAddr the access point to use to send the message
      * @param remoteAddr the destination of the message.
+     *
      * @throws IllegalArgumentException if the apDescriptor references an
      * access point that had not been installed,
      * @throws IOException if an error occurs while sending message bytes
@@ -559,8 +513,7 @@ class NetAccessManager implements ErrorHandler
             TransportAddress srcAddr,
             TransportAddress remoteAddr)
             throws IllegalArgumentException,
-            IOException
-    {
+            IOException {
         sendMessage(stunMessage.encode(stunStack), srcAddr, remoteAddr);
     }
 
@@ -570,6 +523,7 @@ class NetAccessManager implements ErrorHandler
      * @param channelData the message to send
      * @param srcAddr the access point to use to send the message
      * @param remoteAddr the destination of the message.
+     *
      * @throws IllegalArgumentException if the apDescriptor references an
      * access point that had not been installed,
      * @throws IOException if an error occurs while sending message bytes
@@ -581,8 +535,7 @@ class NetAccessManager implements ErrorHandler
             TransportAddress srcAddr,
             TransportAddress remoteAddr)
             throws IllegalArgumentException,
-            IOException, StunException
-    {
+            IOException, StunException {
         boolean pad = srcAddr.getTransport() == Transport.TCP
                 || srcAddr.getTransport() == Transport.TLS;
         sendMessage(channelData.encode(pad), srcAddr, remoteAddr);
@@ -594,6 +547,7 @@ class NetAccessManager implements ErrorHandler
      * @param bytes the bytes to send.
      * @param srcAddr the access point to use to send the bytes.
      * @param remoteAddr the destination of the message.
+     *
      * @throws IllegalArgumentException if the apDescriptor references an
      * access point that had not been installed,
      * @throws IOException if an error occurs while sending message bytes
@@ -604,8 +558,7 @@ class NetAccessManager implements ErrorHandler
             TransportAddress srcAddr,
             TransportAddress remoteAddr)
             throws IllegalArgumentException,
-            IOException
-    {
+            IOException {
         Connector ap = getConnector(srcAddr, remoteAddr);
         if (ap == null) {
             throw new SocketNotFoundException("No socket found for " + srcAddr + "->" + remoteAddr);
@@ -614,10 +567,8 @@ class NetAccessManager implements ErrorHandler
         ap.sendMessage(bytes, remoteAddr);
     }
 
-    public class SocketNotFoundException extends IllegalArgumentException
-    {
-        private SocketNotFoundException(String message)
-        {
+    public class SocketNotFoundException extends IllegalArgumentException {
+        private SocketNotFoundException(String message) {
             super(message);
         }
     }

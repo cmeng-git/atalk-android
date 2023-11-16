@@ -5,13 +5,16 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol;
 
-import org.atalk.impl.neomedia.control.*;
+import org.atalk.impl.neomedia.control.AbstractControls;
+import org.atalk.impl.neomedia.control.ControlsAdapter;
 
 import java.io.IOException;
 
 import javax.media.Format;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.SourceStream;
 
 import timber.log.Timber;
 
@@ -22,7 +25,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-abstract class AbstractBufferStream<T extends DataSource> extends AbstractControls
+public abstract class AbstractBufferStream<T extends DataSource> extends AbstractControls
 		implements SourceStream
 {
 	/**

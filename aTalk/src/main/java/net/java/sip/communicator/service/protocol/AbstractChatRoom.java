@@ -5,7 +5,11 @@ import net.java.sip.communicator.service.protocol.event.ChatRoomConferencePublis
 
 import org.jxmpp.jid.parts.Resourcepart;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An abstract class with a default implementation of some of the methods of the <code>ChatRoom</code> interface.

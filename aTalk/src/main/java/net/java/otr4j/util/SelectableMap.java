@@ -13,7 +13,10 @@
  */
 package net.java.otr4j.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Map wrapper that additionally stores which item is selected. The selection

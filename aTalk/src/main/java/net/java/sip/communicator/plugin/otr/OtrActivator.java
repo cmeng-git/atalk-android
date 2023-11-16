@@ -10,7 +10,10 @@ import net.java.otr4j.OtrPolicy;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSetInstantMessageTransform;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.util.AbstractServiceDependentActivator;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -19,9 +22,16 @@ import org.atalk.android.gui.settings.ChatSecuritySettings;
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import timber.log.Timber;
 

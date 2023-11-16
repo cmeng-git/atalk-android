@@ -13,11 +13,13 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.atalk.android.gui.chat.ChatMessage;
 
-import java.util.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>MessageDeliveredEvent</code>s confirm successful delivery of an instant message. Here, it's

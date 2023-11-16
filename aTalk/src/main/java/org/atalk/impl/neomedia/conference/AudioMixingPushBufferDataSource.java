@@ -18,7 +18,10 @@ import javax.media.CaptureDeviceInfo;
 import javax.media.Time;
 import javax.media.control.BufferControl;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 import timber.log.Timber;
 

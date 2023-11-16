@@ -35,10 +35,10 @@ import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.neomedia.recording.RecorderEvent;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
 import org.atalk.service.neomedia.recording.Synchronizer;
+import org.atalk.util.MediaType;
 import org.atalk.util.dsi.ActiveSpeakerChangedListener;
 import org.atalk.util.dsi.ActiveSpeakerDetector;
 import org.atalk.util.dsi.DominantSpeakerIdentification;
-import org.atalk.util.MediaType;
 
 import java.io.File;
 import java.io.IOException;

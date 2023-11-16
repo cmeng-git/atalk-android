@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.impl.androidupdate;
+package org.atalk.impl.appupdate;
 
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.SimpleServiceActivator;
-
-import org.osgi.framework.BundleContext;
 
 /**
  * Android dummy update service activator for aTalk release version.

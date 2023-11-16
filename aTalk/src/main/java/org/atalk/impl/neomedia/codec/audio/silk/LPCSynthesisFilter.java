@@ -5,8 +5,11 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_ADD_SAT32;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMLAWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
 
 /**
  * even order AR filter. Coefficients are in Q12

@@ -15,7 +15,8 @@
  */
 package org.atalk.sctp4j;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Partially implemented SCTP notifications for which the native wrapper

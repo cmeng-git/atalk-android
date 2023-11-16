@@ -5,11 +5,18 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationReceivedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationRejectedEvent;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationRejectionListener;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceChangeEvent;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 
 import org.jxmpp.jid.EntityBareJid;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Represents a default implementation of <code>OperationSetMultiUserChat</code> in order to make it

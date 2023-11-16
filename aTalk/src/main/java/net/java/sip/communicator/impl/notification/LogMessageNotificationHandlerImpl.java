@@ -5,15 +5,17 @@
  */
 package net.java.sip.communicator.impl.notification;
 
-import net.java.sip.communicator.service.notification.*;
+import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.ERROR_LOG_TYPE;
+import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.INFO_LOG_TYPE;
+import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.TRACE_LOG_TYPE;
+
+import net.java.sip.communicator.service.notification.LogMessageNotificationAction;
+import net.java.sip.communicator.service.notification.LogMessageNotificationHandler;
+import net.java.sip.communicator.service.notification.NotificationAction;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.ERROR_LOG_TYPE;
-import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.INFO_LOG_TYPE;
-import static net.java.sip.communicator.service.notification.LogMessageNotificationAction.TRACE_LOG_TYPE;
 
 /**
  * An implementation of the <code>LogMessageNotificationHandler</code> interface.

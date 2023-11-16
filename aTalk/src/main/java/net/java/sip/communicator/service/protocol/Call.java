@@ -92,8 +92,7 @@ public abstract class Call extends DataObject
     private CallConference conference;
 
     /**
-     * The flag that specifies whether incoming calls into this <code>Call</code> should be
-     * auto-answered.
+     * The flag that specifies whether incoming calls into this <code>Call</code> should be auto-answered.
      */
     private boolean isAutoAnswer = false;
 

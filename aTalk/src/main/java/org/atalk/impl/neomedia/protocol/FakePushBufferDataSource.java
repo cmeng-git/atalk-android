@@ -5,13 +5,16 @@
  */
 package org.atalk.impl.neomedia.protocol;
 
-import org.atalk.impl.neomedia.jmfext.media.protocol.*;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
+import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferStream;
 
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Implements {@link PushBufferDataSource} for the purposes of {@link RTPTranslatorImpl} when it

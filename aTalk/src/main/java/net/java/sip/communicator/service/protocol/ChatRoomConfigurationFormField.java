@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * The <code>ChatRoomConfigurationFormField</code> is contained in the

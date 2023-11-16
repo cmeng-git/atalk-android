@@ -5,12 +5,6 @@
  */
 package net.java.otr4j.session;
 
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.PublicKey;
-
-import javax.crypto.interfaces.DHPublicKey;
-
 import net.java.otr4j.OtrException;
 import net.java.otr4j.io.messages.AbstractMessage;
 import net.java.otr4j.io.messages.DHCommitMessage;
@@ -18,6 +12,12 @@ import net.java.otr4j.io.messages.DHKeyMessage;
 import net.java.otr4j.io.messages.QueryMessage;
 import net.java.otr4j.io.messages.RevealSignatureMessage;
 import net.java.otr4j.io.messages.SignatureMessage;
+
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.PublicKey;
+
+import javax.crypto.interfaces.DHPublicKey;
 
 /**
  * @author George Politis

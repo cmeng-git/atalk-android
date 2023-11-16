@@ -14,7 +14,7 @@
 
 package net.java.sip.communicator.service.protocol.whiteboardobjects;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.WhiteboardPoint;
 
 /**
  * Used to access the content of instant whiteboard objects that are sent or received via the

@@ -7,14 +7,20 @@ package org.atalk.impl.neomedia.codec.video.h264;
 
 import net.sf.fmj.media.AbstractPacketizer;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.format.*;
+import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
+import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
 import org.atalk.service.neomedia.codec.Constants;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.VideoFormat;
 
 /**
@@ -47,7 +53,8 @@ public class Packetizer extends AbstractPacketizer
 			new ParameterizedVideoFormat(
 					Constants.H264_RTP,
 					VideoMediaFormatImpl.H264_PACKETIZATION_MODE_FMTP,
-					"1")};
+					"1")
+	};
 
 	/**
 	 * Finds the index in <code>byteStream</code> at which the start_code_prefix_one_3bytes of a NAL

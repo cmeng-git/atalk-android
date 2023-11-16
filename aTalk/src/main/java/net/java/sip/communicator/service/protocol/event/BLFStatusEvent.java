@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * The status event used when Busy Lamp Field state changes.

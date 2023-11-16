@@ -1,7 +1,8 @@
 package javax.swing.plaf.basic;
 
-import javax.swing.JComponent;
 import java.awt.Graphics;
+
+import javax.swing.JComponent;
 
 public class BasicProgressBarUI {
 

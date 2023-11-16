@@ -17,8 +17,7 @@ import java.util.EventObject;
  * @author Emil Ivov
  * @author Stephane Remy
  */
-public class LocalUserChatRoomPresenceChangeEvent extends EventObject
-{
+public class LocalUserChatRoomPresenceChangeEvent extends EventObject {
     /**
      * Serial version UID.
      */
@@ -54,22 +53,22 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
     /**
      * The <code>ChatRoom</code> to which the change is related.
      */
-    private ChatRoom chatRoom = null;
+    private final ChatRoom chatRoom;
 
     /**
      * The type of this event.
      */
-    private String eventType = null;
+    private final String eventType;
 
     /**
      * An optional String indicating a possible reason as to why the event might have occurred.
      */
-    private String reason = null;
+    private final String reason;
 
     /**
      * An optional String indicating new address for the room, normally send when room is destroyed.
      */
-    private String alternateAddress = null;
+    private final String alternateAddress;
 
     /**
      * Creates a <code>ChatRoomLocalUserPresenceChangeEvent</code> representing that a change in local
@@ -81,8 +80,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      * @param reason the reason explaining why this event might have occurred
      */
     public LocalUserChatRoomPresenceChangeEvent(OperationSetMultiUserChat source,
-            ChatRoom chatRoom, String eventType, String reason)
-    {
+            ChatRoom chatRoom, String eventType, String reason) {
         this(source, chatRoom, eventType, reason, null);
     }
 
@@ -96,8 +94,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      * @param reason the reason explaining why this event might have occurred
      */
     public LocalUserChatRoomPresenceChangeEvent(OperationSetMultiUserChat source,
-            ChatRoom chatRoom, String eventType, String reason, String alternateAddress)
-    {
+            ChatRoom chatRoom, String eventType, String reason, String alternateAddress) {
         super(source);
 
         this.chatRoom = chatRoom;
@@ -111,8 +108,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      *
      * @return the <code>OperationSetMultiUserChat</code>, where this event has occurred
      */
-    public OperationSetMultiUserChat getMultiUserChatOpSet()
-    {
+    public OperationSetMultiUserChat getMultiUserChatOpSet() {
         return (OperationSetMultiUserChat) getSource();
     }
 
@@ -121,8 +117,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      *
      * @return the <code>ChatRoom</code>, that this event is about
      */
-    public ChatRoom getChatRoom()
-    {
+    public ChatRoom getChatRoom() {
         return this.chatRoom;
     }
 
@@ -132,8 +127,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      * @return a human readable String containing the reason for this event, or null if no
      * particular reason was specified
      */
-    public String getReason()
-    {
+    public String getReason() {
         return reason;
     }
 
@@ -142,8 +136,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      *
      * @return one of the LOCAL_USER_XXX fields indicating the type of this event.
      */
-    public String getEventType()
-    {
+    public String getEventType() {
         return eventType;
     }
 
@@ -152,8 +145,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      *
      * @return alternate address for the destroyed room.
      */
-    public String getAlternateAddress()
-    {
+    public String getAlternateAddress() {
         return alternateAddress;
     }
 
@@ -163,8 +155,7 @@ public class LocalUserChatRoomPresenceChangeEvent extends EventObject
      * @return String representation of this event
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "ChatRoomLocalUserPresenceChangeEvent[type=" + getEventType() + " sourceRoom=" + getChatRoom() + "]";
     }
 }

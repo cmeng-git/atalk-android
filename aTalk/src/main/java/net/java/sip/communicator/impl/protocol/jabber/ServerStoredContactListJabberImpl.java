@@ -5,42 +5,67 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.both;
+import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.from;
+import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.none;
+import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.to;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl.ContactChangesListener;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.customavatar.CustomAvatarService;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetPersistentPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails;
+import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
+import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
+import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
-import org.jivesoftware.smack.SmackException.*;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
-import org.jivesoftware.smack.packet.*;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smack.roster.*;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterGroup;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.nick.packet.Nick;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import timber.log.Timber;
-
-import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.both;
-import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.from;
-import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.none;
-import static org.jivesoftware.smack.roster.packet.RosterPacket.ItemType.to;
 
 
 /**

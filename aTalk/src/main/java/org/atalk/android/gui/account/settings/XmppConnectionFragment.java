@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -91,7 +89,7 @@ public class XmppConnectionFragment extends OSGiPreferenceFragment
         setPreferencesFromResource(R.xml.xmpp_connection_preferences, rootKey);
         setPrefTitle(R.string.service_gui_JBR_CONNECTION);
 
-        String accountID = getArguments().getString(EXTRA_ACCOUNT_ID);
+        String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
 
         ProtocolProviderService pps = AccountUtils.getRegisteredProviderForAccount(account);

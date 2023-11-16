@@ -7,22 +7,33 @@ package org.atalk.android.gui.call;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.TransportProtocol;
 import net.java.sip.communicator.service.protocol.media.CallPeerMediaHandler;
 import net.java.sip.communicator.service.protocol.media.MediaAwareCallPeer;
 import net.java.sip.communicator.util.GuiUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
-import java.awt.Dimension;
-import org.atalk.service.neomedia.*;
+import org.atalk.service.neomedia.MediaStream;
+import org.atalk.service.neomedia.MediaStreamStats;
+import org.atalk.service.neomedia.SrtpControl;
+import org.atalk.service.neomedia.StreamConnector;
+import org.atalk.service.neomedia.ZrtpControl;
 import org.atalk.service.osgi.OSGiDialogFragment;
 import org.atalk.util.MediaType;
 
+import java.awt.Dimension;
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 // Disambiguation
 

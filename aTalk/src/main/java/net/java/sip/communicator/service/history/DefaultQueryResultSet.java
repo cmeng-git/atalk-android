@@ -4,7 +4,8 @@
  * Distributable under LGPL license. See terms of license at gnu.org.
  */package net.java.sip.communicator.service.history;
 
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * @author Alexander Pelov

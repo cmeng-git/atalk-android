@@ -1662,8 +1662,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      */
     private void writeMessage(String chatId, String direction, ChatRoomMember from,
             IMessage message, Date msgTimestamp, int msgType) {
-        // missing from, strange messages, most probably a history coming from server and
-        // probably already written
+        // missing from, strange messages, most probably a history coming from server and probably already written
         if (from == null)
             return;
 

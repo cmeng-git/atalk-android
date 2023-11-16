@@ -6,7 +6,6 @@
 package org.atalk.impl.neomedia.format;
 
 import java.awt.Dimension;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.msghistory.event;
 
-import java.util.*;
+import java.util.Date;
 
 /**
  * A "ProgressEvent" event gets delivered through the search process of MessageHistoryService Service. The event is

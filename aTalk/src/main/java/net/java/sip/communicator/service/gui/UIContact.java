@@ -15,21 +15,18 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.OperationSet;
 
-import java.awt.Component;
-import javax.swing.JButton;
-import javax.swing.JMenuItem;
-
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>UIContact</code> represents the user interface contact contained in the contact list component.
  *
  * @author Yana Stamcheva
+ * @author Eng Chong Meng
  */
-public abstract class UIContact
-{
+public abstract class UIContact {
     /**
      * Returns the descriptor of this contact.
      *
@@ -59,21 +56,6 @@ public abstract class UIContact
     public abstract int getSourceIndex();
 
     /**
-     * Creates a tool tip for this contact. If such tooltip is
-     * provided it would be shown on mouse over over this <code>UIContact</code>.
-     *
-     * @return the tool tip for this contact descriptor
-     */
-    // public abstract ExtendedTooltip getToolTip();
-
-    /**
-     * Returns the right button menu component.
-     *
-     * @return the right button menu component
-     */
-    public abstract Component getRightButtonMenu();
-
-    /**
      * Returns the parent group.
      *
      * @return the parent group
@@ -95,60 +77,14 @@ public abstract class UIContact
     public abstract Iterator<String> getSearchStrings();
 
     /**
-     * Returns the default <code>ContactDetail</code> to use for any operations
-     * depending to the given <code>OperationSet</code> class.
-     *
-     * @param opSetClass the <code>OperationSet</code> class we're interested in
-     * @return the default <code>ContactDetail</code> to use for any operations
-     * depending to the given <code>OperationSet</code> class
-     */
-    public abstract UIContactDetail getDefaultContactDetail(
-        Class<? extends OperationSet> opSetClass);
-
-    /**
      * Returns a list of all <code>UIContactDetail</code>s corresponding to the
      * given <code>OperationSet</code> class.
      *
      * @param opSetClass the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>UIContactDetail</code>s corresponding to the
      * given <code>OperationSet</code> class
      */
     public abstract List<UIContactDetail> getContactDetailsForOperationSet(
-        Class<? extends OperationSet> opSetClass);
-
-    /**
-     * Returns a list of all <code>UIContactDetail</code>s within this <code>UIContact</code>.
-     *
-     * @return a list of all <code>UIContactDetail</code>s within this <code>UIContact</code>
-     */
-    public abstract List<UIContactDetail> getContactDetails();
-
-    /**
-     * Returns all custom action buttons for this notification contact.
-     *
-     * @return a list of all custom action buttons for this notification contact
-     */
-    public abstract Collection<? extends JButton> getContactCustomActionButtons();
-
-    /**
-     * Returns the preferred height of this group in the contact list.
-     *
-     * @return the preferred height of this group in the contact list
-     */
-    public int getPreferredHeight()
-    {
-        return -1;
-    }
-
-    /**
-     * Returns all custom action menu items for this contact.
-     * 
-     * @param initActions if <code>true</code> the actions will be reloaded.
-     * @return a list of all custom action menu items for this contact.
-     */
-    public Collection<JMenuItem> getContactCustomActionMenuItems(
-        boolean initActions)
-    {
-        return null;
-    }
+            Class<? extends OperationSet> opSetClass);
 }

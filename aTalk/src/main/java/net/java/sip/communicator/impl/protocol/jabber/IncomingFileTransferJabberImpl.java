@@ -7,7 +7,6 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.IMessage;
 
 import org.jivesoftware.smackx.filetransfer.IncomingFileTransfer;
 

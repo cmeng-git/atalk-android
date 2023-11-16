@@ -6,9 +6,10 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.gui.UIContact;
+import net.java.sip.communicator.service.gui.UIGroup;
 
-import net.java.sip.communicator.service.gui.*;
+import java.util.EventObject;
 
 /**
  * The <code>ContactListEvent</code> is triggered when a contact or a group is

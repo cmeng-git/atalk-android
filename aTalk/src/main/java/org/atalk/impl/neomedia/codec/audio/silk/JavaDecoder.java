@@ -6,11 +6,14 @@
 package org.atalk.impl.neomedia.codec.audio.silk;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Component;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.service.neomedia.control.FECDecoderControl;
 
-import javax.media.*;
+import java.awt.Component;
+
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;

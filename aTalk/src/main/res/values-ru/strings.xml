@@ -956,7 +956,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Мой отпечаток для %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Удаленный отпечаток для %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Аутентификация друзей</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">подтвердил, что это действительно правильный отпечаток для %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Автоматически запускать личные сообщения</string>
     <string name="plugin_otr_configform_CB_ENABLE">Включить личный обмен сообщениями</string>
@@ -997,6 +996,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Аутентифицировать друзей</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">У вас есть неаутентифицированные друзья. Непроверенные друзья не могут получать сообщение OMEMO. Проверить подлинность.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">My Fingerprint %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Verify Buddy</string>
     <string name="omemo_identity_keypairs_missing">Создайте OMEMO IdentityKeyPairs для: %1$s</string>
     <string name="omemo_identity_key_invalid">Недопустимый IdentityKey для omemoDevice: %1$s.\nException: %2$s.</string>
     <string name="omemo_identity_key_missing">OMEMO IdentityKey для %1$s отсутствует.\nПродолжить загрузку с сервера.</string>
@@ -1436,8 +1436,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">порог стимуляции RTP (kBytes/s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Целевая частота кадров (в секунду)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Настройки безопасности шифрования сообщений</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Безопасность сообщений</string>
 

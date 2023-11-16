@@ -5,13 +5,14 @@
  */
 package org.atalk.impl.neomedia.recording;
 
-import net.sf.fmj.media.codec.*;
-import net.sf.fmj.media.multiplexer.*;
-import net.sf.fmj.media.renderer.audio.*;
+import net.sf.fmj.media.codec.JavaSoundCodec;
+import net.sf.fmj.media.multiplexer.BasicMux;
+import net.sf.fmj.media.renderer.audio.JavaSoundUtils;
 
-import javax.media.*;
+import javax.media.Format;
 import javax.media.format.AudioFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.FileTypeDescriptor;
 
 /**
  * Implements a multiplexer for WAV files based on FMJ's <code>BasicMux</code>.

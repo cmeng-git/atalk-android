@@ -18,8 +18,17 @@ package org.atalk.android.plugin.certconfig;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+
+import androidx.fragment.app.FragmentTransaction;
 
 import net.java.sip.communicator.service.certificate.CertificateConfigEntry;
 import net.java.sip.communicator.service.certificate.CertificateService;
@@ -30,9 +39,11 @@ import org.atalk.service.osgi.OSGiFragment;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.security.Security;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import androidx.fragment.app.FragmentTransaction;
 import timber.log.Timber;
 
 /**

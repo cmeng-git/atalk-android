@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.androidcontacts;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.ExtendedContactSourceService;
+import net.java.sip.communicator.service.contactsource.PrefixedContactSourceService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

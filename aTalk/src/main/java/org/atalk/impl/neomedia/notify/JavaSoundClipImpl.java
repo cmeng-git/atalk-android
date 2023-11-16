@@ -5,12 +5,17 @@
  */
 package org.atalk.impl.neomedia.notify;
 
-import org.atalk.service.audionotifier.*;
+import org.atalk.service.audionotifier.AbstractSCAudioClip;
+import org.atalk.service.audionotifier.AudioNotifierService;
+import org.atalk.service.audionotifier.SCAudioClip;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.security.*;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 /**
  * Implementation of SCAudioClip.
@@ -41,11 +46,10 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 	/**
 	 * Creates an AppletAudioClip.
 	 *
-	 * @param inputstream
-	 * 		the audio input stream
+	 * @param inputStream the audio input stream
 	 * @throws IOException
 	 */
-	private static SCAudioClip createAppletAudioClip(InputStream inputstream)
+	private static SCAudioClip createAppletAudioClip(InputStream inputStream)
 			throws IOException
 	{
 		if (acConstructor == null) {
@@ -68,7 +72,7 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 		}
 
 		try {
-			return acConstructor.newInstance(inputstream);
+			return acConstructor.newInstance(inputStream);
 		}
 		catch (Exception ex) {
 			throw new IOException("Failed to construct the AudioClip: " + ex);
@@ -79,13 +83,10 @@ public class JavaSoundClipImpl extends AbstractSCAudioClip
 	 * Initializes a new <code>JavaSoundClipImpl</code> instance which is to play audio stored at a
 	 * specific <code>URL</code> using <code>java.applet.AudioClip</code>.
 	 *
-	 * @param uri
-	 * 		the <code>URL</code> at which the audio is stored and which the new instance is to load
-	 * @param audioNotifier
-	 * 		the <code>AudioNotifierService</code> which is initializing the new instance and whose
+	 * @param uri the <code>URL</code> at which the audio is stored and which the new instance is to load
+	 * @param audioNotifier the <code>AudioNotifierService</code> which is initializing the new instance and whose
 	 * 		<code>mute</code> property/state is to be monitored by the new instance
-	 * @throws IOException
-	 * 		if a <code>java.applet.AudioClip</code> could not be initialized or the audio at the
+	 * @throws IOException if a <code>java.applet.AudioClip</code> could not be initialized or the audio at the
 	 * 		specified <code>url</code> could not be read
 	 */
 	public JavaSoundClipImpl(String uri, AudioNotifierService audioNotifier)

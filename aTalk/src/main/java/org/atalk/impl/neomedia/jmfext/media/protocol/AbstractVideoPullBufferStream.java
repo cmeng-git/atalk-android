@@ -8,7 +8,8 @@ package org.atalk.impl.neomedia.jmfext.media.protocol;
 import java.io.IOException;
 
 import javax.media.Buffer;
-import javax.media.control.*;
+import javax.media.control.FormatControl;
+import javax.media.control.FrameRateControl;
 import javax.media.protocol.PullBufferDataSource;
 
 /**

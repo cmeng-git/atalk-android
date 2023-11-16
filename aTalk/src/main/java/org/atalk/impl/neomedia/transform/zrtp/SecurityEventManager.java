@@ -164,7 +164,6 @@ public class SecurityEventManager extends ZrtpUserCallback
     @Override
     public void showMessage(ZrtpCodes.MessageSeverity sev, EnumSet<?> subCode)
     {
-        int multiStreams = 0;
         Iterator<?> ii = subCode.iterator();
         Object msgCode = ii.next();
 

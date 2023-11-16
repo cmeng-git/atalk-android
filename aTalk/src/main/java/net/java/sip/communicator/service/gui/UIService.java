@@ -20,12 +20,17 @@ import android.graphics.Point;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.gui.event.ChatListener;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
 import net.java.sip.communicator.util.account.LoginManager;
 
 import java.awt.Dimension;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>UIService</code> offers generic access to the graphical user interface

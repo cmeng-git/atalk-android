@@ -11,8 +11,20 @@ import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.service.protocol.Contact;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
 /**

@@ -220,10 +220,10 @@ public class FileSendConversation extends FileTransferConversation implements Fi
      */
     private void updateFTStatus(int status) {
         String fileName = mXferFile.getPath();
-        if (mUpdateDB) {
-            Timber.e("updateFTStatusToDB on status: %s; row count: %s", status,
-                    mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY));
-        }
+//        if (mUpdateDB) {
+//            Timber.e("updateFTStatusToDB on status: %s; row count: %s", status,
+//                    mFHS.updateFTStatusToDB(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY));
+//        }
         mChatFragment.updateFTStatus(msgUuid, status, fileName, mEncryption, ChatMessage.MESSAGE_FILE_TRANSFER_HISTORY);
     }
 

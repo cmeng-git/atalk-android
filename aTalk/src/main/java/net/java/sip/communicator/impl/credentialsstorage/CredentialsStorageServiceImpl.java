@@ -15,14 +15,18 @@
  */
 package net.java.sip.communicator.impl.credentialsstorage;
 
-import net.java.sip.communicator.service.credentialsstorage.*;
+import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
+import net.java.sip.communicator.service.credentialsstorage.CryptoException;
+import net.java.sip.communicator.service.credentialsstorage.MasterPasswordInputService;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.bouncycastle.util.encoders.Base64;
 import org.osgi.framework.BundleContext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

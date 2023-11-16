@@ -17,16 +17,24 @@ package net.java.sip.communicator.service.resources;
 
 import net.java.sip.communicator.util.ServiceUtils;
 
-import javax.swing.ImageIcon;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
 
 import timber.log.Timber;
 

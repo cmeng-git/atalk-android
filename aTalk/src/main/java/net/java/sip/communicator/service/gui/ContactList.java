@@ -6,12 +6,13 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import net.java.sip.communicator.service.contactsource.*;
+import net.java.sip.communicator.service.contactsource.ContactQuery;
+import net.java.sip.communicator.service.contactsource.ContactQueryListener;
+import net.java.sip.communicator.service.contactsource.ContactSourceService;
 import net.java.sip.communicator.service.gui.event.ContactListListener;
 import net.java.sip.communicator.service.gui.event.MetaContactQueryListener;
 
 import java.awt.Component;
-
 import java.util.Collection;
 import java.util.List;
 

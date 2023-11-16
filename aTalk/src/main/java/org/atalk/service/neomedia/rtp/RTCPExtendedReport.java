@@ -5,10 +5,15 @@
  */
 package org.atalk.service.neomedia.rtp;
 
-import java.io.*;
-import java.util.*;
+import net.sf.fmj.media.rtp.RTCPPacket;
 
-import net.sf.fmj.media.rtp.*;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents an RTP Control Protocol Extended Report (RTCP XR) packet in the terms of FMJ i.e. as

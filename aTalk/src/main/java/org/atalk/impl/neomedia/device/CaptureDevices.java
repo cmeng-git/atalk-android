@@ -5,13 +5,16 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import java.io.*;
-import java.util.*;
-
-import javax.media.*;
-import javax.media.format.*;
-
 import org.atalk.impl.neomedia.MediaServiceImpl;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.media.CaptureDeviceInfo;
+import javax.media.CaptureDeviceManager;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 /**
  * Manages the list of active (currently plugged-in) capture devices and manages user preferences

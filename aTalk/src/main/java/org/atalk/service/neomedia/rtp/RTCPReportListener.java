@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.rtp;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.RTCPReport;
 
 /**
  *

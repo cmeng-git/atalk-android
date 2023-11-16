@@ -15,11 +15,11 @@
  */
 package org.atalk.impl.neomedia.stats;
 
-import org.ice4j.util.*;
-import org.atalk.service.neomedia.stats.*;
-import org.atalk.util.*;
+import org.atalk.service.neomedia.stats.ReceiveTrackStats;
+import org.atalk.util.RTPUtils;
+import org.ice4j.util.RateStatistics;
 
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Media stream statistics implementation per received SSRC.

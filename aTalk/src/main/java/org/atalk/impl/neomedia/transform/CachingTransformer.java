@@ -31,8 +31,7 @@ public class CachingTransformer extends SinglePacketTransformerAdapter
         implements TransformEngine, RecurringRunnable
 {
     /**
-     * The period of time between calls to {@link #run} will be requested if this
-     * {@link CachingTransformer} is enabled.
+     * The period of time between calls to {@link #run} will be requested if this {@link CachingTransformer} is enabled.
      */
     private static final int PROCESS_INTERVAL_MS = 10000;
 

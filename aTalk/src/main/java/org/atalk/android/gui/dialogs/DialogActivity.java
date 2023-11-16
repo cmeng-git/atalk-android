@@ -5,7 +5,10 @@
  */
 package org.atalk.android.gui.dialogs;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -20,7 +23,10 @@ import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiActivity;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <code>DialogActivity</code> can be used to display alerts without having parent <code>Activity</code>

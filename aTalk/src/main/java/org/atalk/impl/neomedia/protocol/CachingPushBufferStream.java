@@ -6,14 +6,19 @@
 package org.atalk.impl.neomedia.protocol;
 
 import java.awt.Component;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Control;
+import javax.media.Format;
 import javax.media.control.BufferControl;
 import javax.media.format.AudioFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.PushBufferStream;
+import javax.media.protocol.SourceStream;
 
 /**
  * Enables reading from a <code>PushBufferStream</code> a certain maximum number of data units (e.g.

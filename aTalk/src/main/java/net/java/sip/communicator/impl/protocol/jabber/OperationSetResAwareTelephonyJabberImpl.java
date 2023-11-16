@@ -5,14 +5,19 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Call;
+import net.java.sip.communicator.service.protocol.CallConference;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.jivesoftware.smackx.jingle.element.Jingle;
 
 /**
  * @author Yana Stamcheva

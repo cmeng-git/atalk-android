@@ -7,11 +7,15 @@ package org.atalk.android.gui.contactlist;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import net.java.sip.communicator.service.contactlist.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
+import net.java.sip.communicator.service.contactlist.MetaContactListException;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

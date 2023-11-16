@@ -5,8 +5,9 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_MIN_LAG_MS;
+import static org.atalk.impl.neomedia.codec.audio.silk.CommonPitchEstDefines.PITCH_EST_NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULBB;
 
 /**
  * Pitch analyzer function.

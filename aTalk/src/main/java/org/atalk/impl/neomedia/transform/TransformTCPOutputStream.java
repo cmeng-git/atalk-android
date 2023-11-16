@@ -24,8 +24,7 @@ public class TransformTCPOutputStream extends RTPConnectorTCPOutputStream
 		implements TransformOutputStream
 {
 	/**
-	 * The {@code TransformOutputStream} which aids this instance in implementing the interface in
-	 * question.
+	 * The {@code TransformOutputStream} which aids this instance in implementing the interface in question.
 	 */
 	private final TransformOutputStreamImpl _impl;
 
@@ -33,8 +32,7 @@ public class TransformTCPOutputStream extends RTPConnectorTCPOutputStream
 	 * Initializes a new <code>TransformTCPOutputStream</code> which is to send packet data out through
 	 * a specific TCP socket.
 	 *
-	 * @param socket
-	 *        the TCP socket used to send packet data out
+	 * @param socket the TCP socket used to send packet data out
 	 */
 	public TransformTCPOutputStream(Socket socket)
 	{

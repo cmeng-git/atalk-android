@@ -5,7 +5,13 @@
  */
 package net.java.sip.communicator.util.account;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
+import net.java.sip.communicator.service.protocol.SecurityAuthority;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
@@ -15,7 +21,10 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.plugin.timberlog.TimberLog;
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

@@ -5,16 +5,21 @@
  */
 package org.atalk.service.neomedia;
 
-import java.awt.Component;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.event.VolumeChangeEvent;
 import org.atalk.service.neomedia.event.VolumeChangeListener;
 
+import java.awt.Component;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.media.*;
+import javax.media.GainChangeEvent;
+import javax.media.GainChangeListener;
+import javax.media.GainControl;
 
 import timber.log.Timber;
 

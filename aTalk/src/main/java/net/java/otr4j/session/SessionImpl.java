@@ -8,13 +8,28 @@ package net.java.otr4j.session;
 
 import android.text.TextUtils;
 
-import net.java.otr4j.*;
+import net.java.otr4j.OtrEngineHost;
+import net.java.otr4j.OtrEngineListener;
+import net.java.otr4j.OtrException;
+import net.java.otr4j.OtrPolicy;
 import net.java.otr4j.crypto.OtrCryptoEngine;
 import net.java.otr4j.crypto.OtrCryptoEngineImpl;
-import net.java.otr4j.io.*;
-import net.java.otr4j.io.messages.*;
+import net.java.otr4j.io.OtrInputStream;
+import net.java.otr4j.io.OtrOutputStream;
+import net.java.otr4j.io.SerializationConstants;
+import net.java.otr4j.io.SerializationUtils;
+import net.java.otr4j.io.messages.AbstractEncodedMessage;
+import net.java.otr4j.io.messages.AbstractMessage;
+import net.java.otr4j.io.messages.DHCommitMessage;
+import net.java.otr4j.io.messages.DataMessage;
+import net.java.otr4j.io.messages.ErrorMessage;
+import net.java.otr4j.io.messages.MysteriousT;
+import net.java.otr4j.io.messages.PlainTextMessage;
+import net.java.otr4j.io.messages.QueryMessage;
 import net.java.otr4j.util.SelectableMap;
-import net.java.sip.communicator.plugin.otr.*;
+import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.plugin.otr.OtrContactManager;
+import net.java.sip.communicator.plugin.otr.ScOtrEngineImpl;
 import net.java.sip.communicator.service.gui.Chat;
 
 import org.atalk.android.R;
@@ -22,14 +37,21 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.ProtocolException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.crypto.interfaces.DHPublicKey;
 

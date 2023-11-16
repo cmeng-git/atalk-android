@@ -6,7 +6,9 @@
  */
 package net.java.otr4j.io.messages;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author George Politis

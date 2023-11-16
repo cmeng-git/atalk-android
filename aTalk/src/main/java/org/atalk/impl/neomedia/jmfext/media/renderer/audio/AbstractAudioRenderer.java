@@ -9,7 +9,9 @@ import net.sf.fmj.media.util.MediaThread;
 
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
-import org.atalk.impl.neomedia.device.*;
+import org.atalk.impl.neomedia.device.AudioSystem;
+import org.atalk.impl.neomedia.device.NotifyDevices;
+import org.atalk.impl.neomedia.device.PlaybackDevices;
 import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 import org.atalk.service.neomedia.VolumeControl;
 
@@ -17,7 +19,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.ByteOrder;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.MediaLocator;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**
@@ -61,7 +67,7 @@ public abstract class AbstractAudioRenderer<T extends AudioSystem>
      * The <code>GainControl</code> through which the volume/gain of the media rendered by this
      * instance is (to be) controlled.
      */
-    private GainControl gainControl;
+    private final GainControl gainControl;
 
     /**
      * The <code>MediaLocator</code> which specifies the playback device to be used by this <code>Renderer</code>.

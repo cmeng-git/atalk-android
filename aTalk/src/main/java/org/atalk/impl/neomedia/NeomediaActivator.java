@@ -6,7 +6,11 @@
 package org.atalk.impl.neomedia;
 
 import net.java.sip.communicator.service.gui.ConfigurationForm;
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationData;
+import net.java.sip.communicator.service.notification.NotificationHandler;
+import net.java.sip.communicator.service.notification.NotificationService;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationHandler;
 import net.java.sip.communicator.service.resources.ResourceManagementServiceUtils;
 import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ServiceUtils;
@@ -21,11 +25,17 @@ import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import timber.log.Timber;
 

@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_ADD_SAT32;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
 
 /**
  * 16th order AR filter. Coefficients are in Q12.

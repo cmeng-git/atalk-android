@@ -1,11 +1,11 @@
 package javax.swing;
 
+import android.app.Dialog;
+import android.content.Context;
+
 import java.awt.Container;
 import java.awt.Frame;
 import java.awt.Rectangle;
-
-import android.app.Dialog;
-import android.content.Context;
 
 public class JDialog extends Dialog implements Accessible {
 	private static final Object defaultLookAndFeelDecoratedKey = new Object();

@@ -13,9 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.text.*;
-
 import org.atalk.service.neomedia.device.MediaDevice;
+
+import java.text.ParseException;
 
 /**
  * Represents an <code>OperationSet</code> giving access to desktop streaming specific functionality.

@@ -7,7 +7,10 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolNames;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountID;
 
 import org.jxmpp.jid.EntityBareJid;

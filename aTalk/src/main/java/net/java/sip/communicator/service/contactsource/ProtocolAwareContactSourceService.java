@@ -15,7 +15,8 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 /**
  * The <code>ProtocolAwareContactSourceService</code> extends the basic

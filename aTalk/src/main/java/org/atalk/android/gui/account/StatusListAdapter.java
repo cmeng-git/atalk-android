@@ -3,8 +3,14 @@ package org.atalk.android.gui.account;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 
@@ -13,8 +19,6 @@ import org.atalk.android.gui.util.AndroidImageUtil;
 
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class StatusListAdapter extends ArrayAdapter<PresenceStatus>
 {

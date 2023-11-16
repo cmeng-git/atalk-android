@@ -10,9 +10,17 @@ import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.util.OSUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import javax.media.*;
+import javax.media.Codec;
+import javax.media.Multiplexer;
+import javax.media.PackageManager;
+import javax.media.PlugInManager;
 
 import timber.log.Timber;
 

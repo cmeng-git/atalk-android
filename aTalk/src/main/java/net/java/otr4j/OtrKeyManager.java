@@ -2,7 +2,8 @@ package net.java.otr4j;
 
 import net.java.otr4j.session.SessionID;
 
-import java.security.*;
+import java.security.KeyPair;
+import java.security.PublicKey;
 /**
  * @author George Politis
  */

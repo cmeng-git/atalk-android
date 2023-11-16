@@ -22,9 +22,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.OnKeyListener;
-import android.webkit.*;
+import android.view.ViewGroup;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,7 +38,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.android.*;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
 

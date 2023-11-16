@@ -1,20 +1,45 @@
 package javax.media;
 
-import net.sf.fmj.media.*;
-import net.sf.fmj.media.protocol.*;
+import net.sf.fmj.media.MergingCaptureDevicePullBufferDataSource;
+import net.sf.fmj.media.MergingCaptureDevicePullDataSource;
+import net.sf.fmj.media.MergingCaptureDevicePushBufferDataSource;
+import net.sf.fmj.media.MergingCaptureDevicePushDataSource;
+import net.sf.fmj.media.MergingPullBufferDataSource;
+import net.sf.fmj.media.MergingPullDataSource;
+import net.sf.fmj.media.MergingPushBufferDataSource;
+import net.sf.fmj.media.MergingPushDataSource;
+import net.sf.fmj.media.protocol.CloneableCaptureDevicePullBufferDataSource;
+import net.sf.fmj.media.protocol.CloneableCaptureDevicePullDataSource;
+import net.sf.fmj.media.protocol.CloneableCaptureDevicePushBufferDataSource;
+import net.sf.fmj.media.protocol.CloneableCaptureDevicePushDataSource;
+import net.sf.fmj.media.protocol.CloneablePullBufferDataSource;
+import net.sf.fmj.media.protocol.CloneablePullDataSource;
+import net.sf.fmj.media.protocol.CloneablePushBufferDataSource;
+import net.sf.fmj.media.protocol.CloneablePushDataSource;
 import net.sf.fmj.utility.LoggerSingleton;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.media.control.TrackControl;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullDataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushDataSource;
+import javax.media.protocol.SourceCloneable;
 import javax.media.protocol.URLDataSource;
-import javax.media.protocol.*;
 
 import timber.log.Timber;
 

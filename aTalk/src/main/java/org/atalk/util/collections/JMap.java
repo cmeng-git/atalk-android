@@ -16,7 +16,8 @@
 
 package org.atalk.util.collections;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provides helpers for creating a Map easily in place.  Java 9 has

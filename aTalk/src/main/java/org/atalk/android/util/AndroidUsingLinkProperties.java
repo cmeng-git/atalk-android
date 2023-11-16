@@ -35,8 +35,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
 /**
  * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher.
  * Use {@link #setup(Context)} to setup this mechanism.
@@ -72,7 +70,8 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
     @Override
     public boolean isAvailable()
     {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+        // return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+		return true;
     }
 
     private Network getActiveNetwork()
@@ -153,8 +152,6 @@ public class AndroidUsingLinkProperties extends AbstractDnsServerLookupMechanism
         return out;
     }
 
-    @SuppressLint("ObsoleteSdkInt")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static boolean hasDefaultRoute(LinkProperties linkProperties)
     {
         for (RouteInfo route : linkProperties.getRoutes()) {

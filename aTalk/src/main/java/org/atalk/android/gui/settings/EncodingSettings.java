@@ -13,10 +13,10 @@ import org.atalk.android.gui.account.settings.MediaEncodingActivity;
 import org.atalk.android.gui.account.settings.MediaEncodingsFragment;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
-import org.atalk.util.MediaType;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.util.MediaType;
 
 import java.util.List;
 

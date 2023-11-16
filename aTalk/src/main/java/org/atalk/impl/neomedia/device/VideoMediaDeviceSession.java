@@ -1567,15 +1567,15 @@ public class VideoMediaDeviceSession extends MediaDeviceSession
          * <code>SizeChangeVideoEvent</code> because <code>Player</code> is unable to do it when this
          * <code>SwScale</code> is scaling to a specific <code>outputSize</code>.
          *
-         * @param input input buffer
-         * @param output output buffer
+         * @param inBuf input buffer
+         * @param outBuf output buffer
          * @return the native <code>PaSampleFormat</code>
          * @see SwScale#process(Buffer, Buffer)
          */
         @Override
-        public int process(Buffer input, Buffer output)
+        public int process(Buffer inBuf, Buffer outBuf)
         {
-            int result = super.process(input, output);
+            int result = super.process(inBuf, outBuf);
             if (result == BUFFER_PROCESSED_OK) {
                 Format inputFormat = getInputFormat();
 

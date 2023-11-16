@@ -13,10 +13,18 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallPeerAdapter;
+import net.java.sip.communicator.service.protocol.event.CallPeerChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerListener;
+import net.java.sip.communicator.service.protocol.event.RemoteControlGrantedEvent;
+import net.java.sip.communicator.service.protocol.event.RemoteControlListener;
+import net.java.sip.communicator.service.protocol.event.RemoteControlRevokedEvent;
 
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Represents a default/base implementation of <code>OperationSetDesktopSharingClient</code> which

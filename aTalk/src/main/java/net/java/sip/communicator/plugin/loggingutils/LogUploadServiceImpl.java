@@ -111,7 +111,7 @@ public class LogUploadServiceImpl implements LogUploadService
         }
 
         VersionService versionSerVice = JabberActivator.getVersionService();
-        Timber.i("Device installed with aTalk-android version: %s, version code: %s",
+        Timber.i("Device installed with aTalk version: %s, version code: %s",
                 versionSerVice.getCurrentVersion(), versionSerVice.getCurrentVersionCode());
     }
 

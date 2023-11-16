@@ -13,7 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.sip;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.SecurityAccountRegistration;
 import net.java.sip.communicator.util.ServiceUtils;
 
 import org.apache.commons.lang3.StringUtils;

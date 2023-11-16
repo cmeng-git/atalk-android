@@ -7,18 +7,23 @@ package org.atalk.impl.neomedia.device.util;
 
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
-import android.hardware.camera2.*;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Size;
 import android.view.Surface;
 
 import org.atalk.android.aTalkApp;
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 
-import java.util.*;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -29,8 +34,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class CameraUtils
-{
+public class CameraUtils {
     /**
      * Separator use when save camera formats to DB. Do not change
      */
@@ -42,7 +46,7 @@ public class CameraUtils
     private static PreviewSurfaceProvider surfaceProvider;
 
     /**
-     * The list of sizes from which the first supported by the respective {@link Camera} is to be
+     * The list of sizes from which the first supported by the respective {@link Camera2} is to be
      * chosen as the size of the one and only <code>Format</code> supported by the associated
      * <code>MediaRecorder</code> <code>CaptureDevice</code>.
      *
@@ -65,10 +69,10 @@ public class CameraUtils
      * Returns <code>true</code> if given <code>size</code> is on the list of preferred sizes.
      *
      * @param size the size to check.
+     *
      * @return <code>true</code> if given <code>size</code> is on the list of preferred sizes.
      */
-    public static boolean isPreferredSize(Dimension size)
-    {
+    public static boolean isPreferredSize(Dimension size) {
         for (Dimension s : PREFERRED_SIZES) {
             if (s.width == size.width && s.height == size.height) {
                 return true;
@@ -77,8 +81,7 @@ public class CameraUtils
         return false;
     }
 
-    public static boolean isPreferredSize(Size size)
-    {
+    public static boolean isPreferredSize(Size size) {
         for (Dimension s : PREFERRED_SIZES) {
             if (s.width == size.getWidth() && s.height == size.getHeight()) {
                 return true;
@@ -96,10 +99,10 @@ public class CameraUtils
      *
      * @param sizes the <code>Iterable</code> of <code>Size</code>s which is to be represented as a
      * human-readable <code>String</code>
+     *
      * @return the human-readable <code>String</code> representation of the specified <code>sizes</code>
      */
-    public static String cameraSizesToString(Iterable<Size> sizes)
-    {
+    public static String cameraSizesToString(Iterable<Size> sizes) {
         StringBuilder s = new StringBuilder();
 
         for (Size size : sizes) {
@@ -110,8 +113,7 @@ public class CameraUtils
         return s.toString();
     }
 
-    public static String cameraSizesToString(Size[] sizes)
-    {
+    public static String cameraSizesToString(Size[] sizes) {
         StringBuilder s = new StringBuilder();
         for (Size size : sizes) {
             if (s.length() != 0)
@@ -128,10 +130,10 @@ public class CameraUtils
      *
      * @param sizes the <code>Iterable</code> of <code>Dimension</code>s which is to be represented as a
      * human-readable <code>String</code>
+     *
      * @return the human-readable <code>String</code> representation of the specified <code>sizes</code>
      */
-    public static String dimensionsToString(Iterable<Dimension> sizes)
-    {
+    public static String dimensionsToString(Iterable<Dimension> sizes) {
         StringBuilder s = new StringBuilder();
         for (Dimension size : sizes) {
             if (s.length() != 0)
@@ -145,10 +147,10 @@ public class CameraUtils
      * Returns the string representation of the formats contained in given list.
      *
      * @param formats the list of image formats integers defined in <code>ImageFormat</code> class.
+     *
      * @return the string representation of the formats contained in given list.
      */
-    public static String cameraImgFormatsToString(List<Integer> formats)
-    {
+    public static String cameraImgFormatsToString(List<Integer> formats) {
         StringBuilder s = new StringBuilder();
 
         for (int format : formats) {
@@ -192,8 +194,7 @@ public class CameraUtils
         return s.toString();
     }
 
-    public static List<Integer> stringToCameraFormat(String sFormat)
-    {
+    public static List<Integer> stringToCameraFormat(String sFormat) {
         List<Integer> sFormats = new ArrayList<>();
         if (!TextUtils.isEmpty(sFormat)) {
             String[] pfs = sFormat.split(FORMAT_SEPARATOR);
@@ -213,7 +214,7 @@ public class CameraUtils
                         break;
                     case "PRIVATE":
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                            sFormats.add(ImageFormat.PRIVATE); //API-23
+                            sFormats.add(ImageFormat.PRIVATE); //for API-23
                         break;
                     case "YUV_420_888":
                         sFormats.add(ImageFormat.YUV_420_888);
@@ -235,8 +236,7 @@ public class CameraUtils
      *
      * @param provider the surface provider to set
      */
-    public static void setPreviewSurfaceProvider(PreviewSurfaceProvider provider)
-    {
+    public static void setPreviewSurfaceProvider(PreviewSurfaceProvider provider) {
         surfaceProvider = provider;
     }
 
@@ -249,8 +249,7 @@ public class CameraUtils
      *
      * @return camera preview orientation value in degrees that can be used to adjust the preview orientation
      */
-    public static int getPreviewOrientation(String cameraId)
-    {
+    public static int getPreviewOrientation(String cameraId) {
         // rotation current {@link android.view.Display} rotation value.
         int displayRotation = surfaceProvider.getDisplayRotation();
         int previewOrientation = 0;
@@ -298,10 +297,10 @@ public class CameraUtils
      *
      * @param previewSize requested preview size
      * @param sizes List of camera supported sizes
+     *
      * @return optimized preview size based on camera capability
      */
-    public static Dimension getOptimalPreviewSize(Dimension previewSize, Size[] sizes)
-    {
+    public static Dimension getOptimalPreviewSize(Dimension previewSize, Size[] sizes) {
         if (sizes == null)
             return previewSize;
 
@@ -346,8 +345,7 @@ public class CameraUtils
      * @param cameraId camera ID
      * @param sizes list of camera support video resolutions
      */
-    public static void setCameraSupportSize(String cameraId, Size[] sizes)
-    {
+    public static void setCameraSupportSize(String cameraId, Size[] sizes) {
         cameraSupportSize.put(cameraId, sizes);
     }
 
@@ -355,15 +353,14 @@ public class CameraUtils
      * Get the list of camera video resolutions supported by cameraId
      *
      * @param cameraId the request camera Id resolutions
+     *
      * @return List of camera video resolutions supported by cameraId
      */
-    public static Size[] getSupportSizeForCameraId(String cameraId)
-    {
+    public static Size[] getSupportSizeForCameraId(String cameraId) {
         return cameraSupportSize.get(cameraId);
     }
 
-    public static boolean getSupportedSizes(String vs, List<Dimension> sizes)
-    {
+    public static boolean getSupportedSizes(String vs, List<Dimension> sizes) {
         if (!TextUtils.isEmpty(vs)) {
             String[] videoSizes = vs.split(FORMAT_SEPARATOR);
             for (String videoSize : videoSizes) {

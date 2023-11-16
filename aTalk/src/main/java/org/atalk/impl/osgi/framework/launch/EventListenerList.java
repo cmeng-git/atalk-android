@@ -6,12 +6,12 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
+import org.osgi.framework.Bundle;
+
 import java.lang.reflect.Array;
 import java.util.EventListener;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.osgi.framework.Bundle;
 
 /**
  *

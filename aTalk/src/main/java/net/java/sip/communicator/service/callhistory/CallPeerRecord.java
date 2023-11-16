@@ -18,7 +18,6 @@ package net.java.sip.communicator.service.callhistory;
 import net.java.sip.communicator.service.protocol.CallPeerState;
 
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 

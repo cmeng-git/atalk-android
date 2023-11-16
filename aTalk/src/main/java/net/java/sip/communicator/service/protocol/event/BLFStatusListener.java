@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Listens for changes in the BLFStatus of the monitored lines we have subscribed for.

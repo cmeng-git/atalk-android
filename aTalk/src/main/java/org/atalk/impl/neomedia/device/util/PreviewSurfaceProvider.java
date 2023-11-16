@@ -6,7 +6,12 @@
 package org.atalk.impl.neomedia.device.util;
 
 import android.hardware.camera2.CameraDevice;
-import android.view.*;
+import android.view.Display;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -2,13 +2,17 @@ package org.atalk.android.plugin.textspeech;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 
 import org.atalk.android.aTalkApp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class TTSService extends Service implements TextToSpeech.OnInitListener
 {

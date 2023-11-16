@@ -16,14 +16,22 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.actionbar.ActionBarToggleFragment;
-import org.atalk.impl.neomedia.*;
+import org.atalk.impl.neomedia.MediaServiceImpl;
+import org.atalk.impl.neomedia.MediaUtils;
+import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.service.neomedia.codec.EncodingConfiguration;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.MediaType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Activity allows user to edit audio or video encodings settings and set their priority.

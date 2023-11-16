@@ -11,7 +11,12 @@ import net.java.sip.communicator.service.protocol.CallConference;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.util.MediaType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EventObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An event class representing that an incoming, or an outgoing call has been created.

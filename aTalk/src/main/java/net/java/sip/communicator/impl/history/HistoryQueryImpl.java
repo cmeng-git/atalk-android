@@ -6,10 +6,14 @@
 package net.java.sip.communicator.impl.history;
 
 import net.java.sip.communicator.service.history.HistoryQuery;
-import net.java.sip.communicator.service.history.event.*;
+import net.java.sip.communicator.service.history.event.HistoryQueryListener;
+import net.java.sip.communicator.service.history.event.HistoryQueryStatusEvent;
+import net.java.sip.communicator.service.history.event.HistoryRecordEvent;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * The <code>HistoryQueryImpl</code> is an implementation of the <code>HistoryQuery</code> interface. It

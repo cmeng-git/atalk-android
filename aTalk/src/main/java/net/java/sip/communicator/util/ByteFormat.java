@@ -5,9 +5,12 @@
  */
 package net.java.sip.communicator.util;
 
-import java.text.*;
-
 import androidx.annotation.NonNull;
+
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 
 /**
  * Acknowledgment: This file was originally provided by the Ignite Realtime community, and was part

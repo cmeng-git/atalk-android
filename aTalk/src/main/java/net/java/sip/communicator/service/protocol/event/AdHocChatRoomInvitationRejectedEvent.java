@@ -13,9 +13,11 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetAdHocMultiUserChat;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>AdHocChatRoomInvitationRejectedEvent</code>s indicates the reception of a rejection of an

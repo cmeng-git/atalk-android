@@ -320,6 +320,28 @@ public abstract class AbstractRTPConnector implements RTPConnector
     }
 
     /**
+     * Provides a dummy implementation to {@link RTPConnector#setReceiveBufferSize(int)}.
+     *
+     * @param size ignored.
+     */
+    public void setReceiveBufferSize(int size)
+            throws IOException
+    {
+        // Nothing should be done here :-)
+    }
+
+    /**
+     * Provides a dummy implementation to {@link RTPConnector#setSendBufferSize(int)}.
+     *
+     * @param size ignored.
+     */
+    public void setSendBufferSize(int size)
+            throws IOException
+    {
+        // Nothing should be done here :-)
+    }
+
+    /**
      * Removes a target from our session. If a target is removed, there will be no data sent to that address.
      *
      * @param target Destination target to be removed
@@ -344,28 +366,6 @@ public abstract class AbstractRTPConnector implements RTPConnector
 
         if (dataOutputStream != null)
             dataOutputStream.removeTargets();
-    }
-
-    /**
-     * Provides a dummy implementation to {@link RTPConnector#setReceiveBufferSize(int)}.
-     *
-     * @param size ignored.
-     */
-    public void setReceiveBufferSize(int size)
-            throws IOException
-    {
-        // Nothing should be done here :-)
-    }
-
-    /**
-     * Provides a dummy implementation to {@link RTPConnector#setSendBufferSize(int)}.
-     *
-     * @param size ignored.
-     */
-    public void setSendBufferSize(int size)
-            throws IOException
-    {
-        // Nothing should be done here :-)
     }
 
     /**

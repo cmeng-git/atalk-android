@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import org.atalk.android.R;
-import org.atalk.android.gui.actionbar.ActionBarUtil;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.service.osgi.OSGiActivity;
 

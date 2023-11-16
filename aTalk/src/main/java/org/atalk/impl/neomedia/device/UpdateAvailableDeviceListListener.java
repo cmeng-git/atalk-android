@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import java.util.*;
+import java.util.EventListener;
 
 /**
  * Represents a listener which is to be notified before and after an associated

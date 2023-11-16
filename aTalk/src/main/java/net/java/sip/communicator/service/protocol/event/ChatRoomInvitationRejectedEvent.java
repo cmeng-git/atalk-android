@@ -13,11 +13,13 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 
 import org.jxmpp.jid.EntityBareJid;
 
-import java.util.*;
+import java.util.Date;
+import java.util.EventObject;
 
 /**
  * <code>ChatRoomInvitationRejectedEvent</code>s indicates the reception of a rejection of an

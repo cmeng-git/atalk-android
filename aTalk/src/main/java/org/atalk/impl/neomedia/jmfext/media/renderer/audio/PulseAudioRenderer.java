@@ -16,7 +16,12 @@ import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Objects;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.MediaLocator;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 /**
@@ -480,7 +485,6 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
                 writableSize = length;
 
             GainControl gainControl = getGainControl();
-
             if (gainControl != null)
                 applyGain(gainControl, data, offset, writableSize);
 
@@ -537,9 +541,7 @@ public class PulseAudioRenderer extends AbstractAudioRenderer<PulseAudioSystem>
      */
     private void setStreamVolume(long stream, float level)
     {
-        int volume
-                = PA.sw_volume_from_linear(level * (BasicVolumeControl.MAX_VOLUME_PERCENT / 100));
-
+        int volume = PA.sw_volume_from_linear(level * (BasicVolumeControl.MAX_VOLUME_PERCENT / 100));
         PA.cvolume_set(cvolume, channels, volume);
 
         long o = PA.context_set_sink_input_volume(audioSystem.getContext(),

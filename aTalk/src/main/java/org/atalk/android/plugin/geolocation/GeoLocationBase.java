@@ -36,7 +36,6 @@ import androidx.annotation.NonNull;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.plugin.geolocation.GeoLocationRequest.GeoLocationRequestBuilder;
 
 import java.util.Locale;
 
@@ -194,7 +193,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
                     stopLocationUpdates();
                 }
                 mShowMap = true;
-                GeoLocationRequest geoLocationRequest = new GeoLocationRequestBuilder()
+                GeoLocationRequest geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
                         .setLocationFetchMode(mLocationFetchMode)
                         .setAddressRequest(true)
                         .setLocationUpdateMinTime(0L)
@@ -214,7 +213,7 @@ public class GeoLocationBase extends BaseActivity implements View.OnClickListene
                 else {
                     updateSendButton(false);
                     mShowMap = true;
-                    geoLocationRequest = new GeoLocationRequestBuilder()
+                    geoLocationRequest = new GeoLocationRequest.GeoLocationRequestBuilder()
                             .setLocationFetchMode(mLocationFetchMode)
                             .setAddressRequest(true)
                             .setLocationUpdateMinTime(sendTimeInterval * 1000L)

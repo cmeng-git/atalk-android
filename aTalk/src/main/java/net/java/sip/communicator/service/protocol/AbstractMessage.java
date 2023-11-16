@@ -212,7 +212,7 @@ public abstract class AbstractMessage implements IMessage
      */
     public int getSize()
     {
-        return getRawData().length;
+        return rawData.length;
     }
 
     /*

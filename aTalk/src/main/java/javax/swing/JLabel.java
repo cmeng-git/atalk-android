@@ -1,18 +1,18 @@
 package javax.swing;
 
+import android.util.AttributeSet;
+
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.BreakIterator;
 import java.util.Locale;
 
-import java.awt.Insets;
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import javax.swing.plaf.LabelUI;
-
-import android.util.AttributeSet;
 
 public class JLabel extends JComponent implements SwingConstants, Accessible
 {

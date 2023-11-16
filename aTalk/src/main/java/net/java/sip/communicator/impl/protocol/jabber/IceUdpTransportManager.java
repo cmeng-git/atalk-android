@@ -668,7 +668,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
      * @param stream the {@link IceMediaStream} that we'd like to describe in XML.
      * @return the {@link IceUdpTransport} that we
      */
-    protected ExtensionElement createTransport(IceMediaStream stream)
+    private ExtensionElement createTransport(IceMediaStream stream)
     {
         Agent iceAgent = stream.getParentAgent();
         IceUdpTransport.Builder tpBuilder = IceUdpTransport.getBuilder()
@@ -961,7 +961,6 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                     continue;
                 }
 
-                Component component = stream.getComponent(candidate.getComponent());
                 String relAddr;
                 int relPort;
                 TransportAddress relatedAddress = null;
@@ -971,6 +970,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
                 }
 
                 // must check for null else NPE in component.findRemoteCandidate()
+                Component component = stream.getComponent(candidate.getComponent());
                 if (component != null) {
                     // Timber.d("Process valid component candidate type: %s: %s", media, iceAgent.getStream(media));// candidate.toXML());
                     RemoteCandidate relatedCandidate = component.findRemoteCandidate(relatedAddress);

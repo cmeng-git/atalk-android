@@ -1,6 +1,6 @@
 package org.atalk.impl.neomedia.recording;
 
-import java.io.*;
+import java.io.IOException;
 
 public class WebmWriter
 {

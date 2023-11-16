@@ -15,23 +15,6 @@
  */
 package org.atalk.impl.neomedia.codec.video.h264;
 
-import net.sf.fmj.media.AbstractCodec;
-
-import org.atalk.android.plugin.timberlog.TimberLog;
-import org.atalk.impl.neomedia.codec.AbstractCodec2;
-import org.atalk.impl.neomedia.codec.FFmpeg;
-import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
-import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
-import org.atalk.service.neomedia.codec.Constants;
-import org.atalk.service.neomedia.control.KeyFrameControl;
-
-import java.util.*;
-
-import javax.media.*;
-import javax.media.format.VideoFormat;
-
-import timber.log.Timber;
-
 import static org.atalk.impl.neomedia.codec.video.h264.H264.NAL_PREFIX;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.kFuA;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.kFuAHeaderSize;
@@ -44,6 +27,30 @@ import static org.atalk.impl.neomedia.codec.video.h264.H264.kStapA;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.kStapAHeaderSize;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.kTypeMask;
 import static org.atalk.impl.neomedia.codec.video.h264.H264.verifyStapANaluLengths;
+
+import net.sf.fmj.media.AbstractCodec;
+
+import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.neomedia.codec.AbstractCodec2;
+import org.atalk.impl.neomedia.codec.FFmpeg;
+import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;
+import org.atalk.impl.neomedia.format.VideoMediaFormatImpl;
+import org.atalk.service.neomedia.codec.Constants;
+import org.atalk.service.neomedia.control.KeyFrameControl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.VideoFormat;
+
+import timber.log.Timber;
 
 /**
  * Implements <code>Codec</code> to represent a depacketizer of H.264 RTP packets into
@@ -710,7 +717,7 @@ public class DePacketizer extends AbstractCodec2
         if (this.requestKeyFrame != requestKeyFrame) {
             this.requestKeyFrame = requestKeyFrame;
 
-            if ((this.requestKeyFrame) && (requestKeyFrameThread == null)) {
+            if (this.requestKeyFrame && (requestKeyFrameThread == null)) {
                 requestKeyFrameThread = new Thread()
                 {
                     @Override

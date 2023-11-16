@@ -4,11 +4,20 @@
  * Distributable under LGPL license. See terms of license at gnu.org.
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.*;
 
-import java.util.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.CNG_BUF_MASK_MAX;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.CNG_GAIN_SMTH_Q16;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.CNG_NLSF_SMTH_Q16;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_FRAME_LENGTH;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NB_SUBFR;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NO_VOICE_ACTIVITY;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWB;
+import static org.atalk.impl.neomedia.codec.audio.silk.Macros.SKP_SMULWW;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_assert;
+import static org.atalk.impl.neomedia.codec.audio.silk.Typedef.SKP_int16_MAX;
+
+import java.util.Arrays;
 
 /**
  * SILK CNG.

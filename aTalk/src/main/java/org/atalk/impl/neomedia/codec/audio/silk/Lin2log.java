@@ -5,8 +5,6 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Macros.*;
-
 /**
  * Convert input to a log scale
  *

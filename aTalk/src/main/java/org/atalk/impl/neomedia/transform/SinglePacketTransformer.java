@@ -39,12 +39,12 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     /**
      * The number of exceptions caught in {@link #reverseTransform(RawPacket)}.
      */
-    private AtomicInteger exceptionsInReverseTransform = new AtomicInteger();
+    private final AtomicInteger exceptionsInReverseTransform = new AtomicInteger();
 
     /**
      * The number of exceptions caught in {@link #transform(RawPacket)}.
      */
-    private AtomicInteger exceptionsInTransform = new AtomicInteger();
+    private final AtomicInteger exceptionsInTransform = new AtomicInteger();
 
     /**
      * The idea is to have <code>PacketTransformer</code> implementations strictly associated with a

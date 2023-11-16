@@ -1,5 +1,24 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.2.2 (302020)
+Release Date:   11/16/2023
+Author:         cmeng
+- Fix xml:lang attribute error in stanza sending when user customizes 'regional preference' settings
+- Fix 'Auto generate resource' when the AUTO_GENERATE_RESOURCE property in DB does not exist
+  protocol.jabber.AUTO_GENERATE_RESOURCE=true in atalk-defaults.properties files
+
+- Merged CallEnded class into VideoCallActivity class
+- Auto return to contactList UI, 3 seconds after call has ended.
+
+- Minimize use of android unsupported java classes e.g. java.jwt.Component, javax.swing.JComponent
+- Update osmdroid-android:6.1.14 to 6.1.17
+- Upgrade jni libraries sources for:
+  * ffmpeg 5.1.2 to 5.1.4
+  * libvpx 1.13.0 to 1.13.1
+
+- aTalk is not compatible with API-34 build for Electric Eel SDE; missing dx, dx.jar and aapt2 not compatible
+
+=========================================================================
 Version:        3.2.1 (302010)
 Release Date:   07/03/2023
 Author:         cmeng

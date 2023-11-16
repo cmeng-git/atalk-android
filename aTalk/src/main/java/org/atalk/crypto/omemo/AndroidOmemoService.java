@@ -16,14 +16,20 @@
  */
 package org.atalk.crypto.omemo;
 
-import net.java.sip.communicator.impl.protocol.jabber.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicInstantMessagingJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smackx.omemo.*;
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jxmpp.jid.BareJid;
 
 import java.util.SortedSet;

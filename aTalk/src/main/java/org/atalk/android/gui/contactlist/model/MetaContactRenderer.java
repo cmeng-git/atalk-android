@@ -9,8 +9,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
 import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations.SubscriptionStatus;
+import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
+import net.java.sip.communicator.service.protocol.OperationSetVideoTelephony;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.util.StatusUtil;
 
 import org.apache.commons.lang3.StringUtils;

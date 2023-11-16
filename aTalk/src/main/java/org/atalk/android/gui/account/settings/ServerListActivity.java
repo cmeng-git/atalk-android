@@ -8,18 +8,24 @@ package org.atalk.android.gui.account.settings;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.ListFragment;
 
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
 import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.BundleContext;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.*;
 
 /**
  * The activity allows user to edit STUN or Jingle Nodes list of the Jabber account.

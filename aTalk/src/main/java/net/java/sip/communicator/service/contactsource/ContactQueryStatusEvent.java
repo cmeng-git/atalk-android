@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * The <code>ContactQueryStatusEvent</code> is triggered each time a

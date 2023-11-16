@@ -5,14 +5,6 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.quicktime;
 
-import java.io.*;
-
-import javax.media.*;
-import javax.media.control.*;
-import javax.media.format.*;
-import javax.media.protocol.*;
-
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.video.AVFrame;
@@ -29,6 +21,19 @@ import org.atalk.impl.neomedia.quicktime.NSMutableDictionary;
 import org.atalk.impl.neomedia.quicktime.QTCaptureDecompressedVideoOutput;
 import org.atalk.impl.neomedia.quicktime.QTCaptureOutput;
 import org.atalk.impl.neomedia.quicktime.QTSampleBuffer;
+
+import java.awt.Dimension;
+import java.io.IOException;
+
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.control.FormatControl;
+import javax.media.control.FrameRateControl;
+import javax.media.format.RGBFormat;
+import javax.media.format.VideoFormat;
+import javax.media.format.YUVFormat;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Implements a <code>PushBufferStream</code> using QuickTime/QTKit.

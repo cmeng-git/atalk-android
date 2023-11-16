@@ -9,6 +9,7 @@ import static org.atalk.impl.neomedia.transform.dtls.DtlsControlImpl.DEFAULT_SIG
 
 import net.java.sip.communicator.util.UtilActivator;
 
+import org.atalk.impl.neomedia.transform.zrtp.ZrtpControlImpl;
 import org.atalk.service.neomedia.SDesControl;
 import org.atalk.service.neomedia.SrtpControlType;
 
@@ -340,10 +341,7 @@ public abstract class SecurityAccountRegistration implements Serializable
 
         // Load ZRTP encryption parameters
         setSipZrtpAttribute(accountID.getAccountPropertyBoolean(ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE, true));
-        mZIDSalt = accountID.getAccountPropertyString(ProtocolProviderFactory.ZID_SALT);
-        if (mZIDSalt == null) {
-            accountID.storeAccountProperty(ProtocolProviderFactory.ZID_SALT, randomZIDSalt());
-        }
+        mZIDSalt = ZrtpControlImpl.getAccountZIDSalt(accountID);
 
         // Load DTLS_SRTP TlsCertificateSA from DB or use DEFAULT_SIGNATURE_ALGORITHM if none is defined
         mTlsCertificateSA = accountID.getAccountPropertyString(

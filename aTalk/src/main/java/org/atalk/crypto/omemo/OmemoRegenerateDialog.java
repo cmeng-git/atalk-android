@@ -30,7 +30,11 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 

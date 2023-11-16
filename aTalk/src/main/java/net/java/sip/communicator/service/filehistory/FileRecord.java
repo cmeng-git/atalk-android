@@ -9,7 +9,9 @@ import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.Contact;
 
 import java.io.File;
-import java.util.*;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.HashMap;
 
 /**
  * Structure used for encapsulating data when writing or reading File History Data.

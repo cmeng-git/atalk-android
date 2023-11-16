@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -141,6 +142,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      */
     private CallVolumeCtrlFragment callVolumeControl;
 
+    private CallTimerFragment callTimer;
+
     /**
      * Auto-hide controller fragment for call control buttons. It is attached when remote video
      * covers most part of the screen.
@@ -163,8 +166,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     private String mCallIdentifier;
 
     /**
-     * Instance holds call state to be displayed in <code>CallEnded</code> fragment. Call objects will
-     * be no longer available after the call has ended.
+     * Instance holds call state to be displayed in <code>VideoCallActivity</code> fragment.
+     * Call objects will be no longer available after the call has ended.
      */
     static CallStateHolder callState = new CallStateHolder();
 
@@ -204,7 +207,9 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
     private ImageView peerAvatar;
     private ImageView microphoneButton;
+    private ImageView speakerphoneButton;
     private View padlockGroupView;
+    private TextView callEndReason;
 
     /**
      * Called when the activity is starting. Initializes the corresponding call interface.
@@ -248,7 +253,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         findViewById(R.id.button_call_back_to_chat).setOnClickListener(this);
 
         // Initialize speakerphone button action
-        View speakerphoneButton = findViewById(R.id.button_speakerphone);
+        speakerphoneButton = findViewById(R.id.button_speakerphone);
         speakerphoneButton.setOnClickListener(this);
         speakerphoneButton.setOnLongClickListener(this);
 
@@ -262,7 +267,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         findViewById(R.id.button_call_hold).setOnClickListener(this);
         findViewById(R.id.button_call_hangup).setOnClickListener(this);
         findViewById(R.id.button_call_transfer).setOnClickListener(this);
-        findViewById(R.id.clickable_toast).setOnClickListener(this);
+
+        // set up clickable toastView for onSaveInstanceState in case phone rotate
+        View toastView = findViewById(R.id.clickable_toast);
+        sasToastControl = new ClickableToastController(toastView, this, R.id.clickable_toast);
+        toastView.setOnClickListener(this);
+
+        callEndReason = findViewById(R.id.callEndReason);
+        callEndReason.setVisibility(View.GONE);
 
         peerAvatar = findViewById(R.id.calleeAvatar);
         mBackToChat = false;
@@ -270,32 +282,31 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         padlockGroupView = findViewById(R.id.security_group);
         padlockGroupView.setOnClickListener(this);
 
-        // set up clickable toastView for onSaveInstanceState in case phone rotate
-        View toastView = findViewById(R.id.clickable_toast);
-        sasToastControl = new ClickableToastController(toastView, this, R.id.clickable_toast);
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.addFragmentOnAttachListener(this);
 
         if (savedInstanceState == null) {
             videoFragment = new VideoHandlerFragment();
             callVolumeControl = new CallVolumeCtrlFragment();
+            callTimer = new CallTimerFragment();
+
             /*
              * Adds a fragment that turns on and off the screen when proximity sensor detects FAR/NEAR distance.
              */
             fragmentManager.beginTransaction()
                     .add(callVolumeControl, VOLUME_CTRL_TAG)
                     .add(new ProximitySensorFragment(), PROXIMITY_FRAGMENT_TAG)
-                    /* Adds the fragment that handles video display logic */
+                    /* Fragment that handles video display logic */
                     .add(videoFragment, VIDEO_FRAGMENT_TAG)
-                    /* Adds the fragment that handles call duration logic */
-                    .add(new CallTimerFragment(), TIMER_FRAGMENT_TAG)
+                    /* Fragment that handles call duration logic */
+                    .add(callTimer, TIMER_FRAGMENT_TAG)
                     .commit();
         }
         else {
             // Retrieve restored auto hide fragment
             autoHideControl = (AutoHideController) fragmentManager.findFragmentByTag(AUTO_HIDE_TAG);
             callVolumeControl = (CallVolumeCtrlFragment) fragmentManager.findFragmentByTag(VOLUME_CTRL_TAG);
+            callTimer = (CallTimerFragment) fragmentManager.findFragmentByTag(TIMER_FRAGMENT_TAG);
         }
     }
 
@@ -346,8 +357,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         // Stop call broadcast receiver
         if (callNotificationControl != null) {
             aTalkApp.getGlobalContext().unregisterReceiver(callNotificationControl);
-            callNotificationControl = null;
             Timber.d("callNotificationControl unregistered: %s; %s", mCallIdentifier, callNotificationControl);
+            callNotificationControl = null;
         }
 
         // Clears the in call notification
@@ -459,7 +470,14 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
                 }
                 // Remove auto hide fragment
                 ensureAutoHideFragmentDetached();
-                getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
+                // !!! below is not working in kotlin code; merged with this activity
+                // getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new CallEnded()).commit();
+
+                // auto exit 3 seconds after call ended
+                new Handler().postDelayed(() -> {
+                    finish();
+                }, 3000);
+
             });
         }).start();
     }
@@ -540,12 +558,12 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
             case R.id.button_call_hangup:
                 // Start the hang up Thread, Activity will be closed later on call ended event
-                if (mCall != null) {
-                    CallManager.hangupCall(mCall);
-                }
-                // if call thread is null, then just exit the activity
-                else {
+                if (mCall == null || CallState.CALL_ENDED == mCall.getCallState()) {
                     finish();
+                }
+                else {
+                    CallManager.hangupCall(mCall);
+                    setErrorReason(callState.errorReason);
                 }
                 break;
 
@@ -628,14 +646,13 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * Updates speakerphone button status.
      */
     private void updateSpeakerphoneStatus() {
-        final ImageView speakerPhoneButton = findViewById(R.id.button_speakerphone);
         if (aTalkApp.getAudioManager().isSpeakerphoneOn()) {
-            speakerPhoneButton.setImageResource(R.drawable.call_speakerphone_on_dark);
-            speakerPhoneButton.setBackgroundColor(0x50000000);
+            speakerphoneButton.setImageResource(R.drawable.call_speakerphone_on_dark);
+            speakerphoneButton.setBackgroundColor(0x50000000);
         }
         else {
-            speakerPhoneButton.setImageResource(R.drawable.call_receiver_on_dark);
-            speakerPhoneButton.setBackgroundColor(Color.TRANSPARENT);
+            speakerphoneButton.setImageResource(R.drawable.call_receiver_on_dark);
+            speakerphoneButton.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -785,11 +802,8 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         runOnUiThread(() -> {
             callState.errorReason = reason;
 
-            TextView errorReason = findViewById(R.id.callErrorReason);
-            if (errorReason != null) {
-                errorReason.setText(reason);
-                errorReason.setVisibility(View.VISIBLE);
-            }
+            callEndReason.setText(reason);
+            callEndReason.setVisibility(View.VISIBLE);
         });
     }
 
@@ -849,12 +863,6 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         // It cannot be hidden here, because the preview surface will be destroyed and camera
         // recording system will crash
     }
-
-    // 	Dynamic get videoFragment can sometimes return null;
-    //	private VideoHandlerFragment getVideoFragment() {
-    //		return videoFragment;
-    //		// return (VideoHandlerFragment) getSupportFragmentManager().findFragmentByTag("video");
-    //	}
 
     public boolean isLocalVideoVisible() {
         return videoFragment.isLocalVideoVisible();
@@ -1003,28 +1011,17 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
     }
 
     /**
-     * Gets the <code>CallTimerFragment</code>.
-     *
-     * @return the <code>CallTimerFragment</code>.
-     */
-    private CallTimerFragment getCallTimerFragment() {
-        return (CallTimerFragment) getSupportFragmentManager().findFragmentByTag(TIMER_FRAGMENT_TAG);
-    }
-
-    /**
      * Starts the timer that counts call duration.
      */
     public void startCallTimer() {
-        if (getCallTimerFragment() != null)
-            getCallTimerFragment().startCallTimer();
+        callTimer.startCallTimer();
     }
 
     /**
      * Stops the timer that counts call duration.
      */
     public void stopCallTimer() {
-        if (getCallTimerFragment() != null)
-            getCallTimerFragment().stopCallTimer();
+        callTimer.stopCallTimer();
     }
 
     /**
@@ -1033,7 +1030,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
      * @return {@code true} if the call timer has been started, otherwise returns {@code false}
      */
     public boolean isCallTimerStarted() {
-        return getCallTimerFragment() != null && getCallTimerFragment().isCallTimerStarted();
+        return callTimer.isCallTimerStarted();
     }
 
     private void addCallPeerUI(CallPeer callPeer) {
@@ -1046,7 +1043,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
         setPeerState(null, callPeer.getState(), callPeer.getState().getLocalizedStateString());
         setPeerName(callPeer.getDisplayName());
         setPeerImage(CallUIUtils.getCalleeAvatar(mCall));
-        getCallTimerFragment().callPeerAdded(callPeer);
+        callTimer.callPeerAdded(callPeer);
 
         // set for use by CallEnded
         callState.callPeer = callPeer.getPeerJid();

@@ -5,7 +5,13 @@
  */
 package org.atalk.impl.neomedia.device.util;
 
-import android.opengl.*;
+import android.opengl.EGL14;
+import android.opengl.EGLConfig;
+import android.opengl.EGLContext;
+import android.opengl.EGLDisplay;
+import android.opengl.EGLExt;
+import android.opengl.EGLSurface;
+import android.opengl.GLUtils;
 
 import timber.log.Timber;
 

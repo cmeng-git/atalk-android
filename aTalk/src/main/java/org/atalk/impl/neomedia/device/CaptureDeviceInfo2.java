@@ -7,7 +7,9 @@ package org.atalk.impl.neomedia.device;
 
 import java.util.Objects;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Format;
+import javax.media.MediaLocator;
 
 /**
  * Adds some important information (i.e. device type, UID.) to FMJ <code>CaptureDeviceInfo</code>.

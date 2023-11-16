@@ -7,6 +7,7 @@ package org.atalk.android.gui.account.settings;
 
 import android.app.Activity;
 import android.widget.BaseAdapter;
+
 import androidx.fragment.app.DialogFragment;
 
 /**

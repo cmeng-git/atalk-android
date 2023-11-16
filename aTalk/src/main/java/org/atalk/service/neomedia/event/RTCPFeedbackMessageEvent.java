@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * Represents an event coming from RTCP that meant to tell codec to do something (i.e send a

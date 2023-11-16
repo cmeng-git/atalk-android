@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.notification;
 
-import java.util.*;
+import java.util.Map;
 
 /**
  * The <code>CommandNotificationHandler</code> interface is meant to be implemented by the notification bundle in order to

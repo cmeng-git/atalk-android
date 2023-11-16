@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui.chat;
 
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URL;
-import static org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment.URL_YOUTUBE;
 import static org.atalk.persistance.FileBackend.getMimeType;
 
 import android.content.ActivityNotFoundException;
@@ -466,6 +464,15 @@ public class ChatActivity extends OSGiActivity
         return true;
     }
 
+    private boolean hasUploadService() {
+        XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
+        if (connection != null) {
+            HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
+            return httpFileUploadManager.isUploadServiceDiscovered();
+        }
+        return false;
+    }
+
     // Enable option items only applicable to the specific chatSession
     private void setOptionItem() {
         if ((mMenu != null) && (selectedChatPanel != null)) {
@@ -473,13 +480,6 @@ public class ChatActivity extends OSGiActivity
             ChatSession chatSession = selectedChatPanel.getChatSession();
             boolean contactSession = (chatSession instanceof MetaContactChatSession);
             if (contactSession) {
-                boolean hasUploadService = false;
-                XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
-                if (connection != null) {
-                    HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
-                    hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
-                }
-
                 mLeaveChatRoom.setVisible(false);
                 mDestroyChatRoom.setVisible(false);
                 mHistoryErase.setTitle(R.string.service_gui_HISTORY_ERASE_PER_CONTACT);
@@ -495,7 +495,7 @@ public class ChatActivity extends OSGiActivity
                 mCallVideoContact.setVisible(isShowVideoCall);
 
                 boolean isShowFileSend = !isDomainJid
-                        && (contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService);
+                        && (contactRenderer.isShowFileSendBtn(metaContact) || hasUploadService());
                 mSendFile.setVisible(isShowFileSend);
                 mSendLocation.setVisible(!isDomainJid);
 
@@ -532,13 +532,6 @@ public class ChatActivity extends OSGiActivity
             if (!(chatSession instanceof ConferenceChatSession))
                 return;
 
-            boolean hasUploadService = false;
-            XMPPConnection connection = selectedChatPanel.getProtocolProvider().getConnection();
-            if (connection != null) {
-                HttpFileUploadManager httpFileUploadManager = HttpFileUploadManager.getInstanceFor(connection);
-                hasUploadService = httpFileUploadManager.isUploadServiceDiscovered();
-            }
-
             // Only room owner is allowed to destroy chatRoom - role should not be null for joined room
             ChatRoomWrapper chatRoomWrapper = (ChatRoomWrapper) chatSession.getDescriptor();
             ChatRoomMemberRole role = chatRoomWrapper.getChatRoom().getUserRole();
@@ -548,7 +541,7 @@ public class ChatActivity extends OSGiActivity
 
             boolean isJoined = chatRoomWrapper.getChatRoom().isJoined();
             mLeaveChatRoom.setVisible(isJoined);
-            mSendFile.setVisible(isJoined && hasUploadService);
+            mSendFile.setVisible(isJoined && hasUploadService());
             mSendLocation.setVisible(isJoined);
 
             mTtsEnable.setVisible(isJoined);
@@ -1109,7 +1102,7 @@ public class ChatActivity extends OSGiActivity
         String mediaUrl = videoUrl.toString();
         String mimeType = FileBackend.getMimeType(this, videoUrl);
         if ((!TextUtils.isEmpty(mimeType) && (mimeType.contains("video") || mimeType.contains("audio")))
-                || mediaUrl.matches(URL_YOUTUBE)) {
+                || mediaUrl.matches(YoutubePlayerFragment.URL_YOUTUBE)) {
             playEmbeddedExo(mediaUrl);
         }
         else {
@@ -1138,10 +1131,10 @@ public class ChatActivity extends OSGiActivity
      */
     private void playEmbeddedExo(String videoUrl) {
         Bundle bundle = new Bundle();
-        bundle.putString(ATTR_MEDIA_URL, videoUrl);
+        bundle.putString(MediaExoPlayerFragment.ATTR_MEDIA_URL, videoUrl);
         mPlayerContainer.setVisibility(View.VISIBLE);
 
-        if (videoUrl.matches(URL_YOUTUBE)) {
+        if (videoUrl.matches(YoutubePlayerFragment.URL_YOUTUBE)) {
             mYoutubePlayer = YoutubePlayerFragment.getInstance(bundle);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.player_container, mYoutubePlayer)

@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * Classes for IIR/FIR resamplers.

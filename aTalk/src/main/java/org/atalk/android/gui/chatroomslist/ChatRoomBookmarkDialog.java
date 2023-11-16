@@ -17,8 +17,13 @@
 package org.atalk.android.gui.chatroomslist;
 
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.muc.MUCServiceImpl;

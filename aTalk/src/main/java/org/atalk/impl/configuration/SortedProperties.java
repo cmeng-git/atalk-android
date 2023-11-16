@@ -5,7 +5,9 @@
  */
 package org.atalk.impl.configuration;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * This class is a sorted version of classical <code>java.util.Properties</code>. It is strongly

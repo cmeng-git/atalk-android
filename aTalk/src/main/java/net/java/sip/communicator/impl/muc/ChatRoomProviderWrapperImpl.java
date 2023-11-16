@@ -19,9 +19,13 @@ import android.text.TextUtils;
 
 import net.java.sip.communicator.service.muc.ChatRoomProviderWrapper;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
+import net.java.sip.communicator.service.protocol.ProtocolIcon;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Yana Stamcheva

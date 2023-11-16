@@ -17,8 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
-import net.java.sip.communicator.service.globaldisplaydetails.event.*;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalAvatarChangeEvent;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayDetailsListener;
+import net.java.sip.communicator.service.globaldisplaydetails.event.GlobalDisplayNameChangeEvent;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusEnum;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
 import net.java.sip.communicator.util.StatusUtil;
@@ -100,7 +104,6 @@ public class ActionBarStatusFragment extends OSGiFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loginRenderer = AndroidGUIActivator.getLoginRenderer();
         displayDetailsService = AndroidGUIActivator.getGlobalDisplayDetailsService();
         globalStatusMenu = createGlobalStatusMenu();
 
@@ -116,6 +119,7 @@ public class ActionBarStatusFragment extends OSGiFragment
     @Override
     public void onResume() {
         super.onResume();
+        loginRenderer = AndroidGUIActivator.getLoginRenderer();
         loginRenderer.addGlobalStatusListener(this);
         onChangeEvent(loginRenderer.getGlobalStatus());
 

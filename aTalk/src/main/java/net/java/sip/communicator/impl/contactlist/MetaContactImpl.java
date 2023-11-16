@@ -14,26 +14,39 @@
  */
 package net.java.sip.communicator.impl.contactlist;
 
+import androidx.annotation.NonNull;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactModifiedEvent;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactGroup;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.OperationSetContactCapabilities;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.DataObject;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 /**

@@ -7,12 +7,6 @@ package net.java.sip.communicator.impl.history;
 
 import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
 
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import net.java.sip.communicator.service.history.HistoryWriter;
 import net.java.sip.communicator.service.history.records.HistoryRecord;
 import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
@@ -23,6 +17,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.security.InvalidParameterException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Alexander Pelov

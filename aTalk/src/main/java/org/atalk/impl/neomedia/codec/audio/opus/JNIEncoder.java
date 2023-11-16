@@ -8,7 +8,6 @@ package org.atalk.impl.neomedia.codec.audio.opus;
 import net.sf.fmj.media.AbstractCodec;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
-import java.awt.Component;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.jmfext.media.renderer.audio.AbstractAudioRenderer;
 import org.atalk.service.configuration.ConfigurationService;
@@ -17,9 +16,14 @@ import org.atalk.service.neomedia.codec.Constants;
 import org.atalk.service.neomedia.control.FormatParametersAwareCodec;
 import org.atalk.service.neomedia.control.PacketLossAwareEncoder;
 
+import java.awt.Component;
 import java.util.Map;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Control;
+import javax.media.Format;
+import javax.media.PlugIn;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;

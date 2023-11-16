@@ -1,4 +1,4 @@
-package org.atalk.impl.androidupdate;
+package org.atalk.impl.appupdate;
 
 import static org.atalk.impl.androidtray.NotificationPopupHandler.getPendingIntentFlag;
 
@@ -21,14 +21,12 @@ import org.atalk.impl.androidnotification.AndroidNotifications;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.Calendar;
-
 public class OnlineUpdateService extends IntentService
 {
-    public static final String ACTION_AUTO_UPDATE_APP = "org.atalk.android.ACTION_AUTO_UPDATE_APP";
-    public static final String ACTION_AUTO_UPDATE_START = "org.atalk.android.ACTION_AUTO_UPDATE_START";
-    public static final String ACTION_AUTO_UPDATE_STOP = "org.atalk.android.ACTION_AUTO_UPDATE_STOP";
-
-    private static final String ACTION_UPDATE_AVAILABLE = "org.atalk.android.ACTION_UPDATE_AVAILABLE";
+    public static final String ACTION_AUTO_UPDATE_APP = "org.atalk.hmos.ACTION_AUTO_UPDATE_APP";
+    public static final String ACTION_AUTO_UPDATE_START = "org.atalk.hmos.ACTION_AUTO_UPDATE_START";
+    public static final String ACTION_AUTO_UPDATE_STOP = "org.atalk.hmos.ACTION_AUTO_UPDATE_STOP";
+    private static final String ACTION_UPDATE_AVAILABLE = "org.atalk.hmos.ACTION_UPDATE_AVAILABLE";
     private static final String ONLINE_UPDATE_SERVICE = "OnlineUpdateService";
     private static final String UPDATE_AVAIL_TAG = "aTalk Update Available";
 
@@ -65,7 +63,7 @@ public class OnlineUpdateService extends IntentService
                         UpdateServiceImpl updateService = (UpdateServiceImpl) ServiceUtils
                                 .getService(AndroidGUIActivator.bundleContext, UpdateService.class);
                         if (updateService != null) {
-                            updateService.checkForUpdates(true);
+                            updateService.checkForUpdates();
                         }
                         break;
                     case ACTION_AUTO_UPDATE_START:

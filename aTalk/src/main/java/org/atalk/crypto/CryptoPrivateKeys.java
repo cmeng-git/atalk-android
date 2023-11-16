@@ -16,10 +16,18 @@
  */
 package org.atalk.crypto;
 
-import android.content.*;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.ContextMenu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -37,13 +45,19 @@ import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.util.CryptoHelper;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smackx.omemo.*;
+import org.jivesoftware.smackx.omemo.OmemoManager;
+import org.jivesoftware.smackx.omemo.OmemoService;
+import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import timber.log.Timber;
 

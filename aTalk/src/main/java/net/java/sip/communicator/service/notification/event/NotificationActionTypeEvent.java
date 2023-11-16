@@ -5,9 +5,10 @@
  */
 package net.java.sip.communicator.service.notification.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationService;
 
-import net.java.sip.communicator.service.notification.*;
+import java.util.EventObject;
 
 /**
  * Fired any time an action type is added, removed or changed.

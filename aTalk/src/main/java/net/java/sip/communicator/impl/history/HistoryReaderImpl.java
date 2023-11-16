@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.history;
 
+import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
+
 import net.java.sip.communicator.service.history.HistoryReader;
 import net.java.sip.communicator.service.history.QueryResultSet;
 import net.java.sip.communicator.service.history.event.HistorySearchProgressListener;
@@ -18,10 +20,17 @@ import org.w3c.dom.NodeList;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.Vector;
 import java.util.regex.Pattern;
-
-import static net.java.sip.communicator.service.history.HistoryService.DATE_FORMAT;
 
 /**
  * @author Alexander Pelov

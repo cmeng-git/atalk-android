@@ -29,7 +29,11 @@ import org.atalk.android.R;
 import org.atalk.service.osgi.OSGiActivity;
 import org.jivesoftware.smackx.omemo.OmemoService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * In case your device list gets filled with old unused identities, you can clean it up. This will remove

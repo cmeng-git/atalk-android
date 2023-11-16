@@ -27,7 +27,6 @@ import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.json.JSONObject;
 
 import java.io.IOException;

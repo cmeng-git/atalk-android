@@ -5,10 +5,11 @@
  */
 package org.atalk.impl.neomedia.codec.audio.gsm;
 
-import javax.media.*;
-import javax.media.format.*;
+import net.sf.fmj.media.AbstractCodec;
 
-import net.sf.fmj.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.format.AudioFormat;
 
 /**
  * GSM encoder Codec. Encodes 160 16-bit PCM samples into array of 33 bytes (GSM frame).

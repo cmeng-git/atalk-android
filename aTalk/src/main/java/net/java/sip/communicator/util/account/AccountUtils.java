@@ -5,14 +5,22 @@
  */
 package net.java.sip.communicator.util.account;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -106,7 +114,7 @@ public class AccountUtils
      * @return a list of all currently registered providers for the given <code>protocolName</code>
      * and supporting the given <code>operationSetClass</code>
      */
-    public static List<ProtocolProviderService> getRegisteredProviders(String protocolName,
+    private static List<ProtocolProviderService> getRegisteredProviders(String protocolName,
             Class<? extends OperationSet> opSetClass)
     {
         List<ProtocolProviderService> opSetProviders = new LinkedList<>();

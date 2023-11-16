@@ -38,14 +38,14 @@ public interface VideoMediaStream extends MediaStream
      * @param listener the <code>VideoListener</code> to be notified when visual/video <code>Component</code>s are
      * being added or removed in this <code>VideoMediaStream</code>
      */
-    public void addVideoListener(VideoListener listener);
+    void addVideoListener(VideoListener listener);
 
     /**
      * Gets the <code>KeyFrameControl</code> of this <code>VideoMediaStream</code>.
      *
      * @return the <code>KeyFrameControl</code> of this <code>VideoMediaStream</code>
      */
-    public KeyFrameControl getKeyFrameControl();
+    KeyFrameControl getKeyFrameControl();
 
     /**
      * Gets the visual <code>Component</code>, if any, depicting the video streamed from the local peer
@@ -54,14 +54,14 @@ public interface VideoMediaStream extends MediaStream
      * @return the visual <code>Component</code> depicting the local video if local video is actually
      * being streamed from the local peer to the remote peer; otherwise, <code>null</code>
      */
-    public Component getLocalVisualComponent();
+    Component getLocalVisualComponent();
 
     /**
      * Gets the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
      * @return the <code>QualityControl</code> of this <code>VideoMediaStream</code>
      */
-    public QualityControl getQualityControl();
+    QualityControl getQualityControl();
 
     /**
      * Gets the visual <code>Component</code> where video from the remote peer is being rendered or
@@ -74,7 +74,7 @@ public interface VideoMediaStream extends MediaStream
      * {@link #getVisualComponent(long)} and {@link #getVisualComponents()} are to be used instead.
      */
     @Deprecated
-    public Component getVisualComponent();
+    Component getVisualComponent();
 
     /**
      * Gets the visual <code>Component</code> rendering the <code>ReceiveStream</code> with a specific SSRC.
@@ -83,14 +83,14 @@ public interface VideoMediaStream extends MediaStream
      * @return the visual <code>Component</code> rendering the <code>ReceiveStream</code> with the specified
      * <code>ssrc</code> if any; otherwise, <code>null</code>
      */
-    public Component getVisualComponent(long ssrc);
+    Component getVisualComponent(long ssrc);
 
     /**
      * Gets a list of the visual <code>Component</code>s where video from the remote peer is being rendered.
      *
      * @return a list of the visual <code>Component</code>s where video from the remote peer is being rendered
      */
-    public List<Component> getVisualComponents();
+    List<Component> getVisualComponents();
 
     /**
      * Move origin of a partial desktop streaming <code>MediaDevice</code>.
@@ -98,7 +98,7 @@ public interface VideoMediaStream extends MediaStream
      * @param x new x coordinate origin
      * @param y new y coordinate origin
      */
-    public void movePartialDesktopStreaming(int x, int y);
+    void movePartialDesktopStreaming(int x, int y);
 
     /**
      * Removes a specific <code>VideoListener</code> from this <code>VideoMediaStream</code> in order to have to
@@ -107,18 +107,18 @@ public interface VideoMediaStream extends MediaStream
      * @param listener the <code>VideoListener</code> to no longer be notified when visual/video
      * <code>Component</code>s are being added or removed in this <code>VideoMediaStream</code>
      */
-    public void removeVideoListener(VideoListener listener);
+    void removeVideoListener(VideoListener listener);
 
     /**
      * Updates the <code>QualityControl</code> of this <code>VideoMediaStream</code>.
      *
      * @param advancedParams parameters of advanced attributes that may affect quality control
      */
-    public void updateQualityControl(Map<String, String> advancedParams);
+    void updateQualityControl(Map<String, String> advancedParams);
 
     /**
      * Creates an instance of {@link BandwidthEstimator} for this {@link MediaStream} if one doesn't
      * already exist. Returns the instance.
      */
-    public BandwidthEstimator getOrCreateBandwidthEstimator();
+    BandwidthEstimator getOrCreateBandwidthEstimator();
 }

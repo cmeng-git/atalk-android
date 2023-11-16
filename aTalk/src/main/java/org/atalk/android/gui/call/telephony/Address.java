@@ -4,6 +4,8 @@ import android.text.TextUtils;
 import android.text.util.Rfc822Token;
 import android.text.util.Rfc822Tokenizer;
 
+import androidx.annotation.VisibleForTesting;
+
 import org.apache.james.mime4j.codec.EncoderUtil;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import androidx.annotation.VisibleForTesting;
 import timber.log.Timber;
 
 /*

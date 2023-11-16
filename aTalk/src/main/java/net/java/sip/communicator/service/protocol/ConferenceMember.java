@@ -5,9 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.beans.*;
-
 import org.atalk.service.neomedia.MediaDirection;
+
+import java.beans.PropertyChangeListener;
 
 /**
  * Represents a member and its details in a telephony conference managed by a <code>CallPeer</code> in

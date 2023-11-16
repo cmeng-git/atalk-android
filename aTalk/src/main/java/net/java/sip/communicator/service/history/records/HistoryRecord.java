@@ -5,7 +5,11 @@
  */
 package net.java.sip.communicator.service.history.records;
 
-import java.util.*;
+import androidx.annotation.NonNull;
+
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * @author Alexander Pelov
@@ -25,11 +29,11 @@ public class HistoryRecord
 	{
 		mProperties = properties;
 
-		Long time = Long.parseLong(timestamp);
+		long time = Long.parseLong(timestamp);
 		mTimestamp = new Date(time);
 
-		mPropertyNames = properties.keySet().toArray(new String[properties.size()]);
-		mPropertyValues = properties.values().toArray(new String[properties.size()]);;
+		mPropertyNames = properties.keySet().toArray(new String[0]);
+		mPropertyValues = properties.values().toArray(new String[0]);;
 	}
 
 	/**
@@ -124,6 +128,7 @@ public class HistoryRecord
 	 *
 	 * @return the String representation of this HistoryRecord
 	 */
+	@NonNull
 	@Override
 	public String toString()
 	{

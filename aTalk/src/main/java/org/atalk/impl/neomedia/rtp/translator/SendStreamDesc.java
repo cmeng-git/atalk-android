@@ -5,13 +5,14 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import java.io.*;
-import java.util.*;
-
-import javax.media.protocol.*;
-import javax.media.rtp.*;
-
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.media.protocol.DataSource;
+import javax.media.rtp.SendStream;
 
 /**
  * Describes a <code>SendStream</code> created by the <code>RTPManager</code> of an

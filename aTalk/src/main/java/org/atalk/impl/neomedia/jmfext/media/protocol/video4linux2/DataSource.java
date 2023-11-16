@@ -5,15 +5,15 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.video4linux2;
 
-import java.io.*;
-
-import javax.media.*;
-import javax.media.control.*;
-
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPullBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPullBufferCaptureDevice;
+
+import java.io.IOException;
+
+import javax.media.MediaLocator;
+import javax.media.control.FormatControl;
 
 /**
  * Implements a <code>PullBufferDataSource</code> and <code>CaptureDevice</code> using the Video for Linux

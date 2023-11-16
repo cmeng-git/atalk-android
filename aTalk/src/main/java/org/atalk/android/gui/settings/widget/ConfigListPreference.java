@@ -7,9 +7,10 @@ package org.atalk.android.gui.settings.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.AttributeSet;
+
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceManager;
-import android.util.AttributeSet;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;

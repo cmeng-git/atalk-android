@@ -5,9 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomInvitationListener;
+import net.java.sip.communicator.service.protocol.event.AdHocChatRoomInvitationRejectionListener;
+import net.java.sip.communicator.service.protocol.event.LocalUserAdHocChatRoomPresenceListener;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Allows creating, configuring, joining and administering of individual text-based ad-hoc

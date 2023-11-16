@@ -17,7 +17,9 @@
 package org.atalk.android.gui.chatroomslist.model;
 
 import android.app.Activity;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
@@ -29,7 +31,9 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.util.CollectionAdapter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This adapter displays all <code>chatRoom Group</code> items. If in the constructor

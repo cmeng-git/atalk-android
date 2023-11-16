@@ -128,8 +128,7 @@ public class SendTrackStatsImpl extends AbstractTrackStats
 
         double fractionNotSent
             = (packetsSent+packetsNotSent > 0)
-            ? (packetsNotSent / (packetsNotSent+packetsSent))
-            : 0;
+            ? (packetsNotSent / (packetsNotSent+packetsSent)) : 0;
 
         return Math.max(0, fractionLost - fractionNotSent);
     }

@@ -57,7 +57,6 @@ import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.android.plugin.textspeech.TTSActivity;
 import org.atalk.impl.osgi.framework.BundleImpl;
-import org.atalk.service.osgi.OSGiActivity;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -423,7 +422,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
             case ServiceEvent.REGISTERED:
             case ServiceEvent.UNREGISTERING:
                 if (videoBridgeMenuItem != null) {
-                    OSGiActivity.uiHandler.post(this::initVideoBridge);
+                    uiHandler.post(this::initVideoBridge);
                 }
                 break;
         }
@@ -432,7 +431,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     @Override
     public void contactPresenceStatusChanged(final ContactPresenceStatusChangeEvent evt) {
         // cmeng - how to add the listener onResume - multiple protocol providers???
-        OSGiActivity.uiHandler.post(() -> {
+        uiHandler.post(() -> {
             Contact sourceContact = evt.getSourceContact();
             initVideoBridge();
         });

@@ -16,7 +16,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
+import net.java.sip.communicator.service.protocol.Contact;
 
 import java.io.File;
 

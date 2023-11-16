@@ -5,7 +5,9 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationListener;
+import net.java.sip.communicator.service.protocol.event.ChatRoomInvitationRejectionListener;
+import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenceListener;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;

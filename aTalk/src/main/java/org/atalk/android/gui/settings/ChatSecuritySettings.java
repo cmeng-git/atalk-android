@@ -21,7 +21,7 @@ import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiPreferenceFragment;
 
 /**
- * Chat security settings screen with OTR preferences - modified for aTalk
+ * Chat security settings screen with Omemo preferences - modified for aTalk
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

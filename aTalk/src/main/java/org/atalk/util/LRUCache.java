@@ -15,7 +15,10 @@
  */
 package org.atalk.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author George Politis

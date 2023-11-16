@@ -5,9 +5,8 @@
  */
 package org.atalk.android.plugin.errorhandler;
 
-import android.content.*;
-
-import net.java.sip.communicator.util.Logger;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.service.fileaccess.FileCategory;

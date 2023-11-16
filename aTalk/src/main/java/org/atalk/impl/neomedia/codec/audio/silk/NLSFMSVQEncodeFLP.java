@@ -5,9 +5,17 @@
  */
 package org.atalk.impl.neomedia.codec.audio.silk;
 
-import static org.atalk.impl.neomedia.codec.audio.silk.Define.*;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.LOW_COMPLEXITY_ONLY;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_LPC_ORDER;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_NLSF_MSVQ_SURVIVORS;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.MAX_NLSF_MSVQ_SURVIVORS_LC_MODE;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_FLUCTUATION_REDUCTION;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_MAX_CB_STAGES;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_SURV_MAX_REL_RD;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_TREE_SEARCH_MAX_VECTORS_EVALUATED;
+import static org.atalk.impl.neomedia.codec.audio.silk.Define.NLSF_MSVQ_TREE_SEARCH_MAX_VECTORS_EVALUATED_LC_MODE;
 
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * NLSF vector encoder.

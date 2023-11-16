@@ -5,7 +5,10 @@
  */
 package org.atalk.android.gui;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationSetPresence;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusService;
@@ -13,7 +16,11 @@ import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountStatusUtils;
 
-import org.osgi.framework.*;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 /**
  * Class takes care of setting/restoring proper presence statuses. When protocol registers for

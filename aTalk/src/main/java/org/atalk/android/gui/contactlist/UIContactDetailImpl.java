@@ -12,10 +12,13 @@
  */
 package org.atalk.android.gui.contactlist;
 
-import java.util.*;
+import net.java.sip.communicator.service.gui.UIContactDetail;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import net.java.sip.communicator.service.gui.*;
-import net.java.sip.communicator.service.protocol.*;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * The <code>UIContactDetail</code> implementation

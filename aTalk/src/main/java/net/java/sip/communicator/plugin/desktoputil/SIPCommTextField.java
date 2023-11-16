@@ -1,11 +1,12 @@
 package net.java.sip.communicator.plugin.desktoputil;
 
-import javax.swing.text.JTextComponent;
 import java.awt.Color;
+
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 public class SIPCommTextField extends JTextField implements DocumentListener {
 

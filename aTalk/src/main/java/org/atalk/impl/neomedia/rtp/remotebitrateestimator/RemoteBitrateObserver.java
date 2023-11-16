@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.rtp.remotebitrateestimator;
 
-import java.util.*;
+import java.util.Collection;
 
 /**
  * <code>RemoteBitrateObserver</code> is used to signal changes in bitrate estimates for the incoming

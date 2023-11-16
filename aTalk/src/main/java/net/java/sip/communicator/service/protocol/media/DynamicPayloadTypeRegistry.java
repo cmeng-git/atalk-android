@@ -15,11 +15,10 @@ import timber.log.Timber;
 /**
  * The RTP Audio/Video Profile [RFC 3551] specifies a number of static payload types for use with
  * RTP and reserves the 96-127 field for use with dynamic payload types.
- * <p>
+ *
  * Mappings of dynamic payload types are handled with SDP. They are created for a particular session
  * and remain the same for its entire lifetime. They may however change in following sessions.
- * </p>
- * <p>
+ *
  * We use this class as a utility for easily creating and tracking dynamic payload mappings for the
  * lifetime of a particular session. One instance of this registry is supposed to be mapped to one
  * media session. They should have pretty much the same life cycle.
@@ -81,8 +80,7 @@ public class DynamicPayloadTypeRegistry
     {
         Byte payloadType = getPayloadType(format);
 
-        // seems like we haven't allocated a payload type for this format yet.
-        // lets try to do so now.
+        // seems like we haven't allocated a payload type for this format yet. lets try to do so now.
         if (payloadType == null) {
             // first, let's check whether there's a particular PT number that this format would like to have
             // (e.g. "telephone-event" generally loves to be called "101").
@@ -98,7 +96,6 @@ public class DynamicPayloadTypeRegistry
             }
             payloadTypeMappings.put(format, payloadType);
         }
-
         return payloadType;
     }
 
@@ -246,7 +243,7 @@ public class DynamicPayloadTypeRegistry
      * @return the <code>MediaFormat</code> that has been mapped to <code>payloadType</code> in this
      * registry or <code>null</code> if it hasn't been allocated yet.
      */
-    public MediaFormat findFormat(byte payloadType)
+    private MediaFormat findFormat(byte payloadType)
     {
         for (Map.Entry<MediaFormat, Byte> entry : payloadTypeMappings.entrySet()) {
             byte fmtPayloadType = entry.getValue();

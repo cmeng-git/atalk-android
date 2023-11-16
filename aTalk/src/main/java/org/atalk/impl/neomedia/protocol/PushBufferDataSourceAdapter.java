@@ -10,13 +10,22 @@ import net.sf.fmj.media.util.MediaThread;
 import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
-import javax.media.protocol.*;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
+import javax.media.protocol.SourceStream;
 
 import timber.log.Timber;
 

@@ -15,7 +15,7 @@ package org.atalk.impl.neomedia.transform;
 
 import org.atalk.impl.neomedia.RTPPacketPredicate;
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.*;
+import org.atalk.util.RTPUtils;
 
 /**
  * Implements a <code>TransformEngine</code> which replaces the timestamps in

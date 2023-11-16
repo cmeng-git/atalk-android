@@ -6,7 +6,10 @@
 package org.atalk.impl.neomedia.device;
 
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import timber.log.Timber;

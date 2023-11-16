@@ -5,7 +5,7 @@
  */
 package org.atalk.service.neomedia.control;
 
-import javax.media.*;
+import javax.media.Control;
 
 /**
  * An interface which allows to flush a buffer.

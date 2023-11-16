@@ -16,15 +16,20 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import net.java.sip.communicator.service.protocol.OperationSetUserSearch;
 import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
+import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.event.UserSearchProviderEvent;
+import net.java.sip.communicator.service.protocol.event.UserSearchProviderListener;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smackx.search.*;
+import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.search.ReportedData.Column;
 import org.jivesoftware.smackx.search.ReportedData.Row;
+import org.jivesoftware.smackx.search.UserSearch;
+import org.jivesoftware.smackx.search.UserSearchManager;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jxmpp.jid.DomainBareJid;

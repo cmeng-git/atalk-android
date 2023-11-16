@@ -19,10 +19,20 @@ import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryEvent;
 import net.java.sip.communicator.service.provdisc.event.DiscoveryListener;
 
-import org.dhcp4java.*;
+import org.dhcp4java.DHCPConstants;
+import org.dhcp4java.DHCPOption;
+import org.dhcp4java.DHCPPacket;
 
-import java.net.*;
-import java.util.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -42,27 +52,27 @@ public class DHCPProvisioningDiscover implements Runnable
     /**
      * UDP socket.
      */
-    private DatagramSocket socket;
+    private final DatagramSocket socket;
 
     /**
      * DHCP transaction number.
      */
-    private int xid;
+    private final int xid;
 
     /**
      * Listening port of the client. Note that the socket will send packet to DHCP server on port - 1.
      */
-    private int port;
+    private final int port;
 
     /**
      * Option code of the specific provisioning option.
      */
-    private byte option = (byte) 224;
+    private final byte option;
 
     /**
      * List of <code>ProvisioningListener</code> that will be notified when a provisioning URL is retrieved.
      */
-    private List<DiscoveryListener> listeners = new ArrayList<>();
+    private final List<DiscoveryListener> listeners = new ArrayList<>();
 
     /**
      * Constructor.
@@ -95,10 +105,10 @@ public class DHCPProvisioningDiscover implements Runnable
     public String discoverProvisioningURL()
     {
         DHCPPacket inform = new DHCPPacket();
-        byte macAddress[];
-        byte zeroIPAddress[] = {0x00, 0x00, 0x00, 0x00};
-        byte broadcastIPAddr[] = {(byte) 255, (byte) 255, (byte) 255, (byte) 255};
-        DHCPOption dhcpOpts[] = new DHCPOption[1];
+        byte[] macAddress;
+        byte[] zeroIPAddress = {0x00, 0x00, 0x00, 0x00};
+        byte[] broadcastIPAddr = {(byte) 255, (byte) 255, (byte) 255, (byte) 255};
+        DHCPOption[] dhcpOpts = new DHCPOption[1];
         List<DHCPTransaction> transactions = new ArrayList<DHCPTransaction>();
 
         try {

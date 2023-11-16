@@ -7,13 +7,19 @@ package net.java.sip.communicator.service.protocol.media;
 
 import org.atalk.util.xml.XMLException;
 import org.atalk.util.xml.XMLUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 

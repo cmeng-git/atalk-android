@@ -228,7 +228,6 @@ public class MappingCandidateHarvesters
                 return;
             }
         }
-
         harvesters.add(harvester);
     }
 
@@ -236,8 +235,7 @@ public class MappingCandidateHarvesters
      * Creates STUN mapping harvesters for each of the given STUN servers, and
      * waits for address discovery to finish for all of them.
      *
-     * @param stunServers an array of STUN server addresses (ip_address:port
-     * pairs).
+     * @param stunServers an array of STUN server addresses (ip_address:port pairs).
      * @return the list of those who were successful in discovering an address.
      */
     private static List<StunMappingCandidateHarvester> createStunHarvesters(@NotNull List<String> stunServers)

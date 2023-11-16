@@ -8,8 +8,33 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.AbstractOperationSetServerStoredAccountInfo;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AboutMeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.AddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.BirthDateDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CityDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.CountryDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.DisplayNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.EmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FirstNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.JobTitleDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.LastNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MiddleNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.NicknameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PostalCodeDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ProvinceDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.URLDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkEmailAddressDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkOrganizationNameDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkVideoDetail;
 import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeEvent;
 
 import org.atalk.android.R;
@@ -25,7 +50,11 @@ import org.jxmpp.jid.BareJid;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 

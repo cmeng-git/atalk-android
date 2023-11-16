@@ -52,9 +52,9 @@ import org.atalk.service.neomedia.control.FECDecoderControl;
 import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;
 import org.atalk.service.neomedia.rtp.RTCPReports;
+import org.atalk.util.MediaType;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.RTPUtils;
-import org.atalk.util.MediaType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

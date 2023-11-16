@@ -18,7 +18,9 @@ package net.java.sip.communicator.impl.provdisc.dhcp;
 import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.provdisc.ProvisioningDiscoveryService;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

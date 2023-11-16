@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.impl.androidupdate;
+package org.atalk.impl.appupdate;
 
 import net.java.sip.communicator.service.update.UpdateService;
 
@@ -26,7 +26,7 @@ import net.java.sip.communicator.service.update.UpdateService;
 public class UpdateServiceImpl implements UpdateService
 {
     @Override
-    public void checkForUpdates(boolean notifyAboutNewestVersion)
+    public void checkForUpdates()
     {
     }
 

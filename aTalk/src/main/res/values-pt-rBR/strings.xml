@@ -971,7 +971,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">A minha impressão digital para %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Impressão digital remota para %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Autenticar amigo</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verificar amigo</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">Verifiquei que esta é, de facto, a impressão digital correcta para %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Iniciar automaticamente o envio de mensagens privadas</string>
     <string name="plugin_otr_configform_CB_ENABLE">Permitir o envio de mensagens privadas</string>
@@ -1012,6 +1011,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Autenticar amigo</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Você tem amigos não autenticados. Amigos não autenticados não podem receber mensagem via OMEMO. Marcar para autenticar.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Minha impressão digital %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Verificar amigo</string>
     <string name="omemo_identity_keypairs_missing">Está faltando pares de chaves de identidade do OMEMO para: %1$s</string>
     <string name="omemo_identity_key_invalid">Chave de identidade inválida para aparelho do OMEMO: %1$s.\nExceção: %2$s.</string>
     <string name="omemo_identity_key_missing">Chave de identidade do OMEMO para %1$s não está disponível.\nProceder para obter do servidor.</string>
@@ -1450,8 +1450,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Taxa limite de RTP (kBytes/s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Taxa de quadro alvo (per sec.)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Configurações de segurança de criptografia de mensagens</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Segurança de mensagens</string>
 

@@ -5,18 +5,25 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.protocol.quicktime;
 
-import java.awt.Dimension;
 import org.atalk.impl.neomedia.control.FrameRateControlAdapter;
 import org.atalk.impl.neomedia.device.DeviceSystem;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice;
 import org.atalk.impl.neomedia.jmfext.media.protocol.AbstractVideoPushBufferCaptureDevice;
-import org.atalk.impl.neomedia.quicktime.*;
+import org.atalk.impl.neomedia.quicktime.NSErrorException;
+import org.atalk.impl.neomedia.quicktime.QTCaptureDevice;
+import org.atalk.impl.neomedia.quicktime.QTCaptureDeviceInput;
+import org.atalk.impl.neomedia.quicktime.QTCaptureSession;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
-import javax.media.*;
+import javax.media.Format;
+import javax.media.MediaLocator;
+import javax.media.PlugInManager;
 import javax.media.control.FormatControl;
 import javax.media.control.FrameRateControl;
 import javax.media.format.VideoFormat;

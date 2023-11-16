@@ -80,7 +80,7 @@ public class RTPExtension
     /**
      * The direction that this extension will be transmitted in.
      */
-    private MediaDirection direction = MediaDirection.SENDRECV;
+    private MediaDirection direction;
 
     /**
      * The <code>URI</code> identifier of this extension.

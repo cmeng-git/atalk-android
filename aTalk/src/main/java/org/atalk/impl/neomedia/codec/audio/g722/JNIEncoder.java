@@ -17,8 +17,10 @@ package org.atalk.impl.neomedia.codec.audio.g722;
 
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.AudioFormat;
 
 /**
  *

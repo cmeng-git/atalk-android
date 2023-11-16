@@ -19,5 +19,5 @@ public interface AudioMediaFormat extends MediaFormat
 	 *
 	 * @return the number of audio channels associated with this <code>AudioMediaFormat</code>.
 	 */
-	public int getChannels();
+	int getChannels();
 }

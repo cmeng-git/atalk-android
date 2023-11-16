@@ -6,9 +6,9 @@
  */
 package net.java.sip.communicator.service.gui.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
 
-import net.java.sip.communicator.service.contactlist.*;
+import java.util.EventObject;
 
 /**
  * The <code>MetaContactQueryEvent</code> is triggered each time a

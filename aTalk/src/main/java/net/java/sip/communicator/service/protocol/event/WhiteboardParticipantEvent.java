@@ -13,9 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.WhiteboardParticipant;
+import net.java.sip.communicator.service.protocol.WhiteboardSession;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * <code>WhiteboardParticipantEvent</code>s indicate that a participant in a whiteboard session has

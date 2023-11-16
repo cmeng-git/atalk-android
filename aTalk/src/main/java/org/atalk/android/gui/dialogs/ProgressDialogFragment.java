@@ -6,7 +6,9 @@
 package org.atalk.android.gui.dialogs;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;

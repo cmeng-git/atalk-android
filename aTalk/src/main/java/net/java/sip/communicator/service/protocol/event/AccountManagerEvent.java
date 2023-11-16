@@ -13,7 +13,8 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import java.util.EventObject;
 

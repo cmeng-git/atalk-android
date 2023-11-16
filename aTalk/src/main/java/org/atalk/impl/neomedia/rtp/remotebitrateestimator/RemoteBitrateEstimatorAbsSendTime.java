@@ -21,7 +21,11 @@ import org.atalk.util.logging.TimeSeriesLogger;
 import org.ice4j.util.RateStatistics;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * webrtc.org abs_send_time implementation as of June 26, 2017.

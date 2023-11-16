@@ -5,7 +5,8 @@
  */
 package org.atalk.service.neomedia;
 
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.Socket;
 
 /**
  * Implements a {@link StreamConnector} which wraps a specific <code>StreamConnector</code> instance.

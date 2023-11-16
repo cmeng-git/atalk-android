@@ -206,7 +206,7 @@ public class ExpertSettingsFragment extends OSGiPreferenceFragment
      * Note: Current aTalk implementation requires direct surface option to be enabled in order
      * for fmj to use the android codec if enabled. So couple both the surface and codec options
      *
-     * @see org.atalk.android.gui.settings.widget.ConfigWidgetUtil#handlePersistValue(final Object value)
+     * @see ConfigWidgetUtil#handlePersistValue(final Object value)
      */
     private void updateHwCodecStatus() {
         AndroidCamera selectedCamera = AndroidCamera.getSelectedCameraDevInfo();

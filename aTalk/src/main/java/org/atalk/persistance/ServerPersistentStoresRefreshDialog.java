@@ -16,20 +16,37 @@
  */
 package org.atalk.persistance;
 
+
+import static net.java.sip.communicator.plugin.loggingutils.LogsCollector.LOGGING_DIR_NAME;
+import static org.atalk.android.R.id.cb_avatar;
+import static org.atalk.android.R.id.cb_caps;
+import static org.atalk.android.R.id.cb_debug_log;
+import static org.atalk.android.R.id.cb_del_database;
+import static org.atalk.android.R.id.cb_discoInfo;
+import static org.atalk.android.R.id.cb_export_database;
+import static org.atalk.android.R.id.cb_omemo;
+import static org.atalk.android.R.id.cb_roster;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.*;
-import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
+import org.atalk.android.BuildConfig;
+import org.atalk.android.R;
+import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.persistance.migrations.MigrationTo2;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
@@ -44,16 +61,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import timber.log.Timber;
-
-import static net.java.sip.communicator.plugin.loggingutils.LogsCollector.LOGGING_DIR_NAME;
-import static org.atalk.android.R.id.cb_avatar;
-import static org.atalk.android.R.id.cb_caps;
-import static org.atalk.android.R.id.cb_debug_log;
-import static org.atalk.android.R.id.cb_del_database;
-import static org.atalk.android.R.id.cb_discoInfo;
-import static org.atalk.android.R.id.cb_export_database;
-import static org.atalk.android.R.id.cb_omemo;
-import static org.atalk.android.R.id.cb_roster;
 
 /**
  * Dialog allowing user to refresh persistent stores.

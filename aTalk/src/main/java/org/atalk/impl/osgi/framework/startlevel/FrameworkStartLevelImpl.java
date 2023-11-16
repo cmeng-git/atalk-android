@@ -56,9 +56,7 @@ public class FrameworkStartLevelImpl implements FrameworkStartLevel
         return startLevel;
     }
 
-    public void internalSetStartLevel(
-            int startLevel,
-            FrameworkListener... listeners)
+    public void internalSetStartLevel(int startLevel, FrameworkListener... listeners)
     {
         if (startLevel < 0)
             throw new IllegalArgumentException("startLevel");

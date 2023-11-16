@@ -5,9 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.event.WhiteboardInvitationListener;
+import net.java.sip.communicator.service.protocol.event.WhiteboardInvitationRejectionListener;
+import net.java.sip.communicator.service.protocol.event.WhiteboardSessionPresenceListener;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Provides basic functionality for white-board.

@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * The <code>ContactReceivedEvent</code> indicates that a

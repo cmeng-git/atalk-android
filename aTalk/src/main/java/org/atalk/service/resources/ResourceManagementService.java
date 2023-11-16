@@ -5,13 +5,13 @@
  */
 package org.atalk.service.resources;
 
-import javax.swing.ImageIcon;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Locale;
+
+import javax.swing.ImageIcon;
 
 /**
  * The Resource Management Service gives easy access to common resources for the application

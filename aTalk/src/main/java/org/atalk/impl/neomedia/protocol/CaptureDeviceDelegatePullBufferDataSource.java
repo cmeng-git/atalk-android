@@ -9,9 +9,14 @@ import org.atalk.impl.neomedia.control.ControlsAdapter;
 
 import java.io.IOException;
 
-import javax.media.*;
+import javax.media.CaptureDeviceInfo;
+import javax.media.Time;
 import javax.media.control.FormatControl;
-import javax.media.protocol.*;
+import javax.media.protocol.CaptureDevice;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PullBufferDataSource;
+import javax.media.protocol.PullBufferStream;
 
 /**
  * Represents a <code>PullBufferDataSource</code> which is also a <code>CaptureDevice</code> through

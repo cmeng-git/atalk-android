@@ -8,7 +8,9 @@ package org.atalk.android.gui.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.*;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import org.atalk.android.R;
 

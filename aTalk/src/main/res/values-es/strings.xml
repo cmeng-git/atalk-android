@@ -984,7 +984,6 @@
     <string name="plugin_otr_authbuddydialog_LOCAL_FINGERPRINT">Mi huella digital para %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_REMOTE_FINGERPRINT">Huella digital remota para %1$s: %2$s</string>
     <string name="plugin_otr_authbuddydialog_TITLE">Autentificar al amigo</string>
-    <string name="plugin_otr_authbuddydialog_VERIRY_BUDDY">Verificar al amigo</string>
     <string name="plugin_otr_authbuddydialog_VERIFY_ACTION">está verificado, es de hecho la huella digital correcta para %1$s.</string>
     <string name="plugin_otr_configform_CB_AUTO">Iniciar automáticamente la mensajería privada</string>
     <string name="plugin_otr_configform_CB_ENABLE">Habilitar la mensajería privada</string>
@@ -1028,6 +1027,7 @@
     <string name="omemo_authbuddydialog_AUTHENTICATE_BUDDY">Autentificar amigo</string>
     <string name="omemo_authbuddydialog_AUTHENTICATION_INFO">Hay amigos no autentificados. Los amigos no verificados no pueden recibir el mensajes OMEMO. Comprobar para autenticar.</string>
     <string name="omemo_authbuddydialog_LOCAL_FINGERPRINT">Mi huella digital %1$s:\n%2$s</string>
+    <string name="omemo_authbuddydialog_VERIRY_BUDDY">Verificar al amigo</string>
     <string name="omemo_identity_keypairs_missing">Cree pares de claves de identidad OMEMO para: %1$s</string>
     <string name="omemo_identity_key_invalid">Clave de identidad inválido para el dispositivo omemo: %1$s.\nExcepción: %2$s.</string>
     <string name="omemo_identity_key_missing">Falta la Identidad OMEMO para: %1$s\nProceda a descargar desde el servidor.</string>
@@ -1467,8 +1467,7 @@
     <string name="service_gui_settings_VIDEO_MAX_BANDWIDTH">Umbral de paso RTP (kBytes/s)</string>
     <string name="service_gui_settings_VIDEO_TARGET_FPS">Objetivo de frecuencia en la imagen (por seg.)</string>
 
-    <!-- Security settings -->
-    <!-- Chat security -->
+    <!-- Chat Security settings -->
     <string name="service_gui_settings_MESSAGING_SECURITY_SUMMARY">Configuración de seguridad de cifrado de mensajes</string>
     <string name="service_gui_settings_MESSAGING_SECURITY_TITLE">Seguridad en la mensajería</string>
 

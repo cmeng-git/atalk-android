@@ -5,10 +5,14 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.audio;
 
-import android.media.*;
-import android.os.Build;
+import static android.media.AudioTrack.STATE_INITIALIZED;
 
-import org.atalk.android.gui.call.CallVolumeCtrlFragment;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.AudioTrack;
+
+import com.google.common.primitives.Doubles;
+
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.AudioSystem;
@@ -16,12 +20,15 @@ import org.atalk.impl.neomedia.jmfext.media.protocol.audiorecord.DataSource;
 import org.atalk.service.neomedia.BasicVolumeControl;
 import org.atalk.service.neomedia.codec.Constants;
 
-import javax.media.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.GainControl;
+import javax.media.PlugIn;
+import javax.media.Renderer;
+import javax.media.ResourceUnavailableException;
 import javax.media.format.AudioFormat;
 
 import timber.log.Timber;
-
-import static android.media.AudioTrack.STATE_INITIALIZED;
 
 /**
  * Implements an audio <code>Renderer</code> which uses {@link AudioTrack}.
@@ -29,8 +36,7 @@ import static android.media.AudioTrack.STATE_INITIALIZED;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
-{
+public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem> {
     private static final int ABSTRACT_VOLUME_CONTROL_PERCENT_RANGE
             = (BasicVolumeControl.MAX_VOLUME_PERCENT - BasicVolumeControl.MIN_VOLUME_PERCENT) / 100;
 
@@ -64,7 +70,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * applied in a software manner using
      * {@link BasicVolumeControl#applyGain(GainControl, byte[], int, int)} or in a hardware manner
      * using {@link AudioTrack#setStereoVolume(float, float)}.
-     * <p>
+     *
      * Currently we use software gain control. Output volume is controlled using
      * <code>AudioManager</code> by adjusting stream volume. When the minimum value is reached we keep
      * lowering the volume using software gain control. The opposite happens for the maximum volume.
@@ -130,18 +136,17 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * The type of audio stream in the terms of {@link AudioManager} to be rendered to the output
      * device represented by this <code>AudioTrackRenderer</code>.
      */
-    private int streamType;
+    private final int streamType;
 
     /**
      * The list of <code>Format</code>s of media data supported as input by this <code>Renderer</code>.
      */
-    private Format[] supportedInputFormats;
+    private static Format[] supportedInputFormats;
 
     /**
      * Initializes a new <code>AudioTrackRenderer</code> instance.
      */
-    public AudioTrackRenderer()
-    {
+    public AudioTrackRenderer() {
         this(true);
     }
 
@@ -151,8 +156,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * @param enableGainControl <code>true</code> to enable controlling the volume/gain of the rendered media;
      * otherwise, <code>false</code>
      */
-    public AudioTrackRenderer(boolean enableGainControl)
-    {
+    public AudioTrackRenderer(boolean enableGainControl) {
         super(AudioSystem.getAudioSystem(AudioSystem.LOCATOR_PROTOCOL_AUDIORECORD));
         /*
          * Flag enableGainControl also indicates that it's a call audio stream, so we switch stream
@@ -174,8 +178,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      *
      * @see PlugIn#close()
      */
-    public synchronized void close()
-    {
+    public synchronized void close() {
         if (audioTrack != null) {
             audioTrack.release();
             audioTrack = null;
@@ -202,8 +205,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      *
      * @return the descriptive/human-readable name of this FMJ plug-in
      */
-    public String getName()
-    {
+    public String getName() {
         return PLUGIN_NAME;
     }
 
@@ -214,8 +216,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * @return the type of audio stream in the terms of <code>AudioManager</code> to be rendered to the
      * output device represented by this <code>AudioTrackRenderer</code>
      */
-    private int getStreamType()
-    {
+    private int getStreamType() {
         return streamType;
     }
 
@@ -226,15 +227,15 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * @return the list of input <code>Format</code>s supported by this <code>Renderer</code>
      * @see Renderer#getSupportedInputFormats()
      */
-    public Format[] getSupportedInputFormats()
-    {
+    public Format[] getSupportedInputFormats() {
         if (supportedInputFormats == null) {
             double[] supportedInputSampleRates = new double[1 + Constants.AUDIO_SAMPLE_RATES.length];
             int supportedInputSampleRateCount = 0;
 
-            supportedInputSampleRates[supportedInputSampleRateCount]
-                    = AudioTrack.getNativeOutputSampleRate(getStreamType());
-            supportedInputSampleRateCount++;
+            double sNative = AudioTrack.getNativeOutputSampleRate(streamType);
+            if (!Doubles.asList(Constants.AUDIO_SAMPLE_RATES).contains(sNative)) {
+                supportedInputSampleRates[supportedInputSampleRateCount++] = sNative;
+            }
             System.arraycopy(Constants.AUDIO_SAMPLE_RATES, 0, supportedInputSampleRates,
                     supportedInputSampleRateCount, Constants.AUDIO_SAMPLE_RATES.length);
             supportedInputSampleRateCount += Constants.AUDIO_SAMPLE_RATES.length;
@@ -253,6 +254,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                         Format.NOT_SPECIFIED /* frameSizeInBits */,
                         Format.NOT_SPECIFIED /* frameRate */,
                         Format.byteArray);
+
                 supportedInputFormats[2 * i + 1] = new AudioFormat(
                         AudioFormat.LINEAR,
                         sampleRate,
@@ -274,8 +276,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      * @throws ResourceUnavailableException if any of the required resources cannot be acquired @see PlugIn#open()
      */
     public synchronized void open()
-            throws ResourceUnavailableException
-    {
+            throws ResourceUnavailableException {
         if (audioTrack == null) {
             AudioFormat inputFormat = this.inputFormat;
             double sampleRate = inputFormat.getSampleRate();
@@ -331,35 +332,29 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
              * {@link #AudioTrack(AudioAttributes, android.media.AudioFormat, int,int,int)}to specify the
              * {@link AudioAttributes} instead of the stream type which is only for volume control.
              */
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                AudioAttributes audioAttribute;
+            AudioAttributes audioAttribute;
 
-                if (AudioManager.STREAM_VOICE_CALL == streamType) {
-                    audioAttribute = (new AudioAttributes.Builder())
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                            .build();
-                }
-                else {
-                    audioAttribute = (new AudioAttributes.Builder())
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                            .build();
-                }
-
-                android.media.AudioFormat androidAudioFormat = (new android.media.AudioFormat.Builder())
-                        .setChannelMask(channelConfig)
-                        .setEncoding(audioFormat)
-                        .setSampleRate((int) sampleRate)
+            if (AudioManager.STREAM_VOICE_CALL == streamType) {
+                audioAttribute = (new AudioAttributes.Builder())
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                        .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                         .build();
-
-                audioTrack = new AudioTrack(audioAttribute, androidAudioFormat, bufferSize, AudioTrack.MODE_STREAM,
-                        AudioManager.AUDIO_SESSION_ID_GENERATE);
             }
             else {
-                audioTrack = new AudioTrack(streamType, (int) sampleRate, channelConfig, audioFormat, bufferSize,
-                        AudioTrack.MODE_STREAM);
+                audioAttribute = (new AudioAttributes.Builder())
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build();
             }
+
+            android.media.AudioFormat androidAudioFormat = (new android.media.AudioFormat.Builder())
+                    .setChannelMask(channelConfig)
+                    .setEncoding(audioFormat)
+                    .setSampleRate((int) sampleRate)
+                    .build();
+
+            audioTrack = new AudioTrack(audioAttribute, androidAudioFormat, bufferSize, AudioTrack.MODE_STREAM,
+                    AudioManager.AUDIO_SESSION_ID_GENERATE);
 
             setThreadPriority = true;
             if (USE_SOFTWARE_GAIN) {
@@ -367,9 +362,9 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                  * Set the volume of the audioTrack to the maximum value because there is volume control via neomedia.
                  */
                 float volume = MAX_AUDIO_TRACK_VOLUME;
-                int setStereoVolume = audioTrack.setStereoVolume(volume, volume);
-                if (setStereoVolume != AudioTrack.SUCCESS) {
-                    Timber.w("AudioTrack.setStereoVolume() failed with return value %s", setStereoVolume);
+                int setVolumeStatus = audioTrack.setVolume(volume);
+                if (setVolumeStatus != AudioTrack.SUCCESS) {
+                    Timber.w("AudioTrack.setVolume() failed with return value %s", setVolumeStatus);
                 }
             }
             else {
@@ -387,11 +382,9 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
             if (latency == null)
                 latencyThread = null;
             else {
-                latencyThread = new Thread()
-                {
+                latencyThread = new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         runInLatencyThread();
                     }
                 };
@@ -420,11 +413,11 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      *
      * @param buffer the <code>Buffer</code> containing the media data to be processed and rendered to the
      * output device represented by this <code>Renderer</code>
+     *
      * @return one or a combination of the constants defined in {@link PlugIn}
      * @see Renderer#process(Buffer)
      */
-    public int process(Buffer buffer)
-    {
+    public int process(Buffer buffer) {
         /*
          * We do not have early access to the Thread which runs the #process(Buffer) method of this
          * Renderer so we have to set the priority as part of the call to the method in question.
@@ -458,8 +451,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                 synchronized (this) {
                     if (audioTrack == null) {
                         /*
-                         * This AudioTrackRenderer is not in a state in which it can process the
-                         * data of the Buffer.
+                         * This AudioTrackRenderer is not in a state in which it can process the data of the Buffer.
                          */
                         processed = PlugIn.BUFFER_PROCESSED_FAILED;
                     }
@@ -485,24 +477,24 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
 
                                     if (volume > maxVolume) {
                                         effectiveVolume = maxVolume;
-                                        effectiveGainControlLevel = 1 / ABSTRACT_VOLUME_CONTROL_PERCENT_RANGE;
+                                        effectiveGainControlLevel = 1.0f / ABSTRACT_VOLUME_CONTROL_PERCENT_RANGE;
                                     }
                                     else {
                                         effectiveVolume = volume;
                                         effectiveGainControlLevel = gainControlLevel;
                                     }
 
-                                    int setStereoVolume;
+                                    int setVolumeStatus;
                                     if (gainControlLevelAppliedToAudioTrack == effectiveGainControlLevel) {
-                                        setStereoVolume = AudioTrack.SUCCESS;
+                                        setVolumeStatus = AudioTrack.SUCCESS;
                                     }
                                     else {
-                                        setStereoVolume = audioTrack.setStereoVolume(effectiveVolume, effectiveVolume);
-                                        if (setStereoVolume == AudioTrack.SUCCESS)
+                                        setVolumeStatus = audioTrack.setVolume(effectiveVolume);
+                                        if (setVolumeStatus == AudioTrack.SUCCESS)
                                             gainControlLevelAppliedToAudioTrack = effectiveGainControlLevel;
                                     }
 
-                                    if ((setStereoVolume != AudioTrack.SUCCESS)
+                                    if ((setVolumeStatus != AudioTrack.SUCCESS)
                                             || (volume > maxVolume)) {
                                         BasicVolumeControl.applyGain(gainControl, bytes, offset, length);
                                     }
@@ -580,7 +572,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
                                 Timber.w("Dropping %d bytes of audio data!", length);
                             }
                             else if (written < length) {
-                                processed |= PlugIn.INPUT_BUFFER_NOT_CONSUMED;
+                                processed = PlugIn.INPUT_BUFFER_NOT_CONSUMED;
                                 buffer.setLength(length - written);
                                 buffer.setOffset(offset + written);
                             }
@@ -601,8 +593,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
     /**
      * Runs in {@link #latencyThread}. Reads from {@link #latency} and writes into {@link #audioTrack}.
      */
-    private void runInLatencyThread()
-    {
+    private void runInLatencyThread() {
         try {
             DataSource.setThreadPriority();
             boolean latencyIncurred = false;
@@ -668,8 +659,7 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      *
      * @see Renderer#start()
      */
-    public synchronized void start()
-    {
+    public synchronized void start() {
         if (audioTrack != null) {
             setThreadPriority = true;
             audioTrack.play();
@@ -681,22 +671,19 @@ public class AudioTrackRenderer extends AbstractAudioRenderer<AudioSystem>
      *
      * @see Renderer#stop()
      */
-    public synchronized void stop()
-    {
-        if ((audioTrack != null) && audioTrack.getState()==STATE_INITIALIZED) {
+    public synchronized void stop() {
+        if ((audioTrack != null) && audioTrack.getState() == STATE_INITIALIZED) {
             audioTrack.stop();
             setThreadPriority = true;
         }
     }
 
-    public Object getControl(String s)
-    {
+    public Object getControl(String s) {
         // To change body of implemented methods use File | Settings | File Templates.
         return null;
     }
 
-    public Object[] getControls()
-    {
+    public Object[] getControls() {
         // To change body of implemented methods use File | Settings | File Templates.
         return new Object[0];
     }

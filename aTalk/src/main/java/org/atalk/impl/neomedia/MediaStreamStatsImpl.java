@@ -32,9 +32,9 @@ import org.atalk.service.neomedia.rtp.RTCPReportListener;
 import org.atalk.service.neomedia.rtp.RTCPReports;
 import org.atalk.service.neomedia.rtp.RemoteBitrateEstimator;
 import org.atalk.service.neomedia.stats.TrackStats;
-import org.atalk.util.TimeUtils;
 import org.atalk.util.LRUCache;
 import org.atalk.util.MediaType;
+import org.atalk.util.TimeUtils;
 
 import java.awt.Dimension;
 import java.io.IOException;

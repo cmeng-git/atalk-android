@@ -5,10 +5,10 @@
  */
 package org.atalk.impl.neomedia;
 
-import java.io.*;
-import java.net.*;
-
 import org.atalk.service.neomedia.StreamConnector;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
 
 /**
  * RTPConnector implementation for UDP.

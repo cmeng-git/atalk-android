@@ -5,6 +5,8 @@
  */
 package org.atalk.impl.neomedia;
 
+import androidx.annotation.NonNull;
+
 import com.sun.media.util.Registry;
 
 import org.atalk.android.R;
@@ -52,10 +54,10 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.service.neomedia.format.MediaFormatFactory;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.service.neomedia.recording.RecorderEventHandler;
-import org.atalk.util.OSUtils;
-import org.atalk.util.swing.VideoContainer;
 import org.atalk.util.MediaType;
+import org.atalk.util.OSUtils;
 import org.atalk.util.event.PropertyChangeNotifier;
+import org.atalk.util.swing.VideoContainer;
 import org.json.JSONObject;
 
 import java.awt.Component;
@@ -295,7 +297,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * for capture and playback of media
      * @see MediaService#createMediaStream(MediaDevice)
      */
-    public MediaStream createMediaStream(MediaDevice device)
+    public MediaStream createMediaStream(@NonNull MediaDevice device)
     {
         return createMediaStream(null, device);
     }
@@ -306,7 +308,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * Implements {@link MediaService#createMediaStream(MediaType)}. Initializes a new
      * <code>AudioMediaStreamImpl</code> or <code>VideoMediaStreamImpl</code> in accord with <code>mediaType</code>
      */
-    public MediaStream createMediaStream(MediaType mediaType)
+    public MediaStream createMediaStream(@NonNull MediaType mediaType)
     {
         return createMediaStream(mediaType, null, null, null);
     }
@@ -438,7 +440,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * <code>MediaDevice</code> exists; otherwise, <code>null</code>
      * @see MediaService#getDefaultDevice(MediaType, MediaUseCase)
      */
-    public MediaDevice getDefaultDevice(MediaType mediaType, MediaUseCase useCase)
+    public MediaDevice getDefaultDevice(MediaType mediaType, @NonNull MediaUseCase useCase)
     {
         CaptureDeviceInfo captureDeviceInfo;
         switch (mediaType) {
@@ -506,7 +508,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * <code>MediaService</code> to be available.
      * @see MediaService#getDevices(MediaType, MediaUseCase)
      */
-    public List<MediaDevice> getDevices(MediaType mediaType, MediaUseCase useCase)
+    public List<MediaDevice> getDevices(@NonNull MediaType mediaType, @NonNull MediaUseCase useCase)
     {
         List<? extends CaptureDeviceInfo> cdis;
         List<MediaDeviceImpl> privateDevices;
@@ -538,7 +540,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         List<MediaDevice> publicDevices;
 
         synchronized (privateDevices) {
-            if ((cdis == null) || (cdis.size() <= 0))
+            if (cdis.size() <= 0)
                 privateDevices.clear();
             else {
                 Iterator<MediaDeviceImpl> deviceIter = privateDevices.iterator();
@@ -579,7 +581,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
                         privateDevices.add(device);
                 }
             }
-            publicDevices = new ArrayList<MediaDevice>(privateDevices);
+            publicDevices = new ArrayList<>(privateDevices);
         }
 
         /*
@@ -731,7 +733,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         ScreenDevice[] screens = ScreenDeviceImpl.getAvailableScreenDevices();
         List<ScreenDevice> screenList;
 
-        if ((screens != null) && (screens.length != 0))
+        if (screens.length != 0)
             screenList = new ArrayList<>(Arrays.asList(screens));
         else
             screenList = Collections.emptyList();
@@ -757,7 +759,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * and plays back media using the specified <code>MediaDevice</code>
      * @see MediaService#createRecorder(MediaDevice)
      */
-    public Recorder createRecorder(MediaDevice device)
+    public Recorder createRecorder(@NonNull MediaDevice device)
     {
         if (device instanceof AudioMixerMediaDevice)
             return new RecorderImpl((AudioMixerMediaDevice) device);
@@ -769,7 +771,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      * {@inheritDoc}
      */
     @Override
-    public Recorder createRecorder(RTPTranslator translator)
+    public Recorder createRecorder(@NonNull RTPTranslator translator)
     {
         return new RecorderRtpImpl(translator);
     }
@@ -785,6 +787,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
      *
      * @return a {@link Map} binding some formats to a preferred dynamic RTP payload type number.
      */
+    @NonNull
     @Override
     public Map<MediaFormat, Byte> getDynamicPayloadTypePreferences()
     {
@@ -950,7 +953,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             if ((trackControls != null) && (trackControls.length != 0))
                 try {
                     for (TrackControl trackControl : trackControls) {
-                        Codec codecs[];
+                        Codec[] codecs;
                         SwScale scaler = new SwScale();
 
                         // do not flip desktop
@@ -1045,7 +1048,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         String name = "Partial desktop streaming";
         Dimension size;
         int multiple;
-        Point p = new Point((x < 0) ? 0 : x, (y < 0) ? 0 : y);
+        Point p = new Point(Math.max(x, 0), Math.max(y, 0));
         ScreenDevice dev = getScreenForPoint(p);
         int display;
 
@@ -1071,7 +1074,7 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
 
         size = new Dimension(width, height);
 
-        Format formats[] = new Format[]{
+        Format[] formats = new Format[]{
                 new AVFrameFormat(
                         size,
                         Format.NOT_SPECIFIED,
@@ -1150,11 +1153,10 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
             return null;
 
         String remainder = locator.getRemainder();
-        String split[] = remainder.split(",");
-        int index = Integer.parseInt(((split != null) && (split.length > 1)) ? split[0] : remainder);
+        String[] split = remainder.split(",");
+        int index = Integer.parseInt(split.length > 1 ? split[0] : remainder);
 
         List<ScreenDevice> devs = getAvailableScreenDevices();
-
         if (devs.size() - 1 >= index) {
             Rectangle r = ((ScreenDeviceImpl) devs.get(index)).getBounds();
             return new Point(r.x, r.y);
@@ -1406,12 +1408,12 @@ public class MediaServiceImpl extends PropertyChangeNotifier implements MediaSer
         /**
          * The parent container of our preview.
          */
-        private JComponent container;
+        private final JComponent container;
 
         /**
          * The player showing the video preview.
          */
-        private Player player;
+        private final Player player;
 
         /**
          * The preview component of the player, must be set once the player has been realized.

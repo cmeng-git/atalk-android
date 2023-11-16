@@ -106,7 +106,7 @@ class InSampleDesc
 	 */
 	private void setBuffer(Buffer buffer)
 	{
-		this.buffer = (buffer == null) ? null : new SoftReference<Buffer>(buffer);
+		this.buffer = (buffer == null) ? null : new SoftReference<>(buffer);
 	}
 
 	/**

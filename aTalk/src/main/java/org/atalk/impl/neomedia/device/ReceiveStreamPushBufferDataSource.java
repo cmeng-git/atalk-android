@@ -5,11 +5,13 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import javax.media.protocol.*;
-import javax.media.rtp.*;
-
 import org.atalk.impl.neomedia.protocol.NullBufferTransferHandler;
 import org.atalk.impl.neomedia.protocol.PushBufferDataSourceDelegate;
+
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
+import javax.media.rtp.ReceiveStream;
 
 /**
  * Wraps the <code>DataSource</code> of a specific <code>ReceiveStream</code> so that calls to its

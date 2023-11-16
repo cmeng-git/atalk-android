@@ -6,7 +6,10 @@
 
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetJitsiMeetTools;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.json.JSONObject;

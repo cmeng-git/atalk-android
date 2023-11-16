@@ -8,12 +8,17 @@ package net.java.sip.communicator.service.msghistory;
 
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.msghistory.event.MessageHistorySearchProgressListener;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
 
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.List;
 
 /**
  * The Message History Service stores messages exchanged through the various protocols

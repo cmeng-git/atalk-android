@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.configuration;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Set;
 
 /**
  * A simple in-memory {@link ConfigurationStore} implementation that only uses a hashTable.
@@ -71,7 +72,7 @@ public abstract class HashtableConfigurationStore<T extends Hashtable>
 	{
 		synchronized (properties) {
 			Set<?> propertyNames = properties.keySet();
-			return propertyNames.toArray(new String[propertyNames.size()]);
+			return propertyNames.toArray(new String[0]);
 		}
 	}
 
@@ -109,11 +110,9 @@ public abstract class HashtableConfigurationStore<T extends Hashtable>
 	/**
 	 * Implements {@link ConfigurationStore#setNonSystemProperty(String, Object)}.
 	 *
-	 * @param name
-	 * 		the name of the non-system property to be set to the specified value in this
+	 * @param name the name of the non-system property to be set to the specified value in this
 	 * 		<code>ConfigurationStore</code>
-	 * @param value
-	 * 		the value to be assigned to the non-system property with the specified name in this
+	 * @param value the value to be assigned to the non-system property with the specified name in this
 	 * 		<code>ConfigurationStore</code>
 	 * @see ConfigurationStore#setNonSystemProperty(String, Object)
 	 */

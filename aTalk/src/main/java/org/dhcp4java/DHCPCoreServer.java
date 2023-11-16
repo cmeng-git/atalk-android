@@ -22,9 +22,14 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import timber.log.Timber;
@@ -179,9 +184,9 @@ public class DHCPCoreServer implements Runnable
             this.serverSocket.bind(sockAddress);
 
             // initialize Thread Pool
-            int numThreads = Integer.valueOf(this.properties.getProperty(SERVER_THREADS));
-            int maxThreads = Integer.valueOf(this.properties.getProperty(SERVER_THREADS_MAX));
-            int keepaliveThreads = Integer.valueOf(this.properties.getProperty(SERVER_THREADS_KEEPALIVE));
+            int numThreads = Integer.parseInt(this.properties.getProperty(SERVER_THREADS));
+            int maxThreads = Integer.parseInt(this.properties.getProperty(SERVER_THREADS_MAX));
+            int keepaliveThreads = Integer.parseInt(this.properties.getProperty(SERVER_THREADS_KEEPALIVE));
             this.threadPool = new ThreadPoolExecutor(numThreads, maxThreads,
                     keepaliveThreads, TimeUnit.MILLISECONDS,
                     new ArrayBlockingQueue<>(BOUNDED_QUEUE_SIZE),

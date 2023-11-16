@@ -1,10 +1,9 @@
 package javax.swing;
 
-import java.net.URL;
-
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.net.URL;
 
 public class ImageIcon implements Icon
 {

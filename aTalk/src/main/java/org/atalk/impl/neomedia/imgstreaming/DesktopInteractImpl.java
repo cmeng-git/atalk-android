@@ -5,9 +5,13 @@
  */
 package org.atalk.impl.neomedia.imgstreaming;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import org.atalk.util.OSUtils;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 
 import timber.log.Timber;
 

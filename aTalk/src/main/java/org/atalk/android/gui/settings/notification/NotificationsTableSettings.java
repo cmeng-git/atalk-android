@@ -8,9 +8,15 @@ package org.atalk.android.gui.settings.notification;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.CompoundButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.NotificationChangeListener;
+import net.java.sip.communicator.service.notification.NotificationService;
+import net.java.sip.communicator.service.notification.PopupMessageNotificationAction;
+import net.java.sip.communicator.service.notification.SoundNotificationAction;
 import net.java.sip.communicator.service.notification.event.NotificationActionTypeEvent;
 import net.java.sip.communicator.service.notification.event.NotificationEventTypeEvent;
 import net.java.sip.communicator.util.ServiceUtils;

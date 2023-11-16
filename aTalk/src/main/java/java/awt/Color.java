@@ -1,4 +1,4 @@
-/*  1:   */ package java.awt;
+package java.awt;
 
 import java.io.Serializable;
 

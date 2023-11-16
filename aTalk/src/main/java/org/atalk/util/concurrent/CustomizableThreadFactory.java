@@ -16,7 +16,8 @@
 
 package org.atalk.util.concurrent;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * A thread factory which supports customizing name prefix of created threads

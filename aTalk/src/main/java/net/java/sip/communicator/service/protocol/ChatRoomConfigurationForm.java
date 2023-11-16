@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import java.util.Iterator;
 
 /**
  * The <code>ChatRoomConfigurationForm</code> contains the chat room configuration. It's meant to be

@@ -5,8 +5,6 @@
  */
 package org.atalk.android.gui.account.settings;
 
-import static org.atalk.android.gui.account.settings.AccountPreferenceFragment.EXTRA_ACCOUNT_ID;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -130,7 +128,7 @@ public class AccountPreferenceActivity extends OSGiActivity
         }
 
         Bundle args = new Bundle();
-        args.putString(EXTRA_ACCOUNT_ID, userUniqueID);
+        args.putString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID, userUniqueID);
         preferencesFragment.setArguments(args);
         return preferencesFragment;
     }
@@ -167,7 +165,7 @@ public class AccountPreferenceActivity extends OSGiActivity
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         // Instantiate the new Fragment
         final Bundle args = pref.getExtras();
-        args.putString(EXTRA_ACCOUNT_ID, userUniqueID);
+        args.putString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID, userUniqueID);
         FragmentManager fm = getSupportFragmentManager();
         final Fragment fragment = fm.getFragmentFactory().instantiate(
                 getClassLoader(),

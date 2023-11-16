@@ -5,7 +5,11 @@
  */
 package org.atalk.impl.neomedia;
 
-import javax.media.*;
+import javax.media.ControllerClosedEvent;
+import javax.media.ControllerErrorEvent;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.Processor;
 
 import timber.log.Timber;
 

@@ -13,7 +13,7 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.CallPeer;
 
 /**
  * An event listener that should be implemented by parties interested in remote control feature (i.e

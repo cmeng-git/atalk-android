@@ -1,7 +1,7 @@
 package javax.swing;
 
-import java.awt.Font;
 import java.awt.Color;
+import java.awt.Font;
 
 public class JTextArea {
 

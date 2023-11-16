@@ -21,8 +21,20 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentManager;
 
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
 
@@ -35,14 +47,20 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.xdata.*;
+import org.jivesoftware.smackx.xdata.BooleanFormField;
+import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormField.Option;
+import org.jivesoftware.smackx.xdata.ListMultiFormField;
+import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.Form;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import androidx.fragment.app.FragmentManager;
 import timber.log.Timber;
 
 /**

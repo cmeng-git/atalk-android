@@ -7,7 +7,10 @@
 package net.java.sip.communicator.service.gui.call;
 
 import net.java.sip.communicator.service.protocol.CallPeerState;
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityNegotiationStartedEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOffEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityOnEvent;
+import net.java.sip.communicator.service.protocol.event.CallPeerSecurityTimeoutEvent;
 
 /**
  * The <code>CallPeerRenderer</code> interface is meant to be implemented by

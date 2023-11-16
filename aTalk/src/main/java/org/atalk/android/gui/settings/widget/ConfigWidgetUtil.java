@@ -13,8 +13,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.preference.*;
+import androidx.preference.EditTextPreference;
 import androidx.preference.EditTextPreference.OnBindEditTextListener;
+import androidx.preference.Preference;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;

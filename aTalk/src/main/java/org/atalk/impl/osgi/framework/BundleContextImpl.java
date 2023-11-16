@@ -118,14 +118,14 @@ public class BundleContextImpl implements BundleContext
 		return ((ServiceRegistrationImpl.ServiceReferenceImpl) reference).getService();
 	}
 
-	public ServiceReference getServiceReference(Class clazz)
+	public ServiceReference<?> getServiceReference(Class clazz)
 	{
 		return getServiceReference(clazz, clazz.getName());
 	}
 
-	private ServiceReference getServiceReference(Class clazz, String className)
+	private ServiceReference<?> getServiceReference(Class<?> clazz, String className)
 	{
-		ServiceReference[] serviceReferences;
+		ServiceReference<?>[] serviceReferences;
 
 		try {
 			serviceReferences = getServiceReferences(className, null);
@@ -138,35 +138,34 @@ public class BundleContextImpl implements BundleContext
 		return ((serviceReferences == null) || (serviceReferences.length == 0)) ? null : serviceReferences[0];
 	}
 
-	public ServiceReference getServiceReference(String className)
+	public ServiceReference<?> getServiceReference(String className)
 	{
 		return getServiceReference(Object.class, className);
 	}
 
-	public Collection<ServiceReference> getServiceReferences(Class clazz, String filter)
+	public Collection<ServiceReference<?>> getServiceReferences(Class clazz, String filter)
 		throws InvalidSyntaxException
 	{
 		return getServiceReferences(clazz, clazz.getName(), filter, true);
 	}
 
-	private Collection<ServiceReference> getServiceReferences(Class clazz, String className, String filter, boolean checkAssignable)
+	private Collection<ServiceReference<?>> getServiceReferences(Class<?> clazz, String className, String filter, boolean checkAssignable)
 		throws InvalidSyntaxException
 	{
 		return framework.getServiceReferences(getBundle(), clazz, className, (filter == null) ? null : createFilter(filter), checkAssignable);
 	}
 
-	public ServiceReference[] getServiceReferences(String className, String filter)
+	public ServiceReference<?>[] getServiceReferences(String className, String filter)
 		throws InvalidSyntaxException
 	{
 		return getServiceReferences(className, filter, true);
 	}
 
-	private ServiceReference[] getServiceReferences(String className, String filter, boolean checkAssignable)
+	private ServiceReference<?>[] getServiceReferences(String className, String filter, boolean checkAssignable)
 		throws InvalidSyntaxException
 	{
-		Collection<ServiceReference> serviceReferences = getServiceReferences(Object.class, className, filter, checkAssignable);
-
-		return serviceReferences.toArray(new ServiceReference[serviceReferences.size()]);
+		Collection<ServiceReference<?>> serviceReferences = getServiceReferences(Object.class, className, filter, checkAssignable);
+		return serviceReferences.toArray(new ServiceReference[0]);
 	}
 
 	public Bundle installBundle(String location)
@@ -223,7 +222,6 @@ public class BundleContextImpl implements BundleContext
 
 	public boolean ungetService(ServiceReference<?> reference)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 

@@ -9,12 +9,20 @@ package net.java.sip.communicator.util.call;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo.DetailsResponseListener;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.*;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.FaxDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.MobilePhoneDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PagerDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.PhoneNumberDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.VideoDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.WorkPhoneDetail;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import timber.log.Timber;
 

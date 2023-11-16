@@ -5,11 +5,11 @@
  */
 package org.atalk.service.neomedia;
 
-import net.sf.fmj.media.rtp.*;
+import net.sf.fmj.media.rtp.SSRCCache;
 
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Represents an RTP translator which forwards RTP and RTCP traffic between multiple
@@ -26,7 +26,7 @@ public interface RTPTranslator
 	 *        the SSRC of the RTP stream received by the {@code StreamRTPManager} to be returned
 	 * @return the {@code StreamRTPManager} which receives {@code receiveSSRC} of {@code null}
 	 */
-	public StreamRTPManager findStreamRTPManagerByReceiveSSRC(int receiveSSRC);
+	StreamRTPManager findStreamRTPManagerByReceiveSSRC(int receiveSSRC);
 
 	/**
 	 * Returns a list of <code>StreamRTPManager</code>s currently attached to this
@@ -37,7 +37,7 @@ public interface RTPTranslator
 	 * @return a list of <code>StreamRTPManager</code>s currently attached to this
 	 *         <code>RTPTranslator</code>.
 	 */
-	public List<StreamRTPManager> getStreamRTPManagers();
+	List<StreamRTPManager> getStreamRTPManagers();
 
 	/**
 	 * Provides access to the underlying <code>SSRCCache</code> that holds statistics information about
@@ -46,15 +46,15 @@ public interface RTPTranslator
 	 * @return the underlying <code>SSRCCache</code> that holds statistics information about each SSRC
 	 *         that we receive.
 	 */
-	public SSRCCache getSSRCCache();
+	SSRCCache getSSRCCache();
 
 	/**
 	 * Defines a packet filter which allows an observer of an <code>RTPTranslator</code> to disallow the
 	 * writing of specific packets into a specific destination identified by a <code>MediaStream</code>.
 	 */
-	public interface WriteFilter
+	interface WriteFilter
 	{
-		public boolean accept(MediaStream source, RawPacket pkt,
+		boolean accept(MediaStream source, RawPacket pkt,
 			MediaStream destination, boolean data);
 	}
 
@@ -64,13 +64,13 @@ public interface RTPTranslator
 	 * @param writeFilter
 	 *        the <code>WriteFilter</code> to add to this <code>RTPTranslator</code>
 	 */
-	public void addWriteFilter(WriteFilter writeFilter);
+	void addWriteFilter(WriteFilter writeFilter);
 
 	/**
 	 * Releases the resources allocated by this instance in the course of its execution and prepares
 	 * it to be garbage collected.
 	 */
-	public void dispose();
+	void dispose();
 
 	/**
 	 * Removes a <code>WriteFilter</code> from this <code>RTPTranslator</code>.
@@ -78,5 +78,5 @@ public interface RTPTranslator
 	 * @param writeFilter
 	 *        the <code>WriteFilter</code> to remove from this <code>RTPTranslator</code>
 	 */
-	public void removeWriteFilter(WriteFilter writeFilter);
+	void removeWriteFilter(WriteFilter writeFilter);
 }

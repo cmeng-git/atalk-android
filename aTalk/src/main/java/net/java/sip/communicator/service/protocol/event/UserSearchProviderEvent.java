@@ -13,9 +13,9 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import java.util.EventObject;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
-import net.java.sip.communicator.service.protocol.*;
+import java.util.EventObject;
 
 /**
  * Notifies <code>UserSearchProviderListener</code> that a provider that supports user search is added

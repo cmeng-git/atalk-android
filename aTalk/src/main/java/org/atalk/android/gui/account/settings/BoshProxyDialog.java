@@ -19,13 +19,22 @@ package org.atalk.android.gui.account.settings;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.*;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import net.java.sip.communicator.plugin.jabberaccregwizz.JabberAccountRegistrationActivator;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountManager;
+import net.java.sip.communicator.service.protocol.ProtocolProviderActivator;
+import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration;
 
 import org.atalk.android.R;

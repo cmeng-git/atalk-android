@@ -6,9 +6,14 @@
  */
 package net.java.sip.communicator.util;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class keeps up to date list of services that implement given interface.

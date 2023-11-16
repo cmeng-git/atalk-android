@@ -13,7 +13,8 @@
  */
 package net.java.sip.communicator.service.protocol.event;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AdHocChatRoom;
+import net.java.sip.communicator.service.protocol.Contact;
 
 /**
  * The event that occurs when an ad-hoc chat room has been created.

@@ -7,7 +7,9 @@ package org.atalk.impl.configuration;
 
 import org.atalk.util.xml.XMLException;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Hashtable;
 
 /**

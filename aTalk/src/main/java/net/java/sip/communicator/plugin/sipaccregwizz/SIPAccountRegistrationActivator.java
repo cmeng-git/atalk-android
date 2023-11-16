@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.plugin.sipaccregwizz;
 
+import static timber.log.Timber.e;
+
 import net.java.sip.communicator.service.certificate.CertificateService;
 import net.java.sip.communicator.service.gui.AccountRegistrationWizard;
 import net.java.sip.communicator.service.gui.UIService;
@@ -12,11 +14,12 @@ import net.java.sip.communicator.service.protocol.ProtocolNames;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 
 import org.atalk.service.configuration.ConfigurationService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Hashtable;
-
-import static timber.log.Timber.e;
 
 /**
  * Registers the <code>SIPAccountRegistrationWizard</code> in the UI Service.

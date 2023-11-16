@@ -15,7 +15,9 @@
  */
 package net.java.sip.communicator.service.contactlist;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSet;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

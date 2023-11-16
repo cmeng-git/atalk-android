@@ -15,9 +15,13 @@
  */
 package net.java.sip.communicator.plugin.defaultresourcepack;
 
-import java.util.*;
+import net.java.sip.communicator.service.resources.ColorPack;
 
-import net.java.sip.communicator.service.resources.*;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 /**
  * The default color resource pack.

@@ -1,6 +1,8 @@
 package org.atalk.service;
 
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -51,7 +53,7 @@ public class SystemEventReceiver extends BroadcastReceiver
     {
         DatabaseBackend.getInstance(context);
 
-        SQLiteConfigurationStore store = new SQLiteConfigurationStore();
+        SQLiteConfigurationStore store = new SQLiteConfigurationStore(context);
         String autoStart = (String) store.getProperty(ConfigurationUtils.pAutoStart);
         return (TextUtils.isEmpty(autoStart) || Boolean.parseBoolean(autoStart));
     }

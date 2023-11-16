@@ -6,13 +6,24 @@
 
 package org.atalk.android.gui.chat.conference;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.ChatRoom;
+import net.java.sip.communicator.service.protocol.FileTransfer;
+import net.java.sip.communicator.service.protocol.IMessage;
+import net.java.sip.communicator.service.protocol.OperationNotSupportedException;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetChatStateNotifications;
+import net.java.sip.communicator.service.protocol.OperationSetSmsMessaging;
+import net.java.sip.communicator.service.protocol.PresenceStatus;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.gui.chat.*;
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatMessage;
+import org.atalk.android.gui.chat.ChatSession;
+import org.atalk.android.gui.chat.ChatTransport;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -316,7 +327,7 @@ public class ConferenceChatTransport implements ChatTransport {
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
         // check to see if server supports httpFileUpload service if contact is off line or legacy file transfer failed
-        if (httpFileUploadManager.isUploadServiceDiscovered()) {
+        if (allowsFileTransfer()) {
             int encType = IMessage.ENCRYPTION_NONE;
             Object url;
             try {
@@ -340,8 +351,9 @@ public class ConferenceChatTransport implements ChatTransport {
      *
      * @return {@code true} if this chat transport supports file transfer, otherwise returns {@code false}.
      */
-    private boolean allowsFileTransfer() {
-        return (httpFileUploadManager != null) && httpFileUploadManager.isUploadServiceDiscovered();
+    @Override
+    public boolean allowsFileTransfer() {
+        return httpFileUploadManager.isUploadServiceDiscovered();
     }
 
     /**
@@ -350,8 +362,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @return the file length that is supported.
      */
     public long getMaximumFileLength() {
-        return (httpFileUploadManager == null)
-                ? 0 : httpFileUploadManager.getDefaultUploadService().getMaxFileSize();
+        return (allowsFileTransfer()) ? httpFileUploadManager.getDefaultUploadService().getMaxFileSize() : 0;
     }
 
     /**

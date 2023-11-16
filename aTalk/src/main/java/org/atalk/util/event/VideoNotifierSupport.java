@@ -16,7 +16,9 @@
 package org.atalk.util.event;
 
 import java.awt.Component;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents a mechanism to easily add to a specific <code>Object</code> by means

@@ -5,6 +5,14 @@
  */
 package org.atalk.android.gui.call;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SeekBar;
+
+import androidx.annotation.Nullable;
+
 import org.atalk.android.R;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.NeomediaActivator;
@@ -12,15 +20,6 @@ import org.atalk.service.neomedia.VolumeControl;
 import org.atalk.service.neomedia.event.VolumeChangeEvent;
 import org.atalk.service.neomedia.event.VolumeChangeListener;
 import org.atalk.service.osgi.OSGiDialogFragment;
-
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SeekBar;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * The dialog allows user to manipulate input or output volume gain level. To specify which one will be manipulated by

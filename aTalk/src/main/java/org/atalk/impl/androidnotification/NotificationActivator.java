@@ -7,7 +7,9 @@ package org.atalk.impl.androidnotification;
 
 import net.java.sip.communicator.service.notification.NotificationService;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 

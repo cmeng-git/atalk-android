@@ -16,8 +16,8 @@
 package org.atalk.impl.neomedia.transform.fec;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.RTPUtils;
 import org.atalk.util.ArrayUtils;
+import org.atalk.util.RTPUtils;
 
 import java.util.HashSet;
 import java.util.Map;

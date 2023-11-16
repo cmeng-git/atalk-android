@@ -23,7 +23,9 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The http utils bundle activator. Do nothing just provide access to some services.

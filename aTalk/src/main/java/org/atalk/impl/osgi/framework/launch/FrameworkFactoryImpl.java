@@ -6,10 +6,10 @@
  */
 package org.atalk.impl.osgi.framework.launch;
 
-import java.util.Map;
-
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
+
+import java.util.Map;
 
 /**
  *

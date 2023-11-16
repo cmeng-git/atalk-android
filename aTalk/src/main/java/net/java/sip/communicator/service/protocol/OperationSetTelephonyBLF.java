@@ -13,10 +13,10 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import java.util.*;
+import net.java.sip.communicator.service.protocol.event.BLFStatusListener;
+import net.java.sip.communicator.util.DataObject;
 
-import net.java.sip.communicator.service.protocol.event.*;
-import net.java.sip.communicator.util.*;
+import java.util.List;
 
 /**
  * Provides operations necessary to monitor line activity and pickup calls if needed.

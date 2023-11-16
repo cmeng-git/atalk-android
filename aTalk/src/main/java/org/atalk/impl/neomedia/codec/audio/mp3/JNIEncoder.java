@@ -5,10 +5,11 @@
  */
 package org.atalk.impl.neomedia.codec.audio.mp3;
 
-import java.awt.Component;
+import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.codec.audio.FFmpegAudioEncoder;
 import org.atalk.service.neomedia.control.FlushableControl;
-import org.atalk.impl.neomedia.codec.FFmpeg;
+
+import java.awt.Component;
 
 import javax.media.Format;
 import javax.media.format.AudioFormat;

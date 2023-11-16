@@ -219,7 +219,7 @@ public class About extends BaseActivity implements View.OnClickListener {
                         UpdateService updateService
                                 = ServiceUtils.getService(AndroidGUIActivator.bundleContext, UpdateService.class);
                         if (updateService != null) {
-                            updateService.checkForUpdates(true);
+                            updateService.checkForUpdates();
                         }
                     }
                 }.start();

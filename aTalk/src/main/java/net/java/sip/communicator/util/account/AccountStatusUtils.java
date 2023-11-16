@@ -13,8 +13,6 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ServiceUtils;
 import net.java.sip.communicator.util.UtilActivator;
 
-import java.util.Iterator;
-
 /**
  * The <code>AccountStatusUtils</code> provides utility methods for account status management.
  *

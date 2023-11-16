@@ -1,6 +1,7 @@
 package javax.swing;
 
 import java.awt.Color;
+
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
 public class JProgressBar extends JComponent{

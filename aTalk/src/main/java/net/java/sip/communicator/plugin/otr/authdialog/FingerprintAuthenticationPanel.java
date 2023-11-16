@@ -13,12 +13,22 @@ import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import java.awt.*;
-import javax.swing.*;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.security.PublicKey;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import java.security.PublicKey;
 
 /**
  * @author George Politis

@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.sysactivity.event;
 
-import java.util.*;
+import java.util.EventObject;
 
 /**
  * An event class representing system activity that has occurred.

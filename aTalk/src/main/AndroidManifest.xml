@@ -71,7 +71,11 @@
         android:theme="@style/AppTheme"
         tools:ignore="DataExtractionRules"
         tools:replace="android:allowBackup,android:label"
-        tools:targetApi="s">
+        tools:targetApi="tiramisu">
+
+        <!-- android:enableOnBackInvokedCallback="true"  required source change
+        https://stackoverflow.com/questions/73782320/onbackinvokedcallback-is-not-enabled-for-the-application-in-set-androidenableo
+        -->
 
         <!-- Apache HTTP client deprecation: (no effect so far)
          https://developer.android.com/about/versions/pie/android-9.0-changes-28#apache-p

@@ -6,7 +6,8 @@
 package org.atalk.impl.configuration.xml;
 
 import org.atalk.util.xml.XMLUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Common XML Tasks.

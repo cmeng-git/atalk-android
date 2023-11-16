@@ -5,13 +5,14 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import java.io.*;
-
-import javax.media.rtp.*;
-
 import org.atalk.impl.neomedia.RTPConnectorTCPImpl;
 import org.atalk.impl.neomedia.RTPConnectorTCPInputStream;
 import org.atalk.service.neomedia.StreamConnector;
+
+import java.io.IOException;
+
+import javax.media.rtp.RTPConnector;
+import javax.media.rtp.RTPManager;
 
 import timber.log.Timber;
 

@@ -5,11 +5,15 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.*;
+import net.java.sip.communicator.service.protocol.event.CallChangeAdapter;
+import net.java.sip.communicator.service.protocol.event.CallChangeEvent;
+import net.java.sip.communicator.service.protocol.event.CallEvent;
 
 import org.atalk.android.plugin.timberlog.TimberLog;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import timber.log.Timber;
 

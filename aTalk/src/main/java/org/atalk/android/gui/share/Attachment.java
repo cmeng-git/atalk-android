@@ -29,7 +29,9 @@
 
 package org.atalk.android.gui.share;
 
-import android.content.*;
+import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -37,7 +39,10 @@ import android.os.Parcelable;
 import org.atalk.persistance.FileBackend;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import timber.log.Timber;
 

@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.util;
 
-import java.io.*;
+import java.io.PrintStream;
 
 /**
  * This class provides a PrintWriter implementation that we use to replace

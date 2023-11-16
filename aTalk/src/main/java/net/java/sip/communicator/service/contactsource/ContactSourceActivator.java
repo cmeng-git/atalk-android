@@ -15,10 +15,11 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.protocol.PhoneNumberI18nService;
+import net.java.sip.communicator.util.ServiceUtils;
 
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Damian Minkov

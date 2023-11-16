@@ -8,7 +8,9 @@ package org.atalk.impl.androidnotification;
 import android.content.Context;
 import android.os.Vibrator;
 
-import net.java.sip.communicator.service.notification.*;
+import net.java.sip.communicator.service.notification.NotificationAction;
+import net.java.sip.communicator.service.notification.VibrateNotificationAction;
+import net.java.sip.communicator.service.notification.VibrateNotificationHandler;
 
 import org.atalk.android.aTalkApp;
 

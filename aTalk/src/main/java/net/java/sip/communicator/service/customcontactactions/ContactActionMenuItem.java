@@ -15,7 +15,7 @@
  */
 package net.java.sip.communicator.service.customcontactactions;
 
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 
 /**
  * A custom contact action menu item, used to define an action that can be 

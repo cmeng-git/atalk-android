@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import java.net.*;
+import java.net.URI;
 
 /**
  * Event-callback for clicks on links.

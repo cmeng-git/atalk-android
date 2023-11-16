@@ -17,9 +17,9 @@ package org.atalk.service.neomedia;
 
 import net.sf.fmj.media.rtp.RTPHeader;
 
+import org.atalk.util.ByteArrayBuffer;
 import org.atalk.util.RTPUtils;
 import org.jetbrains.annotations.NotNull;
-import org.atalk.util.ByteArrayBuffer;
 
 import java.util.Iterator;
 
@@ -149,7 +149,6 @@ public class RawPacket implements ByteArrayBuffer
     public static RawPacket makeRTP(long ssrc, int pt, int seqNum, long ts, int len)
     {
         byte[] buf = new byte[len];
-
         RawPacket pkt = new RawPacket(buf, 0, buf.length);
 
         pkt.setVersion();

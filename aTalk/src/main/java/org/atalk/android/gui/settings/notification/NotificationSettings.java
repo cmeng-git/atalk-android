@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import net.java.sip.communicator.service.notification.NotificationChangeListener;
 import net.java.sip.communicator.service.notification.NotificationService;
@@ -23,7 +26,10 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.resources.ResourceManagementService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The <code>Activity</code> lists all notification events. When user selects one of them the details screen is opened.

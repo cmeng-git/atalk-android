@@ -1,8 +1,9 @@
 package java.awt;
 
-import java.io.Serializable;
+import androidx.annotation.NonNull;
 
 import java.awt.geom.Dimension2D;
+import java.io.Serializable;
 
 public class Dimension extends Dimension2D implements Serializable
 {
@@ -10,7 +11,7 @@ public class Dimension extends Dimension2D implements Serializable
 	public int height;
 	private static final long serialVersionUID = 4723952579491349524L;
 
-	private static native void initIDs();
+	// private static native void initIDs();
 
 	public Dimension() {
 		this(0, 0);
@@ -73,6 +74,7 @@ public class Dimension extends Dimension2D implements Serializable
 		return (i * (i + 1) / 2 + this.width);
 	}
 
+	@NonNull
 	public String toString()
 	{
 		return "[width=" + this.width + ", height=" + this.height + "]";

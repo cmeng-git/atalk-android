@@ -5,7 +5,8 @@
  */
 package org.atalk.service.neomedia;
 
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.Socket;
 
 /**
  * The <code>StreamConnector</code> interface represents a pair of datagram sockets that a media stream
@@ -22,7 +23,7 @@ public interface StreamConnector
 	/**
 	 * Enumerates the protocols supported by <code>StreamConnector</code>.
 	 */
-	public enum Protocol {
+	enum Protocol {
 		/**
 		 * UDP protocol.
 		 */

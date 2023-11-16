@@ -20,9 +20,19 @@ import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.osgi.OSGiService;
 import org.bouncycastle.util.encoders.Base64;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceReference;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -732,7 +742,7 @@ public class AccountManager
         return property;
     }
 
-    public Map<String, String> getStoredAccounts(ProtocolProviderFactory factory)
+    private Map<String, String> getStoredAccounts(ProtocolProviderFactory factory)
     {
         Map<String, String> accounts = new Hashtable<>();
         SQLiteDatabase mDB = databaseBackend.getReadableDatabase();

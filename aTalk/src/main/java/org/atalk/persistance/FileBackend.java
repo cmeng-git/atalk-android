@@ -28,7 +28,14 @@ import androidx.core.content.FileProvider;
 
 import org.atalk.android.aTalkApp;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -353,8 +360,10 @@ public class FileBackend
     {
         String mimeType = null;
         if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            ContentResolver cr = ctx.getContentResolver();
-            mimeType = cr.getType(uri);
+            if (ctx != null) {
+                ContentResolver cr = ctx.getContentResolver();
+                mimeType = cr.getType(uri);
+            }
         }
         else {
             String fileExtension;

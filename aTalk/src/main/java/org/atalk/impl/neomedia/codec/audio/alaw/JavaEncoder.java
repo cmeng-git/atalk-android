@@ -5,8 +5,10 @@
  */
 package org.atalk.impl.neomedia.codec.audio.alaw;
 
-import javax.media.*;
-import javax.media.format.*;
+import javax.media.Buffer;
+import javax.media.Format;
+import javax.media.ResourceUnavailableException;
+import javax.media.format.AudioFormat;
 
 /**
  * The ALAW Encoder. Used the FMJ ALawEncoderUtil.

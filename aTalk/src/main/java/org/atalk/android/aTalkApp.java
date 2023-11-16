@@ -243,7 +243,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
     }
 
     /**
-     * Shutdowns the app by stopping <code>OSGiService</code> and broadcastingaction  {@link #ACTION_EXIT}.
+     * Shutdowns the app by stopping <code>OSGiService</code> and broadcasting action {@link #ACTION_EXIT}.
      */
     public static void shutdownApplication() {
         // Shutdown the OSGi service

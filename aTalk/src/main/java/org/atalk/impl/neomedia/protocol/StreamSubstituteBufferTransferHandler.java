@@ -5,7 +5,8 @@
  */
 package org.atalk.impl.neomedia.protocol;
 
-import javax.media.protocol.*;
+import javax.media.protocol.BufferTransferHandler;
+import javax.media.protocol.PushBufferStream;
 
 /**
  * Implements a <code>BufferTransferHandler</code> wrapper which doesn't expose a

@@ -6,14 +6,27 @@
 package org.atalk.impl.configuration.xml;
 
 import org.atalk.impl.configuration.ConfigurationStore;
-import org.atalk.util.xml.*;
-import org.w3c.dom.*;
+import org.atalk.util.xml.DOMElementWriter;
+import org.atalk.util.xml.XMLException;
+import org.atalk.util.xml.XMLUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
-import javax.xml.parsers.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import timber.log.Timber;
 
@@ -162,8 +175,7 @@ public class XMLConfigurationStore implements ConfigurationStore
             DocumentBuilder builder = factory.newDocumentBuilder();
             Map<String, Object> props = new Hashtable<>();
 
-            // if the file is empty (or contains only sth insignificant)
-            // ignore it and create a new document.
+            // if the file is empty (or contains only sth insignificant) ignore it and create a new document.
             if (file.length() < "<sip-communicator>".length() * 2)
                 propertiesDocument = createPropertiesDocument();
             else

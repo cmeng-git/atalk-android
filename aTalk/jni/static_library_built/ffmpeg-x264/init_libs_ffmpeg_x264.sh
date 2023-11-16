@@ -9,7 +9,7 @@ if [[ $# -eq 2 ]]; then
   VERSION_FFMPEG=$1
   VERSION_X264=$2
 else
-  VERSION_FFMPEG=5.1.2
+  VERSION_FFMPEG=5.1.4
   VERSION_X264=164
 fi
 

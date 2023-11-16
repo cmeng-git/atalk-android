@@ -11,7 +11,9 @@ import android.util.Base64;
 
 import org.atalk.android.aTalkApp;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.Serializable;
 
 import javax.media.format.VideoFormat;
 

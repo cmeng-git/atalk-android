@@ -37,10 +37,6 @@ import java.util.Objects;
 
 import timber.log.Timber;
 
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URL;
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.ATTR_MEDIA_URLS;
-import static org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment.PREF_PLAYBACK_SPEED;
-
 public class YoutubePlayerFragment extends Fragment
 {
     // regression to check for valid youtube link
@@ -113,10 +109,10 @@ public class YoutubePlayerFragment extends Fragment
 
         Bundle args = getArguments();
         if (args != null) {
-            mediaUrl = args.getString(ATTR_MEDIA_URL);
+            mediaUrl = args.getString(MediaExoPlayerFragment.ATTR_MEDIA_URL);
 
             // Comment out the following to test loadPlaylist_videoIds()
-            mediaUrls = args.getStringArrayList(ATTR_MEDIA_URLS);
+            mediaUrls = args.getStringArrayList(MediaExoPlayerFragment.ATTR_MEDIA_URLS);
             if (mediaUrls != null && !mediaUrls.isEmpty()) {
                 mVideoIds.clear();
                 for (int i = 0; i < mediaUrls.size(); i++) {
@@ -293,7 +289,7 @@ public class YoutubePlayerFragment extends Fragment
                 .addItem(new MenuItem("menu item2", R.drawable.ic_mood_black_24dp,
                         view -> Toast.makeText(mContext, "item2 clicked", Toast.LENGTH_SHORT).show())
                 )
-                .addItem(new MenuItem("menu item no icon",
+                .addItem(new MenuItem("menu item no icon", null,
                         view -> Toast.makeText(mContext, "item no icon clicked", Toast.LENGTH_SHORT).show())
                 );
     }
@@ -325,7 +321,7 @@ public class YoutubePlayerFragment extends Fragment
      */
     public void initPlaybackSpeed(YouTubePlayer youTubePlayer)
     {
-        mSpeed = (float) configService.getDouble(PREF_PLAYBACK_SPEED, 1.0);
+        mSpeed = (float) configService.getDouble(MediaExoPlayerFragment.PREF_PLAYBACK_SPEED, 1.0);
         youTubePlayer.setPlaybackRate(mSpeed);
     }
 
@@ -351,7 +347,7 @@ public class YoutubePlayerFragment extends Fragment
     {
         // Audio media player speed is (0.5 > mSpeed < 1.5)
         if (mSpeed >= rateMin && mSpeed <= rateMax) {
-            configService.setProperty(PREF_PLAYBACK_SPEED, mSpeed);
+            configService.setProperty(MediaExoPlayerFragment.PREF_PLAYBACK_SPEED, mSpeed);
         }
         youTubePlayerView.release();
     }

@@ -5,7 +5,8 @@
  */
 package org.atalk.service.neomedia.device;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
 
 /**
  * Represents a physical screen display.

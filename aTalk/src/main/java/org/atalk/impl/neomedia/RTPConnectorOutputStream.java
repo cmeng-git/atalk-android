@@ -11,9 +11,9 @@ import org.atalk.android.plugin.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.RawPacket;
+import org.atalk.util.ConfigUtils;
 import org.ice4j.util.QueueStatistics;
 import org.ice4j.util.RateStatistics;
-import org.atalk.util.ConfigUtils;
 
 import java.io.IOException;
 import java.net.InetAddress;

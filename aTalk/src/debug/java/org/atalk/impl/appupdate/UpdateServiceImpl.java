@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.impl.androidupdate;
+package org.atalk.impl.appupdate;
 
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
@@ -41,6 +41,7 @@ import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.FilePathHelper;
 import org.atalk.service.version.Version;
 import org.atalk.service.version.VersionService;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,15 +64,15 @@ public class UpdateServiceImpl implements UpdateService
 {
     // Default update link; path is case-sensitive.
     private static final String[] updateLinks = {
-            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties",
-            "https://atalk.sytes.net/releases/atalk-android/version.properties"
+            "https://raw.githubusercontent.com/cmeng-git/atalk-hmos/master/aTalk/release/version.properties",
+            "https://atalk.sytes.net/releases/atalk-hmos/version.properties"
     };
 
     /**
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
-    private static final String fileNameApk = String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+    private static final String fileNameApk =String.format("aTalk-%s.apk", BuildConfig.BUILD_TYPE);
 
     /**
      * The download link for the installed application
@@ -108,13 +109,10 @@ public class UpdateServiceImpl implements UpdateService
     private static final String ENTRY_NAME = "apk_ids";
 
     /**
-     * Checks for updates and take necessary action.
-     *
-     * @param notifyAboutNewestVersion <code>true</code> if the user is to be notified if they have the
-     * newest version already; otherwise, <code>false</code>
+     * Checks for updates and notify user of any new version, and take necessary action.
      */
     @Override
-    public void checkForUpdates(boolean notifyAboutNewestVersion)
+    public void checkForUpdates()
     {
         // cmeng: reverse the logic to !isLatestVersion() for testing
         mIsLatest = isLatestVersion();
@@ -140,13 +138,13 @@ public class UpdateServiceImpl implements UpdateService
                             }
 
                             @Override
-                            public void onDialogCancelled(DialogActivity dialog)
+                            public void onDialogCancelled(@NotNull DialogActivity dialog)
                             {
                             }
                         }, latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME), currentVersion
                 );
             }
-            else if (notifyAboutNewestVersion) {
+            else {
                 // Notify that running version is up to date
                 DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
                         R.string.plugin_update_New_Version_None,
@@ -166,7 +164,7 @@ public class UpdateServiceImpl implements UpdateService
                             }
 
                             @Override
-                            public void onDialogCancelled(DialogActivity dialog)
+                            public void onDialogCancelled(@NotNull DialogActivity dialog)
                             {
                             }
                         }, currentVersion, currentVersionCode, latestVersion
@@ -235,12 +233,7 @@ public class UpdateServiceImpl implements UpdateService
                     {
                         // Need REQUEST_INSTALL_PACKAGES in manifest; Intent.ACTION_VIEW works for both
                         Intent intent;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                        }
-                        else {
-                            intent = new Intent(Intent.ACTION_VIEW);
-                        }
+                        intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                         intent.setDataAndType(fileUri, APK_MIME_TYPE);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -249,7 +242,7 @@ public class UpdateServiceImpl implements UpdateService
                     }
 
                     @Override
-                    public void onDialogCancelled(DialogActivity dialog)
+                    public void onDialogCancelled(@NotNull DialogActivity dialog)
                     {
                     }
                 }, latestVersion);

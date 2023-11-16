@@ -6,17 +6,19 @@
  */
 package org.atalk.impl.neomedia.codec.video;
 
+import static android.media.MediaCodecList.REGULAR_CODECS;
+
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 
 import org.atalk.service.neomedia.codec.Constants;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import timber.log.Timber;
-
-import static android.media.MediaCodecList.REGULAR_CODECS;
 
 /**
  * Class used to manage codecs information for <code>MediaCodec</code>.

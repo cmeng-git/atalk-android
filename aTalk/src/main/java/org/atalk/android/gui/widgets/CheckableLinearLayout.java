@@ -8,7 +8,9 @@ package org.atalk.android.gui.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.*;
+import android.widget.Checkable;
+import android.widget.CheckedTextView;
+import android.widget.LinearLayout;
 
 /*
  * This class implements <code>Checkable</code> interface in order to provide custom <code>ListView</code> row layouts that can

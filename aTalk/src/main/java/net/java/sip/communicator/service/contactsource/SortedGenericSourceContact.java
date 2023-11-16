@@ -15,17 +15,15 @@
  */
 package net.java.sip.communicator.service.contactsource;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * The <code>ProtocolSourceContact</code> provides a sorted
  * <code>GenericSourceContact</code>. <code>SourceContact</code>-s are sorted
  * alphabetically and based on their presence status.
  */
-public class SortedGenericSourceContact
-    extends GenericSourceContact
-    implements Comparable<SourceContact>
-{
+public class SortedGenericSourceContact extends GenericSourceContact
+        implements Comparable<SourceContact> {
     /**
      * The parent contact query.
      */
@@ -41,16 +39,13 @@ public class SortedGenericSourceContact
      * @param displayName the display name of the contact
      * @param contactDetails the list of contact details
      */
-    public SortedGenericSourceContact(  ContactQuery parentQuery,
-                                        ContactSourceService cSourceService,
-                                        String displayName,
-                                        List<ContactDetail> contactDetails)
-    {
-         super( cSourceService,
-                displayName,
-                contactDetails);
+    public SortedGenericSourceContact(ContactQuery parentQuery,
+            ContactSourceService cSourceService,
+            String displayName,
+            List<ContactDetail> contactDetails) {
+        super(cSourceService, displayName, contactDetails);
 
-         this.parentQuery = parentQuery;
+        this.parentQuery = parentQuery;
     }
 
     /**
@@ -60,53 +55,52 @@ public class SortedGenericSourceContact
      * <p>
      * The result of this method is calculated the following way:
      * <p>
-     *  ( (10 - isOnline) - (10 - targetIsOnline)) * 100000000 <br>
-            + getDisplayName()
-                .compareToIgnoreCase(target.getDisplayName()) * 10000 <br>
-            + compareDDetails * 1000 <br>
-            + String.valueOf(hashCode())
-                .compareToIgnoreCase(String.valueOf(o.hashCode()))
+     * ( (10 - isOnline) - (10 - targetIsOnline)) * 100000000 <br>
+     * + getDisplayName()
+     * .compareToIgnoreCase(target.getDisplayName()) * 10000 <br>
+     * + compareDDetails * 1000 <br>
+     * + String.valueOf(hashCode())
+     * .compareToIgnoreCase(String.valueOf(o.hashCode()))
      * <p>
      * Or in other words ordering of source contacts would be first done by
      * presence status, then display name, then display details and finally
      * (in order to avoid equalities) be the hashCode of the object.
      * <p>
-     * @param   o the {@code SourceContact} to be compared.
-     * @return  a negative integer, zero, or a positive integer as this
-     *  object is less than, equal to, or greater than the specified object.
+     *
+     * @param o the {@code SourceContact} to be compared.
+     *
+     * @return a negative integer, zero, or a positive integer as this
+     * object is less than, equal to, or greater than the specified object.
      */
-    public int compareTo(SourceContact o)
-    {
+    public int compareTo(SourceContact o) {
         SourceContact target = o;
 
         int comparePresence = 0;
-        if (getPresenceStatus() != null && target.getPresenceStatus() != null)
-        {
+        if (getPresenceStatus() != null && target.getPresenceStatus() != null) {
             int isOnline
-                = (getPresenceStatus().isOnline())
-                ? 1
-                : 0;
+                    = (getPresenceStatus().isOnline())
+                    ? 1
+                    : 0;
             int targetIsOnline
-                = (target.getPresenceStatus().isOnline())
-                ? 1
-                : 0;
+                    = (target.getPresenceStatus().isOnline())
+                    ? 1
+                    : 0;
 
-            comparePresence = ( (10 - isOnline) - (10 - targetIsOnline));
+            comparePresence = ((10 - isOnline) - (10 - targetIsOnline));
         }
 
         int compareDDetails = 0;
-        if (getDisplayDetails() != null && target.getDisplayDetails() != null)
-        {
+        if (getDisplayDetails() != null && target.getDisplayDetails() != null) {
             compareDDetails
-                = getDisplayDetails()
+                    = getDisplayDetails()
                     .compareToIgnoreCase(target.getDisplayDetails());
         }
 
         return comparePresence * 100000000
-            + getDisplayName()
+                + getDisplayName()
                 .compareToIgnoreCase(target.getDisplayName()) * 10000
-            + compareDDetails * 100
-            + String.valueOf(hashCode())
+                + compareDDetails * 100
+                + String.valueOf(hashCode())
                 .compareToIgnoreCase(String.valueOf(o.hashCode()));
     }
 
@@ -116,8 +110,7 @@ public class SortedGenericSourceContact
      * @return the index of this contact in its parent
      */
     @Override
-    public int getIndex()
-    {
+    public int getIndex() {
         return parentQuery.getQueryResults().indexOf(this);
     }
 }

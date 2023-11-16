@@ -11,7 +11,9 @@ import net.java.sip.communicator.util.ServiceUtils;
 
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.resources.ResourceManagementService;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 import timber.log.Timber;
 
