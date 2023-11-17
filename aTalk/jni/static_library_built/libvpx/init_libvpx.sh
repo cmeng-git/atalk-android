@@ -17,7 +17,7 @@
 if [[ $# -eq 1 ]]; then
   LIB_GIT=$1
 else
-  LIB_GIT=v1.13.1
+  LIB_GIT=v1.13.0
 fi
 
 LIB_VPX="libvpx"
@@ -32,7 +32,7 @@ fi
 
 # Delete LIB_VPX and uncomment below to use master main repository with the same LIB_GIT version
 # LIB_GIT=f6de5b5
-LIB_GIT=main
+# LIB_GIT=main
 
 rm -rf ${LIB_VPX}
 echo -e "\n========== Fetching library source for: ${LIB_VPX} (${LIB_GIT}) =========="

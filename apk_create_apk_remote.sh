@@ -1,12 +1,11 @@
 #!/bin/bash
 
-echo "### Generate single monolithic hymnchtv-debug.apk from ./debug/hymnchtv-debug.aab, for remote installation ###"
+echo "### Generate single monolithic atalk-debug.apk from ./debug/atalk-debug.aab, for remote installation ###"
 
 if [[ $# -eq 1 ]]; then
   fnapk="aTalk-$1-debug"
   dirapk="$1Debug"
 else
-
   dirapk="fdroidDebug"
 fi
 

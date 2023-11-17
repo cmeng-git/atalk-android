@@ -1,6 +1,6 @@
 # Built application files
 # *.apk
-aTalk-playstore-debug.apk
+*.apk
 *.apks
 *.aab
 

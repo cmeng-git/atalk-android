@@ -7,5 +7,5 @@ LOCAL_MODULE    := jnopenmax
 LOCAL_LDLIBS    := -llog
 LOCAL_CFLAGS    := -I../android/platform/frameworks/base/include/media/stagefright/openmax
 LOCAL_C_INCLUDES :=  ../android/platform/frameworks/native/include/media/OpenMAX/OMX_Component.h
-LOCAL_SRC_FILES := org_atalk_impl_neomedia_codec_video_h264_OMXDecoder.c
+LOCAL_SRC_FILES := H264_OMXDecoder.c
 include $(BUILD_SHARED_LIBRARY)

@@ -5,7 +5,7 @@
  * See terms of license at gnu.org.
  */
 
-#include "JAWTRenderer.h"
+#include "JAWTRenderer_Android.h"
 
 #include <android/log.h>
 #include <EGL/egl.h>
@@ -22,12 +22,12 @@
 
 static const GLfloat vertexPointer[]
     = {
-        -1.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,
-        1.0, -1.0, 0.0,
-        -1.0, 1.0, 0.0,
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0
+        -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f
     };
 
 typedef struct _JAWTRenderer
@@ -416,14 +416,12 @@ JAWTRenderer_paint
             GLfloat *texCoordPointer = thiz->texCoordPointer;
             GLfloat x
                 = (thiz->texEffectiveWidth == thiz->texRealWidth)
-                    ? 1.0
-                    : (thiz->texEffectiveWidth
-                            / (GLfloat) (thiz->texRealWidth));
+                    ? 1.0f
+                    : ((GLfloat) thiz->texEffectiveWidth / (GLfloat) (thiz->texRealWidth));
             GLfloat y
                 = (thiz->texEffectiveHeight == thiz->texRealHeight)
-                    ? 1.0
-                    : (thiz->texEffectiveHeight
-                            / (GLfloat) (thiz->texRealHeight));
+                    ? 1.0f
+                    : ((GLfloat) thiz->texEffectiveHeight / (GLfloat) (thiz->texRealHeight));
 
             texCoordPointer[2] = x;
             texCoordPointer[4] = x;
