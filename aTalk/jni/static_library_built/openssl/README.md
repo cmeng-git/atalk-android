@@ -7,8 +7,6 @@
 <tr><td>libopenssl</td><td>1.1.1t</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
 </table>
 
-
-
 ### Build For Android
 - Follow the instructions below to build libopenssl for android
 - aTalk v3.1.4 or later release is compatible with libopenssl-1.1.1t<br/>
@@ -21,7 +19,7 @@ All the built libxxx.a and *.h are installed in the ./jni/openssl/android/&lt;AB
 
 ### Android libopenssl build instructions
 - Use prebuilt Android NDK: i.e. <br/>
-  export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570
+  export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/22.1.7171670
 - setup the required libopenssl; default "libopenssl-1.1.1t" or<br/>
   change LIB_OPENSSL_GIT value in ./init_libopenssl.sh file if required.<br/>
 

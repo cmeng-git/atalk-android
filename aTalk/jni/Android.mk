@@ -103,5 +103,3 @@ include $(CLEAR_VARS)
 ## Built from static library from source on ubuntu 22.04
 # (unable to build from source in jni - #TODO)
 include ./openssl/Android_a.mk
-
-

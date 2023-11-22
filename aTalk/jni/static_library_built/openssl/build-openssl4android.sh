@@ -52,12 +52,12 @@ configure_make() {
   make clean
   ./Configure \
       $TARGET \
-      -D__ANDROID_API__=${ANDROID_API} \
-      --prefix=${PREFIX} \
+      -D__ANDROID_API__="${ANDROID_API}" \
+      --prefix="${PREFIX}" \
       no-shared \
       no-unit-test
 
-  if make -j${HOST_NUM_CORES}; then
+  if make -j"${HOST_NUM_CORES}"; then
     make install
   fi;
   popd || return

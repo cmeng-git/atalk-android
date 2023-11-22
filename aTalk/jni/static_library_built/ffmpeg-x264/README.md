@@ -4,8 +4,8 @@ aTalk v2.9.4 and above are compatible with ffmpeg-v4.4.2 and libx264-163.3060<br
 aTalk v3.1.4 and above are compatible with ffmpeg-v5.1.4 and libx264-164.3095
 
 ### Source files:
-The ffmpeg-v5.1.2 and libx264-v164 source are downloaded using the init_libs_ffmpeg_x264.sh scripts:<br/>
-  a. wget https://www.ffmpeg.org/releases/ffmpeg-5.1.2.tar.bz2<br/>
+The ffmpeg-v5.1.4 and libx264-v164 source are downloaded using the init_libs_ffmpeg_x264.sh scripts:<br/>
+  a. wget https://www.ffmpeg.org/releases/ffmpeg-5.1.4.tar.bz2<br/>
   b. git clone https://code.videolan.org/videolan/x264.git --branch stable<br/>
      contains source for the x264-164.3095 library build at the time of writing;
 

@@ -7,11 +7,9 @@
 <tr><td>libvpx</td><td>1.13.0</td><td>android</td><td>armeabi-v7a arm64-v8a x86 x86_64</td></tr>
 </table>
 
-
-
 ### Build For Android
 - Follow the instructions below to build libvpx for android
-- aTalk v3.1.4 release is compatible with libvpx-1.13.0 (use android-ndk-r18b) <br/>
+- aTalk v3.2.2 release is compatible with libvpx-1.13.1 (use ndk 22.1.7171670) <br/>
 - aTalk v2.9.4 release is compatible with libvpx-1.11.0 (use android-ndk-r18b) <br/>
 - aTalk v2.6.1 release is compatible with libvpx-1.10.0 (use android-ndk-r18b) <br/>
 - aTalk v1.8.2 release is compatible with libvpx-1.8.0 (must use android-ndk-r17c or lower) <br/>

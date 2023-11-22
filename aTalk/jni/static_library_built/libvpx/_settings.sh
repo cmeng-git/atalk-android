@@ -16,19 +16,24 @@
 
 # Uncomment the line below to see all script echo to terminal
 # set -x
+# export ANDROID_NDK=/opt/android/android-ndk-r18b
+export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670/
 
-export ANDROID_NDK=/opt/android/android-ndk-r18b
+# strip is missing after 22.1.7171670
+# export ANDROID_NDK=/opt/android/android-sdk/ndk/25.2.9519653/
+# export ANDROID_NDK=/opt/android/android-sdk/ndk/26.1.10909125/
+
 if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk-rxx"
-	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
+	echo "Use: export ANDROID_NDK='your_path_to_ndk'"
+	echo "e.g.: export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670"
 	exit 1
 fi
 
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
-# Set to API:21 for aTalk 64-bit architecture support
+# Set to API:21 for aTalk 64-bit architecture support and minSdk support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
 
@@ -67,7 +72,7 @@ configure() {
     # /home/cmeng/workspace/ndk/vpx-android/armeabi-v7a-android-toolchain/bin/arm-linux-androideabi-ld: -Wl,--fix-cortex-a8: unknown option
     armeabi-v7a)
       NDK_ARCH="arm"
-      NDK_ABIARCH="arm-linux-androideabi"
+      NDK_ABIARCH="armv7a-linux-androideabi"
       # clang70: warning: -Wl,--fix-cortex-a8: 'linker' input unused [-Wunused-command-line-argument]
       # CFLAGS="${CFLAGS_} -Wl,--fix-cortex-a8 -march=${CPU} -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
       # CFLAGS="${CFLAGS_} -Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
@@ -101,7 +106,7 @@ configure() {
     x86)
       NDK_ARCH="x86"
       NDK_ABIARCH="i686-linux-android"
-      CFLAGS="${CFLAGS_} -O3 -march=i686 -mtune=intel -msse3 -mfpmath=sse -m32 -fPIC"
+      CFLAGS="${CFLAGS_} -O3 -march=i686 -msse3 -mfpmath=sse -m32 -fPIC" # -mtune=intel
       LDFLAGS="-m32"
       ASFLAGS="-D__ANDROID__"
 
@@ -109,53 +114,54 @@ configure() {
     x86_64)
       NDK_ARCH="x86_64"
       NDK_ABIARCH="x86_64-linux-android"
-      CFLAGS="${CFLAGS_} -O3 -march=x86-64 -mtune=intel -msse4.2 -mpopcnt -m64 -fPIC"
+      CFLAGS="${CFLAGS_} -O3 -march=x86-64 -msse4.2 -mpopcnt -m64 -fPIC" # -mtune=intel
       LDFLAGS=""
       ASFLAGS="-D__ANDROID__"
     ;;
   esac
 
-  TOOLCHAIN_PREFIX=${BASEDIR}/android-toolchain
-  NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
+#  TOOLCHAIN_PREFIX=${BASEDIR}/android-toolchain
+#  if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
+#      rm -rf "${TOOLCHAIN_PREFIX}"
+#  fi
+#
+#  # Must ensure AS JNI uses the same STL library or "system"
+#  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
+#     --arch ${NDK_ARCH} \
+#     --api ${ANDROID_API} \
+#     --stl libc++ \
+#     --install-dir="${TOOLCHAIN_PREFIX}"
 
-  if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
-      rm -rf ${TOOLCHAIN_PREFIX}
-  fi
-
-  # cmeng: must ensure AS JNI uses the same STL library or "system"
-  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
-     --arch ${NDK_ARCH} \
-     --api ${ANDROID_API} \
-     --stl libc++ \
-     --install-dir=${TOOLCHAIN_PREFIX}
+  # Use the prebuilt toolchain instead of using make_standalone_toolchain.py.
+  TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64/
 
   # Define the install-directory of the libs and include files etc
-  # PREFIX=${BASEDIR}/output/android/${ABI}
-
   # Directly install to aTalk ./jni/vpx
   PREFIX=${BASEDIR}/../../vpx/android/${ABI}
+  # NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
 
   # Add the standalone toolchain to the search path.
   export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH
   export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
+  export CROSS_PREFIX_API=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}${ANDROID_API}-
+
+  if [[ ($1 == "armeabi-v7a") ]]; then
+    export CROSS_PREFIX="${TOOLCHAIN_PREFIX}/bin/arm-linux-androideabi-"
+  else
+    export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
+  fi
+
   export CFLAGS="${CFLAGS}"
   export CPPFLAGS="${CFLAGS}"
   export CXXFLAGS="${CFLAGS} -std=c++11"
   export ASFLAGS="${ASFLAGS}"
-  export LDFLAGS="${LDFLAGS} -L${NDK_SYSROOT}/usr/lib"
 
-  export AR="${CROSS_PREFIX}ar"
-  export AS="${CROSS_PREFIX}clang"
-  export CC="${CROSS_PREFIX}clang"
-  export CXX="${CROSS_PREFIX}clang++"
-  export LD="${CROSS_PREFIX}ld"
+  export CC="${CROSS_PREFIX_API}clang"
+  export CXX="${CROSS_PREFIX_API}clang++"
+
+  export AS="${CROSS_PREFIX}as"
+  export LD="${CROSS_PREFIX}ld.gold"
   export STRIP="${CROSS_PREFIX}strip"
-  export RANLIB="${CROSS_PREFIX}ranlib"
-  export CPP="${CROSS_PREFIX}cpp"
-  export NM="${CROSS_PREFIX}nm"
-
-#  export APP_CFLAGS="-fsanitize=address -fno-omit-frame-pointer"
-#  export APP_LDFLAGS="-fsanitize=address"
 
   echo "**********************************************"
   echo "### Use NDK=${NDK}"

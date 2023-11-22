@@ -6,8 +6,15 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.2.2 (11/17/2023)" versioncode="302021">
+    <release version="3.2.3 (11/22/2023)" versioncode="302030">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Update all aTalk JNI libraries build to use NDK '22.1.7171670'; max NDK version that is compatible with aTalk JNI libraries built</change>
+        <change>Upgrade jni libvpx 1.13.0 to 1.13.1; libvpx 1.3.1 source built requires NDK '22.1.7171670'</change>
+        <change>Clean up JNI scripts for all native libraries built; Use the prebuilt toolchain instead of using make_standalone_toolchain.py</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.2.2 (11/17/2023)" versioncode="302021">
         <change>Fix xml:lang attribute error in stanza sending when user customizes 'regional preference' settings</change>
         <change>Fix 'Auto generate resource' when the AUTO_GENERATE_RESOURCE property in DB does not exist</change>
         <change>Auto return to contactList UI, 3 seconds after call has ended</change>

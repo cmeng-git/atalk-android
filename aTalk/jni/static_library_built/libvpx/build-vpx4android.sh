@@ -20,7 +20,7 @@ set -u
 . _settings.sh
 
 LIB_VPX="libvpx"
-LIB_GIT=v1.13.0
+LIB_GIT=v1.13.1
 
 # Auto fetch and unarchive libvpx from online repository
 ./init_libvpx.sh ${LIB_GIT}
@@ -29,7 +29,7 @@ LIB_GIT=v1.13.0
 ./libvpx_patch.sh ${LIB_VPX}
 
 if [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
-  version=`"${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}"`
+  version=$("${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}")
 fi
 
 # Unarchive library, then configure and make for specified architectures
@@ -65,11 +65,14 @@ configure_make() {
   fi
 
   # Directly install to aTalk ./jni/vpx
-#     --enable-bitstream-debug \
+  # --enable-bitstream-debug \
+  # valid only for 1.14.0; Not required for ndk: 22.1.7171670
+  # --disable-neon-i8mm \
+  # --disable-neon-dotprod \
   PREFIX=${BASEDIR}/../../vpx/android/${ABI}
 
   ./configure \
-    --prefix=${PREFIX} \
+    --prefix="${PREFIX}" \
     --target=${TARGET} \
     --as=yasm \
     --enable-pic \
@@ -87,7 +90,7 @@ configure_make() {
     --enable-better-hw-compatibility \
     --disable-webm-io || exit 1
 
-  make -j${HOST_NUM_CORES} install
+  make -j"${HOST_NUM_CORES}" install
   popd || true
 }
 

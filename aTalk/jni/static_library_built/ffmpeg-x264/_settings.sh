@@ -17,23 +17,22 @@
 # Uncomment the line below to see all script echo to terminal
 # set -x
 
-export ANDROID_NDK=/opt/android/android-ndk-r18b
+# NDK max version that is compatible with ffmpeg-x264 build; higher has missing build tools e.g. -string
+export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670
+
 if [[ -z $ANDROID_NDK ]] || [[ ! -d $ANDROID_NDK ]] ; then
 	echo "You need to set ANDROID_NDK environment variable, exiting"
-	echo "Use: export ANDROID_NDK=/your/path/to/android-ndk-rxx"
-	echo "e.g.: export ANDROID_NDK=/opt/android/android-ndk-r18b"
+	echo "Use: export ANDROID_NDK='your_path_to_ndk'"
+	echo "e.g.: export ANDROID_NDK=/opt/android/android-sdk/ndk/22.1.7171670"
 	exit 1
 fi
 
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
-# Set to API:21 for aTalk 64-bit architecture support
+# Set to API:21 for aTalk 64-bit architecture support and minSdk support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
-
-# set STANDALONE_TOOLCHAINS to 0: SDK toolchains OR 1: standalone toolchains
-STANDALONE_TOOLCHAINS=1;
 
 # Built with command i.e. ./ffmpeg-android_build.sh or following with parameter [ABIS(x)]
 # Create custom ABIS or uncomment to build all supported abi for ffmpeg.
@@ -43,10 +42,6 @@ STANDALONE_TOOLCHAINS=1;
 ABIS=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
 
 BASEDIR=`pwd`
-# need to define earlier for standalone toolchains option
-# if [[ STANDALONE_TOOLCHAINS == 1 ]]; then
-#   TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
-# fi
 
 #===========================================
 # Do not proceed further on first call without the required 2 parameters
@@ -78,7 +73,7 @@ case $1 in
     CPU='armv7-a'
     HOST='arm-linux'
     NDK_ARCH='arm'
-    NDK_ABIARCH='arm-linux-androideabi'
+    NDK_ABIARCH='armv7a-linux-androideabi'
     CFLAGS="${CFLAGS_} -Os -march=${CPU} -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
     LDFLAGS="${LDFLAGS_} -march=${CPU}"
     ASFLAGS=""
@@ -132,58 +127,53 @@ case $1 in
   ;;
 esac
 
-if [[ ${STANDALONE_TOOLCHAINS} == 1 ]]; then
-  TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
-  NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
-  CC_=clang
-  CXX_=clang++
+#TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
+#if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
+#  rm -rf "${TOOLCHAIN_PREFIX}"
+#
+## Create standalone toolchains for the specified architecture - use .py instead of the old .sh
+## must ensure AS JNI uses the same STL library or "system" if specified
+#  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
+#    --arch ${NDK_ARCH} \
+#    --api ${ANDROID_API} \
+#    --stl libc++ \
+#    --install-dir="${TOOLCHAIN_PREFIX}"
+#fi
 
-  if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
-    rm -rf ${TOOLCHAIN_PREFIX}
-
-  # Create standalone toolchains for the specified architecture - use .py instead of the old .sh
-  # However for ndk--r19b => Instead use:
-  #    $ ${NDK}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang++ src.cpp
-  # cmeng: must ensure AS JNI uses the same STL library or "system" if specified
-    [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
-      --arch ${NDK_ARCH} \
-      --api ${ANDROID_API} \
-      --stl libc++ \
-      --install-dir=${TOOLCHAIN_PREFIX}
-  fi
-else
-  TOOLCHAIN_PREFIX=${ANDROID_NDK}/toolchains/${NDK_ABIARCH}-49/prebuilt/linux-x86_64
-  NDK_SYSROOT=${ANDROID_NDK}/platforms/android-${ANDROID_API}/arch-${NDK_ARCH}
-  CC_=gcc
-  CXX_=g++
-fi
+# Use the prebuilt toolchain instead of using make_standalone_toolchain.py.
+TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64/
 
 # Define the install directory of the libs and include files etc
 # lame needs absolute path
 # PREFIX=${BASEDIR}/android/$1
 PREFIX=${BASEDIR}/../../ffmpeg/android/$1
+NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
 
 # Add the standalone toolchain to the search path.
 export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH
-export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
+export CROSS_PREFIX_API=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}${ANDROID_API}-
+
+if [[ ($1 == "armeabi-v7a") ]]; then
+  export CROSS_PREFIX="${TOOLCHAIN_PREFIX}/bin/arm-linux-androideabi-"
+else
+  export CROSS_PREFIX=${TOOLCHAIN_PREFIX}/bin/${NDK_ABIARCH}-
+fi
+
 export CFLAGS="${CFLAGS}"
 export CPPFLAGS="${CFLAGS}"
 export CXXFLAGS="${CFLAGS} -std=c++11"
 export ASFLAGS="${ASFLAGS}"
-export LDFLAGS="${LDFLAGS} -L${NDK_SYSROOT}/usr/lib"
+
+export AS="${CROSS_PREFIX_API}clang"
+export CC="${CROSS_PREFIX_API}clang"
+export CXX="${CROSS_PREFIX_API}clang++"
 
 export AR="${CROSS_PREFIX}ar"
-export AS="${CROSS_PREFIX}${CC_}"
-export CC="${CROSS_PREFIX}${CC_}"
-export CXX="${CROSS_PREFIX}${CXX_}"
-export LD="${CROSS_PREFIX}ld"
-export STRIP="${CROSS_PREFIX}strip"
-export RANLIB="${CROSS_PREFIX}ranlib"
-export OBJDUMP="${CROSS_PREFIX}objdump"
-export CPP="${CROSS_PREFIX}cpp"
-export GCONV="${CROSS_PREFIX}gconv"
+export LD="${CROSS_PREFIX}ld.gold"
 export NM="${CROSS_PREFIX}nm"
-export SIZE="${CROSS_PREFIX}size"
+export STRIP="${CROSS_PREFIX}strip"
+export STRING="${CROSS_PREFIX}string"
+
 export PKG_CONFIG="${CROSS_PREFIX}pkg-config"
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig

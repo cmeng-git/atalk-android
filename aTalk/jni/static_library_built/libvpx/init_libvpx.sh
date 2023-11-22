@@ -17,13 +17,13 @@
 if [[ $# -eq 1 ]]; then
   LIB_GIT=$1
 else
-  LIB_GIT=v1.13.0
+  LIB_GIT=v1.13.1
 fi
 
 LIB_VPX="libvpx"
 
 if [[ -d ${LIB_VPX} ]] && [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
-  version=`"${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}"`
+  version=$("${LIB_VPX}/build/make/version.sh" --bare "${LIB_VPX}")
   if [[ (${LIB_GIT} == "${version}") ]]; then
     echo -e "\n========== Current libvpx source is: ${LIB_VPX} (${version}) =========="
     exit 0
@@ -31,6 +31,7 @@ if [[ -d ${LIB_VPX} ]] && [[ -f "${LIB_VPX}/build/make/version.sh" ]]; then
 fi
 
 # Delete LIB_VPX and uncomment below to use master main repository with the same LIB_GIT version
+# Current master version is 1.14.0
 # LIB_GIT=f6de5b5
 # LIB_GIT=main
 

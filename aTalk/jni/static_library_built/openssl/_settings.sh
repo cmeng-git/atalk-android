@@ -17,17 +17,17 @@
 # Uncomment the line below to see all script echo to terminal
 # set -x
 
-export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570
+export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/22.1.7171670
 if [[ -z $ANDROID_NDK_HOME ]] || [[ ! -d $ANDROID_NDK_HOME ]] ; then
 	echo "You need to set ANDROID_NDK_HOME environment variable, exiting"
-	echo "e.g.: export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/20.0.5594570"
+	echo "e.g.: export ANDROID_NDK_HOME=/opt/android/android-sdk/ndk/22.1.7171670"
 	exit 1
 fi
 
 set -u
 
 # Never mix two api level to build static library for use on the same apk.
-# Default to API:21 for it is the minimum requirement for 64 bit arch.
+# Set to API:21 for aTalk 64-bit architecture support and minSdk support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
 ANDROID_API=21
 
@@ -46,19 +46,15 @@ configure() {
 
   case $ABI in
     armeabi-v7a)
-      NDK_ARCH="arm-linux-android-4.9"
-      NDK_ABIARCH="arm-linux-androideabi"
+      NDK_ABIARCH="armv7a-linux-androideabi"
     ;;
     arm64-v8a)
-      NDK_ARCH="aarch64-linux-android-4.9"
       NDK_ABIARCH="aarch64-linux-android"
     ;;
     x86)
-      NDK_ARCH="arm-linux-android-4.9"
       NDK_ABIARCH="i686-linux-android"
     ;;
     x86_64)
-      NDK_ARCH="aarch64-linux-android-4.9"
       NDK_ABIARCH="x86_64-linux-android"
     ;;
   esac
@@ -68,10 +64,10 @@ configure() {
   PREFIX=${BASEDIR}/../../openssl/android/$1
 
   # Add the prebuilt toolchain and clang to the search path. (See NOTES.ANDROID)
-	# PATH=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin:\
-	# $ANDROID_NDK_HOME/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin:$PATH
   NDK_LIBC=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin
-  NDK_TOOLCHAIN=${ANDROID_NDK_HOME}/toolchains/${NDK_ARCH}/prebuilt/linux-x86_64/bin
+  NDK_TOOLCHAIN=${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/${NDK_ABIARCH}/bin
+
+  # export PATH=${NDK_LIBC}:$PATH
   export PATH=${NDK_LIBC}:${NDK_TOOLCHAIN}:$PATH
 
   echo "**********************************************"

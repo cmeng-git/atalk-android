@@ -89,8 +89,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 302021
-        versionName "3.2.2"
+        versionCode 302030
+        versionName "3.2.3"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -110,7 +110,7 @@ android {
     }
 
     // aTalk is only compatible to ndkVersion '20.0.5594570' max version
-    ndkVersion '20.0.5594570'
+    ndkVersion '22.1.7171670'
 
     /*
      * Is OK for release version, but when build for debug it throws the following message and hangs aTalk:
