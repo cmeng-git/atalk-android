@@ -119,8 +119,7 @@ public class FMJPlugInConfiguration
     };
 
     /**
-     * The package prefixes of the additional JMF <code>DataSource</code>s (e.g. low latency PortAudio
-     * and ALSA <code>CaptureDevice</code>s).
+     * The package prefixes of the additional JMF <code>DataSource</code>s (e.g. ALSA <code>CaptureDevice</code>s).
      */
     private static final String[] CUSTOM_PACKAGES = {
             "org.atalk.impl.neomedia.jmfext",

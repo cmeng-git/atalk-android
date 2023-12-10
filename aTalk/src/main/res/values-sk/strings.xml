@@ -26,6 +26,10 @@
 
 <resources>
     <string name="accept_call_video">Prijmite hovor s videom</string>
+    <string name="account_delete_on_server">Odstrániť účet na serveri</string>
+    <string name="account_delete_on_server_unregistered">Odstránenie účtu na serveri zlyhalo, používateľ nie je zaregistrovaný!</string>
+    <string name="account_delete_on_server_failed">Odstránenie účtu na serveri zlyhalo:\n%1$s</string>
+    <string name="account_delete_on_server_successful">Úspešné odstránenie účtu na serveri:\n%1$s</string>
     <string name="account_setup_basics_show_password">Ukázať heslo</string>
     <string name="account_override_server">Prestaviť pripojenie servera</string>
     <string name="account_registration">Zaregistrujte nový účet na serveri</string>
@@ -48,6 +52,8 @@
     <string name="notification_setting">Nastavenia upozornení&#8230;</string>
     <string name="no_application_found_to_open_file">Nenašli sa žiadne aplikácie na otvorenie súboru</string>
     <string name="password">heslo</string>
+    <string name="password_change_on_server_failed">Zmena hesla na serveri zlyhala:\n%1$s</string>
+    <string name="password_change_on_server_successful">Zmena hesla na serveri úspešná!</string>
     <string name="service_gui_PASSWORD">Heslo:</string>
     <string name="send_process_signal">Poslať procesný signál</string>
     <string name="show_call_info">Informácie o hovore</string>
@@ -1156,51 +1162,6 @@
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Šifrovacie sady SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Možnosti ZRTP</string>
     <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Signalizácia ZRTP</string>
-
-    <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">Krypto registrátor</string>
-    <string name="service_gui_SIP_ADVANCED">Pokročilé</string>
-    <string name="service_gui_SIP_AUTH_NAME">Názov autorizácie</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">Pripojiť pri spustení</string>
-    <string name="service_gui_SIP_CLIST_PASS">Heslo</string>
-    <string name="service_gui_SIP_CLIST_TYPE">Typ</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Výber typu zoznamu kontaktov</string>
-    <string name="service_gui_SIP_CLIST_URI">URI / adresa servera so zoznamom kontaktov</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Použite poverenia SIP</string>
-    <string name="service_gui_SIP_CLIST_USER">Užívateľ</string>
-    <string name="service_gui_SIP_CONNECTION">Pripojenie</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">Nastavte podrobnosti pripojenia&#8230;</string>
-    <string name="service_gui_SIP_CONN_GENERAL">Všeobecný</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Možnosti zoznamu kontaktov</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">Obdobie hlasovania kontaktov offline (v s.)</string>
-    <string name="service_gui_SIP_DISPLAYNAME">Zobraziť meno</string>
-    <string name="service_gui_SIP_DTMF">Metóda DTMF</string>
-    <string name="service_gui_SIP_DTMF_TITLE">Výber metódy DTMF</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">Povoliť prítomnosť (SIMPLE)</string>
-    <string name="service_gui_SIP_FORCE_P2P">Vynútiť režim prítomnosti typu peer-to-peer</string>
-    <string name="service_gui_SIP_GENERAL">Používateľské meno a heslo</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">Udržujte nažive metódu</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Udržať nažive</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Ponechajte nažive výber metódy</string>
-    <string name="service_gui_SIP_PING_INTERVAL">Interval pingu</string>
-    <string name="service_gui_SIP_PASSWORD">Zadajte heslo</string>
-    <string name="service_gui_SIP_PORT">Port servera</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">Preferovaná preprava</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">Proxy preferovaný výber prepravy</string>
-    <string name="service_gui_SIP_PRESENCE">Prítomnosť</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">Nakonfigurujte možnosti účasti&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">Možnosti prítomnosti</string>
-    <string name="service_gui_SIP_PROXY">Možnosti servera proxy</string>
-    <string name="service_gui_SIP_PROXY_AUTO">Konfigurujte proxy automaticky</string>
-    <string name="service_gui_SIP_PROXY_ADDR">Proxy adresa</string>
-    <string name="service_gui_SIP_PROXY_PORT">Proxy port</string>
-    <string name="service_gui_SIP_REGISTRAR">registrátor</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Predvolené trvanie predplatného (v s.)</string>
-    <string name="service_gui_SIP_USER">ID CRYPTO</string>
-    <string name="service_gui_SIP_VOICEMAIL">Hlasová schránka</string>
-    <string name="service_gui_SIP_VMAIL_URI">URI predplatného hlasovej schránky</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">URI kontroly hlasovej schránky</string>
-    <string name="service_gui_SIP_WMI">Čakanie správ (MWI)</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Audio kódovanie</string>

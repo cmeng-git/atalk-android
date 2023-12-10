@@ -817,7 +817,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                         OmemoMessage.Received oReceive = omemoManager.decrypt(sender.asBareJid(), omemoElement);
                         iMessage = new MessageJabberImpl(oReceive.getBody(), iMessage.ENCRYPTION_OMEMO, null, msgId);
                     } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | NoRawSessionException
-                            | CryptoFailedException | IOException e) {
+                            | CryptoFailedException | IOException | IllegalArgumentException e) {
                         Timber.e("Omemo decrypt message (%s): %s", msgId, e.getMessage());
                     }
                 }

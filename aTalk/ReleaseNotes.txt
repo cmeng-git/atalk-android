@@ -1,5 +1,19 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.2.4 (302040)
+Release Date:   12/10/2023
+Author:         cmeng
+- Add user selectable option 'Delete account on server' when user remove an account; user must login to perform this action.
+- While user is login, changing local password will also change password on the server.
+- Upgrade smack library to version 4.4.7
+- Remove SIP and ICQ protocols and preference settings support
+- Remove aTalk unused codec, audio system and unused classes:
+  * portaudio, pulseaudio, quicktime, and video4Linux protocol directory
+  * PortAudioRenderer, PulseAudioRenderer, PortAudioSystem, PulseAudioSystem,
+   WASAPIRenderer, DirectShowSystem, QuickTimeSystem and Video4Linux2System
+- Build openssl jni library without installing the man document.
+
+=========================================================================
 Version:        3.2.3 (302030)
 Release Date:   11/22/2023
 Author:         cmeng

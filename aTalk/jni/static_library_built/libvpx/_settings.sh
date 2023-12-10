@@ -120,25 +120,12 @@ configure() {
     ;;
   esac
 
-#  TOOLCHAIN_PREFIX=${BASEDIR}/android-toolchain
-#  if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
-#      rm -rf "${TOOLCHAIN_PREFIX}"
-#  fi
-#
-#  # Must ensure AS JNI uses the same STL library or "system"
-#  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
-#     --arch ${NDK_ARCH} \
-#     --api ${ANDROID_API} \
-#     --stl libc++ \
-#     --install-dir="${TOOLCHAIN_PREFIX}"
-
   # Use the prebuilt toolchain instead of using make_standalone_toolchain.py.
   TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64/
 
   # Define the install-directory of the libs and include files etc
   # Directly install to aTalk ./jni/vpx
   PREFIX=${BASEDIR}/../../vpx/android/${ABI}
-  # NDK_SYSROOT=${TOOLCHAIN_PREFIX}/sysroot
 
   # Add the standalone toolchain to the search path.
   export PATH=${TOOLCHAIN_PREFIX}/bin:$PATH

@@ -30,8 +30,7 @@ import timber.log.Timber;
 
 /**
  * Represents a <code>DeviceSystem</code> which provides support for the devices to capture and play
- * back audio (media). Examples include implementations which integrate the native PortAudio,
- * PulseAudio libraries.
+ * back audio (media); and include implementations which integrate the native libraries.
  *
  * @author Lyubomir Marinov
  * @author Vincent Lucas
@@ -95,25 +94,9 @@ public abstract class AudioSystem extends DeviceSystem
     public static final String LOCATOR_PROTOCOL_JAVASOUND = "javasound";
 
     /**
-     * The protocol of the <code>MediaLocator</code>s identifying <code>CaptureDeviceInfo</code>s
-     * contributed by <code>MacCoreaudioSystem</code>.
-     */
-    public static final String LOCATOR_PROTOCOL_MACCOREAUDIO = "maccoreaudio";
-
-    /**
      * The protocol of the <code>MediaLocator</code>s identifying OpenSL ES capture devices.
      */
     public static final String LOCATOR_PROTOCOL_OPENSLES = "opensles";
-
-    public static final String LOCATOR_PROTOCOL_PORTAUDIO = "portaudio";
-
-    public static final String LOCATOR_PROTOCOL_PULSEAUDIO = "pulseaudio";
-
-    /**
-     * The protocol of the <code>MediaLocator</code>s identifying <code>CaptureDeviceInfo</code>s
-     * contributed by <code>WASAPISystem</code>.
-     */
-    public static final String LOCATOR_PROTOCOL_WASAPI = "wasapi";
 
     /**
      * The (base) name of the <code>ConfigurationService</code> property which indicates whether

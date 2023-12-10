@@ -21,7 +21,6 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetAdvancedTelephony;
 import net.java.sip.communicator.service.protocol.OperationSetBasicTelephony;
 import net.java.sip.communicator.service.protocol.OperationSetDesktopStreaming;
-import net.java.sip.communicator.service.protocol.OperationSetPresence;
 import net.java.sip.communicator.service.protocol.OperationSetResourceAwareTelephony;
 import net.java.sip.communicator.service.protocol.OperationSetTelephonyConferencing;
 import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;

@@ -32,10 +32,10 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
      * The cache of <code>SCAudioClip</code> instances which we may reuse. The reuse is complex because
      * a <code>SCAudioClip</code> may be used by a single user at a time.
      */
-    private Map<AudioKey, SCAudioClip> audios;
+    private Map<AudioKey, SCAudioClip> audioClips;
 
     /**
-     * The <code>Object</code> which synchronizes the access to {@link #audios}.
+     * The <code>Object</code> which synchronizes the access to {@link #audioClips}.
      */
     private final Object audiosSyncRoot = new Object();
 
@@ -111,7 +111,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
              * at a time. That's why we'll forget about them while they are in use, and we'll
              * reclaim them when they are no longer in use.
              */
-            audio = (audios == null) ? null : audios.remove(key);
+            audio = (audioClips == null) ? null : audioClips.remove(key);
             if (audio == null) {
                 try {
                     AudioSystem audioSystem = getDeviceConfiguration().getAudioSystem();
@@ -140,14 +140,14 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
              * Make sure the SCAudioClip will be reclaimed for reuse when it is no longer in use.
              */
             if (audio != null) {
-                if (audios == null)
-                    audios = new HashMap<>();
+                if (audioClips == null)
+                    audioClips = new HashMap<>();
                 /*
                  * We have to return in the Map which was active at the time the SCAudioClip was
                  * initialized because it may have become invalid if the playback or notify audio
                  * device changed.
                  */
-                final Map<AudioKey, SCAudioClip> finalAudios = audios;
+                final Map<AudioKey, SCAudioClip> finalAudios = audioClips;
                 final SCAudioClip finalAudio = audio;
 
                 audio = new SCAudioClip()
@@ -184,7 +184,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                             throws Throwable
                     {
                         try {
-                            synchronized (audios) {
+                            synchronized (audioClips) {
                                 finalAudios.put(key, finalAudio);
                             }
                         } finally {
@@ -273,7 +273,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
                 /*
                  * Make sure that the currently referenced SCAudioClips will not be reclaimed.
                  */
-                audios = null;
+                audioClips = null;
             }
         }
     }
@@ -291,7 +291,7 @@ public class AudioNotifierServiceImpl implements AudioNotifierService, PropertyC
     }
 
     /**
-     * Implements the key of {@link AudioNotifierServiceImpl#audios}. Combines the <code>uri</code> of
+     * Implements the key of {@link AudioNotifierServiceImpl#audioClips}. Combines the <code>uri</code> of
      * the <code>SCAudioClip</code> with the indicator which determines whether the
      * <code>SCAudioClip</code> in question uses the playback or the notify audio device.
      */

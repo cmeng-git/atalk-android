@@ -583,8 +583,7 @@ public class MediaDeviceSession extends PropertyChangeNotifier
      */
     protected void disposePlayer(Player player)
     {
-        if (playerControllerListener != null)
-            player.removeControllerListener(playerControllerListener);
+        player.removeControllerListener(playerControllerListener);
         player.stop();
         player.deallocate();
         player.close();

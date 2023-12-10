@@ -406,13 +406,13 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * @param accountId AccountID to be replaced/inserted
      */
     public void createAccount(AccountID accountId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         db.replace(AccountID.TABLE_NAME, null, accountId.getContentValues());
     }
 
     public List<String> getAllAccountIDs() {
         List<String> userIDs = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {AccountID.USER_ID};
 
         Cursor cursor = db.query(AccountID.TABLE_NAME, columns, null, null, null, null, null);
@@ -424,7 +424,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public List<AccountID> getAccounts(ProtocolProviderFactory factory) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         List<AccountID> accountIDs = new ArrayList<>();
         String[] args = {factory.getProtocolName()};
 
@@ -438,7 +438,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public boolean updateAccount(AccountID accountId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {accountId.getAccountUuid()};
         final int rows = db.update(AccountID.TABLE_NAME, accountId.getContentValues(),
                 AccountID.ACCOUNT_UUID + "=?", args);
@@ -446,7 +446,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public boolean deleteAccount(AccountID accountId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {accountId.getAccountUuid()};
         final int rows = db.delete(AccountID.TABLE_NAME, AccountID.ACCOUNT_UUID + "=?", args);
         return rows == 1;
@@ -467,7 +467,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         int registrationId;
         String ORDER_ASC = SQLiteOmemoStore.OMEMO_REG_ID + " ASC";
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.OMEMO_REG_ID};
         String[] selectionArgs = {user.toString()};
 
@@ -484,7 +484,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     public HashMap<String, Integer> loadAllOmemoRegIds() {
         HashMap<String, Integer> registrationIds = new HashMap<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.OMEMO_JID, SQLiteOmemoStore.OMEMO_REG_ID};
 
         Cursor cursor = db.query(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, columns,
@@ -498,7 +498,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeOmemoRegId(BareJid user, int defaultDeviceId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.OMEMO_JID, user.toString());
@@ -515,7 +515,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         int currentSignedPKeyId = getCurrentSignedPreKeyId(omemoManager);
         OmemoDevice device = omemoManager.getOwnDevice();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.CURRENT_SIGNED_PREKEY_ID};
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
@@ -532,7 +532,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeCurrentSignedPKeyId(OmemoManager omemoManager, int currentSignedPreKeyId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         OmemoDevice device = omemoManager.getOwnDevice();
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
@@ -554,7 +554,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         int lastPKeyId = getLastPreKeyId(omemoManager);
         OmemoDevice device = omemoManager.getOwnDevice();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.LAST_PREKEY_ID};
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
@@ -571,7 +571,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeLastPreKeyId(OmemoManager omemoManager, int lastPreKeyId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         OmemoDevice device = omemoManager.getOwnDevice();
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
@@ -589,7 +589,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     // ========= OMEMO PreKey =========
     private Cursor getCursorForPreKey(OmemoDevice userDevice, int preKeyId) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.PRE_KEYS};
         String[] selectionArgs = {userDevice.getJid().toString(),
@@ -607,7 +607,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         String ORDER_ASC = SQLiteOmemoStore.PRE_KEY_ID + " ASC";
         TreeMap<Integer, PreKeyRecord> PreKeyRecords = new TreeMap<>();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.PRE_KEY_ID, SQLiteOmemoStore.PRE_KEYS};
         String[] selectionArgs = {userDevice.getJid().toString(), Integer.toString(userDevice.getDeviceId())};
@@ -646,7 +646,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storePreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord record) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, userDevice.getJid().toString());
@@ -657,7 +657,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void deletePreKey(OmemoDevice userDevice, int preKeyId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {userDevice.getJid().toString(),
                 Integer.toString(userDevice.getDeviceId()), Integer.toString(preKeyId)};
 
@@ -670,7 +670,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         String ORDER_DESC = SQLiteOmemoStore.PRE_KEY_ID + " DESC";
         OmemoDevice device = omemoManager.getOwnDevice();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.PRE_KEY_ID};
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
@@ -688,7 +688,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     // ========= OMEMO Signed PreKey =========
     private Cursor getCursorForSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.SIGNED_PRE_KEYS};
         String[] selectionArgs = {userDevice.getJid().toString(),
@@ -722,7 +722,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         SignedPreKeyRecord signedPreKeysRecord;
         TreeMap<Integer, SignedPreKeyRecord> preKeys = new TreeMap<>();
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.SIGNED_PRE_KEY_ID, SQLiteOmemoStore.SIGNED_PRE_KEYS};
         String[] selectionArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
         Cursor cursor = db.query(SQLiteOmemoStore.SIGNED_PREKEY_TABLE_NAME, columns,
@@ -744,7 +744,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeSignedPreKey(OmemoDevice device, int signedPreKeyId, SignedPreKeyRecord record) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, device.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, device.getDeviceId());
@@ -755,7 +755,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void deleteSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         String[] args = {userDevice.getJid().toString(), Integer.toString(userDevice.getDeviceId()),
                 Integer.toString(signedPreKeyId)};
@@ -765,7 +765,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void setLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.LAST_RENEWAL_DATE, date.getTime());
@@ -776,7 +776,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public Date getLastSignedPreKeyRenewal(OmemoDevice userDevice) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.LAST_RENEWAL_DATE};
         String[] selectionArgs = {userDevice.getJid().toString(), Integer.toString(userDevice.getDeviceId())};
@@ -796,7 +796,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     private int getCurrentSignedPreKeyId(OmemoManager omemoManager) {
         int currentSignedPKId = 1;
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         OmemoDevice device = omemoManager.getOwnDevice();
 
         String[] columns = {SQLiteOmemoStore.SIGNED_PRE_KEY_ID};
@@ -816,7 +816,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     // ========= OMEMO Identity =========
     private Cursor getIdentityKeyCursor(OmemoDevice device, String fingerprint) {
-        final SQLiteDatabase db = this.getReadableDatabase();
+        final SQLiteDatabase db = getReadableDatabase();
         ArrayList<String> selectionArgs = new ArrayList<>(3);
 
         selectionArgs.add(device.getJid().toString());
@@ -880,7 +880,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     // Use this to delete the device corrupted identityKeyPair/identityKey
     // - Later identityKeyPair gets rebuilt when device restart
     public void deleteIdentityKey(OmemoDevice device) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] whereArgs = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
         db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=? AND "
@@ -900,7 +900,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     private void storeIdentityKey(OmemoDevice device, String fingerprint,
             String base64Serialized, FingerprintStatus status) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String bareJid = device.getJid().toString();
         String deviceId = Integer.toString(device.getDeviceId());
 
@@ -955,7 +955,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         }
 
         OmemoCachedDeviceList cachedDeviceList = new OmemoCachedDeviceList();
-        final SQLiteDatabase db = this.getReadableDatabase();
+        final SQLiteDatabase db = getReadableDatabase();
         String[] columns = {SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.ACTIVE};
         String[] selectionArgs = {contact.toString()};
 
@@ -982,7 +982,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             return;
         }
 
-        final SQLiteDatabase db = this.getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
         // Active devices
@@ -1032,12 +1032,12 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public int deleteNullIdentityKeyDevices() {
-        final SQLiteDatabase db = this.getWritableDatabase();
+        final SQLiteDatabase db = getWritableDatabase();
         return db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.IDENTITY_KEY + " IS NULL", null);
     }
 
     public void setLastDeviceIdPublicationDate(OmemoDevice device, Date date) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.LAST_MESSAGE_RX, date.getTime());
 
@@ -1060,7 +1060,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
 
     public void setLastMessageReceiveDate(OmemoDevice device, Date date) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.LAST_MESSAGE_RX, date.getTime());
 
@@ -1083,7 +1083,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
 
     public void setOmemoMessageCounter(OmemoDevice device, int count) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.MESSAGE_COUNTER, count);
 
@@ -1137,7 +1137,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storePreVerification(OmemoDevice device, String fingerprint, FingerprintStatus status) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, device.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, device.getDeviceId());
@@ -1147,7 +1147,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public boolean setIdentityKeyTrust(OmemoDevice device, String fingerprint, FingerprintStatus fingerprintStatus) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] selectionArgs = {device.getJid().toString(), Integer.toString((device.getDeviceId())), fingerprint};
         int rows = db.update(SQLiteOmemoStore.IDENTITIES_TABLE_NAME,
                 fingerprintStatus.toContentValues(), SQLiteOmemoStore.BARE_JID + "=? AND "
@@ -1157,7 +1157,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     // ========= OMEMO session =========
     private Cursor getCursorForSession(OmemoDevice omemoContact) {
-        final SQLiteDatabase db = this.getReadableDatabase();
+        final SQLiteDatabase db = getReadableDatabase();
         String[] selectionArgs = {omemoContact.getJid().toString(), Integer.toString(omemoContact.getDeviceId())};
         return db.query(SQLiteOmemoStore.SESSION_TABLE_NAME, null,
                 SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?",
@@ -1184,7 +1184,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         int deviceId;
         SessionRecord session = null;
         HashMap<Integer, SessionRecord> deviceSessions = new HashMap<>();
-        final SQLiteDatabase db = this.getReadableDatabase();
+        final SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.SESSION_KEY};
         String[] selectionArgs = {contact.toString()};
@@ -1215,7 +1215,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         String sJid;
         SessionRecord session;
         HashMap<OmemoDevice, SessionRecord> deviceSessions = new HashMap<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
         String[] columns = {SQLiteOmemoStore.BARE_JID, SQLiteOmemoStore.DEVICE_ID, SQLiteOmemoStore.SESSION_KEY};
         Cursor cursor = db.query(SQLiteOmemoStore.SESSION_TABLE_NAME, columns,
@@ -1247,7 +1247,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void storeSession(OmemoDevice omemoContact, SessionRecord session) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(SQLiteOmemoStore.BARE_JID, omemoContact.getJid().toString());
         values.put(SQLiteOmemoStore.DEVICE_ID, omemoContact.getDeviceId());
@@ -1256,14 +1256,14 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     public void deleteSession(OmemoDevice omemoContact) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {omemoContact.getJid().toString(), Integer.toString(omemoContact.getDeviceId())};
         db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME,
                 SQLiteOmemoStore.BARE_JID + "=? AND " + SQLiteOmemoStore.DEVICE_ID + "=?", args);
     }
 
     public void deleteAllSessions(BareJid contact) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {contact.toString()};
         db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
     }
@@ -1278,7 +1278,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     // ========= Purge OMEMO dataBase =========
 
     /**
-     * Call by OMEMO regeneration to perform clean up for:
+     * Call by OMEMO regeneration or onAccount deleted to perform clean up for:
      * 1. purge own Omemo deviceId
      * 2. All the preKey records for the deviceId
      * 3. Singed preKey data
@@ -1290,7 +1290,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         String accountJid = accountId.getAccountJid();
         Timber.d(">>> Wiping OMEMO database for account : %s", accountJid);
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {accountJid};
 
         db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME, SQLiteOmemoStore.OMEMO_JID + "=?", args);
@@ -1299,11 +1299,11 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
         // Cleanup all the session and identities records for own resources, and the contacts
         List<String> identityJids = getContactsForAccount(accountId.getAccountUuid());
-        identityJids.add(accountJid);
+        identityJids.add(0, accountJid); // first item to be deleted
         for (String identityJid : identityJids) {
             args = new String[]{identityJid};
-            db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
             db.delete(SQLiteOmemoStore.SESSION_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
+            db.delete(SQLiteOmemoStore.IDENTITIES_TABLE_NAME, SQLiteOmemoStore.BARE_JID + "=?", args);
         }
     }
 
@@ -1318,7 +1318,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      */
     public void purgeOmemoDb(OmemoDevice device) {
         Timber.d(">>> Wiping OMEMO database for device : %s", device);
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         String[] args = {device.getJid().toString(), Integer.toString(device.getDeviceId())};
 
         db.delete(SQLiteOmemoStore.OMEMO_DEVICES_TABLE_NAME,
@@ -1342,7 +1342,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * @return List of contacts for the specified accountUuid
      */
     public List<String> getContactsForAccount(String accountUuid) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         List<String> childContacts = new ArrayList<>();
 
         String[] columns = {MetaContactGroup.CONTACT_JID};

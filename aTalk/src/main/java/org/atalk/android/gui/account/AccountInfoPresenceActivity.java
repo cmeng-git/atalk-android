@@ -1177,12 +1177,12 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     {
         int id = item.getItemId();
         if (id == R.id.remove) {
-            RemoveAccountDialog.create(this, mAccount, accID -> {
+            AccountDeleteDialog.create(this, mAccount, accID -> {
                 // Prevent from submitting status
                 hasStatusChanges = false;
                 hasChanges = false;
                 finish();
-            }).show();
+            });
             return true;
         }
         else if (id == R.id.account_settings) {

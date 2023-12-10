@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import net.java.sip.communicator.service.protocol.ProtocolNames;
 
 import org.atalk.android.R;
@@ -20,6 +22,7 @@ import org.atalk.android.aTalkApp;
  * Class containing utility methods that may concern accounts. Provide default values for some fields.
  *
  * @author Pawel Domas
+ * @author Eng Chong Meng
  */
 public class AccountUtil
 {
@@ -32,16 +35,10 @@ public class AccountUtil
      */
     static public Drawable getDefaultPresenceIcon(Context context, String protocolName)
     {
-        if (protocolName.equals(ProtocolNames.SIP)) {
-            return new BitmapDrawable(aTalkApp.getAppResources(),
-                    BitmapFactory.decodeResource(context.getResources(), R.drawable.default_sip_status));
-            // API-21: context.getDrawable(R.drawable.default_sip_status);
-        }
-        else if (protocolName.equals(ProtocolNames.JABBER)) {
+        if (protocolName.equals(ProtocolNames.JABBER)) {
             return new BitmapDrawable(aTalkApp.getAppResources(),
                     BitmapFactory.decodeResource(context.getResources(), R.drawable.default_jabber_status));
         }
-
         return null;
     }
 
@@ -53,6 +50,6 @@ public class AccountUtil
      */
     static public LayerDrawable getDefaultAvatarIcon(Context context)
     {
-        return (LayerDrawable) context.getResources().getDrawable(R.drawable.avatar_layer_drawable);
+        return (LayerDrawable) ResourcesCompat.getDrawable(context.getResources(), R.drawable.avatar_layer_drawable, null);
     }
 }

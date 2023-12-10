@@ -116,15 +116,11 @@ public class AccountPreferenceActivity extends OSGiActivity
      */
     private AccountPreferenceFragment createPreferencesFragment(String userUniqueID, String protocolName) {
         AccountPreferenceFragment preferencesFragment;
-        switch (protocolName) {
-            case ProtocolNames.SIP:
-                preferencesFragment = new SipPreferenceFragment();
-                break;
-            case ProtocolNames.JABBER:
-                preferencesFragment = new JabberPreferenceFragment();
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported protocol name: " + protocolName);
+        if (ProtocolNames.JABBER.equals(protocolName)) {
+            preferencesFragment = new JabberPreferenceFragment();
+        }
+        else {
+            throw new IllegalArgumentException("Unsupported protocol name: " + protocolName);
         }
 
         Bundle args = new Bundle();
@@ -144,7 +140,7 @@ public class AccountPreferenceActivity extends OSGiActivity
             List<Fragment> fragments = getSupportFragmentManager().getFragments();
             if (!fragments.isEmpty()) {
                 Fragment fragment = fragments.get(fragments.size() - 1);
-                if ((fragment instanceof JabberPreferenceFragment) || (fragment instanceof SipPreferenceFragment)) {
+                if (fragment instanceof JabberPreferenceFragment) {
                     preferencesFragment.commitChanges();
                     return true;
                 }

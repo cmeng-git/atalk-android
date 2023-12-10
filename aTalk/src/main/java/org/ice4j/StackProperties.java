@@ -305,7 +305,7 @@ public class StackProperties
         if (res.size() == 0)
             return null;
 
-        return res.toArray(new String[res.size()]);
+        return res.toArray(new String[0]);
     }
 
     /**

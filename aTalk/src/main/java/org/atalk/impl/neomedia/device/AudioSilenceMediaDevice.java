@@ -30,8 +30,7 @@ import javax.media.protocol.DataSource;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  */
-public class AudioSilenceMediaDevice
-    extends AudioMediaDeviceImpl
+public class AudioSilenceMediaDevice extends AudioMediaDeviceImpl
 {
     /**
      * The value to pass as the {@code clockOnly} flag to {@link
@@ -96,9 +95,8 @@ public class AudioSilenceMediaDevice
                         /**
                          * {@inheritDoc}
                          *
-                         * Overrides the super implementation to disable the
-                         * very playback because Jitsi Videobridge is a
-                         * server-side technology.
+                         * Overrides the super implementation to disable the very playback
+                         * because Jitsi Videobridge is a server-side technology.
                          */
                         @Override
                         protected Player createPlayer(DataSource dataSource)

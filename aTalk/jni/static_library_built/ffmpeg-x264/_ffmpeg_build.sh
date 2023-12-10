@@ -159,6 +159,10 @@ make clean
   --extra-libs="-lgcc -lstdc++" \
   --pkg-config=${FFMPEG_PKG_CONFIG} || exit 1
 
+# need libopencore_amrwb
+#  --enable-libopencore-amrwb \
+#  --enable-libvo-amrwbenc \
+
 make -j${HOST_NUM_CORES} install || exit 1
 popd || exit
 

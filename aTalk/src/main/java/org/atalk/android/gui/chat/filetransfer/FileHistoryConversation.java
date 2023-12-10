@@ -105,7 +105,7 @@ public class FileHistoryConversation extends FileTransferConversation
      * @param status file transfer status
      * @return the status message to display
      */
-    public String getStatusMessage(String entityJid, String dir, int status)
+    private String getStatusMessage(String entityJid, String dir, int status)
     {
         String statusMsg = "";
         String statusText = FileRecord.statusMap.get(status);

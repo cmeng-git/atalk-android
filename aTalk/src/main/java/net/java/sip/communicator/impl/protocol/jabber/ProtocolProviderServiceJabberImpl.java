@@ -165,6 +165,7 @@ import org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvid
 import org.jivesoftware.smackx.inputevt.InputEvtIQ;
 import org.jivesoftware.smackx.inputevt.InputEvtIQProvider;
 import org.jivesoftware.smackx.iqlast.LastActivityManager;
+import org.jivesoftware.smackx.iqregisterx.AccountManager;
 import org.jivesoftware.smackx.iqregisterx.packet.Registration;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationProvider;
 import org.jivesoftware.smackx.iqregisterx.provider.RegistrationStreamFeatureProvider;
@@ -430,6 +431,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     private boolean isInitialized = false;
 
+    private boolean onAccountDeleted = false;
+
     /**
      * False to disable resetting the smack reply timer on completion;
      * let AndroidOmemoService do it as the task is async
@@ -460,8 +463,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * The icon corresponding to the jabber protocol.
      */
     private ProtocolIconJabberImpl jabberIcon;
-
-    private boolean isDesktopSharingEnable = false;
 
     /**
      * Persistent Storage for Roster Versioning support.
@@ -1426,6 +1427,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                     seCondition = Condition.conflict;
                     regEvent = RegistrationStateChangeEvent.REASON_MULTIPLE_LOGIN;
                     if (errMsg.contains("removed")) {
+                        if (onAccountDeleted) {
+                            onAccountDeleted = false;
+                            return;
+                        }
                         regEvent = RegistrationStateChangeEvent.REASON_NON_EXISTING_USER_ID;
                     }
                 }
@@ -1797,6 +1802,46 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
+     * Delete account on server
+     */
+    public void deleteAccountOnServer() {
+        String msg = aTalkApp.getResString(R.string.account_delete_on_server_unregistered);
+        if (isRegistered()) {
+            AccountManager accountManager = AccountManager.getInstance(mConnection);
+            try {
+                accountManager.deleteAccount();
+                onAccountDeleted = true;
+                msg = aTalkApp.getResString(R.string.account_delete_on_server_successful, mAccountID.getAccountJid());
+            } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException |
+                     SmackException.NotConnectedException | InterruptedException e) {
+                msg = aTalkApp.getResString(R.string.account_delete_on_server_failed, e.getMessage());
+            }
+        }
+        DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.account_delete_on_server), msg);
+    }
+
+    /**
+     * Proceed to change account password on server if the user is registered while password is changed.
+     */
+    public boolean changePasswordOnServer(String pwd) {
+        boolean passwordChange = true;
+
+        if (isRegistered() && !TextUtils.isEmpty(pwd)) {
+            String msg = aTalkApp.getResString(R.string.password_change_on_server_successful);
+            AccountManager accountManager = AccountManager.getInstance(mConnection);
+            try {
+                accountManager.changePassword(pwd);
+            } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException |
+                     SmackException.NotConnectedException | InterruptedException e) {
+                msg = aTalkApp.getResString(R.string.password_change_on_server_failed, e.getMessage());
+                passwordChange = false;
+            }
+            DialogActivity.showDialog(aTalkApp.getInstance(), aTalkApp.getResString(R.string.service_gui_PASSWORD), msg);
+        }
+        return passwordChange;
+    }
+
+    /**
      * Returns the short name of the protocol that the implementation of this provider is based
      * upon (like SIP, Jabber, ICQ/AIM, or others for example).
      *
@@ -1967,14 +2012,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             if (!isVideoCallingDisabledForAccount) {
                 // XEP-0180: Jingle Video via RTP
                 supportedFeatures.add(URN_XMPP_JINGLE_RTP_VIDEO);
-
-                if (isDesktopSharingEnable) {
-                    // Adds extension to support remote control as a sharing server (sharer).
-                    supportedFeatures.add(InputEvtIQ.NAMESPACE_SERVER);
-
-                    // Adds extension to support remote control as a sharing client (sharer).
-                    supportedFeatures.add(InputEvtIQ.NAMESPACE_CLIENT);
-                }
             }
 
             /*

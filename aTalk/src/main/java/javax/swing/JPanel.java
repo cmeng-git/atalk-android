@@ -1,7 +1,5 @@
 package javax.swing;
 
-import net.java.sip.communicator.plugin.desktoputil.SIPCommTextField;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -56,12 +54,6 @@ public class JPanel extends JComponent implements Accessible {
 	}
 
 	public void add(JTextField lblFingerprint) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void add(SIPCommTextField txtRemoteFingerprintComparison,
-			GridBagConstraints c) {
 		// TODO Auto-generated method stub
 		
 	}

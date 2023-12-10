@@ -58,7 +58,7 @@ configure_make() {
       no-unit-test
 
   if make -j"${HOST_NUM_CORES}"; then
-    make install
+    make install_sw
   fi;
   popd || return
 }

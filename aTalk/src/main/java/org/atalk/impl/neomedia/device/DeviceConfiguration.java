@@ -70,12 +70,9 @@ public class DeviceConfiguration extends PropertyChangeNotifier implements Prope
      * The list of class names of custom <code>Renderer</code> implementations to be registered with JMF.
      */
     private static final String[] CUSTOM_RENDERERS = new String[]{
-            OSUtils.IS_ANDROID ? ".audio.AudioTrackRenderer" : null,
-            OSUtils.IS_ANDROID ? ".audio.OpenSLESRenderer" : null,
-            OSUtils.IS_LINUX ? ".audio.PulseAudioRenderer" : null,
-            OSUtils.IS_WINDOWS ? ".audio.WASAPIRenderer" : null,
-            OSUtils.IS_ANDROID ? null : ".audio.PortAudioRenderer",
-            OSUtils.IS_ANDROID ? ".video.SurfaceRenderer" : null,
+            ".audio.AudioTrackRenderer",
+            ".audio.OpenSLESRenderer",
+            ".video.SurfaceRenderer",
             ".video.JAWTRenderer"
     };
 

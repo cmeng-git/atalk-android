@@ -26,6 +26,10 @@
 
 <resources>
     <string name="accept_call_video">Jawab panggilan dengan video</string>
+    <string name="account_delete_on_server">Hapus akun di server</string>
+    <string name="account_delete_on_server_unregistered">Gagal menghapus akun di server, pengguna tidak terdaftar!</string>
+    <string name="account_delete_on_server_failed">Gagal menghapus akun di server:\n%1$s</string>
+    <string name="account_delete_on_server_successful">Hapus akun di server berhasil:\n%1$s</string>
     <string name="account_setup_basics_show_password">Tampilkan kata sandi</string>
     <string name="account_override_server">Ganti pengaturan server</string>
     <string name="account_registration">Daftarkan akun baru di server</string>
@@ -48,6 +52,8 @@
     <string name="notification_setting">Pengaturan pemberitahuan&#8230;</string>
     <string name="no_application_found_to_open_file">Tidak ada yang menambahkan aplikasi untuk perangkat lunak untuk arsip</string>
     <string name="password">kata sandi</string>
+    <string name="password_change_on_server_failed">Perubahan kata sandi di server gagal:\n%1$s</string>
+    <string name="password_change_on_server_successful">Perubahan kata sandi di server berhasil!</string>
     <string name="service_gui_PASSWORD">Kata Sandi:</string>
     <string name="send_process_signal">Kirim Sinyal Proses</string>
     <string name="show_call_info">Info panggilan</string>
@@ -1150,51 +1156,6 @@
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">cipher suite SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Opsi ZRTP</string>
     <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">pensinyalan ZRTP</string>
-
-    <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">Crypto Registrar</string>
-    <string name="service_gui_SIP_ADVANCED">Lanjutan</string>
-    <string name="service_gui_SIP_AUTH_NAME">Nama otorisasi</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">Terhubung saat Memulai</string>
-    <string name="service_gui_SIP_CLIST_PASS">Kata Sandi</string>
-    <string name="service_gui_SIP_CLIST_TYPE">Ketik</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Daftar kontak jenis pilihan</string>
-    <string name="service_gui_SIP_CLIST_URI">Daftar kontak server URI/Alamat</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Gunakan kredensial SIP</string>
-    <string name="service_gui_SIP_CLIST_USER">Pengguna</string>
-    <string name="service_gui_SIP_CONNECTION">Koneksi</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">Tetapkan detail koneksi&#8230;</string>
-    <string name="service_gui_SIP_CONN_GENERAL">Umum</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Opsi Daftar Kenalan</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">Periode pemungutan suara kontak offline (dalam s.)</string>
-    <string name="service_gui_SIP_DISPLAYNAME">Nama Tampilan</string>
-    <string name="service_gui_SIP_DTMF">Metode DTMF</string>
-    <string name="service_gui_SIP_DTMF_TITLE">pemilihan metode DTMF</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">Aktifkan keberadaan (SIMPLE)</string>
-    <string name="service_gui_SIP_FORCE_P2P">Paksa mode kehadiran peer-to-peer</string>
-    <string name="service_gui_SIP_GENERAL">Nama pengguna dan kata sandi</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">Simpan metode hidup</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Tetap hidup</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Tetap hidupkan seleksi metode</string>
-    <string name="service_gui_SIP_PING_INTERVAL">Interval Ping</string>
-    <string name="service_gui_SIP_PASSWORD">Masukkan kata sandi</string>
-    <string name="service_gui_SIP_PORT">Port server</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">Transportasi pilihan</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">Pilihan transportasi pilihan proxy</string>
-    <string name="service_gui_SIP_PRESENCE">Kehadiran</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">Konfigurasikan opsi kehadiran&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">Opsi Kehadiran</string>
-    <string name="service_gui_SIP_PROXY">Opsi proxy</string>
-    <string name="service_gui_SIP_PROXY_AUTO">Konfigurasikan proxy secara otomatis</string>
-    <string name="service_gui_SIP_PROXY_ADDR">Alamat proxy</string>
-    <string name="service_gui_SIP_PROXY_PORT">Port proxy</string>
-    <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Durasi langganan default (dalam s.)</string>
-    <string name="service_gui_SIP_USER">ID CRYPTO</string>
-    <string name="service_gui_SIP_VOICEMAIL">Voicemail</string>
-    <string name="service_gui_SIP_VMAIL_URI">Uri Langganan Voicemail</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">Voicemail periksa URI</string>
-    <string name="service_gui_SIP_WMI">Pesan Menunggu (MWI)</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Enkode audio</string>

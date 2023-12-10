@@ -5,8 +5,7 @@
  */
 package net.java.sip.communicator.plugin.provisioning;
 
-import net.java.sip.communicator.plugin.desktoputil.SIPCommTextField;
-import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
+import org.atalk.util.swing.TransparentPanel;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -52,7 +51,7 @@ public class ProvisioningForm extends TransparentPanel {
 	/**
 	 * The URI field to specify manually a provisioning server.
 	 */
-	private final SIPCommTextField uriField = null;
+	// private final SIPCommTextField uriField = null;
 
 	/**
 	 * The field used to show the username.

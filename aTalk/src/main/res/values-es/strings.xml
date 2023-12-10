@@ -29,6 +29,10 @@
 
 <resources>
     <string name="accept_call_video">Contestar a la llamada con vídeo</string>
+    <string name="account_delete_on_server_successful">Eliminar cuenta en el servidor exitosamente:\n%1$s</string>
+    <string name="account_delete_on_server_unregistered">Error al eliminar la cuenta en el servidor, ¡usuario no registrado!</string>
+    <string name="account_delete_on_server_failed">Error al eliminar la cuenta en el servidor:\n%1$s</string>
+    <string name="account_delete_on_server">Eliminar cuenta en el servidor</string>
     <string name="account_setup_basics_show_password">Mostrar contraseña</string>
     <string name="account_override_server">Sobrescribir la configuración del servidor</string>
     <string name="account_registration">Registrar una cuenta nueva en el servidor</string>
@@ -51,6 +55,8 @@
     <string name="notification_setting">Configuración de notificaciones&#8230;</string>
     <string name="no_application_found_to_open_file">No se ha encontrado ninguna aplicación para abrir el archivo</string>
     <string name="password">contraseña</string>
+    <string name="password_change_on_server_failed">Error al cambiar la contraseña en el servidor:\n%1$s</string>
+    <string name="password_change_on_server_successful">¡El cambio de contraseña en el servidor fue exitoso!</string>
     <string name="service_gui_PASSWORD">Contraseña:</string>
     <string name="send_process_signal">Enviar señal de proceso</string>
     <string name="show_call_info">Información de la llamada</string>
@@ -1174,51 +1180,6 @@
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Suites de cifrado SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Opciones ZRTP</string>
     <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Señalización ZRTP</string>
-
-    <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">Registrador de cifrado</string>
-    <string name="service_gui_SIP_ADVANCED">Avanzado</string>
-    <string name="service_gui_SIP_AUTH_NAME">Nombre de autorización</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">Conectar al inicio</string>
-    <string name="service_gui_SIP_CLIST_PASS">Contraseña</string>
-    <string name="service_gui_SIP_CLIST_TYPE">Tipo</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Selección del tipo de lista de contactos</string>
-    <string name="service_gui_SIP_CLIST_URI">Servidor de listas de contactos URI/Dirección</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Usar credenciales SIP</string>
-    <string name="service_gui_SIP_CLIST_USER">Usuario</string>
-    <string name="service_gui_SIP_CONNECTION">Conexión</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">Configurar los detalles de la conexión&#8230;</string>
-    <string name="service_gui_SIP_CONN_GENERAL">General</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Opciones de la lista de contactos</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">Período de sondeo de contactos fuera de línea(en s.)</string>
-    <string name="service_gui_SIP_DISPLAYNAME">Nombre en la pantalla</string>
-    <string name="service_gui_SIP_DTMF">Método DTMF</string>
-    <string name="service_gui_SIP_DTMF_TITLE">Selección del método DTMF</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">Habilitar la presencia (SIMPLE)</string>
-    <string name="service_gui_SIP_FORCE_P2P">Forzar el modo de presencia peer-to-peer</string>
-    <string name="service_gui_SIP_GENERAL">Nombre de usuario y contraseña</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Mantener activo</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">Método para mantener activo</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Selección del método para mantenerlo activo</string>
-    <string name="service_gui_SIP_PING_INTERVAL">Intervalo de ping</string>
-    <string name="service_gui_SIP_PASSWORD">Introducir la contraseña</string>
-    <string name="service_gui_SIP_PORT">Puerto del servidor</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">Transporte preferido</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">Selección del transporte preferido para el proxy</string>
-    <string name="service_gui_SIP_PRESENCE">Presencia</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">Configurar las opciones de presencia&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">Opciones de presencia</string>
-    <string name="service_gui_SIP_PROXY">Opciones del Proxy</string>
-    <string name="service_gui_SIP_PROXY_AUTO">Configurar el proxy automáticamente</string>
-    <string name="service_gui_SIP_PROXY_ADDR">Dirección del proxy</string>
-    <string name="service_gui_SIP_PROXY_PORT">Puerto del proxy</string>
-    <string name="service_gui_SIP_REGISTRAR">Registrar</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Duración predeterminada de la suscripción(en s.)</string>
-    <string name="service_gui_SIP_USER">CRYPTO ID</string>
-    <string name="service_gui_SIP_VOICEMAIL">Buzón de voz</string>
-    <string name="service_gui_SIP_VMAIL_URI">URI de la subscripción al buzón de voz</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">Comprobación de la URI del buzón de voz</string>
-    <string name="service_gui_SIP_WMI">Mensaje en espera (MWI)</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Codificación de audio</string>

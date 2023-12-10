@@ -304,7 +304,7 @@ public class MetaContactChatSession extends ChatSession
      */
     @Override
     public void setCurrentChatTransport(ChatTransport chatTransport) {
-        this.currentChatTransport = chatTransport;
+        currentChatTransport = chatTransport;
         fireCurrentChatTransportChange();
     }
 

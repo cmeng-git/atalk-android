@@ -7,10 +7,10 @@
 package net.java.sip.communicator.plugin.otr.authdialog;
 
 import net.java.otr4j.session.InstanceTag;
-import net.java.sip.communicator.plugin.desktoputil.SIPCommDialog;
-import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
+
+import org.atalk.util.swing.TransparentPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -37,7 +38,7 @@ import javax.swing.UIManager;
  * @author Marin Dzhigarov
  */
 // @SuppressWarnings("serial")
-public class SmpAuthenticateBuddyDialog extends SIPCommDialog
+public class SmpAuthenticateBuddyDialog extends JDialog //SIPCommDialog
 {
     private final OtrContact otrContact;
 
@@ -51,6 +52,10 @@ public class SmpAuthenticateBuddyDialog extends SIPCommDialog
         this.receiverTag = receiverTag;
         this.question = question;
         initComponents();
+    }
+
+    public void dispose()
+    {
     }
 
     private void initComponents()
@@ -151,7 +156,7 @@ public class SmpAuthenticateBuddyDialog extends SIPCommDialog
             public void actionPerformed(ActionEvent e)
             {
                 OtrActivator.scOtrEngine.abortSmp(otrContact);
-                SmpAuthenticateBuddyDialog.this.dispose();
+                dispose();
             }
         });
         c.insets = new Insets(5, 5, 5, 5);
@@ -165,7 +170,7 @@ public class SmpAuthenticateBuddyDialog extends SIPCommDialog
             public void actionPerformed(ActionEvent e)
             {
                 OtrActivator.scOtrEngine.respondSmp(otrContact, receiverTag, question, answerTextBox.getText());
-                SmpAuthenticateBuddyDialog.this.dispose();
+                dispose();
             }
         });
 

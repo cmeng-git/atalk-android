@@ -31,8 +31,7 @@ import javax.media.format.VideoFormat;
 import timber.log.Timber;
 
 /**
- * Represents the base of a supported device system/backend such as DirectShow, PortAudio,
- * PulseAudio, QuickTime, video4linux2. A <code>DeviceSystem</code> is initialized at a certain time
+ * Represents the base of a supported device system/backend. A <code>DeviceSystem</code> is initialized at a certain time.
  * (usually, during the initialization of the <code>MediaService</code> implementation which is going to
  * use it) and it registers with FMJ the <code>CaptureDevice</code>s it will provide. In addition to
  * providing the devices for the purposes of capture, a <code>DeviceSystem</code> also provides the
@@ -120,8 +119,8 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
 
     /**
      * Initializes the <code>DeviceSystem</code> instances which are to represent the supported device
-     * systems/backends such as DirectShow, PortAudio, PulseAudio, QuickTime, video4linux2. The
-     * method may be invoked multiple times. If a <code>DeviceSystem</code> has been initialized by a
+     * systems/backends. The method may be invoked multiple times.
+     * If a <code>DeviceSystem</code> has been initialized by a
      * previous invocation of the method, its {@link #initialize()} method will be called again as
      * part of the subsequent invocation only if the <code>DeviceSystem</code> in question returns a set
      * of flags from its {@link #getFeatures()} method which contains the constant/flag
@@ -165,23 +164,19 @@ public abstract class DeviceSystem extends PropertyChangeNotifier {
         switch (mediaType) {
             case AUDIO:
                 classNames = new String[]{
-                        OSUtils.IS_ANDROID ? ".AudioRecordSystem" : null,
-                        OSUtils.IS_ANDROID ? ".OpenSLESSystem" : null,
-                        (OSUtils.IS_LINUX || OSUtils.IS_FREEBSD) ? ".PulseAudioSystem" : null,
-                        OSUtils.IS_WINDOWS ? ".WASAPISystem" : null,
-                        OSUtils.IS_MAC ? ".MacCoreaudioSystem" : null,
-                        OSUtils.IS_ANDROID ? null : ".PortAudioSystem", ".AudioSilenceSystem",
-                        ".NoneAudioSystem"};
+                        ".AudioRecordSystem",
+                        ".OpenSLESSystem",
+                        ".AudioSilenceSystem",
+                        ".NoneAudioSystem"
+                };
                 break;
             case VIDEO:
                 classNames = new String[]{
                         // MediaRecorderSystem not working for API-23; so remove the support
                         // OSUtils.IS_ANDROID ? ".MediaRecorderSystem" : null,
-                        (OSUtils.IS_ANDROID) ? ".AndroidCameraSystem" : null,
-                        (OSUtils.IS_LINUX || OSUtils.IS_FREEBSD) ? ".Video4Linux2System" : null,
-                        OSUtils.IS_MAC ? ".QuickTimeSystem" : null,
-                        OSUtils.IS_WINDOWS ? ".DirectShowSystem" : null,
-                        ".ImgStreamingSystem"};
+                        ".AndroidCameraSystem",
+                        ".ImgStreamingSystem"
+                };
                 break;
             default:
                 throw new IllegalArgumentException("mediaType");

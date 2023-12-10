@@ -118,6 +118,12 @@ public class ChatActivity extends OSGiActivity
         ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener {
     private static final int REQUEST_CODE_OPEN_FILE = 105;
     private static final int REQUEST_CODE_SHARE_WITH = 200;
+
+    /*
+     * Share of both text and images in a single intent for local forward only in aTalk;
+     * msgContent is saved intent.categories if both types are required;
+     * Otherwise follow standard share method i.e. REQUEST_CODE_SHARE_WITH
+     */
     private static final int REQUEST_CODE_FORWARD = 201;
 
     public final static String CRYPTO_FRAGMENT = "crypto_fragment";
@@ -925,7 +931,7 @@ public class ChatActivity extends OSGiActivity
     }
 
     /**
-     * Opens a FileChooserDialog to let the user pick attachments
+     * Opens a FileChooserDialog to let the user pick attachments; Add the selected items into the mediaPreviewAdapter
      */
     private ActivityResultLauncher<String> getAttachments() {
         return registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), uris -> {
@@ -1057,7 +1063,7 @@ public class ChatActivity extends OSGiActivity
      * @param file the file to open
      */
     public void openDownloadable(File file, View view) {
-        if (!file.exists()) {
+	if ((file == null) || !file.exists()) {
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
             return;
         }
@@ -1153,7 +1159,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Release the exoPlayer resource on end
      */
-    public void releasePlayer() {
+    private void releasePlayer() {
         // remove the existing player view
         Fragment playerView = getSupportFragmentManager().findFragmentById(R.id.player_container);
         if (playerView != null)
@@ -1273,8 +1279,8 @@ public class ChatActivity extends OSGiActivity
 
     /*
      * This method handles the display of Youtube Player when screen orientation is rotated
-     * Set to fullscreen mode when in landscape, else otherwise
-     * Not working weell - disabled
+     * Set to fullscreen mode when in landscape, else otherwise.
+     * Not working well - disabled
      */
 //    @Override
 //    public void onConfigurationChanged(@NotNull Configuration newConfig)

@@ -53,6 +53,8 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     private final AdHocChatRoomWrapper chatRoomWrapper;
     private final ChatPanel sessionRenderer;
 
+    private final AdHocChatRoom chatRoom;
+
     /**
      * Creates an instance of <code>AdHocConferenceChatSession</code>, by specifying the
      * sessionRenderer to be used for communication with the UI and the ad-hoc chat room
@@ -65,13 +67,12 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     {
         this.sessionRenderer = sessionRenderer;
         this.chatRoomWrapper = chatRoomWrapper;
+        chatRoom = chatRoomWrapper.getAdHocChatRoom();
+        chatRoom.addParticipantPresenceListener(this);
 
-        this.currentChatTransport = new AdHocConferenceChatTransport(this, chatRoomWrapper.getAdHocChatRoom());
+        this.currentChatTransport = new AdHocConferenceChatTransport(this, chatRoom);
         chatTransports.add(currentChatTransport);
         this.initChatParticipants();
-
-        AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
-        chatRoom.addParticipantPresenceListener(this);
     }
 
     /**
@@ -101,7 +102,6 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     @Override
     public void dispose()
     {
-        AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
         chatRoom.removeParticipantPresenceListener(this);
     }
 
@@ -167,8 +167,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
         if (metaHistory == null)
             return null;
 
-        return metaHistory.findLast(chatHistoryFilter, chatRoomWrapper.getAdHocChatRoom(),
-                ConfigurationUtils.getChatHistorySize());
+        return metaHistory.findLast(chatHistoryFilter, chatRoom, ConfigurationUtils.getChatHistorySize());
     }
 
     /**
@@ -188,8 +187,8 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
         if (metaHistory == null)
             return null;
 
-        return metaHistory.findLastMessagesBefore(chatHistoryFilter,
-                chatRoomWrapper.getAdHocChatRoom(), date, ConfigurationUtils.getChatHistorySize());
+        return metaHistory.findLastMessagesBefore(chatHistoryFilter, chatRoom, date,
+                ConfigurationUtils.getChatHistorySize());
     }
 
     /**
@@ -210,7 +209,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
             return null;
 
         return metaHistory.findFirstMessagesAfter(chatHistoryFilter,
-                chatRoomWrapper.getAdHocChatRoom(), date, ConfigurationUtils.getChatHistorySize());
+                chatRoom, date, ConfigurationUtils.getChatHistorySize());
     }
 
     /**
@@ -229,8 +228,8 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
             return new Date(0);
 
         Date startHistoryDate = new Date(0);
-        Collection<Object> firstMessage = metaHistory.findFirstMessagesAfter(chatHistoryFilter,
-                chatRoomWrapper.getAdHocChatRoom(), new Date(0), 1);
+        Collection<Object> firstMessage
+                = metaHistory.findFirstMessagesAfter(chatHistoryFilter, chatRoom, new Date(0), 1);
         if (firstMessage.size() > 0) {
             Iterator<Object> i = firstMessage.iterator();
 
@@ -263,8 +262,8 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
             return new Date(0);
 
         Date endHistoryDate = new Date(0);
-        Collection<Object> lastMessage = metaHistory.findLastMessagesBefore(chatHistoryFilter,
-                chatRoomWrapper.getAdHocChatRoom(), new Date(Long.MAX_VALUE), 1);
+        Collection<Object> lastMessage
+                = metaHistory.findLastMessagesBefore(chatHistoryFilter, chatRoom, new Date(Long.MAX_VALUE), 1);
 
         if (lastMessage.size() > 0) {
             Iterator<Object> i1 = lastMessage.iterator();
@@ -350,7 +349,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     public byte[] getChatStatusIcon()
     {
         PresenceStatus status = GlobalStatusEnum.OFFLINE;
-        if (chatRoomWrapper.getAdHocChatRoom() != null)
+        if (chatRoom != null)
             status = GlobalStatusEnum.ONLINE;
 
         return status.getStatusIcon();
@@ -372,8 +371,6 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
      */
     private void initChatParticipants()
     {
-        AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
-
         if (chatRoom != null) {
             for (Contact contact : chatRoom.getParticipants()) {
                 chatParticipants.add(new AdHocConferenceChatContact(contact));

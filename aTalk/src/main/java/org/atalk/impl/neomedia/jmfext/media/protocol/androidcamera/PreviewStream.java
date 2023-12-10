@@ -267,7 +267,7 @@ public class PreviewStream extends CameraStreamBase
      * @param width final output stream image width.
      * @param height final output stream image height.
      */
-    protected void YUV420PlanarRotate(Image image, byte[] output, int width, int height)
+    private void YUV420PlanarRotate(Image image, byte[] output, int width, int height)
     {
         // Init w * h parameters: Assuming input preview buffer dimension is always in landscape mode
         int wi = width - 1;

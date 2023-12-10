@@ -16,6 +16,7 @@ import androidx.preference.Preference;
 
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.jabberaccregwizz.AccountRegistrationImpl;
 import net.java.sip.communicator.service.protocol.EncodingsRegistrationUtil;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
@@ -119,18 +120,15 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
         AccountRegistrationImpl wizard = getJbrWizard();
         jbrReg = wizard.getAccountRegistration();
 
-        SharedPreferences.Editor editor = shPrefs.edit();
-
         // User name and password
         userNameEdited = jbrReg.getUserID();
         userNameLastEdited = userNameEdited;
 
-        editor.putString(P_KEY_USER_ID, userNameEdited);
-        editor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
-        editor.putBoolean(P_KEY_STORE_PASSWORD, jbrReg.isRememberPassword());
-        editor.putString(P_KEY_DNSSEC_MODE, jbrReg.getDnssMode());
-
-        editor.apply();
+        mEditor.putString(P_KEY_USER_ID, userNameEdited);
+        mEditor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
+        mEditor.putBoolean(P_KEY_STORE_PASSWORD, jbrReg.isRememberPassword());
+        mEditor.putString(P_KEY_DNSSEC_MODE, jbrReg.getDnssMode());
+        mEditor.apply();
     }
 
     /**
@@ -311,13 +309,31 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
             case P_KEY_USER_ID:
                 getUserConfirmation(shPrefs);
                 break;
+
             case P_KEY_PASSWORD:
-                // seems the encrypted password is not save to DB but work?- need further investigation in signin if have problem
-                jbrReg.setPassword(shPrefs.getString(P_KEY_PASSWORD, null));
+                String password = shPrefs.getString(P_KEY_PASSWORD, null);
+                // Timber.d("Change password: %s <= %s", password, jbrReg.getPassword());
+                if (password.equals(jbrReg.getPassword())) {
+                    return;
+                }
+
+                // Change password if user is registered.
+                ProtocolProviderServiceJabberImpl pps = (ProtocolProviderServiceJabberImpl) getAccountID().getProtocolProvider();
+                if (pps.changePasswordOnServer(password)) {
+                    jbrReg.setPassword(password);
+                }
+                // Reset to old valid password if online change password failed;
+                // so actual valid login password is shown in next 'Account setting...' edit.
+                else {
+                     mEditor.putString(P_KEY_PASSWORD, jbrReg.getPassword());
+                     mEditor.apply();
+                }
                 break;
+
             case P_KEY_STORE_PASSWORD:
                 jbrReg.setRememberPassword(shPrefs.getBoolean(P_KEY_STORE_PASSWORD, false));
                 break;
+
             case P_KEY_DNSSEC_MODE:
                 String dnssecMode = shPrefs.getString(P_KEY_DNSSEC_MODE,
                         getResources().getStringArray(R.array.dnssec_Mode_value)[0]);
@@ -364,9 +380,8 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
                                 {
                                     jbrReg.setUserID(userNameEdited);
                                     userNameLastEdited = userNameEdited;
-                                    SharedPreferences.Editor editor = shPrefs.edit();
-                                    editor.putString(P_KEY_USER_ID, jbrReg.getUserID());
-                                    editor.apply();
+                                    mEditor.putString(P_KEY_USER_ID, jbrReg.getUserID());
+                                    mEditor.apply();
                                 }
                             });
 

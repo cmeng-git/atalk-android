@@ -127,19 +127,6 @@ case $1 in
   ;;
 esac
 
-#TOOLCHAIN_PREFIX=${BASEDIR}/toolchain-android
-#if [[ ! -e ${TOOLCHAIN_PREFIX}/${NDK_ABIARCH} ]]; then
-#  rm -rf "${TOOLCHAIN_PREFIX}"
-#
-## Create standalone toolchains for the specified architecture - use .py instead of the old .sh
-## must ensure AS JNI uses the same STL library or "system" if specified
-#  [[ -d ${TOOLCHAIN_PREFIX} ]] || python3 ${NDK}/build/tools/make_standalone_toolchain.py \
-#    --arch ${NDK_ARCH} \
-#    --api ${ANDROID_API} \
-#    --stl libc++ \
-#    --install-dir="${TOOLCHAIN_PREFIX}"
-#fi
-
 # Use the prebuilt toolchain instead of using make_standalone_toolchain.py.
 TOOLCHAIN_PREFIX=$NDK/toolchains/llvm/prebuilt/linux-x86_64/
 

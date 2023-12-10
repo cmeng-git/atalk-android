@@ -26,6 +26,10 @@
 
 <resources>
     <string name="accept_call_video">Ответить на вызов с видео</string>
+    <string name="account_delete_on_server">Удалить аккаунт на сервере</string>
+    <string name="account_delete_on_server_unregistered">Удалить аккаунт на сервере не удалось, пользователь не зарегистрирован!</string>
+    <string name="account_delete_on_server_failed">Удалить учетную запись на сервере не удалось:\n%1$s</string>
+    <string name="account_delete_on_server_successful">Удаление учетной записи на сервере успешно:\n%1$s</string>
     <string name="account_setup_basics_show_password">Показать пароль</string>
     <string name="account_override_server">Отменить настройку сервера</string>
     <string name="account_registration">Зарегистрировать новую учетную запись на сервере</string>
@@ -48,6 +52,8 @@
     <string name="notification_setting">Настройки уведомлений&#8230;</string>
     <string name="no_application_found_to_open_file">Не найдено приложения для открытия файла</string>
     <string name="password">Пароль</string>
+    <string name="password_change_on_server_failed">Смена пароля на сервере не удалась:\n%1$s</string>
+    <string name="password_change_on_server_successful">Смена пароля на сервере прошла успешно!</string>
     <string name="service_gui_PASSWORD">Пароль:</string>
     <string name="send_process_signal">Отправить сигнал процесса</string>
     <string name="show_call_info">Информация о вызове</string>
@@ -1143,51 +1149,6 @@
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">Набор шифров SDES</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">Параметры ZRTP</string>
     <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">Передача сигналов ZRTP</string>
-
-    <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">Crypto Registrar</string>
-    <string name="service_gui_SIP_ADVANCED">Дополнительно</string>
-    <string name="service_gui_SIP_AUTH_NAME">Имя авторизации</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">Подключиться при запуске</string>
-    <string name="service_gui_SIP_CLIST_PASS">Пароль</string>
-    <string name="service_gui_SIP_CLIST_TYPE">Тип</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">Выбор типа списка контактов</string>
-    <string name="service_gui_SIP_CLIST_URI">URI-адрес/адрес сервера контактов</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">Использовать учетные данные SIP</string>
-    <string name="service_gui_SIP_CLIST_USER">Пользователь</string>
-    <string name="service_gui_SIP_CONNECTION">Соединение</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">Установить сведения о соединении&#8230;</string>
-    <string name="service_gui_SIP_CONN_GENERAL">Общие</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">Параметры контактного списка</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">Период опроса автономных контактов (в с.)</string>
-    <string name="service_gui_SIP_DISPLAYNAME">Отображаемое имя</string>
-    <string name="service_gui_SIP_DTMF">Метод DTMF</string>
-    <string name="service_gui_SIP_DTMF_TITLE">Выбор метода DTMF</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">Включить присутствие (SIMPLE)</string>
-    <string name="service_gui_SIP_FORCE_P2P">Использовать режим наличия одноранговой сети</string>
-    <string name="service_gui_SIP_GENERAL">Имя пользователя и пароль</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">Сохранить живой метод</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">Сохранить вживую</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">Сохранять выбор метода</string>
-    <string name="service_gui_SIP_PING_INTERVAL">Интервал Ping</string>
-    <string name="service_gui_SIP_PASSWORD">Введите пароль</string>
-    <string name="service_gui_SIP_PORT">Порт сервера</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">Предпочтительный транспорт</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">Предпочитаемый транспортный выбор прокси</string>
-    <string name="service_gui_SIP_PRESENCE">Присутствие</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">Настроить параметры присутствия&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">Параметры присутствия</string>
-    <string name="service_gui_SIP_PROXY">Параметры прокси</string>
-    <string name="service_gui_SIP_PROXY_AUTO">Автоматически настроить прокси</string>
-    <string name="service_gui_SIP_PROXY_ADDR">Адрес прокси</string>
-    <string name="service_gui_SIP_PROXY_PORT">Порт прокси</string>
-    <string name="service_gui_SIP_REGISTRAR">Регистратор</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">Продолжительность подписки по умолчанию (в с.)</string>
-    <string name="service_gui_SIP_USER">CRYPTO ID</string>
-    <string name="service_gui_SIP_VOICEMAIL">Голосовая почта</string>
-    <string name="service_gui_SIP_VMAIL_URI">URI подписки на голосовую почту</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">URI проверки голосовой почты</string>
-    <string name="service_gui_SIP_WMI">Ожидание сообщения (MWI)</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">Кодировка аудио</string>

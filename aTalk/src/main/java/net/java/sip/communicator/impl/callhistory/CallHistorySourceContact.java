@@ -189,7 +189,7 @@ public class CallHistorySourceContact extends DataObject implements SourceContac
 
                 LinkedList<Class<? extends OperationSet>> supportedOpSets = new LinkedList<>();
 
-                // if the contat supports call
+                // if the contact supports call
                 if ((preferredProviders != null
                         && preferredProviders.containsKey(OperationSetBasicTelephony.class))
                         || (preferredProtocols != null)) {

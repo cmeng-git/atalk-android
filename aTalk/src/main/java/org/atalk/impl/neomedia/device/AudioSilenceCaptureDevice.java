@@ -36,9 +36,7 @@ import javax.media.protocol.BufferTransferHandler;
  * @author Lyubomir Marinov
  * @author Boris Grozev
  */
-class AudioSilenceCaptureDevice
-    extends AbstractPushBufferCaptureDevice
-{
+class AudioSilenceCaptureDevice extends AbstractPushBufferCaptureDevice {
 
     /**
      * The interval of time in milliseconds between two consecutive ticks of the
@@ -51,20 +49,18 @@ class AudioSilenceCaptureDevice
      * The list of <code>Format</code>s supported by the
      * <code>AudioSilenceCaptureDevice</code> instances.
      */
-    private static final Format[] SUPPORTED_FORMATS
-        = new Format[]
-                {
-                    new AudioFormat(
-                            AudioFormat.LINEAR,
-                            48000,
-                            16,
-                            1,
-                            AudioFormat.LITTLE_ENDIAN,
-                            AudioFormat.SIGNED,
-                            Format.NOT_SPECIFIED,
-                            Format.NOT_SPECIFIED,
-                            Format.byteArray)
-                };
+    private static final Format[] SUPPORTED_FORMATS = new Format[]{
+            new AudioFormat(
+                    AudioFormat.LINEAR,
+                    48000,
+                    16,
+                    1,
+                    AudioFormat.LITTLE_ENDIAN,
+                    AudioFormat.SIGNED,
+                    Format.NOT_SPECIFIED,
+                    Format.NOT_SPECIFIED,
+                    Format.byteArray)
+    };
 
     /**
      * The flag which determines whether <code>AudioSilenceCaptureDevice</code> and,
@@ -79,13 +75,13 @@ class AudioSilenceCaptureDevice
 
     /**
      * Initializes a new {@link AudioSilenceCaptureDevice}.
+     *
      * @param clockOnly whether the {@link
      * AudioSilenceCaptureDevice.AudioSilenceStream}s created by this instance
      * are to be used only for the purpose of ticking the clock which makes
      * {@link org.atalk.impl.neomedia.conference.AudioMixer} run.
      */
-    AudioSilenceCaptureDevice(boolean clockOnly)
-    {
+    AudioSilenceCaptureDevice(boolean clockOnly) {
         this.clockOnly = clockOnly;
     }
 
@@ -93,13 +89,12 @@ class AudioSilenceCaptureDevice
      * {@inheritDoc}
      *
      * Implements
-     * {@link AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
+     * {@link org.atalk.impl.neomedia.jmfext.media.protocol.AbstractPushBufferCaptureDevice#createStream(int, FormatControl)}.
      */
     @Override
     protected AudioSilenceStream createStream(
             int streamIndex,
-            FormatControl formatControl)
-    {
+            FormatControl formatControl) {
         return new AudioSilenceStream(this, formatControl, clockOnly);
     }
 
@@ -112,19 +107,16 @@ class AudioSilenceCaptureDevice
      * <code>CaptureDeviceInfo</code> and this instance does not have one.
      */
     @Override
-    protected Format[] getSupportedFormats(int streamIndex)
-    {
+    protected Format[] getSupportedFormats(int streamIndex) {
         return SUPPORTED_FORMATS.clone();
     }
 
     /**
-     * Implements a <code>PushBufferStream</code> which provides silence in the form
-     * of audio media.
+     * Implements a <code>PushBufferStream</code> which provides silence in the form of audio media.
      */
     private static class AudioSilenceStream
-        extends AbstractPushBufferStream<AudioSilenceCaptureDevice>
-        implements Runnable
-    {
+            extends AbstractPushBufferStream<AudioSilenceCaptureDevice>
+            implements Runnable {
         /**
          * The indicator which determines whether {@link #start()} has been
          * invoked on this instance without an intervening {@link #stop()}.
@@ -147,9 +139,8 @@ class AudioSilenceCaptureDevice
 
         /**
          * Initializes a new <code>AudioSilenceStream</code> which is to be exposed
-         * by a specific <code>AudioSilenceCaptureDevice</code> and which is to have
-         * its <code>Format</code>-related information abstracted by a specific
-         * <code>FormatControl</code>.
+         * by a specific <code>AudioSilenceCaptureDevice</code> and which is to have its
+         * <code>Format</code>-related information abstracted by a specific <code>FormatControl</code>.
          *
          * @param dataSource the <code>AudioSilenceCaptureDevice</code> which is
          * initializing the new instance and which is to expose it in its array
@@ -160,43 +151,38 @@ class AudioSilenceCaptureDevice
         public AudioSilenceStream(
                 AudioSilenceCaptureDevice dataSource,
                 FormatControl formatControl,
-                boolean clockOnly)
-        {
+                boolean clockOnly) {
             super(dataSource, formatControl);
             this.clockOnly = clockOnly;
         }
 
         /**
-         * Reads available media data from this instance into a specific
-         * <code>Buffer</code>.
+         * Reads available media data from this instance into a specific <code>Buffer</code>.
          *
          * @param buffer the <code>Buffer</code> to write the available media data
          * into
+         *
          * @throws IOException if an I/O error has prevented the reading of
-         * available media data from this instance into the specified
-         * <code>buffer</code>
+         * available media data from this instance into the specified <code>buffer</code>
          */
         @Override
         public void read(Buffer buffer)
-            throws IOException
-        {
-            if (clockOnly)
-            {
+                throws IOException {
+            if (clockOnly) {
                 buffer.setLength(0);
             }
-            else
-            {
+            else {
                 AudioFormat format = (AudioFormat) getFormat();
                 int frameSizeInBytes
-                    = format.getChannels()
+                        = format.getChannels()
                         * (((int) format.getSampleRate()) / 50)
                         * (format.getSampleSizeInBits() / 8);
 
                 byte[] data
-                    = AbstractCodec2.validateByteArraySize(
-                            buffer,
-                            frameSizeInBytes,
-                            false);
+                        = AbstractCodec2.validateByteArraySize(
+                        buffer,
+                        frameSizeInBytes,
+                        false);
 
                 Arrays.fill(data, 0, frameSizeInBytes, (byte) 0);
 
@@ -211,10 +197,8 @@ class AudioSilenceCaptureDevice
          * instance to its consumer i.e. <code>BufferTransferHandler</code>.
          */
         @Override
-        public void run()
-        {
-            try
-            {
+        public void run() {
+            try {
                 /*
                  * Make sure that the current thread which implements the actual
                  * ticking of the clock implemented by this instance uses a
@@ -230,17 +214,15 @@ class AudioSilenceCaptureDevice
                  *
                  * XXX The implementation utilizes System.currentTimeMillis()
                  * and, consequently, may be broken by run-time adjustments to
-                 * the system time. 
+                 * the system time.
                  */
                 long tickTime = System.currentTimeMillis();
 
-                while (true)
-                {
+                while (true) {
                     long sleepInterval = tickTime - System.currentTimeMillis();
                     boolean tick = (sleepInterval <= 0);
 
-                    if (tick)
-                    {
+                    if (tick) {
                         /*
                          * The current thread has woken up just in time or too
                          * late for the next scheduled clock tick and,
@@ -248,72 +230,56 @@ class AudioSilenceCaptureDevice
                          */
                         tickTime += CLOCK_TICK_INTERVAL;
                     }
-                    else
-                    {
+                    else {
                         /*
                          * The current thread has woken up too early for the
                          * next scheduled clock tick and, consequently, it
                          * should sleep until the time of the next scheduled
                          * clock tick comes.
                          */
-                        try
-                        {
+                        try {
                             Thread.sleep(sleepInterval);
-                        }
-                        catch (InterruptedException ie)
-                        {
+                        } catch (InterruptedException ie) {
                         }
                         /*
                          * The clock will not tick and spurious wakeups will be
                          * handled. However, the current thread will first check
                          * whether it is still utilized by this
-                         * AudioSilenceStream in order to not delay stop
-                         * requests.
+                         * AudioSilenceStream in order to not delay stop requests.
                          */
                     }
 
-                    synchronized (this)
-                    {
+                    synchronized (this) {
                         /*
                          * If the current Thread is no longer utilized by this
                          * AudioSilenceStream, it no longer has the right to
                          * touch it. If this AudioSilenceStream has been
-                         * stopped, the current Thread should stop as well. 
+                         * stopped, the current Thread should stop as well.
                          */
                         if ((thread != Thread.currentThread()) || !started)
                             break;
                     }
 
-                    if (tick)
-                    {
+                    if (tick) {
                         BufferTransferHandler transferHandler
-                            = this.transferHandler;
+                                = this.transferHandler;
 
-                        if (transferHandler != null)
-                        {
-                            try
-                            {
+                        if (transferHandler != null) {
+                            try {
                                 transferHandler.transferData(this);
-                            }
-                            catch (Throwable t)
-                            {
+                            } catch (Throwable t) {
                                 if (t instanceof ThreadDeath)
                                     throw (ThreadDeath) t;
-                                else
-                                {
+                                else {
                                     // TODO Auto-generated method stub
                                 }
                             }
                         }
                     }
                 }
-            }
-            finally
-            {
-                synchronized (this)
-                {
-                    if (thread == Thread.currentThread())
-                    {
+            } finally {
+                synchronized (this) {
+                    if (thread == Thread.currentThread()) {
                         thread = null;
                         started = false;
                         notifyAll();
@@ -330,10 +296,8 @@ class AudioSilenceCaptureDevice
          */
         @Override
         public synchronized void start()
-            throws IOException
-        {
-            if (thread == null)
-            {
+                throws IOException {
+            if (thread == null) {
                 String className = getClass().getName();
 
                 thread = new Thread(this, className);
@@ -341,16 +305,12 @@ class AudioSilenceCaptureDevice
 
                 boolean started = false;
 
-                try
-                {
+                try {
                     thread.start();
                     started = true;
-                }
-                finally
-                {
+                } finally {
                     this.started = started;
-                    if (!started)
-                    {
+                    if (!started) {
                         thread = null;
                         notifyAll();
 
@@ -368,21 +328,16 @@ class AudioSilenceCaptureDevice
          */
         @Override
         public synchronized void stop()
-            throws IOException
-        {
+                throws IOException {
             this.started = false;
             notifyAll();
 
             boolean interrupted = false;
 
-            while (thread != null)
-            {
-                try
-                {
+            while (thread != null) {
+                try {
                     wait();
-                }
-                catch (InterruptedException ie)
-                {
+                } catch (InterruptedException ie) {
                     interrupted = true;
                 }
             }

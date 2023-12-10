@@ -12,7 +12,6 @@ import org.atalk.impl.neomedia.NeomediaActivator;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.service.neomedia.MediaUseCase;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -28,8 +27,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class AndroidCamera extends CaptureDeviceInfo
-{
+public class AndroidCamera extends CaptureDeviceInfo {
     /**
      * The facing of the camera is opposite to that of the screen.
      */
@@ -47,8 +45,7 @@ public class AndroidCamera extends CaptureDeviceInfo
      * @param locator the <code>MediaLocator</code> identifying the camera and it's system.
      * @param formats list of supported formats.
      */
-    public AndroidCamera(String name, MediaLocator locator, Format[] formats)
-    {
+    public AndroidCamera(String name, MediaLocator locator, Format[] formats) {
         super(name, locator, formats);
     }
 
@@ -58,10 +55,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      * @param locatorProtocol locator protocol that identifies device system.
      * @param cameraId ID of camera that identifies the camera.
      * @param facing direction of the corresponding to given <code>cameraId</code>.
+     *
      * @return camera <code>MediaLocator</code> for given parameters.
      */
-    public static MediaLocator constructLocator(String locatorProtocol, String cameraId, int facing)
-    {
+    public static MediaLocator constructLocator(String locatorProtocol, String cameraId, int facing) {
         return new MediaLocator(locatorProtocol + ":" + cameraId + "/" + facing);
     }
 
@@ -70,8 +67,7 @@ public class AndroidCamera extends CaptureDeviceInfo
      *
      * @return the protocol part of <code>MediaLocator</code> that identifies camera device system.
      */
-    public String getCameraProtocol()
-    {
+    public String getCameraProtocol() {
         return locator.getProtocol();
     }
 
@@ -80,8 +76,7 @@ public class AndroidCamera extends CaptureDeviceInfo
      *
      * @return camera facing direction.
      */
-    public int getCameraFacing()
-    {
+    public int getCameraFacing() {
         return getCameraFacing(locator);
     }
 
@@ -89,10 +84,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      * Extracts camera id from given <code>locator</code>.
      *
      * @param locator the <code>MediaLocator</code> that identifies the camera.
+     *
      * @return extracted camera id from given <code>locator</code>.
      */
-    public static String getCameraId(MediaLocator locator)
-    {
+    public static String getCameraId(MediaLocator locator) {
         String remainder = locator.getRemainder();
         return remainder.substring(0, remainder.indexOf("/"));
     }
@@ -101,10 +96,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      * Extracts camera facing from given <code>locator</code>.
      *
      * @param locator the <code>MediaLocator</code> that identifies the camera.
+     *
      * @return extracted camera facing from given <code>locator</code>.
      */
-    public static int getCameraFacing(MediaLocator locator)
-    {
+    public static int getCameraFacing(MediaLocator locator) {
         String remainder = locator.getRemainder();
         return Integer.parseInt(remainder.substring(remainder.indexOf("/") + 1));
     }
@@ -114,11 +109,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      *
      * @return array of cameras available in the system.
      */
-    public static AndroidCamera[] getCameras()
-    {
+    public static AndroidCamera[] getCameras() {
         DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
         List<CaptureDeviceInfo> videoDevices = devConfig.getAvailableVideoCaptureDevices(MediaUseCase.CALL);
-        Collections.sort(videoDevices, new SortByName());
+        videoDevices.sort(new SortByName());
 
         AndroidCamera[] cameras = new AndroidCamera[videoDevices.size()];
         for (int i = 0; i < videoDevices.size(); i++) {
@@ -130,10 +124,8 @@ public class AndroidCamera extends CaptureDeviceInfo
     }
 
     // Used for sorting in ascending order CaptureDeviceInfo by name
-    static class SortByName implements Comparator<CaptureDeviceInfo>
-    {
-        public int compare(CaptureDeviceInfo a, CaptureDeviceInfo b)
-        {
+    static class SortByName implements Comparator<CaptureDeviceInfo> {
+        public int compare(CaptureDeviceInfo a, CaptureDeviceInfo b) {
             return a.getName().compareTo(b.getName());
         }
     }
@@ -142,10 +134,10 @@ public class AndroidCamera extends CaptureDeviceInfo
      * Finds camera with given <code>facing</code> from the same device system as currently selected camera.
      *
      * @param facing the facing direction of camera to find.
+     *
      * @return camera with given <code>facing</code> from the same device system as currently selected camera.
      */
-    public static AndroidCamera getCameraFromCurrentDeviceSystem(int facing)
-    {
+    public static AndroidCamera getCameraFromCurrentDeviceSystem(int facing) {
         AndroidCamera currentCamera = getSelectedCameraDevInfo();
         String currentProtocol = (currentCamera != null) ? currentCamera.getCameraProtocol() : null;
 
@@ -172,8 +164,7 @@ public class AndroidCamera extends CaptureDeviceInfo
      *
      * @return device info of the currently selected camera.
      */
-    public static AndroidCamera getSelectedCameraDevInfo()
-    {
+    public static AndroidCamera getSelectedCameraDevInfo() {
         MediaServiceImpl mediaServiceImpl = NeomediaActivator.getMediaServiceImpl();
         return (mediaServiceImpl == null) ? null
                 : (AndroidCamera) mediaServiceImpl.getDeviceConfiguration().getVideoCaptureDevice(MediaUseCase.CALL);
@@ -184,8 +175,7 @@ public class AndroidCamera extends CaptureDeviceInfo
      *
      * @param cameraLocator camera device locator that will be used.
      */
-    public static AndroidCamera setSelectedCamera(MediaLocator cameraLocator)
-    {
+    public static AndroidCamera setSelectedCamera(MediaLocator cameraLocator) {
         DeviceConfiguration devConfig = NeomediaActivator.getMediaServiceImpl().getDeviceConfiguration();
         List<CaptureDeviceInfo> videoDevices = devConfig.getAvailableVideoCaptureDevices(MediaUseCase.CALL);
 

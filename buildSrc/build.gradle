@@ -34,7 +34,7 @@ repositories {
 //    internalize
 //}
 
-def smackVersion = '4.4.6'
+def smackVersion = '4.4.7'
 
 /* a task to create the relocated libs, must be defined before used below in dependencies */
 //task internalizeJar(type: ShadowJar) {
@@ -80,24 +80,6 @@ def jarJarDeps = task("jarJarDeps") {
  * May use className and className$** to delete only the related, but excluding classes with same prefix
  */
 jarJarDeps.dependsOn(
-        // smack-core
-        jarjar.repackage {
-            from("org.igniterealtime.smack:smack-core:$smackVersion") {
-                transitive = false
-            }
-            destinationDir new File("${projectDir}/../aTalk/third_party/m2/org/igniterealtime/smack/smack-core-jarjar/${smackVersion}")
-            destinationName "smack-core-jarjar-${smackVersion}.jar"
-
-            classDelete 'org.jivesoftware.smack.packet.AbstractIqBuilder'
-            classDelete 'org.jivesoftware.smack.packet.EmptyResultIQ'
-            classDelete 'org.jivesoftware.smack.packet.ErrorIQ'
-            classDelete 'org.jivesoftware.smack.packet.IqView'
-            classDelete 'org.jivesoftware.smack.packet.IQ**'
-            classDelete 'org.jivesoftware.smack.util.InternetAddress**'
-            classDelete 'org.jivesoftware.smack.util.PacketParserUtils**'
-            classDelete 'org.jivesoftware.smack.util.ParserUtils**'
-        },
-
         // smack-experimental
         jarjar.repackage {
             from("org.igniterealtime.smack:smack-experimental:$smackVersion") {
@@ -150,10 +132,6 @@ jarJarDeps.dependsOn(
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager**'
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport'
             classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport$**'
-            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo**'
-
-            // Must do local compilation as case CandidateActivated.ELEMENT (candidate-activated): has changed to case 'activated'
-            classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.provider.JingleS5BTransportProvider**'
         },
 
         // smack-omemo

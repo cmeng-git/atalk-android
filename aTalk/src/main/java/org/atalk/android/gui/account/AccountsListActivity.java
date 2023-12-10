@@ -205,7 +205,7 @@ public class AccountsListActivity extends OSGiActivity
     {
         switch (item.getItemId()) {
             case R.id.remove:
-                RemoveAccountDialog.create(this, clickedAccount, account -> listAdapter.remove(account)).show();
+                AccountDeleteDialog.create(this, clickedAccount, account -> listAdapter.remove(account));
                 return true;
 
             case R.id.account_settings:

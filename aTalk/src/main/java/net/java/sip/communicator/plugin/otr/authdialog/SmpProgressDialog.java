@@ -6,10 +6,10 @@
  */
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import net.java.sip.communicator.plugin.desktoputil.SIPCommDialog;
-import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
 import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.service.protocol.Contact;
+
+import org.atalk.util.swing.TransparentPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,6 +22,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -35,7 +36,7 @@ import javax.swing.plaf.basic.BasicProgressBarUI;
  * @author Marin Dzhigarov
  */
 @SuppressWarnings("serial")
-public class SmpProgressDialog extends SIPCommDialog
+public class SmpProgressDialog extends JDialog
 {
     private final JProgressBar progressBar = new JProgressBar(0, 100);
 
@@ -99,9 +100,11 @@ public class SmpProgressDialog extends SIPCommDialog
         progressBar.setValue(33);
         progressBar.setForeground(successColor);
         progressBar.setStringPainted(false);
-        iconLabel.setIcon(
-                OtrActivator.resourceService.getImage(
-                        "plugin.otr.ENCRYPTED_UNVERIFIED_ICON_22x22"));
+        iconLabel.setIcon(OtrActivator.resourceService.getImage("plugin.otr.ENCRYPTED_UNVERIFIED_ICON_22x22"));
+    }
+
+    public void dispose()
+    {
     }
 
     /**

@@ -76,8 +76,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 
-public class SQLiteOmemoStore extends SignalOmemoStore
-{
+public class SQLiteOmemoStore extends SignalOmemoStore {
     // omemoDevices Table
     public static final String OMEMO_DEVICES_TABLE_NAME = "omemo_devices";
     public static final String OMEMO_JID = "omemoJid"; // account user
@@ -130,8 +129,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      */
     private OmemoDevice mDevice;
 
-    public SQLiteOmemoStore()
-    {
+    public SQLiteOmemoStore() {
         super();
         mDB = DatabaseBackend.getInstance(aTalkApp.getGlobalContext());
     }
@@ -140,11 +138,9 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Cache of a map fingerPrint string to FingerprintStatus
      */
     private final LruCache<String, FingerprintStatus> trustCache =
-            new LruCache<String, FingerprintStatus>(NUM_TRUSTS_TO_CACHE)
-            {
+            new LruCache<String, FingerprintStatus>(NUM_TRUSTS_TO_CACHE) {
                 @Override
-                protected FingerprintStatus create(String fingerprint)
-                {
+                protected FingerprintStatus create(String fingerprint) {
                     return mDB.getFingerprintStatus(mDevice, fingerprint);
                 }
             };
@@ -160,18 +156,17 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param device omemoDevice for which its fingerprint status is to be retrieved
      * @param fingerprint fingerprint to check
+     *
      * @return the fingerprint status for the specified device
      * @see LruCache#create(Object)
      */
-    public FingerprintStatus getFingerprintStatus(OmemoDevice device, String fingerprint)
-    {
+    public FingerprintStatus getFingerprintStatus(OmemoDevice device, String fingerprint) {
         /* Must setup mDevice for FingerprintStatus#create(String fingerprint) */
         mDevice = device;
         return (fingerprint == null) ? null : trustCache.get(fingerprint);
     }
 
-    private void setFingerprintStatus(OmemoDevice device, String fingerprint, FingerprintStatus status)
-    {
+    private void setFingerprintStatus(OmemoDevice device, String fingerprint, FingerprintStatus status) {
         mDB.setIdentityKeyTrust(device, fingerprint, status);
         trustCache.remove(fingerprint); // clear old status in trustCache
     }
@@ -187,11 +182,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Basically this returns the deviceIds of all "accounts" of localUser, which are known to the store.
      *
      * @param localUser BareJid of the user.
+     *
      * @return set of deviceIds with available data.
      */
     @Override
-    public SortedSet<Integer> localDeviceIdsOf(BareJid localUser)
-    {
+    public SortedSet<Integer> localDeviceIdsOf(BareJid localUser) {
         return mDB.loadDeviceIdsOf(localUser);
     }
 
@@ -201,8 +196,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param user user
      * @param defaultDeviceId defaultDeviceId
      */
-    public void setDefaultDeviceId(BareJid user, int defaultDeviceId)
-    {
+    public void setDefaultDeviceId(BareJid user, int defaultDeviceId) {
         mDB.storeOmemoRegId(user, defaultDeviceId);
     }
 
@@ -214,11 +208,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Return all our current OmemoPreKeys.
      *
      * @param userDevice our OmemoDevice.
+     *
      * @return Map containing our preKeys
      */
     @Override
-    public TreeMap<Integer, PreKeyRecord> loadOmemoPreKeys(OmemoDevice userDevice)
-    {
+    public TreeMap<Integer, PreKeyRecord> loadOmemoPreKeys(OmemoDevice userDevice) {
         return mDB.loadPreKeys(userDevice);
     }
 
@@ -227,11 +221,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key to be loaded
+     *
      * @return loaded preKey
      */
     @Override
-    public PreKeyRecord loadOmemoPreKey(OmemoDevice userDevice, int preKeyId)
-    {
+    public PreKeyRecord loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
         PreKeyRecord record = mDB.loadPreKey(userDevice, preKeyId);
         if (record == null) {
             Timber.w("There is no PreKeyRecord for: %s", preKeyId);
@@ -247,8 +241,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param preKeyRecord ths PreKeyRecord
      */
     @Override
-    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord preKeyRecord)
-    {
+    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, PreKeyRecord preKeyRecord) {
         mDB.storePreKey(userDevice, preKeyId, preKeyRecord);
     }
 
@@ -260,8 +253,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param preKeyId id of the used key to be deleted
      */
     @Override
-    public void removeOmemoPreKey(OmemoDevice userDevice, int preKeyId)
-    {
+    public void removeOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
         mDB.deletePreKey(userDevice, preKeyId);
     }
 
@@ -274,11 +266,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param signedPreKeyId id of the key
+     *
      * @return key
      */
     @Override
-    public SignedPreKeyRecord loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId)
-    {
+    public SignedPreKeyRecord loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
         SignedPreKeyRecord record = mDB.loadSignedPreKey(userDevice, signedPreKeyId);
         if (record == null) {
             Timber.w("There is no SignedPreKeyRecord for: %s", signedPreKeyId);
@@ -290,11 +282,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Load all our signed PreKeys.
      *
      * @param userDevice our OmemoDevice.
+     *
      * @return HashMap of our singedPreKeys
      */
     @Override
-    public TreeMap<Integer, SignedPreKeyRecord> loadOmemoSignedPreKeys(OmemoDevice userDevice)
-    {
+    public TreeMap<Integer, SignedPreKeyRecord> loadOmemoSignedPreKeys(OmemoDevice userDevice) {
         return mDB.loadSignedPreKeys(userDevice);
     }
 
@@ -306,8 +298,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param signedPreKey the key itself
      */
     @Override
-    public void storeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId, SignedPreKeyRecord signedPreKey)
-    {
+    public void storeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId, SignedPreKeyRecord signedPreKey) {
         mDB.storeSignedPreKey(userDevice, signedPreKeyId, signedPreKey);
     }
 
@@ -318,8 +309,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param signedPreKeyId key with the specified id will be removed
      */
     @Override
-    public void removeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId)
-    {
+    public void removeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
         mDB.deleteSignedPreKey(userDevice, signedPreKeyId);
     }
 
@@ -330,8 +320,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param date date
      */
     @Override
-    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date)
-    {
+    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) {
         mDB.setLastSignedPreKeyRenewal(userDevice, date);
     }
 
@@ -339,11 +328,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Get the date in millis of the last time the signed preKey was renewed.
      *
      * @param userDevice our OmemoDevice.
+     *
      * @return date if existent, otherwise null
      */
     @Override
-    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice)
-    {
+    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) {
         return mDB.getLastSignedPreKeyRenewal(userDevice);
     }
 
@@ -356,13 +345,13 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * Return null, if we have no identityKeyPair.
      *
      * @param userDevice our OmemoDevice.
+     *
      * @return identityKeyPair Omemo identityKeyPair
      * @throws CorruptedOmemoKeyException Thrown, if the stored key is damaged (*hands up* not my fault!)
      */
     @Override
     public IdentityKeyPair loadOmemoIdentityKeyPair(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException
-    {
+            throws CorruptedOmemoKeyException {
         IdentityKeyPair identityKeyPair;
         try {
             identityKeyPair = mDB.loadIdentityKeyPair(userDevice);
@@ -384,8 +373,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param identityKeyPair identityKeyPair
      */
     @Override
-    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, IdentityKeyPair identityKeyPair)
-    {
+    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, IdentityKeyPair identityKeyPair) {
         String fingerprint = keyUtil().getFingerprintOfIdentityKeyPair(identityKeyPair).toString();
         Timber.i("Store omemo identityKeyPair for :%s", userDevice);
         mDB.storeIdentityKeyPair(userDevice, identityKeyPair, fingerprint);
@@ -397,8 +385,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param userDevice our device.
      */
     @Override
-    public void removeOmemoIdentityKeyPair(OmemoDevice userDevice)
-    {
+    public void removeOmemoIdentityKeyPair(OmemoDevice userDevice) {
         Timber.e(new Exception("Removed device IdentityKeyPair: " + userDevice));
         mDB.deleteIdentityKey(userDevice);
     }
@@ -408,13 +395,13 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contactDevice the device of which we want to load the identityKey.
+     *
      * @return identityKey - may be null
      * @throws CorruptedOmemoKeyException when the key in question is corrupted and cannot be deserialized.
      */
     @Override
     public IdentityKey loadOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice)
-            throws CorruptedOmemoKeyException
-    {
+            throws CorruptedOmemoKeyException {
         IdentityKey identityKey;
         try {
             identityKey = mDB.loadIdentityKey(contactDevice);
@@ -445,8 +432,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param contactKey identityKey belonging to the contactsDevice.
      */
     @Override
-    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice, IdentityKey contactKey)
-    {
+    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice, IdentityKey contactKey) {
         if (userDevice.equals(contactDevice)) {
             Timber.w("Attempt to overwrite own device IdentityKeyPars with IdentityKey; ignore request!: %s", contactDevice);
             return;
@@ -492,21 +478,18 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param contactDevice device of which we want to delete the identityKey.
      */
     @Override
-    public void removeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public void removeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactDevice) {
         mDB.deleteIdentityKey(contactDevice);
     }
 
-    public OmemoTrustCallback getTrustCallBack()
-    {
+    public OmemoTrustCallback getTrustCallBack() {
         return aTalkTrustCallback;
     }
 
     /**
      * Trust Callback used to make trust decisions on identities.
      */
-    public OmemoTrustCallback aTalkTrustCallback = new OmemoTrustCallback()
-    {
+    public OmemoTrustCallback aTalkTrustCallback = new OmemoTrustCallback() {
         /*
          * Determine the identityKey of a remote client's device is in which TrustState based on the stored
          * value in the database.
@@ -524,8 +507,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
          * considered 'untrusted.'
          */
         @Override
-        public TrustState getTrust(OmemoDevice device, OmemoFingerprint fingerprint)
-        {
+        public TrustState getTrust(OmemoDevice device, OmemoFingerprint fingerprint) {
             FingerprintStatus fpStatus = getFingerprintStatus(device, fingerprint.toString());
             if (fpStatus != null) {
                 FingerprintStatus.Trust trustState = fpStatus.getTrust();
@@ -562,8 +544,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
          * Distrust an OmemoIdentity. This involved marking the key as distrusted or undecided if previously is null
          */
         @Override
-        public void setTrust(OmemoDevice device, OmemoFingerprint identityKeyFingerprint, TrustState state)
-        {
+        public void setTrust(OmemoDevice device, OmemoFingerprint identityKeyFingerprint, TrustState state) {
             String fingerprint = identityKeyFingerprint.toString();
             FingerprintStatus fpStatus = getFingerprintStatus(device, fingerprint);
 
@@ -597,11 +578,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contact contact we want to get the deviceList of
+     *
      * @return CachedDeviceList of the contact
      */
     @Override
-    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact)
-    {
+    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) {
         // OmemoCachedDeviceList list = mDB.loadCachedDeviceList(contact);
         // Timber.d("Cached list for active (inActive): %s (%s)", list.getActiveDevices(), list.getInactiveDevices());
         // return list;
@@ -617,8 +598,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param contactDeviceList list of the contact devices' ids.
      */
     @Override
-    public void storeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoCachedDeviceList contactDeviceList)
-    {
+    public void storeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoCachedDeviceList contactDeviceList) {
         mDB.storeCachedDeviceList(userDevice, contact, contactDeviceList);
     }
 
@@ -632,11 +612,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contactDevice device whose session we want to load
+     *
      * @return crypto related session; null if none if found
      */
     @Override
-    public SessionRecord loadRawSession(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public SessionRecord loadRawSession(OmemoDevice userDevice, OmemoDevice contactDevice) {
         return mDB.loadSession(contactDevice);
     }
 
@@ -645,11 +625,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contact BareJid of the contact we want to get all sessions from
+     *
      * @return TreeMap of deviceId and sessions of the contact
      */
     @Override
-    public HashMap<Integer, SessionRecord> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact)
-    {
+    public HashMap<Integer, SessionRecord> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
         return mDB.getSubDeviceSessions(contact);
     }
 
@@ -661,8 +641,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param session session
      */
     @Override
-    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactDevice, SessionRecord session)
-    {
+    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactDevice, SessionRecord session) {
         mDB.storeSession(contactDevice, session);
     }
 
@@ -673,8 +652,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param contactDevice device whose session we want to delete
      */
     @Override
-    public void removeRawSession(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public void removeRawSession(OmemoDevice userDevice, OmemoDevice contactDevice) {
         mDB.deleteSession(contactDevice);
     }
 
@@ -685,8 +663,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param contact BareJid of the contact
      */
     @Override
-    public void removeAllRawSessionsOf(OmemoDevice userDevice, BareJid contact)
-    {
+    public void removeAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
         mDB.deleteAllSessions(contact);
     }
 
@@ -696,11 +673,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contactDevice device
+     *
      * @return true if we have session, otherwise false
      */
     @Override
-    public boolean containsRawSession(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public boolean containsRawSession(OmemoDevice userDevice, OmemoDevice contactDevice) {
         return mDB.containsSession(contactDevice);
     }
 
@@ -712,8 +689,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param date date of the last received message
      */
     @Override
-    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice, Date date)
-    {
+    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice, Date date) {
         mDB.setLastMessageReceiveDate(contactDevice, date);
     }
 
@@ -722,11 +698,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice.
      * @param contactDevice device in question
+     *
      * @return date if existent, otherwise null
      */
     @Override
-    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactDevice) {
         return mDB.getLastMessageReceiveDate(contactDevice);
     }
 
@@ -739,8 +715,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param date date of the last publication after not being published
      */
     @Override
-    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice, Date date)
-    {
+    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice, Date date) {
         mDB.setLastDeviceIdPublicationDate(contactDevice, date);
     }
 
@@ -750,11 +725,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our OmemoDevice
      * @param contactDevice OmemoDevice in question
+     *
      * @return date of the last publication after not being published
      */
     @Override
-    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice)
-    {
+    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactDevice) {
         return mDB.getLastDeviceIdPublicationDate(contactDevice);
     }
 
@@ -767,8 +742,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param counter counter value.
      */
     @Override
-    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter)
-    {
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
         mDB.setOmemoMessageCounter(contactsDevice, counter);
     }
 
@@ -779,11 +753,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param userDevice our omemoDevice
      * @param contactsDevice device of which we want to get the message counter.
+     *
      * @return counter value.
      */
     @Override
-    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice)
-    {
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
         return mDB.getOmemoMessageCounter(contactsDevice);
     }
 
@@ -795,8 +769,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param userDevice our OmemoDevice.
      */
     @Override
-    public void purgeOwnDeviceKeys(OmemoDevice userDevice)
-    {
+    public void purgeOwnDeviceKeys(OmemoDevice userDevice) {
         mDB.purgeOmemoDb(userDevice);
         trustCache.evictAll();
     }
@@ -808,8 +781,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param userJid Account userJid
      * @param omemoDevice of which the bundle and devicelist items are to be removed from server
      */
-    private void purgeBundleDeviceList(XMPPConnection connection, BareJid userJid, OmemoDevice omemoDevice)
-    {
+    private void purgeBundleDeviceList(XMPPConnection connection, BareJid userJid, OmemoDevice omemoDevice) {
         Timber.d("Purge server bundle and deviceList for old omemo device: %s", omemoDevice);
         PubSubManager pubsubManager = PubSubManager.getInstanceFor(connection, userJid);
         PepManager pepManager = PepManager.getInstanceFor(connection);
@@ -860,8 +832,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * c. publish it to the server.
      * 3. Purge server bundle data and devicelist for the old omemoDevice
      */
-    public void regenerate(AccountID accountId)
-    {
+    public void regenerate(AccountID accountId) {
         ProtocolProviderService pps = accountId.getProtocolProvider();
         if (pps != null) {
             XMPPConnection connection = pps.getConnection();
@@ -900,8 +871,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param pps protocolProvider of the user account.
      */
-    public void purgeInactiveUserDevices(ProtocolProviderService pps)
-    {
+    public void purgeInactiveUserDevices(ProtocolProviderService pps) {
         if (pps != null) {
             XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
@@ -940,8 +910,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      * @param omemoManager OmemoManager
      * @param omemoDevice the corrupted device
      */
-    public void purgeCorruptedOmemoKey(OmemoManager omemoManager, OmemoDevice omemoDevice)
-    {
+    public void purgeCorruptedOmemoKey(OmemoManager omemoManager, OmemoDevice omemoDevice) {
         Timber.d("Purging corrupted KeyIdentity for omemo device: %s", omemoDevice);
 
         // remove the local corrupted device from db first; in case network access throws exception
@@ -966,8 +935,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
      *
      * @param accountId the omemo local database/server of the accountID to be purged.
      */
-    public void purgeUserOmemoData(AccountID accountId)
-    {
+    public void purgeUserOmemoData(AccountID accountId) {
         // Retain a copy of the old device to purge data on server
         BareJid userJid = accountId.getBareJid();
         SortedSet<Integer> deviceIds = localDeviceIdsOf(userJid);
@@ -995,8 +963,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore
     /**
      * Method helps to clean up omemo database of accounts that have been removed
      */
-    public void cleanUpOmemoDB()
-    {
+    public void cleanUpOmemoDB() {
         List<String> userIds = mDB.getAllAccountIDs();
         HashMap<String, Integer> omemoIDs = mDB.loadAllOmemoRegIds();
 

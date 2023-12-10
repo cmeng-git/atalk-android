@@ -232,7 +232,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     /**
      * bit-7 is used to hide session record from the UI if set.
      *
-     * @see org.atalk.android.gui.chat.chatsession.ChatSessionFragment#SESSION_HIDDEN
+     * @see ChatSessionFragment#SESSION_HIDDEN
      */
     public final static int MSGTYPE_MASK = 0x3F;
 

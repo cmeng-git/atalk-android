@@ -236,6 +236,7 @@ public class AndroidCameraSystem extends DeviceSystem {
         }
     }
 
+    // Update camera database, and remove mediaRecorder support (2021/11/05); not longer supported since API-23.
     public static void cleanMediaDB() {
         String[] prefixes = new String[]{LOCATOR_PROTOCOL_MEDIARECORDER, LOCATOR_PROTOCOL_ANDROIDCAMERA};
 

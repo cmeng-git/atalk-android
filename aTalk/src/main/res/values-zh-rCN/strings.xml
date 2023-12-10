@@ -25,6 +25,10 @@
 
 <resources>
     <string name="accept_call_video">用视频接听电话</string>
+    <string name="account_delete_on_server">删除服务器上的帐户</string>
+    <string name="account_delete_on_server_unregistered">在服务器上删除帐户失败，用户未注册！</string>
+    <string name="account_delete_on_server_failed">在服务器上删除帐户失败：\n%1$s</string>
+    <string name="account_delete_on_server_successful">在服务器上删除帐户成功：\n%1$s</string>
     <string name="account_setup_basics_show_password">显示密码</string>
     <string name="account_override_server">覆盖服务器设置</string>
     <string name="account_registration">在服务器上注册新账号</string>
@@ -47,6 +51,8 @@
     <string name="notification_setting">通知设置&#8230;</string>
     <string name="no_application_found_to_open_file">没有找到打开文件的应用程序</string>
     <string name="password">密码</string>
+    <string name="password_change_on_server_failed">服务器上的密码更改失败:\n%1$s</string>
+    <string name="password_change_on_server_successful">服务器密码修改成功！</string>
     <string name="service_gui_PASSWORD">密码：</string>
     <string name="send_process_signal">发送过程信号</string>
     <string name="show_call_info">通话信息</string>
@@ -1159,51 +1165,6 @@
     <string name="service_gui_PREF_SECURITY_SDES_TITLE">SDES 密码套件</string>
     <string name="service_gui_PREF_SECURITY_ZRTP">ZRTP 选项</string>
     <string name="service_gui_PREF_SECURITY_ZRTP_SIGNALING">ZRTP 信号</string>
-
-    <!-- SIP preferences -->
-    <string name="service_gui_CRYPTOSIP_REGISTRAR">加密注册器</string>
-    <string name="service_gui_SIP_ADVANCED">高级</string>
-    <string name="service_gui_SIP_AUTH_NAME">授权名称</string>
-    <string name="service_gui_SIP_AUTO_SIGNIN">启动时连接</string>
-    <string name="service_gui_SIP_CLIST_PASS">密码</string>
-    <string name="service_gui_SIP_CLIST_TYPE">类型</string>
-    <string name="service_gui_SIP_CLIST_TYPE_DLG_TITLE">联系人列表类型选择</string>
-    <string name="service_gui_SIP_CLIST_URI">联系人列表服务器 URI/地址</string>
-    <string name="service_gui_SIP_CLIST_SIP_CREDENTIALS">使用 SIP 凭据</string>
-    <string name="service_gui_SIP_CLIST_USER">用户</string>
-    <string name="service_gui_SIP_CONNECTION">连接</string>
-    <string name="service_gui_SIP_CONNECTION_DESC">设置连接细节&#8230;</string>
-    <string name="service_gui_SIP_CONN_GENERAL">常规</string>
-    <string name="service_gui_SIP_CONTACTLIST_OPTIONS">联系人列表选项</string>
-    <string name="service_gui_SIP_CONTACTS_POLLING">离线联系人轮询周期（秒）</string>
-    <string name="service_gui_SIP_DISPLAYNAME">显示名称</string>
-    <string name="service_gui_SIP_DTMF">DTMF 方法</string>
-    <string name="service_gui_SIP_DTMF_TITLE">DTMF 方式选择</string>
-    <string name="service_gui_SIP_ENABLE_SIMPLE">启用在线状态（SIMPLE）</string>
-    <string name="service_gui_SIP_FORCE_P2P">强制点对点在线模式</string>
-    <string name="service_gui_SIP_GENERAL">用户名和密码</string>
-    <string name="service_gui_SIP_KEEP_ALIVE">保持活跃方法</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_CAT">保持活跃</string>
-    <string name="service_gui_SIP_KEEP_ALIVE_TITLE">保持活跃方式选择</string>
-    <string name="service_gui_SIP_PING_INTERVAL">侦测网络间隔</string>
-    <string name="service_gui_SIP_PASSWORD">输入密码</string>
-    <string name="service_gui_SIP_PORT">服务器端口</string>
-    <string name="service_gui_SIP_PREF_TRANSPORT">首选传输</string>
-    <string name="service_gui_SIP_PREF_TRANS_TITLE">代理首选传输选择</string>
-    <string name="service_gui_SIP_PRESENCE">状态</string>
-    <string name="service_gui_SIP_PRESENCE_DESC">配置状态选项&#8230;</string>
-    <string name="service_gui_SIP_PRESENCE_OPTIONS">状态选项</string>
-    <string name="service_gui_SIP_PROXY">代理选项</string>
-    <string name="service_gui_SIP_PROXY_AUTO">自动配置代理</string>
-    <string name="service_gui_SIP_PROXY_ADDR">代理地址</string>
-    <string name="service_gui_SIP_PROXY_PORT">代理端口</string>
-    <string name="service_gui_SIP_REGISTRAR">注册商</string>
-    <string name="service_gui_SIP_SUBSCRIPTION_DUR">默认订阅时长（秒）</string>
-    <string name="service_gui_SIP_USER">加密 ID</string>
-    <string name="service_gui_SIP_VOICEMAIL">语音信箱</string>
-    <string name="service_gui_SIP_VMAIL_URI">语音信箱订阅 URI</string>
-    <string name="service_gui_SIP_VMAIL_CHECK_URI">语音信箱检查 URI</string>
-    <string name="service_gui_SIP_WMI">短信等待（MWI）</string>
 
     <!-- Common preferences -->
     <string name="service_gui_PREF_AUDIO_ENCODING">音频编码</string>
