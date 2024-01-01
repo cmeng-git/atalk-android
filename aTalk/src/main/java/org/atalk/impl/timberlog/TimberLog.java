@@ -1,4 +1,4 @@
-package org.atalk.android.plugin.timberlog;
+package org.atalk.impl.timberlog;
 
 public class TimberLog
 {

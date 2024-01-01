@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.configuration;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.configuration.xml.XMLConfigurationStore;
 import org.atalk.service.configuration.ConfigPropertyVetoException;
 import org.atalk.service.configuration.ConfigVetoableChangeListener;

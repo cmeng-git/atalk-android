@@ -89,6 +89,7 @@
         <activity
             android:name=".gui.LauncherActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
             android:launchMode="singleTask" />
         <activity
             android:name=".gui.ShutdownActivity"

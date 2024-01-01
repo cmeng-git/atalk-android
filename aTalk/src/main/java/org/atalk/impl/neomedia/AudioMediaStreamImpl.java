@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.device.AudioMediaDeviceSession;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.rtcp.AudioRTCPTermination;

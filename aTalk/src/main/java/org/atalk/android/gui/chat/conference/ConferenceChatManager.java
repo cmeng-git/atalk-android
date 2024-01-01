@@ -67,7 +67,7 @@ import org.atalk.android.gui.chatroomslist.AdHocChatRoomList;
 import org.atalk.android.gui.chatroomslist.AdHocChatRoomListChangeEvent;
 import org.atalk.android.gui.chatroomslist.AdHocChatRoomListChangeListener;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;

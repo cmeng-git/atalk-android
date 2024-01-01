@@ -26,7 +26,7 @@ import net.java.sip.communicator.service.protocol.event.ScFileTransferListener;
 
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSessionManager;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

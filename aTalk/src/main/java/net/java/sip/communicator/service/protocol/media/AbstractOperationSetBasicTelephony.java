@@ -16,7 +16,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.recording.Recorder;
 import org.atalk.util.MediaType;

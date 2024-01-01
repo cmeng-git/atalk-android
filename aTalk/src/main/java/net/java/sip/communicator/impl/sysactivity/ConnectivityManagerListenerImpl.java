@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.service.sysactivity.event.SystemActivityEvent;
 
 import org.atalk.android.aTalkApp;
@@ -57,8 +59,8 @@ public class ConnectivityManagerListenerImpl extends BroadcastReceiver
      */
     public void start()
     {
-        Context context = aTalkApp.getGlobalContext();
-        context.registerReceiver(this, new IntentFilter(CONNECTIVITY_CHANGE_ACTION));
+        ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), this,
+                new IntentFilter(CONNECTIVITY_CHANGE_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED);
         connected = true;
     }
 

@@ -29,7 +29,7 @@ import net.java.sip.communicator.service.protocol.event.ServerStoredGroupEvent;
 import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
 import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;

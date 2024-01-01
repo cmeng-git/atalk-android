@@ -18,7 +18,7 @@
  */
 package org.dhcp4java;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.io.IOException;
 import java.io.InputStream;

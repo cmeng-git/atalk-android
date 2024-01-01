@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.transform.dtmf;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.RawPacket;
 
 import timber.log.Timber;

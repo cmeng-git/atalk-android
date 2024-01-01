@@ -20,7 +20,7 @@ import net.java.otr4j.io.messages.SignatureMessage;
 import net.java.otr4j.io.messages.SignatureX;
 import net.java.otr4j.session.Session.OTRv;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.io.IOException;
 import java.math.BigInteger;

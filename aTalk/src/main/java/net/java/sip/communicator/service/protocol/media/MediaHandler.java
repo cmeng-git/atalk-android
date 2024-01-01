@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.event.DTMFListener;
 import net.java.sip.communicator.service.protocol.event.DTMFReceivedEvent;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.service.neomedia.AudioMediaStream;
 import org.atalk.service.neomedia.DTMFTone;

@@ -14,11 +14,11 @@ jni/ffmpeg, jni/vpx, jni/openssl etc
 * The following 3 libraries are required to be built externally for integration into aTalk i.e.:
 
 1. ffmpeg-x264:<br/>
-   Build static libraries for the various architectures used for aTalk/jin/ffmpeg
+   Build static libraries for the various architectures used for aTalk/jni/ffmpeg
 2. libvpx:<br/>
-   Build static libraries for the various architectures used for aTalk/jin/vpx
+   Build static libraries for the various architectures used for aTalk/jni/vpx
 3. openssl:<br/>
-   Build static libraries for the various architectures used for aTalk/jin/openssl
+   Build static libraries for the various architectures used for aTalk/jni/openssl
 
 Built all
 --------------------------------------

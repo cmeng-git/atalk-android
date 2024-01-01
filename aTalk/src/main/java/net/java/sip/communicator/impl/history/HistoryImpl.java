@@ -12,7 +12,7 @@ import net.java.sip.communicator.service.history.HistoryWriter;
 import net.java.sip.communicator.service.history.InteractiveHistoryReader;
 import net.java.sip.communicator.service.history.records.HistoryRecordStructure;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.util.xml.XMLUtils;
 import org.w3c.dom.Document;
 

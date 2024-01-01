@@ -10,9 +10,10 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
-        // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
-        // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+        // gradle-1.0.1 not compatible with gradle 7.x; use from master source instead
+        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
+        classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
+        // classpath "com.github.jengelman.gradle.plugins:shadow:8.1.1"
     }
 }
 
@@ -84,13 +85,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    compileSdkVersion rootProject.compileSdk
-    buildToolsVersion rootProject.buildTools
+
+    compileSdk rootProject.compileSdk
+    // buildToolsVersion rootProject.buildTools
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 302040
-        versionName "3.2.4"
+        versionCode 303000
+        versionName "3.3.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -213,7 +215,7 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/core_release.kotlin_module'
-        exclude 'META-INF/kotlin-stdlib-jdk7.kotlin_module'
+        exclude 'META-INF/kotlin-stdlib-jdk8.kotlin_module'
     }
 }
 
@@ -230,15 +232,17 @@ ext {
 dependencies {
     implementation project(':android-youtube-player:core')
 
+    // Fix Duplicate class
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
     // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // 1.12.0 is only compatible with API-34
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
 
-    // not compatible with 1.8.0
-    implementation 'androidx.activity:activity-ktx:1.7.2'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
@@ -251,6 +255,7 @@ dependencies {
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
     implementation 'com.jakewharton:butterknife:10.2.3'
+    // butterknife-compiler:10.2.3 is required for PermissionsActivity, but only compatible with jdk-15 max
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
@@ -264,10 +269,8 @@ dependencies {
     implementation 'com.github.evgenyneu:js-evaluator-for-android:v5.0.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
-    // implementation 'com.github.hannesa2:jarjar2:1.0.3'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
-    // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'

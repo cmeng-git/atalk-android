@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.device;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.impl.neomedia.codec.video.AVFrameFormat;
 import org.atalk.service.configuration.ConfigurationService;

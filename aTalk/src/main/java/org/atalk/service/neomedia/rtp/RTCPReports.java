@@ -8,7 +8,7 @@ package org.atalk.service.neomedia.rtp;
 import net.sf.fmj.media.rtp.RTCPFeedback;
 import net.sf.fmj.media.rtp.RTCPReport;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.util.ArrayList;
 import java.util.Collection;

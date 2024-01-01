@@ -15,7 +15,7 @@
  */
 package org.atalk.impl.neomedia.transform;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;

@@ -22,7 +22,7 @@ import net.java.sip.communicator.service.systray.SystrayService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
 import org.atalk.android.gui.settings.TimePreference;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 
 import java.util.Calendar;

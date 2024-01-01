@@ -111,7 +111,7 @@ import org.atalk.android.gui.util.HtmlImageGetter;
 import org.atalk.android.gui.util.XhtmlImageParser;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.geolocation.SvpApiImpl;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
 import org.atalk.persistance.FileBackend;

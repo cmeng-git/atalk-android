@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.RTPConnectorOutputStream;
 import org.ice4j.util.QueueStatistics;
 

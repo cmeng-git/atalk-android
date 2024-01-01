@@ -7,7 +7,7 @@ package org.atalk.impl.neomedia.device;
 
 import androidx.annotation.NonNull;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaServiceImpl;
 import org.atalk.util.MediaType;
 import org.atalk.util.OSUtils;

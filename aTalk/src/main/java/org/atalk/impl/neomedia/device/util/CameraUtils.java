@@ -218,7 +218,7 @@ public class CameraUtils
                         break;
                     case "PRIVATE":
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                            sFormats.add(ImageFormat.PRIVATE); //for API-23
+                            sFormats.add(ImageFormat.PRIVATE); // API-23
                         break;
                     case "YUV_420_888":
                         sFormats.add(ImageFormat.YUV_420_888);

@@ -6,8 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.2.4 (12/10/2023)" versioncode="302040">
+    <release version="3.3.0 (01/01/2024)" versioncode="303000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Update aTalk-android for android API-34 support; needs jarjar-gradle (master)</change>
+        <change>Use jarjar-gradle from github master i.e. '9a7eca7'(1.1.1); require gradle-8.2-bin.zip and precompiled smack jars</change>
+        <change>Update source to support API-34 ContextCompat.registerReceiver with RECEIVER_EXPORTED/RECEIVER_NOT_EXPORTED option</change>
+        <change>Update to 'com.android.tools.build:gradle:7.4.2' and 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22'</change>
+        <change>Upgrade Android Studio to Giraffe | 2022.3.1 - but with Gradle-JDK using jdk-15</change>
+        <change>butterknife-compiler:10.2.3 is required for PermissionsActivity, but only compatible with jdk-15 max</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.2.4 (12/10/2023)" versioncode="302040">
         <change>Add user selectable option 'Delete account on server' when user remove an account; user must login to perform this action</change>
         <change>While user is login, changing local password will also change password on the server</change>
         <change>Upgrade smack library to version 4.4.7</change>

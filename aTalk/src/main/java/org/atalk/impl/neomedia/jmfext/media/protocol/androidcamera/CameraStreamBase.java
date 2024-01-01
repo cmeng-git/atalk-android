@@ -37,7 +37,7 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.call.VideoHandlerFragment;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.NeomediaServiceUtils;
 import org.atalk.impl.neomedia.device.DeviceConfiguration;
 import org.atalk.impl.neomedia.device.util.AndroidCamera;

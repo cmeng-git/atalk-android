@@ -1,5 +1,22 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.0 (303000)
+Release Date:   01/02/2024
+Author:         cmeng
+- Update aTalk-android for android API-34 support (needs new updated jarjar-gradle)
+- Use jarjar-gradle from github master i.e. '9a7eca7'(1.1.1); require gradle-8.2-bin.zip and precompiled smack jars
+  * Gradle-8.x-bin.zip build without problem, but does not generate the smack jar files;
+    Currently use this to build; and with previous generated jars;
+  * Gradle-7.5-bin.zip generate smack jars in the defined directory, but not the defined name
+    e.g. CH_1980125902.jar!!! need to find out how to use the generated smack jars files
+- Update source to support API-34 ContextCompat.registerReceiver with RECEIVER_EXPORTED/RECEIVER_NOT_EXPORTED option.
+- Update to 'com.android.tools.build:gradle:7.4.2'
+- Update to 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22'
+- Upgrade Android Studio to Giraffe | 2022.3.1 - but with Gradle-JDK using jdk-15
+- butterknife-compiler:10.2.3 is required for PermissionsActivity, but only compatible with jdk-15 max
+- Move TimerLog implementation out of android directory
+
+=========================================================================
 Version:        3.2.4 (302040)
 Release Date:   12/10/2023
 Author:         cmeng

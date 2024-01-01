@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.notification.LogMessageNotificationActi
 import net.java.sip.communicator.service.notification.LogMessageNotificationHandler;
 import net.java.sip.communicator.service.notification.NotificationAction;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 

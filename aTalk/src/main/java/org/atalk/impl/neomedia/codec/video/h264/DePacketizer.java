@@ -30,7 +30,7 @@ import static org.atalk.impl.neomedia.codec.video.h264.H264.verifyStapANaluLengt
 
 import net.sf.fmj.media.AbstractCodec;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.codec.FFmpeg;
 import org.atalk.impl.neomedia.format.ParameterizedVideoFormat;

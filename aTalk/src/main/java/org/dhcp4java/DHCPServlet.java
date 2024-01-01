@@ -26,7 +26,7 @@ import static org.dhcp4java.DHCPConstants.DHCPINFORM;
 import static org.dhcp4java.DHCPConstants.DHCPRELEASE;
 import static org.dhcp4java.DHCPConstants.DHCPREQUEST;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;

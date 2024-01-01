@@ -55,10 +55,9 @@ public class VersionServiceImpl extends AbstractVersionService
             CURRENT_VERSION_NAME = versionName;
             CURRENT_VERSION_CODE = versionCode;
 
-            // cmeng - version must all be digits, otherwise no online update
+            // versionCode is used for online update comparison
             CURRENT_VERSION = (VersionImpl) parseVersionString(versionName);
-            Timber.i("Device installed with aTalk version: %s, version code: %s",
-                    CURRENT_VERSION, versionCode);
+            Timber.i("Device installed with aTalk version: %s, version code: %s", versionName, versionCode);
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }

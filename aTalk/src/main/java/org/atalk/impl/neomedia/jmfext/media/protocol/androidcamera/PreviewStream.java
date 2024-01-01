@@ -30,7 +30,7 @@ import androidx.annotation.NonNull;
 
 import org.atalk.android.gui.call.VideoCallActivity;
 import org.atalk.android.gui.call.VideoHandlerFragment;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.AbstractCodec2;
 import org.atalk.impl.neomedia.device.util.PreviewSurfaceProvider;
 

@@ -16,6 +16,8 @@
  */
 package org.atalk.impl.appupdate;
 
+import com.codetroopers.betterpickers.BuildConfig;
+
 import net.java.sip.communicator.service.update.UpdateService;
 
 /**
@@ -33,7 +35,7 @@ public class UpdateServiceImpl implements UpdateService
     @Override
     public String getLatestVersion()
     {
-        return "";
+        return BuildConfig.VERSION_NAME;
     }
 
     @Override

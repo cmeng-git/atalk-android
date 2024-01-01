@@ -7,7 +7,7 @@
  */
 package org.atalk.impl.neomedia;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.REDBlock;
 import org.atalk.impl.neomedia.codec.REDBlockIterator;
 import org.atalk.impl.neomedia.device.AbstractMediaDevice;

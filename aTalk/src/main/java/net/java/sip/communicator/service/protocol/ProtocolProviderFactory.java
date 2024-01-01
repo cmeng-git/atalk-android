@@ -8,7 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.configuration.ConfigurationStore;
 import org.atalk.impl.configuration.DatabaseConfigurationStore;
 import org.atalk.impl.configuration.HashtableConfigurationStore;

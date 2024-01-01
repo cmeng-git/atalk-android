@@ -13,7 +13,7 @@
  */
 package org.atalk.util.dsi;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.util.concurrent.ExecutorUtils;
 import org.json.JSONArray;
 import org.json.JSONException;

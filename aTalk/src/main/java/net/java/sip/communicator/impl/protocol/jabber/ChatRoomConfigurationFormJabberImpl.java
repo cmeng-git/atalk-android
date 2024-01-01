@@ -9,7 +9,7 @@ import net.java.sip.communicator.service.protocol.ChatRoomConfigurationForm;
 import net.java.sip.communicator.service.protocol.ChatRoomConfigurationFormField;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;

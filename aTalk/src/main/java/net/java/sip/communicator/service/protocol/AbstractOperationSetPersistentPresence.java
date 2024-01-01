@@ -16,7 +16,7 @@ import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
 import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
 import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.jxmpp.jid.Jid;
 
 import java.beans.PropertyChangeEvent;

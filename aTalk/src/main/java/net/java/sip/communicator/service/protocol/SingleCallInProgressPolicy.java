@@ -14,7 +14,7 @@ import net.java.sip.communicator.service.protocol.event.CallEvent;
 import net.java.sip.communicator.service.protocol.event.CallListener;
 import net.java.sip.communicator.service.protocol.event.CallPeerEvent;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

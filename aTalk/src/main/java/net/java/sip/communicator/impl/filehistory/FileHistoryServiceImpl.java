@@ -43,7 +43,7 @@ import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.filetransfer.FileReceiveConversation;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.jxmpp.util.XmppStringUtils;
 import org.osgi.framework.BundleContext;

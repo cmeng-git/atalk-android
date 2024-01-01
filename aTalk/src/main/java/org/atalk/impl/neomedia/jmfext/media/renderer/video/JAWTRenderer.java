@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.jmfext.media.renderer.video;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.codec.video.SwScale;
 import org.atalk.impl.neomedia.jmfext.media.renderer.AbstractRenderer;
 import org.atalk.util.OSUtils;

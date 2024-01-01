@@ -80,7 +80,7 @@ import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.android.gui.util.LocaleHelper;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.omemo.AndroidOmemoService;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;

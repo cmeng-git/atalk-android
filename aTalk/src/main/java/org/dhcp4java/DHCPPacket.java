@@ -31,7 +31,7 @@ import static org.dhcp4java.DHCPConstants._DHCP_MAX_MTU;
 import static org.dhcp4java.DHCPConstants._HTYPE_NAMES;
 import static org.dhcp4java.DHCPConstants._MAGIC_COOKIE;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

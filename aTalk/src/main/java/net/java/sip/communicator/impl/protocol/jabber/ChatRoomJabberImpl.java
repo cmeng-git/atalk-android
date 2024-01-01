@@ -59,7 +59,7 @@ import org.atalk.android.gui.chat.conference.CaptchaDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.XhtmlUtil;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;

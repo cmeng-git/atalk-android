@@ -29,6 +29,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.core.content.ContextCompat;
+
 import net.java.sip.communicator.service.update.UpdateService;
 import net.java.sip.communicator.util.ServiceUtils;
 
@@ -64,8 +66,8 @@ public class UpdateServiceImpl implements UpdateService
 {
     // Default update link; path is case-sensitive.
     private static final String[] updateLinks = {
-            "https://raw.githubusercontent.com/cmeng-git/atalk-hmos/master/aTalk/release/version.properties",
-            "https://atalk.sytes.net/releases/atalk-hmos/version.properties"
+            "https://raw.githubusercontent.com/cmeng-git/atalk-android/master/aTalk/release/version.properties",
+            "https://atalk.sytes.net/releases/atalk-android/version.properties"
     };
 
     /**
@@ -280,8 +282,8 @@ public class UpdateServiceImpl implements UpdateService
 
         if (downloadReceiver == null) {
             downloadReceiver = new DownloadReceiver();
-            aTalkApp.getGlobalContext().registerReceiver(downloadReceiver,
-                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), downloadReceiver,
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED);
         }
 
         DownloadManager.Request request = new DownloadManager.Request(uri);

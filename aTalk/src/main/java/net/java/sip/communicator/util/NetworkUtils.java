@@ -19,7 +19,7 @@ package net.java.sip.communicator.util;
 
 import android.text.TextUtils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.minidns.dnsqueryresult.DnsQueryResult;
 import org.minidns.hla.ResolverApi;
 import org.minidns.hla.ResolverResult;

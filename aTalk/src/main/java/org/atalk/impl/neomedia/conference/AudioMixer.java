@@ -5,7 +5,7 @@
  */
 package org.atalk.impl.neomedia.conference;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.control.ReadOnlyBufferControlDelegate;
 import org.atalk.impl.neomedia.control.ReadOnlyFormatControlDelegate;

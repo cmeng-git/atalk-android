@@ -23,7 +23,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+
+import androidx.core.content.ContextCompat;
 
 import net.java.sip.communicator.service.protocol.AbstractFileTransfer;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -220,8 +223,8 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         // queryFileSize will also trigger onReceived; just ignore
         if (downloadReceiver == null) {
             downloadReceiver = new DownloadReceiver();
-            aTalkApp.getGlobalContext().registerReceiver(downloadReceiver,
-                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+            ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), downloadReceiver,
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED);
         }
         if (mFileSize == -1) {
             mFileSize = queryFileSize();

@@ -18,7 +18,7 @@ import net.java.sip.communicator.util.PortTracker;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.DefaultStreamConnector;
 import org.atalk.service.neomedia.MediaStreamTarget;
 import org.atalk.service.neomedia.StreamConnector;

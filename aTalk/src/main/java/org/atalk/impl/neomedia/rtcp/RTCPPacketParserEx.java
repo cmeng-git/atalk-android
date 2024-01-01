@@ -11,7 +11,7 @@ import net.sf.fmj.media.rtp.RTCPPacketParser;
 import net.sf.fmj.media.rtp.util.BadFormatException;
 import net.sf.fmj.media.rtp.util.UDPPacket;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.RawPacket;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.service.neomedia.rtp.RTCPExtendedReport;

@@ -17,7 +17,7 @@ import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.AccountManager;
 import net.java.sip.communicator.util.ServiceUtils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.fileaccess.FileAccessService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleActivator;

@@ -65,7 +65,7 @@ class NetAccessManager implements ErrorHandler {
      * Thread pool to execute {@link MessageProcessingTask}s across all
      * {@link NetAccessManager}s.
      */
-    private static ExecutorService messageProcessingExecutor
+    private static final ExecutorService messageProcessingExecutor
             = ExecutorFactory.createCachedThreadPool("ice4j.NetAccessManager-");
 
     /**

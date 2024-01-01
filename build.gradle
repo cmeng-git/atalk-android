@@ -3,20 +3,16 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        // maven { url "https://jitpack.io" }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.4.2'
 
         // Required by android-youtube-player
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22'
 
-        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
-        // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // NOTE: Do not place your application dependencies here;
+        // they belong in the individual module build.gradle files
     }
 }
 
@@ -32,9 +28,8 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 21
-    // aTalk SDE is not compatible with API-34; missing dx, dx.jar and aapt2 not compatible
-    compileSdk = 33
-    buildTools = '33.0.2'
+    compileSdk = 34
+    // buildTools = '34.0.0'
 }
 
 task clean(type: Delete) {

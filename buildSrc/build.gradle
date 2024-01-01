@@ -8,9 +8,10 @@ buildscript {
     }
 
     dependencies {
-        classpath "org.anarres.jarjar:jarjar-gradle:1.0.1"
-        // classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca72f9'
-        // classpath "com.github.jengelman.gradle.plugins:shadow:6.1.0"
+        // gradle-1.0.1 not compatible with gradle 7.x; use from master source instead
+        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
+        classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
+        // classpath "com.github.jengelman.gradle.plugins:shadow:8.1.1"
     }
 }
 

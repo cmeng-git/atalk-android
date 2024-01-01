@@ -22,8 +22,7 @@ import java.util.EventObject;
  * The event id indicates the exact reason for this event.
  * @author Damian Minkov
  */
-public class SystemActivityEvent
-    extends EventObject
+public class SystemActivityEvent extends EventObject
 {
     /**
      * Serial version UID.

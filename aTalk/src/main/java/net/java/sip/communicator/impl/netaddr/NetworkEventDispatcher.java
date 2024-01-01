@@ -18,7 +18,7 @@ package net.java.sip.communicator.impl.netaddr;
 import net.java.sip.communicator.service.netaddr.event.ChangeEvent;
 import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.util.ArrayList;
 import java.util.Iterator;

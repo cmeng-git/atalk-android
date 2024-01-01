@@ -19,7 +19,7 @@ import net.java.sip.communicator.service.netaddr.NetworkAddressManagerService;
 import net.java.sip.communicator.service.netaddr.event.NetworkConfigurationChangeListener;
 import net.java.sip.communicator.util.NetworkUtils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.util.OSUtils;
 import org.ice4j.Transport;

@@ -17,7 +17,7 @@ package org.atalk.impl.neomedia.transform;
 
 import net.sf.fmj.media.rtp.RTCPPacket;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.rtp.ResumableStreamRewriter;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RawPacket;

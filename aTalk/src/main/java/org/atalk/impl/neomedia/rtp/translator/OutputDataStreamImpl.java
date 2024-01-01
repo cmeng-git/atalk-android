@@ -8,7 +8,7 @@ package org.atalk.impl.neomedia.rtp.translator;
 import net.sf.fmj.media.rtp.RTCPHeader;
 import net.sf.fmj.media.rtp.RTPHeader;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.RTPConnectorOutputStream;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.MediaStream;

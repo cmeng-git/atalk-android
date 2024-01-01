@@ -9,7 +9,7 @@ import net.sf.fmj.media.rtp.RTCPFeedback;
 import net.sf.fmj.media.rtp.RTCPReport;
 import net.sf.fmj.media.rtp.RTCPSRPacket;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.device.MediaDeviceSession;
 import org.atalk.impl.neomedia.device.VideoMediaDeviceSession;
 import org.atalk.impl.neomedia.rtcp.NACKPacket;

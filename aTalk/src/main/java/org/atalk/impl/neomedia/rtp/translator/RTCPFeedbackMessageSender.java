@@ -15,7 +15,7 @@
  */
 package org.atalk.impl.neomedia.rtp.translator;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.RTCPFeedbackMessagePacket;
 import org.atalk.impl.neomedia.VideoMediaStreamImpl;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;

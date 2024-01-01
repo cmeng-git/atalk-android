@@ -13,7 +13,7 @@ import net.java.sip.communicator.service.protocol.media.DynamicRTPExtensionsRegi
 import net.java.sip.communicator.util.NetworkUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaDirection;
 import org.atalk.service.neomedia.MediaService;
 import org.atalk.service.neomedia.MediaStreamTarget;

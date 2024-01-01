@@ -18,7 +18,7 @@ import net.sf.fmj.media.protocol.CloneablePushBufferDataSource;
 import net.sf.fmj.media.protocol.CloneablePushDataSource;
 import net.sf.fmj.utility.LoggerSingleton;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.io.IOException;
 import java.net.URL;

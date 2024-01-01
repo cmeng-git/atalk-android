@@ -5,7 +5,7 @@
  */
 package net.java.sip.communicator.util.launchutils;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import java.util.LinkedList;
 import java.util.List;

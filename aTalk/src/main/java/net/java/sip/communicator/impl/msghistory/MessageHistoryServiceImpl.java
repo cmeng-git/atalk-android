@@ -80,7 +80,7 @@ import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.jivesoftware.smack.SmackException;

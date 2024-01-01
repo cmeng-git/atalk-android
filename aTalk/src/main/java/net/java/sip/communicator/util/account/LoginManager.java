@@ -20,7 +20,7 @@ import net.java.sip.communicator.util.UtilActivator;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -160,8 +160,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
         //			}
         //			// CONNECTION_FAILED events are now dispatched in reconnect plugin
         ////			else if (newState.equals(RegistrationState.CONNECTION_FAILED)) {
-        ////				loginRenderer.protocolProviderConnectionFailed(
-        ////						protocolProvider, this);
+        ////				loginRenderer.protocolProviderConnectionFailed(protocolProvider, this);
         ////				Timber.log(TimberLog.FINER, evt.getReason());
         ////			}
         //			else if (newState.equals(RegistrationState.EXPIRED)) {

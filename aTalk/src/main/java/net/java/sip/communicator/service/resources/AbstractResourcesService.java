@@ -400,7 +400,7 @@ public abstract class AbstractResourcesService implements ResourceManagementServ
             resourceString = resourceString.replaceAll("\\\\", "");
         }
 
-        if (resourceString.indexOf("''") > -1) {
+        if (resourceString.contains("''")) {
             resourceString = resourceString.replaceAll("''", "'");
         }
         return resourceString;

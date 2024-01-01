@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.AbstractRTPConnector;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.neomedia.AbstractSrtpControl;

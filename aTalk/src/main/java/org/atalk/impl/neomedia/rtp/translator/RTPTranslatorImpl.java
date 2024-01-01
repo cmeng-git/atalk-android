@@ -9,7 +9,7 @@ import net.sf.fmj.media.rtp.RTCPHeader;
 import net.sf.fmj.media.rtp.RTPHeader;
 import net.sf.fmj.media.rtp.SSRCCache;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.jmfext.media.rtp.RTPSessionMgr;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
 import org.atalk.service.neomedia.AbstractRTPTranslator;

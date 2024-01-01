@@ -14,7 +14,7 @@ import net.java.sip.communicator.service.protocol.Call;
 
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.CallManager;
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 
 import timber.log.Timber;
 

@@ -14,7 +14,7 @@ import android.view.WindowManager;
 
 import net.java.sip.communicator.service.resources.AbstractResourcesService;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.osgi.OSGiService;
 import org.atalk.service.resources.ResourceManagementService;
 import org.osgi.framework.BundleContext;

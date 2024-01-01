@@ -121,6 +121,7 @@ public class GlobalStatusEnum extends PresenceStatus {
      * @param status the connectivity coefficient for the specified status
      * @param statusName String
      * @param statusIcon the icon associated with this status
+     * @param i18NKey the i18NKey string - not use in aTalk
      */
     protected GlobalStatusEnum(int status, String statusName, byte[] statusIcon, String i18NKey) {
         super(status, statusName, statusIcon);

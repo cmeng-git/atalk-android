@@ -53,7 +53,7 @@ import net.java.sip.communicator.service.protocol.event.SubscriptionEvent;
 import net.java.sip.communicator.service.protocol.event.SubscriptionListener;
 import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
-import org.atalk.android.plugin.timberlog.TimberLog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.json.JSONObject;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
