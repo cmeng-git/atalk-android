@@ -1,6 +1,5 @@
 // import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 // import org.anarres.gradle.plugin.jarjar.JarjarTask
-// import org.anarres.gradle.plugin.jarjar.JarjarController
 
 buildscript {
     repositories {
@@ -10,8 +9,7 @@ buildscript {
     }
 
     dependencies {
-        // gradle-1.0.1 not compatible with gradle 7.x; use from master source instead
-        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
+        // gradle-1.0.1 not compatible with gradle 7.x; use master release instead
         classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
         // classpath "com.github.jengelman.gradle.plugins:shadow:8.1.1"
     }
@@ -25,7 +23,7 @@ repositories {
     maven {
         url 'third_party/m2'
 
-        // Must include these lines for gradle 5.0+
+        // Must include these lines for gradle 5.0+ to find smack jarjar files
         metadataSources {
             mavenPom()
             artifact()
@@ -61,7 +59,6 @@ configurations.all {
             // multiple actions can be specified
             if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
                 //changing the name reference to smack libraries to its individual jar
-                // details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
                 details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
             }
         }
@@ -91,8 +88,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 303000
-        versionName "3.3.0"
+        versionCode 303010
+        versionName "3.3.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -250,7 +247,6 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    // implementation 'androidx.webkit:webkit:1.4.0'
 
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
@@ -302,7 +298,7 @@ dependencies {
     //noinspection GradleDependency (define and use in smack)
     // implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
-    // Required for debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
+    // For debug and tracing for bouncycastle - AS allows direct copy and replacement of bc source for debug
 //    implementation jarjar.repackage {
 //        from('org.bouncycastle:bctls-jdk15on:1.65') {
 //            transitive = false
@@ -338,7 +334,7 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-sasl-provided:$smackVersion"
     implementation "org.igniterealtime.smack:smack-tcp:$smackVersion"
 
-    implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
+    // implementation "org.igniterealtime.smack:smack-omemo:$smackVersion"
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
@@ -362,9 +358,8 @@ dependencies {
      * classDelete must check the actual jar to see if end ** is required - due to multiple components
      * May use className and className$** to delete only the related, but excluding classes with same prefix
      */
-    implementation jarjar.repackage {
+    implementation jarjar.repackage("fmj-1.0.2-jitsi.jar") {
         from('org.jitsi:fmj:1.0.2-jitsi')
-        destinationName "fmj-1.0.2-jitsi.jar"
 
         // remove extracted modules for changes
         classDelete 'net.sf.fmj.media.RegistryDefaults'
@@ -373,16 +368,8 @@ dependencies {
         classDelete 'javax.media.format.YUVFormat'
         classDelete 'javax.media.Manager**'
         classDelete 'javax.media.Player'
-    }
 
-//    implementation jarjar.repackage ("fmj-1.0.1-jitsi.jar", {
-//        from('org.jitsi:fmj:1.0.1-jitsi')
-//
-//        // remove extracted modules for changes
-//        classDelete 'net.sf.fmj.media.RegistryDefaults'
-//        classDelete 'javax.media.format.VideoFormat'
-//        classDelete 'javax.media.Manager**'
-//    })
+    }
 
 //    task customFatJar(type: Jar) {
 //        baseName = 'all-in-one-jar'
@@ -399,12 +386,11 @@ dependencies {
 //    })))
 
     // see NetaddrActivator#start(BundleContext) for the actual settings: (use ice4j 3.0-xx)
-    implementation jarjar.repackage {
+    implementation jarjar.repackage("ice4j-3.0-SNAPSHOT.jar") {
         // from('org.jitsi:ice4j:3.0-60-g28a23e1') {
         from('org.jitsi:ice4j:3.0-55-g32a8aad') {
             transitive = false
         }
-        destinationName "ice4j-3.0-SNAPSHOT.jar"
 
         // Rename to use aTalk namespace to minimize changes
         classRename 'org.jitsi.utils.**', 'org.atalk.util.@1'
@@ -444,12 +430,11 @@ dependencies {
     // implementation 'ch.imvs:sdes4j:1.1.5' - not compatible due to java library use
     // libraries from maven repository but need to change Base64 to ApacheBase64 to avoid conflict with android
     // declaration of 'org.apache.commons.codec.binary.Base64' appears in /system/framework/org.apache.http.legacy.boot.jar
-    implementation jarjar.repackage {
+    implementation jarjar.repackage("sde4j-1.1.4.jar") {
         from('ch.imvs:sdes4j:1.1.4') {
             transitive = false
         }
         // destinationDir new File("${projectDir}/libs")
-        destinationName "sde4j-1.1.4.jar"
 
         // v1.1.5 uses java.util.Base64 was only added in API level 26
         // classRename 'java.util.Base64', 'org.atalk.android.util.java.util.Base64'

@@ -6,8 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.0 (01/01/2024)" versioncode="303000">
+    <release version="3.3.1 (01/12/2024)" versioncode="303010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Revert gradle-wrapper.properties #distributionUrl to use gradle-7.6-bin.zip; gradle-8.x does not generate the required smack jarjar files at all</change>
+        <change>Use implementation jarjar.repackage("filename.jar") to ensure destinationName is set correctly</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.0 (01/01/2024)" versioncode="303000">
         <change>Update aTalk-android for android API-34 support; needs jarjar-gradle (master)</change>
         <change>Use jarjar-gradle from github master i.e. '9a7eca7'(1.1.1); require gradle-8.2-bin.zip and precompiled smack jars</change>
         <change>Update source to support API-34 ContextCompat.registerReceiver with RECEIVER_EXPORTED/RECEIVER_NOT_EXPORTED option</change>

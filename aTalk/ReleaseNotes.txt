@@ -1,5 +1,13 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.1 (303010)
+Release Date:   01/12/2024
+Author:         cmeng
+- Revert to set distributionUrl=https://services.gradle.org/distributions/gradle-7.6-bin.zip
+  in gradle-wrapper.properties; gradle-8.x does not generate the required smack jarjar files at all.
+- Use implementation jarjar.repackage("filename.jar") to ensure destinationName is set correctly.
+
+=========================================================================
 Version:        3.3.0 (303000)
 Release Date:   01/02/2024
 Author:         cmeng
