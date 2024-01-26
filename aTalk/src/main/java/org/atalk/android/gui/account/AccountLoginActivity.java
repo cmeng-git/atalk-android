@@ -148,11 +148,10 @@ public class AccountLoginActivity extends ExitMenuActivity
     @Override
     public void onLoginPerformed(String userName, String password, String network, Map<String, String> accountProperties)
     {
-//        ProtocolProviderService pps = createAccount(userName, password, network, accountProperties);
-//        if (pps != null) {
-//            Intent showContactsIntent = new Intent(aTalk.ACTION_SHOW_CONTACTS);
-//            startActivity(showContactsIntent);
-//            finish();
-//        }
+        ProtocolProviderService pps = createAccount(userName, password, network, accountProperties);
+        if (pps != null) {
+            startActivity(new Intent(this, aTalk.class));
+            finish();
+        }
     }
 }

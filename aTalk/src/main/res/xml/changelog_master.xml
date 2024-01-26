@@ -6,7 +6,7 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.2 (01/26/2024)" versioncode="303020">
+    <release version="3.3.2 (01/26/2024)" versioncode="303021">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
         <change>Rebuild for API-34 release fixing user login problem arise from Android Studio weird behaviour</change>
         <change>Change chat session action options on user single and multiple items selection</change>
