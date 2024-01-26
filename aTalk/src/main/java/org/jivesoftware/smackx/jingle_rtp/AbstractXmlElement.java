@@ -35,11 +35,13 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import timber.log.Timber;
+
 /**
  * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
  * {@link AbstractXmlElement(Builder)} to build these elements.
- *
+ * <p>
  * Note this is meant as base class to ease most jingle extension elements creation.
  *
  * @author Florian Schmaus
@@ -212,7 +214,7 @@ public class AbstractXmlElement implements ExtensionElement {
 
     /**
      * Returns all childElements for this <code>AbstractXmlElement</code> or na Empty array if there is none.
-     *
+     * <p>
      * Overriding extensions may need to override this method if they would like to have anything
      * more elaborate than just a list of extensions.
      *
@@ -318,7 +320,9 @@ public class AbstractXmlElement implements ExtensionElement {
         if (xmlCache != null) {
             return xmlCache;
         }
-        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
+        // XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
+        // Do not pass in enclosingXmlEnvironment; else the NS may not be included
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         addExtraAttributes(xml);
 
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -334,7 +338,12 @@ public class AbstractXmlElement implements ExtensionElement {
 
             if (elements != null) {
                 for (Map.Entry<QName, ExtensionElement> entry : elements.entrySet()) {
-                    xml.append(entry.getValue().toXML(getNamespace()));
+                    ExtensionElement extElement = entry.getValue();
+                    try {
+                        xml.append(extElement.toXML(extElement.getNamespace()));
+                    } catch (AbstractMethodError ex) {
+                        Timber.e("toXML Exception: %s\n%s", extElement.toString(), ex.getMessage());
+                    }
                 }
             }
             xml.closeElement(this);
@@ -409,7 +418,13 @@ public class AbstractXmlElement implements ExtensionElement {
                 elements = new MultiMap<>();
             }
 
-            QName key = element.getQName();
+            QName key;
+            try {
+                key = element.getQName();
+            } catch (AbstractMethodError ex) {
+                key = new QName(element.getNamespace(), element.getElementName());
+                Timber.e("QName element Exception: %s => %s\n%s", element.toString(), key.toString(), ex.getMessage());
+            }
             elements.put(key, element);
             return getThis();
         }
@@ -424,7 +439,13 @@ public class AbstractXmlElement implements ExtensionElement {
             }
 
             for (ExtensionElement element : xElements) {
-                QName key = element.getQName();
+                QName key;
+                try {
+                    key = element.getQName();
+                } catch (AbstractMethodError ex) {
+                    key = new QName(element.getNamespace(), element.getElementName());
+                    Timber.e("QName xElements Exception: %s => %s\n%s", element.toString(), key.toString(), ex.getMessage());
+                }
                 elements.put(key, element);
             }
             return getThis();

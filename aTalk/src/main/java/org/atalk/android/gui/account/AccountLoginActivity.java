@@ -143,15 +143,16 @@ public class AccountLoginActivity extends ExitMenuActivity
 
     /**
      * See {@link AccountLoginFragment.AccountLoginListener#onLoginPerformed}
+     * Not used causing problem in API-34 release, So disable it.
      */
     @Override
     public void onLoginPerformed(String userName, String password, String network, Map<String, String> accountProperties)
     {
-        ProtocolProviderService pps = createAccount(userName, password, network, accountProperties);
-        if (pps != null) {
-            Intent showContactsIntent = new Intent(aTalk.ACTION_SHOW_CONTACTS);
-            startActivity(showContactsIntent);
-            finish();
-        }
+//        ProtocolProviderService pps = createAccount(userName, password, network, accountProperties);
+//        if (pps != null) {
+//            Intent showContactsIntent = new Intent(aTalk.ACTION_SHOW_CONTACTS);
+//            startActivity(showContactsIntent);
+//            finish();
+//        }
     }
 }

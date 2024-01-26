@@ -6,8 +6,16 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.1 (01/12/2024)" versioncode="303010">
+    <release version="3.3.2 (01/26/2024)" versioncode="303020">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Rebuild for API-34 release fixing user login problem arise from Android Studio weird behaviour</change>
+        <change>Change chat session action options on user single and multiple items selection</change>
+        <change>Change auto return to contactList UI timer to 5 seconds after call has ended; allow user more time to view error messages</change>
+        <change>JingleFile send still having problem, AS throws AbstractMethodError exception unexpectedly. See &lt;a href='https://issuetracker.google.com/issues/321988935'&gt;Bug Report&lt;/a&gt;</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.1 (01/12/2024)" versioncode="303010">
         <change>Revert gradle-wrapper.properties #distributionUrl to use gradle-7.6-bin.zip; gradle-8.x does not generate the required smack jarjar files at all</change>
         <change>Use implementation jarjar.repackage("filename.jar") to ensure destinationName is set correctly</change>
         <change>Bug fixes and enhancements</change>

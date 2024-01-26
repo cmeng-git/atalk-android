@@ -10,8 +10,8 @@ buildscript {
 
     dependencies {
         // gradle-1.0.1 not compatible with gradle 7.x; use master release instead
+        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
         classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
-        // classpath "com.github.jengelman.gradle.plugins:shadow:8.1.1"
     }
 }
 
@@ -54,15 +54,16 @@ configurations {
 }
 
 configurations.all {
-    it.resolutionStrategy {
-        eachDependency { details ->
-            // multiple actions can be specified
-            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
-                //changing the name reference to smack libraries to its individual jar
-                details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
-            }
-        }
-    }
+// replace with configurations.implementation {exclude group: "org.igniterealtime.smack"...}
+//    it.resolutionStrategy {
+//        eachDependency { details ->
+//            // multiple actions can be specified
+//            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
+//                //changing the name reference to smack libraries to its individual jar
+//                details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
+//            }
+//        }
+//    }
 
     // https://docs.gradle.org/current/userguide/resolution_rules.html
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
@@ -71,6 +72,12 @@ configurations.all {
             details.because 'Fixes ASP bug: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59'
         }
     }
+}
+
+configurations.implementation {
+    exclude group: "org.igniterealtime.smack", module: "smack-extensions"
+    exclude group: "org.igniterealtime.smack", module: "smack-experimental"
+    exclude group: "org.igniterealtime.smack", module: "smack-omemo"
 }
 
 android {
@@ -84,12 +91,12 @@ android {
     }
 
     compileSdk rootProject.compileSdk
-    // buildToolsVersion rootProject.buildTools
+    buildToolsVersion rootProject.buildTools
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 303010
-        versionName "3.3.1"
+        versionCode 303020
+        versionName "3.3.2"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -147,7 +154,6 @@ android {
             shrinkResources false
             // too many missing references when enable
             minifyEnabled false
-            // useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
@@ -212,7 +218,7 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/core_release.kotlin_module'
-        exclude 'META-INF/kotlin-stdlib-jdk8.kotlin_module'
+        exclude 'META-INF/kotlin-stdlib-jdk7.kotlin_module'
     }
 }
 
@@ -230,7 +236,7 @@ dependencies {
     implementation project(':android-youtube-player:core')
 
     // Fix Duplicate class
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+    // implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 
     // Java compilation dependency: ndkBuild & jarRepackage (avoid class conflict)
     // generated files in libs/$(TARGET_ARCH_ABI)/*.so and libs/*.jar
@@ -266,7 +272,8 @@ dependencies {
 
     implementation 'com.github.yalantis:ucrop:2.2.8'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
-    implementation 'com.google.android.material:material:1.11.0'
+    // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
+    implementation 'com.google.android.material:material:1.6.1'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
@@ -441,6 +448,66 @@ dependencies {
 
         // v1.1.4 uses binary.Base64
         classRename 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
+    }
+
+    // smack-experimental
+    implementation jarjar.repackage("smack-experimental-${smackVersion}.jar") {
+        from("org.igniterealtime.smack:smack-experimental:${smackVersion}") {
+            transitive = false
+        }
+
+        // Add support for media file sharing
+        classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
+        classDelete 'org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager**'
+        // AbstractMethodError if not in aTalk local directory
+        // classDelete 'org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild**'
+    }
+
+    // smack-extensions
+    implementation jarjar.repackage("smack-extensions-${smackVersion}.jar") {
+        from("org.igniterealtime.smack:smack-extensions:${smackVersion}") {
+            transitive = false
+        }
+
+        // Do not send <close/> on an already closed InBandBytestream session
+        classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
+
+        // Add support for chatStat in conference room
+        classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+
+        classDelete 'org.jivesoftware.smackx.jingle.JingleManager**'
+        classDelete 'org.jivesoftware.smackx.jingle.JingleUtil**'
+
+        classDelete 'org.jivesoftware.smackx.jingle.element.Jingle'
+        classDelete 'org.jivesoftware.smackx.jingle.element.Jingle$**'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleAction**'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContent$**'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentDescription'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransport'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo'
+        classDelete 'org.jivesoftware.smackx.jingle.element.JingleReason**'
+
+        classDelete 'org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager**'
+        classDelete 'org.jivesoftware.smackx.jingle.provider.JingleProvider**'
+
+        classDelete 'org.jivesoftware.smackx.jingle.transports.JingleTransportManager**'
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport**'
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager**'
+
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager**'
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport'
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport$**'
+    }
+
+    // smack-omemo
+    implementation jarjar.repackage("smack-omemo-${smackVersion}.jar") {
+        from("org.igniterealtime.smack:smack-omemo:$smackVersion") {
+            transitive = false
+        }
+        classDelete 'org.jivesoftware.smackx.omemo.OmemoManager**'
     }
 }
 

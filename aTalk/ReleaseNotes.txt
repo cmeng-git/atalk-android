@@ -1,5 +1,21 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.2 (303020)
+Release Date:   01/26/2024
+Author:         cmeng
+- Rebuild for API-34 release fixing user login problem arise from Android Studio exclude group:.
+- AbstractXmlElement#toXML(XmlEnvironment): Do not pass in enclosingXmlEnvironment;
+  else the NS may be be excluded causing problem; and getFirstChildElement(Class<T> type) will return null
+  e.g. <description xmlns='urn:xmpp:jingle:apps:rtp:1'...> and <transport xmlns='urn:xmpp:jingle:transports:ice-udp:1'...>
+- Change chat session action options on user single and multiple items selection
+- Change auto return to contactList UI timer to 5 seconds after call has ended; allow user more time to view error messages.
+- Use exclude group: for local smack libraries inclusion;
+  add jarjar for local smack libraries into main build.gralde, and remove buildSrc#build.gradle
+- AccountLoginActivity#onLoginPerformed(); remove execution, seem not use and causes problem in API-34 release
+- JingleFile send still having problem, AS throws AbstractMethodError exception unexpectedly.
+  Not such problem with apk in ADB debug. see https://issuetracker.google.com/issues/321988935
+
+=========================================================================
 Version:        3.3.1 (303010)
 Release Date:   01/12/2024
 Author:         cmeng

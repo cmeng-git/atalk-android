@@ -59,8 +59,10 @@
 
 -dontwarn org.jivesoftware.**
 -keep class org.igniterealtime.jbosh.**{*;}
--keep class org.jivesoftware.**{*;}
--keep interface org.jivesoftware.** {*;}
+-keep class org.jivesoftware.smack.**{*;}
+-keep class org.jivesoftware.smackx.**{*;}
+-keep interface org.jivesoftware.smack.** {*;}
+-keep interface org.jivesoftware.smackx.** {*;}
 -keepclasseswithmembers class de.measite.smack.** {*;}
 
 -keepclasseswithmembers class * extends org.jivesoftware.smack.sasl.SASLMechanism {

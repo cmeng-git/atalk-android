@@ -7,10 +7,12 @@ buildscript {
 
     dependencies {
         // gradle-8.x requires JVM 17; aTalk max jvm is 15.
+        // gradle:4.2.2': [Build | Generate Sigbed Bundle / APL...], build has error i.e.
+        // i.e. aTalk/build/jarjar (Is a directory); but resolved with gradle:7.4.2'
         classpath 'com.android.tools.build:gradle:7.4.2'
 
         // Required by android-youtube-player
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.22'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0'
 
         // NOTE: Do not place your application dependencies here;
         // they belong in the individual module build.gradle files
@@ -29,8 +31,9 @@ project.ext {
     testCoverage = project.hasProperty('testCoverage')
 
     minSdk = 21
+    // SDE Eel is not compatible with API-34; missing dx, dx.jar and aapt2 not compatible
     compileSdk = 34
-    // buildTools = '34.0.0'
+    buildTools = '34.0.0'
 }
 
 task clean(type: Delete) {
