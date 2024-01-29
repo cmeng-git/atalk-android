@@ -347,7 +347,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
 
         /**
          * Creates an instance of <code>VideoBridgeProviderMenuItem</code>
-         *
+         * <p>
          * // @param preselectedProvider the <code>ProtocolProviderService</code> that provides the video bridge
          */
         public VideoBridgeProviderMenuItem() {
@@ -407,6 +407,7 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
     public void serviceChanged(ServiceEvent event) {
         ServiceReference serviceRef = event.getServiceReference();
 
+        // Timber.d("Bundle State: %s: ", serviceRef.getBundle().getState());
         // if the event is caused by a bundle being stopped, we don't want to know
         if (serviceRef.getBundle().getState() == BundleImpl.STOPPING) {
             return;

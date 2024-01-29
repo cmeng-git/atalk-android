@@ -164,7 +164,7 @@ public class CallNotificationManager
      *
      * @param ctx Android context.
      * @param contentView notification root <code>View</code>.
-     * @param mCallId the call ID that will be used in the <code>Intents</code>
+     * @param requestCodeBase the starting Request Code ID that will be used in the <code>Intents</code>
      */
     private void setIntents(Context ctx, RemoteViews contentView, int requestCodeBase)
     {

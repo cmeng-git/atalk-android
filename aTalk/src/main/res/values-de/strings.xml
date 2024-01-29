@@ -561,7 +561,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Mikrofon-Lautstärke</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Anpassen des Mikrofonklangs</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Wird von %1$s nicht unterstützt</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">schreibt eine Nachricht</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">schreibt eine Nachricht (%1$s)</string>
     <string name="service_gui_RECENT_MESSAGES">Letzte Nachrichten</string>
     <string name="service_gui_RECEIVED">%1$s empfangen</string>
     <string name="service_gui_REFERRED_STATUS">Weitergeleitet</string>
@@ -794,8 +794,8 @@
     <string name="plugin_update_Download_Ready">Das Update (%1$s) wurde heruntergeladen und kann jetzt installiert werden.</string>
     <string name="plugin_update_InProgress">In Bearbeitung</string>
     <string name="plugin_update_Download_InProgress">Beim Herunterladen</string>
-    <string name="plugin_update_Update_Available">Eine neu veröffentlichte Version (%1$s-%2$s) für %3$s ist verfügbar. Aktuell installierte Version: %4$s.</string>
-    <string name="plugin_update_UpToDate">Die installierte Version: (%1$s-%2$s) ist aktuell. Online verfügbare Version: %3$s.</string>
+    <string name="plugin_update_Update_Available">Eine neu veröffentlichte Version (%1$s-%2$s) für %3$s ist verfügbar. Aktuell installierte Version: (%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">Die installierte Version: (%1$s-%2$s) ist aktuell. Online verfügbare Version: (%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">Keine neue Version</string>
     <string name="plugin_update_Install_Update">Updates installieren</string>
     <string name="plugin_update_Download_failed">Fehler beim Herunterladen des neuen Updates!</string>

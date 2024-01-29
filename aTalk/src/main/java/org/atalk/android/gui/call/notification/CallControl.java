@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import net.java.sip.communicator.service.protocol.Call;
 
 import org.atalk.android.aTalkApp;
+import org.atalk.android.gui.aTalk;
 import org.atalk.android.gui.call.CallManager;
 import org.atalk.impl.timberlog.TimberLog;
 
@@ -180,6 +181,7 @@ public class CallControl extends BroadcastReceiver
     private static Intent createIntent(String callId, int action)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(CallControl.CALL_CTRL_ACTION);
         intent.putExtra(CallControl.EXTRA_CALL_ID, callId);
         intent.putExtra(CallControl.EXTRA_ACTION, action);

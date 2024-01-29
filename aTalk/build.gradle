@@ -1,6 +1,3 @@
-// import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-// import org.anarres.gradle.plugin.jarjar.JarjarTask
-
 buildscript {
     repositories {
         google()
@@ -10,25 +7,14 @@ buildscript {
 
     dependencies {
         // gradle-1.0.1 not compatible with gradle 7.x; use master release instead
-        // classpath 'org.anarres.jarjar:jarjar-gradle:1.0.1'
         classpath 'com.github.shevek.jarjar:jarjar-gradle:9a7eca7'
     }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.anarres.jarjar'
-// apply plugin: "com.github.johnrengelman.shadow"
 
 repositories {
-    maven {
-        url 'third_party/m2'
-
-        // Must include these lines for gradle 5.0+ to find smack jarjar files
-        metadataSources {
-            mavenPom()
-            artifact()
-        }
-    }
     google()
     mavenCentral()
     maven {
@@ -54,17 +40,6 @@ configurations {
 }
 
 configurations.all {
-// replace with configurations.implementation {exclude group: "org.igniterealtime.smack"...}
-//    it.resolutionStrategy {
-//        eachDependency { details ->
-//            // multiple actions can be specified
-//            if (details.requested.group == "org.igniterealtime.smack" && ['smack-experimental', 'smack-extensions', 'smack-omemo'].contains(details.requested.name)) {
-//                //changing the name reference to smack libraries to its individual jar
-//                details.useTarget group: details.requested.group, name: "${details.requested.name}-jarjar", version: details.requested.version
-//            }
-//        }
-//    }
-
     // https://docs.gradle.org/current/userguide/resolution_rules.html
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.bouncycastle' && details.requested.name == 'bcprov-jdk15on' && details.requested.version == '1.66') {
@@ -95,8 +70,8 @@ android {
 
     defaultConfig {
         applicationId "org.atalk.android"
-        versionCode 303021
-        versionName "3.3.2"
+        versionCode 303030
+        versionName "3.3.3"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk

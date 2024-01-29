@@ -84,9 +84,7 @@ public class PopupClickReceiver extends BroadcastReceiver
         filter.addAction(ACTION_SNOOZE);
         filter.addAction(ACTION_CALL_ANSWER);
         filter.addAction(ACTION_CALL_DISMISS);
-        ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), this,
-                filter, ContextCompat.RECEIVER_NOT_EXPORTED);
-
+        ContextCompat.registerReceiver(aTalkApp.getInstance(), this, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     /**
@@ -145,6 +143,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createIntent(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_POPUP_CLICK);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
@@ -159,6 +158,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createDeleteIntent(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_POPUP_CLEAR);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
@@ -173,6 +173,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createReplyIntent(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_REPLY_TO);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
@@ -187,6 +188,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createMarkAsReadIntent(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_MARK_AS_READ);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
@@ -201,6 +203,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createSnoozeIntent(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_SNOOZE);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;
@@ -215,6 +218,7 @@ public class PopupClickReceiver extends BroadcastReceiver
     public static Intent createCallDismiss(int notificationId)
     {
         Intent intent = new Intent();
+        intent.setPackage(aTalkApp.getInstance().getPackageName());
         intent.setAction(ACTION_CALL_DISMISS);
         intent.putExtra(EXTRA_NOTIFICATION_ID, notificationId);
         return intent;

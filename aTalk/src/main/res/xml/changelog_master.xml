@@ -6,8 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.2 (01/26/2024)" versioncode="303021">
+    <release version="3.3.3 (01/26/2024)" versioncode="303030">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix ContextCompat.registerReceiver flag setting to ensure proper callbacks for android API-34 device:</change>
+        <change>a. Fix Http File Download, Connectivity Manager Listener and Update Service</change>
+        <change>b. Fix main menu Exit option</change>
+        <change>c. Fix CallControl Notification with proper callback</change>
+        <change>d. Fix message received popup with proper callback</change>
+        <change>Temporary disable 'Jingle Outgoing File Offer', use only HTTP file upload instead; Android Studio release built throws runtime AbstractMethodError</change>
+        <change>Fix Option 'StreetViews &amp; Map' crashes in API-34: Layout &lt;frame /> cannot accept fraction value in android:layout_weight</change>
+        <change>Fix correct downloadable fileNameApk creation, for debug version only</change>
+        <change>Make UpdateService shows both version/code for installed and latest available apk</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.2 (01/26/2024)" versioncode="303021">
         <change>Rebuild for API-34 release fixing user login problem arise from Android Studio weird behaviour</change>
         <change>Change chat session action options on user single and multiple items selection</change>
         <change>Change auto return to contactList UI timer to 5 seconds after call has ended; allow user more time to view error messages</change>

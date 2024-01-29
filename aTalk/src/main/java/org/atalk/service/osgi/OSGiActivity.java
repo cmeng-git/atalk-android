@@ -5,7 +5,6 @@
  */
 package org.atalk.service.osgi;
 
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -114,7 +113,7 @@ public class OSGiActivity extends BaseActivity {
         }
         // Registers exit action listener
         ContextCompat.registerReceiver(this, exitListener,
-                new IntentFilter(aTalkApp.ACTION_EXIT), ContextCompat.RECEIVER_NOT_EXPORTED);
+                new IntentFilter(ACTION_EXIT), ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     protected void onNewIntent(Intent intent) {

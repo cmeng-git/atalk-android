@@ -386,28 +386,28 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
     @Override
     public IQ handleTransportInfo(JingleContentTransportInfo info, Jingle wrapping) {
-        switch (info.getElementName()) {
+        if (info != null) {
+            switch (info.getElementName()) {
+                case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
+                    handleCandidateUsed((JingleS5BTransportInfo) info, wrapping);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
-                handleCandidateUsed((JingleS5BTransportInfo) info, wrapping);
-                break;
+                case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
+                    handleCandidateActivate((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
-                handleCandidateActivate((JingleS5BTransportInfo) info);
-                break;
+                case JingleS5BTransportInfo.CandidateError.ELEMENT:
+                    handleCandidateError((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateError.ELEMENT:
-                handleCandidateError((JingleS5BTransportInfo) info);
-                break;
+                case JingleS5BTransportInfo.ProxyError.ELEMENT:
+                    handleProxyError((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.ProxyError.ELEMENT:
-                handleProxyError((JingleS5BTransportInfo) info);
-                break;
-
-            default:
-                throw new AssertionError("Unknown transport-info element: " + info.getElementName());
+                default:
+                    throw new AssertionError("Unknown transport-info element: " + info.getElementName());
+            }
         }
-
         return IQ.createResultIQ(wrapping);
     }
 

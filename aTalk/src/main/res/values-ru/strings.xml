@@ -563,7 +563,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Уровень усиления микрофона</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Отрегулировать звук микрофона</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Присутствие не поддерживается %1$s</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">Записывает сообщение</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">Записывает сообщение (%1$s)</string>
     <string name="service_gui_RECENT_MESSAGES">Недавние разговоры</string>
 	<string name="service_gui_RECEIVED">%1$s получено</string>
     <string name="service_gui_REFERRED_STATUS">Отправлено</string>
@@ -795,8 +795,8 @@
     <string name="plugin_update_Download_Ready">Обновление (%1$s) загружается и готово к установке.</string>
     <string name="plugin_update_InProgress">Выполняется</string>
     <string name="plugin_update_Download_InProgress">Выполняется обновление загрузки.</string>
-    <string name="plugin_update_Update_Available">Доступна новая выпущенная версия (%1$s-%2$s) для %3$s. Текущая установленная версия: %4$s.</string>
-    <string name="plugin_update_UpToDate">Ваша текущая установленная версия: (%1$s-%2$s) обновлена. Доступная онлайн-версия: %3$s.</string>
+    <string name="plugin_update_Update_Available">Доступна новая выпущенная версия (%1$s-%2$s) для %3$s. Текущая установленная версия: (%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">Ваша текущая установленная версия: (%1$s-%2$s) обновлена. Доступная онлайн-версия: (%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">Нет новой версии</string>
     <string name="plugin_update_Install_Update">Установить обновления</string>
     <string name="plugin_update_Download_failed">Не удалось загрузить новое обновление!</string>

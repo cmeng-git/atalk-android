@@ -1,5 +1,31 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.3 (303030)
+Release Date:   01/29/2024
+Author:         cmeng
+- Fix ContextCompat.registerReceiver flag setting: If this receiver is listening for broadcasts sent from the system
+  or from other apps—even other apps that you own—use the RECEIVER_EXPORTED flag. If instead this receiver is listening
+  only for broadcasts sent by your app, use the RECEIVER_NOT_EXPORTED flag; and broadcaster must setPackage(getPackageName()).
+  * Use RECEIVER_EXPORTED for HttpFileDownloadJabberImpl(), UpdateServiceImpl(), and ConnectivityManagerListenerImpl()
+  * Use RECEIVER_NOT_EXPORTED and required to setPackage(getPackageName()) in sendBroadcast for:
+  a. Fix option Exit not working in android API-34
+  b. Fix CallControl Notification with proper callback.
+  c. Fix message received popup with proper callback.
+
+- Temporary disable 'Jingle Outgoing File Offer', use HTTP file upload instead; Android Studio release build throws runtime AbstractMethodError.
+- Fix Option 'StreetViews & Map' crashes in API-34: Layout <frame /> cannot accept fraction value in android:layout_weight
+- Fix Correct downloadable fileNameApk =String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
+- Make UpdateServiceImpl() shows both version/code for installed and latest available apk.
+- Move shutdownApplication() function into ExitMenuActivity i.e. non-static
+- Add missing method in JComponent#setDoubleBuffered(boolean)
+
+- Need further investigation, do not happen anymore after fixing message received popup with proper callback:
+  * Error dispatching notification of type PopupMessageAction from net.java.sip.communicator.impl.notification.PopupMessageNotificationHandlerImpl@2836f72
+    java.lang.IllegalArgumentException: org.atalk.android: Targeting U+ (version 34 and above) disallows creating or retrieving a PendingIntent with FLAG_MUTABLE,
+    an implicit Intent within and without FLAG_NO_CREATE and FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT for security reasons. To retrieve an already existing PendingIntent,
+    use FLAG_NO_CREATE, however, to create a new PendingIntent with an implicit Intent use FLAG_IMMUTABLE.
+
+=========================================================================
 Version:        3.3.2 (303021)
 Release Date:   01/26/2024
 Author:         cmeng

@@ -12,14 +12,14 @@
         class="com.google.android.gms.maps.SupportStreetViewPanoramaFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5" />
+        android:layout_weight="1" />
 
     <fragment
         android:id="@+id/map_view"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         map:cameraTargetLat="-33.87365"
         map:cameraTargetLng="151.20689"
         map:cameraZoom="15" />

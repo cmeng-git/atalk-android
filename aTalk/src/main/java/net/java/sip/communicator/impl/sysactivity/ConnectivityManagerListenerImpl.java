@@ -59,8 +59,8 @@ public class ConnectivityManagerListenerImpl extends BroadcastReceiver
      */
     public void start()
     {
-        ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), this,
-                new IntentFilter(CONNECTIVITY_CHANGE_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED);
+        ContextCompat.registerReceiver(aTalkApp.getInstance(), this,
+                new IntentFilter(CONNECTIVITY_CHANGE_ACTION), ContextCompat.RECEIVER_EXPORTED);
         connected = true;
     }
 

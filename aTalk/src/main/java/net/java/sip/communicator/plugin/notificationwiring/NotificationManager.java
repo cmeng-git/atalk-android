@@ -273,7 +273,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Fires a notification for the given event type through the <code>NotificationService</code>. The
      * event type is one of the static constants defined in the <code>NotificationManager</code> class.
-     *
+     * <p>
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to stop looping sounds
      * if the respective notifications use them i.e. there is implicit agreement that the notifications fired through
      * the method do not loop sounds. Consequently, the method passes arguments to <code>NotificationService</code>
@@ -1552,8 +1552,8 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             }
 
             proactiveTimer.put(chatDescriptor, currentTime);
-            fireChatNotification(chatDescriptor, PROACTIVE_NOTIFICATION, fromJid,
-                    aTalkApp.getResString(R.string.service_gui_PROACTIVE_NOTIFICATION), null);
+            String chatState = aTalkApp.getResString(R.string.service_gui_PROACTIVE_NOTIFICATION, evt.getChatState());
+            fireChatNotification(chatDescriptor, PROACTIVE_NOTIFICATION, fromJid, chatState, null);
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)
                 throw (ThreadDeath) t;

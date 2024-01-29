@@ -581,7 +581,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Nivel de ganancia del micrófono</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Ajustar el sonido del micrófono</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Presencia no soportada por %1$s</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">está escribiendo un mensaje</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">está escribiendo un mensaje (%1$s)</string>
     <string name="service_gui_RECENT_MESSAGES">Conversaciones recientes</string>
     <string name="service_gui_RECEIVED">%1$s recibido</string>
     <string name="service_gui_REFERRED_STATUS">Remitido</string>
@@ -822,8 +822,8 @@
     <string name="plugin_update_Download_Ready">La actualización (%1$s) está descargada y lista para ser instalada.</string>
     <string name="plugin_update_InProgress">En progreso</string>
     <string name="plugin_update_Download_InProgress">La descarga de la actualización está en curso.</string>
-    <string name="plugin_update_Update_Available">Hay disponible una nueva versión (%1$s-%2$s) para %3$s. Versión instalada actual: %4$s.</string>
-    <string name="plugin_update_UpToDate">Versión instalada actual: (%1$s-%2$s) está actualizada. Versión disponible en línea: %3$s.</string>
+    <string name="plugin_update_Update_Available">Hay disponible una nueva versión (%1$s-%2$s) para %3$s. Versión instalada actual: (%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">Versión instalada actual: (%1$s-%2$s) está actualizada. Versión disponible en línea: (%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">No hay nueva versión</string>
     <string name="plugin_update_Install_Update">Instalar las actualizaciones</string>
     <string name="plugin_update_Download_failed">¡Error al descargar la nueva actualización!</string>

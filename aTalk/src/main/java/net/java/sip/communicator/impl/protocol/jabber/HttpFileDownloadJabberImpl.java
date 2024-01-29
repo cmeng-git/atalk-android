@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 
 import androidx.core.content.ContextCompat;
@@ -211,10 +210,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
     // Routines supporting HTTP File Download
 
     /**
-     * Method fired when the chat message is clicked. {@inheritDoc}
-     * Trigger from @see ChatFragment#
-     *
-     * @param checkFileSize check acceptable file Size limit before download if true
+     * Method fired when the chat message is clicked. {@inheritDoc} Trigger from @see ChatFragment#
      */
     public void initHttpFileDownload() {
         if (previousDownloads.contains(dnLink))
@@ -223,8 +219,8 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         // queryFileSize will also trigger onReceived; just ignore
         if (downloadReceiver == null) {
             downloadReceiver = new DownloadReceiver();
-            ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), downloadReceiver,
-                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED);
+            ContextCompat.registerReceiver(aTalkApp.getInstance(), downloadReceiver,
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED);
         }
         if (mFileSize == -1) {
             mFileSize = queryFileSize();

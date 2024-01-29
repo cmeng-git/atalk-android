@@ -19,6 +19,7 @@ package org.atalk.android.gui.call;
 import android.content.Context;
 import android.content.Intent;
 
+import net.java.sip.communicator.impl.protocol.jabber.CallPeerJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicTelephonyJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
@@ -266,7 +267,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
      * On user accepted call, send an "accept: message to own bareJid; server will then forward to all our resources.
      * Cancel vibrate in progress; The ending of ring tone is handled by the caller
      * i.e. NotificationPopupHandler.removeCallNotification(id);
-     *
+     * <p>
      * Note: the attached message is with to/from reversed for sendJingleMessage requirements
      *
      * @param sid the intended Jingle Message call id

@@ -5,6 +5,7 @@
  */
 package org.atalk.android.gui.menu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.About;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.atalk.service.osgi.OSGiActivity;
+import org.atalk.service.osgi.OSGiService;
 
 /**
  * Extends this activity to handle exit options menu item.
@@ -38,7 +40,7 @@ public abstract class ExitMenuActivity extends OSGiActivity {
         switch (item.getItemId()) {
             // Shutdown application
             case R.id.menu_exit:
-                aTalkApp.shutdownApplication();
+                shutdownApplication();
                 break;
             case R.id.online_help:
                 About.atalkUrlAccess(this, getString(R.string.FAQ_Link));
@@ -54,5 +56,18 @@ public abstract class ExitMenuActivity extends OSGiActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    /**
+     * Shutdowns the app by stopping <code>OSGiService</code> and broadcasting action {@link #ACTION_EXIT}.
+     */
+    private void shutdownApplication() {
+        // Shutdown the OSGi service
+        stopService(new Intent(this, OSGiService.class));
+        // Broadcast the exit action
+        Intent exitIntent = new Intent();
+        exitIntent.setAction(ACTION_EXIT);
+        exitIntent.setPackage(getPackageName());
+        sendBroadcast(exitIntent);
     }
 }

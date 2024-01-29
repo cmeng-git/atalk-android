@@ -564,7 +564,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Tingkat penguatan mikrofon</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Sesuaikan suara mikrofon</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">Keberadaan tidak didukung oleh %1$s</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">sedang menulis pesan</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">sedang menulis pesan (%1$s)</string>
     <string name="service_gui_RECENT_MESSAGES">Percakapan terbaru</string>
 	<string name="service_gui_RECEIVED">%1$s diterima</string>
     <string name="service_gui_REFERRED_STATUS">Disebutkan</string>
@@ -804,8 +804,8 @@
     <string name="plugin_update_Download_Ready">Pembaruan (%1$s) diunduh dan siap untuk dipasang.</string>
     <string name="plugin_update_InProgress">Sedang berlangsung</string>
     <string name="plugin_update_Download_InProgress">Mengunduh pembaruan sedang berlangsung.</string>
-    <string name="plugin_update_Update_Available">Versi baru yang dirilis (%1$s-%2$s) untuk %3$s telah tersedia. Versi terpasang saat ini: %4$s.</string>
-    <string name="plugin_update_UpToDate">Versi terinstal yang saat ini: (%1$s-%2$s) adalah yang terbaru. Versi online yang tersedia: %3$s.</string>
+    <string name="plugin_update_Update_Available">Versi baru yang dirilis (%1$s-%2$s) untuk %3$s telah tersedia. Versi terpasang saat ini: (%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">Versi terinstal yang saat ini: (%1$s-%2$s) adalah yang terbaru. Versi online yang tersedia: (%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">Tidak ada versi baru</string>
     <string name="plugin_update_Install_Update">Instal Pembaruan</string>
     <string name="plugin_update_Download_failed">Gagal mengunduh pembaruan baru!</string>

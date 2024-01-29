@@ -576,7 +576,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">Úroveň zisku mikrofónu</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Upravte zvuk mikrofónu</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">%1$s nepodporuje prítomnosť</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">píše správu</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">píše správu (%1$s)s</string>
     <string name="service_gui_RECENT_MESSAGES">Posledné konverzácie</string>
     <string name="service_gui_RECEIVED">Prijaté: %1$s</string>
     <string name="service_gui_REFERRED_STATUS">Uvedené</string>
@@ -812,8 +812,8 @@
     <string name="plugin_update_Download_Ready">Aktualizácia (%1$s) sa stiahne a je pripravená na inštaláciu.</string>
     <string name="plugin_update_InProgress">Prebieha</string>
     <string name="plugin_update_Download_InProgress">Prebieha sťahovanie aktualizácií.</string>
-    <string name="plugin_update_Update_Available">K dispozícii je nová vydaná verzia (%1$s-%2$s) pre %3$s. Aktuálna nainštalovaná verzia: %4$s.</string>
-    <string name="plugin_update_UpToDate">Vaša aktuálna nainštalovaná verzia: (%1$s-%2$s) je aktuálna. Online dostupná verzia: %3$s.</string>
+    <string name="plugin_update_Update_Available">K dispozícii je nová vydaná verzia (%1$s-%2$s) pre %3$s. Aktuálna nainštalovaná verzia: (%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">Vaša aktuálna nainštalovaná verzia: (%1$s-%2$s) je aktuálna. Online dostupná verzia: (%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">Žiadna nová verzia</string>
     <string name="plugin_update_Install_Update">Nainštalujte aktualizácie</string>
     <string name="plugin_update_Download_failed">Nepodarilo sa stiahnuť novú aktualizáciu!</string>

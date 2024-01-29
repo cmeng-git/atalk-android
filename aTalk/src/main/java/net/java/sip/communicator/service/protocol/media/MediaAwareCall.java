@@ -269,6 +269,7 @@ public abstract class MediaAwareCall<
      *
      * @param mediaType the <code>MediaType</code> of the <code>MediaStream</code> which RTP
      * and RTCP traffic is to be forwarded between
+     *
      * @return the <code>RTPTranslator</code> which forwards RTP and RTCP traffic between the
      * <code>CallPeer</code>s of this <code>Call</code> when the local peer represented by this
      * <code>Call</code> is acting as a conference focus
@@ -453,6 +454,7 @@ public abstract class MediaAwareCall<
      *
      * @param allowed <code>true</code> if local video transmission is allowed and <code>false</code> otherwise.
      * @param useCase the use case of the video (i.e video call or desktop streaming/sharing session)
+     *
      * @throws OperationFailedException if video initialization fails.
      */
     public void setLocalVideoAllowed(boolean allowed, MediaUseCase useCase)
@@ -491,6 +493,7 @@ public abstract class MediaAwareCall<
      * case the system is actually able to do so.
      *
      * @param useCase the use case of the video (i.e video call or desktop streaming/sharing session)
+     *
      * @return <code>true</code> if the streaming of local video for this <code>Call</code> is allowed;
      * otherwise, <code>false</code>
      */
@@ -694,6 +697,7 @@ public abstract class MediaAwareCall<
      * @param newState the <code>CallState</code> into which this <code>Call</code> is to enter
      * @param cause the <code>CallPeerChangeEvent</code> which is the cause for the request to have this
      * <code>Call</code> enter the specified <code>CallState</code>
+     *
      * @see Call#setCallState(CallState, CallPeerChangeEvent)
      */
     @Override

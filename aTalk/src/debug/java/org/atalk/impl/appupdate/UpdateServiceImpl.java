@@ -74,7 +74,7 @@ public class UpdateServiceImpl implements UpdateService
      * Apk mime type constant.
      */
     private static final String APK_MIME_TYPE = "application/vnd.android.package-archive";
-    private static final String fileNameApk =String.format("aTalk-%s.apk", BuildConfig.BUILD_TYPE);
+    private static final String fileNameApk =String.format("aTalk-%s-%s.apk", BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE);
 
     /**
      * The download link for the installed application
@@ -143,7 +143,7 @@ public class UpdateServiceImpl implements UpdateService
                             public void onDialogCancelled(@NotNull DialogActivity dialog)
                             {
                             }
-                        }, latestVersion, Long.toString(latestVersionCode), aTalkApp.getResString(R.string.APPLICATION_NAME), currentVersion
+                        }, latestVersion, latestVersionCode, fileNameApk, currentVersion, currentVersionCode
                 );
             }
             else {
@@ -169,7 +169,7 @@ public class UpdateServiceImpl implements UpdateService
                             public void onDialogCancelled(@NotNull DialogActivity dialog)
                             {
                             }
-                        }, currentVersion, currentVersionCode, latestVersion
+                        }, currentVersion, currentVersionCode, latestVersion, latestVersionCode
                 );
             }
         } else {
@@ -282,8 +282,8 @@ public class UpdateServiceImpl implements UpdateService
 
         if (downloadReceiver == null) {
             downloadReceiver = new DownloadReceiver();
-            ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), downloadReceiver,
-                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_NOT_EXPORTED);
+            ContextCompat.registerReceiver(aTalkApp.getInstance(), downloadReceiver,
+                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED);
         }
 
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -471,7 +471,7 @@ public class UpdateServiceImpl implements UpdateService
             }
         }
 
-        // return true if all failed.
+        // return true if all failed to force update.
         return true;
     }
 

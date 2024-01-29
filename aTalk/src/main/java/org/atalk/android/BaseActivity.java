@@ -15,6 +15,11 @@ import org.atalk.android.gui.util.ThemeHelper;
  */
 public class BaseActivity extends AppCompatActivity {
     /**
+     * The EXIT action name that is broadcast to all OSGiActivities
+     */
+    protected static final String ACTION_EXIT = "org.atalk.android.exit";
+
+    /**
      * Override AppCompatActivity#onCreate() to support Theme setting
      * Must setTheme() before super.onCreate(), otherwise user selected Theme is not working
      */

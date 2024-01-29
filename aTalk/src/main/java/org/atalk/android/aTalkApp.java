@@ -54,13 +54,12 @@ import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.DrawableCache;
 import org.atalk.android.gui.util.LocaleHelper;
 import org.atalk.android.plugin.permissions.PermissionsActivity;
-import org.atalk.impl.timberlog.TimberLogImpl;
 import org.atalk.impl.androidnotification.NotificationHelper;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
+import org.atalk.impl.timberlog.TimberLogImpl;
 import org.atalk.persistance.DatabaseBackend;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.log.LogUploadService;
-import org.atalk.service.osgi.OSGiService;
 import org.osgi.framework.BundleContext;
 
 import java.awt.Dimension;
@@ -78,11 +77,6 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * Name of config property that indicates whether foreground icon should be displayed.
      */
     public static final String SHOW_ICON_PROPERTY_NAME = "org.atalk.android.show_icon";
-
-    /**
-     * The EXIT action name that is broadcast to all OSGiActivities
-     */
-    public static final String ACTION_EXIT = "org.atalk.android.exit";
 
     /**
      * Indicate if aTalk is in the foreground (true) or background (false)
@@ -240,18 +234,6 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         }
         Timber.d("Android device is %s.", isLocked ? "locked" : "unlocked");
         return isLocked;
-    }
-
-    /**
-     * Shutdowns the app by stopping <code>OSGiService</code> and broadcasting action {@link #ACTION_EXIT}.
-     */
-    public static void shutdownApplication() {
-        // Shutdown the OSGi service
-        mInstance.stopService(new Intent(mInstance, OSGiService.class));
-        // Broadcast the exit action
-        Intent exitIntent = new Intent();
-        exitIntent.setAction(ACTION_EXIT);
-        mInstance.sendBroadcast(exitIntent);
     }
 
     /**

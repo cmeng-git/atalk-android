@@ -577,7 +577,7 @@
     <string name="service_gui_MIC_CONTROL_TITLE">麦克风增益级别</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">调整麦克风声音</string>
     <string name="service_gui_PRESENCE_NOT_SUPPORTED">%1$s 不支持在线状态</string>
-    <string name="service_gui_PROACTIVE_NOTIFICATION">正在写短信</string>
+    <string name="service_gui_PROACTIVE_NOTIFICATION">正在写短信 (%1$s)</string>
     <string name="service_gui_RECENT_MESSAGES">最近对话</string>
     <string name="service_gui_RECEIVED">%1$s 已收到</string>
     <string name="service_gui_REFERRED_STATUS">推荐</string>
@@ -813,8 +813,8 @@
     <string name="plugin_update_Download_Ready">更新 (%1$s) 已下载并准备安装。</string>
     <string name="plugin_update_InProgress">进行中</string>
     <string name="plugin_update_Download_InProgress">正在下载更新。</string>
-    <string name="plugin_update_Update_Available">%3$s 的新发布版本 (%1$s-%2$s) 可用。当前安装的版本：%4$s.</string>
-    <string name="plugin_update_UpToDate">您当前安装的版本：(%1$s-%2$s) 是最新的。\n在线版本：%3$s.</string>
+    <string name="plugin_update_Update_Available">%3$s 的新发布版本 (%1$s-%2$s) 可用。当前安装的版本：(%4$s-%5$s).</string>
+    <string name="plugin_update_UpToDate">您当前安装的版本：(%1$s-%2$s) 是最新的。\n在线版本：(%3$s-%4$s).</string>
     <string name="plugin_update_New_Version_None">没有新版本</string>
     <string name="plugin_update_Install_Update">安装更新</string>
     <string name="plugin_update_Download_failed">无法下载新更新！</string>
