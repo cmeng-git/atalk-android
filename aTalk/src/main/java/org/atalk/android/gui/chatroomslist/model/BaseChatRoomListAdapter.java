@@ -93,7 +93,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     public BaseChatRoomListAdapter(ChatRoomListFragment crlFragment)
     {
         // cmeng - must use this mInflater as crlFragment may not always attached to FragmentManager
-        mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
+        mInflater = LayoutInflater.from(aTalkApp.getInstance());
         chatRoomListFragment = crlFragment;
         chatRoomListView = chatRoomListFragment.getChatRoomListView();
     }

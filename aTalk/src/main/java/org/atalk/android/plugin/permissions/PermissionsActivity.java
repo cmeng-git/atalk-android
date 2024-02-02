@@ -59,41 +59,20 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.atalk.android.BaseActivity;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
+import org.atalk.android.databinding.PermissionsActivityBinding;
 import org.atalk.android.gui.Splash;
 import org.atalk.service.SystemEventReceiver;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
  * Sample activity showing the permission request process with Dexter.
  */
 public class PermissionsActivity extends BaseActivity {
-    @BindView(R.id.audio_permission_feedback)
-    TextView audioPermissionFeedbackView;
-    @BindView(R.id.camera_permission_feedback)
-    TextView cameraPermissionFeedbackView;
-    @BindView(R.id.contacts_permission_feedback)
-    TextView contactsPermissionFeedbackView;
-    @BindView(R.id.location_permission_feedback)
-    TextView locationPermissionFeedbackView;
-    @BindView(R.id.notifications_permission_feedback)
-    TextView notificationsPermissionFeedbackView;
-    @BindView(R.id.phone_permission_feedback)
-    TextView phonePermissionFeedbackView;
-    @BindView(R.id.storage_permission_feedback)
-    TextView storagePermissionFeedbackView;
-    @BindView(R.id.storage_permission_button)
-    Button button_storage;
-    @BindView(R.id.notifications_permission_button)
-    Button button_notifications;
-    @BindView(android.R.id.content)
-    View contentView;
+    private PermissionsActivityBinding mBinding;
 
     private MultiplePermissionsListener allPermissionsListener;
     private MultiplePermissionsListener dialogMultiplePermissionsListener;
@@ -142,7 +121,11 @@ public class PermissionsActivity extends BaseActivity {
                 startActivity(intent);
             }
 
-            setContentView(R.layout.permissions_activity);
+            mBinding = PermissionsActivityBinding.inflate(getLayoutInflater());
+            View view = mBinding.getRoot();
+            setContentView(view);
+            initView();
+
             Timber.i("Launching dynamic permission request for aTalk.");
             aTalkApp.permissionFirstRequest = false;
 
@@ -151,33 +134,12 @@ public class PermissionsActivity extends BaseActivity {
             mBatteryOptimization = requestBatteryOptimization();
             boolean showBatteryOptimizationDialog = openBatteryOptimizationDialogIfNeeded();
 
-            ButterKnife.bind(this);
             createPermissionListeners();
             boolean permissionRequest = getPackagePermissionsStatus();
             permissionsStatusUpdate();
 
             if ((!permissionRequest) && !showBatteryOptimizationDialog) {
                 startLauncher();
-            }
-
-            // POST_NOTIFICATIONS is only valid for API-33 (TIRAMISU)
-            if (permissionList.contains(Manifest.permission.POST_NOTIFICATIONS)) {
-                notificationsPermissionFeedbackView.setVisibility(View.VISIBLE);
-                button_notifications.setVisibility(View.VISIBLE);
-            }
-            else {
-                notificationsPermissionFeedbackView.setVisibility(View.GONE);
-                button_notifications.setVisibility(View.GONE);
-            }
-
-            // handler for WRITE_EXTERNAL_STORAGE pending android API
-            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ||
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                storagePermissionFeedbackView.setText(R.string.permission_granted_feedback);
-                button_storage.setEnabled(false);
-            }
-            else {
-                button_storage.setEnabled(true);
             }
         }
         else {
@@ -194,7 +156,43 @@ public class PermissionsActivity extends BaseActivity {
         finish();
     }
 
-    @OnClick(R.id.button_done)
+    private void initView() {
+        Button button_storage = mBinding.storagePermissionButton;
+        // handler for WRITE_EXTERNAL_STORAGE pending android API
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            mBinding.storagePermissionFeedback.setText(R.string.permission_granted_feedback);
+            button_storage.setEnabled(false);
+        }
+        else {
+            button_storage.setEnabled(true);
+            button_storage.setOnClickListener(v -> onStoragePermissionButtonClicked());
+        }
+
+        // POST_NOTIFICATIONS is only valid for API-33 (TIRAMISU)
+        TextView notificationsPermissionFeedbackView = mBinding.notificationsPermissionFeedback;
+        Button button_notifications = mBinding.notificationsPermissionButton;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationsPermissionFeedbackView.setVisibility(View.VISIBLE);
+            button_notifications.setVisibility(View.VISIBLE);
+            button_notifications.setOnClickListener(v -> onNotificationsPermissionButtonClicked());
+        }
+        else {
+            notificationsPermissionFeedbackView.setVisibility(View.GONE);
+            button_notifications.setVisibility(View.GONE);
+        }
+
+        mBinding.cameraPermissionButton.setOnClickListener(v -> onCameraPermissionButtonClicked());
+        mBinding.contactsPermissionButton.setOnClickListener(v -> onContactsPermissionButtonClicked());
+        mBinding.locationPermissionButton.setOnClickListener(v -> onLocationPermissionButtonClicked());
+        mBinding.audioPermissionButton.setOnClickListener(v -> onAudioPermissionButtonClicked());
+        mBinding.phonePermissionButton.setOnClickListener(v -> onPhonePermissionButtonClicked());
+
+        mBinding.allPermissionsButton.setOnClickListener(v -> onAllPermissionsButtonClicked());
+        mBinding.appInfoPermissionsButton.setOnClickListener(v -> onInfoButtonClicked());
+        mBinding.buttonDone.setOnClickListener(v -> onDoneButtonClicked());
+    }
+
     public void onDoneButtonClicked() {
         startLauncher();
     }
@@ -213,7 +211,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.all_permissions_button)
     public void onAllPermissionsButtonClicked() {
         grantedPermissionResponses.clear();
         deniedPermissionResponses.clear();
@@ -225,7 +222,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.audio_permission_button)
     public void onAudioPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.RECORD_AUDIO)
@@ -234,7 +230,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.camera_permission_button)
     public void onCameraPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.CAMERA)
@@ -243,7 +238,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.contacts_permission_button)
     public void onContactsPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_CONTACTS)
@@ -252,7 +246,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.location_permission_button)
     public void onLocationPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -262,7 +255,6 @@ public class PermissionsActivity extends BaseActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    @OnClick(R.id.notifications_permission_button)
     public void onNotificationsPermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -271,7 +263,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.phone_permission_button)
     public void onPhonePermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.READ_PHONE_STATE)
@@ -280,7 +271,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.storage_permission_button)
     public void onStoragePermissionButtonClicked() {
         Dexter.withContext(this)
                 .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -289,7 +279,6 @@ public class PermissionsActivity extends BaseActivity {
                 .check();
     }
 
-    @OnClick(R.id.app_info_permissions_button)
     public void onInfoButtonClicked() {
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.parse("package:" + this.getPackageName()));
@@ -416,6 +405,7 @@ public class PermissionsActivity extends BaseActivity {
         PermissionListener feedbackViewPermissionListener = new AppPermissionListener(this);
         MultiplePermissionsListener feedbackViewMultiplePermissionListener = new MultiplePermissionListener(this);
 
+        View contentView = findViewById(android.R.id.content);
         allPermissionsListener = new CompositeMultiplePermissionsListener(feedbackViewMultiplePermissionListener,
                 SnackbarOnAnyDeniedMultiplePermissionsListener.Builder
                         .with(contentView, R.string.all_permissions_denied_feedback)
@@ -515,27 +505,28 @@ public class PermissionsActivity extends BaseActivity {
      */
     private TextView getFeedbackViewForPermission(String name) {
         TextView feedbackView;
+
         switch (name) {
             case Manifest.permission.ACCESS_FINE_LOCATION:
-                feedbackView = locationPermissionFeedbackView;
+                feedbackView = mBinding.locationPermissionFeedback;
                 break;
             case Manifest.permission.CAMERA:
-                feedbackView = cameraPermissionFeedbackView;
+                feedbackView = mBinding.cameraPermissionFeedback;
                 break;
             case Manifest.permission.POST_NOTIFICATIONS:
-                feedbackView = notificationsPermissionFeedbackView;
+                feedbackView = mBinding.notificationsPermissionFeedback;
                 break;
             case Manifest.permission.READ_CONTACTS:
-                feedbackView = contactsPermissionFeedbackView;
+                feedbackView = mBinding.contactsPermissionFeedback;
                 break;
             case Manifest.permission.READ_PHONE_STATE:
-                feedbackView = phonePermissionFeedbackView;
+                feedbackView = mBinding.phonePermissionFeedback;
                 break;
             case Manifest.permission.RECORD_AUDIO:
-                feedbackView = audioPermissionFeedbackView;
+                feedbackView = mBinding.audioPermissionFeedback;
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                feedbackView = storagePermissionFeedbackView;
+                feedbackView = mBinding.storagePermissionFeedback;
                 break;
             default:
                 feedbackView = null;

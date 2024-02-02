@@ -1209,7 +1209,7 @@ public class ChatPanel implements Chat, MessageListener {
                 if (chatRoomWrapper != null) {
                     // conferenceChatSession = new ConferenceChatSession(this, chatRoomWrapper);
                     Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-                    aTalkApp.getGlobalContext().startActivity(chatIntent);
+                    aTalkApp.getInstance().startActivity(chatIntent);
                 }
                 else {
                     Timber.e("Failed to create chatroom");
@@ -1220,7 +1220,7 @@ public class ChatPanel implements Chat, MessageListener {
                         = conferenceChatManager.createAdHocChatRoom(pps, chatContacts, reason);
                 // conferenceChatSession = new AdHocConferenceChatSession(this, chatRoomWrapper);
                 Intent chatIntent = ChatSessionManager.getChatIntent(chatRoomWrapper);
-                aTalkApp.getGlobalContext().startActivity(chatIntent);
+                aTalkApp.getInstance().startActivity(chatIntent);
             }
             // if (conferenceChatSession != null) {
             //   this.setChatSession(conferenceChatSession);

@@ -1,5 +1,35 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.4 (303040)
+Release Date:   02/03/2024
+Author:         cmeng
+- Drop com.jakewharton:butterknife-compiler:10.2.3 dependency and remove jdk-15 max restriction;
+  use android View binding class instead.
+- Change file transfer protocol priority to:
+  * The file transport is selected with the following priority order if contact is online:
+  * a. httpFileUpload (for OMEMO and plain chat session: chatType)
+  * b. jingleFileSend (Secure JET or Plain) (NAT not supported)
+  * c. Legacy byteStream transfer protocol for SOCK5 with fallback on IBB on user retry
+- Fix Smack 4.4.7: ByteStream Sock5 implementation does not take care of the host address with zone id
+- Enable webView cache mode
+- JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google time solution feedback
+- API-34 overrides aTalk message Snooze pending intent; actual implementation depends on manufacturers i.e.
+  auto enable after 3 notifications (pixel) or show user snooze option (Notes 10) with timer etc.
+
+- Update gradle build environment to with gradle 8.0.0 and above:
+  a. Use Android Studio Hedgehog | 2023.1.1 Patch
+  b. distributionUrl=https://services.gradle.org/distributions/gradle-8.5-bin.zip
+  c. classpath 'com.android.tools.build:gradle:8.2.2'
+  d. Add to buildFeatures: viewBinding true; buildConfig true
+  e. Add namespace to aTalk and YoutubePlayer modules
+  f. YoutubePlayer: kotlinOptions { jvmTarget = '1.8'}
+  g. Update gradle.properties to include:
+     # Gradle >=8.0.0: Library project resource identifiers are not constant static final ints, just static ints.
+     android.nonFinalResIds=false
+     # Gradle >=8.0.0: Allow transitive resource identifiers use in aTalk.
+     android.nonTransitiveRClass=false
+
+=========================================================================
 Version:        3.3.3 (303030)
 Release Date:   01/29/2024
 Author:         cmeng

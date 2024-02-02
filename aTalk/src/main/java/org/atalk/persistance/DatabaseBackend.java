@@ -1374,7 +1374,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
         @Override
         public Context getContext() {
-            return aTalkApp.getGlobalContext();
+            return aTalkApp.getInstance();
         }
 
         //        @Override

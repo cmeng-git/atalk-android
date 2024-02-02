@@ -238,7 +238,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
 
             contactIcon = contact.getImage();
             if (contactIcon == null) {
-                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getGlobalContext(), R.drawable.person_photo);
+                contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.person_photo);
             }
         } else if (chatDescriptor instanceof ChatRoom) {
             ChatRoom chatRoom = (ChatRoom) chatDescriptor;
@@ -304,7 +304,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
     /**
      * Fires a notification through the <code>NotificationService</code> with a specific event type, a
      * specific message title and a specific message.
-     *
+     * <p>
      * <b>Note</b>: The uses of the method at the time of this writing do not take measures to
      * stop looping sounds if the respective notifications use them i.e. there is implicit
      * agreement that the notifications fired through the method do not loop sounds. Consequently,
@@ -1338,37 +1338,37 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
      */
     public void securityMessageReceived(CallPeerSecurityMessageEvent evt) {
         try {
-            String messageTitleKey;
+            int messageTitleKey;
             // Android notification cannot support html tags
             String message = Html.fromHtml(evt.getI18nMessage()).toString();
 
             switch (evt.getEventSeverity()) {
                 // Don't play alert sound for Info or warning.
                 case SrtpListener.INFORMATION:
-                    messageTitleKey = "service.gui.SECURITY_INFO";
+                    messageTitleKey = R.string.service_gui_SECURITY_INFO;
                     aTalkApp.showToastMessage(message);
                     return;
 
                 case SrtpListener.WARNING:
-                    messageTitleKey = "service.gui.SECURITY_WARNING";
+                    messageTitleKey = R.string.service_gui_SECURITY_WARNING;
                     break;
 
                 // Security cannot be established! Play an alert sound and popup message
                 case SrtpListener.SEVERE:
                 case SrtpListener.ERROR:
-                    messageTitleKey = "service.gui.SECURITY_ERROR";
+                    messageTitleKey = R.string.service_gui_SECURITY_ERROR;
                     fireNotification(CALL_SECURITY_ERROR, SystrayService.WARNING_MESSAGE_TYPE,
-                            NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
+                            aTalkApp.getResString(messageTitleKey), message);
                     return;
 
                 default:
                     // Whatever other severity there is or will be, we do not know how to react to it yet.
-                    messageTitleKey = null;
+                    messageTitleKey = -1;
             }
 
-            if (messageTitleKey != null) {
+            if (messageTitleKey != -1) {
                 fireNotification(SECURITY_MESSAGE, SystrayService.INFORMATION_MESSAGE_TYPE,
-                        NotificationWiringActivator.getResources().getI18NString(messageTitleKey), message);
+                        aTalkApp.getResString(messageTitleKey), message);
             }
         } catch (Throwable t) {
             if (t instanceof ThreadDeath)

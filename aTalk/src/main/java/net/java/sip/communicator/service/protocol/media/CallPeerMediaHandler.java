@@ -778,7 +778,7 @@ public abstract class CallPeerMediaHandler<T extends MediaAwareCallPeer<?, ?, ?>
         }
 
         if (supportFormats.size() == 0) {
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+            DialogActivity.showDialog(aTalkApp.getInstance(),
                     R.string.service_gui_CALL, R.string.service_gui_CALL_NO_DEVICE_CODEC_H,
                     (mediaDevice != null) ? mediaDevice.getMediaType().toString() : "Unknown");
         }

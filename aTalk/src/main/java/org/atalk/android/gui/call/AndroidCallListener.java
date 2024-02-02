@@ -55,7 +55,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener {
     /**
      * The application context.
      */
-    private static final Context appContext = aTalkApp.getGlobalContext();
+    private static final Context appContext = aTalkApp.getInstance();
 
     /*
      * Flag stores speakerphone status to be restored to initial value once the call has ended.

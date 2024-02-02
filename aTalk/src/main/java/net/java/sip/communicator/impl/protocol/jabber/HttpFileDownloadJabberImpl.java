@@ -413,7 +413,7 @@ public class HttpFileDownloadJabberImpl extends AbstractFileTransfer {
         // Receiver not registered exception - may occur if window is refreshed while download is in progress?
         if (downloadReceiver != null) {
             try {
-                aTalkApp.getGlobalContext().unregisterReceiver(downloadReceiver);
+                aTalkApp.getInstance().unregisterReceiver(downloadReceiver);
             } catch (IllegalArgumentException ie) {
                 Timber.w("Unregister download receiver exception: %s", ie.getMessage());
             }

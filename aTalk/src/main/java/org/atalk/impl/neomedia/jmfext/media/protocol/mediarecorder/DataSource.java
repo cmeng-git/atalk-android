@@ -638,7 +638,7 @@ public class DataSource extends AbstractPushBufferCaptureDevice
     private void obtainParameters()
             throws IOException
     {
-        mOutputFile = aTalkApp.getGlobalContext().getCacheDir().getPath() + "/atalk-test.mpeg4";
+        mOutputFile = aTalkApp.getInstance().getCacheDir().getPath() + "/atalk-test.mpeg4";
         File outFile = new File(mOutputFile);
         Timber.d("Obtaining H264Parameters from short sample video file: %s", mOutputFile);
 

@@ -168,12 +168,12 @@ public class SystrayServiceImpl extends AbstractSystrayService
              * if(targetIntent == null) { Timber.e( "Failed to create chat with " + metaContact); } } else { //
              * TODO: add call history intent here targetIntent = null; }
              *
-             * if(targetIntent != null) { aTalkApp .getGlobalContext().startActivity(targetIntent); }
+             * if(targetIntent != null) { aTalkApp .getInstance().startActivity(targetIntent); }
              *
              * return; }
              *
              * // Displays popup message details when the notification is clicked if(message != null) {
-             * DialogActivity.showDialog( aTalkApp.getGlobalContext(), message.getMessageTitle(),
+             * DialogActivity.showDialog( aTalkApp.getInstance(), message.getMessageTitle(),
              * message.getMessage()); }
              */
         }

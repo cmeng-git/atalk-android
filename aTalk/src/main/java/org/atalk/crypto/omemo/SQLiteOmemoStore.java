@@ -131,7 +131,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
     public SQLiteOmemoStore() {
         super();
-        mDB = DatabaseBackend.getInstance(aTalkApp.getGlobalContext());
+        mDB = DatabaseBackend.getInstance(aTalkApp.getInstance());
     }
 
     /**

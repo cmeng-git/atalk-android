@@ -32,16 +32,16 @@
             android:id="@+id/presenceStatusIcon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_alignTop="@+id/contactAvatar"
+            android:layout_alignTop="@id/contactAvatar"
             android:layout_marginStart="20dp"
-            android:layout_toEndOf="@+id/contactAvatar"
+            android:layout_toEndOf="@id/contactAvatar"
             android:src="@drawable/jabber_status_ffc" />
 
         <TextView
             android:id="@+id/presenceStatusName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/presenceStatusIcon"
+            android:layout_alignBottom="@id/presenceStatusIcon"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_toEndOf="@id/presenceStatusIcon"
@@ -51,10 +51,10 @@
             android:id="@+id/statusMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/contactAvatar"
+            android:layout_alignBottom="@id/contactAvatar"
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
-            android:layout_toEndOf="@+id/contactAvatar"
+            android:layout_toEndOf="@id/contactAvatar"
             android:hint="@string/plugin_contactinfo_USER_STATUS_MESSAGE"
             tools:ignore="UnknownIdInLayout" />
     </RelativeLayout>
@@ -578,7 +578,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/centerShim"
+            android:layout_toEndOf="@id/centerShim"
             android:text="@string/service_gui_OK" />
     </RelativeLayout>
 </LinearLayout>

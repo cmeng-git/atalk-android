@@ -103,16 +103,15 @@ import timber.log.Timber;
 
 /**
  * Activity allows user to set presence status, status message, change the user avatar
- * and all the vCard-temp information for the {@link #Account}.
- *
+ * and all the vCard-temp information for the {@link Account}.
+ * <p>
  * The main panel that allows users to view and edit their account information.
  * Different instances of this class are created for every registered
  * <code>ProtocolProviderService</code>.
  * Currently, supported account details are first/middle/last names, nickname,
  * street/city/region/country address, postal code, birth date, gender,
  * organization name, job title, about me, home/work email, home/work phone.
- *
- *
+ * <p>
  * The {@link #mAccount} is retrieved from the {@link Intent} extra by it's
  * {@link AccountID#getAccountUniqueID()}
  *
@@ -121,8 +120,7 @@ import timber.log.Timber;
  */
 public class AccountInfoPresenceActivity extends OSGiActivity
         implements EventListener<AccountEvent>, DialogActivity.DialogListener,
-        SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener
-{
+        SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener {
     /**
      * Calender Date Picker parameters
      */
@@ -231,11 +229,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     private boolean isRegistered;
 
     @Override
-    protected void onCreate(android.os.Bundle savedInstanceState)
-    {
+    protected void onCreate(android.os.Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       // Set the main layout
+        // Set the main layout
         setContentView(R.layout.account_info_presence_status);
         mButtonContainer = findViewById(R.id.button_Container);
 
@@ -297,16 +294,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
     @Override
     protected void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         super.stop(bundleContext);
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         if (softKeyboard != null) {
             softKeyboard.unRegisterSoftKeyboardCallback();
@@ -315,8 +310,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         if (!hasChanges && !hasStatusChanges) {
             super.onBackPressed();
         }
@@ -328,8 +322,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Create and initialize the view with actual values
      */
-    private void initPresenceStatus()
-    {
+    private void initPresenceStatus() {
         this.accountPresence = mAccount.getPresenceOpSet();
 
         // Check for presence support
@@ -357,17 +350,14 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         ActionBarUtil.setStatusIcon(this, presenceStatus.getStatusIcon());
 
         statusSpinner.setSelection(statusAdapter.getPosition(presenceStatus), false);
-        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 hasStatusChanges = true;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parentView)
-            {
+            public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
 
@@ -384,8 +374,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * mapping between supported <code>ServerStoredDetails</code> and their respective
      * <code>EditText</code> that are used for modifying the details.
      */
-    private void initSummaryPanel()
-    {
+    private void initSummaryPanel() {
         imageUrlField = findViewById(R.id.ai_ImageUrl);
         detailToTextField.put(ImageDetail.class, imageUrlField);
 
@@ -538,6 +527,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 .setCancelText("Cancel")
                 .setThemeDark();
 
+        // Note: android DatePickerDialog required API-24 min
         mCalenderButton = findViewById(R.id.datePicker);
         mCalenderButton.setEnabled(false);
         mCalenderButton.setOnClickListener(
@@ -558,8 +548,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * check for any unsaved changes and alert user
      */
-    private void checkUnsavedChanges()
-    {
+    private void checkUnsavedChanges() {
         if (hasChanges) {
             DialogActivity.showConfirmDialog(this,
                     R.string.service_gui_UNSAVED_CHANGES_TITLE,
@@ -576,8 +565,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      *
      * @param dialog source <code>DialogActivity</code>.
      */
-    public boolean onConfirmClicked(DialogActivity dialog)
-    {
+    public boolean onConfirmClicked(DialogActivity dialog) {
         return mApplyButton.performClick();
     }
 
@@ -586,14 +574,12 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      *
      * @param dialog source <code>DialogActivity</code>
      */
-    public void onDialogCancelled(DialogActivity dialog)
-    {
+    public void onDialogCancelled(DialogActivity dialog) {
         finish();
     }
 
     @Override  // CalendarDatePickerDialogFragment callback
-    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth)
-    {
+    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
         Calendar mDate = Calendar.getInstance();
 
         int age = mDate.get(Calendar.YEAR) - year;
@@ -613,8 +599,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         hasChanges = (dialog != null);
     }
 
-    private void setTextEditState(boolean editState)
-    {
+    private void setTextEditState(boolean editState) {
         boolean isEditable;
         for (Class<? extends GenericDetail> editable : detailToTextField.keySet()) {
             EditText field = detailToTextField.get(editable);
@@ -638,8 +623,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * implementations may support details that are not supported by this plugin.
      * In this case they will not be loaded.
      */
-    private void loadDetails()
-    {
+    private void loadDetails() {
         if (accountInfoOpSet != null) {
             new DetailsLoadWorker().execute();
         }
@@ -648,16 +632,13 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Loads details in separate thread.
      */
-    private class DetailsLoadWorker extends AsyncTask<Void, Void, Iterator<GenericDetail>>
-    {
+    private class DetailsLoadWorker extends AsyncTask<Void, Void, Iterator<GenericDetail>> {
         @Override
-        public void onPreExecute()
-        {
+        public void onPreExecute() {
         }
 
         @Override
-        protected Iterator<GenericDetail> doInBackground(Void... params)
-        {
+        protected Iterator<GenericDetail> doInBackground(Void... params) {
             return accountInfoOpSet.getAllAvailableDetails();
         }
 
@@ -666,8 +647,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
          * after the {@code construct} method has returned.
          */
         @Override
-        protected void onPostExecute(Iterator<GenericDetail> result)
-        {
+        protected void onPostExecute(Iterator<GenericDetail> result) {
             Iterator<GenericDetail> allDetails = null;
             try {
                 allDetails = get();
@@ -714,8 +694,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      *
      * @param detail the loaded detail for extraction.
      */
-    private void loadDetail(GenericDetail detail)
-    {
+    private void loadDetail(GenericDetail detail) {
         if (detail.getClass().equals(AboutMeDetail.class)) {
             aboutMeDetail = (AboutMeDetail) detail;
             aboutMeArea.setText((String) detail.getDetailValue());
@@ -810,8 +789,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Retrieve avatar via XEP-0084 and override vCard <photo/> content if avatarImage not null
      */
-    private void getUserAvatarData()
-    {
+    private void getUserAvatarData() {
         byte[] avatarImage = AvatarManager.getAvatarImageByJid(mAccount.getJid().asBareJid());
         if (avatarImage != null && avatarImage.length > 0) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(avatarImage, 0, avatarImage.length);
@@ -826,8 +804,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * Attempts to upload all <code>ServerStoredDetails</code> on the server using
      * <code>OperationSetServerStoredAccountInfo</code>
      */
-    private void SubmitChangesAction()
-    {
+    private void SubmitChangesAction() {
         if (!isRegistered || !hasChanges)
             return;
 
@@ -1126,10 +1103,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * get the class's editText string value or null (length == 0)
      *
      * @param className Class Name
+     *
      * @return String or null if string length == 0
      */
-    private String getText(Class<? extends GenericDetail> className)
-    {
+    private String getText(Class<? extends GenericDetail> className) {
         EditText editText = detailToTextField.get(className);
         return ViewUtil.toString(editText);
     }
@@ -1141,8 +1118,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * @param oldDetail the detail to be replaced.
      * @param newDetail the replacement.
      */
-    private void changeDetail(GenericDetail oldDetail, GenericDetail newDetail)
-    {
+    private void changeDetail(GenericDetail oldDetail, GenericDetail newDetail) {
         try {
             if (newDetail == null) {
                 accountInfoOpSet.removeDetail(oldDetail);
@@ -1162,8 +1138,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.presence_status_menu, menu);
         return true;
@@ -1173,8 +1148,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.remove) {
             AccountDeleteDialog.create(this, mAccount, accID -> {
@@ -1194,8 +1168,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.accountAvatar) {
             getMenuInflater().inflate(R.menu.avatar_menu, menu);
@@ -1203,8 +1176,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
+    public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.avatar_ChoosePicture:
                 onAvatarClicked(avatarView);
@@ -1229,8 +1201,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      *
      * @param avatarView the {@link View} that has been clicked
      */
-    public void onAvatarClicked(View avatarView)
-    {
+    public void onAvatarClicked(View avatarView) {
         if (mAccount.getAvatarOpSet() == null) {
             Timber.w("Avatar operation set is not supported by %s", mAccount.getAccountName());
             showAvatarChangeError();
@@ -1246,8 +1217,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * @return an instant of ActivityResultLauncher<String>
      * @see ActivityResultCaller
      */
-    private ActivityResultLauncher<String> getAvatarContent()
-    {
+    private ActivityResultLauncher<String> getAvatarContent() {
         return registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if (uri == null) {
                 Timber.e("No image data selected for avatar!");
@@ -1273,8 +1243,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * @param resultCode the result code
      * @param data the source {@link Intent} that returns the result
      */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK)
             return;
@@ -1313,8 +1282,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         }
     }
 
-    private void showAvatarChangeError()
-    {
+    private void showAvatarChangeError() {
         DialogActivity.showDialog(this,
                 R.string.service_gui_ERROR, R.string.service_gui_AVATAR_SET_ERROR, mAccount.getAccountName());
     }
@@ -1325,8 +1293,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * @param status {@link PresenceStatus} to be set
      * @param text the status message
      */
-    private void publishStatus(final PresenceStatus status, final String text)
-    {
+    private void publishStatus(final PresenceStatus status, final String text) {
         new Thread(() -> {
             try {
                 // Try to publish selected status
@@ -1353,8 +1320,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * cmeng: may not be required anymore with new implementation
      */
     @Override
-    public void onChangeEvent(final AccountEvent eventObject)
-    {
+    public void onChangeEvent(final AccountEvent eventObject) {
         if (eventObject.getEventType() != AccountEvent.AVATAR_CHANGE) {
             return;
         }
@@ -1368,8 +1334,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Checks if there are any uncommitted changes and applies them eventually
      */
-    private void commitStatusChanges()
-    {
+    private void commitStatusChanges() {
         if (hasStatusChanges) {
             Spinner statusSpinner = findViewById(R.id.presenceStatusSpinner);
 
@@ -1393,8 +1358,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * Progressing dialog while applying changes to account info/status
      * Auto cancel the dialog at end of applying cycle
      */
-    public void launchApplyProgressDialog()
-    {
+    public void launchApplyProgressDialog() {
         progressDialog = ProgressDialog.show(this, getString(R.string.service_gui_WAITING),
                 getString(R.string.service_gui_APPLY_CHANGES), true, true);
         new Thread(() -> {
@@ -1419,8 +1383,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
      * SoftKeyboard event handler to show/hide view buttons to give more space for fields' text entry.
      * # init to handle when softKeyboard is hided/shown
      */
-    private void initSoftKeyboard()
-    {
+    private void initSoftKeyboard() {
         LinearLayout mainLayout = findViewById(R.id.accountInfo_layout);
         InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 
@@ -1431,31 +1394,25 @@ public class AccountInfoPresenceActivity extends OSGiActivity
 
     // Events to show or hide buttons for bigger view space for text entry
     @Override
-    public void onSoftKeyboardHide()
-    {
+    public void onSoftKeyboardHide() {
         new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.VISIBLE));
     }
 
     @Override
-    public void onSoftKeyboardShow()
-    {
+    public void onSoftKeyboardShow() {
         new Handler(Looper.getMainLooper()).post(() -> mButtonContainer.setVisibility(View.GONE));
     }
 
-    private class EditTextWatcher implements TextWatcher
-    {
+    private class EditTextWatcher implements TextWatcher {
 
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // Ignore
         }
 
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
 
-        public void afterTextChanged(Editable s)
-        {
+        public void afterTextChanged(Editable s) {
             hasChanges = true;
         }
     }

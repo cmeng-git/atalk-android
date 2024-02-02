@@ -103,7 +103,7 @@ public class AndroidContactQuery extends AbstractContactQuery<AndroidContactSour
      */
     private void doQuery()
     {
-        ContentResolver contentResolver = aTalkApp.getGlobalContext().getContentResolver();
+        ContentResolver contentResolver = aTalkApp.getInstance().getContentResolver();
         Cursor cursor = null;
 
         try {

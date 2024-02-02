@@ -116,7 +116,7 @@ public class RequestAuthorizationDialog extends OSGiActivity
      */
     public static Intent getRequestAuthDialogIntent(long requestId)
     {
-        Intent intent = new Intent(aTalkApp.getGlobalContext(), RequestAuthorizationDialog.class);
+        Intent intent = new Intent(aTalkApp.getInstance(), RequestAuthorizationDialog.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;

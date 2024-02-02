@@ -30,7 +30,7 @@ public class VibrateHandlerImpl implements VibrateNotificationHandler
 	 * Creates new instance of <code>VibrateHandlerImpl</code>.
 	 */
 	public VibrateHandlerImpl() {
-		this.vibratorService = (Vibrator) aTalkApp.getGlobalContext().getSystemService(Context.VIBRATOR_SERVICE);
+		this.vibratorService = (Vibrator) aTalkApp.getInstance().getSystemService(Context.VIBRATOR_SERVICE);
 	}
 
 	/**

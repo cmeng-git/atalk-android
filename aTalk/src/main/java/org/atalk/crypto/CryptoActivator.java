@@ -70,7 +70,7 @@ public class CryptoActivator implements BundleActivator
         // OmemoConfiguration.setMaxReadOnlyMessageCount(5);
 
         // Uncomment to setup to use a file-based persistent storage for OMEMO
-        // File omemoStoreDirectory = aTalkApp.getGlobalContext().getFilesDir();
+        // File omemoStoreDirectory = aTalkApp.getInstance().getFilesDir();
         // OmemoConfiguration.setFileBasedOmemoStoreDefaultPath(omemoStoreDirectory);
 
         // Alternatively initialize to use SQLiteOmemoStore backend database

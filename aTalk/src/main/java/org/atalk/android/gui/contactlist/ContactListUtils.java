@@ -42,7 +42,7 @@ public class ContactListUtils
                     AndroidGUIActivator.getContactListService().createMetaContact(protocolProvider, group, contactAddress);
                 } catch (MetaContactListException ex) {
                     Timber.e("Add Contact error: %s", ex.getMessage());
-                    Context ctx = aTalkApp.getGlobalContext();
+                    Context ctx = aTalkApp.getInstance();
                     String title = ctx.getString(R.string.service_gui_ADD_CONTACT_ERROR_TITLE);
 
                     String msg;

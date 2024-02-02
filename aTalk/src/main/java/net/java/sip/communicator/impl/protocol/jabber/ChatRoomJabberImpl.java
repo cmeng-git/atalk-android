@@ -923,7 +923,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         try {
             mMultiUserChat.destroy(reason, roomName);
         } catch (NoResponseException | NotConnectedException | InterruptedException e) {
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_ERROR,
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_ERROR,
                     R.string.service_gui_CHATROOM_DESTROY_EXCEPTION, e.getMessage());
             return false;
         }
@@ -1125,7 +1125,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
             fireMessageEvent(msgDeliveredEvt);
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener = new OmemoAuthenticateListener(message, omemoManager);
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
         } catch (NoOmemoSupportException e) {

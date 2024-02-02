@@ -366,7 +366,7 @@ public class LoginManager implements ServiceListener, RegistrationStateChangeLis
 //				else if (errorCode == OperationFailedException.NETWORK_FAILURE) {
 //					Timber.e(alertMsg + "network failure: " + ex);
 //				}
-                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                DialogActivity.showDialog(aTalkApp.getInstance(),
                         R.string.service_gui_ERROR, R.string.service_gui_LOGOFF_NOT_SUCCEEDED,
                         protocolProvider.getAccountID().getUserID(),
                         protocolProvider.getAccountID().getService());

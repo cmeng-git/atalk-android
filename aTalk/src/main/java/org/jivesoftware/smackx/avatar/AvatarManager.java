@@ -16,16 +16,18 @@
  */
 package org.jivesoftware.smackx.avatar;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.LruCache;
 
-import org.atalk.android.aTalkApp;
-import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.avatar.cache.*;
+import org.jivesoftware.smackx.avatar.cache.AvatarCacheFile;
+import org.jivesoftware.smackx.avatar.cache.AvatarCacheMemory;
+import org.jivesoftware.smackx.avatar.cache.JidToHashCacheFile;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -34,7 +36,9 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,7 +111,6 @@ public class AvatarManager extends Manager
     protected static boolean isUserAvatarEnable = true;
 
     protected XMPPConnection mConnection;
-    protected Context mContext;
 
     public static synchronized AvatarManager getInstanceFor(XMPPConnection connection)
     {
@@ -126,7 +129,6 @@ public class AvatarManager extends Manager
     protected AvatarManager(XMPPConnection connection)
     {
         super(connection);
-        mContext = aTalkApp.getGlobalContext();
         mConnection = connection;
         instances.put(connection, this);
 

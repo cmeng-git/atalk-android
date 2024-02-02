@@ -293,7 +293,7 @@ public class H264Parameters implements Serializable
      */
     static H264Parameters getStoredParameters(VideoFormat formatUsed)
     {
-        SharedPreferences config = aTalkApp.getGlobalContext().getSharedPreferences(
+        SharedPreferences config = aTalkApp.getInstance().getSharedPreferences(
                 STORE_ID, Context.MODE_PRIVATE);
 
         // Checks if the video size matches
@@ -324,7 +324,7 @@ public class H264Parameters implements Serializable
      */
     static void storeParameters(H264Parameters params, VideoFormat formatUsed)
     {
-        SharedPreferences config = aTalkApp.getGlobalContext().getSharedPreferences(STORE_ID, Context.MODE_PRIVATE);
+        SharedPreferences config = aTalkApp.getInstance().getSharedPreferences(STORE_ID, Context.MODE_PRIVATE);
 
         if (params.seq_parameter_set_rbsp == null || params.pic_parameter_set_rbsp == null) {
             return;

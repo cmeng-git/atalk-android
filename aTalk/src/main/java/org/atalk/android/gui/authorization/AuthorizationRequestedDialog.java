@@ -171,7 +171,7 @@ public class AuthorizationRequestedDialog extends OSGiActivity
      */
     public static void showDialog(Long id)
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         Intent showIntent = new Intent(ctx, AuthorizationRequestedDialog.class);
         showIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         showIntent.putExtra(EXTRA_REQUEST_ID, id);

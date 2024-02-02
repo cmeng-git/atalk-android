@@ -94,7 +94,7 @@ internal class LegacyYouTubePlayerView(context: Context, attrs: AttributeSet? = 
             throw IllegalStateException("This YouTubePlayerView has already been initialized.")
 
         if (handleNetworkEvents) {
-//            ContextCompat.registerReceiver(aTalkApp.getGlobalContext(), networkCallback,
+//            ContextCompat.registerReceiver(aTalkApp.getInstance(), networkCallback,
 //                    IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED)
             registerNetworkCallback()
 

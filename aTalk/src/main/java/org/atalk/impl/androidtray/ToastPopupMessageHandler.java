@@ -25,7 +25,7 @@ public class ToastPopupMessageHandler extends AbstractPopupMessageHandler {
 	 * {@inheritDoc}
 	 */
 	public void showPopupMessage(PopupMessage popupMessage) {
-		Context context = aTalkApp.getGlobalContext();
+		Context context = aTalkApp.getInstance();
 		CharSequence text = popupMessage.getMessage();
 		int duration = Toast.LENGTH_SHORT;
 

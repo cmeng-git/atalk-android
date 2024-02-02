@@ -173,7 +173,7 @@ public class AndroidUtils
      */
     public static boolean isTablet()
     {
-        Context context = aTalkApp.getGlobalContext();
+        Context context = aTalkApp.getInstance();
 
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;

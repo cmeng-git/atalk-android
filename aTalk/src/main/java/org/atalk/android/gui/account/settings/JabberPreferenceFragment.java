@@ -363,7 +363,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
                 if (msgCount > 0) {
                     String msgPrompt = aTalkApp.getResString(R.string.service_gui_USERNAME_CHANGE_WARN,
                             userName, msgCount, userNameEdited);
-                    DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+                    DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
                             aTalkApp.getResString(R.string.service_gui_WARNING), msgPrompt,
                             aTalkApp.getResString(R.string.service_gui_PROCEED), new DialogActivity.DialogListener()
                             {

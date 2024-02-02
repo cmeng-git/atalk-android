@@ -430,7 +430,7 @@ public abstract class FileTransferConversation extends OSGiFragment
             return;
         }
 
-        Glide.with(aTalkApp.getGlobalContext())
+        Glide.with(aTalkApp.getInstance())
                 .asDrawable()
                 .load(Uri.fromFile(mXferFile))
                 .override(1280, 608)

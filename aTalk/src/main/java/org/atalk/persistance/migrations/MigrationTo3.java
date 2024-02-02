@@ -36,7 +36,7 @@ public class MigrationTo3
     private static void deleteOldDatabase() {
         // Proceed to delete if "SQLiteConfigurationStore.db" exist
         String PROPERTIES_DB = "net.java.sip.communicator.impl.configuration.SQLiteConfigurationStore.db";
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         String DBPath = ctx.getDatabasePath(PROPERTIES_DB).getPath();
         File dbFile = new File(DBPath);
         if (dbFile.exists()) {

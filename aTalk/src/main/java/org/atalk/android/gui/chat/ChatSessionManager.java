@@ -324,7 +324,7 @@ public class ChatSessionManager {
             return null;
         }
 
-        Intent chatIntent = new Intent(aTalkApp.getGlobalContext(), ChatActivity.class);
+        Intent chatIntent = new Intent(aTalkApp.getInstance(), ChatActivity.class);
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         chatIntent.putExtra(CHAT_IDENTIFIER, chatId);
         chatIntent.putExtra(CHAT_MODE, chatMode);

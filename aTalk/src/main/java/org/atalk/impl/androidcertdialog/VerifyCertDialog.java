@@ -84,7 +84,7 @@ class VerifyCertDialog implements VerifyCertificateDialogService.VerifyCertifica
         }
 
         // starts the dialog and waits on the lock until finish
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         Intent verifyIntent = VerifyCertificateActivity.createIntent(ctx, requestId);
         ctx.startActivity(verifyIntent);
 

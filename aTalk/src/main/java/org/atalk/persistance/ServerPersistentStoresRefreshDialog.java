@@ -244,7 +244,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         // accountID omemo key attributes
         String JSONKEY_REGISTRATION_ID = "omemoRegId";
         String JSONKEY_CURRENT_PREKEY_ID = "omemoCurPreKeyId";
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
 
         OmemoStore<?, ?, ?, ?, ?, ?, ?, ?, ?> omemoStore = OmemoService.getInstance().getOmemoStoreBackend();
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
@@ -290,7 +290,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         String sharedPrefs = "shared_prefs";
         String history = "history_ver1.0";
 
-        File appFilesDir = aTalkApp.getGlobalContext().getFilesDir();
+        File appFilesDir = aTalkApp.getInstance().getFilesDir();
         File appRootDir = appFilesDir.getParentFile();
 
         File appDBDir = new File(appRootDir, database);
@@ -332,7 +332,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      */
     public static void deleteDB()
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         ctx.deleteDatabase(DatabaseBackend.DATABASE_NAME);
     }
 

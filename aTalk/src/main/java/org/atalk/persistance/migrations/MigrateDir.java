@@ -38,7 +38,7 @@ public class MigrateDir
      */
     public static void purgeAvatarCache()
     {
-        File avatarCacheDir = new File(aTalkApp.getGlobalContext().getFilesDir() + "/avatarcache");
+        File avatarCacheDir = new File(aTalkApp.getInstance().getFilesDir() + "/avatarcache");
         if (avatarCacheDir.exists()) {
             try {
                 FileBackend.deleteRecursive(avatarCacheDir);

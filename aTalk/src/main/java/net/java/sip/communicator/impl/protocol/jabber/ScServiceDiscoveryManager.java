@@ -49,7 +49,6 @@ import timber.log.Timber;
  * An wrapper to smack's default {@link ServiceDiscoveryManager} that adds support for
  * XEP-0030: Service Discovery.
  * XEP-0115: Entity Capabilities
- *
  * This work is based on Jonas Adahl's smack fork.
  *
  * @author Emil Ivov
@@ -196,7 +195,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * Registers that a new feature is supported by this XMPP entity. When this client is queried
      * for its information the registered features will be answered.
-     *
+     * <p>
      * Since no packet is actually sent to the server it is safe to perform this operation before
      * logging to the server. In fact, you may want to configure the supported features before
      * logging to the server so that the information is already available if it is required upon login.
@@ -222,8 +221,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
 
     /**
      * Removes the specified feature from the supported features by the encapsulated ServiceDiscoveryManager.
-     *
-     *
      * Since no packet is actually sent to the server it is safe to perform this operation before
      * logging to the server.
      *
@@ -237,7 +234,6 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * ============================================
      * NodeInformationProvider implementation for getNode....()
-     *
      * Returns a list of the Items {@link org.jivesoftware.smackx.disco.packet.DiscoverItems.Item}
      * defined in the node or in other words <code>null</code> since we don't support any.
      *
@@ -330,8 +326,8 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     }
 
     /**
-     * Returns the discovered information of a given XMPP entity addressed by its JID if locally
-     * cached, otherwise schedules for retrieval.
+     * Returns the discovered information of a given XMPP entity addressed by its JID
+     * if locally cached, otherwise schedules for retrieval.
      *
      * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
      * @return the discovered information.
@@ -606,7 +602,7 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
      */
     public static void initEntityPersistentStore()
     {
-        entityStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/entityStore");
+        entityStoreDirectory = new File(aTalkApp.getInstance().getFilesDir() + "/entityStore");
 
         if (!entityStoreDirectory.exists()) {
             if (!entityStoreDirectory.mkdir())
@@ -627,14 +623,14 @@ public class ScServiceDiscoveryManager implements NodeInformationProvider
     /**
      * Setup the SimpleDirectoryPersistentCache store to support DiscoInfo persistent
      * store for fast discoInfo retrieval and bandwidth performance.
-     *
+     * <p>
      * Note: {@link #discoInfoStoreDirectory} directory is setup to contain all the disco#info
      * entities for each specific account and is being setup during the account login.
      */
     public void initDiscoInfoPersistentStore()
     {
         String userID = parentProvider.getAccountID().getUserID();
-        discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/discoInfoStore_" + userID);
+        discoInfoStoreDirectory = new File(aTalkApp.getInstance().getFilesDir() + "/discoInfoStore_" + userID);
 
         if (!discoInfoStoreDirectory.exists()) {
             if (!discoInfoStoreDirectory.mkdir())

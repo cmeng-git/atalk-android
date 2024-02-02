@@ -24,7 +24,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:layout_toEndOf="@+id/avatarView"
+        android:layout_toEndOf="@id/avatarView"
         android:singleLine="true"
         android:text="CalleeDisplayName@server.com"
         android:textColor="@color/textColorBlack" />
@@ -46,7 +46,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/avatarView"
+        android:layout_toEndOf="@id/avatarView"
         android:orientation="horizontal"
         android:weightSum="6">
 

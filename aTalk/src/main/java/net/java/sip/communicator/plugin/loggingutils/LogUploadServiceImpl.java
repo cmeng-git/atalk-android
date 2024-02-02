@@ -68,7 +68,7 @@ public class LogUploadServiceImpl implements LogUploadService
             }
             // Stores file name to remove it on service shutdown
             storedLogFiles.add(externalStorageFile);
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             Uri logsUri = FileBackend.getUriForFile(ctx, externalStorageFile);
 
             Intent sendIntent = new Intent(Intent.ACTION_SEND);

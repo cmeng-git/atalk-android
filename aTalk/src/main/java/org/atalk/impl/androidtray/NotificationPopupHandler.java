@@ -67,7 +67,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
         implements ChatSessionManager.CurrentChatListener {
     private static final String KEY_TEXT_REPLY = "key_text_reply";
 
-    private final Context mContext = aTalkApp.getGlobalContext();
+    private final Context mContext = aTalkApp.getInstance();
 
     /**
      * Map of currently displayed <code>AndroidPopup</code>s. Value is removed when
@@ -156,7 +156,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                                 .putExtra(CallManager.AUTO_ACCEPT, SystrayService.HEADS_UP_INCOMING_CALL == msgType);
                     }
 
-                    PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getGlobalContext(),
+                    PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(aTalkApp.getInstance(),
                             0, fullScreenIntent, getPendingIntentFlag(false, true));
 
                     mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -192,11 +192,11 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                             aTalkApp.getResString(R.string.service_gui_MAS),
                             createReadPendingIntent(nId))
                             .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_MARK_AS_READ)
-                            .setShowsUserInterface(false)
+                            // .setShowsUserInterface(true)
                             .build();
                     mBuilder.addAction(markReadAction);
 
-                    // Build Reply action for OS >= android-N
+                    // Build Reply action for OS >= android-N (Override for API-34 built!!!)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
                                 .setLabel("Quick reply")
@@ -207,7 +207,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                                 aTalkApp.getResString(R.string.service_gui_REPLY),
                                 createReplyIntent(nId))
                                 .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
-                                .setShowsUserInterface(false)
+                                // .setShowsUserInterface(true)
                                 .addRemoteInput(remoteInput)
                                 .build();
                         mBuilder.addAction(replyAction);
@@ -219,7 +219,8 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                             NotificationCompat.Action snoozeAction = new NotificationCompat.Action.Builder(
                                     R.drawable.ic_notifications_paused_dark,
                                     aTalkApp.getResString(R.string.service_gui_SNOOZE),
-                                    createSnoozeIntent(nId)).build();
+                                    createSnoozeIntent(nId))
+                                    .build();
                             mBuilder.addAction(snoozeAction);
                         }
                     }
@@ -482,7 +483,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
      */
     private static void removeNotification(int notificationId) {
         if (notificationId == OSGiService.getGeneralNotificationId()) {
-            AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
+            AndroidUtils.clearGeneralNotification(aTalkApp.getInstance());
         }
         AndroidPopup popup = notificationMap.get(notificationId);
         if (popup == null) {

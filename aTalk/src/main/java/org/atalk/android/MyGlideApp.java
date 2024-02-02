@@ -27,7 +27,7 @@ public class MyGlideApp extends AppGlideModule
             return;
         }
 
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         if (FileBackend.isMediaFile(file)) {
             // History file image view is only a small preview (192 px max height)
             if (isHistory) {

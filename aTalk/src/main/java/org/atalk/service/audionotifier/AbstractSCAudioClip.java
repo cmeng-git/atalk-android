@@ -95,6 +95,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     {
         this.uri = uri;
         this.audioNotifier = audioNotifier;
+        // Timber.e(new Exception("AbstractSCAudioClip Init: " + uri));
     }
 
     /**
@@ -366,14 +367,14 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
 
     // The notification volume for aTalk - no good to implement as it affect all notifications
     //    private void setNotificationVolume() {
-    //        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+    //        AudioManager audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
     //        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
     //        Timber.d("Current volume: %s", currentVolume);
     //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), 0);
     //    }
     //
     //    private void restoreNotificationVolume() {
-    //        AudioManager audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+    //        AudioManager audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
     //        Timber.d("Current volume restore: %s", currentVolume);
     //        audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, currentVolume, 0);
     //    }
@@ -500,7 +501,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
             }
         }
 
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         ringtone = RingtoneManager.getRingtone(ctx, Uri.parse(uri));
         if (ringtone == null)
             return false;
@@ -533,7 +534,7 @@ public abstract class AbstractSCAudioClip implements SCAudioClip
     {
         if (!uri.startsWith(AndroidResourceServiceImpl.PROTOCOL)) {
             if (ringtone != null) {
-                // Timber.d("Ring tone playback stopping: %s = %s", ringtone.getTitle(aTalkApp.getGlobalContext()), uri);
+                // Timber.d("Ring tone playback stopping: %s = %s", ringtone.getTitle(aTalkApp.getInstance()), uri);
                 try {
                     ringtone.stop();
                     ringtone = null;

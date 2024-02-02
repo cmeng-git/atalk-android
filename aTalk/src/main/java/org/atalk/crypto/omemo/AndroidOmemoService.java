@@ -132,7 +132,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
             if (errMsg.contains("Invalid IdentityKeyPairs") || errMsg.contains("CorruptedOmemoKeyException")) {
                 String msg = aTalkApp.getResString(R.string.omemo_init_failed_CorruptedOmemoKeyException,
                         mOmemoManager.getOwnDevice(), errMsg);
-                DialogActivity.showDialog(aTalkApp.getGlobalContext(), title, msg);
+                DialogActivity.showDialog(aTalkApp.getInstance(), title, msg);
             }
             else {
                 aTalkApp.showToastMessage(R.string.omemo_init_failed_noresponse, mOmemoManager.getOwnDevice());

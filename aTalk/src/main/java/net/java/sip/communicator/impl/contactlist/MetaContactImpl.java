@@ -244,7 +244,6 @@ public class MetaContactImpl extends DataObject implements MetaContact
 
     /**
      * Returns contacts, encapsulated by this MetaContact and belonging to the specified protocol ContactGroup.
-     *
      * In order to prevent problems with concurrency, the <code>Iterator</code> returned by
      * this method is not be over the actual list of contacts but over a copy of that list.
      *

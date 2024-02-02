@@ -101,7 +101,7 @@ public class AndroidPopup
     {
         this.handler = handler;
         this.popupMessage = popupMessage;
-        mContext = aTalkApp.getGlobalContext();
+        mContext = aTalkApp.getInstance();
 
         group = popupMessage.getGroup();
         nId = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
@@ -387,13 +387,13 @@ public class AndroidPopup
         }
         // Displays popup message details when the notification is clicked when targetIntent is null
         if ((message != null) && (targetIntent == null)) {
-            targetIntent = DialogActivity.getDialogIntent(aTalkApp.getGlobalContext(),
+            targetIntent = DialogActivity.getDialogIntent(aTalkApp.getInstance(),
                     message.getMessageTitle(), message.getMessage());
         }
 
         // Must be unique for each, so use the notification id as the request code
         return (targetIntent == null)
-                ? null : PendingIntent.getActivity(aTalkApp.getGlobalContext(), getId(), targetIntent,
+                ? null : PendingIntent.getActivity(aTalkApp.getInstance(), getId(), targetIntent,
                 NotificationPopupHandler.getPendingIntentFlag(false, true));
     }
 

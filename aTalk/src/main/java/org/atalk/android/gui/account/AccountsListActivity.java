@@ -278,7 +278,7 @@ public class AccountsListActivity extends OSGiActivity
             // Account in unRegistering so discoveryInfoManager == null
             // ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
             // File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
-            File discoInfoStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir()
+            File discoInfoStoreDirectory = new File(aTalkApp.getInstance().getFilesDir()
                     + "/discoInfoStore_" + userJid);
             try {
                 FileBackend.deleteRecursive(discoInfoStoreDirectory);

@@ -99,7 +99,7 @@ public class CallControl extends BroadcastReceiver
         switch (action) {
             case ACTION_TOGGLE_SPEAKER:
                 Timber.log(TimberLog.FINER, "Action TOGGLE SPEAKER");
-                AudioManager audio = (AudioManager) aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+                AudioManager audio = (AudioManager) aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
                 audio.setSpeakerphoneOn(!audio.isSpeakerphoneOn());
                 break;
 

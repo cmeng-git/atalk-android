@@ -93,7 +93,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList)
     {
         // cmeng - must use this mInflater as clFragment may not always attached to FragmentManager e.g. muc invite dialog
-        mInflater = LayoutInflater.from(aTalkApp.getGlobalContext());
+        mInflater = LayoutInflater.from(aTalkApp.getInstance());
         contactListFragment = clFragment;
         isMainContactList = mainContactList;
         contactListView = contactListFragment.getContactListView();
@@ -513,7 +513,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
                     case R.id.contactCallVideoButton:
                         if (viewHolder != null) {
-                            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), metaContact,
+                            AndroidCallUtil.createCall(aTalkApp.getInstance(), metaContact,
                                     (isAudioCall == null), viewHolder.callVideoButton);
                         }
                         break;

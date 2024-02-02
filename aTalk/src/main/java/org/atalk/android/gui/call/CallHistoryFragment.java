@@ -433,7 +433,7 @@ public class CallHistoryFragment extends OSGiFragment
                     case R.id.callVideoButton:
                         if (viewHolder != null) {
                             boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                            AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(), jid,
+                            AndroidCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
                                     viewHolder.callVideoButton, isVideoCall);
                         }
                         break;

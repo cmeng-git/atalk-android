@@ -61,7 +61,7 @@ public class ProgressDialogFragment extends OSGiFragment
         Bundle args = new Bundle();
         args.putString(ARG_MESSAGE, message);
 
-        return DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title,
+        return DialogActivity.showCustomDialog(aTalkApp.getInstance(), title,
                 ProgressDialogFragment.class.getName(), args, null, null, extras);
     }
 }

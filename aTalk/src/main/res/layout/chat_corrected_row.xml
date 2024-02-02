@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="4dp"
-        android:layout_toStartOf="@+id/outgoingAvatarView"
+        android:layout_toStartOf="@id/outgoingAvatarView"
         android:background="@drawable/holder_message_correction"
         android:gravity="end"
         android:orientation="vertical"
@@ -85,7 +85,7 @@
         android:id="@+id/messageArrowView"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/chat_arrow_height"
-        android:layout_toEndOf="@+id/outgoingMessageHolder"
+        android:layout_toEndOf="@id/outgoingMessageHolder"
         android:layout_marginStart="-10dp"
         android:layout_marginTop="@dimen/chat_arrow_top"
         android:src="@drawable/message_arrow_out_correction_dark" />

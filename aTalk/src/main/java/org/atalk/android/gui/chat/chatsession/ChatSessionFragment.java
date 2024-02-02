@@ -617,7 +617,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
                     case R.id.callVideoButton:
                         boolean isVideoCall = viewHolder.callVideoButton.isPressed();
-                        AndroidCallUtil.createAndroidCall(aTalkApp.getGlobalContext(), jid,
+                        AndroidCallUtil.createAndroidCall(aTalkApp.getInstance(), jid,
                                 viewHolder.callVideoButton, isVideoCall);
                         break;
 

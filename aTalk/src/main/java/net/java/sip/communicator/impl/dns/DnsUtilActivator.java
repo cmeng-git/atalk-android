@@ -47,7 +47,7 @@ public class DnsUtilActivator implements BundleActivator
         // DnsClient.removeDNSServerLookupMechanism(AndroidUsingExec.INSTANCE);
         // DnsClient.addDnsServerLookupMechanism(AndroidUsingExecLowPriority.INSTANCE);
 
-        AndroidUsingLinkProperties.setup(aTalkApp.getGlobalContext());
+        AndroidUsingLinkProperties.setup(aTalkApp.getInstance());
         Timber.i("Mini DNS service ... [STARTED]");
     }
 

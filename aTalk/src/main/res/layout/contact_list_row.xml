@@ -35,7 +35,7 @@
         android:background="@drawable/list_selector_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toEndOf="@+id/avatarLayout"
+        android:layout_toEndOf="@id/avatarLayout"
         android:gravity="bottom"
         android:paddingBottom="4dp"
         android:paddingStart="10dp">
@@ -68,7 +68,7 @@
         android:id="@+id/unread_count"
         android:layout_width="@dimen/IconSize"
         android:layout_height="@dimen/IconSize"
-        android:layout_toStartOf="@+id/callButtonLayout"
+        android:layout_toStartOf="@id/callButtonLayout"
         android:layout_centerVertical="true" />
 
     <LinearLayout

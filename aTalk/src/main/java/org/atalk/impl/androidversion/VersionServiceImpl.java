@@ -40,7 +40,7 @@ public class VersionServiceImpl extends AbstractVersionService
      */
     public VersionServiceImpl()
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         PackageManager pckgMan = ctx.getPackageManager();
         try {
             PackageInfo pckgInfo = pckgMan.getPackageInfo(ctx.getPackageName(), 0);

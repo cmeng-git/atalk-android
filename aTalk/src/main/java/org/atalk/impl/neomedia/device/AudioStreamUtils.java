@@ -38,7 +38,7 @@ public class AudioStreamUtils
         InputStream audioStream = null;
         try {
             // Context context = ServiceUtils.getService(NeomediaActivator.getBundleContext(), OSGiService.class);
-            Context context = aTalkApp.getGlobalContext();
+            Context context = aTalkApp.getInstance();
 
             // As Android resources don't use file extensions, remove it if there is one.
             int lastPathSeparator = uri.lastIndexOf('/');

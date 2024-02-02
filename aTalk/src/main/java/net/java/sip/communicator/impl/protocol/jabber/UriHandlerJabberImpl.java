@@ -390,7 +390,7 @@ public class UriHandlerJabberImpl implements UriHandler, ServiceListener, Accoun
         //				.showMessagePopupDialog(message, "Failed to create chat!",
         //						PopupDialog.ERROR_MESSAGE);
 
-        DialogActivity.showDialog(aTalkApp.getGlobalContext(), "Failed to create chat!", message);
+        DialogActivity.showDialog(aTalkApp.getInstance(), "Failed to create chat!", message);
         Timber.e(exc, "%s", message);
     }
 

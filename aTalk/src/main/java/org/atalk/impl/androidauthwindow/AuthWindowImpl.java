@@ -99,7 +99,7 @@ public class AuthWindowImpl implements AuthenticationWindowService.Authenticatio
             return;
         }
 
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         Intent authWindowIntent = new Intent(ctx, AuthWindowActivity.class);
         authWindowIntent.putExtra(AuthWindowActivity.REQUEST_ID_EXTRA, requestId);
         authWindowIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

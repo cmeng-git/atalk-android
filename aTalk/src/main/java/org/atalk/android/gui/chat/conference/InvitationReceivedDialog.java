@@ -197,7 +197,7 @@ public class InvitationReceivedDialog extends Dialog
      */
     private void showErrorMessage(String errorMessage)
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
     }
 }

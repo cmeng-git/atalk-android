@@ -362,7 +362,7 @@ public class ChatActivity extends OSGiActivity
         }
 
         // Clear last chat intent
-        AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
+        AndroidUtils.clearGeneralNotification(aTalkApp.getInstance());
     }
 
     /**
@@ -403,7 +403,7 @@ public class ChatActivity extends OSGiActivity
         }
 
         // Leave last chat intent by updating general notification
-        AndroidUtils.clearGeneralNotification(aTalkApp.getGlobalContext());
+        AndroidUtils.clearGeneralNotification(aTalkApp.getInstance());
     }
 
     /**

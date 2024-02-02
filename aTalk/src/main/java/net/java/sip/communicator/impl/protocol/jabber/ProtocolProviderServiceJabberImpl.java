@@ -1661,7 +1661,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     // Check if there is any connectivity to a mobile network
     private boolean isConnectedMobile() {
-        Context context = aTalkApp.getGlobalContext();
+        Context context = aTalkApp.getInstance();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1857,7 +1857,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public static void initAvatarStore() {
         /* Persistent Storage directory for Avatar. */
-        File avatarStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/avatarStore");
+        File avatarStoreDirectory = new File(aTalkApp.getInstance().getFilesDir() + "/avatarStore");
 
         // Store in memory cache by default, and in persistent store if not null
         VCardAvatarManager.setPersistentCache(avatarStoreDirectory);
@@ -1873,7 +1873,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     public void initRosterStore() {
         String userID = mAccountID.getUserID();
 
-        rosterStoreDirectory = new File(aTalkApp.getGlobalContext().getFilesDir() + "/rosterStore_" + userID);
+        rosterStoreDirectory = new File(aTalkApp.getInstance().getFilesDir() + "/rosterStore_" + userID);
 
         if (!rosterStoreDirectory.exists()) {
             if (!rosterStoreDirectory.mkdir())
@@ -2743,7 +2743,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 || (failMode == SecurityAuthority.POLICY_VIOLATION)) {
             if (TextUtils.isEmpty(reason) && (ex.getCause() != null))
                 reason = ex.getCause().getMessage();
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+            DialogActivity.showDialog(aTalkApp.getInstance(),
                     aTalkApp.getResString(R.string.service_gui_ERROR), reason);
         }
         else {
@@ -3212,7 +3212,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             }
         }
 
-        long listenerId = DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(),
+        long listenerId = DialogActivity.showConfirmDialog(aTalkApp.getInstance(),
                 aTalkApp.getResString(R.string.service_gui_HTTP_REQUEST_TITLE), instruction, aTalkApp.getResString(R.string.service_gui_ACCEPT),
                 new DialogActivity.DialogListener() {
                     @Override

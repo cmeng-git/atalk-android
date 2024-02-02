@@ -817,7 +817,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                         OmemoMessage.Received oReceive = omemoManager.decrypt(sender.asBareJid(), omemoElement);
                         iMessage = new MessageJabberImpl(oReceive.getBody(), iMessage.ENCRYPTION_OMEMO, null, msgId);
                     } catch (SmackException.NotLoggedInException | CorruptedOmemoKeyException | NoRawSessionException
-                            | CryptoFailedException | IOException | IllegalArgumentException e) {
+                             | CryptoFailedException | IOException | IllegalArgumentException e) {
                         Timber.e("Omemo decrypt message (%s): %s", msgId, e.getMessage());
                     }
                 }
@@ -1734,7 +1734,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     }
 
     /**
-     * Update the reset of the message content and write to the dataBase
+     * Update the rest of the message content and write to the dataBase
      *
      * @param message IMessage message to be written
      * @param direction ChatMessage.DIR_IN or DIR_OUT
@@ -1759,6 +1759,8 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                     ? FileRecord.STATUS_UNKNOWN : ChatMessage.MESSAGE_IN);
             contentValues.put(ChatMessage.REMOTE_MSG_ID, message.getMessageUID());
         }
+        // Inserted message SessionUuid must exist in chatSessions table; else:
+        // SQLiteConstraintException: FOREIGN KEY constraint failed (code 787 SQLITE_CONSTRAINT_FOREIGNKEY[787])
         mDB.insert(ChatMessage.TABLE_NAME, null, contentValues);
     }
 

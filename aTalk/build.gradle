@@ -32,14 +32,12 @@ configurations {
     fdroidImplementation
     playstoreImplementation
 
-    // define a separate configuration for shadow
-    internalize
-
     // dependency libraries duplication conflict cause by smack-xmlparser-xpp3
     all*.exclude group: 'xpp3', module: 'xpp3_min'
 }
 
-configurations.all {
+configurations.implementation {
+
     // https://docs.gradle.org/current/userguide/resolution_rules.html
     resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.bouncycastle' && details.requested.name == 'bcprov-jdk15on' && details.requested.version == '1.66') {
@@ -47,35 +45,28 @@ configurations.all {
             details.because 'Fixes ASP bug: Failed to transform bcprov-jdk15on-1.66.jar -> Unsupported class file major version 59'
         }
     }
-}
 
-configurations.implementation {
     exclude group: "org.igniterealtime.smack", module: "smack-extensions"
     exclude group: "org.igniterealtime.smack", module: "smack-experimental"
     exclude group: "org.igniterealtime.smack", module: "smack-omemo"
 }
 
 android {
-    compileOptions {
-        // Has problem with this Java version
-        // sourceCompatibility JavaVersion.VERSION_11
-        // targetCompatibility JavaVersion.VERSION_11
-
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     compileSdk rootProject.compileSdk
     buildToolsVersion rootProject.buildTools
 
     defaultConfig {
+        namespace 'org.atalk.android'
         applicationId "org.atalk.android"
-        versionCode 303030
-        versionName "3.3.3"
+
+        versionCode 303040
+        versionName "3.3.4"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
-        multiDexEnabled true
+
+        // Required when setting minSdkVersion to 20 or lower
+        // multiDexEnabled true
 
         externalNativeBuild {
             ndkBuild {
@@ -105,14 +96,22 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildFeatures {
         dataBinding true
 
-        // for view binding:
-        // viewBinding true
+        // for view binding to replace butterKnife in PermissionsActivity:
+        viewBinding true
+
+        // Required for gradle version >= 8.0.0 and above
+        buildConfig true
     }
 
-    flavorDimensions("distribution")
+    flavorDimensions "distribution"
     productFlavors {
         playstore {
             dimension "distribution"
@@ -232,8 +231,10 @@ dependencies {
     // for android better picker
     implementation 'com.code-troopers.betterpickers:library:3.1.0'
     implementation 'com.jakewharton:butterknife:10.2.3'
-    // butterknife-compiler:10.2.3 is required for PermissionsActivity, but only compatible with jdk-15 max
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+
+    // Drop butterknife-compiler:10.2.3 for PermissionsActivity dependency, use View Binding instead;
+    // butterknife-compiler:10.2.3 is only compatible with jdk-15 max
+    // annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
     implementation('com.jakewharton.timber:timber:5.0.1') {
         transitive = false
@@ -248,7 +249,7 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.8'
     implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     // Do not update to 1.7.x or higher; has problem and reported need to use gradle 7 which is not compatible with aTalk.
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
 
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.29'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
@@ -320,9 +321,6 @@ dependencies {
     implementation "org.igniterealtime.smack:smack-omemo-signal:$smackVersion"
 
     implementation 'org.jxmpp:jxmpp-jid:1.0.3'
-    // (dependencies = jxmpp-core + jxmpp-stringprep-libidn')
-    // implementation 'org.jetbrains:annotations-java5:15.0'
-
     implementation 'org.osgi:osgi.core:8.0.0'
 
     // playstore version use google map services
@@ -350,7 +348,6 @@ dependencies {
         classDelete 'javax.media.format.YUVFormat'
         classDelete 'javax.media.Manager**'
         classDelete 'javax.media.Player'
-
     }
 
 //    task customFatJar(type: Jar) {
@@ -434,6 +431,7 @@ dependencies {
         // Add support for media file sharing
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
         classDelete 'org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager**'
+
         // AbstractMethodError if not in aTalk local directory
         // classDelete 'org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild**'
     }
@@ -443,6 +441,9 @@ dependencies {
         from("org.igniterealtime.smack:smack-extensions:${smackVersion}") {
             transitive = false
         }
+
+        // Take care <streamhost/> host attribute tagged with zoneId
+        classDelete  'org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream**'
 
         // Do not send <close/> on an already closed InBandBytestream session
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'
@@ -486,44 +487,6 @@ dependencies {
     }
 }
 
-///* a task to create the relocated libs, must be defined before used below in dependencies */
-//task internalizeJar(type: ShadowJar) {
-//    // this is not needed but prevents conflicts with other artifacts you may want to create
-//    archiveClassifier.set('intern')
-//    configurations = [project.configurations.internalize] // our configuration from above
-//
-//    // i.e. transitive = false
-//    dependencies {
-//        exclude(dependency('commons-codec:commons-codec:'))
-//        exclude(dependency('org.bitlet:weupnp:'))
-//        exclude(dependency('org.opentelecoms.sdp:sdp-api:'))
-//    }
-//
-//    // ===== org.jitsi:fmj:1.0.1-jitsi =====
-//    exclude 'net.sf.fmj.media.RegistryDefaults'
-//    exclude 'javax.media.format.VideoFormat'
-//    exclude 'javax.media.Manager**'
-//
-//    // ===== com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac =====
-//    relocate 'java.util.function.Consumer', 'org.jivesoftware.smack.util.Consumer'
-//    // Duration was added in API level-26; see https://github.com/JakeWharton/ThreeTenABP
-//    relocate 'java.time.Duration', 'org.threeten.bp.Duration'
-//    // Clean up and optimize call to weupnp call - reduces threads avoid time race condition
-//    exclude 'org.ice4j.ice.harvest.UPNPHarvester**.class'
-//
-//    // ===== org.jitsi:fmj:1.0.1-jitsi =====
-//    relocate 'org.apache.commons.codec.binary.Base64', 'org.apache.commons.codec.binary.ApacheBase64'
-//}
-//
-//// These libs are the dependency of the internalizeJar configuration
-//dependencies {
-//    internalize 'org.jitsi:fmj:1.0.1-jitsi'
-//    internalize 'com.github.jitsi:ice4j:0b052e8f857653c32ef17ae8e35283f7993972ac'
-//    internalize 'ch.imvs:sdes4j:1.1.4'
-//
-//    implementation tasks.internalizeJar.outputs.files // our real project uses the relocated jar as dependency
-//}
-
 /*
  * The task downloads both libOpus, libSpeex, and bcg729 sources per the specified version in the scripts.
  * Build of the dynamic libraries *.so for openssl, vpx, ffmpeg and the two libs etc are performed by android NDKBuild.
@@ -543,16 +506,6 @@ task getJniLibs(type: Exec) {
 task initJniLibs(type: Exec) {
     workingDir "${projectDir}/jni/static_library_built"
     executable './build-jnilibs4atalk.sh'
-
-    // No working; execute only the last statement to build ffmpeg
-    // workingDir "${projectDir}/jni/static_library_built/libvpx"
-    // executable './build-vpx4android.sh'
-
-    // workingDir "${projectDir}/jni/static_library_built/openssl"
-    // executable './openssl/build-openssl4android.sh'
-
-    // workingDir "${projectDir}/jni/static_library_built/ffmpeg-x264"
-    // executable './build-ffmpeg4android.sh'
 }
 
 /*

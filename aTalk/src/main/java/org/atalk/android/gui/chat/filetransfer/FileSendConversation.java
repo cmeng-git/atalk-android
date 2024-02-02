@@ -307,7 +307,7 @@ public class FileSendConversation extends FileTransferConversation implements Fi
         if (ConfigurationUtils.isSendThumbnail()
                 && (ChatFragment.MSGTYPE_OMEMO != mChatType)
                 && !mStickerMode && FileBackend.isMediaFile(mXferFile)) {
-            Glide.with(aTalkApp.getGlobalContext())
+            Glide.with(aTalkApp.getInstance())
                     .asBitmap()
                     .load(Uri.fromFile(mXferFile))
                     .into(new CustomTarget<Bitmap>(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT) {

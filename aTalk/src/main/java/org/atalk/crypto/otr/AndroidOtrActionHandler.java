@@ -25,7 +25,7 @@ public class AndroidOtrActionHandler implements OtrActionHandler
 	{
 		ScSessionID scSessionID = ScOtrEngineImpl.getScSessionForGuid(uuid);
 		if (scSessionID != null) {
-			aTalkApp.getGlobalContext().startActivity(OtrAuthenticateDialog.createIntent(uuid));
+			aTalkApp.getInstance().startActivity(OtrAuthenticateDialog.createIntent(uuid));
 		}
 		else {
 			System.err.println("Session for gui: " + uuid + " no longer exists");

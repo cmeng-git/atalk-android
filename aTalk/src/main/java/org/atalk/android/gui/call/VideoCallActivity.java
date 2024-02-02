@@ -357,7 +357,7 @@ public class VideoCallActivity extends OSGiActivity implements CallPeerRenderer,
 
         // Stop call broadcast receiver
         if (callNotificationControl != null) {
-            aTalkApp.getGlobalContext().unregisterReceiver(callNotificationControl);
+            aTalkApp.getInstance().unregisterReceiver(callNotificationControl);
             Timber.d("callNotificationControl unregistered: %s; %s", mCallIdentifier, callNotificationControl);
             callNotificationControl = null;
         }

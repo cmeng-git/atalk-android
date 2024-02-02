@@ -463,10 +463,9 @@ public class SessionImpl implements Session
         OtrContactManager.OtrContact otrContact = ScOtrEngineImpl.getOtrContact(sessionID);
         Chat chat = OtrActivator.uiService.getChat(otrContact.contact);
         if (((ChatPanel) chat).isOmemoChat()) {
-            String msg_local = aTalkApp.getGlobalContext().getString(R.string.crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW);
+            String msg_local = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW);
             getHost().showAlert(getSessionID(), msg_local);
-            String msg_remote = aTalkApp.getGlobalContext()
-                    .getString(R.string.crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER);
+            String msg_remote = aTalkApp.getResString(R.string.crypto_msg_OMEMO_SESSION_OTR_NOT_ALLOW_SENDER);
             getHost().injectMessage(getSessionID(), msg_remote);
             return;
         }

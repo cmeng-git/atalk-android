@@ -2364,7 +2364,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     public static void setAvatar(ImageView avatarView, Drawable avatarDrawable) {
         if (avatarDrawable == null) {
             // avatarDrawable = aTalkApp.getAppResources().getDrawable(R.drawable.contact_avatar);
-            avatarDrawable = ContextCompat.getDrawable(aTalkApp.getGlobalContext(), R.drawable.contact_avatar);
+            avatarDrawable = ContextCompat.getDrawable(aTalkApp.getInstance(), R.drawable.contact_avatar);
         }
         if (avatarView != null) {
             avatarView.setImageDrawable(avatarDrawable);

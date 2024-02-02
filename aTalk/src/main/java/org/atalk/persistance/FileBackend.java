@@ -239,7 +239,7 @@ public class FileBackend
             filePath += File.separator + subFolder;
 
         // https://developer.android.com/reference/android/os/Environment#getExternalStorageDirectory()
-        // File atalkDLDir = aTalkApp.getGlobalContext().getExternalFilesDir(filePath);
+        // File atalkDLDir = aTalkApp.getInstance().getExternalFilesDir(filePath);
         // File atalkDLDir = new File(Environment.getExternalStorageDirectory(), filePath);
         File atalkDLDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + filePath);
 
@@ -417,7 +417,7 @@ public class FileBackend
      */
     public static boolean isMediaFile(File file)
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         Uri uri = getUriForFile(ctx, file);
         String mimeType = getMimeType(ctx, uri);
 

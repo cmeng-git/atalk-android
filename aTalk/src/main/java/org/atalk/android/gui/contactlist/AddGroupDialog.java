@@ -132,7 +132,7 @@ public class AddGroupDialog extends OSGiFragment
          */
         private void showErrorMessage(String errorMessage)
         {
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_ERROR), errorMessage);
         }
 
@@ -175,7 +175,7 @@ public class AddGroupDialog extends OSGiFragment
                     newMetaGroup = mcl.createMetaContactGroup(mcl.getRoot(), groupName);
                 } catch (MetaContactListException ex) {
                     Timber.e(ex);
-                    Context ctx = aTalkApp.getGlobalContext();
+                    Context ctx = aTalkApp.getInstance();
 
                     int errorCode = ex.getErrorCode();
 

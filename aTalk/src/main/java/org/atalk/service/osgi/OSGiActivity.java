@@ -433,7 +433,7 @@ public class OSGiActivity extends BaseActivity {
     protected boolean postRestoreIntent() {
         // Restore after OSGi startup
         if (AndroidGUIActivator.bundleContext == null) {
-            Intent intent = new Intent(aTalkApp.getGlobalContext(), LauncherActivity.class);
+            Intent intent = new Intent(aTalkApp.getInstance(), LauncherActivity.class);
             intent.putExtra(LauncherActivity.ARG_RESTORE_INTENT, getIntent());
             startActivity(intent);
             finish();

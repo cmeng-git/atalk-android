@@ -88,11 +88,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     public static final int PRC_RECORD_AUDIO = 2002;
     public static final int PRC_WRITE_EXTERNAL_STORAGE = 2003;
 
-    /**
-     * The action that will show contacts.
-     */
-    public static final String ACTION_SHOW_CONTACTS = "org.atalk.show_contacts";
-
     public final static int Theme_Change = 1;
     public final static int Locale_Change = 2;
     public static int mPrefChange = 0;
@@ -194,11 +189,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
             String query = intent.getStringExtra(SearchManager.QUERY);
             Timber.w("Search intent not handled for query: %s", query);
         }
-//        else if (ACTION_SHOW_CONTACTS.equals(action)) {
-//            contactListFragment = new ContactListFragment();
-//            // showContactsFragment(intent);
-//        }
-
         // Start aTalk with contactList UI for IM setup
         if (Intent.ACTION_SENDTO.equals(action)) {
             mPager.setCurrentItem(0);

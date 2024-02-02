@@ -130,7 +130,7 @@ public class EntityListHelper {
      * @param group the <code>MetaContactGroup</code> to remove
      */
     public static void removeMetaContactGroup(final MetaContactGroup group) {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         String message = ctx.getString(R.string.service_gui_REMOVE_GROUP_TEXT, group.getGroupName());
 
         DialogActivity.showConfirmDialog(ctx, ctx.getString(R.string.service_gui_REMOVE), message, ctx.getString(R.string.service_gui_REMOVE_GROUP),
@@ -155,7 +155,7 @@ public class EntityListHelper {
     private static void doRemoveGroup(final MetaContactGroup group) {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             try {
                 AndroidGUIActivator.getContactListService().removeMetaContactGroup(group);
             } catch (Exception ex) {
@@ -189,7 +189,7 @@ public class EntityListHelper {
         String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, entityJid);
 
         // Displays the history delete dialog and waits for user confirmation
-        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(), title, ChatMessageDeleteFragment.class.getName(),
+        DialogActivity.showCustomDialog(aTalkApp.getInstance(), title, ChatMessageDeleteFragment.class.getName(),
                 args, aTalkApp.getResString(R.string.service_gui_PURGE), new DialogActivity.DialogListener() {
                     public boolean onConfirmClicked(DialogActivity dialog) {
                         CheckBox cbMediaDelete = dialog.findViewById(R.id.cb_media_delete);
@@ -283,7 +283,7 @@ public class EntityListHelper {
      * @param callback the callback.
      */
     public static void eraseAllEntityHistory(final Context callback) {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         String title = ctx.getString(R.string.service_gui_HISTORY);
         String message = ctx.getString(R.string.service_gui_HISTORY_REMOVE_ALL_WARNING);
 

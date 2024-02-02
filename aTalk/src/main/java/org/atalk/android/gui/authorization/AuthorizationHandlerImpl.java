@@ -88,7 +88,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
 
         requestMap.put(id, requestHolder);
         Intent dialogIntent = RequestAuthorizationDialog.getRequestAuthDialogIntent(id);
-        aTalkApp.getGlobalContext().startActivity(dialogIntent);
+        aTalkApp.getInstance().startActivity(dialogIntent);
         requestHolder.waitForResponse();
 
         // If user id did not cancel the dialog when return, prepared request and remove it
@@ -109,7 +109,7 @@ public class AuthorizationHandlerImpl implements AuthorizationHandler
     @Override
     public void processAuthorizationResponse(AuthorizationResponse response, Contact contact)
     {
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         String msg = contact.getAddress() + " ";
 
         AuthorizationResponse.AuthorizationResponseCode responseCode = response.getResponseCode();

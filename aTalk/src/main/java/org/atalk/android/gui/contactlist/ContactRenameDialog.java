@@ -136,7 +136,7 @@ public class ContactRenameDialog extends OSGiDialogFragment
      */
     private void showErrorMessage(String errMessage)
     {
-        DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+        DialogActivity.showDialog(aTalkApp.getInstance(),
                 aTalkApp.getResString(R.string.service_gui_ERROR), errMessage);
     }
 }

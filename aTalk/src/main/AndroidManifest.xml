@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.atalk.android"
     android:installLocation="internalOnly">
 
     <!-- Tell the system this app requires OpenGL ES 2.0. -->
@@ -317,9 +316,6 @@
                 android:name="android.preference"
                 android:resource="@xml/silk_preferences" />
         </activity-alias>
-        <!-- Sip settings -->
-        <activity
-            android:name=".gui.settings.SipSettings" />
         <!-- Provisioning settings -->
         <activity
             android:name=".gui.settings.ProvisioningSettings" />

@@ -55,7 +55,7 @@ public class CallVolumeCtrlFragment extends OSGiFragment implements VolumeChange
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        audioManager = (AudioManager)  aTalkApp.getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+        audioManager = (AudioManager)  aTalkApp.getInstance().getSystemService(Context.AUDIO_SERVICE);
         MediaServiceImpl mediaService = NeomediaActivator.getMediaServiceImpl();
         if (mediaService != null)
             volumeControl = mediaService.getOutputVolumeControl();

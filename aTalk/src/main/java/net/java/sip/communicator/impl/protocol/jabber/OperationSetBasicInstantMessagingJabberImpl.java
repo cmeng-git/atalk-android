@@ -593,7 +593,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         } catch (UndecidedOmemoIdentityException e) {
             OmemoAuthenticateListener omemoAuthListener
                     = new OmemoAuthenticateListener(to, resource, message, correctedMessageUID, omemoManager);
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             ctx.startActivity(OmemoAuthenticateDialog.createIntent(ctx, omemoManager, e.getUndecidedDevices(), omemoAuthListener));
             return;
         } catch (CryptoFailedException | InterruptedException | NotConnectedException | NoResponseException |

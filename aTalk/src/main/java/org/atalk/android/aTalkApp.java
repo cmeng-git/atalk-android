@@ -173,11 +173,11 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         // Get android device screen display size
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             Point size = new Point();
-            ((WindowManager) getGlobalContext().getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
+            ((WindowManager) mInstance.getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
             mDisplaySize = new Dimension(size.x, size.y);
         }
         else {
-            Rect mBounds = ((WindowManager) getGlobalContext().getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
+            Rect mBounds = ((WindowManager) mInstance.getSystemService(WINDOW_SERVICE)).getCurrentWindowMetrics().getBounds();
             mDisplaySize = new Dimension(Math.abs(mBounds.width()), Math.abs(mBounds.height()));
         }
         return mDisplaySize;
@@ -251,7 +251,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return <code>AudioManager</code> service instance.
      */
     public static AudioManager getAudioManager() {
-        return (AudioManager) getGlobalContext().getSystemService(Context.AUDIO_SERVICE);
+        return (AudioManager) mInstance.getSystemService(Context.AUDIO_SERVICE);
     }
 
     /**
@@ -260,16 +260,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return <code>CameraManager</code> service instance.
      */
     public static CameraManager getCameraManager() {
-        return (CameraManager) getGlobalContext().getSystemService(Context.CAMERA_SERVICE);
-    }
-
-    /**
-     * Retrieves <code>PowerManager</code> instance using application context.
-     *
-     * @return <code>PowerManager</code> service instance.
-     */
-    public static PowerManager getPowerManager() {
-        return (PowerManager) getGlobalContext().getSystemService(Context.POWER_SERVICE);
+        return (CameraManager) mInstance.getSystemService(Context.CAMERA_SERVICE);
     }
 
     /**
@@ -278,7 +269,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return <code>SensorManager</code> service instance.
      */
     public static SensorManager getSensorManager() {
-        return (SensorManager) getGlobalContext().getSystemService(Context.SENSOR_SERVICE);
+        return (SensorManager) mInstance.getSystemService(Context.SENSOR_SERVICE);
     }
 
     /**
@@ -287,7 +278,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return <code>NotificationManager</code> service instance.
      */
     public static NotificationManager getNotificationManager() {
-        return (NotificationManager) getGlobalContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        return (NotificationManager) mInstance.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /**
@@ -296,7 +287,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
      * @return <code>DownloadManager</code> service instance.
      */
     public static DownloadManager getDownloadManager() {
-        return (DownloadManager) getGlobalContext().getSystemService(Context.DOWNLOAD_SERVICE);
+        return (DownloadManager) mInstance.getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     /**
@@ -367,7 +358,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
             if (toast != null && toast.getView() != null) {
                 toast.cancel();
             }
-            toast = Toast.makeText(getGlobalContext(), message, Toast.LENGTH_LONG);
+            toast = Toast.makeText(mInstance, message, Toast.LENGTH_LONG);
             toast.show();
         });
     }
@@ -434,7 +425,7 @@ public class aTalkApp extends Application implements LifecycleEventObserver {
         if (intent == null) {
             intent = getHomeIntent();
         }
-        return PendingIntent.getActivity(getGlobalContext(), 0, intent,
+        return PendingIntent.getActivity(mInstance, 0, intent,
                 NotificationPopupHandler.getPendingIntentFlag(false, true));
     }
 

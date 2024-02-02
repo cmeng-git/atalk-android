@@ -6,8 +6,18 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.3 (01/26/2024)" versioncode="303030">
+    <release version="3.3.4 (02/03/2024)" versioncode="303040">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Drop butterknife-compiler:10.2.3 dependency and remove jdk-15 max restriction; use android View binding class instead</change>
+        <change>Change file transfer protocol priority to: a. httpFileUpload; b. jingleFileSend (Secure JET or Plain); c. Legacy byteStream transfer protocol</change>
+        <change>Fix Smack 4.4.7: ByteStream Sock5 implementation does not take care of the host address with zone id</change>
+        <change>Enable webView cache mode</change>
+        <change>Upgrade to android studio Hedgehog; update all associated changes required with gradle 8.x</change>
+        <change>JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google time solution feedback</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.3 (01/29/2024)" versioncode="303030">
         <change>Fix ContextCompat.registerReceiver flag setting to ensure proper callbacks for android API-34 device:</change>
         <change>a. Fix Http File Download, Connectivity Manager Listener and Update Service</change>
         <change>b. Fix main menu Exit option</change>

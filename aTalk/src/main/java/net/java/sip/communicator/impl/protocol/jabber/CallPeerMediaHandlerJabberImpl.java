@@ -1368,7 +1368,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 
         if (!atLeastOneValidDescription) {
             // don't just throw exception. Must inform user to take action
-            DialogActivity.showDialog(aTalkApp.getGlobalContext(), R.string.service_gui_CALL,
+            DialogActivity.showDialog(aTalkApp.getInstance(), R.string.service_gui_CALL,
                     R.string.service_gui_CALL_NO_MATCHING_FORMAT_H, remoteFormats.toString());
 
             ProtocolProviderServiceJabberImpl.throwOperationFailedException(

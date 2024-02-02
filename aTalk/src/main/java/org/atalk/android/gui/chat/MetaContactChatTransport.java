@@ -30,6 +30,7 @@ import net.java.sip.communicator.service.protocol.event.FileTransferStatusChange
 import net.java.sip.communicator.service.protocol.event.MessageListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
@@ -109,9 +110,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * override contact disco#info no XEP-0184 feature advertised.
      */
     private boolean isDeliveryReceiptSupported;
-
-    // Temporary disable Jingle File Transfer; AS has gradle build problem with AbstractMehtodException
-    private final boolean jft_disable = true;
 
     /**
      * <code>true</code> when a contact sends a message with XEP-0085 chat state notifications;
@@ -654,10 +652,10 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * c. current active session i.e. chatType,
      * d. server httpFileUpload service support
      * e. fallback on failure for legacy byteStream transfer protocol.
-     *
+     * <p>
      * The file transport is selected with the following priority order if contact is online:
-     * a. jingleFileSend (Secure JET or Plain)
-     * b. httpFileUpload (for OMEMO and plain chat session: chatType)
+     * a. httpFileUpload (for OMEMO and plain chat session: chatType)
+     * b. jingleFileSend (Secure JET or Plain) (NAT not supported)
      * c. Legacy byteStream transfer protocol for SOCK5 with fallback on IBB on user retry
      * #see <a href="https://xmpp.org/extensions/xep-0096.html"></a>XEP-0096: SI File Transfer 1.3.1 (2022-03-22)</a>
      *
@@ -672,16 +670,16 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             throws Exception {
         if (getStatus().isOnline()) {
             try {
-                // Try jingle file transfer protocol as first attempt if supported by buddy
-                return jingleFileSend(file, chatType, xferCon);
+                // Use http file upload if available.
+                return httpFileUpload(file, chatType, xferCon);
 
-                /* ==== For testing Bytestream or httpFileUpload only ==== */
-                // return httpFileUpload(file, chatType, xferCon);
+                /* ==== For testing of JingleFileSend or ByteStream transfer only ==== */
+                // return jingleFileSend(file, chatType, xferCon);
                 // return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
             } catch (OperationNotSupportedException ex) {
-                // Use http file upload if available.
                 try {
-                    return httpFileUpload(file, chatType, xferCon);
+                    // Use jingle file transfer protocol as second attempt if supported by buddy
+                    return jingleFileSend(file, chatType, xferCon);
                 } catch (OperationNotSupportedException ex2) {
                     // Use legacy FileTransfer starting with SOCKS5, fallback to IBB ByteStream transfer.
                     return ftOpSet.sendFile(mContact, file, xferCon.getMessageUuid());
@@ -706,9 +704,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     private OutgoingFileOfferJingleImpl jingleFileSend(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
-
-        if (jft_disable)
-            throw new OperationNotSupportedException("JFT temporary disable; AS throws AbstractMethodError");
+        if (!BuildConfig.DEBUG) {
+            throw new OperationNotSupportedException("JFT temporary disabled for release; AS throws AbstractMethodError");
+        }
 
         // toJid is not null if contact is online and supports the jet/jingle file transfer
         FullJid recipient;
@@ -726,7 +724,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             OutgoingFileOfferController ofoController;
             int encType = IMessage.ENCRYPTION_NONE;
             String msgUuid = xferCon.getMessageUuid();
-            Context ctx = aTalkApp.getGlobalContext();
+            Context ctx = aTalkApp.getInstance();
             JingleFile jingleFile = createJingleFile(ctx, file);
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
 

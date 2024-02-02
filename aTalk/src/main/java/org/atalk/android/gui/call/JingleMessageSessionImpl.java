@@ -149,7 +149,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
      * @param sid the unique for Jingle Message / Jingle Session sid
      */
     private static void startJMCallActivity(String sid) {
-        Context context = aTalkApp.getGlobalContext();
+        Context context = aTalkApp.getInstance();
         Intent intent = new Intent(context, JingleMessageCallActivity.class);
 
         intent.putExtra(CallManager.CALL_SID, sid);
@@ -180,7 +180,7 @@ public final class JingleMessageSessionImpl implements JingleMessageListener {
 
         OperationSetBasicTelephonyJabberImpl telephonyJabber = jmStateListeners.get(connection);
         if (telephonyJabber != null)
-            AndroidCallUtil.createCall(aTalkApp.getGlobalContext(), telephonyJabber.getProtocolProvider(), mRemote, isVideoCall);
+            AndroidCallUtil.createCall(aTalkApp.getInstance(), telephonyJabber.getProtocolProvider(), mRemote, isVideoCall);
     }
 
     /**

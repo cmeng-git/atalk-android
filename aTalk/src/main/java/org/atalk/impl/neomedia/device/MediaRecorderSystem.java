@@ -89,7 +89,7 @@ public class MediaRecorderSystem extends DeviceSystem
     @Override
     protected void doInitialize()
     {
-        if (isMediaRecorderInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getGlobalContext(),
+        if (isMediaRecorderInitialized || (ContextCompat.checkSelfPermission(aTalkApp.getInstance(),
                 Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)) {
             return;
         }

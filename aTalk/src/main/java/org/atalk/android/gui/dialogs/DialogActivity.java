@@ -114,7 +114,7 @@ public class DialogActivity extends OSGiActivity {
     private boolean confirmed;
 
     private static final LocalBroadcastManager localBroadcastManager
-            = LocalBroadcastManager.getInstance(aTalkApp.getGlobalContext());
+            = LocalBroadcastManager.getInstance(aTalkApp.getInstance());
 
     /**
      * <code>BroadcastReceiver</code> that listens for close dialog action.

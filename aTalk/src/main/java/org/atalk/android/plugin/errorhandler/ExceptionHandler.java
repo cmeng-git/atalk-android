@@ -99,7 +99,7 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler
 	 */
 	private static SharedPreferences getStorage()
 	{
-		return aTalkApp.getGlobalContext().getSharedPreferences("crash", Context.MODE_PRIVATE);
+		return aTalkApp.getInstance().getSharedPreferences("crash", Context.MODE_PRIVATE);
 	}
 
 	/**

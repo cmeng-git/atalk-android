@@ -92,7 +92,7 @@ public class PopupClickReceiver extends BroadcastReceiver
      */
     void unregisterReceiver()
     {
-        aTalkApp.getGlobalContext().unregisterReceiver(this);
+        aTalkApp.getInstance().unregisterReceiver(this);
     }
 
     /**

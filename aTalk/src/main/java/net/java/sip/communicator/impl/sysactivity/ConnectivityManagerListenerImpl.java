@@ -69,8 +69,7 @@ public class ConnectivityManagerListenerImpl extends BroadcastReceiver
      */
     public void stop()
     {
-        Context context = aTalkApp.getGlobalContext();
-        context.unregisterReceiver(this);
+        aTalkApp.getInstance().unregisterReceiver(this);
         connected = false;
     }
 

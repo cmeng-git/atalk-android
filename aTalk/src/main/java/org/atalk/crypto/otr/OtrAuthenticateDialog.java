@@ -127,7 +127,7 @@ public class OtrAuthenticateDialog extends OSGiActivity
      */
     public static Intent createIntent(UUID uuid)
     {
-        Intent intent = new Intent(aTalkApp.getGlobalContext(), OtrAuthenticateDialog.class);
+        Intent intent = new Intent(aTalkApp.getInstance(), OtrAuthenticateDialog.class);
         intent.putExtra(EXTRA_SESSION_UUID, uuid);
 
         // Started not from Activity

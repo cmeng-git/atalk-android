@@ -65,7 +65,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
             return obtainCredentials(accountID, defaultValues, isShowServerOption);
         }
 
-        Context ctx = aTalkApp.getGlobalContext();
+        Context ctx = aTalkApp.getInstance();
         String errorMessage = aTalkApp.getResString(R.string.service_gui_CONNECTION_FAILED_MSG,
                 defaultValues.getUserName(), defaultValues.getServerAddress());
 
@@ -127,7 +127,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
         final Object credentialsLock = new Object();
 
         // Displays the credentials dialog and waits for it to complete
-        DialogActivity.showCustomDialog(aTalkApp.getGlobalContext(),
+        DialogActivity.showCustomDialog(aTalkApp.getInstance(),
                 aTalkApp.getResString(R.string.service_gui_LOGIN_CREDENTIAL), CredentialsFragment.class.getName(),
                 args, aTalkApp.getResString(R.string.service_gui_SIGN_IN), new DialogActivity.DialogListener()
                 {
@@ -165,7 +165,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
 
                         // Translate dnssecMode label to dnssecMode value
                         Spinner spinnerDM = dialogContent.findViewById(R.id.dnssecModeSpinner);
-                        String[] dnssecModeValues = aTalkApp.getGlobalContext().getResources()
+                        String[] dnssecModeValues = aTalkApp.getInstance().getResources()
                                 .getStringArray(R.array.dnssec_Mode_value);
                         String selectedDnssecMode = dnssecModeValues[spinnerDM.getSelectedItemPosition()];
                         credentials.setDnssecMode(selectedDnssecMode);

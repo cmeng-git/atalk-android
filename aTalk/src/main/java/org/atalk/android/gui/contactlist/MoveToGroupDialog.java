@@ -108,7 +108,7 @@ public class MoveToGroupDialog extends OSGiDialogFragment implements DialogInter
                     AndroidGUIActivator.getContactListService().moveMetaContact(metaContact, selectedItem);
                 } catch (MetaContactListException e) {
                     Timber.e(e, "%s", e.getMessage());
-                    DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                    DialogActivity.showDialog(aTalkApp.getInstance(),
                             aTalkApp.getResString(R.string.service_gui_ERROR), e.getMessage());
                 }
             }
