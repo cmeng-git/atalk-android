@@ -33,8 +33,7 @@ import java.util.Map;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class MobileIndicator implements RegistrationStateChangeListener, UserCapsNodeListener
-{
+public class MobileIndicator implements RegistrationStateChangeListener, UserCapsNodeListener {
     /**
      * The parent provider.
      */
@@ -74,8 +73,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      * @param ssclCallback the callback for the contact list to obtain contacts.
      */
     public MobileIndicator(ProtocolProviderServiceJabberImpl parentProvider,
-            ServerStoredContactListJabberImpl ssclCallback)
-    {
+            ServerStoredContactListJabberImpl ssclCallback) {
         this.parentProvider = parentProvider;
         this.ssclCallback = ssclCallback;
 
@@ -101,8 +99,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      *
      * @param contact the contact
      */
-    public void resourcesUpdated(ContactJabberImpl contact)
-    {
+    public void resourcesUpdated(ContactJabberImpl contact) {
         if (isCapsMobileIndicator) {
             // we update it also here, cause sometimes caps update comes before presence changed and
             // contacts are still offline and we dispatch wrong initial mobile indicator
@@ -141,8 +138,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      * @param contact the contact.
      * @param resources the list of contact resources.
      */
-    private void updateContactMobileStatus(ContactJabberImpl contact, List<ContactResource> resources)
-    {
+    private void updateContactMobileStatus(ContactJabberImpl contact, List<ContactResource> resources) {
         // check whether all are mobile
         boolean allMobile = false;
         for (ContactResource res : resources) {
@@ -163,10 +159,10 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      * Checks a resource whether it is mobile or not, by checking the cache.
      *
      * @param fullJid the FullJid to check.
+     *
      * @return whether resource with that name is mobile or not.
      */
-    boolean isMobileResource(Jid fullJid)
-    {
+    boolean isMobileResource(Jid fullJid) {
         if (isCapsMobileIndicator) {
             EntityCapsManager.NodeVerHash caps = EntityCapsManager.getNodeVerHashByJid(fullJid);
             return (caps != null && containsStrings(caps.getNode(), checkStrings));
@@ -188,8 +184,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      * @param evt ProviderStatusChangeEvent the event describing the status change.
      */
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         if (evt.getNewState() == RegistrationState.REGISTERED) {
             this.parentProvider.getDiscoveryManager().addUserCapsNodeListener(this);
         }
@@ -218,8 +213,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      *
      * @param user the contact address with or without resource.
      */
-    private void updateMobileIndicatorUsingCaps(Jid user)
-    {
+    private void updateMobileIndicatorUsingCaps(Jid user) {
         ContactJabberImpl contact = ssclCallback.findContactById(user.asBareJid());
         if (contact == null)
             return;
@@ -258,10 +252,10 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      *
      * @param value the value to check
      * @param checkStrs an array of strings we are searching for.
+     *
      * @return <code>true</code> if <code>value</code> starts one of the Strings.
      */
-    private static boolean startsWithStrings(String value, String[] checkStrs)
-    {
+    private static boolean startsWithStrings(String value, String[] checkStrs) {
         for (String str : checkStrs) {
             if (str.length() > 0 && value.startsWith(str))
                 return true;
@@ -274,10 +268,10 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      *
      * @param value the value to check
      * @param checkStrs an array of strings we are searching for.
+     *
      * @return <code>true</code> if <code>value</code> contains one of the Strings.
      */
-    private static boolean containsStrings(String value, String[] checkStrs)
-    {
+    private static boolean containsStrings(String value, String[] checkStrs) {
         for (String str : checkStrs) {
             if (str.length() > 0 && value.contains(str))
                 return true;

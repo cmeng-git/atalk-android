@@ -155,7 +155,6 @@ Libraries used in this project:
 * [annotations-java5](https://mvnrepository.com/artifact/org.jetbrains/annotations)
 * [apache-mime4j-core](https://github.com/apache/james-mime4j)
 * [bouncycastle](https://github.com/bcgit/bc-java)
-* [butterknife](https://github.com/JakeWharton/butterknife)
 * [ckChangeLog](https://github.com/cketti/ckChangeLog)
 * [commons-text](https://commons.apache.org/proper/commons-text/)
 * [Dexter](https://github.com/Karumi/Dexter)
@@ -203,9 +202,10 @@ Other contributors:
 
 ## aTalk apk build for android
 * Following development environment setups are used to build aTalk.apk<br/>
-  a. Android Studio Dolphin | 2021.3.1<br/>
-  b. Gradle version as specified in ./gradle/gradle-wrapper.properties<br/>
-  c. Ubuntu 22.04 with proper environment setup for development<br>
+  a. Android Studio Hedgehog | 2023.1.1 Patch<br/>
+  b. distributionUrl=https://services.gradle.org/distributions/gradle-8.5-bin.zip
+  c. classpath 'com.android.tools.build:gradle:8.2.2'
+  d. Ubuntu 22.04 with proper environment setup for development<br>
   Note: all shell scripts in aTalk are written to run on linux OS only e.g. Ubuntu
 * aTalk uses native jni libraries, required to be built manually or downloaded prior to android NDK build.<br/>
   The static jni libraries must be built prior to android studio apk build process.
@@ -238,6 +238,5 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 
 [Privacy Policy](https://cmeng-git.github.io/atalk/privacypolicy.html)
