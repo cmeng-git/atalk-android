@@ -89,7 +89,9 @@ public class ActionBarUtil {
             // statusText is null while search option is selected
             if (statusText != null) {
                 statusText.setText(subtitle);
-                statusText.setMovementMethod(new ScrollingMovementMethod());
+                // statusText.setMovementMethod(new ScrollingMovementMethod());
+                // Must have setSelected() to get text to start scroll
+                statusText.setSelected(true);
             }
         }
     }

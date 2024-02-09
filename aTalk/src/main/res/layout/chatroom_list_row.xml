@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/contact_list_row_height"
     android:background="@color/background_light"
@@ -17,7 +18,8 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_chatroom" />
+            android:src="@drawable/ic_chatroom"
+            tools:ignore="ContentDescription" />
 
         <CheckBox
             android:id="@+id/cb_bookmark"

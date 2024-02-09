@@ -112,9 +112,9 @@ import org.atalk.android.gui.util.HtmlImageGetter;
 import org.atalk.android.gui.util.XhtmlImageParser;
 import org.atalk.android.gui.util.event.EventListener;
 import org.atalk.android.plugin.geolocation.SvpApiImpl;
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.CryptoFragment;
 import org.atalk.crypto.listener.CryptoModeChangeListener;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.persistance.FileBackend;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smack.packet.Stanza;
@@ -131,6 +131,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -511,7 +512,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
     /**
      * Checks for <code>ChatController</code> initialization. To init/activate the controller fragment
      * must be visible and its View must be created.
-     *
+     * <p>
      * Non-focus chatFragment causing non-sync between chatFragment and chatController i.e.
      * sending & received messages sent to wrong chatFragment - resolved with initChatController()
      * passing in focus state as parameter; taking the appropriate actions pending the focus state;
@@ -816,8 +817,12 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                                         msgUidDel.addAll(((MergedMessage) chatMsg).getMessageUIDs());
                                     }
                                     else {
-                                        msgUidDel.add(chatMsg.getMessageUID());
+                                        String msgId = chatMsg.getMessageUID();
+                                        // Cannot delete system messages or room status message which has null msgUuid
+                                        if (TextUtils.isEmpty(msgId))
+                                            continue;
 
+                                        msgUidDel.add(msgId);
                                         /*
                                          * Include only the incoming received media or aTalk created outgoing tmp files
                                          * OR all voice file for deletion
@@ -1089,19 +1094,23 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          * Inserts given <code>CopyOnWriteArrayList</code> of <code>ChatMessage</code> at the beginning of the list.
          * synchronized to avoid java.util.ConcurrentModificationException on receive history messages
          * - seems still happen so use CopyOnWriteArrayList at ChanPanel#LoadHistory()
-         *
+         * <p>
          * List<ChatMessage> chatMessages = new CopyOnWriteArrayList<>() to avoid ConcurrentModificationException
          *
          * @param chatMessages the CopyOnWriteArrayList of <code>ChatMessage</code> to prepend.
          */
-        private synchronized void prependMessages(List<ChatMessage> chatMessages) {
+        private synchronized void prependMessages(final List<ChatMessage> chatMessages) {
             if (chatMessages.isEmpty()) {
                 return;
             }
 
             List<MessageDisplay> newMessageList = new ArrayList<>();
             MessageDisplay previous = null;
-            for (ChatMessage next : chatMessages) {
+
+            // Use Iterator to avoid ConcurrentModificationException; observed during testing
+            Iterator<ChatMessage> iteratorCM = chatMessages.iterator();
+            while (iteratorCM.hasNext()) {
+                ChatMessage next = iteratorCM.next();
                 if (previous == null || !previous.msg.isConsecutiveMessage(next)) {
                     previous = new MessageDisplay(next);
                     newMessageList.add(previous);
@@ -1111,6 +1120,16 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                     previous.update(previous.msg.mergeMessage(next));
                 }
             }
+//            for (ChatMessage next : chatMessages) {
+//                if (previous == null || !previous.msg.isConsecutiveMessage(next)) {
+//                    previous = new MessageDisplay(next);
+//                    newMessageList.add(previous);
+//                }
+//                else {
+//                    // Merge the message and update the object in the list
+//                    previous.update(previous.msg.mergeMessage(next));
+//                }
+//            }
             messages.addAll(0, newMessageList);
         }
 
@@ -1153,7 +1172,6 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
          *
          * @param deletedUUIDs List of message UUID to be deleted.
          */
-
         private void onClearMessage(List<String> deletedUUIDs) {
             // Null signify doEraseAllEntityHistory has been performed i.e. erase all history messages
             if (deletedUUIDs == null) {
@@ -1164,6 +1182,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                 // int msgSize = messages.size();
                 for (int idx = deletedUUIDs.size(); idx-- > 0; ) {
                     String msgUuid = deletedUUIDs.get(idx);
+
                     // Remove deleted message from ChatPanel#msgCache
                     chatPanel.updateCacheMessage(msgUuid, null);
 

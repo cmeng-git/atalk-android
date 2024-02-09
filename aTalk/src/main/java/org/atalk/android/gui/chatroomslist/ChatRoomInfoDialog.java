@@ -130,6 +130,7 @@ public class ChatRoomInfoDialog extends OSGiDialogFragment
 
                 textView = contentView.findViewById(R.id.roominfo_description);
                 textView.setText(toString(chatRoomInfo.getDescription(), mChatRoomWrapper.getBookmarkName()));
+                textView.setSelected(true);
 
                 textView = contentView.findViewById(R.id.roominfo_occupants);
                 int count = chatRoomInfo.getOccupantsCount();

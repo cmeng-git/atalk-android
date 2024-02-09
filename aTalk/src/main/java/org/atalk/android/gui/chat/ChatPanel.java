@@ -14,6 +14,7 @@ import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
+import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.gui.Chat;
@@ -599,6 +600,7 @@ public class ChatPanel implements Chat, MessageListener {
 
         MamManager mamManager;
         XMPPConnection connection = getProtocolProvider().getConnection();
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
 
         Jid jid;
         if (descriptor instanceof ChatRoom) {
@@ -653,6 +655,8 @@ public class ChatPanel implements Chat, MessageListener {
                  SmackException.NotLoggedInException e) {
             Timber.e("MAM query: %s", e.getMessage());
         }
+
+        connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         return true;
     }
 
@@ -807,6 +811,15 @@ public class ChatPanel implements Chat, MessageListener {
     public void addMessage(ChatMessageImpl chatMessage) {
         // Must always cache the chatMsg as chatFragment has not registered to handle incoming
         // message on first onAttach or when it is not in focus.
+
+        // Do nothing if the MESSAGE_STATUS is disabled
+        if (ChatMessage.MESSAGE_STATUS == chatMessage.getMessageType()) {
+            Object descriptor = mChatSession.getDescriptor();
+            if ((descriptor instanceof ChatRoomWrapper) &&
+                    !((ChatRoomWrapper) descriptor).isRoomStatusEnable())
+                return;
+        }
+
         if (!(cacheNextMsg(chatMessage))) {
             Timber.e("Failed adding to msgCache (updated: %s): %s", cacheUpdated, chatMessage.getMessageUID());
         }

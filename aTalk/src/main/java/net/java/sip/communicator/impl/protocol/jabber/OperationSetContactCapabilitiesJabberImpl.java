@@ -25,6 +25,7 @@ import net.java.sip.communicator.util.ConfigurationUtils;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jxmpp.jid.Jid;
 
@@ -88,7 +89,7 @@ public class OperationSetContactCapabilitiesJabberImpl
     /**
      * The <code>discoveryManager</code> of {@link #parentProvider}.
      */
-    private ScServiceDiscoveryManager discoveryManager;
+    private ServiceDiscoveryManager discoveryManager;
 
     /**
      * Initializes a new <code>OperationSetContactCapabilitiesJabberImpl</code> instance which is to be
@@ -257,19 +258,19 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Sets the <code>ScServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of {@link #parentProvider}.
+     * Sets the <code>ServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of {@link #parentProvider}.
      * Remove the existing one before replaced with the new request
      *
-     * @param discManager the <code>ScServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of
+     * @param discManager the <code>ServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of
      * {@link #parentProvider}
      */
-    void setDiscoveryManager(ScServiceDiscoveryManager discManager) {
+    void setDiscoveryManager(ServiceDiscoveryManager discManager) {
         if ((discManager != null) && (discManager != discoveryManager)) {
             if (discoveryManager != null)
-                discoveryManager.removeUserCapsNodeListener(this);
+                ServiceDiscoveryHelper.removeUserCapsNodeListener(this);
 
             discoveryManager = discManager;
-            discoveryManager.addUserCapsNodeListener(this);
+            ServiceDiscoveryHelper.addUserCapsNodeListener(this);
         }
     }
 
@@ -281,8 +282,8 @@ public class OperationSetContactCapabilitiesJabberImpl
      * @param online indicates if the user is currently online
      * @see UserCapsNodeListener#userCapsNodeNotify(Jid, boolean)
      */
-    public void userCapsNodeNotify(Jid user, boolean online)
-    {
+    @Override
+    public void userCapsNodeNotify(Jid user, boolean online) {
         /*
          * It doesn't matter to us whether a caps node has been added or removed for the specified
          * user because we report all changes.
@@ -298,7 +299,7 @@ public class OperationSetContactCapabilitiesJabberImpl
                 if (online) {
                     // when going online we have received a presence and make sure we discover
                     // this particular jid for getSupportedOperationSets
-                    fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(user, online));
+                    fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(user, true));
                 }
                 else {
                     // Need to wait a while before getSupportedOperationSets(); otherwise non-updated values

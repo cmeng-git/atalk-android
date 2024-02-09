@@ -43,6 +43,7 @@ import org.atalk.service.neomedia.format.MediaFormat;
 import org.atalk.util.MediaType;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smackx.colibri.ColibriConferenceIQ;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
@@ -90,10 +91,10 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
 {
     /**
      * Determines whether a specific XMPP feature is supported by both a specific
-     * <code>ScServiceDiscoveryManager</code> (may be referred to as the local peer) and a specific
+     * <code>ServiceDiscoveryManager</code> (may be referred to as the local peer) and a specific
      * <code>DiscoverInfo</code> (may be thought of as the remote peer).
      *
-     * @param discoveryManager the <code>ScServiceDiscoveryManager</code> to be checked whether it includes
+     * @param discoveryManager the <code>ServiceDiscoveryManager</code> to be checked whether it includes
      * the specified feature
      * @param discoverInfo the <code>DiscoveryInfo</code> which is to be checked whether it contains the specified
      * feature. If <code>discoverInfo</code> is <code>null</code>, it is considered to contain the specified feature.
@@ -102,7 +103,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
      * @return <code>true</code> if the specified <code>feature</code> is supported by both the specified
      * <code>discoveryManager</code> and the specified <code>discoverInfo</code>; otherwise, <code>false</code>
      */
-    private static boolean isFeatureSupported(ScServiceDiscoveryManager discoveryManager,
+    private static boolean isFeatureSupported(ServiceDiscoveryManager discoveryManager,
             DiscoverInfo discoverInfo, String feature)
     {
         return discoveryManager.includesFeature(feature)
@@ -749,7 +750,7 @@ public class CallPeerMediaHandlerJabberImpl extends CallPeerMediaHandler<CallPee
             }
             else {
                 ProtocolProviderServiceJabberImpl protocolProvider = mPeer.getProtocolProvider();
-                ScServiceDiscoveryManager discoveryManager = protocolProvider.getDiscoveryManager();
+                ServiceDiscoveryManager discoveryManager = protocolProvider.getDiscoveryManager();
                 DiscoverInfo peerDiscoverInfo = mPeer.getDiscoveryInfo();
 
                 /*

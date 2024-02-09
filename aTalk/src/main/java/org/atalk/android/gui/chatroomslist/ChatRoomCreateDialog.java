@@ -116,6 +116,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         nicknameField = findViewById(R.id.NickName_Edit);
         subjectField = findViewById(R.id.chatRoom_Subject_Edit);
         subjectField.setText("");
+        findViewById(R.id.subject_clear).setOnClickListener(v -> subjectField.setText(""));
 
         passwordField = findViewById(R.id.passwordField);
         CheckBox showPasswordCB = findViewById(R.id.show_password);
@@ -341,7 +342,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         Collection<String> contacts = new ArrayList<>();
         String reason = "Let's chat";
 
-        if ((chatRoomID != null) && (nickName != null) && (subject != null) && (getSelectedProvider() != null)) {
+        if ((chatRoomID != null) && (nickName != null) && (getSelectedProvider() != null)) {
             ProtocolProviderService pps = getSelectedProvider().getProtocolProvider();
 
             // create new if chatRoom does not exist
@@ -362,18 +363,19 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 // ConfigurationUtils.saveChatRoom(pps, chatRoomID, chatRoomID);
 
                 /*
-                 * Save to server bookmark with autojoin option only for newly created chatRoom;
+                 * Save to server bookmark with auto-join option == false only for newly created chatRoom;
                  * Otherwise risk of overridden user previous settings
                  */
-                chatRoomWrapper.setAutoJoin(true);
+                // chatRoomWrapper.setAutoJoin(true);
                 chatRoomWrapper.setBookmark(true);
                 chatRoomWrapper.setNickName(nickName); // saved for later ResourcePart retrieval in addBookmarkedConference
                 EntityBareJid entityBareJid = chatRoomWrapper.getEntityBareJid();
 
+                // Use subject for bookmark name if not null; else use chatRoomID
+                String name = TextUtils.isEmpty(subject) ? chatRoomID : subject;
                 BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(pps.getConnection());
                 try {
-                    // Use subject for bookmark name
-                    bookmarkManager.addBookmarkedConference(subject, entityBareJid, true,
+                    bookmarkManager.addBookmarkedConference(name, entityBareJid, false,
                             chatRoomWrapper.getNickResource(), password);
                 } catch (SmackException.NoResponseException | SmackException.NotConnectedException
                          | XMPPException.XMPPErrorException | InterruptedException e) {
@@ -389,7 +391,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                         if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
                             return;
 
-                        // if we failed for some , then close and remove the room
+                        // if we failed for some, then close and remove the room
                         AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
                         MUCActivator.getMUCService().removeChatRoom(crWrapper);
                     });
@@ -416,9 +418,6 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         }
         else if (nickName == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CHANGE_NICKNAME_NULL);
-        }
-        else if (subject == null) {
-            aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_SUBJECT_NULL);
         }
         else {
             aTalkApp.showToastMessage(R.string.service_gui_CHATROOM_JOIN_FAILED, nickName, chatRoomID);

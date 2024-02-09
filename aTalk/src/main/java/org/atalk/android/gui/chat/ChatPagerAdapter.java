@@ -80,13 +80,11 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter implements ChatL
     }
 
     /**
-     * Returns index of the <code>ChatPanel</code> in this adapter identified by given
-     * <code>sessionId</code>.
+     * Returns index of the <code>ChatPanel</code> in this adapter identified by given <code>sessionId</code>.
      *
      * @param sessionId chat session identifier.
      *
-     * @return index of the <code>ChatPanel</code> in this adapter identified by given
-     * <code>sessionId</code>.
+     * @return index of the <code>ChatPanel</code> in this adapter identified by given <code>sessionId</code>.
      */
     public int getChatIdx(String sessionId) {
         if (sessionId == null)

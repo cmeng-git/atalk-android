@@ -47,10 +47,12 @@
 
             <TextView
                 android:id="@+id/actionBarStatus"
-                style="@style/SmallFont"
+                style="@style/MediumFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:singleLine="true"
+                android:ellipsize="marquee"
                 android:layout_marginStart="22dp"
                 android:focusable="true"
                 android:textColor="@color/textColorWhite" />

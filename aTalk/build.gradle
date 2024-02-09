@@ -59,8 +59,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 303040
-        versionName "3.3.4"
+        versionCode 303050
+        versionName "3.3.5"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk

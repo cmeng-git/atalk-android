@@ -771,11 +771,16 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
     }
 
-    public void saveMamIfNotExit(OmemoManager omemoManager, ChatPanel chatPanel,
-            List<Forwarded<Message>> forwardedList) {
-
+    public void saveMamIfNotExit(OmemoManager omemoManager, ChatPanel chatPanel, List<Forwarded<Message>> forwardedList) {
+        String chatId;
+        Object descriptor = chatPanel.getDescriptor();
+        if (descriptor instanceof ChatRoomWrapper) {
+            chatId = getSessionUuidByJid(((ChatRoomWrapper) descriptor).getChatRoom());
+        }
+        else {
+            chatId = getSessionUuidByJid(((MetaContact) descriptor).getDefaultContact());
+        }
         EntityFullJid userJid = chatPanel.getProtocolProvider().getConnection().getUser();
-        String chatId = chatPanel.getChatSession().getChatId();
 
         Date timeStamp = new Date();
         for (Forwarded<Message> forwarded : forwardedList) {

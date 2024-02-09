@@ -227,7 +227,7 @@ public abstract class AccountPreferenceFragment extends OSGiPreferenceFragment
      * Unregisters preference listeners. Get executed when a Dialog is displayed.
      */
     @Override
-    public void  onStop()
+    public void onStop()
     {
         shPrefs.unregisterOnSharedPreferenceChangeListener(this);
         shPrefs.unregisterOnSharedPreferenceChangeListener(summaryMapper);

@@ -153,7 +153,6 @@ public class ChatRoomQuery extends AsyncContactQuery<ContactSourceService>
      */
     private void providerAdded(ChatRoomProviderWrapper provider, boolean addQueryResult)
     {
-
         for (int i = 0; i < provider.countChatRooms(); i++) {
             ChatRoomWrapper chatRoom = provider.getChatRoom(i);
             addChatRoom(provider.getProtocolProvider(), chatRoom.getChatRoomName(),

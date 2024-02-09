@@ -59,8 +59,8 @@ import org.atalk.android.gui.chat.conference.CaptchaDialog;
 import org.atalk.android.gui.chat.conference.ConferenceChatManager;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.XhtmlUtil;
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -2762,17 +2762,24 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 // if status 201 is available means that room is created and locked till we send the configuration
                 if ((mucUser.getStatus() != null)
                         && mucUser.getStatus().contains(MUCUser.Status.ROOM_CREATED_201)) {
-                    try {
-                        TextSingleFormField formField
-                                = FormField.buildHiddenFormType("http://jabber.org/protocol/muc#roomconfig");
-                        DataForm dataForm = DataForm.builder(DataForm.Type.form).addField(formField).build();
-                        mMultiUserChat.sendConfigurationForm(new FillableForm(dataForm));
+                    // Must execute in new Thread; else failed with NoResponseException.
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                TextSingleFormField formField
+                                        = FormField.buildHiddenFormType("http://jabber.org/protocol/muc#roomconfig");
+                                DataForm dataForm = DataForm.builder(DataForm.Type.form).addField(formField).build();
+                                mMultiUserChat.sendConfigurationForm(new FillableForm(dataForm));
 
-                        // Sending null also picked up the options OperationSetMultiUserChatJabberImpl#createChatRoom and sent
-                        // mMultiUserChat.sendConfigurationForm(null);
-                    } catch (XMPPException | NoResponseException | NotConnectedException | InterruptedException e) {
-                        Timber.e(e, "Failed to send config form.");
-                    }
+                                // Sending null also picked up the options OperationSetMultiUserChatJabberImpl#createChatRoom and sent
+                                // mMultiUserChat.sendConfigurationForm(null);
+                            } catch (XMPPException | NoResponseException | NotConnectedException |
+                                     InterruptedException e) {
+                                Timber.e("Send config form error: %s", e.getMessage());
+                            }
+                        }
+                    }.start();
 
                     // Update mNickName here as it is used in fireLocalUserRoleEvent before joinAs() is triggered.
                     EntityFullJid from = presence.getFrom().asEntityFullJidIfPossible();
@@ -2782,8 +2789,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                     if (affiliation == MUCAffiliation.owner) {
                         setLocalUserRole(ChatRoomMemberRole.OWNER, true);
                     }
-                    else
+                    else {
                         setLocalUserRole(ChatRoomMemberRole.MODERATOR, true);
+                    }
                 }
                 else {
                     // this is the presence for our own initial mRole and affiliation,

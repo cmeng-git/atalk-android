@@ -49,8 +49,7 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatRoomWrapper
-{
+public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatRoomWrapper {
     /**
      * The protocol provider to which the corresponding chat room belongs.
      */
@@ -99,13 +98,13 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
 
     private Boolean isTtsEnable = null;
 
-    private Boolean isRoomStatusEnable = null;
+    private Boolean isRoomStatusEnable;
 
     /**
      * As isAutoJoin can be called from GUI many times we store its value once retrieved to
      * minimize calls to configuration service. Set to null to indicate not initialize
      */
-    private Boolean autoJoin = null;
+    private Boolean isAutoJoin;
 
     private Boolean bookmark = null;
 
@@ -124,11 +123,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     /**
      * The property change listener for the message service.
      */
-    private final PropertyChangeListener propertyListener = new PropertyChangeListener()
-    {
+    private final PropertyChangeListener propertyListener = new PropertyChangeListener() {
         @Override
-        public void propertyChange(PropertyChangeEvent e)
-        {
+        public void propertyChange(PropertyChangeEvent e) {
             MessageHistoryService mhs = MUCActivator.getMessageHistoryService();
             if (!mhs.isHistoryLoggingEnabled() || !mhs.isHistoryLoggingEnabled(getChatRoomID())) {
                 MUCService.setChatRoomAutoOpenOption(mPPS, getChatRoomID(), MUCService.OPEN_ON_ACTIVITY);
@@ -142,17 +139,21 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      * @param parentProvider the protocol provider to which the corresponding chat room belongs
      * @param chatRoomID the identifier of the corresponding chat room
      */
-    public ChatRoomWrapperImpl(ChatRoomProviderWrapper parentProvider, String chatRoomID)
-    {
+    public ChatRoomWrapperImpl(ChatRoomProviderWrapper parentProvider, String chatRoomID) {
         this.parentProvider = parentProvider;
         this.chatRoomID = chatRoomID;
         this.mPPS = parentProvider.getProtocolProvider();
+
+        String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE);
+        isRoomStatusEnable = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
+
+        val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME);
+        isAutoJoin = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
 
         // Request for passwordPrefix only if chatRoomID is not a serviceName
         if (chatRoomID.contains("@")) {
             passwordPrefix = ConfigurationUtils.getChatRoomPrefix(mPPS, chatRoomID) + ".password";
         }
-
         MUCActivator.getConfigurationService().addPropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, propertyListener);
         MUCActivator.getConfigurationService().addPropertyChangeListener(
@@ -166,8 +167,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      * @param parentProvider the protocol provider to which the corresponding chat room belongs
      * @param chatRoom the chat room to which this wrapper corresponds.
      */
-    public ChatRoomWrapperImpl(ChatRoomProviderWrapper parentProvider, ChatRoom chatRoom)
-    {
+    public ChatRoomWrapperImpl(ChatRoomProviderWrapper parentProvider, ChatRoom chatRoom) {
         this(parentProvider, chatRoom.getIdentifier().toString());
         this.chatRoom = chatRoom;
     }
@@ -177,8 +177,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the <code>ChatRoom</code> that this wrapper represents.
      */
-    public ChatRoom getChatRoom()
-    {
+    public ChatRoom getChatRoom() {
         return chatRoom;
     }
 
@@ -187,8 +186,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param chatRoom the chat room
      */
-    public void setChatRoom(ChatRoom chatRoom)
-    {
+    public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
 
@@ -197,8 +195,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the chat room name
      */
-    public String getChatRoomName()
-    {
+    public String getChatRoomName() {
         if (chatRoom != null)
             return chatRoom.getName();
 
@@ -210,8 +207,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the identifier of the chat room
      */
-    public String getChatRoomID()
-    {
+    public String getChatRoomID() {
         return chatRoomID;
     }
 
@@ -220,8 +216,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the account user BareJid
      */
-    public BareJid getUser()
-    {
+    public BareJid getUser() {
         return mPPS.getConnection().getUser().asBareJid();
     }
 
@@ -230,8 +225,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param count unread message count
      */
-    public void setUnreadCount(int count)
-    {
+    public void setUnreadCount(int count) {
         unreadCount = count;
     }
 
@@ -240,8 +234,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the unread message count
      */
-    public int getUnreadCount()
-    {
+    public int getUnreadCount() {
         return unreadCount;
     }
 
@@ -250,8 +243,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the chat room EntityBareJid
      */
-    public EntityBareJid getEntityBareJid()
-    {
+    public EntityBareJid getEntityBareJid() {
         if (chatRoom != null)
             return chatRoom.getIdentifier();
         else {
@@ -269,8 +261,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the parent protocol provider
      */
-    public ChatRoomProviderWrapper getParentProvider()
-    {
+    public ChatRoomProviderWrapper getParentProvider() {
         return this.parentProvider;
     }
 
@@ -279,8 +270,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the protocol provider service
      */
-    public ProtocolProviderService getProtocolProvider()
-    {
+    public ProtocolProviderService getProtocolProvider() {
         return mPPS;
     }
 
@@ -289,8 +279,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return {@code true} if the chat room is persistent, otherwise - returns {@code false}.
      */
-    public boolean isPersistent()
-    {
+    public boolean isPersistent() {
         if (persistent == null) {
             if (chatRoom != null)
                 persistent = chatRoom.isPersistent();
@@ -305,8 +294,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value set persistent state.
      */
-    public void setPersistent(boolean value)
-    {
+    public void setPersistent(boolean value) {
         this.persistent = value;
     }
 
@@ -315,8 +303,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param password the password to store
      */
-    public void savePassword(String password)
-    {
+    public void savePassword(String password) {
         MUCActivator.getCredentialsStorageService().storePassword(passwordPrefix, password);
     }
 
@@ -325,16 +312,14 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the password
      */
-    public String loadPassword()
-    {
+    public String loadPassword() {
         return MUCActivator.getCredentialsStorageService().loadPassword(passwordPrefix);
     }
 
     /**
      * Removes the saved password for the chat room.
      */
-    public void removePassword()
-    {
+    public void removePassword() {
         MUCActivator.getCredentialsStorageService().removePassword(passwordPrefix);
     }
 
@@ -343,8 +328,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the user nickName ResourcePart
      */
-    public Resourcepart getNickResource()
-    {
+    public Resourcepart getNickResource() {
         String nickName = getNickName();
         try {
             return Resourcepart.from(nickName);
@@ -359,8 +343,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the member nickName
      */
-    public String getNickName()
-    {
+    public String getNickName() {
         if (StringUtils.isEmpty(mNickName)) {
             mNickName = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ChatRoom.USER_NICK_NAME);
             if (StringUtils.isEmpty(mNickName))
@@ -374,8 +357,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param pps the ProtocolProviderService
      */
-    private String getDefaultNickname(ProtocolProviderService pps)
-    {
+    private String getDefaultNickname(ProtocolProviderService pps) {
         String nickName = AndroidGUIActivator.getGlobalDisplayDetailsService().getDisplayName(pps);
         if ((nickName == null) || nickName.contains("@"))
             nickName = XmppStringUtils.parseLocalpart(pps.getAccountID().getAccountJid());
@@ -388,8 +370,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param nickName the nickName to store
      */
-    public void setNickName(String nickName)
-    {
+    public void setNickName(String nickName) {
         mNickName = nickName;
         if (!isPersistent()) {
             setPersistent(true);
@@ -403,8 +384,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return the bookmark name
      */
-    public String getBookmarkName()
-    {
+    public String getBookmarkName() {
         return StringUtils.isEmpty(bookmarkName)
                 ? chatRoomID.split("@")[0] : bookmarkName;
     }
@@ -414,8 +394,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value the bookmark name to set
      */
-    public void setBookmarkName(String value)
-    {
+    public void setBookmarkName(String value) {
         bookmarkName = value;
         if (!isPersistent()) {
             setPersistent(true);
@@ -429,13 +408,8 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return is auto joining enabled.
      */
-    public boolean isAutoJoin()
-    {
-        if (autoJoin == null) {
-            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME);
-            autoJoin = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
-        }
-        return autoJoin;
+    public boolean isAutoJoin() {
+        return isAutoJoin;
     }
 
     /**
@@ -443,12 +417,9 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value change of auto join property.
      */
-    public void setAutoJoin(boolean value)
-    {
-        if (isAutoJoin() == value)
-            return;
+    public void setAutoJoin(boolean value) {
 
-        autoJoin = value;
+        isAutoJoin = value;
         // as the user wants to autoJoin this room and it maybe already created as non-persistent
         // we must set it persistent and store it
         if (!isPersistent()) {
@@ -456,12 +427,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
             ConfigurationUtils.saveChatRoom(mPPS, chatRoomID, chatRoomID);
         }
 
-        if (value) {
-            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME, Boolean.toString(autoJoin));
-        }
-        else {
-            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME, null);
-        }
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, AUTOJOIN_PROPERTY_NAME, Boolean.toString(isAutoJoin));
         MUCActivator.getMUCService().fireChatRoomListChangedEvent(this, ChatRoomListChangeEvent.CHAT_ROOM_CHANGED);
     }
 
@@ -470,8 +436,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return if the charRoomWrapper is bookmarked.
      */
-    public boolean isBookmarked()
-    {
+    public boolean isBookmarked() {
         if (bookmark == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, BOOKMARK_PROPERTY_NAME);
             bookmark = !StringUtils.isEmpty(val) && Boolean.parseBoolean(val);
@@ -484,8 +449,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value change of bookmark property.
      */
-    public void setBookmark(boolean value)
-    {
+    public void setBookmark(boolean value) {
         if (isBookmarked() == value)
             return;
 
@@ -510,8 +474,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @return true if chatroom tts is enabled.
      */
-    public boolean isTtsEnable()
-    {
+    public boolean isTtsEnable() {
         if (isTtsEnable == null) {
             String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, TTS_ENABLE);
             isTtsEnable = StringUtils.isNotEmpty(val) && Boolean.parseBoolean(val);
@@ -525,8 +488,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param value change of tts enable property.
      */
-    public void setTtsEnable(boolean value)
-    {
+    public void setTtsEnable(boolean value) {
         if (isTtsEnable() == value)
             return;
 
@@ -540,45 +502,28 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
     }
 
     /**
-     * When access on start-up, return roomStatusEnable may be null.
+     * Get the roomStatusEnable status
      *
      * @return true if chatroom tts is enabled.
      */
-    public boolean isRoomStatusEnable()
-    {
-        if (isRoomStatusEnable == null) {
-            String val = ConfigurationUtils.getChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE);
-            isRoomStatusEnable = StringUtils.isEmpty(val) || Boolean.parseBoolean(val);
-        }
+    public boolean isRoomStatusEnable() {
         return isRoomStatusEnable;
     }
 
     /**
-     * Change chatroom status enable value in configuration service.
-     * Null value in DB is considered as true.
+     * Change chatroom status enable value in configuration service. Null value in DB is considered as false.
      *
      * @param value change of room status enable property.
      */
-    public void setRoomStatusEnable(boolean value)
-    {
-        if (isRoomStatusEnable() == value)
-            return;
-
+    public void setRoomStatusEnable(boolean value) {
         isRoomStatusEnable = value;
-        if (value) {
-            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE, null);
-        }
-        else {
-            ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE,
-                    Boolean.toString(isRoomStatusEnable));
-        }
+        ConfigurationUtils.updateChatRoomProperty(mPPS, chatRoomID, ROOM_STATUS_ENABLE, Boolean.toString(isRoomStatusEnable));
     }
 
     /**
      * Removes the listeners.
      */
-    public void removeListeners()
-    {
+    public void removeListeners() {
         MUCActivator.getConfigurationService().removePropertyChangeListener(
                 MessageHistoryService.PNAME_IS_MESSAGE_HISTORY_ENABLED, propertyListener);
         MUCActivator.getConfigurationService().removePropertyChangeListener(
@@ -591,14 +536,12 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      *
      * @param property chatRoom property that has been changed
      */
-    public void firePropertyChange(String property)
-    {
+    public void firePropertyChange(String property) {
         super.firePropertyChange(property, null, null);
     }
 
     @Override
-    public int compareTo(@NonNull ChatRoomWrapper o)
-    {
+    public int compareTo(@NonNull ChatRoomWrapper o) {
         ChatRoomWrapperImpl target = (ChatRoomWrapperImpl) o;
 
 //		int isOnline = (contactsOnline > 0) ? 1 : 0;

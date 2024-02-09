@@ -186,13 +186,13 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     @Override
     public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         if (evt.getNewState() == RegistrationState.REGISTERED) {
-            this.parentProvider.getDiscoveryManager().addUserCapsNodeListener(this);
+            ServiceDiscoveryHelper.addUserCapsNodeListener(this);
         }
         else if ((evt.getNewState() == RegistrationState.CONNECTION_FAILED
                 || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED
                 || evt.getNewState() == RegistrationState.UNREGISTERED)
                 && this.parentProvider.getDiscoveryManager() != null) {
-            this.parentProvider.getDiscoveryManager().removeUserCapsNodeListener(this);
+            ServiceDiscoveryHelper.removeUserCapsNodeListener(this);
         }
     }
 

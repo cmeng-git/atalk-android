@@ -16,16 +16,7 @@
  */
 package org.atalk.persistance;
 
-
 import static net.java.sip.communicator.plugin.loggingutils.LogsCollector.LOGGING_DIR_NAME;
-import static org.atalk.android.R.id.cb_avatar;
-import static org.atalk.android.R.id.cb_caps;
-import static org.atalk.android.R.id.cb_debug_log;
-import static org.atalk.android.R.id.cb_del_database;
-import static org.atalk.android.R.id.cb_discoInfo;
-import static org.atalk.android.R.id.cb_export_database;
-import static org.atalk.android.R.id.cb_omemo;
-import static org.atalk.android.R.id.cb_roster;
 
 import android.app.Activity;
 import android.content.Context;
@@ -36,23 +27,21 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.ScServiceDiscoveryManager;
+import net.java.sip.communicator.impl.protocol.jabber.ServiceDiscoveryHelper;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
-import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.dialogs.DialogActivity;
+import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.atalk.persistance.migrations.MigrationTo2;
 import org.atalk.service.fileaccess.FileCategory;
 import org.atalk.service.libjitsi.LibJitsi;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 
@@ -67,14 +56,12 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ServerPersistentStoresRefreshDialog extends OSGiFragment
-{
+public class ServerPersistentStoresRefreshDialog extends OSGiFragment {
     /**
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.refresh_persistent_stores, container, false);
         if (BuildConfig.DEBUG) {
             view.findViewById(R.id.cb_export_database).setVisibility(View.VISIBLE);
@@ -89,8 +76,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      *
      * @param parent the parent <code>Activity</code>
      */
-    public void show(Activity parent)
-    {
+    public void show(Activity parent) {
         DialogActivity.showCustomDialog(parent,
                 parent.getString(R.string.service_gui_REFRESH_STORES),
                 ServerPersistentStoresRefreshDialog.class.getName(), null,
@@ -101,29 +87,26 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     /**
      * Implements <code>DialogActivity.DialogListener</code> interface and handles refresh stores process.
      */
-    class DialogListenerImpl implements DialogActivity.DialogListener
-    {
+    class DialogListenerImpl implements DialogActivity.DialogListener {
         @Override
-        public boolean onConfirmClicked(DialogActivity dialog)
-        {
+        public boolean onConfirmClicked(DialogActivity dialog) {
             View view = dialog.getContentFragment().getView();
-            CheckBox cbRoster = view.findViewById(cb_roster);
-            CheckBox cbCaps = view.findViewById(cb_caps);
-            CheckBox cbDiscoInfo = view.findViewById(cb_discoInfo);
-            CheckBox cbAvatar = view.findViewById(cb_avatar);
-            CheckBox cbOmemo = view.findViewById(cb_omemo);
-            CheckBox cbDebugLog = view.findViewById(cb_debug_log);
-            CheckBox cbExportDB = view.findViewById(cb_export_database);
-            CheckBox cbDeleteDB = view.findViewById(cb_del_database);
+            if (view == null)
+                return false;
+
+            CheckBox cbRoster = view.findViewById(R.id.cb_roster);
+            CheckBox cbCaps = view.findViewById(R.id.cb_caps);
+            CheckBox cbAvatar = view.findViewById(R.id.cb_avatar);
+            CheckBox cbOmemo = view.findViewById(R.id.cb_omemo);
+            CheckBox cbDebugLog = view.findViewById(R.id.cb_debug_log);
+            CheckBox cbExportDB = view.findViewById(R.id.cb_export_database);
+            CheckBox cbDeleteDB = view.findViewById(R.id.cb_del_database);
 
             if (cbRoster.isChecked()) {
                 refreshRosterStore();
             }
             if (cbCaps.isChecked()) {
-                refreshCapsStore();
-            }
-            if (cbDiscoInfo.isChecked()) {
-                refreshDiscoInfoStore();
+                ServiceDiscoveryHelper.refreshEntityCapsStore();
             }
             if (cbAvatar.isChecked()) {
                 purgeAvatarStorage();
@@ -144,8 +127,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         }
 
         @Override
-        public void onDialogCancelled(DialogActivity dialog)
-        {
+        public void onDialogCancelled(DialogActivity dialog) {
         }
     }
 
@@ -153,8 +135,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to refresh roster store for each registered account
      * Persistent Store for XEP-0237:Roster Versioning
      */
-    private void refreshRosterStore()
-    {
+    private void refreshRosterStore() {
         Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
         for (ProtocolProviderService pps : ppServices) {
             ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
@@ -172,66 +153,10 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
     }
 
     /**
-     * Process to refresh the single Entity Capabilities store for all accounts
-     * Persistent Store for XEP-0115:Entity Capabilities
-     */
-    private void refreshCapsStore()
-    {
-        // stop roster from accessing the store
-        EntityCapsManager.setPersistentCache(null);
-        EntityCapsManager.clearMemoryCache();
-
-        File entityStoreDirectory = ScServiceDiscoveryManager.getEntityPersistentStore();
-        if ((entityStoreDirectory != null) && entityStoreDirectory.exists()) {
-            try {
-                FileBackend.deleteRecursive(entityStoreDirectory);
-            } catch (IOException e) {
-                Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_CAPS);
-            }
-            ScServiceDiscoveryManager.initEntityPersistentStore();
-        }
-    }
-
-    /**
-     * Process to refresh Disco#info store for all accounts
-     * Persistent Store for XEP-0030:Service Discovery
-     */
-    private void refreshDiscoInfoStore()
-    {
-        Collection<ProtocolProviderService> ppServices = AccountUtils.getRegisteredProviders();
-        for (ProtocolProviderService pps : ppServices) {
-            ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
-
-            ScServiceDiscoveryManager discoveryInfoManager = jabberProvider.getDiscoveryManager();
-            if (discoveryInfoManager == null)
-                return;
-
-            if (jabberProvider.isRegistered()) {
-                if (RegistrationState.REGISTERED.equals(jabberProvider.getRegistrationState())) {
-                    // stop discoveryInfoManager from accessing the store
-                    discoveryInfoManager.setDiscoInfoPersistentStore(null);
-                    discoveryInfoManager.clearDiscoInfoPersistentCache();
-                }
-            }
-
-            File discoInfoStoreDirectory = discoveryInfoManager.getDiscoInfoPersistentStore();
-            if ((discoInfoStoreDirectory != null) && discoInfoStoreDirectory.exists()) {
-                try {
-                    FileBackend.deleteRecursive(discoInfoStoreDirectory);
-                } catch (IOException e) {
-                    Timber.e("Failed to purchase store for: %s", R.string.service_gui_REFRESH_STORES_DISCINFO);
-                }
-                discoveryInfoManager.initDiscoInfoPersistentStore();
-            }
-        }
-    }
-
-    /**
      * Process to clear the VCard Avatar Index and purge persistent storage for all accounts
      * XEP-0153: vCard-Based Avatars
      */
-    private void purgeAvatarStorage()
-    {
+    private void purgeAvatarStorage() {
         VCardAvatarManager.clearPersistentStorage();
     }
 
@@ -239,8 +164,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to purge persistent storage for OMEMO_Store
      * XEP-0384: OMEMO Encryption
      */
-    private void purgeOmemoStorage()
-    {
+    private void purgeOmemoStorage() {
         // accountID omemo key attributes
         String JSONKEY_REGISTRATION_ID = "omemoRegId";
         String JSONKEY_CURRENT_PREKEY_ID = "omemoCurPreKeyId";
@@ -282,8 +206,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
         Timber.i("### Omemo store has been refreshed!");
     }
 
-    private void exportDB()
-    {
+    private void exportDB() {
         String clFileName = "contactlist.xml";
         String OMEMO_Store = "OMEMO_Store";
         String database = "databases";
@@ -330,8 +253,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Warn: Delete the aTalk dataBase
      * Static access from other module
      */
-    public static void deleteDB()
-    {
+    public static void deleteDB() {
         Context ctx = aTalkApp.getInstance();
         ctx.deleteDatabase(DatabaseBackend.DATABASE_NAME);
     }
@@ -340,8 +262,7 @@ public class ServerPersistentStoresRefreshDialog extends OSGiFragment
      * Process to purge all debug log files in case it gets too large to handle
      * Static access from other module
      */
-    public static void purgeDebugLog()
-    {
+    public static void purgeDebugLog() {
         File logDir;
         try {
             logDir = LibJitsi.getFileAccessService().getPrivatePersistentDirectory(LOGGING_DIR_NAME, FileCategory.LOG);

@@ -6,8 +6,25 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.4 (02/03/2024)" versioncode="303040">
+    <release version="3.3.5 (02/09/2024)" versioncode="303050">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix incorrect derive of the chatSession Uuid for conference chat messages in saveMamIfNotExit()</change>
+        <change>Extend smack reply timeout to 10S for MamManager.MamQuery() to take care for slow server response</change>
+        <change>Drop non-null subject field as prerequisite in create/join a chatRoom; user may not have the right to change subject</change>
+        <change>Default bookmark creation but with auto-join disabled for newly created chatRoom</change>
+        <change>Default "Enable Room Status" to false on entry to newly created chatRoom</change>
+        <change>Block room status caching in ChatPanel#msgCache if RoomStatus Enable == false; else they will appear in chatSession when open</change>
+        <change>Limit conference subject to single line with auto scroll horizontally</change>
+        <change>Fix chatRoom status icon indicator not being updated on entry</change>
+        <change>Send muc#roomconfig stanza on new thread; else always failed with NoResponseException</change>
+        <change>Fix deletion of room status messages crashes aTalk</change>
+        <change>Drop aTalk ScServiceDiscovery class; use smack ServiceDiscoveryManager and local ServiceDiscoveryHelper implementations</change>
+        <change>Cleanup and improve ServerPersistentStoresRefreshDialog class implementation</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+
+    <release version="3.3.4 (02/03/2024)" versioncode="303040">
         <change>Drop butterknife-compiler:10.2.3 dependency and remove jdk-15 max restriction; use android View binding class instead</change>
         <change>Change file transfer protocol priority to: a. httpFileUpload; b. jingleFileSend (Secure JET or Plain); c. Legacy byteStream transfer protocol</change>
         <change>Fix Smack 4.4.7: ByteStream Sock5 implementation does not take care of the host address with zone id</change>

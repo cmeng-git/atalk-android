@@ -39,6 +39,7 @@ import org.atalk.android.gui.chat.ChatContact;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatTransport;
+import org.atalk.android.gui.util.AndroidImageUtil;
 
 import java.util.Collection;
 import java.util.Date;
@@ -504,11 +505,13 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     @Override
     public byte[] getChatStatusIcon()
     {
-        PresenceStatus status = GlobalStatusEnum.OFFLINE;
-        if (chatRoomWrapper.getChatRoom() != null && chatRoomWrapper.getChatRoom().isJoined())
-            status = GlobalStatusEnum.ONLINE;
-
+        boolean isJoined = (chatRoomWrapper.getChatRoom() != null) && chatRoomWrapper.getChatRoom().isJoined();
+        PresenceStatus status = isJoined ?  GlobalStatusEnum.ONLINE : GlobalStatusEnum.OFFLINE;
         return status.getStatusIcon();
+
+        // byte[] statusIcon = AndroidImageUtil.getImageBytes(this,
+        //     isJoined ? R.drawable.global_online : R.drawable.global_offline);
+        // return statusIcon
     }
 
     /**
@@ -519,7 +522,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     @Override
     public byte[] getChatAvatar()
     {
-        return null;
+        return AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.ic_chatroom);
     }
 
     /**

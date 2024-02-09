@@ -94,7 +94,7 @@
         <TextView
             android:id="@+id/none"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <CheckBox
             android:id="@+id/store_password"
@@ -112,16 +112,25 @@
         <TextView
             android:id="@+id/chatRoom_Subject"
             style="@style/MediumFont"
-            android:layout_width="100dp"
+            android:layout_width="62dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/chatRoom_Subject" />
 
+        <ImageButton
+            android:id="@+id/subject_clear"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/correction_cancel" />
+
         <EditText
             android:id="@+id/chatRoom_Subject_Edit"
             style="@style/EntryTextView"
-            android:hint="@string/service_gui_GROUP_CHAT"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            android:singleLine="true"
+            android:hint="@string/service_gui_GROUP_CHAT" />
     </LinearLayout>
 
     <TextView

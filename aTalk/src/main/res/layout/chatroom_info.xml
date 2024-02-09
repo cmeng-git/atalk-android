@@ -73,7 +73,9 @@
                     android:id="@+id/roominfo_description"
                     style="@style/EntryTextView"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/text_entry_height" />
+                    android:layout_height="@dimen/text_entry_height"
+                    android:ellipsize="marquee"
+                    android:singleLine="true" />
             </LinearLayout>
 
             <LinearLayout
@@ -92,12 +94,6 @@
                 <TextView
                     android:id="@+id/roominfo_occupants"
                     style="@style/EntryTextView"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit ="marquee_forever"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:scrollHorizontally="true"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/text_entry_height" />
             </LinearLayout>

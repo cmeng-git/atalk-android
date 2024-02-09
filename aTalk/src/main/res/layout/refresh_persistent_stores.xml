@@ -25,12 +25,6 @@
         android:text="@string/service_gui_REFRESH_STORES_CAPS" />
 
     <CheckBox
-        android:id="@+id/cb_discoInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/service_gui_REFRESH_STORES_DISCINFO" />
-
-    <CheckBox
         android:id="@+id/cb_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

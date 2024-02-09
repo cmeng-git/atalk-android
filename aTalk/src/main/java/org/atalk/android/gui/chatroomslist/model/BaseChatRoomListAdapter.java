@@ -283,8 +283,8 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
             convertView = mInflater.inflate(R.layout.chatroom_list_row, parent, false);
 
             chatRoomViewHolder = new ChatRoomViewHolder();
-            chatRoomViewHolder.roomName = convertView.findViewById(R.id.room_name);
             chatRoomViewHolder.statusMessage = convertView.findViewById(R.id.room_status);
+            chatRoomViewHolder.roomName = convertView.findViewById(R.id.room_name);
 
             chatRoomViewHolder.roomIcon = convertView.findViewById(R.id.room_icon);
             chatRoomViewHolder.roomIcon.setOnClickListener(this);

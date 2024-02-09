@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
+import net.java.sip.communicator.impl.muc.ChatRoomWrapperImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -307,7 +308,7 @@ public class ChatActivity extends OSGiActivity
     /**
      * Called when the fragment is visible to the user and actively running. This is generally
      * tied to {@link android.app.Activity#onResume() Activity.onResume} of the containing Activity's lifecycle.
-     *
+     * <p>
      * Set lastSelectedIdx = -1 so {@link #updateSelectedChatInfo(int)} is always executed on onResume
      */
     @Override
@@ -555,11 +556,11 @@ public class ChatActivity extends OSGiActivity
                     ? R.string.service_gui_TTS_DISABLE : R.string.service_gui_TTS_ENABLE);
 
             mStatusEnable.setVisible(true);
-            mStatusEnable.setTitle(chatRoomWrapper.isRoomStatusEnable()
+            boolean roomStatusEnable = chatRoomWrapper.isRoomStatusEnable();
+            mStatusEnable.setTitle(roomStatusEnable
                     ? R.string.service_gui_CHATROOM_STATUS_OFF : R.string.service_gui_CHATROOM_STATUS_ON);
 
             mChatRoomNickSubject.setVisible(isJoined);
-
             mHistoryErase.setTitle(R.string.service_gui_CHATROOM_HISTORY_ERASE_PER);
             mChatRoomInfo.setVisible(true);
             mChatRoomMember.setVisible(true);
@@ -568,6 +569,10 @@ public class ChatActivity extends OSGiActivity
             mCallAudioContact.setVisible(false);
             mCallVideoContact.setVisible(false);
             mOtr_Session.setVisible(false);
+
+            ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
+            ActionBarUtil.setStatusIcon(this, ccSession.getChatStatusIcon());
+            ActionBarUtil.setSubtitle(this, ccSession.getChatSubject());
         }
     }
 
@@ -817,7 +822,7 @@ public class ChatActivity extends OSGiActivity
             }
             else if (chatSession instanceof ConferenceChatSession) {
                 // Reset unread message count when user slides to view this chat session
-                ((ChatRoomWrapper) chatSession.getDescriptor()).setUnreadCount(0);
+                ((ChatRoomWrapperImpl) chatSession.getDescriptor()).setUnreadCount(0);
 
                 ConferenceChatSession ccSession = (ConferenceChatSession) chatSession;
                 ActionBarUtil.setAvatar(this, R.drawable.ic_chatroom);
@@ -853,7 +858,8 @@ public class ChatActivity extends OSGiActivity
                             lastActiveTime = (System.currentTimeMillis() - elapseTime * 1000L);
                             mRecipient.setLastActiveTime(lastActiveTime);
                         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                                | SmackException.NotConnectedException | InterruptedException | IllegalArgumentException e) {
+                                 | SmackException.NotConnectedException | InterruptedException |
+                                 IllegalArgumentException e) {
                             Timber.w("Exception in getLastSeen %s", e.getMessage());
                         }
                     }
@@ -888,10 +894,11 @@ public class ChatActivity extends OSGiActivity
 
     public void sendAttachment(AttachOptionItem attachOptionItem) {
         Uri fileUri;
+        String contentType;
 
         switch (attachOptionItem) {
             case pic:
-                String contentType = "image/*";
+                contentType = "image/*";
                 mGetContents.launch(contentType);
                 break;
 
@@ -1063,7 +1070,7 @@ public class ChatActivity extends OSGiActivity
      * @param file the file to open
      */
     public void openDownloadable(File file, View view) {
-	if ((file == null) || !file.exists()) {
+        if ((file == null) || !file.exists()) {
             showToastMessage(R.string.service_gui_FILE_DOES_NOT_EXIST);
             return;
         }
@@ -1191,7 +1198,7 @@ public class ChatActivity extends OSGiActivity
 
     /**
      * Construct media url share with thumbnail and title via URL_EMBBED which supports with JSONObject:
-     *
+     * <p>
      * {"width":480,"provider_name":"YouTube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
      * "title":"Rick Astley - Never Gonna Give You Up (Video)","author_name":"RickAstleyVEVO",
      * "thumbnail_width":480,"height":270,"thumbnail_url":"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",

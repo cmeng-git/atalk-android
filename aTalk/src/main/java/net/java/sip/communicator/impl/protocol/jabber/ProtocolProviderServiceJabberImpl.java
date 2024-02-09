@@ -80,8 +80,8 @@ import org.atalk.android.gui.call.JingleMessageSessionImpl;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.login.LoginSynchronizationPoint;
 import org.atalk.android.gui.util.LocaleHelper;
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.omemo.AndroidOmemoService;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.atalk.util.OSUtils;
@@ -491,7 +491,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * <code>supportedFeatures</code> when asked by a remote client. It can also be used to query
      * remote clients for supported features.
      */
-    private ScServiceDiscoveryManager discoveryManager = null;
+    private ServiceDiscoveryManager discoveryManager = null;
+    private ServiceDiscoveryHelper scHelper = null;
 
     private ReconnectionManager reconnectionManager = null;
 
@@ -965,7 +966,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             String proxyPassword = mAccountID.getAccountPropertyString(
                     ProtocolProviderFactory.PROXY_PASSWORD, mAccountID.getProxyPassword());
 
-            if (proxyAddress == null || proxyAddress.length() <= 0) {
+            if (proxyAddress == null || proxyAddress.length() == 0) {
                 throw new OperationFailedException("Missing Proxy Address",
                         OperationFailedException.INVALID_ACCOUNT_PROPERTIES);
             }
@@ -1472,7 +1473,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         /**
          * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
-         *
+         * <p>
          * Note that the connection is likely not yet authenticated and therefore only limited operations
          * like registering an account may be possible.
          *
@@ -1624,8 +1625,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Called when the server ping fails.
      */
     public void pingFailed() {
-        // Timber.w("Ping failed! isLastConnectionMobile: %s; isConnectedMobile: %s", isLastConnectionMobile,
-        //        isConnectedMobile());
+        // Timber.w("Ping failed! isLastConnectionMobile: %s; isConnectedMobile: %s", isLastConnectionMobile, isConnectedMobile());
         isMobilePingClosedOnError = isLastConnectionMobile && isConnectedMobile();
     }
 
@@ -1747,7 +1747,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
                 opsetContactCapabilities.setDiscoveryManager(null);
         } finally {
             if (discoveryManager != null) {
-                discoveryManager.stop();
                 discoveryManager = null;
             }
         }
@@ -2112,7 +2111,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * Registers the ServiceDiscoveryManager wrapper
-     *
      * we setup all supported features before packets are actually being sent during feature
      * registration. So we'd better do it here so that our first presence update would
      * contain a caps with the right features.
@@ -2121,10 +2119,9 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         // Add features aTalk supports in addition to smack.
         String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
         String[] featuresToAdd = supportedFeatures.toArray(new String[0]);
-        // boolean cacheNonCaps = true;
 
-        discoveryManager = new ScServiceDiscoveryManager(this, mConnection, featuresToRemove,
-                featuresToAdd, true);
+        scHelper = new ServiceDiscoveryHelper(this, mConnection, featuresToRemove,featuresToAdd);
+        discoveryManager = ServiceDiscoveryManager.getInstanceFor(mConnection);
 
         /*
          * Expose the discoveryManager as service-public through the
@@ -2166,7 +2163,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         EntityCapsManager.setDefaultEntityNode(entityNode);
 
         /* setup EntityCapsManager persistent store for XEP-0115: Entity Capabilities */
-        ScServiceDiscoveryManager.initEntityPersistentStore();
+        ServiceDiscoveryHelper.initEntityPersistentStore();
 
         /*
          * The CapsExtension reply to be included in the caps <Identity/>
@@ -2783,25 +2780,18 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @return <code>true</code> if the list of features is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureListSupported(Jid jid, String... features) {
-        try {
-            if (discoveryManager == null)
-                return false;
+        // DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(jid);
+        DiscoverInfo featureInfo = scHelper.discoverInfo(jid);
+        if (featureInfo == null)
+            return false;
 
-            DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(jid);
-            if (featureInfo == null)
+        // If one is not supported we return false and don't check the others.
+        for (String feature : features) {
+            if (!featureInfo.containsFeature(feature)) {
                 return false;
-
-            // If one is not supported we return false and don't check the others.
-            for (String feature : features) {
-                if (!featureInfo.containsFeature(feature)) {
-                    return false;
-                }
             }
-            return true;
-        } catch (Exception e) {
-            Timber.d(e, "Failed to retrieve discovery info.");
         }
-        return false;
+        return true;
     }
 
     /**
@@ -2951,17 +2941,21 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Returns the currently valid {@link ScServiceDiscoveryManager}.
+     * Returns the currently valid {@link ServiceDiscoveryManager}.
      *
-     * @return the currently valid {@link ScServiceDiscoveryManager}.
+     * @return the currently valid {@link ServiceDiscoveryManager}.
      */
-    public ScServiceDiscoveryManager getDiscoveryManager() {
+    public ServiceDiscoveryManager getDiscoveryManager() {
         return discoveryManager;
+    }
+
+    public ServiceDiscoveryHelper getScHelper() {
+        return scHelper;
     }
 
     /**
      * Return the EntityFullJid associate with this protocol provider.
-     *
+     * <p>
      * Build our own EntityJid if not connected. May not be full compliant - For explanation
      *
      * @return the Jabber EntityFullJid
@@ -3131,7 +3125,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      */
     public Jid getJitsiVideobridge() {
         if (mConnection != null && mConnection.isConnected()) {
-            ScServiceDiscoveryManager discoveryManager = getDiscoveryManager();
+            ServiceDiscoveryManager discoveryManager = getDiscoveryManager();
             DomainBareJid serviceName = mConnection.getXMPPServiceDomain();
             DiscoverItems discoverItems = null;
 
@@ -3281,7 +3275,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
-     * @see XMPPTCPConnection#socket.
+     * @see XMPPTCPConnection#Socket
      */
     public Socket getSocket() {
         Socket socket = null;

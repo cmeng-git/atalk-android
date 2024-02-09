@@ -62,22 +62,22 @@ public class ChatRoomListAdapter extends BaseChatRoomListAdapter
     /**
      * The group of original chatRoomProviderWrapper before filtered
      */
-    private LinkedList<ChatRoomProviderWrapper> originalCrpWrapperGroup;
+    private final LinkedList<ChatRoomProviderWrapper> originalCrpWrapperGroup;
 
     /**
      * The group of chatRoomProviderWrapper for view display
      */
-    private LinkedList<ChatRoomProviderWrapper> mCrpWrapperGroup;
+    private final LinkedList<ChatRoomProviderWrapper> mCrpWrapperGroup;
 
     /**
      * The original list of chatRoomWrapper before filtered.
      */
-    private LinkedList<TreeSet<ChatRoomWrapper>> originalCrWrapperList;
+    private final LinkedList<TreeSet<ChatRoomWrapper>> originalCrWrapperList;
 
     /**
      * The list of chatRoomWrapper for view display.
      */
-    private LinkedList<TreeSet<ChatRoomWrapper>> mCrWrapperList;
+    private final LinkedList<TreeSet<ChatRoomWrapper>> mCrWrapperList;
 
     /**
      * The <code>MUCService</code>, which is the back end of this chatRoom list adapter.

@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.5 (303050)
+Release Date:   02/09/2024
+Author:         cmeng
+- Fix incorrect derive of the chatSession Uuid for conference chat messages in saveMamIfNotExit()
+- Extend smack reply timeout to 10S for MamManager.MamQuery() to take care for slow server response
+- Drop non-null subject field as prerequisite in create/join a chatRoom; user may not have the right to change subject.
+  * Instead use chatRoomId for bookmark name if subject is null.
+- Default bookmark creation but with auto-join disabled for newly created chatRoom.
+- Default "Enable Room Status" to false on entry to newly created chatRoom.
+- Block room status caching in ChatPanel#msgCache if !isRoomStatusEnable(); else they will appear in chatSession when open.
+- Limit conference subject to single line with ellipsize="marquee" and auto scroll horizontally
+- Fix chatRoom status icon indicator not being updated on entry.
+- Fix muc#roomconfig stanza sending always failed with NoResponseException, if Send within
+  PresenceListener#processOwnPresence() thread; must send in new Thread() to resolve the problem.
+- Fix deletion of room status messages crashes aTalk
+- Drop aTalk ScServiceDiscovery class; use smack ServiceDiscoveryManager and local ServiceDiscoveryHelper implementations.
+  * Simplify implementation, and resolve endless disco#info requests at times.
+- Remove unused class EntityCapsDatabase()
+- Rename SimpleDirectoryPersistentCache entityStore to entityCapsStore
+- Cleanup and improve ServerPersistentStoresRefreshDialog class implementation
+
+=========================================================================
 Version:        3.3.4 (303040)
 Release Date:   02/03/2024
 Author:         cmeng

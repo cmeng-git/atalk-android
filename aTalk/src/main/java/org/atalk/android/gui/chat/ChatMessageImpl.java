@@ -50,7 +50,7 @@ public class ChatMessageImpl implements ChatMessage {
      * contactId: received chat message e.g. leopoard@atalk.org
      * chatRoom: delivered group chat message e.g. conference@atalk.org
      * nickName: received group chat message e.g. leopard
-     *
+     * <p>
      * Exception as recipient:
      * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
      */

@@ -75,7 +75,7 @@ public interface ChatMessage
     int MESSAGE_OUT = 0;
     /**
      * The message type representing incoming messages.
-     *
+     * <p>
      * An event type indicating that the message being received is a standard conversation message
      * sent by another contact.
      */
@@ -86,7 +86,7 @@ public interface ChatMessage
     int MESSAGE_STATUS = 3;
     /**
      * The message type representing system messages received.
-     *
+     * <p>
      * An event type indicting that the message being received is a system message being sent by the
      * server or a system administrator, possibly notifying us of something important such as
      * ongoing maintenance activities or server downtime.
@@ -95,7 +95,7 @@ public interface ChatMessage
     /**
      * The message type representing action messages. These are message specific for IRC,
      * but could be used in other protocols also.
-     *
+     * <p>
      * An event type indicating that the message being received is a special message that sent by
      * either another member or the server itself, indicating that some kind of action (other than
      * the delivery of a conversation message) has occurred. Action messages are widely used in IRC
