@@ -2780,7 +2780,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @return <code>true</code> if the list of features is supported; otherwise, <code>false</code>
      */
     public boolean isFeatureListSupported(Jid jid, String... features) {
-        // DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(jid);
         DiscoverInfo featureInfo = scHelper.discoverInfo(jid);
         if (featureInfo == null)
             return false;

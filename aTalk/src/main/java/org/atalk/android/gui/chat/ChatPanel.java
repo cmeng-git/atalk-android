@@ -128,9 +128,9 @@ public class ChatPanel implements Chat, MessageListener {
      * in ChatSession UI, and get updated with history messages retrieved by user. This msgCache is
      * always return when user resume the chatSession (chatListAdapter is empty). There the contents
      * must kept up to date with the ChatSession UI messages.
-     *
+     * <p>
      * Important: when historyLog is disabled i.e. all messages exchanges are only saved in msgCache.
-     *
+     * <p>
      * Use CopyOnWriteArrayList instead to avoid ChatFragment#prependMessages ConcurrentModificationException
      * private List<ChatMessage> msgCache = new LinkedList<>();
      */

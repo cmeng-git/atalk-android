@@ -1,5 +1,17 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.6 (303060)
+Release Date:   02/12/2024
+Author:         cmeng
+- JingleFile transfer AbstractMethodError resolved with aTalk source patches; Google team is unable to offer any solution in gradle release built.
+  * Must place two smack files into aTalk local source, and defined QNAME in file
+  * a. org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo
+  * b. org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild
+- Fix call notification control ui partial cropping of buttons.
+- Smack uses java.util.zip.Deflater(In|Out)putStream as Java7 API native alternative to obsoleted JZlib
+- Clean up ChatSessionManager class source removing unused methods.
+
+=========================================================================
 Version:        3.3.5 (303050)
 Release Date:   02/09/2024
 Author:         cmeng
@@ -20,6 +32,7 @@ Author:         cmeng
 - Remove unused class EntityCapsDatabase()
 - Rename SimpleDirectoryPersistentCache entityStore to entityCapsStore
 - Cleanup and improve ServerPersistentStoresRefreshDialog class implementation
+- JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google team solution feedback
 
 =========================================================================
 Version:        3.3.4 (303040)
@@ -34,7 +47,7 @@ Author:         cmeng
   * c. Legacy byteStream transfer protocol for SOCK5 with fallback on IBB on user retry
 - Fix Smack 4.4.7: ByteStream Sock5 implementation does not take care of the host address with zone id
 - Enable webView cache mode
-- JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google time solution feedback
+- JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google team solution feedback
 - API-34 overrides aTalk message Snooze pending intent; actual implementation depends on manufacturers i.e.
   auto enable after 3 notifications (pixel) or show user snooze option (Notes 10) with timer etc.
 

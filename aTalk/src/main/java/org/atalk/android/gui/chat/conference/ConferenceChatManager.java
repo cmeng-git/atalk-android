@@ -233,7 +233,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
             chatPanel = ChatSessionManager.getMultiChat(serverWrapper.getSystemRoomWrapper(), createWindow);
         }
         else {
-            chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, createWindow, message.getMessageUID());
+            chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, createWindow);
         }
         if (chatPanel == null)
             return;
@@ -932,7 +932,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         Timber.i("Message received from contact: %s", sourceParticipant);
 
         IMessage message = evt.getMessage();
-        ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true, message.getMessageUID());
+        ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, true);
 
         chatPanel.addMessage(sourceParticipant, sourceParticipant, evt.getTimestamp(),
                 messageType, message, null);

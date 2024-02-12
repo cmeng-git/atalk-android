@@ -732,9 +732,6 @@ public class ChatActivity extends OSGiActivity
                     isAudioCall = true;  // fall through to start either audio / video call
 
                 case R.id.call_contact_video:
-                    // AndroidCallUtil.createCall(this, mRecipient.getAddress(),
-                    //        mRecipient.getProtocolProvider(), (isAudioCall == null));
-
                     AndroidCallUtil.createCall(this, selectedChatPanel.getMetaContact(),
                             (isAudioCall == null), null);
                     return true;
@@ -1198,13 +1195,6 @@ public class ChatActivity extends OSGiActivity
 
     /**
      * Construct media url share with thumbnail and title via URL_EMBBED which supports with JSONObject:
-     * <p>
-     * {"width":480,"provider_name":"YouTube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-     * "title":"Rick Astley - Never Gonna Give You Up (Video)","author_name":"RickAstleyVEVO",
-     * "thumbnail_width":480,"height":270,"thumbnail_url":"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-     * "author_url":"https://www.youtube.com/user/RickAstleyVEVO","type":"video","provider_url":"https://www.youtube.com/",
-     * "thumbnail_height":360,"version":"1.0","html":"\n<iframe width=\" 480\" height=\"270\"
-     * src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?feature=oembed\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe>\n"}
      */
     private class MediaShareAsynTask extends AsyncTask<String, Void, String> {
         private String mUrl;

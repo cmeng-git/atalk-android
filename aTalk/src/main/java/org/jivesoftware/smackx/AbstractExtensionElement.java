@@ -5,11 +5,6 @@
  */
 package org.jivesoftware.smackx;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,6 +12,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A generic implementation of <code>ExtensionElement</code>. The purpose of this class is quite similar
@@ -28,8 +28,7 @@ import java.util.Map;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractExtensionElement implements ExtensionElement
-{
+public abstract class AbstractExtensionElement implements ExtensionElement {
     /**
      * The element of this stanza extension. Should remain <code>null</code> if there's no namespace
      * associated with this element.
@@ -63,8 +62,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @param namespace the XML namespace for this element.
      * @param element the name of the element
      */
-    protected AbstractExtensionElement(String element, String namespace)
-    {
+    protected AbstractExtensionElement(String element, String namespace) {
         this.element = element;
         this.namespace = namespace;
     }
@@ -75,8 +73,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @return the name of the <code>encryption</code> element.
      */
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return element;
     }
 
@@ -86,8 +83,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @return the XML namespace for this element or <code>null</code> if the element does not live in a namespace of its own.
      */
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return namespace;
     }
 
@@ -96,8 +92,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the text content of this extension or <code>null</code> if no text content has been specified so far.
      */
-    public String getText()
-    {
+    public String getText() {
         return textContent;
     }
 
@@ -106,11 +101,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * with this stanza extension.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the value of the specified <code>attribute</code> or <code>null</code> if no such attribute
      * is currently registered with this extension.
      */
-    public Object getAttribute(String attribute)
-    {
+    public Object getAttribute(String attribute) {
         synchronized (attributes) {
             return attributes.get(attribute);
         }
@@ -120,11 +115,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Returns the string value of the attribute with the specified <code>name</code>.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the String value of the specified <code>attribute</code> or <code>null</code> if no such
      * attribute is currently registered with this extension.
      */
-    public String getAttributeAsString(String attribute)
-    {
+    public String getAttributeAsString(String attribute) {
         synchronized (attributes) {
             Object attributeVal = attributes.get(attribute);
             return attributeVal == null ? null : attributeVal.toString();
@@ -135,11 +130,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Returns the <code>int</code> value of the attribute with the specified <code>name</code>.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the <code>int</code> value of the specified <code>attribute</code> or <code>-1</code> if no such
      * attribute is currently registered with this extension.
      */
-    public int getAttributeAsInt(String attribute)
-    {
+    public int getAttributeAsInt(String attribute) {
         return getAttributeAsInt(attribute, -1);
     }
 
@@ -149,11 +144,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @param attribute the name of the attribute that we'd like to retrieve
      * @param defaultValue the <code>int</code> to be returned as the value of the specified attribute if no such
      * attribute is currently registered with this extension
+     *
      * @return the <code>int</code> value of the specified <code>attribute</code> or <code>defaultValue</code>
      * if no such attribute is currently registered with this extension
      */
-    public int getAttributeAsInt(String attribute, int defaultValue)
-    {
+    public int getAttributeAsInt(String attribute, int defaultValue) {
         synchronized (attributes) {
             String value = getAttributeAsString(attribute);
             return (value == null) ? defaultValue : Integer.parseInt(value);
@@ -164,13 +159,13 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Tries to parse the value of the specified <code>attribute</code> as an <code>URI</code> and returns it.
      *
      * @param attribute the name of the attribute that we'd like to retrieve.
+     *
      * @return the <code>URI</code> value of the specified <code>attribute</code> or <code>null</code> if no
      * such attribute is currently registered with this extension.
      * @throws IllegalArgumentException if <code>attribute</code> is not a valid {@link URI}
      */
     public URI getAttributeAsURI(String attribute)
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         synchronized (attributes) {
             String attributeVal = getAttributeAsString(attribute);
 
@@ -190,8 +185,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @return the names of the attributes which currently have associated values in this extension
      */
-    public List<String> getAttributeNames()
-    {
+    public List<String> getAttributeNames() {
         synchronized (attributes) {
             return new ArrayList<>(attributes.keySet());
         }
@@ -201,10 +195,10 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Gets the first extension present of the given type
      *
      * @param type the type of extension to get
+     *
      * @return the first instance of an extension of type T we find, or null if there is none
      */
-    public <T extends ExtensionElement> T getChildExtension(Class<T> type)
-    {
+    public <T extends ExtensionElement> T getChildExtension(Class<T> type) {
         List<T> childExts = getChildExtensionsOfType(type);
         if (!childExts.isEmpty()) {
             return childExts.get(0);
@@ -216,14 +210,12 @@ public abstract class AbstractExtensionElement implements ExtensionElement
 
     /**
      * Returns all sub-elements for this <code>AbstractExtensionElement</code> or <code>null</code> if there aren't any.
-     *
      * Overriding extensions may need to override this method if they would like to have anything
      * more elaborate than just a list of extensions.
      *
      * @return the {@link List} of elements that this stanza extension contains.
      */
-    public List<? extends ExtensionElement> getChildExtensions()
-    {
+    public List<? extends ExtensionElement> getChildExtensions() {
         return childExtensions;
     }
 
@@ -232,11 +224,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param <T> the specific type of <code>ExtensionElement</code> to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
+     *
      * @return this stanza's first direct child extension that matches specified <code>type</code> or
      * <code>null</code> if no such child extension was found.
      */
-    public <T extends ExtensionElement> T getFirstChildOfType(Class<T> type)
-    {
+    public <T extends ExtensionElement> T getFirstChildOfType(Class<T> type) {
         List<? extends ExtensionElement> childExtensions = getChildExtensions();
         synchronized (childExtensions) {
             for (ExtensionElement extension : childExtensions) {
@@ -255,11 +247,11 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param <T> the specific <code>ExtensionElement</code> type of child extensions to be returned
      * @param type the <code>Class</code> of the extension we are looking for.
+     *
      * @return a (possibly empty) list containing all of this packet's direct child extensions that
      * match the specified <code>type</code>
      */
-    public <T extends ExtensionElement> List<T> getChildExtensionsOfType(Class<T> type)
-    {
+    public <T extends ExtensionElement> List<T> getChildExtensionsOfType(Class<T> type) {
         List<? extends ExtensionElement> childExtensions = getChildExtensions();
         List<T> result = new ArrayList<>();
 
@@ -283,16 +275,17 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * a new <code>AbstractExtensionElement</code> instance of the same run-time type.
      *
      * @param src the <code>AbstractExtensionElement</code> to be cloned
+     *
      * @return a new <code>AbstractExtensionElement</code> instance of the run-time type of the specified
      * <code>src</code> which has the same attributes, namespace and text
      */
     @SuppressWarnings("unchecked")
-    public static <T extends AbstractExtensionElement> T clone(T src)
-    {
+    public static <T extends AbstractExtensionElement> T clone(T src) {
         T dst;
         try {
             dst = (T) src.getClass().getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                 InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
@@ -313,8 +306,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @return an XML representation of this extension.
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment)
-    {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
 
         // add the rest of the attributes if any
@@ -359,8 +351,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param namespace the XML namespace for this element.
      */
-    public void setNamespace(String namespace)
-    {
+    public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
 
@@ -369,8 +360,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param text the text content of this extension.
      */
-    public void setText(String text)
-    {
+    public void setText(String text) {
         this.textContent = text;
     }
 
@@ -381,8 +371,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * @param value an {@link Object} whose <code>toString()</code> method returns the XML value of the
      * attribute we are setting or <code>null</code> if we'd like to remove the attribute with the specified <code>name</code>.
      */
-    public void setAttribute(String name, Object value)
-    {
+    public void setAttribute(String name, Object value) {
         synchronized (attributes) {
             if (value != null) {
                 this.attributes.put(name, value);
@@ -399,8 +388,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param name the name of the attribute that we are removing.
      */
-    public void removeAttribute(String name)
-    {
+    public void removeAttribute(String name) {
         synchronized (attributes) {
             attributes.remove(name);
         }
@@ -408,14 +396,12 @@ public abstract class AbstractExtensionElement implements ExtensionElement
 
     /**
      * Adds the specified <code>childExtension</code> to the list of extensions registered with this packet.
-     *
      * Overriding extensions may need to override this method if they would like to have anything
      * more elaborate than just a list of extensions (e.g. casting separate instances to more specific.
      *
      * @param childExtension the extension we'd like to add here.
      */
-    public void addChildExtension(ExtensionElement childExtension)
-    {
+    public void addChildExtension(ExtensionElement childExtension) {
         childExtensions.add(childExtension);
     }
 
@@ -425,8 +411,7 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      *
      * @param childExtension the extension to add
      */
-    public void setChildExtension(ExtensionElement childExtension)
-    {
+    public void setChildExtension(ExtensionElement childExtension) {
         // required API-24
         // getChildExtensionsOfType(childExtension.getClass()).forEach(this::removeChildExtension);
         List<? extends ExtensionElement> extensionElements = getChildExtensionsOfType(childExtension.getClass());
@@ -440,10 +425,10 @@ public abstract class AbstractExtensionElement implements ExtensionElement
      * Removes all occurrences of an extension element from the list of child extensions.
      *
      * @param childExtension the child extension to remove.
+     *
      * @return {@code true} if any extensions were removed, and {@code false} otherwise.
      */
-    public boolean removeChildExtension(ExtensionElement childExtension)
-    {
+    public boolean removeChildExtension(ExtensionElement childExtension) {
         boolean removed = false;
         if (childExtension != null) {
             while (childExtensions.remove(childExtension)) {

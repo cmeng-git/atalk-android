@@ -6,8 +6,14 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.5 (02/09/2024)" versioncode="303050">
+    <release version="3.3.6 (02/12/2024)" versioncode="303060">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>JingleFile transfer AbstractMethodError resolved with aTalk source patches; Google team is unable to offer any solution in gradle release built</change>
+        <change>Fix call notification control ui partial cropping of buttons</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.5 (02/09/2024)" versioncode="303050">
         <change>Fix incorrect derive of the chatSession Uuid for conference chat messages in saveMamIfNotExit()</change>
         <change>Extend smack reply timeout to 10S for MamManager.MamQuery() to take care for slow server response</change>
         <change>Drop non-null subject field as prerequisite in create/join a chatRoom; user may not have the right to change subject</change>
@@ -20,6 +26,7 @@
         <change>Fix deletion of room status messages crashes aTalk</change>
         <change>Drop aTalk ScServiceDiscovery class; use smack ServiceDiscoveryManager and local ServiceDiscoveryHelper implementations</change>
         <change>Cleanup and improve ServerPersistentStoresRefreshDialog class implementation</change>
+        <change>JingleFile transfer AbstractMethodError remained; disabled for aTalk release. Awaiting Google time solution feedback</change>
         <change>Bug fixes and enhancements</change>
     </release>
 

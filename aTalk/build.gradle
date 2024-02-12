@@ -17,11 +17,11 @@ apply plugin: 'org.anarres.jarjar'
 repositories {
     google()
     mavenCentral()
-    maven {
-        // May need manual cleanup for new SNAPSHOT update if same name with date change only:
-        // Smack official SNAPSHOT repository accepted by F-Droid
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
+//    maven {
+//        // May need manual cleanup for new SNAPSHOT update if same name with date change only:
+//        // Smack official SNAPSHOT repository accepted by F-Droid
+//        url 'https://oss.sonatype.org/content/repositories/snapshots'
+//    }
     maven {
         // Git project library as local library project (ucrop) - see https://jitpack.io/docs/
         url 'https://jitpack.io'
@@ -59,8 +59,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 303050
-        versionName "3.3.5"
+        versionCode 303060
+        versionName "3.3.6"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -307,7 +307,9 @@ dependencies {
     // implementation "org.igniterealtime.smack:smack-bosh:$smackVersion"
     implementation "org.igniterealtime.jbosh:jbosh:0.9.2"
 
-    implementation "org.igniterealtime.smack:smack-compression-jzlib:4.4.0-alpha3-SNAPSHOT"
+    // Use java.util.zip.Deflater(In|Out)putStream as Java7 API native alternative to obsoleted JZlib
+    // implementation "org.igniterealtime.smack:smack-compression-jzlib:4.4.0-alpha3-SNAPSHOT"
+
     implementation "org.igniterealtime.smack:smack-core:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-experimental:$smackVersion"
     // implementation "org.igniterealtime.smack:smack-extensions:$smackVersion"
@@ -432,8 +434,8 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager**'
         classDelete 'org.jivesoftware.smackx.jingle_filetransfer.JingleFileTransferManager**'
 
-        // AbstractMethodError if not in aTalk local directory
-        // classDelete 'org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild**'
+        // Fix AbstractMethodError: source in aTalk local directory and with in file QNAME defined
+        classDelete 'org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild**'
     }
 
     // smack-extensions
@@ -476,6 +478,9 @@ dependencies {
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager**'
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport'
         classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport$**'
+
+        // Fix AbstractMethodError: source in aTalk local directory and with in file QNAME defined
+        classDelete 'org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo**'
     }
 
     // smack-omemo

@@ -391,7 +391,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                         if (evt.getPropertyName().equals(ChatRoomWrapper.JOIN_SUCCESS_PROP))
                             return;
 
-                        // if we failed for some, then close and remove the room
+                        // if we failed for some reason, then close and remove the room
                         AndroidGUIActivator.getUIService().closeChatRoomWindow(crWrapper);
                         MUCActivator.getMUCService().removeChatRoom(crWrapper);
                     });

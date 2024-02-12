@@ -5,6 +5,8 @@
  */
 package org.jivesoftware.smackx;
 
+import java.io.IOException;
+
 import org.atalk.impl.timberlog.TimberLog;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -15,8 +17,6 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
-import java.io.IOException;
-
 import timber.log.Timber;
 
 /**
@@ -24,11 +24,11 @@ import timber.log.Timber;
  * been instantiated for.
  *
  * @param <EE> Class that the packets we will be parsing belong to
+ *
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement> extends ExtensionElementProvider<EE>
-{
+public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement> extends ExtensionElementProvider<EE> {
     /**
      * The {@link Class} that the packets we will be parsing here belong to.
      */
@@ -40,8 +40,7 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
      * @param c the {@link Class} that the packets we will be parsing belong to.
      * l
      */
-    public DefaultExtensionElementProvider(Class<EE> c)
-    {
+    public DefaultExtensionElementProvider(Class<EE> c) {
         this.stanzaClass = c;
     }
 
@@ -51,13 +50,13 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
      * and at the end of the method call it will be on the closing element of the packet extension.
      *
      * @param parser an XML parser positioned at the packet's starting element.
+     *
      * @return a new packet extension instance.
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException
-    {
+            throws IOException, XmlPullParserException, SmackParsingException {
         EE stanzaExtension;
         try {
             stanzaExtension = stanzaClass.newInstance();
@@ -100,7 +99,8 @@ public class DefaultExtensionElementProvider<EE extends AbstractExtensionElement
                         else if (childExtension instanceof AbstractXmlElement) {
                             Timber.d("AbstractXmlElement: <%s, %s>",
                                     childExtension.getElementName(), childExtension.getNamespace());
-                        } else {
+                        }
+                        else {
                             Timber.d("Invalid AbstractExtensionElement: <%s, %s>", elementName, namespace);
                         }
                     }

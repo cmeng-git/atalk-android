@@ -225,7 +225,6 @@ public class MetaContactImpl extends DataObject implements MetaContact {
         List<Presence> presences = Roster.getInstanceFor(pps.getConnection()).getPresences(contact.getJid().asBareJid());
         for (Presence presence : presences) {
             if (presence.isAvailable()) {
-                // DiscoverInfo featureInfo = discoveryManager.discoverInfoNonBlocking(presence.getFrom());
                 DiscoverInfo featureInfo = pps.getScHelper().discoverInfo(presence.getFrom());
                 if ((featureInfo != null) && featureInfo.containsFeature(feature)) {
                     return true;

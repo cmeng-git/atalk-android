@@ -466,21 +466,6 @@ public class ChatSessionManager {
      * <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(ChatRoomWrapper chatRoomWrapper, boolean create) {
-        return getMultiChatInternal(chatRoomWrapper, create);
-    }
-
-    /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> and
-     * optionally creates it if it does not exist yet.
-     *
-     * @param chatRoomWrapper the <code>ChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
-     * <code>ChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoomWrapper</code> or
-     * <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
-     */
-    private static ChatPanel getMultiChatInternal(ChatRoomWrapper chatRoomWrapper, boolean create) {
         synchronized (chatSyncRoot) {
             ChatPanel chatPanel = findChatPanelForDescriptor(chatRoomWrapper);
 
@@ -502,21 +487,6 @@ public class ChatSessionManager {
      * or <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
      */
     public static ChatPanel getMultiChat(AdHocChatRoomWrapper chatRoomWrapper, boolean create) {
-        return getMultiChatInternal(chatRoomWrapper, create);
-    }
-
-    /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
-     * and optionally creates it if it does not exist yet.
-     *
-     * @param chatRoomWrapper the <code>AdHocChatRoomWrapper</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a new <code>ChatPanel</code> for the specified
-     * <code>AdHocChatRoomWrapper</code> if no such <code>ChatPanel</code> exists already; otherwise, <code>false</code>
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoomWrapper</code>
-     * or <code>null</code> if no such <code>ChatPanel</code> exists and <code>create</code> is <code>false</code>
-     */
-    private static ChatPanel getMultiChatInternal(AdHocChatRoomWrapper chatRoomWrapper, boolean create) {
         synchronized (chatSyncRoot) {
             ChatPanel chatPanel = findChatPanelForDescriptor(chatRoomWrapper);
 
@@ -533,72 +503,37 @@ public class ChatSessionManager {
      * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
      * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
      * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat
      *
      * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
      * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
-    private static ChatPanel getMultiChatInternal(ChatRoom chatRoom, boolean create, String escapedMessageID) {
+    public static ChatPanel getMultiChat(ChatRoom chatRoom, boolean create) {
         synchronized (chatSyncRoot) {
             ChatPanel chatPanel = null;
-            ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
+            ChatRoomWrapper chatRoomWrapper
+                    = MUCActivator.getMUCService().getChatRoomWrapperByChatRoom(chatRoom, create);
 
             if (chatRoomWrapper != null) {
                 chatPanel = findChatPanelForDescriptor(chatRoomWrapper);
                 if ((chatPanel == null) && create)
-                    chatPanel = createChat(chatRoomWrapper, escapedMessageID);
+                    chatPanel = createChat(chatRoomWrapper);
             }
             return chatPanel;
         }
     }
 
     /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code> and optionally
-     * creates it if it does not exist. Must be executed on the event dispatch thread.
-     *
-     * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
-     * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
-     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
-     */
-    public static ChatPanel getMultiChat(ChatRoom chatRoom, boolean create, String escapedMessageID) {
-        return getMultiChatInternal(chatRoom, create, escapedMessageID);
-    }
-
-    /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code> and optionally
-     * creates it if it does not exist.
-     *
-     * @param chatRoom the <code>ChatRoom</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
-     * <code>ChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>ChatRoom</code>;
-     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
-     */
-    public static ChatPanel getMultiChat(ChatRoom chatRoom, boolean create) {
-        return getMultiChat(chatRoom, create, null);
-    }
-
-    /**
      * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
-     * optionally creates it if it does not exist. Must be executed on the event dispatch thread.
+     * optionally creates it if it does not exist.
      *
      * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
      * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
      * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat
      *
      * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
      * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
      */
-    private static ChatPanel getMultiChatInternal(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID) {
+    public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create) {
         synchronized (chatSyncRoot) {
             AdHocChatRoomList chatRoomList
                     = AndroidGUIActivator.getUIService().getConferenceChatManager().getAdHocChatRoomList();
@@ -616,42 +551,10 @@ public class ChatSessionManager {
             if (chatRoomWrapper != null) {
                 chatPanel = findChatPanelForDescriptor(chatRoomWrapper);
                 if ((chatPanel == null) && create)
-                    chatPanel = createChat(chatRoomWrapper, escapedMessageID);
+                    chatPanel = createChat(chatRoomWrapper);
             }
             return chatPanel;
         }
-    }
-
-    /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
-     * optionally creates it if it does not exist. Must be executed on the event dispatch thread.
-     *
-     * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
-     * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
-     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
-     */
-    public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create, String escapedMessageID) {
-        return getMultiChatInternal(adHocChatRoom, create, escapedMessageID);
-    }
-
-    /**
-     * Gets the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code> and
-     * optionally creates it if it does not exist.
-     *
-     * @param adHocChatRoom the <code>AdHocChatRoom</code> to get the corresponding <code>ChatPanel</code> of
-     * @param create <code>true</code> to create a <code>ChatPanel</code> corresponding to the specified
-     * <code>AdHocChatRoom</code> if such <code>ChatPanel</code> does not exist yet
-     *
-     * @return the <code>ChatPanel</code> corresponding to the specified <code>AdHocChatRoom</code>;
-     * <code>null</code> if there is no such <code>ChatPanel</code> and <code>create</code> is <code>false</code>
-     */
-    public static ChatPanel getMultiChat(AdHocChatRoom adHocChatRoom, boolean create) {
-        return getMultiChat(adHocChatRoom, create, null);
     }
 
     // ==============================================
@@ -744,20 +647,6 @@ public class ChatSessionManager {
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper) {
-        return createChat(chatRoomWrapper, null);
-    }
-
-    /**
-     * Creates a <code>ChatPanel</code> for the given <code>ChatRoom</code> and saves it in the list of
-     * created <code>ChatPanel</code>s.
-     *
-     * @param chatRoomWrapper the <code>ChatRoom</code>, for which the chat will be created
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat.
-     *
-     * @return The {@code ChatPanel} newly created.
-     */
-    private static ChatPanel createChat(ChatRoomWrapper chatRoomWrapper, String escapedMessageID) {
         ChatPanel chatPanel = new ChatPanel(chatRoomWrapper);
         ConferenceChatSession chatSession = new ConferenceChatSession(chatPanel, chatRoomWrapper);
         chatPanel.setChatSession(chatSession);
@@ -775,20 +664,6 @@ public class ChatSessionManager {
      * @return The {@code ChatPanel} newly created.
      */
     private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper) {
-        return createChat(chatRoomWrapper, null);
-    }
-
-    /**
-     * Creates a <code>ChatPanel</code> for the given <code>AdHocChatRoom</code> and saves it in the list
-     * of created <code>ChatPanel</code>s.
-     *
-     * @param chatRoomWrapper the <code>AdHocChatRoom</code>, for which the chat will be created
-     * @param escapedMessageID the message ID of the message that should be excluded from the history when the last
-     * one is loaded in the chat.
-     *
-     * @return The {@code ChatPanel} newly created.
-     */
-    private static ChatPanel createChat(AdHocChatRoomWrapper chatRoomWrapper, String escapedMessageID) {
         ChatPanel chatPanel = new ChatPanel(chatRoomWrapper);
         AdHocConferenceChatSession chatSession = new AdHocConferenceChatSession(chatPanel, chatRoomWrapper);
         chatPanel.setChatSession(chatSession);
@@ -842,7 +717,7 @@ public class ChatSessionManager {
     /**
      * Runnable used as base for all that creates chat panels.
      */
-    private abstract class AbstractChatPanelCreateRunnable {
+    private abstract static class AbstractChatPanelCreateRunnable {
         /**
          * The result panel.
          */
@@ -869,7 +744,7 @@ public class ChatSessionManager {
     /**
      * Creates chat room wrapper in event dispatch thread.
      */
-    private class CreateChatRoomWrapperRunner extends AbstractChatPanelCreateRunnable {
+    private static class CreateChatRoomWrapperRunner extends AbstractChatPanelCreateRunnable {
         /**
          * The source chat room.
          */
@@ -889,14 +764,14 @@ public class ChatSessionManager {
          */
         @Override
         protected ChatPanel createChatPanel() {
-            return getMultiChatInternal(chatRoomWrapper, true);
+            return getMultiChat(chatRoomWrapper, true);
         }
     }
 
     /**
      * Creates chat room wrapper in event dispatch thread.
      */
-    private class CreateAdHocChatRoomWrapperRunner extends AbstractChatPanelCreateRunnable {
+    private static class CreateAdHocChatRoomWrapperRunner extends AbstractChatPanelCreateRunnable {
         /**
          * The source chat room.
          */
@@ -916,28 +791,26 @@ public class ChatSessionManager {
          */
         @Override
         protected ChatPanel createChatPanel() {
-            return getMultiChatInternal(chatRoomWrapper, true);
+            return getMultiChat(chatRoomWrapper, true);
         }
     }
 
     /**
      * Creates chat room in event dispatch thread.
      */
-    private class CreateChatRoomRunner extends AbstractChatPanelCreateRunnable {
+    private static class CreateChatRoomRunner extends AbstractChatPanelCreateRunnable {
         /**
          * The source chat room.
          */
         private final ChatRoom chatRoom;
-        private final String escapedMessageID;
 
         /**
          * Constructs.
          *
          * @param chatRoom the <code>ChatRoom</code> used to create the corresponding <code>ChatPanel</code>.
          */
-        private CreateChatRoomRunner(ChatRoom chatRoom, String escapedMessageID) {
+        private CreateChatRoomRunner(ChatRoom chatRoom) {
             this.chatRoom = chatRoom;
-            this.escapedMessageID = escapedMessageID;
         }
 
         /**
@@ -945,28 +818,26 @@ public class ChatSessionManager {
          */
         @Override
         protected ChatPanel createChatPanel() {
-            return getMultiChatInternal(chatRoom, true, escapedMessageID);
+            return getMultiChat(chatRoom, true);
         }
     }
 
     /**
      * Creates chat room in event dispatch thread.
      */
-    private class CreateAdHocChatRoomRunner extends AbstractChatPanelCreateRunnable {
+    private static class CreateAdHocChatRoomRunner extends AbstractChatPanelCreateRunnable {
         /**
          * The source chat room.
          */
         private final AdHocChatRoom adHocChatRoom;
-        private final String escapedMessageID;
 
         /**
          * Constructs.
          *
          * @param adHocChatRoom the <code>AdHocChatRoom</code> used to create the corresponding <code>ChatPanel</code>.
          */
-        private CreateAdHocChatRoomRunner(AdHocChatRoom adHocChatRoom, String escapedMessageID) {
+        private CreateAdHocChatRoomRunner(AdHocChatRoom adHocChatRoom) {
             this.adHocChatRoom = adHocChatRoom;
-            this.escapedMessageID = escapedMessageID;
         }
 
         /**
@@ -974,7 +845,7 @@ public class ChatSessionManager {
          */
         @Override
         protected ChatPanel createChatPanel() {
-            return getMultiChatInternal(adHocChatRoom, true, escapedMessageID);
+            return getMultiChat(adHocChatRoom, true);
         }
     }
 }

@@ -35,8 +35,6 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import timber.log.Timber;
-
 /**
  * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
@@ -338,12 +336,7 @@ public class AbstractXmlElement implements ExtensionElement {
 
             if (elements != null) {
                 for (Map.Entry<QName, ExtensionElement> entry : elements.entrySet()) {
-                    ExtensionElement extElement = entry.getValue();
-                    try {
-                        xml.append(extElement.toXML(extElement.getNamespace()));
-                    } catch (AbstractMethodError ex) {
-                        Timber.e("toXML Exception: %s\n%s", extElement.toString(), ex.getMessage());
-                    }
+                    xml.append(entry.getValue().toXML(getNamespace()));
                 }
             }
             xml.closeElement(this);
@@ -418,13 +411,7 @@ public class AbstractXmlElement implements ExtensionElement {
                 elements = new MultiMap<>();
             }
 
-            QName key;
-            try {
-                key = element.getQName();
-            } catch (AbstractMethodError ex) {
-                key = new QName(element.getNamespace(), element.getElementName());
-                Timber.e("QName element Exception: %s => %s\n%s", element.toString(), key.toString(), ex.getMessage());
-            }
+            QName key = element.getQName();
             elements.put(key, element);
             return getThis();
         }
@@ -439,13 +426,7 @@ public class AbstractXmlElement implements ExtensionElement {
             }
 
             for (ExtensionElement element : xElements) {
-                QName key;
-                try {
-                    key = element.getQName();
-                } catch (AbstractMethodError ex) {
-                    key = new QName(element.getNamespace(), element.getElementName());
-                    Timber.e("QName xElements Exception: %s => %s\n%s", element.toString(), key.toString(), ex.getMessage());
-                }
+                QName key = element.getQName();
                 elements.put(key, element);
             }
             return getThis();

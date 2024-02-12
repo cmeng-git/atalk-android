@@ -704,9 +704,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     private OutgoingFileOfferJingleImpl jingleFileSend(File file, int chatType, FileSendConversation xferCon)
             throws Exception {
-        if (!BuildConfig.DEBUG) {
-            throw new OperationNotSupportedException("JFT temporary disabled for release; AS throws AbstractMethodError");
-        }
 
         // toJid is not null if contact is online and supports the jet/jingle file transfer
         FullJid recipient;

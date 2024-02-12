@@ -38,7 +38,7 @@ import timber.log.Timber;
 /**
  * Class manages currently running call control notifications. Those are displayed when {@link VideoCallActivity} is
  * minimized or closed and the call is still active. They allow user to do basic call operations like mute, put on hold
- * and hang up directly from the status bar.
+ * and hang up directly from the call notification control UI.
  *
  * @author Pawel Domas
  * @author Eng Chong Meng
@@ -113,7 +113,7 @@ public class CallNotificationManager
         }
 
         // Sets call peer display name and avatar in content view
-        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.call_status_bar_notification);
+        RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.call_notification_control_ui);
         CallPeer callPeer = call.getCallPeers().next();
         byte[] avatar = CallUIUtils.getCalleeAvatar(call);
         if (avatar != null) {
@@ -129,7 +129,8 @@ public class CallNotificationManager
         Notification notification = new NotificationCompat.Builder(context, AndroidNotifications.CALL_GROUP)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.missed_call)
-                .setContent(contentView) // Sets the content view
+                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                .setCustomContentView(contentView) // Sets custom content view to avoid buttons cropping
                 .build();
 
         // Must use random Id, else notification cancel() may not work properly
