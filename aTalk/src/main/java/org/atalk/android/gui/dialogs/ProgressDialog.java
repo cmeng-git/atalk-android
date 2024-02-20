@@ -25,14 +25,14 @@ import java.util.Map;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ProgressDialogFragment extends OSGiFragment
+public class ProgressDialog extends OSGiFragment
 {
     /**
      * Argument used to retrieve the message that will be displayed next to the progress bar.
      */
     private static final String ARG_MESSAGE = "progress_dialog_message";
 
-    public ProgressDialogFragment()
+    public ProgressDialog()
     {
     }
 
@@ -40,7 +40,7 @@ public class ProgressDialogFragment extends OSGiFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View progressView = inflater.inflate(R.layout.progress_dialog, container, false);
-        ViewUtil.setTextViewValue(progressView, R.id.textView, getArguments().getString(ARG_MESSAGE));
+        ViewUtil.setTextViewValue(progressView, R.id.messageText, getArguments().getString(ARG_MESSAGE));
         return progressView;
     }
 
@@ -62,6 +62,6 @@ public class ProgressDialogFragment extends OSGiFragment
         args.putString(ARG_MESSAGE, message);
 
         return DialogActivity.showCustomDialog(aTalkApp.getInstance(), title,
-                ProgressDialogFragment.class.getName(), args, null, null, extras);
+                ProgressDialog.class.getName(), args, null, null, extras);
     }
 }

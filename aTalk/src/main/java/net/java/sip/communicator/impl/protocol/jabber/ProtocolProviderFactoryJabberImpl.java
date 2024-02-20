@@ -197,7 +197,7 @@ public class ProtocolProviderFactoryJabberImpl extends ProtocolProviderFactory
         // access the configuration service and check for a password.
         this.storeAccount(accountID);
 
-        EntityBareJid jid = accountID.getBareJid().asEntityBareJidIfPossible();
+        EntityBareJid jid = accountID.getEntityBareJid();
         ((ProtocolProviderServiceJabberImpl) protocolProvider).initialize(jid, accountID);
 
         // We store again the account in order to store all properties added during the protocol provider initialization.

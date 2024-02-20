@@ -139,7 +139,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
      * Bring aTalk to foreground, and end JingleMessageCallActivity UI; else user is prompted with
      * both heads-up notification and ReceivedCallActivity UI to take action, this confuses user;
      * Also to avoid failure arises on launching ...CallActivity from background;
-     *
+     * <p>
      * Note: Due to android design constraints i.e. only activity launch is allowed when android is in locked screen.
      * Hence two UI are still being shown on call received i.e. JingleMessageCallActivity and VideoCallActivity
      */
@@ -155,7 +155,7 @@ public class JingleMessageCallActivity extends OSGiActivity implements JingleMes
     /**
      * Sets the peer avatar.
      *
-     * @param avatar the avatar of the callee
+     * @param callee the avatar of the callee
      */
     public void setPeerImage(Jid callee) {
         if (callee == null)

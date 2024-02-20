@@ -64,9 +64,6 @@ public class IceFragment extends OSGiPreferenceFragment
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
     {
-        setPreferencesFromResource(R.xml.ice_preferences, rootKey);
-        setPrefTitle(R.string.service_gui_JBR_ICE_SUMMARY);
-
         String accountID = getArguments().getString(AccountPreferenceFragment.EXTRA_ACCOUNT_ID);
         AccountID account = AccountUtils.getAccountIDForUID(accountID);
 
@@ -75,13 +72,15 @@ public class IceFragment extends OSGiPreferenceFragment
             Timber.w("No protocol provider registered for %s", account);
             return;
         }
-        mActivity = (AccountPreferenceActivity) getActivity();
-        jbrReg = JabberPreferenceFragment.jbrReg;
 
-        shPrefs = getPreferenceManager().getSharedPreferences();
+        initPreferences();
+        setPreferencesFromResource(R.xml.ice_preferences, rootKey);
+        setPrefTitle(R.string.service_gui_JBR_ICE_SUMMARY);
+
         shPrefs.registerOnSharedPreferenceChangeListener(this);
         shPrefs.registerOnSharedPreferenceChangeListener(summaryMapper);
 
+        mActivity = (AccountPreferenceActivity) getActivity();
         findPreference(P_KEY_STUN_TURN_SERVERS).setOnPreferenceClickListener(pref -> {
             getStunServerList();
             return true;
@@ -92,7 +91,6 @@ public class IceFragment extends OSGiPreferenceFragment
             return true;
         });
 
-        initPreferences();
     }
 
     /**
@@ -101,7 +99,10 @@ public class IceFragment extends OSGiPreferenceFragment
     protected void initPreferences()
     {
         // ICE options
+        jbrReg = JabberPreferenceFragment.jbrReg;
+        shPrefs = getPreferenceManager().getSharedPreferences();
         SharedPreferences.Editor editor = shPrefs.edit();
+
         editor.putBoolean(P_KEY_ICE_ENABLED, jbrReg.isUseIce());
         editor.putBoolean(P_KEY_UPNP_ENABLED, jbrReg.isUseUPNP());
         editor.putBoolean(P_KEY_AUTO_DISCOVER_STUN, jbrReg.isAutoDiscoverStun());

@@ -110,7 +110,7 @@
                     android:id="@+id/serverIpField"
                     style="@style/EntryTextView"
                     android:layout_width="0dp"
-                    android:layout_weight=".70"
+                    android:layout_weight="7"
                     android:hint="@string/account_server_ip"
                     android:inputType="textNoSuggestions" />
 
@@ -119,7 +119,7 @@
                     style="@style/EntryTextView"
                     android:layout_width="0dp"
                     android:layout_marginStart="@dimen/between_padding"
-                    android:layout_weight=".30"
+                    android:layout_weight="3"
                     android:inputType="textNoSuggestions"
                     android:text="@string/account_server_port" />
             </LinearLayout>

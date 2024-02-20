@@ -6,7 +6,7 @@
     <application >
 
         <activity
-            android:name=".gui.LauncherDebugActivity"
+            android:name="org.atalk.android.gui.LauncherDebugActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/APPLICATION_NAME"
             android:launchMode="singleTask" />

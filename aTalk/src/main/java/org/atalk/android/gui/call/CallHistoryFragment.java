@@ -426,7 +426,7 @@ public class CallHistoryFragment extends OSGiFragment
                         if (jid instanceof DomainBareJid) {
                             TelephonyFragment extPhone = TelephonyFragment.newInstance(contact.getAddress());
                             ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone).commit();
+                                    .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                             break;
                         }
 

@@ -21,6 +21,14 @@
             android:src="@drawable/avatar" />
 
         <ImageView
+            android:id="@+id/contactBlockIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignBottom="@id/avatarIcon"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/contact_block" />
+
+        <ImageView
             android:id="@+id/contactStatusIcon"
             android:layout_width="16dp"
             android:layout_height="16dp"

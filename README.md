@@ -108,6 +108,7 @@ It supports the following XEP's, standards for XMPP clients.
 * [XEP-0177: Jingle Raw UDP Transport Method 1.1.1](https://xmpp.org/extensions/xep-0177.html)
 * [XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates 1.2](https://xmpp.org/extensions/xep-0178.html)
 * [XEP-0184: Message Delivery Receipts 1.4.0](https://xmpp.org/extensions/xep-0184.html)
+* [XEP-0191: Blocking command](https://xmpp.org/extensions/xep-0191.html)
 * [XEP-0198: Stream Management 1.6](https://xmpp.org/extensions/xep-0198.html)
 * [XEP-0199: XMPP Ping 2.0.1](https://xmpp.org/extensions/xep-0199.html)
 * [XEP-0203: Delayed Delivery 2.0](https://xmpp.org/extensions/xep-0203.html)

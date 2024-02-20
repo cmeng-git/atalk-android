@@ -1,5 +1,27 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.3.7 (303070)
+Release Date:   02/21/2024
+Author:         cmeng
+- Add support for XEP-0191: Blocking Command to block communications with a specific contact and domain.
+- Implement EntityCapsPersistentCache using mySQlite DB instead of file system for speed.
+- Fix erased contact/chatroom history messages reappear after return to chatSession;
+  messages are retrieved from unclear chatPanel@msgCache.
+- Disable 'Contact Info' option when user is offline; Contact Info is not properly initialized when user is offline.
+- Must initPreferences() for all views before setPreferencesFromResource(); else any updated values in shared_prefs
+  will not be reflected in preference UI: IceFragment, TelephonyFragment and XmppConnectionFragment
+- Allow user removal of a DomainJid from the contact list UI.
+- Allow user moving of contact not in the Roster; ServerStoredContactListJabberImpl#moveContact()
+- Include check contact blocking state in MetaContactRender#isShowCallBtn() and isShowVideoCallBtn()
+- Fix Telephony UI Cancel button not working: must set TelephonyFragment.TELEPHONY_TAG in fragment Tag on launch.
+- Set android:exported to true for all activities launch via preference <intent android:action/>; else aTalk crashes in API-34.
+- Add/Remove of ContactPresenceStatusListener and ContactBlockingStatusListener should be for each registered ProtocolProvider
+  * MetaContactListAdapter#addContactStatusListener etc
+- Clean up ShareActivity source - remove the unnecessary FragmentPagerAdapter implementation.
+- Create common CustomDialogCb with checkBox option for: AccountDelete, ChatMessageDelete, and ContactBlock
+- Use full class path for all references to avoid problem.
+
+=========================================================================
 Version:        3.3.6 (303060)
 Release Date:   02/12/2024
 Author:         cmeng

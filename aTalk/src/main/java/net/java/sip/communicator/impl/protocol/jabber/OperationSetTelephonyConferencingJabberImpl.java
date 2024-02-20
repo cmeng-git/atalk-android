@@ -272,7 +272,7 @@ public class OperationSetTelephonyConferencingJabberImpl
         };
 
         CallJabberImpl call = callPeer.getCall();
-        coinIQ.setFrom(call.getProtocolProvider().getOurJID());
+        coinIQ.setFrom(call.getProtocolProvider().getOurJid());
         coinIQ.setTo(callPeer.getPeerJid());
         coinIQ.setType(Type.set);
 
@@ -484,7 +484,7 @@ public class OperationSetTelephonyConferencingJabberImpl
             if (room != null)
                 return "xmpp:" + chatRoomName + "/" + room.getUserNickname();
         }
-        return "xmpp:" + parentProvider.getOurJID();
+        return "xmpp:" + parentProvider.getOurJid();
     }
 
     /**

@@ -26,26 +26,18 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
-import org.atalk.android.R;
-import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
-import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.DepthPageTransformer;
-import org.atalk.service.osgi.OSGiActivity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.atalk.android.R;
+import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.service.osgi.OSGiActivity;
+
 /**
  * ShareActivity is defined as SingleTask, to avoid multiple instances being created if user does not exit
  * this activity before start another sharing.
- *
+ * <p>
  * ShareActivity provides multiple contacts sharing. However, this requires aTalk does not have any
  * chatFragment current in active open state. Otherwise, Android OS destroys this activity on first
  * contact sharing; and multiple contacts sharing is no possible.
@@ -54,11 +46,6 @@ import java.util.Set;
  */
 public class ShareActivity extends OSGiActivity
 {
-    /**
-     * The number of pages (wizard steps) to show.
-     */
-    private static final int NUM_PAGES = 2;
-
     /**
      * A reference of the share object
      */
@@ -96,7 +83,7 @@ public class ShareActivity extends OSGiActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sharewith_view);
+        setContentView(R.layout.frame_container);
         // configureToolBar();
 
         ActionBar actionBar = getSupportActionBar();
@@ -109,16 +96,12 @@ public class ShareActivity extends OSGiActivity
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_bg_share)));
         }
 
-        /*
-         * The pager widget, which handles animation and allows swiping horizontally to access previous
-         * and next wizard steps.
-         */
-        ViewPager mPager = findViewById(R.id.shareViewPager);
-        PagerAdapter mPagerAdapter = new SharePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setPageTransformer(true, new DepthPageTransformer());
-        mShare = new Share();
+        ContactListFragment contactList = new ContactListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frameContainer, contactList)
+                .commit();
 
+        mShare = new Share();
         handleIntent(getIntent());
     }
 
@@ -141,7 +124,7 @@ public class ShareActivity extends OSGiActivity
      */
     private void handleIntent(Intent intent)
     {
-        super.onStart();
+        // super.onStart();
         if (intent == null) {
             return;
         }
@@ -229,36 +212,5 @@ public class ShareActivity extends OSGiActivity
                 shareIntent.addCategory(mShare.mCategories.toString());
         }
         return shareIntent;
-    }
-
-    /**
-     * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
-     */
-    private static class SharePagerAdapter extends FragmentPagerAdapter
-    {
-        private SharePagerAdapter(FragmentManager fm)
-        {
-            // Must use BEHAVIOR_SET_USER_VISIBLE_HINT to see conference list on first slide to conference view
-            // super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT); not valid anymore after change to BaseChatRoomListAdapter
-            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @NotNull
-        @Override
-        public Fragment getItem(int position)
-        {
-            if (position == 0) {
-                return new ContactListFragment();
-            }
-            else {
-                return new ChatRoomListFragment();
-            }
-        }
-
-        @Override
-        public int getCount()
-        {
-            return NUM_PAGES;
-        }
     }
 }

@@ -221,6 +221,24 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         }
     }
 
+    protected void updateBlockStatus(final int groupIndex, final int contactIndex, Contact contact)
+    {
+        int firstIndex = contactListView.getFirstVisiblePosition();
+        View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
+
+        if (contactView != null) {
+            ImageView blockView = contactView.findViewById(R.id.contactBlockIcon);
+            if (blockView == null) {
+                Timber.w("No contact blocking status view found for %s", contact);
+                return;
+            }
+            if (contact.isContactBlock())
+                blockView.setImageResource(R.drawable.contact_block);
+            else
+                blockView.setImageDrawable(null);
+        }
+    }
+
     /**
      * Updates the contact message unread count. Hide the unread message badge if the count is zero
      *
@@ -307,7 +325,9 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             contactViewHolder.avatarView = convertView.findViewById(R.id.avatarIcon);
             contactViewHolder.avatarView.setOnClickListener(this);
             contactViewHolder.avatarView.setOnLongClickListener(this);
+
             contactViewHolder.statusView = convertView.findViewById(R.id.contactStatusIcon);
+            contactViewHolder.blockView = convertView.findViewById(R.id.contactBlockIcon);
 
             contactViewHolder.unreadCount = convertView.findViewById(R.id.unread_count);
             contactViewHolder.unreadCount.setTag(contactViewHolder);
@@ -356,7 +376,8 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         String statusMessage = renderer.getStatusMessage(child);
 
         MetaContact metaContact = (MetaContact) child;
-        if (metaContact.getDefaultContact() != null) {
+        Contact contact = metaContact.getDefaultContact();
+        if (contact != null) {
             mContactViewHolder.put(metaContact, contactViewHolder);
             updateUnreadCount(metaContact, metaContact.getUnreadCount());
 
@@ -369,7 +390,13 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                 else
                     statusMessage = renderer.getDefaultAddress(child);
             }
+            // update contact block status
+            if (contact.isContactBlock())
+                contactViewHolder.blockView.setImageResource(R.drawable.contact_block);
+            else
+                contactViewHolder.blockView.setImageDrawable(null);
         }
+
         contactViewHolder.displayName.setText(sDisplayName);
         contactViewHolder.statusMessage.setText(statusMessage);
 
@@ -506,7 +533,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
                         if (jid instanceof DomainBareJid) {
                             TelephonyFragment extPhone = TelephonyFragment.newInstance(JidAddress);
                             contactListFragment.getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(android.R.id.content, extPhone).commit();
+                                    .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                             break;
                         }
                         isAudioCall = true;
@@ -598,6 +625,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         TextView displayName;
         TextView statusMessage;
         ImageView avatarView;
+        ImageView blockView;
         ImageView statusView;
         ImageView callButton;
         ImageView callVideoButton;

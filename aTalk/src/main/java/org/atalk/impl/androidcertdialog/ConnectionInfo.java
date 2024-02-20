@@ -51,7 +51,6 @@ import java.util.Map;
 /**
  * Setting screen which displays protocolProvider connection info and servers SSL Certificates.
  * Unregistered accounts without any approved certificates are not shown.
- *
  * a. Short click to display the SSL certificate for registered account.
  * b. Long Click to delete any manually approved self signed SSL certificates if any.
  *

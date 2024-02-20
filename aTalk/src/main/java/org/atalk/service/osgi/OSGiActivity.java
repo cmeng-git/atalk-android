@@ -342,6 +342,7 @@ public class OSGiActivity extends BaseActivity {
      */
     protected void startActivity(Class<?> activityClass) {
         Intent intent = new Intent(this, activityClass);
+        // intent.setPackage(getPackageName());
         startActivity(intent);
     }
 

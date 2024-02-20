@@ -93,7 +93,18 @@
     <string name="menu_settings">Настройки</string>
     <string name="title_activity_activation_view">Активация</string>
 
-    <!-- General -->
+    <!-- Block Command -->
+    <string name="contact_block_text">Хотите заблокировать «%1$s» от отправки вам сообщений?</string>
+    <string name="contact_unblock_text">Хотите разблокировать «%1$s» и разрешить им отправлять вам сообщения?</string>
+    <string name="domain_blocking">Применить ко всем контактам из: %1$s</string>
+    <string name="contact_block">Заблокировать контакт</string>
+    <string name="contact_unblock">Разблокировать контакт</string>
+    <string name="contact_blocked">Контакт заблокирован</string>
+    <string name="block">Блокировать</string>
+    <string name="unblock">Разблокировать</string>
+    <string name="block_list_title">Чёрный список</string>
+    <string name="block_list_show">Показать черный список</string>
+
     <string name="service_gui_ACCEPT">Принять</string>
     <string name="service_gui_ACCOUNT">Аккаунт</string>
     <string name="service_gui_ACCOUNT_ME">Я</string>

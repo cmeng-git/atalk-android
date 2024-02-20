@@ -37,6 +37,11 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import net.java.sip.communicator.impl.protocol.jabber.CallJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.CallPeerJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -61,11 +66,6 @@ import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.audioservice.SoundMeter;
 import org.atalk.persistance.FilePathHelper;
 import org.jivesoftware.smackx.chatstates.ChatState;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -168,6 +168,8 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     private static final int min_distance = 100;
     private float downX;
 
+    private boolean isBlocked = false;
+
     /**
      * Creates new instance of <code>ChatController</code>.
      *
@@ -189,42 +191,34 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
         if (!isAttached) {
             isAttached = true;
 
-            // Timber.d("ChatController attached to %s", chatFragment.hashCode());
-            chatPanel = mChatFragment.getChatPanel();
+            // Ensure all view are properly initialized before any action taken on views
+            initViews();
 
-            // Gets message edit view
-            msgEdit = parent.findViewById(R.id.chatWriteText);
+            MetaContact metaContact = chatPanel.getMetaContact();
+            isBlocked = false;
+            if (metaContact != null) {
+                isBlocked = metaContact.getDefaultContact().isContactBlock();
+            }
+            if (isBlocked) {
+                msgEdit.setText(R.string.contact_blocked);
+            } else {
+                // Restore edited text
+                msgEdit.setText(chatPanel.getEditedText());
+            }
+            msgEdit.setEnabled(!isBlocked);
+            sendBtn.setEnabled(!isBlocked);
+
+            // Timber.d("ChatController attached to %s", chatFragment.hashCode());
             msgEdit.setCommitListener(this);
             msgEdit.setFocusableInTouchMode(true);
-
-            // Restore edited text
-            msgEdit.setText(chatPanel.getEditedText());
             msgEdit.addTextChangedListener(this);
 
-            // Message typing area background
-            msgEditBg = parent.findViewById(R.id.chatTypingArea);
-            msgRecordView = parent.findViewById(R.id.recordView);
-
-            // Gets the cancel correction button and hooks on click action
-            cancelCorrectionBtn = parent.findViewById(R.id.cancelCorrectionBtn);
-            cancelCorrectionBtn.setOnClickListener(this);
-
-            // Quoted reply message view
-            chatMessageReply = parent.findViewById(R.id.chatMsgReply);
             chatMessageReply.setVisibility(View.GONE);
-            chatReplyCancel = parent.findViewById(R.id.chatReplyCancel);
             chatReplyCancel.setVisibility(View.GONE);
             chatReplyCancel.setOnClickListener(this);
+            cancelCorrectionBtn.setOnClickListener(this);
 
-            imagePreview = parent.findViewById(R.id.imagePreview);
-            mediaPreview = parent.findViewById(R.id.media_preview);
-
-            // Gets the send message button and hooks on click action
-            sendBtn = parent.findViewById(R.id.sendMessageButton);
             sendBtn.setOnClickListener(this);
-
-            // Gets the send audio button and hooks on click action if permission allowed
-            audioBtn = parent.findViewById(R.id.audioMicButton);
             if (isAudioAllowed) {
                 audioBtn.setOnClickListener(this);
                 audioBtn.setOnLongClickListener(this);
@@ -234,15 +228,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 Timber.w("Audio recording is not allowed - permission denied!");
             }
 
-            // Gets the call switch button
-            callBtn = parent.findViewById(R.id.chatBackToCallButton);
             callBtn.setOnClickListener(this);
-
-            mSoundMeter = parent.findViewById(R.id.sound_meter);
-            mRecordTimer = parent.findViewById(R.id.recordTimer);
-            mdBTextView = parent.findViewById(R.id.dBTextView);
-
-            mTrash = parent.findViewById(R.id.ic_mic_trash);
             mTrashAnimate = (AnimationDrawable) mTrash.getBackground();
 
             animBlink = AnimationUtils.loadAnimation(parent, R.anim.blink);
@@ -258,9 +244,46 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     }
 
     /**
+     * Initialize all the view
+     */
+    private void initViews() {
+        chatPanel = mChatFragment.getChatPanel();
+
+        // Gets message edit view
+        msgEdit = parent.findViewById(R.id.chatWriteText);
+
+        // Message typing area background
+        msgEditBg = parent.findViewById(R.id.chatTypingArea);
+
+        // Gets the cancel correction button and hooks on click action
+        cancelCorrectionBtn = parent.findViewById(R.id.cancelCorrectionBtn);
+
+        // Quoted reply message view
+        chatMessageReply = parent.findViewById(R.id.chatMsgReply);
+        chatReplyCancel = parent.findViewById(R.id.chatReplyCancel);
+
+        // Gets the send message button and hooks on click action
+        sendBtn = parent.findViewById(R.id.sendMessageButton);
+        // Gets the send audio button and hooks on click action if permission allowed
+        audioBtn = parent.findViewById(R.id.audioMicButton);
+        // Gets the call switch button
+        callBtn = parent.findViewById(R.id.chatBackToCallButton);
+        mTrash = parent.findViewById(R.id.ic_mic_trash);
+
+        // Bind all image previews
+        msgRecordView = parent.findViewById(R.id.recordView);
+        imagePreview = parent.findViewById(R.id.imagePreview);
+        mediaPreview = parent.findViewById(R.id.media_preview);
+
+        // Bind all sound record views
+        mSoundMeter = parent.findViewById(R.id.sound_meter);
+        mRecordTimer = parent.findViewById(R.id.recordTimer);
+        mdBTextView = parent.findViewById(R.id.dBTextView);
+    }
+
+    /**
      * Init to correct mChatTransport; if chatTransPort allows, then enable chatState
      * notifications thread. Perform only if the chatFragment is really visible to user
-     *
      * Otherwise the non-focus chatFragment will cause out-of-sync between chatFragment and
      * chatController i.e. entered msg display in wrong chatFragment
      */
@@ -305,7 +328,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
             // Remove text listener
             msgEdit.removeTextChangedListener(this);
             // Store edited text in chatPanel
-            if ((chatPanel != null) && (msgEdit.getText() != null))
+            if ((chatPanel != null) && !isBlocked && (msgEdit.getText() != null))
                 chatPanel.setEditedText(msgEdit.getText().toString());
 
             mediaPreview.setVisibility(View.GONE);
@@ -657,7 +680,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
                 parent.runOnUiThread(() -> {
                     mTrashAnimate.stop();
                     mTrashAnimate.selectDrawable(0);
-
                     msgEdit.setVisibility(View.VISIBLE);
 
                     msgRecordView.setVisibility(View.GONE);
@@ -808,6 +830,7 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Insert/remove the buddy nickname into the sending text.
+     *
      * @param buddy occupant jid
      */
     public void insertTo(String buddy) {
@@ -857,7 +880,6 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
 
     /**
      * Updates chat state.
-     *
      * {@inheritDoc}
      */
     @Override
@@ -885,7 +907,9 @@ public class ChatController implements View.OnClickListener, View.OnLongClickLis
     public void updateSendModeState() {
         boolean hasAttachments = (mediaPreview.getAdapter() != null)
                 && ((MediaPreviewAdapter) mediaPreview.getAdapter()).hasAttachments();
-        mediaPreview.setVisibility(View.GONE);
+        if (mediaPreview != null)
+            mediaPreview.setVisibility(View.GONE);
+
         imagePreview.setVisibility(View.GONE);
         imagePreview.setImageDrawable(null);
 

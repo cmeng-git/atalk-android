@@ -1,6 +1,6 @@
 /*
  * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ * Copyright 2014~2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.dialogs.CustomDialogCbox;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.crypto.omemo.SQLiteOmemoStore;
 import org.jivesoftware.smackx.omemo.OmemoService;
@@ -40,16 +41,23 @@ import org.jivesoftware.smackx.omemo.OmemoService;
  */
 public class AccountDeleteDialog {
     public static void create(Context ctx, final Account account, final OnAccountRemovedListener listener) {
-        Bundle args = new Bundle();
-        args.putString(AccountDeleteFragment.ARG_MESSAGE,
-                ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID()));
         String title = ctx.getString(R.string.service_gui_REMOVE_ACCOUNT);
 
+        String message = ctx.getString(R.string.service_gui_REMOVE_ACCOUNT_MESSAGE, account.getAccountID());
+        String cbMessage = ctx.getString(R.string.account_delete_on_server);
+        String btnText = ctx.getString(R.string.service_gui_DELETE);
+
+        Bundle args = new Bundle();
+        args.putString(CustomDialogCbox.ARG_MESSAGE, message);
+        args.putString(CustomDialogCbox.ARG_CB_MESSAGE, cbMessage);
+        args.putBoolean(CustomDialogCbox.ARG_CB_CHECK, false);
+        args.putBoolean(CustomDialogCbox.ARG_CB_ENABLE, true);
+
         // Displays the history delete dialog and waits for user confirmation
-        DialogActivity.showCustomDialog(ctx, title, AccountDeleteFragment.class.getName(),
-                args, ctx.getString(R.string.service_gui_DELETE), new DialogActivity.DialogListener() {
+        DialogActivity.showCustomDialog(ctx, title, CustomDialogCbox.class.getName(), args, btnText,
+                new DialogActivity.DialogListener() {
                     public boolean onConfirmClicked(DialogActivity dialog) {
-                        CheckBox cbAccountDelete = dialog.findViewById(R.id.cb_account_delete);
+                        CheckBox cbAccountDelete = dialog.findViewById(R.id.cb_option);
                         boolean accountDelete = cbAccountDelete.isChecked();
                         onRemoveClicked(account, accountDelete, listener);
                         return true;

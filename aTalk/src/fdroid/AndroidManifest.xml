@@ -5,7 +5,7 @@
 
     <application>
         <activity
-            android:name=".plugin.geolocation.OsmActivity"
+            android:name="org.atalk.android.plugin.geolocation.OsmActivity"
             android:exported="true"
             android:icon="@drawable/ic_logo"
             android:label="OSM Map">

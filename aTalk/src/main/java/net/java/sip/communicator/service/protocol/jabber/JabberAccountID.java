@@ -67,9 +67,7 @@ public class JabberAccountID extends AccountID
 
     /**
      * Always call with gtalk property.
-     *
-     * It is used to bypass capabilities checks: some software do not advertise GTalk support (but
-     * they support it).
+     * It is used to bypass capabilities checks: some software do not advertise GTalk support (but they support it).
      */
     public static final String BYPASS_GTALK_CAPABILITIES = "BYPASS_GTALK_CAPABILITIES";
 
@@ -84,7 +82,6 @@ public class JabberAccountID extends AccountID
     public static final String TELEPHONY_BYPASS_GTALK_CAPS = "TELEPHONY_BYPASS_GTALK_CAPS";
     /**
      * The override domain for phone call.
-     *
      * If Jabber account is able to call PSTN number and if domain name of the switch is different
      * than the domain of the account (gw.domain.org vs domain.org), you can use this property to
      * set the switch domain.
@@ -105,7 +102,7 @@ public class JabberAccountID extends AccountID
         // id can be null on initial startup
         if (userId != null) {
             try {
-                userBareJid = JidCreate.bareFrom(userId);
+                userBareJid = JidCreate.entityBareFrom(userId);
             } catch (XmppStringprepException e) {
                 Timber.e("Unable to create BareJid for user account: %s", userId);
                 throw new IllegalArgumentException("User ID is not a valid xmpp BareJid");
@@ -134,7 +131,7 @@ public class JabberAccountID extends AccountID
             this.accountUID = getProtocolName() + ":" + mUserID;
             mAccountProperties.put(USER_ID, userId);
             try {
-                userBareJid = JidCreate.bareFrom(userId);
+                userBareJid = JidCreate.entityBareFrom(userId);
             } catch (XmppStringprepException e) {
                 Timber.e("Unable to create BareJid for user account: %s", userId);
             }

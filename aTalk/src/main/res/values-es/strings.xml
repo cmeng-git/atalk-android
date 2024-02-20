@@ -96,6 +96,18 @@
     <string name="menu_settings">Ajustes</string>
     <string name="title_activity_activation_view">Activación</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">¿Quieres bloquear a \'%1$s\' para que no pueda enviarte mensajes?</string>
+    <string name="contact_unblock_text">¿Quieres desbloquear a \'%1$s\' y permitirle que te envíe mensajes?</string>
+    <string name="domain_blocking">Aplicar a todos los contactos de: %1$s</string>
+    <string name="contact_block">Bloquear contacto</string>
+    <string name="contact_unblock">Desbloquear contacto</string>
+    <string name="contact_blocked">Contacto bloqueado</string>
+    <string name="block">Bloquear</string>
+    <string name="unblock">Desbloquear</string>
+    <string name="block_list_title">Lista contactos bloqueados</string>
+    <string name="block_list_show">Mostrar contactos bloqueados</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Aceptar</string>
     <string name="service_gui_ACCOUNT">Cuenta</string>

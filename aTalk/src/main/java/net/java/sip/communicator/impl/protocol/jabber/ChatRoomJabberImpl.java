@@ -824,7 +824,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
      */
     private void onJoinSuccess() {
         // update members list only on successful joining chatRoom
-        ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mPPS.getOurJID());
+        ChatRoomMemberJabberImpl member = new ChatRoomMemberJabberImpl(this, mNickName, mPPS.getOurJid());
         synchronized (members) {
             members.put(mNickName, member);
         }
@@ -2995,6 +2995,6 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         // When status changes this may be related to a change in the available resources.
         ((ContactJabberImpl) contact).updatePresenceStatus(offlineStatus);
         presenceOpSet.fireContactPresenceStatusChangeEvent(contact, contact.getJid(), contact.getParentContactGroup(),
-                oldContactStatus, offlineStatus);
+                oldContactStatus, offlineStatus, false);
     }
 }

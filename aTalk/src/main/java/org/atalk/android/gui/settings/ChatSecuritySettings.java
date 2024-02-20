@@ -88,9 +88,8 @@ public class ChatSecuritySettings extends OSGiActivity
             PreferenceUtil.setCheckboxVal(screen, P_KEY_OMEMO_KEY_BLIND_TRUST,
                     mConfig.getBoolean(mConfig.PNAME_OMEMO_KEY_BLIND_TRUST, true));
 
-            SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
-
             // cmeng: remove unused preferences
+            SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
             SharedPreferences.Editor mEditor = shPrefs.edit();
             mEditor.remove("pref.key.crypto.auto");
             mEditor.remove("pref.key.crypto.require");

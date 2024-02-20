@@ -24,8 +24,8 @@ import org.atalk.service.configuration.ConfigurationService;
 import org.atalk.service.neomedia.SrtpControlType;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.osgi.framework.BundleContext;
 
 import java.util.ArrayList;
@@ -44,12 +44,12 @@ import timber.log.Timber;
  * protected constructor. The reason why this constructor is protected is mostly avoiding confusion
  * and letting people (using the protocol provider service) believe that they are the ones who are
  * supposed to instantiate the AccountID class.
- *
+ * <p>
  * Every instance of the <code>ProtocolProviderService</code>, created through the
  * ProtocolProviderFactory is assigned an AccountID instance, that uniquely represents it and whose
  * string representation (obtained through the getAccountUniqueID() method) can be used for
  * identification of persistently stored account details.
- *
+ * <p>
  * Account id's are guaranteed to be different for different accounts and in the same time are bound
  * to be equal for multiple installations of the same account.
  *
@@ -148,7 +148,7 @@ public class AccountID
     /**
      * An XMPP Jabber ID associated with this particular account. e.g. abc123@example.org
      */
-    protected BareJid userBareJid;
+    protected EntityBareJid userBareJid;
 
     /**
      * The name of the service that defines the context for this account. e.g. example.org
@@ -166,10 +166,9 @@ public class AccountID
      * @param protocolName the protocol name implemented by the provider that this id is meant for e.g. Jabber
      * @param serviceName the name of the service is what follows after the '@' sign in XMPP addresses (JIDs).
      * (e.g. iptel.org, jabber.org, icq.com) the service of the account registered with.
-     *
+     * <p>
      * Note: parameters userID is null and new empty accountProperties when called from
-     * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration or
-     * @see net.java.sip.communicator.service.protocol.sip.SIPAccountRegistration constructor
+     * @see net.java.sip.communicator.service.protocol.jabber.JabberAccountRegistration
      */
     protected AccountID(String userID, Map<String, String> accountProperties, String protocolName, String serviceName)
     {
@@ -204,7 +203,7 @@ public class AccountID
      * Allows a specific set of account properties to override a given default protocol name (e.g.
      * account registration wizards which want to present a well-known protocol name associated
      * with the account that is different from the name of the effective protocol).
-     *
+     * <p>
      * Note: The logic of the SIP protocol implementation at the time of this writing modifies
      * <code>accountProperties</code> to contain the default protocol name if an override hasn't been
      * defined. Since the desire is to enable all account registration wizards to override the
@@ -247,7 +246,7 @@ public class AccountID
     }
 
     // Override for Jabber implementation for the BareJid e.g. abc123@example.org.
-    public BareJid getBareJid()
+    public EntityBareJid getEntityBareJid()
     {
         return userBareJid;
     }

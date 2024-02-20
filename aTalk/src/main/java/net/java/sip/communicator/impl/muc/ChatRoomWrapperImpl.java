@@ -217,7 +217,7 @@ public class ChatRoomWrapperImpl extends PropertyChangeNotifier implements ChatR
      * @return the account user BareJid
      */
     public BareJid getUser() {
-        return mPPS.getConnection().getUser().asBareJid();
+        return mPPS.getOurJid().asBareJid();
     }
 
     /**

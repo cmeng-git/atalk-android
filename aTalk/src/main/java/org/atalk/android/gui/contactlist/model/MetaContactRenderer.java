@@ -80,8 +80,15 @@ public class MetaContactRenderer implements UIContactRenderer
     public boolean isShowVideoCallBtn(Object contactImpl)
     {
         // Disable video call option if there is no camera support on the device
-        return isShowButton((MetaContact) contactImpl, OperationSetVideoTelephony.class)
-                && (AndroidCamera.getCameras().length != 0);
+        if (contactImpl instanceof MetaContact) {
+            MetaContact metaContact = (MetaContact) contactImpl;
+            Contact contact = metaContact.getDefaultContact();
+            boolean isBlocked = (contact != null) && contact.isContactBlock();
+            return !isBlocked
+                    && isShowButton(metaContact, OperationSetVideoTelephony.class)
+                    && (AndroidCamera.getCameras().length != 0);
+        }
+        return false;
     }
 
     @Override
@@ -92,9 +99,13 @@ public class MetaContactRenderer implements UIContactRenderer
             MetaContact metaContact = (MetaContact) contactImpl;
 
             boolean isDomainJid = false;
-            if (metaContact.getDefaultContact() != null)
-                isDomainJid = metaContact.getDefaultContact().getJid() instanceof DomainBareJid;
-            return isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class);
+            Contact contact = metaContact.getDefaultContact();
+            boolean isBlocked = false;
+            if (contact != null) {
+                isDomainJid = contact.getJid() instanceof DomainBareJid;
+                isBlocked = contact.isContactBlock();
+            }
+            return !isBlocked && (isDomainJid || isShowButton(metaContact, OperationSetBasicTelephony.class) );
         }
         return false;
     }

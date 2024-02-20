@@ -58,7 +58,7 @@
     </queries>
 
     <application
-        android:name=".aTalkApp"
+        android:name="org.atalk.android.aTalkApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@drawable/ic_logo"
@@ -86,23 +86,21 @@
          -->
 
         <activity
-            android:name=".gui.LauncherActivity"
+            android:name="org.atalk.android.gui.LauncherActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:launchMode="singleTask" />
         <activity
-            android:name=".gui.ShutdownActivity"
+            android:name="org.atalk.android.gui.ShutdownActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
         <activity
-            android:name=".gui.aTalk"
+            android:name="org.atalk.android.gui.aTalk"
             android:exported="false"
             android:launchMode="singleTask">
             <!-- android:uiOptions="splitActionBarWhenNarrow" -->
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
-                <action android:name="org.atalk.show_contacts" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -115,11 +113,11 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".gui.Splash"
+            android:name="org.atalk.android.gui.Splash"
             android:launchMode="singleTask" />
 
         <activity
-            android:name=".plugin.permissions.PermissionsActivity"
+            android:name="org.atalk.android.plugin.permissions.PermissionsActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
@@ -129,7 +127,11 @@
         </activity>
 
         <activity
-            android:name=".gui.share.ShareActivity"
+            android:name="org.atalk.android.gui.contactlist.ContactBlockListActivity"
+            android:launchMode="singleTask" />
+
+        <activity
+            android:name="org.atalk.android.gui.share.ShareActivity"
             android:exported="true"
             android:launchMode="singleTask">
 
@@ -151,29 +153,29 @@
 
             <meta-data
                 android:name="android.service.chooser.chooser_target_service"
-                android:value=".services.ContactChooserTargetService" />
+                android:value="org.atalk.services.ContactChooserTargetService" />
         </activity>
 
         <!-- Account settings and sub-menu-->
         <activity
-            android:name=".gui.account.AccountsListActivity"
-            android:parentActivityName=".gui.aTalk" />
+            android:name="org.atalk.android.gui.account.AccountsListActivity"
+            android:parentActivityName="org.atalk.android.gui.aTalk" />
         <activity
-            android:name=".gui.account.AccountInfoPresenceActivity"
+            android:name="org.atalk.android.gui.account.AccountInfoPresenceActivity"
             android:label="@string/plugin_accountinfo_TITLE"
-            android:parentActivityName=".gui.account.AccountsListActivity" />
+            android:parentActivityName="org.atalk.android.gui.account.AccountsListActivity" />
         <activity
-            android:name=".gui.account.AccountLoginActivity" />
+            android:name="org.atalk.android.gui.account.AccountLoginActivity" />
         <activity
-            android:name=".plugin.geolocation.GeoLocationActivity" />
+            android:name="org.atalk.android.plugin.geolocation.GeoLocationActivity" />
         <activity
-            android:name=".gui.contactlist.AddContactActivity" />
+            android:name="org.atalk.android.gui.contactlist.AddContactActivity" />
         <activity
-            android:name=".gui.contactlist.ContactInfoActivity"
+            android:name="org.atalk.android.gui.contactlist.ContactInfoActivity"
             android:label="@string/plugin_connectioninfo_TITLE" />
         <!-- Dialog Activity -->
         <activity
-            android:name=".gui.dialogs.DialogActivity"
+            android:name="org.atalk.android.gui.dialogs.DialogActivity"
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <!-- Verify Certificate Activity -->
@@ -182,7 +184,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <!-- Authorization requested dialog -->
         <activity
-            android:name=".gui.authorization.AuthorizationRequestedDialog"
+            android:name="org.atalk.android.gui.authorization.AuthorizationRequestedDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/service_gui_AUTHORIZATION_REQUEST" />
         <!-- Authentication window service Activity -->
@@ -191,11 +193,11 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <!-- Request authorization dialog -->
         <activity
-            android:name=".gui.authorization.RequestAuthorizationDialog"
+            android:name="org.atalk.android.gui.authorization.RequestAuthorizationDialog"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/service_gui_REQUEST_AUTHORIZATION" />
         <activity
-            android:name=".gui.call.CallContactActivity"
+            android:name="org.atalk.android.gui.call.CallContactActivity"
             android:exported="false"
             android:icon="@drawable/ic_notification"
             android:launchMode="singleTask">
@@ -208,15 +210,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gui.call.VideoCallActivity"
+            android:name="org.atalk.android.gui.call.VideoCallActivity"
             android:configChanges="orientation|screenSize|screenLayout"
             android:hardwareAccelerated="true" />
         <activity
-            android:name=".gui.call.JingleMessageCallActivity" />
+            android:name="org.atalk.android.gui.call.JingleMessageCallActivity" />
         <activity
-            android:name=".gui.call.ReceivedCallActivity" />
+            android:name="org.atalk.android.gui.call.ReceivedCallActivity" />
         <activity
-            android:name=".gui.chat.ChatActivity"
+            android:name="org.atalk.android.gui.chat.ChatActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
 
@@ -225,19 +227,19 @@
             android:name="org.atalk.crypto.omemo.OmemoAuthenticateDialog" />
         <activity
             android:name="org.atalk.crypto.omemo.OmemoRegenerateDialog"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/service_gui_settings_OMEMO_REGENERATE_TITLE">
             <intent-filter>
-                <action android:name=".crypto.omemo.OmemoRegenerateDialog" />
+                <action android:name="org.atalk.crypto.omemo.OmemoRegenerateDialog" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/service_gui_settings_OMEMO_PURGE_DEVICE_TITLE">
             <intent-filter>
-                <action android:name=".crypto.omemo.OmemoDeviceDeleteDialog" />
+                <action android:name="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -245,19 +247,19 @@
         <!-- Key & FingerPrint activities -->
         <activity
             android:name="org.atalk.crypto.CryptoPrivateKeys"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">
             <intent-filter>
-                <action android:name=".crypto.CryptoPrivateKeys" />
+                <action android:name="org.atalk.crypto.CryptoPrivateKeys" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name="org.atalk.crypto.CryptoDeviceFingerPrints"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
             <intent-filter>
-                <action android:name=".crypto.CryptoDeviceFingerPrints" />
+                <action android:name="org.atalk.crypto.CryptoDeviceFingerPrints" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -267,7 +269,7 @@
             android:name="org.atalk.crypto.otr.OtrAuthenticateDialog" />
 
         <activity
-            android:name=".gui.chat.aTalkProtocolReceiver"
+            android:name="org.atalk.android.gui.chat.aTalkProtocolReceiver"
             android:exported="true"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
@@ -277,72 +279,72 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gui.settings.SettingsActivity" />
+            android:name="org.atalk.android.gui.settings.SettingsActivity" />
 
         <activity
-            android:name=".gui.settings.EncodingSettings" />
+            android:name="org.atalk.android.gui.settings.EncodingSettings" />
 
         <!-- MediaCodec list -->
         <activity
-            android:name=".gui.settings.MediaCodecList" />
+            android:name="org.atalk.android.gui.settings.MediaCodecList" />
 
         <!-- Chat Security and SSL Certificate -->
         <activity
-            android:name=".gui.settings.ChatSecuritySettings"
+            android:name="org.atalk.android.gui.settings.ChatSecuritySettings"
             android:label="@string/service_gui_settings_MESSAGING_SECURITY_TITLE" />
         <activity
             android:name="org.atalk.impl.androidcertdialog.ConnectionInfo"
             android:label="@string/service_gui_settings_SSL_CERTIFICATE" />
         <activity
-            android:name=".gui.settings.notification.NotificationSettings"
+            android:name="org.atalk.android.gui.settings.notification.NotificationSettings"
             android:label="@string/service_gui_settings_EVENTS_TITLE" />
-        <activity android:name=".gui.settings.notification.NotificationDetails" />
+        <activity android:name="org.atalk.android.gui.settings.notification.NotificationDetails" />
         <!-- Basic settings -->
         <activity
-            android:name=".gui.settings.CodecSettingsActivity" />
+            android:name="org.atalk.android.gui.settings.CodecSettingsActivity" />
         <!-- Opus settings -->
         <activity-alias
-            android:name=".gui.settings.OpusSettings"
-            android:targetActivity=".gui.settings.CodecSettingsActivity">
+            android:name="org.atalk.android.gui.settings.OpusSettings"
+            android:targetActivity="org.atalk.android.gui.settings.CodecSettingsActivity">
             <meta-data
                 android:name="android.preference"
                 android:resource="@xml/opus_preferences" />
         </activity-alias>
         <!-- Silk settings -->
         <activity-alias
-            android:name=".gui.settings.SilkSettings"
-            android:targetActivity=".gui.settings.CodecSettingsActivity">
+            android:name="org.atalk.android.gui.settings.SilkSettings"
+            android:targetActivity="org.atalk.android.gui.settings.CodecSettingsActivity">
             <meta-data
                 android:name="android.preference"
                 android:resource="@xml/silk_preferences" />
         </activity-alias>
         <!-- Provisioning settings -->
         <activity
-            android:name=".gui.settings.ProvisioningSettings" />
+            android:name="org.atalk.android.gui.settings.ProvisioningSettings" />
 
         <!-- Do not define android:parentActivityName for the following 4 preference activities;
           the actual preference menus shown are fragments, then will have problem if defined.
           Override to execute onBackKeyPress for Up navigator -->
         <activity
-            android:name=".gui.account.settings.AccountPreferenceActivity" />
+            android:name="org.atalk.android.gui.account.settings.AccountPreferenceActivity" />
         <activity
-            android:name=".gui.account.settings.SecurityActivity" />
+            android:name="org.atalk.android.gui.account.settings.SecurityActivity" />
         <activity
-            android:name=".gui.account.settings.ServerListActivity" />
+            android:name="org.atalk.android.gui.account.settings.ServerListActivity" />
         <activity
-            android:name=".gui.account.settings.MediaEncodingActivity" />
+            android:name="org.atalk.android.gui.account.settings.MediaEncodingActivity" />
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".gui.About"
+            android:name="org.atalk.android.gui.About"
             android:label="@string/About_action" />
 
         <!--Text Speech Features -->
         <activity
-            android:name=".plugin.textspeech.TTSActivity" />
+            android:name="org.atalk.android.plugin.textspeech.TTSActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -356,7 +358,7 @@
 
         <service android:name="org.atalk.service.osgi.OSGiService" />
         <service
-            android:name=".gui.account.AccountAuthenticatorService"
+            android:name="org.atalk.android.gui.account.AccountAuthenticatorService"
             android:exported="false"
             android:process=":auth">
             <intent-filter>
@@ -368,13 +370,13 @@
                 android:resource="@xml/authenticator" />
         </service>
         <service
-            android:name=".plugin.audioservice.AudioBgService"
+            android:name="org.atalk.android.plugin.audioservice.AudioBgService"
             android:exported="false" />
         <service
-            android:name=".plugin.textspeech.TTSService"
+            android:name="org.atalk.android.plugin.textspeech.TTSService"
             android:exported="false" />
         <service
-            android:name=".plugin.geolocation.LocationBgService"
+            android:name="org.atalk.android.plugin.geolocation.LocationBgService"
             android:exported="false" />
 
         <receiver
@@ -393,7 +395,7 @@
         </receiver>
 
         <receiver
-            android:name=".gui.share.ShareUtil$ShareBroadcastReceiver"
+            android:name="org.atalk.android.gui.share.ShareUtil$ShareBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

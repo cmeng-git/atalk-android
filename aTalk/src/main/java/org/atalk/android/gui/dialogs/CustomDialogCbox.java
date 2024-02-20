@@ -1,6 +1,6 @@
 /*
  * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ * Copyright 2014~2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.atalk.android.gui.account;
+package org.atalk.android.gui.dialogs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,20 +27,24 @@ import org.atalk.android.R;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 
-/**
- * Fragment for history message delete with media delete option
- *
- * @author Eng Chong Meng
- */
-public class AccountDeleteFragment extends OSGiFragment
+public class CustomDialogCbox extends OSGiFragment
 {
     public static final String ARG_MESSAGE = "dialog_message";
+    public static final String ARG_CB_MESSAGE = "cb_message";
+    public static final String ARG_CB_CHECK = "cb_check";
+    public static final String ARG_CB_ENABLE = "cb_enable";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View viewAccountDelete = inflater.inflate(R.layout.account_delete, container, false);
-        ViewUtil.setTextViewValue(viewAccountDelete, R.id.textView, getArguments().getString(ARG_MESSAGE));
-        return viewAccountDelete;
+        View vcBlocking = inflater.inflate(R.layout.custom_dialog_cb, container, false);
+        Bundle arg = getArguments();
+        if (arg != null) {
+            ViewUtil.setTextViewValue(vcBlocking, R.id.messageText, arg.getString(ARG_MESSAGE));
+            ViewUtil.setTextViewValue(vcBlocking, R.id.cb_option, arg.getString(ARG_CB_MESSAGE));
+            ViewUtil.setCompoundChecked(vcBlocking, R.id.cb_option, arg.getBoolean(ARG_CB_CHECK));
+            ViewUtil.ensureEnabled(vcBlocking, R.id.cb_option, arg.getBoolean(ARG_CB_ENABLE));
+        }
+        return vcBlocking;
     }
 }

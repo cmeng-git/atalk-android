@@ -241,7 +241,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
             boolean peerIsInitiator = peer.isInitiator();
             if (requestLocalChannel) {
                 ColibriConferenceIQ.Channel localChannelRequest = new ColibriConferenceIQ.Channel();
-                localChannelRequest.setEndpoint(protocolProvider.getOurJID().toString());
+                localChannelRequest.setEndpoint(protocolProvider.getOurJid().toString());
                 localChannelRequest.setInitiator(peerIsInitiator);
 
                 for (PayloadType ptpe : rdpe.getChildElements(PayloadType.class))
@@ -748,7 +748,7 @@ public class CallJabberImpl extends MediaAwareCall<CallPeerJabberImpl,
                     attendant = attendantCall.getPeerBySid(sid);
                     if ((attendant != null)
                             && basicTelephony.getFullCalleeURI(attendant.getPeerJid()).equals(transfer.getFrom())
-                            && protocolProvider.getOurJID().equals(transfer.getTo())) {
+                            && protocolProvider.getOurJid().equals(transfer.getTo())) {
                         autoAnswer = true;
                     }
                 }

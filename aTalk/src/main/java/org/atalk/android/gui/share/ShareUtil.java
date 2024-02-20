@@ -33,21 +33,19 @@ import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
+import java.util.ArrayList;
+
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.impl.androidtray.NotificationPopupHandler;
 import org.atalk.persistance.FileBackend;
 
-import java.util.ArrayList;
-
-import androidx.annotation.RequiresApi;
 import timber.log.Timber;
 
 /**
  * @author Eng Chong Meng
  */
-public class ShareUtil
-{
+public class ShareUtil {
     private static final int REQUEST_CODE_SHARE = 500;
 
     /**
@@ -64,8 +62,7 @@ public class ShareUtil
      * @param imageUris array of image uris for sharing
      */
     @SuppressLint("NewApi")
-    public static void share(final Activity activity, String msgContent, ArrayList<Uri> imageUris)
-    {
+    public static void share(final Activity activity, String msgContent, ArrayList<Uri> imageUris) {
         if (activity != null) {
             int timeDelay = 0;
 
@@ -74,7 +71,7 @@ public class ShareUtil
                 try {
                     if (!imageUris.isEmpty() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)) {
                         PendingIntent pi = PendingIntent.getBroadcast(activity, REQUEST_CODE_SHARE,
-                                new Intent(activity, ShareBroadcastReceiver.class),
+                                new Intent(activity, ShareBroadcastReceiver.class).setPackage(activity.getPackageName()),
                                 NotificationPopupHandler.getPendingIntentFlag(false, true));
                         activity.startActivity(Intent.createChooser(shareIntent,
                                 activity.getString(R.string.service_gui_SHARE_TEXT), pi.getIntentSender()));
@@ -113,10 +110,10 @@ public class ShareUtil
      *
      * @param activity a reference of the activity
      * @param msgContent text content for sharing
+     *
      * @return share intent of the given msgContent
      */
-    public static Intent share(Activity activity, String msgContent)
-    {
+    public static Intent share(Activity activity, String msgContent) {
         Intent shareIntent = null;
         if ((activity != null) && (!TextUtils.isEmpty(msgContent))) {
             shareIntent = new Intent();
@@ -138,10 +135,10 @@ public class ShareUtil
      *
      * @param context a reference context of the activity
      * @param imageUris array of image uris for sharing
+     *
      * @return share intent of the given imageUris
      */
-    public static Intent share(Context context, ArrayList<Uri> imageUris)
-    {
+    public static Intent share(Context context, ArrayList<Uri> imageUris) {
         Intent shareIntent = null;
         if ((context != null) && !imageUris.isEmpty()) {
             shareIntent = new Intent();
@@ -163,8 +160,7 @@ public class ShareUtil
      * @param msgContent text content for sharing
      * @param imageUris array of image uris for sharing
      */
-    public static Intent shareLocal(Context context, Intent shareLocal, String msgContent, ArrayList<Uri> imageUris)
-    {
+    public static Intent shareLocal(Context context, Intent shareLocal, String msgContent, ArrayList<Uri> imageUris) {
         if ((context != null) && (shareLocal != null)) {
 
             if (!imageUris.isEmpty()) {
@@ -193,10 +189,10 @@ public class ShareUtil
      *
      * @param context a reference context of the activity
      * @param imageUris array of image uris for sharing
+     *
      * @return th common mime type for the given imageUris
      */
-    private static String getMimeType(Context context, ArrayList<Uri> imageUris)
-    {
+    private static String getMimeType(Context context, ArrayList<Uri> imageUris) {
         String tmp;
         String[] mimeTmp;
         String[] mimeType = {"*", "*"};
@@ -224,20 +220,17 @@ public class ShareUtil
      * Share BroadcastReceiver call back after user has chosen the share app
      * Some delay is given for user to pick the buddy before starting the next share intent
      */
-    public static class ShareBroadcastReceiver extends BroadcastReceiver
-    {
+    public static class ShareBroadcastReceiver extends BroadcastReceiver {
         private static Intent mediaIntent;
 
-        public static void setShareIntent(Activity activity, Intent intent)
-        {
+        public static void setShareIntent(Activity activity, Intent intent) {
             mediaIntent = Intent.createChooser(intent, activity.getText(R.string.service_gui_SHARE_FILE));
             mediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             ComponentName clickedComponent = intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT);
 
             if (mediaIntent == null)

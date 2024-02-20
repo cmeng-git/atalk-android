@@ -6,8 +6,24 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.6 (02/12/2024)" versioncode="303060">
+    <release version="3.3.7 (02/21/2024)" versioncode="303070">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Add support for XEP-0191: Blocking Command to block communications with a specific contact and domain</change>
+        <change>Implement EntityCapsPersistentCache using mySQLite DB instead of file system</change>
+        <change>Fix erased contact/chatroom history messages reappear after return to chatSession due to msgCache not cleared</change>
+        <change>Disable 'Contact Info' option when user is offline, as the info is invalid when user is offline</change>
+        <change>Fix Telephony UI Cancel button not working; Fragment Tag not set</change>
+        <change>Set android:exported to true for all activities launch via preference intent, else aTalk crashes in API-34</change>
+        <change>Allow user removal of a DomainJid from the contact list UI</change>
+        <change>Allow user moving of contact not in the Roster</change>
+        <change>Include check for contact blocking state when showing AudioCall and VideoCall options</change>
+        <change>Must initialize all preferences values for all settings before 'set Preferences From Resource', to ensure the updated values are reflected in preference UI</change>
+        <change>Add/Remove of ContactPresence and ContactBlocking Status Listeners in MetaContactListAdapter should be per registered ProtocolProvider</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+
+    <release version="3.3.6 (02/12/2024)" versioncode="303060">
         <change>JingleFile transfer AbstractMethodError resolved with aTalk source patches; Google team is unable to offer any solution in gradle release built</change>
         <change>Fix call notification control ui partial cropping of buttons</change>
         <change>Bug fixes and enhancements</change>

@@ -93,6 +93,18 @@
     <string name="menu_settings">Einstellungen</string>
     <string name="title_activity_activation_view">Aktivierung</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">Möchtest du \'%1$s\' sperren und keine Nachrichten mehr erhalten?</string>
+    <string name="contact_unblock_text">Möchtest du \'%1$s\' sperren und keine Nachrichten mehr erhalten?</string>
+    <string name="domain_blocking">Auf alle Kontakte anwenden von: %1$s</string>
+    <string name="contact_block">Kontakt sperren</string>
+    <string name="contact_unblock">Kontakt entsperren</string>
+    <string name="contact_blocked">Kontakt gesperrt</string>
+    <string name="block">Sperren</string>
+    <string name="unblock">Entsperren</string>
+    <string name="block_list_title">Sperrliste</string>
+    <string name="block_list_show">Sperrliste anzeigen</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Akzeptieren</string>
     <string name="service_gui_ACCOUNT">Konto</string>

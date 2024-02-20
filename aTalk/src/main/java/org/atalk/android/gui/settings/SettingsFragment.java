@@ -648,7 +648,7 @@ public class SettingsFragment extends OSGiPreferenceFragment
             if (pps.isRegistered()) {
                 ProtocolProviderServiceJabberImpl.enableMam(pps.getConnection(), enable);
             } else {
-                aTalkApp.showToastMessage(R.string.service_gui_settings_HISTORY_WARNING, pps.getAccountID().getBareJid());
+                aTalkApp.showToastMessage(R.string.service_gui_settings_HISTORY_WARNING, pps.getAccountID().getEntityBareJid());
             }
         }
     }

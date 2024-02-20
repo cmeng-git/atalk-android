@@ -148,6 +148,22 @@ public interface Contact
      */
     String getPersistentData();
 
+
+    /**
+     * When access on start-up, return contact block may be null.
+     *
+     * @return true if Contact is blocked.
+     */
+    boolean isContactBlock();
+
+    /**
+     * Change Contact block status value in configuration service.
+     * Null value in DB is considered as false
+     *
+     * @param value change of contact block status.
+     */
+    void setContactBlock(boolean value);
+
     /**
      * When access on start-up, return ttsEnable may be null.
      *

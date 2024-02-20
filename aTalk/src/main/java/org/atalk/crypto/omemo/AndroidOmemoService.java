@@ -16,6 +16,8 @@
  */
 package org.atalk.crypto.omemo;
 
+import java.util.SortedSet;
+
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicInstantMessagingJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
@@ -32,8 +34,6 @@ import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jxmpp.jid.BareJid;
 
-import java.util.SortedSet;
-
 import timber.log.Timber;
 
 /**
@@ -41,20 +41,18 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class AndroidOmemoService implements OmemoManager.InitializationFinishedCallback
-{
+public class AndroidOmemoService implements OmemoManager.InitializationFinishedCallback {
     private final OmemoManager mOmemoManager;
     private final XMPPConnection mConnection;
 
     public static boolean isOmemoInitSuccessful = false;
 
-    public AndroidOmemoService(ProtocolProviderService pps)
-    {
+    public AndroidOmemoService(ProtocolProviderService pps) {
         mConnection = pps.getConnection();
         mOmemoManager = initOmemoManager(pps);
 
         Timber.i("### Registered omemo messageListener for: %s", pps.getAccountID().getUserID());
-        OperationSetBasicInstantMessaging imOpSet =  pps.getOperationSet(OperationSetBasicInstantMessaging.class);
+        OperationSetBasicInstantMessaging imOpSet = pps.getOperationSet(OperationSetBasicInstantMessaging.class);
         ((OperationSetBasicInstantMessagingJabberImpl) imOpSet).registerOmemoListener(mOmemoManager);
 
         OperationSetMultiUserChat mucOpSet = pps.getOperationSet(OperationSetMultiUserChat.class);
@@ -65,10 +63,10 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
      * Initialize store for the specific protocolProvider and Initialize the OMEMO Manager
      *
      * @param pps protocolProvider for the current user
+     *
      * @return instance of OMEMO Manager
      */
-    private OmemoManager initOmemoManager(ProtocolProviderService pps)
-    {
+    private OmemoManager initOmemoManager(ProtocolProviderService pps) {
         OmemoStore mOmemoStore = OmemoService.getInstance().getOmemoStoreBackend();
 
         BareJid userJid;
@@ -76,7 +74,7 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
             userJid = mConnection.getUser().asBareJid();
         }
         else {
-            userJid = pps.getAccountID().getBareJid();
+            userJid = pps.getAccountID().getEntityBareJid();
         }
 
         int defaultDeviceId;
@@ -100,28 +98,25 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
     }
 
     /**
-     * The method should only be called upon user authentication
-     * Init smack reply timeout for omemo prekey publish whose reply takes 7(normal) to 11s(bosh)
-     * on Note3 & Note10 with remote server; but takes only 2s on aTalk server
+     * The method should only be called upon user authentication.
+     * Init smack reply timeout for omemo preKey publish whose reply takes 7(normal) to 11s(bosh)
+     * on Note10 with remote server; but takes only 2s on aTalk server.
      */
-    public void initOmemoDevice()
-    {
+    public void initOmemoDevice() {
         isOmemoInitSuccessful = false;
         mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_OMEMO_INIT_TIMEOUT);
         mOmemoManager.initializeAsync(this);
     }
 
     @Override
-    public void initializationFinished(OmemoManager manager)
-    {
+    public void initializationFinished(OmemoManager manager) {
         isOmemoInitSuccessful = true;
         mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         Timber.d("Initialize OmemoManager successful for %s", manager.getOwnDevice());
     }
 
     @Override
-    public void initializationFailed(Exception cause)
-    {
+    public void initializationFailed(Exception cause) {
         isOmemoInitSuccessful = false;
         mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
 

@@ -92,6 +92,18 @@
     <string name="menu_settings">设置</string>
     <string name="title_activity_activation_view">激活</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">要封禁“%1$s”向您传送讯息吗？</string>
+    <string name="contact_unblock_text">要解除封禁“%1$s”并允许他们向您传送讯息吗？</string>
+    <string name="domain_blocking">适用于来自“%1$s”的所有联系人</string>
+    <string name="contact_block">封禁联系人</string>
+    <string name="contact_unblock">封禁联系人</string>
+    <string name="contact_blocked">联系人已被封禁</string>
+    <string name="block">封禁</string>
+    <string name="unblock">解除封禁</string>
+    <string name="block_list_title">联系人封禁列表</string>
+    <string name="block_list_show">显示封禁列表</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">接受</string>
     <string name="service_gui_ACCOUNT">账号</string>

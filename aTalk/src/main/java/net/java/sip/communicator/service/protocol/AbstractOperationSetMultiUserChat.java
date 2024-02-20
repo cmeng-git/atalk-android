@@ -67,7 +67,7 @@ public abstract class AbstractOperationSetMultiUserChat implements OperationSetM
     }
 
     /*
-     * Implements OperationSetMultiUserChat#addPresenceListener( LocalUserChatRoomPresenceListener).
+     * Implements OperationSetMultiUserChat#addPresenceListener(LocalUserChatRoomPresenceListener).
      */
     public void addPresenceListener(LocalUserChatRoomPresenceListener listener)
     {

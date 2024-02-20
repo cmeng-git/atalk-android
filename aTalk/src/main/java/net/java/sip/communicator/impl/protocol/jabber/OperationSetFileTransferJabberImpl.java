@@ -137,7 +137,7 @@ public class OperationSetFileTransferJabberImpl implements OperationSetFileTrans
         assertConnected();
 
         if (file.length() > getMaximumFileLength())
-            throw new IllegalArgumentException(aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, mPPS.getOurJID()));
+            throw new IllegalArgumentException(aTalkApp.getResString(R.string.service_gui_FILE_TOO_BIG, mPPS.getOurJid()));
 
         // null if the contact is offline, or file transfer is not supported by this contact;
         // Then throws OperationNotSupportedException for caller to try alternative method

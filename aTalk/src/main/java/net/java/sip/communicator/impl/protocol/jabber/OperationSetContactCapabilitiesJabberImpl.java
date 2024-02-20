@@ -320,6 +320,7 @@ public class OperationSetContactCapabilitiesJabberImpl
      *
      * @param evt the <code>ContactPresenceStatusChangeEvent</code> that notified us
      */
+    @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         if (evt.getNewStatus().getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
             userCapsNodeNotify(evt.getJid(), false);

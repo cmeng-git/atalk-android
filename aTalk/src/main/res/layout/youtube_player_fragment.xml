@@ -6,7 +6,7 @@
     android:background="@color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".plugin.mediaplayer.YoutubePlayerFragment" >
+    tools:context="org.atalk.android.plugin.mediaplayer.YoutubePlayerFragment" >
 
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtube_player_view"

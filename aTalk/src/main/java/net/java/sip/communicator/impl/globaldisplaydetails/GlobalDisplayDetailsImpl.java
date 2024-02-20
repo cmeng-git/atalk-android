@@ -145,7 +145,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
             pps = ((List<ProtocolProviderService>) providers).get(0);
         }
 
-        BareJid userJid = pps.getAccountID().getBareJid();
+        BareJid userJid = pps.getAccountID().getEntityBareJid();
         return AvatarManager.getAvatarImageByJid(userJid);
     }
 
@@ -240,7 +240,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         }
 
         // AvatarCacheUtils.cacheAvatar(event.getSourceProvider(), globalAvatar);
-        BareJid userId = event.getSourceProvider().getAccountID().getBareJid();
+        BareJid userId = event.getSourceProvider().getAccountID().getEntityBareJid();
         AvatarManager.addAvatarImage(userId, globalAvatar, false);
         fireGlobalAvatarEvent(globalAvatar);
     }
@@ -306,7 +306,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         @Override
         public void run() {
             // globalAvatar = AvatarCacheUtils.getCachedAvatar(protocolProvider);
-            BareJid userId = protocolProvider.getAccountID().getBareJid();
+            BareJid userId = protocolProvider.getAccountID().getEntityBareJid();
             globalAvatar = AvatarManager.getAvatarImageByJid(userId);
             if ((isUpdate) || (globalAvatar == null)) {
                 byte[] accountImage = AccountInfoUtils.getImage(accountInfoOpSet);

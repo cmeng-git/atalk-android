@@ -2,8 +2,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Message settings -->
-    <PreferenceCategory
-        android:title="@string/pref_cat_MESSAGING_SECURITY_OPTIONS">
+    <PreferenceCategory android:title="@string/pref_cat_MESSAGING_SECURITY_OPTIONS">
 
         <CheckBoxPreference
             android:key="pref.key.crypto.enable"
@@ -12,36 +11,42 @@
             android:title="@string/service_gui_settings_CRYPTO_ENABLE_TITLE" />
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_OMEMO_SECURITY_SETTINGS">
+    <PreferenceCategory android:title="@string/pref_cat_OMEMO_SECURITY_SETTINGS">
 
         <CheckBoxPreference
             android:key="pref.key.omemo.key.blind.trust"
             android:summary="@string/pref_omemo_blind_trust_before_verification_summary"
-            android:title="@string/pref_omemo_blind_trust_before_verification"/>
+            android:title="@string/pref_omemo_blind_trust_before_verification" />
         <PreferenceScreen
             android:summary="@string/pref_omemo_regenerate_identities_summary"
             android:title="@string/pref_omemo_regenerate_identities_title">
-            <intent android:action=".crypto.omemo.OmemoRegenerateDialog"/>
+            <intent
+                android:action="org.atalk.crypto.omemo.OmemoRegenerateDialog"
+                android:targetPackage="org.atalk.android" />
         </PreferenceScreen>
         <PreferenceScreen
             android:summary="@string/pref_omemo_purge_devices_summary"
             android:title="@string/pref_omemo_purge_devices_title">
-            <intent android:action=".crypto.omemo.OmemoDeviceDeleteDialog"/>
+            <intent
+                android:action="org.atalk.crypto.omemo.OmemoDeviceDeleteDialog"
+                android:targetPackage="org.atalk.android" />
         </PreferenceScreen>
     </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="@string/pref_cat_KEY_FINGERPRINT_SECURITY">
+    <PreferenceCategory android:title="@string/pref_cat_KEY_FINGERPRINT_SECURITY">
         <PreferenceScreen
             android:summary="@string/service_gui_settings_CRYPTO_PRIV_KEYS_SUMMARY"
             android:title="@string/service_gui_settings_CRYPTO_PRIV_KEYS_TITLE">
-            <intent android:action=".crypto.CryptoPrivateKeys"/>
+            <intent
+                android:action="org.atalk.crypto.CryptoPrivateKeys"
+                android:targetPackage="org.atalk.android" />
         </PreferenceScreen>
         <PreferenceScreen
             android:summary="@string/service_gui_settings_CRYPTO_FINGERPRINTS_SUMMARY"
             android:title="@string/service_gui_settings_CRYPTO_FINGERPRINTS_TITLE">
-            <intent android:action=".crypto.CryptoDeviceFingerPrints"/>
+            <intent
+                android:action="org.atalk.crypto.CryptoDeviceFingerPrints"
+                android:targetPackage="org.atalk.android" />
         </PreferenceScreen>
 
     </PreferenceCategory>

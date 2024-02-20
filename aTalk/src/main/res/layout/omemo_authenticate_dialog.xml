@@ -12,7 +12,6 @@
         android:text="@string/omemo_authbuddydialog_LOCAL_FINGERPRINT" />
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/between_padding"

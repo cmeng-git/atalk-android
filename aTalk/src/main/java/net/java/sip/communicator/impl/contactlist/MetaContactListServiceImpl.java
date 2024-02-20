@@ -2254,6 +2254,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      *
      * @param evt the ContactPresenceStatusChangeEvent describing the status change.
      */
+    @Override
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt)
     {
         MetaContactImpl metaContactImpl = (MetaContactImpl) findMetaContactByContact(evt.getSourceContact());

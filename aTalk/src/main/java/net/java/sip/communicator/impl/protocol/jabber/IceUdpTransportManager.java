@@ -206,7 +206,7 @@ public class IceUdpTransportManager extends TransportManagerJabberImpl implement
             }
 
             // the default server is supposed to use the same user name and password as the account itself.
-            String username = accID.getBareJid().toString();
+            String username = accID.getEntityBareJid().toString();
             String password = JabberActivator.getProtocolProviderFactory().loadPassword(accID);
             UserCredentials credentials = provider.getUserCredentials();
 

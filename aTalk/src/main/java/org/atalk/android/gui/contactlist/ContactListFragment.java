@@ -26,6 +26,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.List;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Chat;
@@ -34,6 +36,7 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations;
+import net.java.sip.communicator.service.protocol.OperationSetExtendedAuthorizations.SubscriptionStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
@@ -57,10 +60,10 @@ import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smackx.blocking.BlockingCommandManager;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -70,8 +73,7 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactListFragment extends OSGiFragment implements OnGroupClickListener
-{
+public class ContactListFragment extends OSGiFragment implements OnGroupClickListener {
     /**
      * Search options menu items.
      */
@@ -127,8 +129,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Creates new instance of <code>ContactListFragment</code>.
      */
-    public ContactListFragment()
-    {
+    public ContactListFragment() {
         super();
         // This fragment will create options menu.
         setHasOptionsMenu(true);
@@ -138,8 +139,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onAttach(@NonNull Context context)
-    {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mContext = context;
     }
@@ -148,8 +148,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (AndroidGUIActivator.bundleContext == null) {
             return null;
         }
@@ -166,8 +165,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Initialize the contact list adapter;
      */
-    private void initContactListAdapter()
-    {
+    private void initContactListAdapter() {
         contactListView.setAdapter(getContactListAdapter());
 
         // Attach contact groups expand memory
@@ -193,8 +191,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         // Invalidate view to update read counter and expand groups (collapsed when access settings)
@@ -208,8 +205,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * {@inheritDoc}
      */
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         // Unbind search listener
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
@@ -245,8 +241,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * @param menu the options menu
      */
     @Override
-    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater)
-    {
+    public void onCreateOptionsMenu(@NotNull Menu menu, @NotNull MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
 
         // Get the SearchView MenuItem
@@ -254,25 +249,21 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         if (mSearchItem == null)
             return;
 
-        mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener()
-        {
+        mSearchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
-            public boolean onMenuItemActionCollapse(MenuItem item)
-            {
+            public boolean onMenuItemActionCollapse(MenuItem item) {
                 filterContactList("");
                 return true; // Return true to collapse action view
             }
 
-            public boolean onMenuItemActionExpand(MenuItem item)
-            {
+            public boolean onMenuItemActionExpand(MenuItem item) {
                 return true; // Return true to expand action view
             }
         });
         bindSearchListener();
     }
 
-    private void bindSearchListener()
-    {
+    private void bindSearchListener() {
         if (mSearchItem != null) {
             SearchView searchView = (SearchView) mSearchItem.getActionView();
             SearchViewListener listener = new SearchViewListener();
@@ -286,8 +277,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @return MetaContact list showing the media buttons
      */
-    public MetaContactListAdapter getContactListAdapter()
-    {
+    public MetaContactListAdapter getContactListAdapter() {
         if (contactListAdapter == null) {
             contactListAdapter = new MetaContactListAdapter(this, true);
             contactListAdapter.initModelData();
@@ -298,8 +288,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         return contactListAdapter;
     }
 
-    private QueryContactListAdapter getSourcesAdapter()
-    {
+    private QueryContactListAdapter getSourcesAdapter() {
         if (sourcesAdapter == null) {
             sourcesAdapter = new QueryContactListAdapter(this, getContactListAdapter());
             sourcesAdapter.initModelData();
@@ -307,16 +296,14 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         return sourcesAdapter;
     }
 
-    private void disposeSourcesAdapter()
-    {
+    private void disposeSourcesAdapter() {
         if (sourcesAdapter != null) {
             sourcesAdapter.dispose();
         }
         sourcesAdapter = null;
     }
 
-    public void showPopUpMenuGroup(View groupView, MetaContactGroup group)
-    {
+    public void showPopUpMenuGroup(View groupView, MetaContactGroup group) {
         // Inflate chatRoom list popup menu
         PopupMenu popup = new PopupMenu(mContext, groupView);
         Menu menu = popup.getMenu();
@@ -335,8 +322,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * @param contactView click view.
      * @param metaContact an instance of MetaContact.
      */
-    public void showPopupMenuContact(View contactView, MetaContact metaContact)
-    {
+    public void showPopupMenuContact(View contactView, MetaContact metaContact) {
         // Inflate contact list popup menu
         PopupMenu popup = new PopupMenu(mContext, contactView);
         Menu menu = popup.getMenu();
@@ -367,8 +353,8 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
 
         // update TTS enable option item title for the contact only if not DomainJid
         mContactTtsEnable = menu.findItem(R.id.contact_tts_enable);
-        Jid jid = contact.getJid();
-        if ((jid == null) || jid instanceof DomainJid) {
+        Jid contactJid = contact.getJid();
+        if ((contactJid == null) || contactJid instanceof DomainJid) {
             mContactTtsEnable.setVisible(false);
         }
         else {
@@ -383,18 +369,42 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
             Timber.w("No protocol provider found for: %s", contact);
             return;
         }
+        boolean isOnline = pps.isRegistered();
+
+        MenuItem miContactBlock = menu.findItem(R.id.contact_blocking);
+        if (isOnline) {
+            XMPPConnection connection = pps.getConnection();
+            boolean isParent = (contactJid != null) && contactJid.isParentOf(connection.getUser());
+
+            // Do not allow user to block himself
+            miContactBlock.setEnabled(!isParent);
+            miContactBlock.setTitle(contact.isContactBlock() ? R.string.contact_unblock : R.string.contact_block);
+
+            try {
+                boolean isSupported = BlockingCommandManager.getInstanceFor(connection).isSupportedByServer();
+                miContactBlock.setVisible(isSupported);
+
+            } catch (Exception e) {
+                Timber.w("Blocking Command: %s", e.getMessage());
+            }
+        }
+        else {
+            miContactBlock.setVisible(false);
+        }
 
         // Cannot send unsubscribed or move group if user in not online
-        boolean userRegistered = pps.isRegistered();
-        menu.findItem(R.id.remove_contact).setVisible(userRegistered);
-        menu.findItem(R.id.move_contact).setVisible(userRegistered);
+        menu.findItem(R.id.remove_contact).setVisible(isOnline);
+        menu.findItem(R.id.move_contact).setVisible(isOnline);
+        menu.findItem(R.id.contact_info).setVisible(isOnline);
 
         OperationSetExtendedAuthorizations authOpSet = pps.getOperationSet(OperationSetExtendedAuthorizations.class);
-        boolean reRequestVisible = (authOpSet != null)
+        boolean reRequestVisible = isOnline
+                && (authOpSet != null)
                 && authOpSet.getSubscriptionStatus(contact) != null
-                && !authOpSet.getSubscriptionStatus(contact).equals(
-                OperationSetExtendedAuthorizations.SubscriptionStatus.Subscribed);
+                && !authOpSet.getSubscriptionStatus(contact).equals(SubscriptionStatus.Subscribed);
         menu.findItem(R.id.re_request_auth).setVisible(reRequestVisible);
+
+        // Show content menu
         popup.show();
     }
 
@@ -402,18 +412,17 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * Interface responsible for receiving menu item click events if the items
      * themselves do not have individual item click listeners.
      */
-    private class PopupMenuItemClick implements OnMenuItemClickListener
-    {
+    private class PopupMenuItemClick implements OnMenuItemClickListener {
         /**
          * This method will be invoked when a menu item is clicked if the item
          * itself did not already handle the event.
          *
          * @param item the menu item that was clicked
+         *
          * @return {@code true} if the event was handled, {@code false} otherwise
          */
         @Override
-        public boolean onMenuItemClick(MenuItem item)
-        {
+        public boolean onMenuItemClick(MenuItem item) {
             FragmentTransaction ft;
             ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedContact);
 
@@ -457,6 +466,13 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     ft.addToBackStack(null);
                     DialogFragment renameFragment = ContactRenameDialog.getInstance(mClickedContact);
                     renameFragment.show(ft, "renameDialog");
+                    return true;
+
+                case R.id.contact_blocking:
+                    if (mClickedContact != null) {
+                        Contact contact = mClickedContact.getDefaultContact();
+                        EntityListHelper.setEntityBlockState(mContext, contact, !contact.isContactBlock());
+                    }
                     return true;
 
                 case R.id.remove_contact:
@@ -504,8 +520,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param closedChat closed <code>ChatPanel</code>.
      */
-    public void onCloseChat(ChatPanel closedChat)
-    {
+    public void onCloseChat(ChatPanel closedChat) {
         ChatSessionManager.removeActiveChat(closedChat);
         if (contactListAdapter != null)
             contactListAdapter.notifyDataSetChanged();
@@ -514,8 +529,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Method fired when all chats are being closed.
      */
-    public void onCloseAllChats()
-    {
+    public void onCloseAllChats() {
         ChatSessionManager.removeAllActiveChats();
         if (contactListAdapter != null)
             contactListAdapter.notifyDataSetChanged();
@@ -526,18 +540,15 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param contact the contact for which we request authorization
      */
-    private void requestAuthorization(final Contact contact)
-    {
+    private void requestAuthorization(final Contact contact) {
         final OperationSetExtendedAuthorizations authOpSet
                 = contact.getProtocolProvider().getOperationSet(OperationSetExtendedAuthorizations.class);
         if (authOpSet == null)
             return;
 
-        new Thread()
-        {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 AndroidLoginRenderer loginRenderer = AndroidGUIActivator.getLoginRenderer();
                 AuthorizationRequest request = (loginRenderer == null) ?
                         null : loginRenderer.getAuthorizationHandler().createAuthorizationRequest(contact);
@@ -560,8 +571,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param metaContact the <code>Contact</code> for which info to be opened.
      */
-    private void startContactInfoActivity(MetaContact metaContact)
-    {
+    private void startContactInfoActivity(MetaContact metaContact) {
         Intent statusIntent = new Intent(mContext, ContactInfoActivity.class);
         statusIntent.putExtra(ContactInfoActivity.INTENT_CONTACT_ID, metaContact.getDisplayName());
         startActivity(statusIntent);
@@ -572,8 +582,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @return the contact list view
      */
-    public ExpandableListView getContactListView()
-    {
+    public ExpandableListView getContactListView() {
         return contactListView;
     }
 
@@ -584,10 +593,10 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * @param v the view
      * @param groupPosition the position of the group
      * @param id the identifier
+     *
      * @return <code>true</code> if the group click action has been performed
      */
-    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id)
-    {
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
         if (contactListView.isGroupExpanded(groupPosition))
             contactListView.collapseGroup(groupPosition);
         else {
@@ -600,8 +609,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
      */
-    public void startChat(MetaContact metaContact)
-    {
+    public void startChat(MetaContact metaContact) {
         if (metaContact.getDefaultContact() == null) {
             aTalkApp.showToastMessage(R.string.service_gui_CONTACT_INVALID, metaContact.getDisplayName());
         }
@@ -621,8 +629,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param descriptor <code>MetaContact</code> for which chat activity will be started.
      */
-    private void startChatActivity(Object descriptor)
-    {
+    private void startChatActivity(Object descriptor) {
         Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
 
         if (chatIntent != null) {
@@ -638,8 +645,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         }
     }
 
-    public MetaContact getClickedContact()
-    {
+    public MetaContact getClickedContact() {
         return mClickedContact;
     }
 
@@ -648,8 +654,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param query the query string that will be used for filtering contacts.
      */
-    private void filterContactList(String query)
-    {
+    private void filterContactList(String query) {
         if (StringUtils.isEmpty(query)) {
             // Cancel any pending queries
             disposeSourcesAdapter();
@@ -683,25 +688,21 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
     /**
      * Class used to implement <code>SearchView</code> listeners for compatibility purposes.
      */
-    class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener
-    {
+    class SearchViewListener implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
         @Override
-        public boolean onQueryTextSubmit(String query)
-        {
+        public boolean onQueryTextSubmit(String query) {
             filterContactList(query);
             return true;
         }
 
         @Override
-        public boolean onQueryTextChange(String query)
-        {
+        public boolean onQueryTextChange(String query) {
             filterContactList(query);
             return true;
         }
 
         @Override
-        public boolean onClose()
-        {
+        public boolean onClose() {
             filterContactList("");
             return true;
         }
@@ -713,8 +714,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      *
      * @param metaContact The MetaContact to be updated
      */
-    public void updateUnreadCount(final MetaContact metaContact)
-    {
+    public void updateUnreadCount(final MetaContact metaContact) {
         runOnUiThread(() -> {
             if ((metaContact != null) && (contactListAdapter != null)) {
                 int unreadCount = metaContact.getUnreadCount();

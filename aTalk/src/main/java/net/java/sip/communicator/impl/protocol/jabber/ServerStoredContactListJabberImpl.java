@@ -707,8 +707,9 @@ public class ServerStoredContactListJabberImpl
             throws OperationFailedException
     {
         // Allow direct removal of any VolatileContactJabberImpl if it is not DomainBareJid
-        if (contactToRemove.getJid() instanceof DomainBareJid)
-            return;
+		// Allow removal of DomainBareJid contact 
+        // if (contactToRemove.getJid() instanceof DomainBareJid)
+        //    return;
 
         // aTalk implementation is ContactGroup.VOLATILE_GROUP is equivalent to "VolatileContactJabberImpl"
         if ((contactToRemove instanceof VolatileContactJabberImpl) || ((contactToRemove.getParentContactGroup() != null)
@@ -794,7 +795,8 @@ public class ServerStoredContactListJabberImpl
         xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_30);
 
         try {
-            mRoster.createItemAndRequestSubscription(contact.getSourceEntry().getJid(), contact.getDisplayName(),
+            // Do not use getSourceEntry() to getJid(); may be null if contact is not in roster.
+            mRoster.createItemAndRequestSubscription(contact.getJid().asBareJid(), contact.getDisplayName(),
                     new String[]{newParent.getGroupName()});
             newParent.addContact(contact);
         } catch (XMPPException ex) {

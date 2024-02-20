@@ -155,7 +155,7 @@ public class AndroidCallUtil {
             return;
         }
         // cmeng (20210319: Seems to have no chance to show; and it causes waitForDialogOpened() (10s) error often, so remove it
-//        final long dialogId = ProgressDialogFragment.showProgressDialog(
+//        final long dialogId = ProgressDialog.showProgressDialog(
 //                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING),
 //                aTalkApp.getResString(R.string.service_gui_CALL_OUTGOING_MSG, callee));
 

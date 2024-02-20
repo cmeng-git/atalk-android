@@ -141,8 +141,7 @@ public class AndroidImageUtil
      * @param resId bitmap resource id.
      * @param reqWidth requested width.
      * @param reqHeight requested height.
-     * @return <code>Bitmap</code> identified by given <code>resId</code> scaled to requested width and
-     * height.
+     * @return <code>Bitmap</code> identified by given <code>resId</code> scaled to requested width and height.
      */
     public static Bitmap scaledBitmapFromResource(Resources res, int resId, int reqWidth, int reqHeight)
     {

@@ -14,7 +14,7 @@
         android:indeterminate="true" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/messageText"
         style="@style/MediumFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

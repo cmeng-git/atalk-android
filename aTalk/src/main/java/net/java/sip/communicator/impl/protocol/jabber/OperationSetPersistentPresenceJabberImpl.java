@@ -5,6 +5,20 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetPersistentPresence;
 import net.java.sip.communicator.service.protocol.AuthorizationHandler;
 import net.java.sip.communicator.service.protocol.AuthorizationRequest;
@@ -22,6 +36,7 @@ import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.RegistrationState;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.event.ContactBlockingStatusListener;
 import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
@@ -30,6 +45,7 @@ import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListene
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
+import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.impl.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -51,9 +67,14 @@ import org.jivesoftware.smackx.avatar.useravatar.listener.UserAvatarListener;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
+import org.jivesoftware.smackx.blocking.AllJidsUnblockedListener;
+import org.jivesoftware.smackx.blocking.BlockingCommandManager;
+import org.jivesoftware.smackx.blocking.JidsBlockedListener;
+import org.jivesoftware.smackx.blocking.JidsUnblockedListener;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.FullJid;
@@ -61,17 +82,6 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import timber.log.Timber;
 
@@ -87,7 +97,8 @@ import timber.log.Timber;
  */
 public class OperationSetPersistentPresenceJabberImpl
         extends AbstractOperationSetPersistentPresence<ProtocolProviderServiceJabberImpl>
-        implements VCardAvatarListener, UserAvatarListener, SubscribeListener, PresenceEventListener {
+        implements VCardAvatarListener, UserAvatarListener, SubscribeListener, PresenceEventListener,
+        JidsBlockedListener, JidsUnblockedListener, AllJidsUnblockedListener {
     /**
      * Contains our current status message. Note that this field would only be changed once the
      * server has confirmed the new status message and not immediately upon setting a new one..
@@ -146,6 +157,8 @@ public class OperationSetPersistentPresenceJabberImpl
      * Manages statuses and different user resources.
      */
     private ContactChangesListener mContactChangesListener = null;
+
+    private BlockingCommandManager blockingCommandManager = null;
 
     /**
      * Manages the presence extension to advertise the SHA-1 hash of this account avatar as
@@ -340,12 +353,12 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Creates and returns a unresolved contact group from the specified <code>address</code> and <code>persistentData</code>.
      *
-     * @param groupUID an identifier, returned by ContactGroup's getGroupUID, that the protocol provider may
-     * use in order to create the group.
-     * @param persistentData a String returned ContactGroups's getPersistentData() method during a previous run and
-     * that has been persistently stored locally.
-     * @param parentGroup the group under which the new group is to be created or null if this is group directly
-     * underneath the root.
+     * @param groupUID an identifier, returned by ContactGroup's getGroupUID,
+     * that the protocol provider may use in order to create the group.
+     * @param persistentData a String returned ContactGroup's getPersistentData() method
+     * during a previous run and that has been persistently stored locally.
+     * @param parentGroup the group under which the new group is to be created
+     * or null if this is group directly underneath the root.
      *
      * @return the unresolved <code>ContactGroup</code> created from the specified <code>uid</code> and <code>persistentData</code>
      */
@@ -393,7 +406,7 @@ public class OperationSetPersistentPresenceJabberImpl
         if (localContact != null)
             return localContact;
 
-        final FullJid ourJID = mPPS.getOurJID();
+        final FullJid ourJID = mPPS.getOurJid();
         localContact = new ContactJabberImpl(null, ssContactList, false, true);
         localContact.setLocal(true);
         localContact.updatePresenceStatus(currentStatus);
@@ -561,7 +574,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 Timber.e(e, "Could not send new presence status");
             }
             if (localContact != null)
-                updateResource(localContact, mPPS.getOurJID(), currentPresence);
+                updateResource(localContact, mPPS.getOurJid(), currentPresence);
         }
         fireProviderStatusChangeEvent(currentStatus, status);
 
@@ -909,6 +922,24 @@ public class OperationSetPersistentPresenceJabberImpl
                     userAvatarManager.addAvatarListener(OperationSetPersistentPresenceJabberImpl.this);
                 }
 
+                // Add Blocking Command Handler
+                if (blockingCommandManager == null) {
+                    blockingCommandManager = BlockingCommandManager.getInstanceFor(xmppConnection);
+                    try {
+                        if (blockingCommandManager.isSupportedByServer()) {
+                            blockingCommandManager.addJidsBlockedListener(OperationSetPersistentPresenceJabberImpl.this);
+                            blockingCommandManager.addJidsUnblockedListener(OperationSetPersistentPresenceJabberImpl.this);
+                            blockingCommandManager.addAllJidsUnblockedListener(OperationSetPersistentPresenceJabberImpl.this);
+                            initContactBlockStatus(blockingCommandManager);
+                        }
+                        else {
+                            blockingCommandManager = null;
+                        }
+                    } catch (Exception e) {
+                        Timber.w("Add Blocking Command Listeners failed: %s", e.getMessage());
+                    }
+                }
+
                 // Do the following if no from resumed (do once only)
                 if (evt.getReasonCode() != RegistrationStateChangeEvent.REASON_RESUMED) {
                     /*
@@ -952,13 +983,13 @@ public class OperationSetPersistentPresenceJabberImpl
                 ssContactList.cleanup();
 
                 if (xmppConnection != null) {
-                    // Remove all subscription listeners upon de-registration
+                    // Remove all subscription listeners upon de-registration; seems never get executed.
+                    Timber.d("Remove SubscribeListener, PresenceEventListener and BlockedListener? %s", xmppConnection != null);
+
                     if (mRoster != null) {
                         mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
                         mRoster.removePresenceEventListener(OperationSetPersistentPresenceJabberImpl.this);
                         mRoster.removeRosterListener(mContactChangesListener);
-                        mRoster = null;
-                        Timber.i("SubscribeListener and PresenceEventListener removed");
                     }
 
                     // vCardAvatarManager can be null for unRegistered account
@@ -966,11 +997,20 @@ public class OperationSetPersistentPresenceJabberImpl
                         vCardAvatarManager.removeVCardAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
                         userAvatarManager.removeAvatarListener(OperationSetPersistentPresenceJabberImpl.this);
                     }
+
+                    if (blockingCommandManager != null) {
+                        blockingCommandManager.removeJidsBlockedListener(OperationSetPersistentPresenceJabberImpl.this);
+                        blockingCommandManager.removeAllJidsUnblockedListener(OperationSetPersistentPresenceJabberImpl.this);
+                    }
                 }
+
+                // Must reset all Managers on protocol UNREGISTERED; so to re-register on protocol REGISTERED with new connection.
                 handleSubscribeEvent = false;
                 mContactChangesListener = null;
+                mRoster = null;
                 vCardAvatarManager = null;
                 userAvatarManager = null;
+                blockingCommandManager = null;
             }
         }
     }
@@ -1136,7 +1176,7 @@ public class OperationSetPersistentPresenceJabberImpl
         }
 
         contact.updatePresenceStatus(newStatus);
-        Timber.d("Dispatching contact status update for %s: %s", jid, newStatus.getStatusName());
+        // Timber.d("Dispatching contact status change for %s: %s", jid, newStatus.getStatusName());
         fireContactPresenceStatusChangeEvent(contact, jid, contact.getParentContactGroup(),
                 oldStatus, newStatus, resourceUpdated);
     }
@@ -1242,8 +1282,6 @@ public class OperationSetPersistentPresenceJabberImpl
                         }
                     }
                 }
-                Timber.d("Smack presence update for: %s - %s", presence.getFrom(), presence.getType());
-
                 // all contact statuses that are received from all its resources ordered by priority (higher first)
                 // and those with equal priorities order with the one that is most connected as first
                 TreeSet<Presence> userStats = statuses.get(userJid);
@@ -1278,6 +1316,7 @@ public class OperationSetPersistentPresenceJabberImpl
                             iter.remove();
                     }
                 }
+
                 if (!jabberStatusToPresenceStatus(presence, mPPS)
                         .equals(mPPS.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE))) {
                     userStats.add(presence);
@@ -1304,6 +1343,8 @@ public class OperationSetPersistentPresenceJabberImpl
 
                 // statuses may be the same and only change in status message
                 sourceContact.setStatusMessage(currentPresence.getStatus());
+
+                Timber.d("Smack presence update for: %s - %s", presence.getFrom(), presence.getType());
                 updateContactStatus(sourceContact, presence.getFrom(), jabberStatusToPresenceStatus(currentPresence, mPPS));
             } catch (IllegalStateException | IllegalArgumentException ex) {
                 Timber.e(ex, "Failed changing status");
@@ -1468,7 +1509,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
         // Update resource if receive from instances of user presence and localContact is not null
         if ((localContact != null) && (address != null)) {
-            EntityFullJid ourJid = mPPS.getOurJID(); // Received NPE from FFR
+            EntityFullJid ourJid = mPPS.getOurJid(); // Received NPE from FFR
             if ((ourJid != null) && ourJid.asBareJid().isParentOf(address)) {
                 // Timber.d("Smack presence update own instance %s %s: %s", userJid, address, localContact);
                 updateResource(localContact, null, presence);
@@ -1534,6 +1575,85 @@ public class OperationSetPersistentPresenceJabberImpl
     }
     //================= End of Presence Subscription Handlers =========================
 
+    //================= BlockingCommand Handlers =========================
+    private final Set<ContactBlockingStatusListener> bcListeners = new LinkedHashSet<>();
+
+    @Override
+    public void onJidsBlocked(List<Jid> blockedJids) {
+        setContactBlockingState(blockedJids, true);
+    }
+
+    @Override
+    public void onJidsUnblocked(List<Jid> unblockedJids) {
+        setContactBlockingState(unblockedJids, false);
+    }
+
+    @Override
+    public void onAllJidsUnblocked() {
+        setAllContactsBlockingState(null, false);
+    }
+
+    public void initContactBlockStatus(BlockingCommandManager bcManager) {
+        try {
+            List<Jid> blockList = bcManager.getBlockList();
+            setContactBlockingState(blockList, true);
+        } catch (Exception e) {
+            Timber.w("initContactBlockStatus: %s", e.getMessage());
+        }
+    }
+
+    private void setContactBlockingState(List<Jid> blockingList, boolean blockState) {
+        for (Jid jid : blockingList) {
+            if (jid instanceof DomainBareJid)
+                setAllContactsBlockingState(jid, blockState);
+            else {
+                Contact contact = findContactByJid(jid);
+                if (contact != null) {
+                    contact.setContactBlock(blockState);
+                    onBcStatusChange(contact, blockState);
+                }
+            }
+        }
+    }
+
+    private void setAllContactsBlockingState(Jid domainJid, boolean blockState) {
+        MetaContactListService mclService = AndroidGUIActivator.getContactListService();
+        Iterator<MetaContact> metaContacts = mclService.findAllMetaContactsForProvider(mPPS);
+        while (metaContacts.hasNext()) {
+            MetaContact metaContact = metaContacts.next();
+            Iterator<Contact> contacts = metaContact.getContacts();
+            while (contacts.hasNext()) {
+                Contact contact = contacts.next();
+                if (domainJid == null || domainJid.isParentOf(contact.getJid())) {
+                    contact.setContactBlock(blockState);
+                    onBcStatusChange(contact, blockState);
+                }
+            }
+        }
+        Timber.d("Process Jids blocking state completed: %s => %s", blockState, domainJid);
+    }
+
+    private void onBcStatusChange(Contact contact, boolean blockState) {
+        for (ContactBlockingStatusListener bcListener : bcListeners) {
+            bcListener.contactBlockingStatusChanged(contact, blockState);
+        }
+    }
+
+    /**
+     * Adds a listener that would receive events upon changes of the provider presence status.
+     *
+     * @param listener the listener to register for changes in our PresenceStatus.
+     */
+    public void addContactBlockStatusListener(ContactBlockingStatusListener listener) {
+        bcListeners.add(listener);
+    }
+
+    public void removeContactBlockStatusListener(ContactBlockingStatusListener listener) {
+        bcListeners.remove(listener);
+    }
+
+    //================= End of BlockingCommand Handlers =========================
+
     /**
      * Runnable that resolves local contact list against the server side roster. This thread is the
      * one which will call getRoster for the first time. The thread wait until the roster
@@ -1595,7 +1715,6 @@ public class OperationSetPersistentPresenceJabberImpl
 
     /**
      * Event is fired when a contact change avatar via XEP-0153: vCard-Based Avatars protocol.
-     *
      * onAvatarChange event is triggered if a change in the VCard Avatar is detected via
      * <present/> in its update <x xmlns='vcard-temp:x:update'/><photo/> element imageHash value.
      * A new SHA-1 avatar contained in the photo tag represents a new avatar for this contact.

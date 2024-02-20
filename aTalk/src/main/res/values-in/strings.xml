@@ -93,6 +93,18 @@
     <string name="menu_settings">Pengaturan</string>
     <string name="title_activity_activation_view">Aktivasi</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">Apakah Anda ingin memblokir \'%1$s\' mengirimi Anda pesan?</string>
+    <string name="contact_unblock_text">Apakah Anda ingin membuka blokir \'%1$s\' dan mengizinkan mereka mengirimi Anda pesan?</string>
+    <string name="domain_blocking">Berlaku untuk semua kontak dari: %1$s</string>
+    <string name="contact_block">Blokir kontak</string>
+    <string name="contact_unblock">Buka blokir kontak</string>
+    <string name="contact_blocked">Kontak diblokir</string>
+    <string name="block">Memblokir</string>
+    <string name="unblock">Buka blokir</string>
+    <string name="block_list_title">Daftar blokir</string>
+    <string name="block_list_show">Tampilkan daftar blokir</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Terima</string>
     <string name="service_gui_ACCOUNT">Akun</string>

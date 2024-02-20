@@ -6,7 +6,7 @@
     android:background="@color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".plugin.mediaplayer.MediaExoPlayerFragment" >
+    tools:context="org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment" >
 
     <com.google.android.exoplayer2.ui.StyledPlayerView
         android:id="@+id/exoplayerView"

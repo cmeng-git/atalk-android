@@ -93,6 +93,18 @@
     <string name="menu_settings">Nastavenie</string>
     <string name="title_activity_activation_view">Aktivácia</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">Chceli by ste zablokovať prijímanie správ od %1$s?</string>
+    <string name="contact_unblock_text">Chceli by ste odblokovať \'%1$s\' a povoliť prijímanie správ?</string>
+    <string name="domain_blocking">Použiť na všetky kontakty z: %1$s</string>
+    <string name="contact_block">Zablokovať kontakt</string>
+    <string name="contact_unblock">Odblokovať kontakt</string>
+    <string name="contact_blocked">Kontakt zablokovaný</string>
+    <string name="block">Zablokovať</string>
+    <string name="unblock">Odblokovať</string>
+    <string name="block_list_title">Zablokovať zoznam</string>
+    <string name="block_list_show">Zobraziť zoznam blokov</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Súhlasiť</string>
     <string name="service_gui_ACCOUNT">Účet</string>

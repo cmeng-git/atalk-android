@@ -429,7 +429,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage(message.getMessageUID())
                 .ofType(Message.Type.chat)
                 .to(toJid)
-                .from(mPPS.getConnection().getUser())
+                .from(mPPS.getOurJid())
                 .setThread(threadID)
                 .addExtensions(extElements);
 

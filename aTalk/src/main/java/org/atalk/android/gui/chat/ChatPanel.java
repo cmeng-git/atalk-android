@@ -708,6 +708,10 @@ public class ChatPanel implements Chat, MessageListener {
         }
     }
 
+    public void msgCacheClear() {
+        msgCache.clear();
+    }
+
     /**
      * Implements the <code>Chat.isChatFocused</code> method. Returns TRUE if this chat is
      * the currently selected and if the chat window, where it's contained is active.

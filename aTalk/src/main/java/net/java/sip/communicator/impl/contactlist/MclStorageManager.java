@@ -55,9 +55,8 @@ import timber.log.Timber;
 /**
  * The class handles read / write operations over a  persistent copy of the meta contacts and
  * groups stored in SQLite tables i.e. metaContactGroup and childContacts.
- *
+ * <p>
  * The load / resolve strategy that we use when storing contact lists is roughly the following:
- *
  * 1) The MetaContactListService is started. <br>
  * 2) We receive an OSGI event telling us that a new ProtocolProviderService is registered or we
  * simply retrieve one that was already in the bundle <br>
@@ -824,7 +823,6 @@ public class MclStorageManager implements MetaContactListListener
     /**
      * Indicates that a protocol specific <code>Contact</code> instance has been added to the list of
      * protocol specific buddies in this <code>MetaContact</code>
-     *
      * Creates a table entry corresponding to <code>Contact</code>.
      *
      * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
@@ -979,7 +977,7 @@ public class MclStorageManager implements MetaContactListListener
     /**
      * Remove the contact in the metaContact entry from the childContacts table;
      * also the contact entry in contacts table if none found in childContacts after removal.
-     *
+     * <p>
      * Note: Both the contact chatSession and its associated chat messages are left in the DB
      * User may remove this in ChatSessionFragment when an invalid entity is selected.
      *

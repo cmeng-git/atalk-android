@@ -70,7 +70,7 @@ public class ChatRoomDestroyDialog extends OSGiFragment
      * Create chatRoom destroy dialog
      *
      * @param context the parent <code>Context</code>
-     * @param chatRoomWrapper chatRoom wrapper
+     * @param crWrapper chatRoom wrapper
      * @param cPanel the chatPanel to send message
      */
     public void show(Context context, ChatRoomWrapper crWrapper, ChatPanel cPanel)

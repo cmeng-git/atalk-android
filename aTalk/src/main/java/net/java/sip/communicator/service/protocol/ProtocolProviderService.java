@@ -8,6 +8,7 @@ package net.java.sip.communicator.service.protocol;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jxmpp.jid.EntityFullJid;
 
 import java.util.Collection;
 import java.util.List;
@@ -199,6 +200,14 @@ public interface ProtocolProviderService
      * @return the id of the account represented by this provider.
      */
     AccountID getAccountID();
+
+    /**
+     * Return the user EntityFullJid associate with this protocol provider.
+     *
+     * @return the EntityFullJid of the account represented by this provider.
+     */
+
+    EntityFullJid getOurJid();
 
     /**
      * Validates the given protocol specific contact identifier and returns an

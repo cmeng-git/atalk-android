@@ -93,6 +93,18 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_activation_view">Activation</string>
 
+    <!-- Block Command -->
+    <string name="contact_block_text">Would you like to block \'%1$s\' from sending you messages?</string>
+    <string name="contact_unblock_text">Would you like to unblock \'%1$s\' and allow them to send you messages?</string>
+    <string name="domain_blocking">Apply to all contacts from: %1$s</string>
+    <string name="contact_block">Block contact</string>
+    <string name="contact_unblock">Unblock contact</string>
+    <string name="contact_blocked">Contact blocked</string>
+    <string name="block">Block</string>
+    <string name="unblock">Unblock</string>
+    <string name="block_list_title">Block list</string>
+    <string name="block_list_show">Show block list</string>
+
     <!-- General -->
     <string name="service_gui_ACCEPT">Accept</string>
     <string name="service_gui_ACCOUNT">Account</string>

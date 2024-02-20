@@ -5,6 +5,12 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Vector;
+
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
@@ -18,12 +24,6 @@ import net.java.sip.communicator.service.protocol.event.SubscriptionMovedEvent;
 
 import org.atalk.impl.timberlog.TimberLog;
 import org.jxmpp.jid.Jid;
-
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -127,24 +127,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
      * @param jid the specific contact FullJid that has caused the event.
      * @param parentGroup the group that contains the source contact.
      * @param oldValue the status that the source contact detained before changing it.
+     * @param newValue the status defined in source.getPresenceStatus().
+     * @param isResourceChange true if event is for resource change.
      */
-    protected void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
-            PresenceStatus oldValue)
-    {
-        PresenceStatus newValue = source.getPresenceStatus();
-        if (oldValue.equals(newValue)) {
-            Timber.d("Ignored prov status change evt. old==new: %s", oldValue);
-            return;
-        }
-        fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue);
-    }
-
-    public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
-            PresenceStatus oldValue, PresenceStatus newValue)
-    {
-        this.fireContactPresenceStatusChangeEvent(source, jid, parentGroup, oldValue, newValue, false);
-    }
-
     public void fireContactPresenceStatusChangeEvent(Contact source, Jid jid, ContactGroup parentGroup,
             PresenceStatus oldValue, PresenceStatus newValue, boolean isResourceChange)
     {
@@ -155,8 +140,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         synchronized (contactPresenceStatusListeners) {
             listeners = new ArrayList<>(contactPresenceStatusListeners);
         }
-        // Timber.d("Dispatching Contact Status Change. Listeners = %s evt = %s", listeners.size(), evt);
 
+        // Timber.w("Dispatching contact status change for %s: %s => %s listeners\n%s",
+        //         jid, newValue.getStatusName(), listeners.size(), listeners);
         for (ContactPresenceStatusListener listener : listeners)
             listener.contactPresenceStatusChanged(evt);
     }
@@ -180,16 +166,6 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
         // Timber.d("Dispatching a Contact Property Change Event to %d listeners. Evt = %S", listeners.size(), evt);
         for (SubscriptionListener listener : listeners)
             listener.contactModified(evt);
-    }
-
-    /**
-     * Notifies all registered listeners of the new event.
-     *
-     * @param oldValue the presence status we were in before the change.
-     */
-    protected void fireProviderStatusChangeEvent(PresenceStatus oldValue)
-    {
-        fireProviderStatusChangeEvent(oldValue, getPresenceStatus());
     }
 
     /**
@@ -389,15 +365,12 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
     }
 
     /**
-     * Returns the protocol specific contact instance representing the local user or null if it is
-     * not supported.
+     * Returns the protocol specific contact instance representing the local user or null if it is not supported.
      *
-     * @return the Contact that the Provider implementation is communicating on behalf of or null if
-     * not supported.
+     * @return the Contact that the Provider implementation is communicating on behalf of or null if not supported.
      */
     public Contact getLocalContact()
     {
         return null;
     }
-
 }

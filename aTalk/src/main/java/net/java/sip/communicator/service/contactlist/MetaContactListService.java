@@ -25,15 +25,14 @@ import java.util.Iterator;
 /**
  * The <code>MetaContactListService</code> handles the global project contact
  * list including contacts from all implemented protocols.
- *
+ * <p>
  * An implementation of the <code>MetaContactListService</code> would take care
  * of synchronizing the local copy of the contact list with the  versions stored
  * on the various server protocols.
- *
+ * <p>
  * All modules that would for some reason like to query or modify the contact
- * list should use this service rather than accessing protocol providers
- * directly.
- *
+ * list should use this service rather than accessing protocol providers directly.
+ * <p>
  * The point of <code>MetaContact</code>s is being able to merge different
  * protocol specific contacts so that they represent a single person or identity.
  * Every protocol specific <code>Contact</code> would therefore automatically
@@ -41,18 +40,18 @@ import java.util.Iterator;
  * MetaContact may containing multiple contacts (e.g. a single person often
  * has accounts in different protocols) while a single protocol specific
  * Contact may only be assigned to a exactly one MetaContact.
- *
+ * <p>
  * Once created a MetaContact may be updated to contain multiple protocol
  * specific contacts. These protocol specific contacts may also be removed
  * away from a MetaContact. Whenever a MetaContact remains empty (i.e. all of
  * its protocol specific contacts are removed) it is automatically deleted.
- *
+ * <p>
  * Note that for most of the methods defined by this interface, it is likely
  * that implementations require one or more network operations to complete
  * before returning. It is therefore strongly advised not to call these methods
  * in event dispatching threads (watch out UI implementors ;) ) as this may lead
  * to unpleasant user experience.
- *
+ * <p>
  * The MetaContactListService also defines a property named:<br>
  * <code>net.java.sip.communicator.service.contactlist.PROVIDER_MASK</code><br>
  * When this property is set, implementations of the MetaContactListService
@@ -61,7 +60,6 @@ import java.util.Iterator;
  * bundles could make sure that a tested meta contact list implementation would
  * only load their mocking protocol provider implementations during the test
  * run.
- *
  *
  * @author Emil Ivov
  * @author Eng Chong Meng
@@ -259,7 +257,7 @@ public interface MetaContactListService
      * contact. Depending on implementations the method may sometimes need
      * time to complete as it may be necessary for an underlying protocol to
      * wait for a server to acknowledge addition of the contact.
-     *
+     * <p>
      * If the specified parent MetaContactGroup did not have a corresponding
      * group on the protocol server, it will be created before the contact itself.
      *
@@ -322,7 +320,6 @@ public interface MetaContactListService
      * server stored groups will be created on the fly, whenever real protocol
      * specific contacts are added to the group if the protocol lying behind them supports that.
      *
-     *
      * @param parentGroup the <code>MetaContactGroup</code> that should be the parent of the newly created group.
      * @param groupName the name of the <code>MetaContactGroup</code> to create.
      * @return the newly created <code>MetaContactGroup</code>
@@ -335,7 +332,6 @@ public interface MetaContactListService
      * Renames the specified <code>MetaContactGroup</code> as indicated by the <code>newName</code> param.
      * The operation would only affect the local meta group and would not
      * "touch" any encapsulated protocol specific group.
-     *
      *
      * @param group the <code>MetaContactGroup</code> to rename.
      * @param newGroupName the new name of the <code>MetaContactGroup</code> to rename.

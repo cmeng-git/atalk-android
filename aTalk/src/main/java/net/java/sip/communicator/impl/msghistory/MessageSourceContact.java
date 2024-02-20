@@ -484,9 +484,7 @@ public class MessageSourceContact extends DataObject
         if (this.contact == null)
             return;
 
-        MetaContact metaContact = MessageHistoryActivator.getContactListService()
-                .findMetaContactByContact(contact);
-
+        MetaContact metaContact = MessageHistoryActivator.getContactListService().findMetaContactByContact(contact);
         if (metaContact == null)
             return;
 

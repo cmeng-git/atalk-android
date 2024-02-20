@@ -1177,6 +1177,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
             if (deletedUUIDs == null) {
                 messages.clear();
                 msgUuid2Idx.clear();
+                chatPanel.msgCacheClear();
             }
             else {
                 // int msgSize = messages.size();
@@ -1759,6 +1760,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                             // Show ContactList UI for user selection if groupChat contact is anonymous.
                             Intent intent = new Intent(mContext, aTalk.class);
                             intent.setAction(Intent.ACTION_SENDTO);
+                            // intent.setPackage(mChatActivity.getPackageName());
                             startActivity(intent);
                         }
                         break;

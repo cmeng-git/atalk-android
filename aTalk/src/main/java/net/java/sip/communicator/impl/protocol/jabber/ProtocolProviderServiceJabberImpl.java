@@ -1148,7 +1148,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
                     config.setSslContextFactory(sslContextFactory);
                     config.setCustomX509TrustManager(sslTrustManager);
-                    config.setAuthzid(mAccountID.getBareJid().asEntityBareJidIfPossible());
+                    config.setAuthzid(mAccountID.getEntityBareJid());
 
                 } catch (GeneralSecurityException e) {
                     Timber.e(e, "Error creating custom trust manager");
@@ -1963,7 +1963,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     /**
      * Defined all the entity capabilities for the EntityCapsManager to advertise in
      * disco#info query from other entities. Some features support are user selectable
-     *
      * Note: Do not need to mention if there are already included in Smack Library and have been activated.
      */
     private void addSupportedCapsFeatures() {
@@ -2953,14 +2952,14 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     }
 
     /**
-     * Return the EntityFullJid associate with this protocol provider.
-     * <p>
-     * Build our own EntityJid if not connected. May not be full compliant - For explanation
+     * Return the user EntityFullJid associate with this protocol provider.
+     * Build our own EntityJid if user is offline. May not be fully compliant
      *
      * @return the Jabber EntityFullJid
      * @see AbstractXMPPConnection #user
      */
-    public EntityFullJid getOurJID() {
+    @Override
+    public EntityFullJid getOurJid() {
         EntityFullJid fullJid;
         if (mConnection != null) {
             fullJid = mConnection.getUser();
@@ -2968,7 +2967,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         else {
             // mResource can be null if user is not registered, so use default
             loadResource();
-            fullJid = JidCreate.entityFullFrom(mAccountID.getBareJid().asEntityBareJidIfPossible(), mResource);
+            fullJid = JidCreate.entityFullFrom(mAccountID.getEntityBareJid(), mResource);
         }
         return fullJid;
     }

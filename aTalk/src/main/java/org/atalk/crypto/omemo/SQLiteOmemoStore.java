@@ -837,7 +837,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
         if (pps != null) {
             XMPPConnection connection = pps.getConnection();
             if ((connection != null) && connection.isAuthenticated()) {
-                BareJid userJid = accountId.getBareJid();
+                BareJid userJid = accountId.getEntityBareJid();
                 OmemoManager omemoManager = OmemoManager.getInstanceFor(connection);
                 // stop old omemo manager to update cached data
                 omemoManager.stopStanzaAndPEPListeners();
@@ -937,7 +937,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
      */
     public void purgeUserOmemoData(AccountID accountId) {
         // Retain a copy of the old device to purge data on server
-        BareJid userJid = accountId.getBareJid();
+        BareJid userJid = accountId.getEntityBareJid();
         SortedSet<Integer> deviceIds = localDeviceIdsOf(userJid);
         if (deviceIds.size() == 0)
             return;

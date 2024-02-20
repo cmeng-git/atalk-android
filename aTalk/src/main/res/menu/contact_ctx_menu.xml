@@ -29,6 +29,10 @@
         android:title="@string/service_gui_RENAME_CONTACT">
     </item>
     <item
+        android:id="@+id/contact_blocking"
+        android:title="@string/contact_block">
+    </item>
+    <item
         android:id="@+id/remove_contact"
         android:title="@string/service_gui_REMOVE_CONTACT">
     </item>

@@ -32,6 +32,8 @@ public class Migrations {
                 MigrationTo5.updateOmemoDevicesTable(db);
             case 5:
                 MigrationTo6.updateChatSessionTable(db);
+            case 6:
+                MigrationTo7.createEntityCapsTable(db);
         }
     }
 }

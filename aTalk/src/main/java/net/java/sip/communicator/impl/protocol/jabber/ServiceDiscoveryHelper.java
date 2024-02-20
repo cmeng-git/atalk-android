@@ -16,9 +16,14 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 
 import org.atalk.android.aTalkApp;
+import org.atalk.persistance.EntityCapsCache;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -32,15 +37,10 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
-import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.Jid;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -51,8 +51,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ServiceDiscoveryHelper
-{
+public class ServiceDiscoveryHelper {
     private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(StanzaTypeFilter.PRESENCE,
             new StanzaExtensionFilter(CapsExtension.ELEMENT, CapsExtension.NAMESPACE));
 
@@ -60,11 +59,6 @@ public class ServiceDiscoveryHelper
      * The {@link ServiceDiscoveryManager} supported in smack
      */
     private final ServiceDiscoveryManager mDiscoveryManager;
-
-    /**
-     * The parent provider
-     */
-    private final ProtocolProviderServiceJabberImpl mPPS;
 
     /**
      * The {@link XMPPConnection} that this manager is responsible for.
@@ -77,7 +71,7 @@ public class ServiceDiscoveryHelper
      */
     private static final List<UserCapsNodeListener> userCapsNodeListeners = new LinkedList<>();
 
-    private static SimpleDirectoryPersistentCache entityCapsPersistentCache;
+    private static EntityCapsCache entityCapsPersistentCache;
 
     /**
      * Creates a new <code>ScServiceDiscoveryManager</code> wrapping the default discovery manager of
@@ -94,7 +88,7 @@ public class ServiceDiscoveryHelper
      */
     public ServiceDiscoveryHelper(ProtocolProviderServiceJabberImpl parentProvider, XMPPConnection connection,
             String[] featuresToRemove, String[] featuresToAdd) {
-        mPPS = parentProvider;
+        ProtocolProviderServiceJabberImpl mPPS = parentProvider;
         mConnection = connection;
 
         // Init EntityCapsManager so it is ready to receive Entity Caps Info
@@ -133,6 +127,7 @@ public class ServiceDiscoveryHelper
      * Using a 30-second Reply timeout
      *
      * @param entityJid the address of the XMPP entity. Buddy Jid should be FullJid
+     *
      * @return The corresponding DiscoverInfo or null if none is known.
      */
     public DiscoverInfo discoverInfo(final Jid entityJid) {
@@ -147,60 +142,54 @@ public class ServiceDiscoveryHelper
             Timber.e("DiscoveryManager.discoverInfo failed %s", e.getMessage());
         }
         mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
-
-        // Unnecessary as the cap changed is notified via UserCapsNodeNotify()
-//        if (discoverInfo != null) {
-//            OperationSetContactCapabilitiesJabberImpl capabilitiesOpSet
-//                    = (OperationSetContactCapabilitiesJabberImpl) mPPS.getOperationSet(OperationSetContactCapabilities.class);
-//            // fire the event
-//            if (capabilitiesOpSet != null) {
-//                capabilitiesOpSet.fireContactCapabilitiesChanged(entityJid);
-//            }
-//        }
         return discoverInfo;
     }
 
     /**
-     * Setup the SimpleDirectoryPersistentCache store to support EntityCapsManager persistent
+     * Setup the EntityCapsCache store to support EntityCapsManager persistent
      * store for fast Entity Capabilities and bandwidth improvement.
      * First initialize in {@link ProtocolProviderServiceJabberImpl# initSmackDefaultSettings()}
      * to ensure Persistence store is setup before being access.
      */
-    public static void initEntityPersistentStore()
-    {
-        // A single Persistent Storage for EntityCapsManager to save caps for all accounts
+    public static void initEntityPersistentStore() {
+        // Remove previous folder for entityCaps cache
         File entityCapsFolder = new File(aTalkApp.getInstance().getFilesDir() + "/entityCapsStore");
-
-        // Rename old folder if present
-        File oldFolder = new File(aTalkApp.getInstance().getFilesDir() + "/entityStore");
-        if (oldFolder.exists()) {
-            if (oldFolder.renameTo(entityCapsFolder)) {
-                Timber.d("Cap folder rename successfully");
-            };
+        if (delFolder(entityCapsFolder)) {
+            Timber.d("%s folder deleted successfully", entityCapsFolder);
         }
-
-        if (!entityCapsFolder.exists()) {
-            if (!entityCapsFolder.mkdir())
-                Timber.e("Entity Store directory creation error: %s", entityCapsFolder.getAbsolutePath());
+        else {
+            // older folder if present
+            entityCapsFolder = new File(aTalkApp.getInstance().getFilesDir() + "/entityStore");
+            if (delFolder(entityCapsFolder)) {
+                Timber.d("%s folder deleted successfully", entityCapsFolder);
+            }
         }
+        entityCapsPersistentCache = new EntityCapsCache();
+        EntityCapsManager.setPersistentCache(entityCapsPersistentCache);
+    }
 
-        if (entityCapsFolder.exists()) {
-            entityCapsPersistentCache = new SimpleDirectoryPersistentCache(entityCapsFolder);
-            EntityCapsManager.setPersistentCache(entityCapsPersistentCache);
+    private static boolean delFolder(File folder) {
+        File[] files = folder.listFiles();
+        if (files == null) {
+            return false;
         }
+        for (File f : files) {
+            f.delete();
+        }
+        return folder.delete();
     }
 
     /**
      * For cleanup EntityManager entity caps persistence storage and cache.
      * {@link ServerPersistentStoresRefreshDialog}
      */
-    public static void refreshEntityCapsStore()
-    {
+    public static void refreshEntityCapsStore() {
         entityCapsPersistentCache.emptyCache();
         EntityCapsManager.clearMemoryCache();
     }
 
     // ======================= UserCapsNodeListener Implementation ==================================
+
     /**
      * Adds a specific <code>UserCapsNodeListener</code> to the list of <code>UserCapsNodeListener</code>s
      * interested in events notifying about changes in the list of user caps nodes of the
@@ -209,8 +198,7 @@ public class ServiceDiscoveryHelper
      * @param listener the <code>UserCapsNodeListener</code> which is interested in events notifying about
      * changes in the list of user caps nodes of this <code>EntityCapsManager</code>
      */
-    public static void addUserCapsNodeListener(UserCapsNodeListener listener)
-    {
+    public static void addUserCapsNodeListener(UserCapsNodeListener listener) {
         if (listener == null)
             throw new NullPointerException("listener");
 
@@ -228,8 +216,7 @@ public class ServiceDiscoveryHelper
      * @param listener the <code>UserCapsNodeListener</code> which is no longer interested in events notifying
      * about changes in the list of user caps nodes of this <code>EntityCapsManager</code>
      */
-    public static void removeUserCapsNodeListener(UserCapsNodeListener listener)
-    {
+    public static void removeUserCapsNodeListener(UserCapsNodeListener listener) {
         if (listener != null) {
             synchronized (userCapsNodeListeners) {
                 userCapsNodeListeners.remove(listener);
@@ -240,17 +227,16 @@ public class ServiceDiscoveryHelper
     /**
      * The {@link StanzaListener} that will be registering incoming caps.
      */
-    private class CapsStanzaListener implements StanzaListener
-    {
+    private class CapsStanzaListener implements StanzaListener {
         /**
          * Handles incoming presence packets with CapsExtension and alert listeners
          * that the specific user caps node may have changed.
          *
          * @param stanza the incoming presence <code>Packet</code> to be handled
+         *
          * @see StanzaListener#processStanza(Stanza)
          */
-        public void processStanza(Stanza stanza)
-        {
+        public void processStanza(Stanza stanza) {
             // Check it the packet indicates that the user is online. We will use this
             // information to decide if we're going to send the discover info request.
             boolean online = (stanza instanceof Presence) && ((Presence) stanza).isAvailable();
@@ -274,6 +260,7 @@ public class ServiceDiscoveryHelper
                 UserCapsNodeNotify(fromJid, false);
             }
         }
+
     }
 
     /**
@@ -282,8 +269,7 @@ public class ServiceDiscoveryHelper
      * @param user the user (FullJid): Can either be account or contact
      * @param online indicates if the user is online
      */
-    private void UserCapsNodeNotify(Jid user, boolean online)
-    {
+    private void UserCapsNodeNotify(Jid user, boolean online) {
         if (user != null) {
             // Fire userCapsNodeNotify.
             UserCapsNodeListener[] listeners;

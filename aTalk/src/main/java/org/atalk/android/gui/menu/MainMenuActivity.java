@@ -52,6 +52,7 @@ import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
 import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.android.gui.contactlist.ContactBlockListActivity;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
@@ -293,6 +294,9 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
                 break;
             case R.id.add_contact:
                 startActivity(AddContactActivity.class);
+                break;
+            case R.id.block_list:
+                startActivity(ContactBlockListActivity.class);
                 break;
             case R.id.main_settings:
                 startActivity(SettingsActivity.class);

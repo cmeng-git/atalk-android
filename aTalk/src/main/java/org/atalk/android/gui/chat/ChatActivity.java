@@ -726,7 +726,7 @@ public class ChatActivity extends OSGiActivity
                     if (jid instanceof DomainBareJid) {
                         TelephonyFragment extPhone = TelephonyFragment.newInstance(jid.toString());
                         getSupportFragmentManager().beginTransaction()
-                                .replace(android.R.id.content, extPhone).commit();
+                                .replace(android.R.id.content, extPhone, TelephonyFragment.TELEPHONY_TAG).commit();
                         return true;
                     }
                     isAudioCall = true;  // fall through to start either audio / video call

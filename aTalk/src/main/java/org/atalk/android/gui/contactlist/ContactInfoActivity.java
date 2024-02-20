@@ -127,7 +127,7 @@ public class ContactInfoActivity extends OSGiActivity
                  */
                 OperationSetServerStoredContactInfo contactInfoOpSet
                         = pps.getOperationSet(OperationSetServerStoredContactInfo.class);
-                if ((contactInfoOpSet != null) && pps.isRegistered()) {
+                if (contactInfoOpSet != null) {
                     initPresenceStatus();
                     initSummaryPanel();
 

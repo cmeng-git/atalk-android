@@ -852,7 +852,7 @@ public class OperationSetBasicTelephonyJabberImpl
                             // Check and proceed if we are legally involved in the session.
                             if ((attendant != null)
                                     && transfer.getFrom().isParentOf(attendant.getPeerJid())
-                                    && transfer.getTo().isParentOf(mPPS.getOurJID())) {
+                                    && transfer.getTo().isParentOf(mPPS.getOurJid())) {
                                 call = attendantCall;
                             }
                         }

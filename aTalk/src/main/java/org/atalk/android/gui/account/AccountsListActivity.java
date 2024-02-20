@@ -36,7 +36,7 @@ import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.account.settings.AccountPreferenceActivity;
 import org.atalk.android.gui.contactlist.AddGroupDialog;
 import org.atalk.android.gui.dialogs.DialogActivity;
-import org.atalk.android.gui.dialogs.ProgressDialogFragment;
+import org.atalk.android.gui.dialogs.ProgressDialog;
 import org.atalk.android.plugin.certconfig.TLS_Configuration;
 import org.atalk.persistance.FileBackend;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
@@ -260,7 +260,7 @@ public class AccountsListActivity extends OSGiActivity
             ProtocolProviderServiceJabberImpl jabberProvider = (ProtocolProviderServiceJabberImpl) pps;
 
             // Purge avatarHash and avatarImages of all contacts belong to the account roster
-            BareJid userJid = accountId.getBareJid();
+            BareJid userJid = accountId.getEntityBareJid();
             try {
                 VCardAvatarManager.clearPersistentStorage(userJid);
             } catch (XmppStringprepException e) {
@@ -358,7 +358,7 @@ public class AccountsListActivity extends OSGiActivity
                 accEnableThread = new AccountEnableThread(account.getAccountID(), enable);
                 String message = enable ? getString(R.string.service_gui_CONNECTING_ACCOUNT, account.getAccountName())
                         : getString(R.string.service_gui_DISCONNECTING_ACCOUNT, account.getAccountName());
-                progressDialog = ProgressDialogFragment.showProgressDialog(getString(R.string.service_gui_INFO), message);
+                progressDialog = ProgressDialog.showProgressDialog(getString(R.string.service_gui_INFO), message);
                 accEnableThread.start();
             });
             return rowView;

@@ -85,7 +85,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * Increment DATABASE_VERSION when there is a change in database records
      */
     public static final String DATABASE_NAME = "dbRecords.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static DatabaseBackend instance = null;
     private ProtocolProviderService mProvider;
 
@@ -166,6 +166,13 @@ public class DatabaseBackend extends SQLiteOpenHelper {
             + ", " + ChatSession.ENTITY_JID
             + ") ON CONFLICT REPLACE);";
 
+    public static String CREATE_ENTITY_CAPS_STATEMENT = "CREATE TABLE "
+            + EntityCapsCache.TABLE_NAME + "("
+            + EntityCapsCache.ENTITY_NODE_VER + " TEXT, "
+            + EntityCapsCache.ENTITY_DISC_INFO + " TEXT, UNIQUE ("
+            + EntityCapsCache.ENTITY_NODE_VER
+            + ") ON CONFLICT REPLACE);";
+
     private DatabaseBackend(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -225,13 +232,13 @@ public class DatabaseBackend extends SQLiteOpenHelper {
      * f. chatMessages
      * g. callHistory
      * f. recentMessages
-     * i. Axolotl tables: identities, sessions, preKeys, signed_preKeys
+     * i. Entity Caps
+     * j. Axolotl tables: identities, sessions, preKeys, signed_preKeys
      * <p>
      * # Initialize and initial data migration
      *
      * @param db SQLite database
      */
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // db.execSQL("PRAGMA foreign_keys=ON;");
@@ -374,6 +381,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + MessageSourceService.ACCOUNT_UID + ") REFERENCES "
                 + AccountID.TABLE_NAME + "(" + AccountID.ACCOUNT_UID
                 + ") ON DELETE CASCADE);");
+
+        // Create Entity Caps DB
+        db.execSQL(CREATE_ENTITY_CAPS_STATEMENT);
 
         // Create all relevant tables for OMEMO support
         db.execSQL(CREATE_OMEMO_DEVICES_STATEMENT);

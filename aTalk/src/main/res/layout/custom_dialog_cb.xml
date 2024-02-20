@@ -6,14 +6,14 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/messageText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING"
         android:textAppearance="@style/MediumFont" />
 
     <CheckBox
-        android:id="@+id/cb_media_delete"
+        android:id="@+id/cb_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/list_padding"

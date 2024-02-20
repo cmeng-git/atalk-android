@@ -31,10 +31,6 @@
         android:id="@+id/muc_bookmarks"
         android:title="@string/service_gui_CHATROOM_BOOKMARK_TITLE" />
     <item
-        android:id="@+id/add_contact"
-        android:icon="@drawable/add_contact_dark"
-        android:title="@string/service_gui_ADD_CONTACT" />
-    <item
         android:id="@+id/main_settings"
         android:title="@string/system_settings" />
     <item
@@ -47,6 +43,13 @@
         android:id="@+id/notification_setting"
         android:title="@string/notification_setting"
         android:visible="false" />
+    <item
+        android:id="@+id/block_list"
+        android:title="@string/block_list_show" />
+    <item
+        android:id="@+id/add_contact"
+        android:icon="@drawable/add_contact_dark"
+        android:title="@string/service_gui_ADD_CONTACT" />
     <item
         android:id="@+id/show_hide_offline"
         android:icon="@drawable/show_hide_offline_light"

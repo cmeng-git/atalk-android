@@ -116,7 +116,7 @@ public class About extends BaseActivity implements View.OnClickListener {
             new String[]{"XEP-0177: Jingle Raw UDP Transport Method 1.1.1", "https://xmpp.org/extensions/xep-0177.html"},
             new String[]{"XEP-0178: Best Practices for Use of SASL EXTERNAL with Certificates 1.2", "https://xmpp.org/extensions/xep-0178.html"},
             new String[]{"XEP-0184: Message Delivery Receipts 1.4.0", "https://xmpp.org/extensions/xep-0184.html"},
-            // new String[]{"XEP-0191: Blocking command (NI)", "https://xmpp.org/extensions/xep-0191.html"},
+            new String[]{"XEP-0191: Blocking command", "https://xmpp.org/extensions/xep-0191.html"},
             new String[]{"XEP-0198: Stream Management 1.6", "https://xmpp.org/extensions/xep-0198.html"},
             new String[]{"XEP-0199: XMPP Ping 2.0.1", "https://xmpp.org/extensions/xep-0199.html"},
             new String[]{"XEP-0203: Delayed Delivery 2.0", "https://xmpp.org/extensions/xep-0203.html"},
@@ -245,6 +245,7 @@ public class About extends BaseActivity implements View.OnClickListener {
             url = context.getString(R.string.AboutDialog_Link);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
