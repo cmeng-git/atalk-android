@@ -120,6 +120,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
      * Sort database message records by TimeStamp in ASC
      */
     private static final String ORDER_ASC = MessageSourceService.TIME_STAMP + " ASC";
+    private static final String ORDER_DESC = MessageSourceService.TIME_STAMP + " DESC";
 
     /**
      * The maximum number of recent messages to store in the history, but will retrieve just <code>numberOfMessages</code>
@@ -540,7 +541,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     {
         // Keep the record size to within the specified NUMBER_OF_MSGS_IN_HISTORY
         Cursor cursor = mDB.query(MessageSourceService.TABLE_NAME, null, null, null,
-                null, null, ORDER_ASC);
+                null, null, ORDER_DESC);
         int excess = cursor.getCount() - NUMBER_OF_MSGS_IN_HISTORY;
         if (excess > 0) {
             cursor.move(excess + 12);

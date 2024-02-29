@@ -9,8 +9,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.text.TextUtils;
 
 import net.java.sip.communicator.impl.certificate.CertificateServiceImpl;
@@ -393,7 +391,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     // File transfer e.g. IBB across server can take more than 5 seconds
     public static final int SMACK_REPLY_EXTENDED_TIMEOUT_10 = 10000;  // 10 seconds
 
-    public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
+    // Must implemented in OmemoManager and OmemoService directory due to Async.go()
+    // public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
 
     /**
      * aTalk Smack packet reply default timeout - use Smack default instead of 10s (starting v2.1.8).
@@ -1563,7 +1562,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
              * Must initialize omemoManager on every new connected connection, to ensure both pps and omemoManager is referred
              * to same instance of xmppConnection.  Perform only after connection is connected to ensure the user is defined
              */
-            // androidOmemoService = new AndroidOmemoService(ProtocolProviderServiceJabberImpl.this);
+            androidOmemoService = new AndroidOmemoService(ProtocolProviderServiceJabberImpl.this);
 
             /*
              * Must only initialize omemoDevice after user authenticated
@@ -1664,17 +1663,10 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         Context context = aTalkApp.getInstance();
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                final Network network = cm.getActiveNetwork();
-                if (network != null) {
-                    final NetworkCapabilities nc = cm.getNetworkCapabilities(network);
-                    return (nc != null) && nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
-                }
-            }
-            else {
-                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-                return (networkInfo != null && networkInfo.isConnected()
-                        && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE);
+            final Network network = cm.getActiveNetwork();
+            if (network != null) {
+                final NetworkCapabilities nc = cm.getNetworkCapabilities(network);
+                return (nc != null) && nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
             }
         }
         return false;
@@ -1945,7 +1937,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
          * Move to authenticated stage?
          * Perform here to ensure only one androidOmemoService is created; otherwise onResume may create multiple instances
          */
-        androidOmemoService = new AndroidOmemoService(this);
+        // androidOmemoService = new AndroidOmemoService(this);
 
         /*
          * add SupportedFeatures only prior to registerServiceDiscoveryManager. Otherwise found
@@ -3179,7 +3171,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     /**
      * ============== HTTP Authorization Request received ===============.
-     *
      * Handler for the incoming HttpAuthorizationRequest received. Generate a HeadsUp notification to alert user
      * if the request is via IQ and the device is in locked state; user must exit device locked state to handle
      * the next incoming request; the current request dialog launch may have been ignored by android if aTalk
@@ -3273,7 +3264,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
-     * @see XMPPTCPConnection#Socket
+     * @see XMPPTCPConnection#socket
      */
     public Socket getSocket() {
         Socket socket = null;

@@ -4,7 +4,7 @@ The built static libraries are used in Android Studio NDK built process to gener
 Each static library is built using the shell scripts in each module sub-directory.<br/>
 The scripts are written to run on linux/Ubuntu OS with proper development environment setup i.e.
 * sudo apt-get --quiet --yes install build-essential git autoconf libtool pkg-config gperf gettext yasm python-lxml
-* The compiled static libraries for each module are installed into the aTalk/jin/&lt;module>/android/&lt;ABI>.
+* The compiled static libraries for each module are installed into the ./jni/&lt;module>/android/&lt;ABI>.
 
 Please refer to each sub-directory for more information.
 
@@ -14,11 +14,11 @@ jni/ffmpeg, jni/vpx, jni/openssl etc
 * The following 3 libraries are required to be built externally for integration into aTalk i.e.:
 
 1. ffmpeg-x264:<br/>
-   Build static libraries for the various architectures used for aTalk/jni/ffmpeg
+   Build static libraries for the various architectures used for ./jni/ffmpeg
 2. libvpx:<br/>
-   Build static libraries for the various architectures used for aTalk/jni/vpx
+   Build static libraries for the various architectures used for ./jni/vpx
 3. openssl:<br/>
-   Build static libraries for the various architectures used for aTalk/jni/openssl
+   Build static libraries for the various architectures used for ./jni/openssl
 
 Built all
 --------------------------------------

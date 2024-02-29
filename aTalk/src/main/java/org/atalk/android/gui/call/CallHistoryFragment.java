@@ -16,8 +16,6 @@
  */
 package org.atalk.android.gui.call;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -33,12 +31,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
@@ -72,15 +82,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -89,7 +90,8 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class CallHistoryFragment extends OSGiFragment
-        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleted {
+        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleted,
+        DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener {
     /**
      * A map of <contact, MetaContact>
      */
@@ -109,6 +111,15 @@ public class CallHistoryFragment extends OSGiFragment
      * The call history list view representing the chat.
      */
     private ListView callListView;
+
+    private View callDateTime;
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+    private Button btnPurge;
+    private Button btnCancel;
+    private TextView callHistoryWarn;
+    private final Calendar calendar = Calendar.getInstance();
+    private int mYear, mMonth, mDay;
 
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
@@ -138,6 +149,16 @@ public class CallHistoryFragment extends OSGiFragment
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.call_history, container, false);
         mTitle = contentView.findViewById(R.id.call_history);
+
+        callDateTime = contentView.findViewById(R.id.call_history_dateTime);
+        datePicker = contentView.findViewById(R.id.datePicker);
+        timePicker = contentView.findViewById(R.id.timePicker);
+
+        callHistoryWarn = contentView.findViewById(R.id.call_history_warn);
+        btnPurge = contentView.findViewById(R.id.purgeButton);
+        btnCancel = contentView.findViewById(R.id.cancelButton);
+
+        callDateTime.setVisibility(View.GONE);
 
         callListView = contentView.findViewById(R.id.callListView);
         callHistoryAdapter = new CallHistoryAdapter(inflater);
@@ -217,7 +238,8 @@ public class CallHistoryFragment extends OSGiFragment
                 callRecordViewHolder.callInfo = convertView.findViewById(R.id.callInfo);
 
                 convertView.setTag(callRecordViewHolder);
-            } else {
+            }
+            else {
                 callRecordViewHolder = (CallRecordViewHolder) convertView.getTag();
             }
 
@@ -310,7 +332,7 @@ public class CallHistoryFragment extends OSGiFragment
      * Sets the call state.
      *
      * @param callStateView the call state image view
-     * @param callRecord    the call record.
+     * @param callRecord the call record.
      */
     private void setCallState(ImageView callStateView, CallRecord callRecord) {
         CallPeerRecord peerRecord = callRecord.getPeerRecords().get(0);
@@ -322,7 +344,8 @@ public class CallHistoryFragment extends OSGiFragment
                 resId = R.drawable.call_incoming;
             else
                 resId = R.drawable.call_incoming_missed;
-        } else {
+        }
+        else {
             resId = R.drawable.call_outgoing;
         }
         callStateView.setImageResource(resId);
@@ -442,7 +465,8 @@ public class CallHistoryFragment extends OSGiFragment
                         break;
                 }
             }
-        } else {
+        }
+        else {
             Timber.w("Clicked item is not a valid MetaContact");
         }
     }
@@ -454,10 +478,7 @@ public class CallHistoryFragment extends OSGiFragment
         int cPos;
         int headerCount;
         int checkListSize;
-        private int mYear, mMonth, mDay, mHour, mMinute;
-
         SparseBooleanArray checkedList = new SparseBooleanArray();
-        ;
 
         @Override
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
@@ -488,32 +509,8 @@ public class CallHistoryFragment extends OSGiFragment
                         if (cType == callHistoryAdapter.CALL_RECORD) {
                             callRecord = (CallRecord) callHistoryAdapter.getItem(cPos);
                             if (callRecord != null) {
-                                Date sDate = callRecord.getStartTime();
-                                final Calendar c = Calendar.getInstance();
-                                c.setTime(sDate);
-                                mYear = c.get(Calendar.YEAR);
-                                mMonth = c.get(Calendar.MONTH);
-                                mDay = c.get(Calendar.DAY_OF_MONTH);
-                                mHour = c.get(Calendar.HOUR_OF_DAY);
-                                mMinute = c.get(Calendar.MINUTE);
-
-                                // Show DateTime picker for user to change the endDate
-                                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext,
-                                        (view, year, monthOfYear, dayOfMonth) -> {
-                                            mYear = year;
-                                            mMonth = monthOfYear;
-                                            mDay = dayOfMonth;
-
-                                            // Launch Time Picker Dialog
-                                            TimePickerDialog timePickerDialog = new TimePickerDialog(mContext,
-                                                    (view1, hourOfDay, minute) -> {
-                                                        c.set(mYear, mMonth, mDay, hourOfDay, minute);
-                                                        EntityListHelper.eraseEntityCallHistory(CallHistoryFragment.this, c.getTime());
-                                                        mode.finish();
-                                                    }, mHour, mMinute, false);
-                                            timePickerDialog.show();
-                                        }, mYear, mMonth, mDay);
-                                datePickerDialog.show();
+                                eraseCallHistory(callRecord);
+                                mode.finish();
                             }
                         }
                     }
@@ -589,6 +586,44 @@ public class CallHistoryFragment extends OSGiFragment
             callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     };
+
+    public void eraseCallHistory(final CallRecord callRecord) {
+        callDateTime.setVisibility(View.VISIBLE);
+        Date sDate = callRecord.getStartTime();
+
+        calendar.setTime(sDate);
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int mHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int mMinute = calendar.get(Calendar.MINUTE);
+        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+
+        datePicker.init(mYear, mMonth, mDay, this);
+        timePicker.setIs24HourView(true);
+        timePicker.setHour(mHourOfDay);
+        timePicker.setMinute(mMinute);
+        timePicker.setOnTimeChangedListener(this);
+
+        btnPurge.setOnClickListener(v -> {
+            EntityListHelper.eraseEntityCallHistory(this, calendar.getTime());
+            callDateTime.setVisibility(View.GONE);
+        });
+        btnCancel.setOnClickListener(v -> callDateTime.setVisibility(View.GONE));
+    }
+
+    @Override
+    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        calendar.set(year, monthOfYear, dayOfMonth);
+        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+    }
+
+    @Override
+    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+        // must also set year/month/day; these values may get messed up by onTimeChanged().
+        calendar.set(mYear, mMonth, mDay, hourOfDay, minute);
+        callHistoryWarn.setText(getString(R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, calendar.getTime()));
+    }
 
     private static class CallRecordViewHolder {
         ImageView avatar;

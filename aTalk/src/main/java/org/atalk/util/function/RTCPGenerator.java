@@ -15,10 +15,11 @@
  */
 package org.atalk.util.function;
 
+import java.util.function.Function;
+
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 
 import org.atalk.service.neomedia.RawPacket;
-// import java.util.function.Function;
 
 /**
  * A <code>Function</code> that produces <code>RawPacket</code>s from <code>RTCPCompoundPacket</code>s.
@@ -26,8 +27,7 @@ import org.atalk.service.neomedia.RawPacket;
  * @author George Politis
  * @author Eng Chong Meng
  */
-// java.util.function.Function; => need API-24
-public class RTCPGenerator extends AbstractFunction<RTCPCompoundPacket, RawPacket>
+public class RTCPGenerator implements Function<RTCPCompoundPacket, RawPacket>
 {
     @Override
     public RawPacket apply(RTCPCompoundPacket in)

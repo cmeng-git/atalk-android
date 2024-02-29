@@ -26,12 +26,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.text.Html;
 import android.text.TextUtils;
-
-import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 
@@ -69,7 +66,7 @@ public class ShareUtil {
             if (!TextUtils.isEmpty(msgContent)) {
                 Intent shareIntent = share(activity, msgContent);
                 try {
-                    if (!imageUris.isEmpty() && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)) {
+                    if (!imageUris.isEmpty()) {
                         PendingIntent pi = PendingIntent.getBroadcast(activity, REQUEST_CODE_SHARE,
                                 new Intent(activity, ShareBroadcastReceiver.class).setPackage(activity.getPackageName()),
                                 NotificationPopupHandler.getPendingIntentFlag(false, true));
@@ -228,7 +225,6 @@ public class ShareUtil {
             mediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
         @Override
         public void onReceive(Context context, Intent intent) {
             ComponentName clickedComponent = intent.getParcelableExtra(Intent.EXTRA_CHOSEN_COMPONENT);

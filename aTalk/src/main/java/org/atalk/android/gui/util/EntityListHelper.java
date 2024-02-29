@@ -442,20 +442,21 @@ public class EntityListHelper {
 
     public static void eraseEntityCallHistory(final CallHistoryFragment caller, final Date endDate) {
         // Displays the call history delete dialog and waits for user
-        DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
-                R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, R.string.service_gui_PURGE,
-                new DialogActivity.DialogListener() {
-
-                    public boolean onConfirmClicked(DialogActivity dialog) {
-                        new doEraseEntityCallHistory(caller, null, endDate).execute();
-                        return true;
-                    }
-
-                    @Override
-                    public void onDialogCancelled(DialogActivity dialog) {
-                    }
-                }, endDate
-        );
+//        DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
+//                R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, R.string.service_gui_PURGE,
+//                new DialogActivity.DialogListener() {
+//
+//                    public boolean onConfirmClicked(DialogActivity dialog) {
+//                        new doEraseEntityCallHistory(caller, null, endDate).execute();
+//                        return true;
+//                    }
+//
+//                    @Override
+//                    public void onDialogCancelled(DialogActivity dialog) {
+//                    }
+//                }, endDate
+//        );
+        new doEraseEntityCallHistory(caller, null, endDate).execute();
     }
 
     /**

@@ -24,6 +24,8 @@
  */
 package org.atalk.util.function;
 
+import java.util.function.Consumer;
+
 /**
  * Represents an operation that accepts a single {@code long}-valued argument and
  * returns no result.  This is the primitive type specialization of

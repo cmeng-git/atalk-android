@@ -34,7 +34,7 @@ VERSION=$(cat RELEASE)
 echo -e "\n\n** BUILD STARTED: ${LIB_FFMPEG}-v${VERSION} for ${1} **"
 
 # Must include option --disable-asm; otherwise ffmpeg-3.4.6 has problem and crash system:
-# armeabi-v7a: org.atalk.android A/libc: Fatal signal 7 (SIGBUS), code 1, fault addr 0x9335c00c in tid 20032 (Loop thread: ne)
+# armeabi-v7a: A/libc: Fatal signal 7 (SIGBUS), code 1, fault addr 0x9335c00c in tid 20032 (Loop thread: ne)
 # x86: ./i686-linux-android/bin/ld: warning: shared library text segment is not shareable
 # x86_64: e.g libswresample, libswscale, libavcodec:  requires dynamic R_X86_64_PC32 reloc against ...
 # libavcodec/x86/cabac.h:193:9: error: inline assembly requires more registers than available

@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,8 +35,20 @@ import androidx.activity.result.ActivityResultCaller;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
-import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
-import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter.CalendarDay;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import com.yalantis.ucrop.UCrop;
 
 import net.java.sip.communicator.service.protocol.AccountID;
@@ -85,20 +98,6 @@ import org.atalk.util.SoftKeyboard;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.osgi.framework.BundleContext;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
 import timber.log.Timber;
 
 /**
@@ -120,15 +119,8 @@ import timber.log.Timber;
  */
 public class AccountInfoPresenceActivity extends OSGiActivity
         implements EventListener<AccountEvent>, DialogActivity.DialogListener,
-        SoftKeyboard.SoftKeyboardChanged, CalendarDatePickerDialogFragment.OnDateSetListener {
-    /**
-     * Calender Date Picker parameters
-     */
-    private CalendarDatePickerDialogFragment calendarDatePicker;
-
-    private static final String FRAG_TAG_DATE_PICKER = "fragment_date_picker_name";
-
-    private static final CalendarDay DEFAULT_START_DATE = new CalendarDay(1900, Calendar.JANUARY, 1);
+        SoftKeyboard.SoftKeyboardChanged, DatePicker.OnDateChangedListener {
+    private DatePicker mDatePicker;
 
     private static final String AVATAR_ICON_REMOVE = "Remove Picture";
 
@@ -514,24 +506,20 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         // Setup and initialize birthday calendar basic parameters
         dateFormat = DateFormat.getDateInstance();
         Calendar today = Calendar.getInstance();
-        int thisYear = today.get(Calendar.YEAR);
-        int thisMonth = today.get(Calendar.MONTH);
-        int thisDay = today.get(Calendar.DAY_OF_MONTH);
-        CalendarDay TODAY = new CalendarDay(thisYear, thisMonth, thisDay);
+        int mYear = today.get(Calendar.YEAR);
+        int mMonth = today.get(Calendar.MONTH);
+        int mDay = today.get(Calendar.DAY_OF_MONTH);
+        mDatePicker = findViewById(R.id.datePicker);
+        mDatePicker.init(mYear, mMonth, mDay, this);
 
-        calendarDatePicker = new CalendarDatePickerDialogFragment()
-                .setOnDateSetListener(AccountInfoPresenceActivity.this)
-                .setFirstDayOfWeek(Calendar.MONDAY)
-                .setDateRange(DEFAULT_START_DATE, TODAY)
-                .setDoneText("Done")
-                .setCancelText("Cancel")
-                .setThemeDark();
-
-        // Note: android DatePickerDialog required API-24 min
-        mCalenderButton = findViewById(R.id.datePicker);
+        mCalenderButton = findViewById(R.id.datePickerBtn);
         mCalenderButton.setEnabled(false);
-        mCalenderButton.setOnClickListener(
-                v -> calendarDatePicker.show(getSupportFragmentManager(), FRAG_TAG_DATE_PICKER));
+        mCalenderButton.setOnClickListener(v -> {
+            if (mDatePicker.getVisibility() == View.GONE)
+                mDatePicker.setVisibility(View.VISIBLE);
+            else
+                mDatePicker.setVisibility(View.GONE);
+        });
 
         mApplyButton = findViewById(R.id.button_Apply);
         mApplyButton.setOnClickListener(v -> {
@@ -578,8 +566,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         finish();
     }
 
-    @Override  // CalendarDatePickerDialogFragment callback
-    public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateChanged(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         Calendar mDate = Calendar.getInstance();
 
         int age = mDate.get(Calendar.YEAR) - year;
@@ -596,7 +583,7 @@ public class AccountInfoPresenceActivity extends OSGiActivity
         birthDateField.setText(dateFormat.format(mDate.getTime()));
 
         // internal program call is with dialog == null
-        hasChanges = (dialog != null);
+        hasChanges = (datePicker != null);
     }
 
     private void setTextEditState(boolean editState) {
@@ -688,7 +675,6 @@ public class AccountInfoPresenceActivity extends OSGiActivity
     /**
      * Loads a single <code>GenericDetail</code> obtained from the
      * <code>OperationSetServerStoredAccountInfo</code> into this plugin.
-     *
      * If VcardTemp contains <photo/>, it will be converted to XEP-0084 avatarData &
      * avatarMetadata, and remove it from VCardTemp.
      *
@@ -713,10 +699,10 @@ public class AccountInfoPresenceActivity extends OSGiActivity
                 int bMonth = birthDate.get(Calendar.MONTH);
                 int bDay = birthDate.get(Calendar.DAY_OF_MONTH);
                 // Preset calendarDatePicker date
-                calendarDatePicker.setPreselectedDate(bYear, bMonth, bDay);
+                mDatePicker.updateDate(bYear, bMonth, bDay);
 
                 // Update BirthDate and Age
-                onDateSet(null, bYear, bMonth, bDay);
+                onDateChanged(null, bYear, bMonth, bDay);
             }
             else if (objBirthDate != null) {
                 birthDateField.setText((String) objBirthDate);

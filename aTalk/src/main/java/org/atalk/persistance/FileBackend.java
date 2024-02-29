@@ -277,16 +277,11 @@ public class FileBackend
      */
     public static Uri getUriForFile(Context context, File file)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            try {
-                String packageId = context.getPackageName();
-                return FileProvider.getUriForFile(context, packageId + FILE_PROVIDER, file);
-            } catch (IllegalArgumentException e) {
-                throw new SecurityException(e);
-            }
-        }
-        else {
-            return Uri.fromFile(file);
+        try {
+            String packageId = context.getPackageName();
+            return FileProvider.getUriForFile(context, packageId + FILE_PROVIDER, file);
+        } catch (IllegalArgumentException e) {
+            throw new SecurityException(e);
         }
     }
 

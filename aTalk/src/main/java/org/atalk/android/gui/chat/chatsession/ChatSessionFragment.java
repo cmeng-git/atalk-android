@@ -39,6 +39,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
@@ -84,16 +94,6 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.DomainJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -296,7 +296,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                 chatRecordViewHolder.callVideoButton.setTag(chatRecordViewHolder);
 
                 convertView.setTag(chatRecordViewHolder);
-            } else {
+            }
+            else {
                 chatRecordViewHolder = (ChatRecordViewHolder) convertView.getTag();
             }
             chatRecordViewHolder.childPosition = position;
@@ -320,13 +321,15 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                 byte[] avatar = AvatarManager.getAvatarImageByJid(bareJid);
                 if (avatar != null) {
                     chatRecordViewHolder.avatar.setImageBitmap(AndroidImageUtil.bitmapFromBytes(avatar));
-                } else {
+                }
+                else {
                     chatRecordViewHolder.avatar.setImageResource(R.drawable.person_photo);
                 }
                 metaContact = mMetaContacts.get(entityId);
                 if (metaContact != null)
                     unreadCount = metaContact.getUnreadCount();
-            } else {
+            }
+            else {
                 chatRecordViewHolder.avatar.setImageResource(R.drawable.ic_chatroom);
                 ChatRoomWrapper crpWrapper = chatRoomWrapperList.get(entityId);
                 if (crpWrapper != null)
@@ -403,7 +406,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             runOnUiThread(() -> {
                 if (count == 0) {
                     chatRecordViewHolder.unreadCount.setVisibility(View.GONE);
-                } else {
+                }
+                else {
                     chatRecordViewHolder.unreadCount.setVisibility(View.VISIBLE);
                     chatRecordViewHolder.unreadCount.setUnreadCount(count);
                 }
@@ -586,7 +590,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
             accountId = chatSessionRecord.getAccountUserId();
             entityJid = chatSessionRecord.getEntityId();
-        } else {
+        }
+        else {
             Timber.w("Clicked item is not a valid MetaContact or chatRoom");
             return;
         }
@@ -625,7 +630,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                         break;
                 }
             }
-        } else {
+        }
+        else {
             createOrJoinChatRoom(accountId, entityJid);
         }
     }
@@ -682,7 +688,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         if (chatRoomWrapper != null) {
             nickName = chatRoomWrapper.getNickName();
             password = chatRoomWrapper.loadPassword();
-        } else {
+        }
+        else {
             // Just create chatRoomWrapper without joining as nick and password options are not available
             chatRoomWrapper = mucService.createChatRoom(chatRoomID, pps, contacts,
                     reason, false, false, true, chatRoomList.contains(chatRoomID));
@@ -724,9 +731,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         int cPos;
         int headerCount;
         int checkListSize;
-
-        MenuItem mDelete;
-        MenuItem mSelectAll;
 
         SparseBooleanArray checkedList;
 
@@ -790,7 +794,8 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                                             || chatRoomWrapperList.containsKey(entityJid)) {
                                         mMHS.setSessionChatType(sessionUuid, sessionRecord.getChatType() | SESSION_HIDDEN);
                                         Timber.d("Hide chatSession for entityJid: %s (%s)", entityJid, sessionUuid);
-                                    } else {
+                                    }
+                                    else {
                                         int msgCount = mMHS.getMessageCountForSessionUuid(sessionUuid);
                                         mMHS.purgeLocallyStoredHistory(Collections.singletonList(sessionUuid), true);
                                         Timber.w("Purged (%s) messages for invalid entityJid: %s (%s)",
@@ -826,10 +831,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.call_history_menu, menu);
             headerCount = chatSessionListView.getHeaderViewsCount();
-
-            mDelete = menu.findItem(R.id.cr_delete);
-            mSelectAll = menu.findItem(R.id.cr_select_all);
-
+            menu.findItem(R.id.cr_delete_older).setVisible(false);
             return true;
         }
 

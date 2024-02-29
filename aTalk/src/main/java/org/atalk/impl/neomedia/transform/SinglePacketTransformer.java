@@ -6,22 +6,19 @@
 package org.atalk.impl.neomedia.transform;
 
 import org.atalk.service.neomedia.RawPacket;
-import org.atalk.util.function.Predicate;
 import org.atalk.util.ByteArrayBuffer;
-import org.jivesoftware.smack.util.Function;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import timber.log.Timber;
 
 /**
  * Extends the <code>PacketTransformer</code> interface with methods which allow the transformation of a
  * single packet into a single packet.
- *
  * Eases the implementation of <code>PacketTransformer<code>-s which transform each
  * packet into a single transformed packet (as opposed to an array of possibly more than one packet).
- *
- * Need API-24 for new implementation (Use Function from smack).
  *
  * @author Boris Grozev
  * @author George Politis
@@ -56,19 +53,16 @@ public abstract class SinglePacketTransformer implements PacketTransformer
 
     /*
      * A cached link to {@link #reverseTransform(RawPacket)} method to reduce calling overhead on hotpath.
-     * Need API-24 (Use Function from smack)
      */
     private final Function<RawPacket, RawPacket> cachedReverseTransform = this::reverseTransform;
 
     /*
      * A cached link to {@link #transform(RawPacket)} method to reduce calling overhead on hotpath.
-     * Need API-24 (Use Function from smack)
      */
     private final Function<RawPacket, RawPacket> cachedTransform = this::transform;
 
     /**
      * Ctor.
-     *
      * XXX At some point ideally we would get rid of this ctor and all the inheritors will use the
      * parametrized ctor. Also, we might want to move this check inside the <code>TransformEngineChain</code>
      * so that we only make the check once per packet: The RTCP transformer is only supposed only to (reverse)
@@ -138,7 +132,6 @@ public abstract class SinglePacketTransformer implements PacketTransformer
     }
 
     /*
-     * cmeng - for API-24 implementation - use Function from smack
      * Applies a specific transformation function to an array of {@link RawPacket}s.
      *
      * @param pkts the array to transform.

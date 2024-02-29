@@ -848,7 +848,7 @@ public class ServerStoredContactListJabberImpl
     /**
      * Sends the initial presence to server. RFC 6121 says: a client SHOULD request the roster
      * before sending initial presence We extend this and send it after we have dispatched the roster.
-     *
+     * <p>
      * Note: Ensure only <x xmlns='vcard-temp:x:update'/> extension without the <photo/> element is
      * added if avatar photo has yet to be downloaded from server. Refer to XEP-0153: vCard-Based
      * Avatars section Example 6. User Is Not Ready to Advertise an Image

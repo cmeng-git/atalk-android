@@ -189,7 +189,6 @@ public class ServiceDiscoveryHelper {
     }
 
     // ======================= UserCapsNodeListener Implementation ==================================
-
     /**
      * Adds a specific <code>UserCapsNodeListener</code> to the list of <code>UserCapsNodeListener</code>s
      * interested in events notifying about changes in the list of user caps nodes of the

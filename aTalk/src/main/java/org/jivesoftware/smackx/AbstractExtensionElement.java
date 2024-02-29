@@ -412,12 +412,12 @@ public abstract class AbstractExtensionElement implements ExtensionElement {
      * @param childExtension the extension to add
      */
     public void setChildExtension(ExtensionElement childExtension) {
-        // required API-24
-        // getChildExtensionsOfType(childExtension.getClass()).forEach(this::removeChildExtension);
-        List<? extends ExtensionElement> extensionElements = getChildExtensionsOfType(childExtension.getClass());
-        for (ExtensionElement xe : extensionElements) {
-            removeChildExtension(xe);
-        }
+//        List<? extends ExtensionElement> extensionElements = getChildExtensionsOfType(childExtension.getClass());
+//        for (ExtensionElement xe : extensionElements) {
+//            removeChildExtension(xe);
+//        }
+        getChildExtensionsOfType(childExtension.getClass())
+                .forEach(this::removeChildExtension);
         childExtensions.add(childExtension);
     }
 

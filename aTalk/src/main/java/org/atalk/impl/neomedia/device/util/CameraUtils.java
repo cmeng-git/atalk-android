@@ -6,24 +6,22 @@
 package org.atalk.impl.neomedia.device.util;
 
 import android.graphics.ImageFormat;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.os.Build;
 import android.text.TextUtils;
 import android.util.Size;
 import android.view.Surface;
-
-import org.atalk.android.aTalkApp;
-import org.atalk.impl.neomedia.device.DeviceConfiguration;
-import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.atalk.android.aTalkApp;
+import org.atalk.impl.neomedia.device.DeviceConfiguration;
+import org.atalk.impl.neomedia.jmfext.media.protocol.androidcamera.PreviewStream;
 
 import timber.log.Timber;
 
@@ -50,7 +48,7 @@ public class CameraUtils
      * The list of sizes from which the first supported by the respective {@link Camera2} is to be
      * chosen as the size of the one and only <code>Format</code> supported by the associated
      * <code>MediaRecorder</code> <code>CaptureDevice</code>.
-     *
+     * <p>
      * User selectable video resolution. The actual resolution use during video call is adjusted so
      * it is within device capability {@link #getOptimalPreviewSize(Dimension, Size[])
      * Any strides paddings if required, is properly handled in
@@ -217,8 +215,7 @@ public class CameraUtils
                         sFormats.add(ImageFormat.RAW_SENSOR);
                         break;
                     case "PRIVATE":
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                            sFormats.add(ImageFormat.PRIVATE); // API-23
+                        sFormats.add(ImageFormat.PRIVATE); // API-23
                         break;
                     case "YUV_420_888":
                         sFormats.add(ImageFormat.YUV_420_888);
@@ -248,7 +245,6 @@ public class CameraUtils
     /**
      * Calculates preview orientation for the {@link android.view.Display}'s <code>rotation</code>
      * in degrees for the selected cameraId, also taking into account of the device orientation.
-     *
      * valid camera orientation: 0 or 90
      * valid displayRotation: 0, 90, 180
      *
@@ -360,7 +356,7 @@ public class CameraUtils
      * Get the list of camera video resolutions supported by cameraId
      *
      * @param cameraId the request camera Id resolutions
-     * @return List of camera video resolutions supported by cameraId
+     * @return Array of camera video resolutions supported by cameraId
      */
     public static Size[] getSupportSizeForCameraId(String cameraId)
     {

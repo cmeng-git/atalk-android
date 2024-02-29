@@ -65,10 +65,6 @@
         <item name="android:windowContentOverlay">@drawable/panel_separator_dark</item>
     </style>
 
-    <style name="dialogAlert">
-        <item name="android:background">@drawable/dialog_bg</item>
-    </style>
-
     <style name="ScreenOffDialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

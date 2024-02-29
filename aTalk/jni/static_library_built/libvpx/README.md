@@ -50,7 +50,7 @@ b. for a specific <ABI>
 ./build-libvpx4android.sh <ABI>
 
 The build installs the static libs and includes into the android project jni directory
- i.e. aTalk/jni/vpx/android/\<ABI>
+ i.e. ./jni/vpx/android/\<ABI>
 ```
 ```
 Note:
@@ -62,7 +62,7 @@ clang50: error: no such file or directory: 'ARCHITECTURE=7'
 The above problem is fixed in libvpx-1.8.2 (standalone toolChanins only: sdk-path option is removed)
 ```
 
-All information given below is for reference only. See aTalk/jni for its implementation.
+All information given below is for reference only. See ./jni for its implementation.
 
 ##### ============================================
 #### Android.mk makefile - for other project

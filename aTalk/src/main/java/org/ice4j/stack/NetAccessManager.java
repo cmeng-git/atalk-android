@@ -17,12 +17,7 @@
  */
 package org.ice4j.stack;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import org.atalk.util.concurrent.ExecutorFactory;
-import org.atalk.util.function.Consumer;
 import org.ice4j.StunException;
 import org.ice4j.Transport;
 import org.ice4j.TransportAddress;
@@ -38,6 +33,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,7 +49,6 @@ import java.util.logging.Logger;
  * @author Boris Grozev
  * @author Yura Yaroshevich
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public
 class NetAccessManager implements ErrorHandler {
     /**

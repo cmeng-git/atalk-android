@@ -5,7 +5,7 @@
 # APP_PLATFORM=android-15 for aTalk minimum support SDK platform i.e. api-15
 # see https://github.com/android-ndk/ndk/issues/543
 # https://android.googlesource.com/platform/ndk/+/master/docs/user/common_problems.md#using-mismatched-prebuilt-libraries
-APP_PLATFORM := android-21
+APP_PLATFORM := android-24
 
 # https://developer.android.com/ndk/guides/abis.html
 # We recommend setting APP_ABI := all for all targets. For specific target explicitly, use

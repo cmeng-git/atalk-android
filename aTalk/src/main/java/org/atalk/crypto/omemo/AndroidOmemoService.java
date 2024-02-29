@@ -20,7 +20,6 @@ import java.util.SortedSet;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetBasicInstantMessagingJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetMultiUserChatJabberImpl;
-import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -99,26 +98,29 @@ public class AndroidOmemoService implements OmemoManager.InitializationFinishedC
 
     /**
      * The method should only be called upon user authentication.
-     * Init smack reply timeout for omemo preKey publish whose reply takes 7(normal) to 11s(bosh)
-     * on Note10 with remote server; but takes only 2s on aTalk server.
+     * Init smack reply time for omemo preKey publish on aTalk server may take:
+     * Note-10+ = 8s(normal) to 11s(bosh); AVD = 8.4s from aTalk server
+     * 20240222: Implemented in smack OmemoManager/OmemoService for both Async.go; problem with
+     * replyTimeout set not guarantee. initializeAsync() and PepEventListener<OmemoDeviceListElement>
+     * <p>
+     * Note: Must initialize the manager without blocking; else <Roster/> and <Presence/> are
+     * not handled properly in aTalk. Once the manager is successfully initialized,
+     * the finishedCallback will be notified. It will also get notified, if an error occurs.
      */
     public void initOmemoDevice() {
         isOmemoInitSuccessful = false;
-        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_OMEMO_INIT_TIMEOUT);
         mOmemoManager.initializeAsync(this);
     }
 
     @Override
     public void initializationFinished(OmemoManager manager) {
         isOmemoInitSuccessful = true;
-        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
         Timber.d("Initialize OmemoManager successful for %s", manager.getOwnDevice());
     }
 
     @Override
     public void initializationFailed(Exception cause) {
         isOmemoInitSuccessful = false;
-        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
 
         String title = aTalkApp.getResString(R.string.omemo_init_failed_title);
         String errMsg = cause.getMessage();

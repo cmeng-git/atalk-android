@@ -191,6 +191,7 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
      * @param urlKey The identifier of the image in the resource properties file.
      * @return the <code>URL</code> of the image corresponding to the given key
      */
+    @Override
     public URL getImageURL(String urlKey)
     {
         String path = getImagePath(urlKey);
@@ -244,42 +245,6 @@ public class ResourceManagementServiceImpl extends AbstractResourcesService
     public URL getSoundURLForPath(String path)
     {
         return getSoundPack().getClass().getClassLoader().getResource(path);
-    }
-
-    /**
-     * Loads an image from a given image identifier.
-     *
-     * @param imageID The identifier of the image.
-     * @return The image for the given identifier.
-     */
-    @Override
-    public byte[] getImageInBytes(String imageID)
-    {
-        InputStream in = getImageInputStream(imageID);
-        if (in == null)
-            return null;
-
-        byte[] image = null;
-        try {
-            image = new byte[in.available()];
-            in.read(image);
-        } catch (IOException e) {
-            Timber.e(e, "Failed to load image:%s", imageID);
-        }
-        return image;
-    }
-
-    /**
-     * Loads an image from a given image identifier.
-     *
-     * @param imageID The identifier of the image.
-     * @return The image for the given identifier.
-     */
-    @Override
-    public ImageIcon getImage(String imageID)
-    {
-        URL imageURL = getImageURL(imageID);
-        return (imageURL == null) ? null : new ImageIcon(imageURL);
     }
 
     /**

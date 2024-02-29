@@ -1,5 +1,30 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        3.4.0 (304000)
+Release Date:   02/29/2024
+Author:         cmeng
+- AndroidOmemoService initOmemoDevice() setReplyTimeout not working and always failed with NoResponseException;
+  * Implement setReplyTimeout for both Async.go in smack OmemoManager/OmemoService, else set value is reset by aTalk other stanza processes.
+  * set in OmemoService for initializeAsync(), and within the PepEventListener<OmemoDeviceListElement>
+  See https://discourse.igniterealtime.org/t/smack-4-4-7-xmppconnection-setreplytimeout-value-is-not-guaranteed-when-the-stanza-is-sent-asynchronously/93636
+- Smack OmemoManager handle of Pubsub#event in PepEventListener has NoResponseException; end in endless loop when server
+  send multiple (x15) Pubsub#event's, and eventually eventually crashes smack with InvalidXmlException.
+  setReplyTimeout to 15s and block all new Pubsub#Event once it is served, check via publishedDeviceList.
+- Finally aTalk decided to make local changes, replacing the 2 files in smack-omemo library i.e.
+  a. OmemoManager.java and
+  b. OmemoService.java classes
+- Remove all the new created volatile contacts on exit 'Show Block List', else deleted contacts reappear in contactList.
+- Alert dialog drawable/background_alert_dialog must use ?attr/colorBackground, to align with text font theme color.
+- Set aTalk minSdkVersion to API-24; diminish support in android libraries for < API-24
+- Drop dependency and replace com.code-troopers.betterpickers with android DatePicker-spinner mode (API-24).
+- Improve call history deletion UI for all call records prior to user set date.
+- Improve account preference birth date setting UI.
+- Remove MapsInitializer.initialize(), no further required; default to use Renderer.LATEST
+  see https://developers.google.com/maps/documentation/android-sdk/renderer#opt-out
+- Remove all old classes supporting <API-24: AbstractFunction, Consumer, Function, Predicate, and Supplier
+- Halt upgrade jni library libvpx 1.13.1 to 1.14.0; ABI mismatch when run on armeabi-v7a and x86-64. arm64-v8a is OK.
+
+=========================================================================
 Version:        3.3.7 (303070)
 Release Date:   02/21/2024
 Author:         cmeng
@@ -30,7 +55,6 @@ Author:         cmeng
   * a. org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo
   * b. org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild
 - Fix call notification control ui partial cropping of buttons.
-- Smack uses java.util.zip.Deflater(In|Out)putStream as Java7 API native alternative to obsoleted JZlib
 - Clean up ChatSessionManager class source removing unused methods.
 
 =========================================================================

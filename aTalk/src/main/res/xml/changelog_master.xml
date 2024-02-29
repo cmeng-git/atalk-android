@@ -6,8 +6,21 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.3.7 (02/21/2024)" versioncode="303070">
+    <release version="3.4.0 (02/29/2024)" versioncode="304000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Fix AndroidOmemoService#initOmemoDevice always failed with NoResponseException due to asynchronous execution even with setReplyTimeout = 15s</change>
+        <change>Fix smack OmemoManager handle of Pubsub#event in PepEventListener has NoResponseException; end in endless loop and smack crashes</change>
+        <change>Set aTalk minSdkVersion to API-24; diminish support in android libraries for older API's</change>
+        <change>Remove all the new created volatile contacts on exit 'Show Block List', else deleted contacts reappear in contactList</change>
+        <change>Alert dialog drawable/background_alert_dialog must use ?attr/colorBackground, to align with text font theme color</change>
+        <change>Drop dependency and replace betterpickers library with android DatePicker-spinner mode (API-24)</change>
+        <change>Improve call history deletion UI for all call records prior to user set date</change>
+        <change>Improve account preference birth date setting UI</change>
+        <change>Remove MapsInitializer.initialize(), no further required; default to use Renderer.LATEST</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.3.7 (02/21/2024)" versioncode="303070">
         <change>Add support for XEP-0191: Blocking Command to block communications with a specific contact and domain</change>
         <change>Implement EntityCapsPersistentCache using mySQLite DB instead of file system</change>
         <change>Fix erased contact/chatroom history messages reappear after return to chatSession due to msgCache not cleared</change>
@@ -21,7 +34,6 @@
         <change>Add/Remove of ContactPresence and ContactBlocking Status Listeners in MetaContactListAdapter should be per registered ProtocolProvider</change>
         <change>Bug fixes and enhancements</change>
     </release>
-
 
     <release version="3.3.6 (02/12/2024)" versioncode="303060">
         <change>JingleFile transfer AbstractMethodError resolved with aTalk source patches; Google team is unable to offer any solution in gradle release built</change>

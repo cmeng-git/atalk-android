@@ -26,8 +26,7 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ChatSecuritySettings extends OSGiActivity
-{
+public class ChatSecuritySettings extends OSGiActivity {
     // Preference mKeys
     static private final String P_KEY_CRYPTO_ENABLE = "pref.key.crypto.enable";
 
@@ -47,8 +46,7 @@ public class ChatSecuritySettings extends OSGiActivity
      * {@inheritDoc}
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             // Display the fragment as the main content.
@@ -61,14 +59,12 @@ public class ChatSecuritySettings extends OSGiActivity
      * The preferences fragment implements OTR settings.
      */
     public static class SettingsFragment extends OSGiPreferenceFragment
-            implements SharedPreferences.OnSharedPreferenceChangeListener
-    {
+            implements SharedPreferences.OnSharedPreferenceChangeListener {
         /**
          * {@inheritDoc}
          */
         @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey)
-        {
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             super.onCreatePreferences(savedInstanceState, rootKey);
             addPreferencesFromResource(R.xml.security_preferences);
         }
@@ -77,8 +73,7 @@ public class ChatSecuritySettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void onStart()
-        {
+        public void onStart() {
             super.onStart();
 
             mConfig = UtilActivator.getConfigurationService();
@@ -106,8 +101,7 @@ public class ChatSecuritySettings extends OSGiActivity
          * {@inheritDoc}
          */
         @Override
-        public void onStop()
-        {
+        public void onStop() {
             SharedPreferences shPrefs = getPreferenceManager().getSharedPreferences();
             shPrefs.unregisterOnSharedPreferenceChangeListener(this);
             super.onStop();
@@ -116,8 +110,7 @@ public class ChatSecuritySettings extends OSGiActivity
         /**
          * {@inheritDoc}
          */
-        public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key)
-        {
+        public void onSharedPreferenceChanged(SharedPreferences shPreferences, String key) {
             if (key.equals(P_KEY_CRYPTO_ENABLE)) {
                 OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
 

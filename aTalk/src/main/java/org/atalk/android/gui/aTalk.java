@@ -35,6 +35,11 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;
@@ -50,15 +55,8 @@ import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
-import org.atalk.impl.neomedia.device.AndroidCameraSystem;
-import org.atalk.persistance.migrations.MigrateDir;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import de.cketti.library.changelog.ChangeLog;
 import timber.log.Timber;
@@ -151,11 +149,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         // allow 15 seconds for first launch login to complete before showing history log if the activity is still active
         ChangeLog cl = new ChangeLog(this);
         if (cl.isFirstRun()) {
-            // Purge obsoleted aTalk avatarCache directory and contents 2.2.0 (2020/03/13): To be removed in future release.
-            MigrateDir.purgeAvatarCache();
-            // Update camera database, and remove mediaRecorder support (2021/11/05); not longer supported since API-23.
-            AndroidCameraSystem.cleanMediaDB();
-
             runOnUiThread(() -> new Handler().postDelayed(() -> {
                 if (!isFinishing()) {
                     cl.getLogDialog().show();
@@ -406,19 +399,17 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
 
     public static boolean hasPermission(Activity callBack, boolean requestPermission, int requestCode, String permission) {
         // Timber.d(new Exception(),"Callback: %s => %s (%s)", callBack, permission, requestPermission);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Do not use getInstance() as mInstances may be empty
-            if (ActivityCompat.checkSelfPermission(aTalkApp.getInstance(), permission) != PackageManager.PERMISSION_GRANTED) {
-                if (requestPermission && (callBack != null)) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(callBack, permission)) {
-                        ActivityCompat.requestPermissions(callBack, new String[]{permission}, requestCode);
-                    }
-                    else {
-                        showHintMessage(requestCode, permission);
-                    }
+        // Do not use getInstance() as mInstances may be empty
+        if (ActivityCompat.checkSelfPermission(aTalkApp.getInstance(), permission) != PackageManager.PERMISSION_GRANTED) {
+            if (requestPermission && (callBack != null)) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(callBack, permission)) {
+                    ActivityCompat.requestPermissions(callBack, new String[]{permission}, requestCode);
                 }
-                return false;
+                else {
+                    showHintMessage(requestCode, permission);
+                }
             }
+            return false;
         }
         return true;
     }

@@ -1,10 +1,5 @@
 package org.atalk.service.httputil;
 
-import android.os.Build;
-
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
-import org.atalk.android.BuildConfig;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -18,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
+
+import org.apache.http.conn.ssl.StrictHostnameVerifier;
+import org.atalk.android.BuildConfig;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -58,12 +56,7 @@ public class HttpConnectionManager // extends AbstractConnectionManager
         } catch (final UnknownHostException e) {
             throw new IllegalStateException(e);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(localhost, 9050));
-        }
-        else {
-            return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(localhost, 8118));
-        }
+        return new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(localhost, 9050));
     }
 
     public static OkHttpClient buildHttpClient(final String url, int readTimeout)

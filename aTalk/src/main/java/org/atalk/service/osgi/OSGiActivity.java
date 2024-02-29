@@ -444,7 +444,7 @@ public class OSGiActivity extends BaseActivity {
     }
 
     /**
-     * Broadcast listener that listens for {@link aTalkApp#ACTION_EXIT} and then finishes this <code>Activity</code>
+     * Broadcast listener that listens for {@link ACTION_EXIT} and then finishes this <code>Activity</code>
      */
     class ExitActionListener extends BroadcastReceiver {
         @Override

@@ -16,8 +16,7 @@
  */
 package org.atalk.impl.appupdate;
 
-import com.codetroopers.betterpickers.BuildConfig;
-
+import org.atalk.android.BuildConfig;
 import net.java.sip.communicator.service.update.UpdateService;
 
 /**
@@ -25,22 +24,18 @@ import net.java.sip.communicator.service.update.UpdateService;
  *
  * @author Eng Chong Meng
  */
-public class UpdateServiceImpl implements UpdateService
-{
+public class UpdateServiceImpl implements UpdateService {
     @Override
-    public void checkForUpdates()
-    {
+    public void checkForUpdates() {
     }
 
     @Override
-    public String getLatestVersion()
-    {
+    public String getLatestVersion() {
         return BuildConfig.VERSION_NAME;
     }
 
     @Override
-    public boolean isLatestVersion()
-    {
+    public boolean isLatestVersion() {
         return true;
     }
 }

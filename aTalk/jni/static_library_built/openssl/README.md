@@ -30,7 +30,7 @@ All the built libxxx.a and *.h are installed in the ./jni/openssl/android/&lt;AB
 - b. for a specific \<ABI><br/>
   ./build-libopenssl4android.sh \<ABI>
 
-All information given below is for reference only. See aTalk/jni for its implementation.
+All information given below is for reference only. See ./jni for its implementation.
 
 ##============================================##<br/>
 Add libopenssl include path to `jni/Android.mk`.

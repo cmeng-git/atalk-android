@@ -154,17 +154,11 @@ public class LogContext {
 
     protected static String formatContext(Map<String, String> context) {
         StringBuilder contextString = new StringBuilder();
-//        String data = context.entrySet()
-//                .stream()
-//                .map(e -> e.getKey() + "=" + e.getValue())
-//                .collect(Collectors.joining(" "));
-//        contextString.append(data);
-
-        String data = "";
-        for (Map.Entry<String, String> entry : context.entrySet()) {
-            data += entry.getKey() + "=" + entry.getValue() + " ";
-        }
-        contextString.append(data.trim());
+        String data = context.entrySet()
+                .stream()
+                .map(e -> e.getKey() + "=" + e.getValue())
+                .collect(Collectors.joining(" "));
+        contextString.append(data);
 
         if (contextString.length() > 0) {
             return CONTEXT_START_TOKEN + contextString + CONTEXT_END_TOKEN;

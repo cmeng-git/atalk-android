@@ -211,12 +211,7 @@ public class CallRecord
 
         long callTime = (endTime.getTime() - start);
         CharSequence callDuration;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            callDuration = formatDuration(callTime);
-        }
-        else {
-            callDuration = Long.toString(callTime / 1000);
-        }
+        callDuration = formatDuration(callTime);
 
         StringBuilder callInfo = new StringBuilder()
                 .append(callStart)
@@ -227,7 +222,6 @@ public class CallRecord
         return callInfo.toString();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static CharSequence formatDuration(long millis)
     {
         final MeasureFormat.FormatWidth width;

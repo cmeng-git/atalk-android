@@ -451,7 +451,6 @@ public class GuiUtils
             default:
                 return "";
         }
-
         return UtilActivator.getResources().getI18NString(monthStringKey);
     }
 

@@ -50,7 +50,8 @@ public class GeoLocationActivity extends GeoLocationBase implements OnMapsSdkIni
     {
         super.onCreate(savedInstanceState);
         googleApiAvailability = GoogleApiAvailability.getInstance();
-        MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
+        // Not required to override; default to use LATEST
+        // MapsInitializer.initialize(getApplicationContext(), MapsInitializer.Renderer.LATEST, this);
     }
 
     @Override

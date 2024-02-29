@@ -18,6 +18,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
@@ -49,11 +54,6 @@ import org.atalk.service.osgi.OSGiService;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -197,21 +197,19 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
                     mBuilder.addAction(markReadAction);
 
                     // Build Reply action for OS >= android-N (Override for API-34 built!!!)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                                .setLabel("Quick reply")
-                                .build();
+                    RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                            .setLabel("Quick reply")
+                            .build();
 
-                        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
-                                R.drawable.ic_send_text_dark,
-                                aTalkApp.getResString(R.string.service_gui_REPLY),
-                                createReplyIntent(nId))
-                                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
-                                // .setShowsUserInterface(true)
-                                .addRemoteInput(remoteInput)
-                                .build();
-                        mBuilder.addAction(replyAction);
-                    }
+                    NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+                            R.drawable.ic_send_text_dark,
+                            aTalkApp.getResString(R.string.service_gui_REPLY),
+                            createReplyIntent(nId))
+                            .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                            // .setShowsUserInterface(true)
+                            .addRemoteInput(remoteInput)
+                            .build();
+                    mBuilder.addAction(replyAction);
 
                     // Build Snooze action if more than the specific limit has been reached
                     if (newPopup instanceof AndroidMergedPopup) {
@@ -308,7 +306,7 @@ public class NotificationPopupHandler extends AbstractPopupMessageHandler
             flag |= PendingIntent.FLAG_MUTABLE;
             flag |= isUpdate ? PendingIntent.FLAG_NO_CREATE : 0;
         }
-        else if (!isMutable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        else if (!isMutable) {
             flag |= PendingIntent.FLAG_IMMUTABLE;
         }
         return flag;

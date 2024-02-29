@@ -32,7 +32,7 @@ set -u
 # Never mix two api level to build static library for use on the same apk.
 # Set to API:21 for aTalk 64-bit architecture support and minSdk support
 # Does not build 64-bit arch if ANDROID_API is less than 21 i.e. the minimum supported API level for 64-bit.
-ANDROID_API=21
+ANDROID_API=24
 
 # Built with command i.e. ./ffmpeg-android_build.sh or following with parameter [ABIS(x)]
 # Create custom ABIS or uncomment to build all supported abi for ffmpeg.

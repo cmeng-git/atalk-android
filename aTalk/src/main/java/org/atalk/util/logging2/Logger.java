@@ -16,9 +16,8 @@
 
 package org.atalk.util.logging2;
 
-import org.atalk.util.function.Supplier;
-
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 

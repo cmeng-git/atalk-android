@@ -207,6 +207,7 @@ public class OperationSetPersistentPresenceJabberImpl
      */
     public OperationSetPersistentPresenceJabberImpl(ProtocolProviderServiceJabberImpl pps, InfoRetriever infoRetriever) {
         super(pps);
+        // Timber.e("OperationSetPersistentPresenceJabberImpl: %s %s", pps, infoRetriever);
         mInfoRetriever = infoRetriever;
         ssContactList = new ServerStoredContactListJabberImpl(this, pps, infoRetriever);
         mobileIndicator = new MobileIndicator(pps, ssContactList);
@@ -546,6 +547,7 @@ public class OperationSetPersistentPresenceJabberImpl
                 return;
             }
         }
+
         if (status.equals(jabberStatusEnum.getStatus(JabberStatusEnum.OFFLINE))) {
             mPPS.unregister();
             clearLocalContactResources();
@@ -569,6 +571,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
             currentPresence = presenceBuilder.build();
             try {
+                // Timber.e("Sending presence status");
                 connection.sendStanza(currentPresence);
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send new presence status");

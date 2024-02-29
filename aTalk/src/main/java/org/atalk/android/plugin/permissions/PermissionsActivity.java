@@ -18,7 +18,6 @@ package org.atalk.android.plugin.permissions;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -107,13 +106,12 @@ public class PermissionsActivity extends BaseActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Always request permission on first apk launch for android.M
-        if (aTalkApp.permissionFirstRequest && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
+        if (aTalkApp.permissionFirstRequest) {
 
             // see if we should show the splash screen and wait for it to complete before continue
             if (Splash.isFirstRun()) {
@@ -306,7 +304,6 @@ public class PermissionsActivity extends BaseActivity {
      * Retrieve the package current default permissions status on create;
      * only if both the arrays are empty. Non-empty -> orientation change
      */
-    @TargetApi(23)
     private boolean getPackagePermissionsStatus() {
         if (grantedPermissionResponses.isEmpty() && deniedPermissionResponses.isEmpty()) {
             PackageManager pm = getPackageManager();
@@ -559,7 +556,6 @@ public class PermissionsActivity extends BaseActivity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     protected boolean isOptimizingBattery() {
         final PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
         return (pm != null) && !pm.isIgnoringBatteryOptimizations(getPackageName());
@@ -568,7 +564,6 @@ public class PermissionsActivity extends BaseActivity {
     /**
      * GetBatteryOptimization class ActivityResultContract implementation.
      */
-    @TargetApi(Build.VERSION_CODES.M)
     @SuppressLint("BatteryLife")
     public class GetBatteryOptimization extends ActivityResultContract<Void, Boolean> {
         @NonNull

@@ -17,6 +17,63 @@
         android:text="@string/service_gui_CALL_HISTORY_GROUP_NAME"
         android:textColor="@color/textColorWhite" />
 
+    <LinearLayout
+        android:id="@+id/call_history_dateTime"
+        android:background="?attr/colorBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/call_history_warn"
+            style="@style/MediumFont"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:calendarViewShown="false"
+                android:timePickerMode="spinner" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+
+            <Button
+                android:id="@+id/cancelButton"
+                style="@style/ButtonTop"
+                android:text="@string/service_gui_CANCEL" />
+
+            <Button
+                android:id="@+id/purgeButton"
+                style="@style/ButtonTop"
+                android:layout_marginStart="4dp"
+                android:text="@string/service_gui_PURGE" />
+        </LinearLayout>
+    </LinearLayout>
+
     <ListView
         android:id="@+id/callListView"
         android:layout_width="fill_parent"

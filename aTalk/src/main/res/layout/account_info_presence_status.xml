@@ -262,7 +262,7 @@
                     android:maxLines="1" />
 
                 <ImageView
-                    android:id="@+id/datePicker"
+                    android:id="@+id/datePickerBtn"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginStart="5dp"
@@ -271,6 +271,15 @@
                     android:src="@drawable/ic_calender"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
+
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/ai_Age_Container"

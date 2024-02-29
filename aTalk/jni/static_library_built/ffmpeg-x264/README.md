@@ -14,7 +14,7 @@ The ffmpeg-v5.1.4 and libx264-v164 source are downloaded using the init_libs_ffm
   e.g. build-ffmpeg4android.sh arm64-v8a for the specific 'arm64-v8a' architecture built
 * Optional - execute script below to fetch libraries sources for both ffmpeg and x264 i.e. ./init_libs_ffmpeg_x264.sh. <br/>
   Note: You only need to run this script manually if you want to update the existing ffmpeg and/or x264 sources<br/>
-* All the final built static libs *.a and include files are installed in the ./aTalk/jni/ffmpeg/android/&lt;ABI>
+* All the final built static libs *.a and include files are installed in the ./jni/ffmpeg/android/&lt;ABI>
 * Note:<br/>
  a. Before building, build-ffmpeg4android.sh fetches the source if none is found or with an incorrect version.<br/>
     The versions are defined in the file i.e.:<br/>
@@ -43,7 +43,7 @@ The ffmpeg-v5.1.4 and libx264-v164 source are downloaded using the init_libs_ffm
 * Current aTalk >=v3.0.0 ffmpeg support have updated all deprecated functions when using ffmpeg version >= 5.1
 * If a higher ffmpeg version is required, you may need to update both the following two files:
   - .jni\ffmpeg\FFmpeg.c and
-  - atalk-android\aTalk\src\main\java\org\atalk\impl\neomedia\codec\FFmpeg.java
+  - org\atalk\impl\neomedia\codec\FFmpeg.java
 * Building of arch64-bit required api-21 and must apply throughout all scripts and in AS JNI application.mk<br/>
 i.e. APP_PLATFORM := android-21
 

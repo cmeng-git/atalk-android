@@ -31,6 +31,7 @@ import org.atalk.service.osgi.OSGiPreferenceFragment;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -299,8 +300,7 @@ public class SecurityActivity extends OSGiActivity implements SecurityProtocolsD
             final Map<String, Integer> encMap = securityReg.getEncryptionProtocol();
             List<String> encryptionsInOrder = new ArrayList<>(encMap.keySet());
 
-            // ComparingInt is only available in API-24
-            Collections.sort(encryptionsInOrder, (s, s2) -> encMap.get(s) - encMap.get(s2));
+            encryptionsInOrder.sort(Comparator.comparingInt(encMap::get));
 
             Map<String, Boolean> encStatus = securityReg.getEncryptionProtocolStatus();
             StringBuilder summary = new StringBuilder();

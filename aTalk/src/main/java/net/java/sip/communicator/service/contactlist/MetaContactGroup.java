@@ -172,7 +172,7 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * <code>MetaContactGroup</code>, the method would return an empty list.
      * The <code>canContainSubgroups()</code> method allows us to verify whether
      * this is the case with the group at hand.
-     *
+     * <p>
      * Note to implementors:  In order to prevent problems with concurrency, the
      * <code>Iterator</code> returned by this method should not be over the actual
      * list of groups but rather over a copy of that list.
@@ -318,11 +318,11 @@ public interface MetaContactGroup extends Comparable<MetaContactGroup>
      * key-value pair. If the specified {@code key} is already associated
      * in this instance with a value, the existing value is overwritten with the
      * specified {@code value}.
-     *
+     * <p>
      * The user-defined association created by this method and stored in this
      * instance is not serialized by this instance and is thus only meant for
      * runtime use.
-     *
+     * <p>
      * The storage of the user data is implementation-specific and is thus not
      * guaranteed to be optimized for execution time and memory use.
      *

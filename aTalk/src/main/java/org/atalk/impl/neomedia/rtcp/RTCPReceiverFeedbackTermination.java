@@ -15,6 +15,12 @@
  */
 package org.atalk.impl.neomedia.rtcp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.media.rtp.ReceiveStream;
+
 import net.sf.fmj.media.rtp.RTCPCompoundPacket;
 import net.sf.fmj.media.rtp.RTCPPacket;
 import net.sf.fmj.media.rtp.RTCPRRPacket;
@@ -22,7 +28,6 @@ import net.sf.fmj.media.rtp.RTCPReportBlock;
 import net.sf.fmj.media.rtp.SSRCCache;
 import net.sf.fmj.media.rtp.SSRCInfo;
 
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.impl.neomedia.MediaStreamImpl;
 import org.atalk.impl.neomedia.RTCPPacketPredicate;
 import org.atalk.impl.neomedia.rtp.StreamRTPManager;
@@ -31,6 +36,7 @@ import org.atalk.impl.neomedia.rtp.translator.RTPTranslatorImpl;
 import org.atalk.impl.neomedia.transform.PacketTransformer;
 import org.atalk.impl.neomedia.transform.SinglePacketTransformerAdapter;
 import org.atalk.impl.neomedia.transform.TransformEngine;
+import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.service.neomedia.MediaStream;
 import org.atalk.service.neomedia.RTPTranslator;
 import org.atalk.service.neomedia.RawPacket;
@@ -38,15 +44,10 @@ import org.atalk.service.neomedia.TransmissionFailedException;
 import org.atalk.service.neomedia.event.RTCPFeedbackMessageEvent;
 import org.atalk.util.ArrayUtils;
 import org.atalk.util.ByteArrayBuffer;
+import org.atalk.util.MediaType;
 import org.atalk.util.RTCPUtils;
 import org.atalk.util.concurrent.PeriodicRunnable;
 import org.atalk.util.function.RTCPGenerator;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.media.rtp.ReceiveStream;
 
 import timber.log.Timber;
 
@@ -57,8 +58,7 @@ import timber.log.Timber;
  * @author Boris Grozev
  * @author Eng Chong Meng
  */
-public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements TransformEngine
-{
+public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements TransformEngine {
     /**
      * The maximum number of RTCP report blocks that an RR can contain.
      */
@@ -100,8 +100,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      *
      * @param stream the {@link MediaStream} that owns this instance.
      */
-    public RTCPReceiverFeedbackTermination(MediaStreamImpl stream)
-    {
+    public RTCPReceiverFeedbackTermination(MediaStreamImpl stream) {
         super(REPORT_PERIOD_MS);
         this.stream = stream;
     }
@@ -110,8 +109,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      * {@inheritDoc}
      */
     @Override
-    public void run()
-    {
+    public void run() {
         super.run();
 
         // cmeng - just return if stream or rtpTranslator is null i.e. nothing to report
@@ -163,8 +161,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      *
      * @return the local sender SSRC ID
      */
-    private long getSenderSSRC()
-    {
+    private long getSenderSSRC() {
         StreamRTPManager streamRTPManager = stream.getStreamRTPManager();
         if (streamRTPManager == null) {
             return -1;
@@ -177,8 +174,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      *
      * @return A <code>List</code> of <code>RTCPRRPacket</code>s to inject into the <code>MediaStream</code>.
      */
-    private RTCPRRPacket[] makeRRs(long senderSSRC)
-    {
+    private RTCPRRPacket[] makeRRs(long senderSSRC) {
         RTCPReportBlock[] reportBlocks = makeReportBlocks();
         if (ArrayUtils.isNullOrEmpty(reportBlocks)) {
             return null;
@@ -210,15 +206,12 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
     /**
      * Iterate through all the <code>ReceiveStream</code>s that this <code>MediaStream</code> has and
      * make <code>RTCPReportBlock</code>s for all of them.
-     *
      * cmeng: rptTranslator is currently disabled for Android or peer is not the conference focus.
-     *
      * {@link net.java.sip.communicator.service.protocol.media.MediaAwareCallConference#getRTPTranslator(MediaType)}
      *
-     * @return
+     * @return RTCPReportBlock[]
      */
-    private RTCPReportBlock[] makeReportBlocks()
-    {
+    private RTCPReportBlock[] makeReportBlocks() {
         // State validation.
         if (stream == null) {
             Timber.w("stream is null.");
@@ -278,7 +271,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
                         .addField("xtnd_seqnum", reportBlock.getXtndSeqNum()));
             }
         }
-        return reportBlocks.toArray(new RTCPReportBlock[reportBlocks.size()]);
+        return reportBlocks.toArray(new RTCPReportBlock[0]);
     }
 
     /**
@@ -288,8 +281,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      * @return an <code>RTCPREMBPacket</code> that provides receiver feedback to the
      * endpoint from which we receive.
      */
-    private RTCPREMBPacket makeREMB(long senderSSRC)
-    {
+    private RTCPREMBPacket makeREMB(long senderSSRC) {
         // Destination
         RemoteBitrateEstimatorWrapper remoteBitrateEstimator = stream.getRemoteBitrateEstimator();
         if (!remoteBitrateEstimator.receiveSideBweEnabled()) {
@@ -323,8 +315,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      * {@inheritDoc}
      */
     @Override
-    public PacketTransformer getRTPTransformer()
-    {
+    public PacketTransformer getRTPTransformer() {
         return null;
     }
 
@@ -332,21 +323,18 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
      * {@inheritDoc}
      */
     @Override
-    public PacketTransformer getRTCPTransformer()
-    {
+    public PacketTransformer getRTCPTransformer() {
         return rtcpTransformer;
     }
 
     /**
      *
      */
-    class RTCPTransformer extends SinglePacketTransformerAdapter
-    {
+    class RTCPTransformer extends SinglePacketTransformerAdapter {
         /**
          * Ctor.
          */
-        RTCPTransformer()
-        {
+        RTCPTransformer() {
             super(RTCPPacketPredicate.INSTANCE);
         }
 
@@ -354,8 +342,7 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
          * {@inheritDoc}
          */
         @Override
-        public RawPacket transform(RawPacket pkt)
-        {
+        public RawPacket transform(RawPacket pkt) {
             // Kill the RRs that FMJ is sending.
             return doTransform(pkt, true);
         }
@@ -364,13 +351,11 @@ public class RTCPReceiverFeedbackTermination extends PeriodicRunnable implements
          * {@inheritDoc}
          */
         @Override
-        public RawPacket reverseTransform(RawPacket pkt)
-        {
+        public RawPacket reverseTransform(RawPacket pkt) {
             return doTransform(pkt, false);
         }
 
-        private RawPacket doTransform(RawPacket pkt, boolean send)
-        {
+        private RawPacket doTransform(RawPacket pkt, boolean send) {
             RTCPIterator it = new RTCPIterator(pkt);
             while (it.hasNext()) {
                 ByteArrayBuffer baf = it.next();

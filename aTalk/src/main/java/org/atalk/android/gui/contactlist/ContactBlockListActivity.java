@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetPresence;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
@@ -45,6 +46,8 @@ import net.java.sip.communicator.util.StatusUtil;
 import net.java.sip.communicator.util.account.AccountUtils;
 
 import org.atalk.android.R;
+import org.atalk.android.gui.AndroidGUIActivator;
+import org.atalk.android.gui.dialogs.DialogActivity;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.service.osgi.OSGiActivity;
@@ -65,6 +68,8 @@ public class ContactBlockListActivity extends OSGiActivity
 
     // A reference map between contact and its viewHolder
     private final Map<Contact, ContactViewHolder> mContactViews = new HashMap<>();
+
+    private final List<Contact> volatileContacts = new ArrayList<>();
 
     /**
      * {@inheritDoc}
@@ -98,6 +103,7 @@ public class ContactBlockListActivity extends OSGiActivity
      */
     private List<Contact> getContactBlockList() {
         List<Contact> blockContacts = new ArrayList<>();
+        volatileContacts.clear();
 
         // Get all the registered protocolProviders
         Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
@@ -119,6 +125,7 @@ public class ContactBlockListActivity extends OSGiActivity
                         // create a volatile contact if not found
                         if (contact == null) {
                             contact = ((OperationSetPersistentPresenceJabberImpl) presenceOpSet).createVolatileContact(jid);
+                            volatileContacts.add(contact);
                         }
                         blockContacts.add(contact);
                         contact.setContactBlock(true);
@@ -126,7 +133,6 @@ public class ContactBlockListActivity extends OSGiActivity
                 } catch (Exception e) {
                     Timber.w("initContactBlockStatus: %s", e.getMessage());
                 }
-
             }
         }
         return blockContacts;
@@ -139,6 +145,18 @@ public class ContactBlockListActivity extends OSGiActivity
             for (OperationSetPresence ops : presenceOpSets)
                 ops.removeContactBlockStatusListener(this);
         }
+
+        // Remove all volatile contacts on exit, else show up in contact list
+        new Thread(() -> {
+            MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
+            for (Contact contact : volatileContacts) {
+                try {
+                    metaContactListService.removeContact(contact);
+                } catch (Exception ex) {
+                    Timber.w("Remove contact %s error: %s", contact, ex.getMessage());
+                }
+            }
+        }).start();
     }
 
     @Override

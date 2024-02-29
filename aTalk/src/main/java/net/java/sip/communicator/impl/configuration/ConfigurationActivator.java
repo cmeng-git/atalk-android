@@ -14,8 +14,7 @@ import org.osgi.framework.BundleContext;
  * @author Emil Ivov
  * @author Lyubomir Marinov
  */
-public class ConfigurationActivator implements BundleActivator
-{
+public class ConfigurationActivator implements BundleActivator {
     /**
      * The <code>BundleContext</code> in which the configuration bundle has been started and has not been stopped yet.
      */
@@ -25,20 +24,18 @@ public class ConfigurationActivator implements BundleActivator
      * Starts the configuration service
      *
      * @param bundleContext the <code>BundleContext</code> as provided by the OSGi framework.
+     *
      * @throws Exception if anything goes wrong
      */
     public void start(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
         ConfigurationActivator.bundleContext = bundleContext;
         ConfigurationService configurationService = LibJitsi.getConfigurationService();
 
-        if (configurationService != null) {
-            configurationService.setProperty("protocol.sip.DESKTOP_STREAMING_DISABLED", "true");
-            configurationService.setProperty("protocol.jabber.DESKTOP_STREAMING_DISABLED", "true");
-            configurationService.setProperty("protocol.jabber.DISABLE_CUSTOM_DIGEST_MD5", "true");
-            bundleContext.registerService(ConfigurationService.class.getName(), configurationService, null);
-        }
+        configurationService.setProperty("protocol.sip.DESKTOP_STREAMING_DISABLED", "true");
+        configurationService.setProperty("protocol.jabber.DESKTOP_STREAMING_DISABLED", "true");
+        configurationService.setProperty("protocol.jabber.DISABLE_CUSTOM_DIGEST_MD5", "true");
+        bundleContext.registerService(ConfigurationService.class.getName(), configurationService, null);
     }
 
     /**
@@ -46,13 +43,13 @@ public class ConfigurationActivator implements BundleActivator
      * configuration service.
      *
      * @param bundleContext <code>BundleContext</code>
+     *
      * @throws Exception if anything goes wrong while storing the properties managed by the
      * <code>ConfigurationService</code> implementation provided by this bundle and while
      * unregistering the service in question
      */
     public void stop(BundleContext bundleContext)
-            throws Exception
-    {
+            throws Exception {
     }
 
     /**
@@ -62,8 +59,7 @@ public class ConfigurationActivator implements BundleActivator
      * @return the <code>BundleContext</code> in which the configuration bundle has been started and
      * has not been stopped yet
      */
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 }

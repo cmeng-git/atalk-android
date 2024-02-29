@@ -8,7 +8,6 @@ package org.atalk.android.gui.account.settings;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 
 import java.io.IOException;
@@ -135,13 +134,6 @@ public class XmppConnectionFragment extends OSGiPreferenceFragment
         editor.putString(P_KEY_RESOURCE_PRIORITY, String.valueOf(jbrReg.getPriority()));
 
         editor.apply();
-    }
-
-    protected void initCheckBoxPreference() {
-//        SharedPreferences.Editor editor = shPrefs.edit();
-//
-//        CheckBoxPreference showContact = findPreference(P_KEY_AUTO_GEN_RESOURCE);
-//        showContact.setChecked(false);
     }
 
     /**

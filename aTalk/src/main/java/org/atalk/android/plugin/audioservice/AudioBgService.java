@@ -24,7 +24,6 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.PlaybackParams;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -33,18 +32,17 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import org.atalk.persistance.FileBackend;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.atalk.persistance.FileBackend;
+
 import timber.log.Timber;
 
-public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener
-{
+public class AudioBgService extends Service implements MediaPlayer.OnCompletionListener {
     // Media player actions
     public static final String ACTION_PLAYER_INIT = "player_init";
     public static final String ACTION_PLAYER_START = "player_start";
@@ -73,8 +71,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     private float playbackSpeed = 1.0f;
 
-    public enum PlaybackState
-    {
+    public enum PlaybackState {
         init,
         play,
         pause,
@@ -116,8 +113,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     static final private double EMA_FILTER = 0.4;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         switch (intent.getAction()) {
             case ACTION_PLAYER_INIT:
@@ -189,8 +185,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         stopTimer();
         stopRecording();
@@ -208,8 +203,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
@@ -221,10 +215,10 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * Create a new media player instance for the specified uri
      *
      * @param uri Media file uri
+     *
      * @return true is creation is successful
      */
-    public boolean playerCreate(Uri uri)
-    {
+    public boolean playerCreate(Uri uri) {
         if (uri == null)
             return false;
 
@@ -258,8 +252,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    public void playerInit(Uri uri)
-    {
+    public void playerInit(Uri uri) {
         if (uri == null)
             return;
 
@@ -299,8 +292,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    private void playerReInit(Uri uri)
-    {
+    private void playerReInit(Uri uri) {
         mPlayer = uriPlayers.get(uri);
         if (mPlayer != null) {
             mPlayer.seekTo(0);
@@ -315,8 +307,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    public void playerPause(Uri uri)
-    {
+    public void playerPause(Uri uri) {
         if (uri == null)
             return;
 
@@ -336,8 +327,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    public void playerStart(Uri uri)
-    {
+    public void playerStart(Uri uri) {
         if (uri == null)
             return;
 
@@ -351,10 +341,8 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                PlaybackParams playPara = mPlayer.getPlaybackParams().setSpeed(playbackSpeed);
-                mPlayer.setPlaybackParams(playPara);
-            }
+            PlaybackParams playPara = mPlayer.getPlaybackParams().setSpeed(playbackSpeed);
+            mPlayer.setPlaybackParams(playPara);
             mPlayer.start();
             playbackState(PlaybackState.play, uri);
         } catch (Exception e) {
@@ -371,8 +359,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    public void playerSeek(Uri uri, int seekPosition)
-    {
+    public void playerSeek(Uri uri, int seekPosition) {
         if (uri == null)
             return;
 
@@ -393,24 +380,21 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     /**
      * Setting of playback speed is only support in Android.M
      */
-    private void setPlaybackSpeed()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (Map.Entry<Uri, MediaPlayer> entry : uriPlayers.entrySet()) {
-                MediaPlayer player = entry.getValue();
-                Uri uri = entry.getKey();
-                if (player == null)
-                    continue;
+    private void setPlaybackSpeed() {
+        for (Map.Entry<Uri, MediaPlayer> entry : uriPlayers.entrySet()) {
+            MediaPlayer player = entry.getValue();
+            Uri uri = entry.getKey();
+            if (player == null)
+                continue;
 
-                try {
-                    PlaybackParams playPara = player.getPlaybackParams().setSpeed(playbackSpeed);
-                    player.setPlaybackParams(playPara);
+            try {
+                PlaybackParams playPara = player.getPlaybackParams().setSpeed(playbackSpeed);
+                player.setPlaybackParams(playPara);
 
-                    // Update player state: play will start upon speed change if it was in pause state
-                    playbackState(PlaybackState.play, uri);
-                } catch (IllegalStateException e) {
-                    Timber.e("Playback setSpeed failed: %s", e.getMessage());
-                }
+                // Update player state: play will start upon speed change if it was in pause state
+                playbackState(PlaybackState.play, uri);
+            } catch (IllegalStateException e) {
+                Timber.e("Playback setSpeed failed: %s", e.getMessage());
             }
         }
     }
@@ -420,8 +404,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the media file uri
      */
-    private void playerRelease(Uri uri)
-    {
+    private void playerRelease(Uri uri) {
         if (uri == null)
             return;
 
@@ -448,8 +431,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * @param mp Media Player instance
      */
     @Override
-    public void onCompletion(MediaPlayer mp)
-    {
+    public void onCompletion(MediaPlayer mp) {
         fileUri = getUriByPlayer(mp);
         if (fileUri == null) {
             mp.release();
@@ -464,10 +446,10 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * Return the uri of the given mp
      *
      * @param mp the media player
+     *
      * @return Uri of the player
      */
-    private Uri getUriByPlayer(MediaPlayer mp)
-    {
+    private Uri getUriByPlayer(MediaPlayer mp) {
         for (Map.Entry<Uri, MediaPlayer> entry : uriPlayers.entrySet()) {
             if (entry.getValue().equals(mp)) {
                 return entry.getKey();
@@ -486,8 +468,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * @param pState player state
      * @param uri media file uri
      */
-    private void playbackState(PlaybackState pState, Uri uri)
-    {
+    private void playbackState(PlaybackState pState, Uri uri) {
         MediaPlayer xPlayer = uriPlayers.get(uri);
         if (xPlayer != null) {
             Intent intent = new Intent(PLAYBACK_STATE);
@@ -507,10 +488,8 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      * b. playback position
      * c. uri playback duration
      */
-    private final Runnable playbackStatus = new Runnable()
-    {
-        public void run()
-        {
+    private final Runnable playbackStatus = new Runnable() {
+        public void run() {
             boolean hasActivePlayer = false;
 
             for (Map.Entry<Uri, MediaPlayer> entry : uriPlayers.entrySet()) {
@@ -539,8 +518,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @param uri the audio file
      */
-    public void playerPlay(Uri uri)
-    {
+    public void playerPlay(Uri uri) {
         if (playerCreate(uri)) {
             mPlayer.start();
             uriPlayers.remove(uri);
@@ -551,8 +529,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
     /* =============================================================
      * Voice recording handlers
      * ============================================================= */
-    public void recordAudio()
-    {
+    public void recordAudio() {
         audioFile = createMediaVoiceFile();
         if (audioFile == null) {
             return;
@@ -577,8 +554,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         mHandlerRecord.postDelayed(updateSPL, 0);
     }
 
-    private void stopRecording()
-    {
+    private void stopRecording() {
         if (mRecorder != null) {
             try {
                 mRecorder.stop();
@@ -596,26 +572,22 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         }
     }
 
-    private void stopTimer()
-    {
+    private void stopTimer() {
         if (mHandlerRecord != null) {
             mHandlerRecord.removeCallbacks(updateSPL);
             mHandlerRecord = null;
         }
     }
 
-    private void sendBroadcast(String filePath)
-    {
+    private void sendBroadcast(String filePath) {
         Intent intent = new Intent(ACTION_AUDIO_RECORD);
         // intent.setDataAndType(uri, "video/3gp");
         intent.putExtra(URI, filePath);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    private final Runnable updateSPL = new Runnable()
-    {
-        public void run()
-        {
+    private final Runnable updateSPL = new Runnable() {
+        public void run() {
             long finalTime = SystemClock.uptimeMillis() - startTime;
             int seconds = (int) (finalTime / 1000);
             int minutes = seconds / 60;
@@ -638,16 +610,14 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
         }
     };
 
-    public double getAmplitudeEMA()
-    {
+    public double getAmplitudeEMA() {
         double amp = getAmplitude();
         // Compute a smoothed version for less flickering of the display.
         mEMA = EMA_FILTER * mEMA + (1.0 - EMA_FILTER) * amp;
         return mEMA;
     }
 
-    public double getAmplitude()
-    {
+    public double getAmplitude() {
         if (mRecorder != null)
             return (mRecorder.getMaxAmplitude());
         else
@@ -659,8 +629,7 @@ public class AudioBgService extends Service implements MediaPlayer.OnCompletionL
      *
      * @return Voice file for saving audio
      */
-    private static File createMediaVoiceFile()
-    {
+    private static File createMediaVoiceFile() {
         File voiceFile = null;
         File mediaDir = FileBackend.getaTalkStore(FileBackend.MEDIA_VOICE_SEND, true);
 

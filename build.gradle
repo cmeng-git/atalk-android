@@ -30,7 +30,7 @@ project.ext {
     preDexLibs = !project.hasProperty('disablePreDex')
     testCoverage = project.hasProperty('testCoverage')
 
-    minSdk = 21
+    minSdk = 24
     // SDE Eel is not compatible with API-34; missing dx, dx.jar and aapt2 not compatible
     compileSdk = 34
     buildTools = '34.0.0'

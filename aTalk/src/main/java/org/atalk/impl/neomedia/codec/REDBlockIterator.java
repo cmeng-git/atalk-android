@@ -13,13 +13,11 @@
  */
 package org.atalk.impl.neomedia.codec;
 
-import org.atalk.util.function.Predicate;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
 import timber.log.Timber;
-// import java.util.function.Predicate*; => need API-24
 
 /**
  * An <code>Iterator</code> that iterates RED blocks (primary and non-primary).

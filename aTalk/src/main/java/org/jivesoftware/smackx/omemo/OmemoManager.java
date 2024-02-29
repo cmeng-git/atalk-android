@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -96,6 +97,8 @@ import org.jxmpp.jid.FullJid;
 public final class OmemoManager extends Manager implements JingleEnvelopeManager {
     private static final Logger LOGGER = Logger.getLogger(OmemoManager.class.getName());
 
+    public static final int SMACK_REPLY_OMEMO_PUBLISH = 15000;
+
     private static final Integer UNKNOWN_DEVICE_ID = -1;
 
     private static final WeakHashMap<XMPPConnection, TreeMap<Integer, OmemoManager>> INSTANCES = new WeakHashMap<>();
@@ -107,6 +110,8 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
     private final PepManager pepManager;
 
     private OmemoTrustCallback trustCallback;
+
+    private Set<Integer> publishedDeviceList;
 
     private BareJid ownJid;
     private Integer deviceId;
@@ -268,6 +273,7 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
                 } catch (Exception e) {
                     finishedCallback.initializationFailed(e);
                 }
+                getConnection().setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
             }
         });
     }
@@ -1019,7 +1025,8 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
         }
         final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
 
-        if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())) {
+        if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())
+                && !newDeviceList.copyDeviceIds().equals(publishedDeviceList)) {
             LOGGER.log(Level.FINE, "Republish deviceList due to changes:" +
                             " Received: " + Arrays.toString(receivedDeviceList.copyDeviceIds().toArray()) +
                             " Published: " + Arrays.toString(newDeviceList.copyDeviceIds().toArray()));
@@ -1027,11 +1034,16 @@ public final class OmemoManager extends Manager implements JingleEnvelopeManager
                 @Override
                 public void run() {
                     try {
+                        // LOGGER.log(Level.INFO, "received (new) DeviceList: " + receivedDeviceList.getDeviceIds()
+                        //        + " (" + newDeviceList.getDeviceIds() + ")");
+                        getConnection().setReplyTimeout(SMACK_REPLY_OMEMO_PUBLISH);
                         OmemoService.publishDeviceList(connection(), newDeviceList);
+                        publishedDeviceList = newDeviceList.copyDeviceIds();
                     } catch (InterruptedException | XMPPException.XMPPErrorException |
                                     SmackException.NotConnectedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
                         LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
                     }
+                    getConnection().setReplyTimeout(SmackConfiguration.getDefaultReplyTimeout());
                 }
             });
         }
