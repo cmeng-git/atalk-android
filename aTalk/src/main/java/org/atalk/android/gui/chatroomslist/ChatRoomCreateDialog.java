@@ -110,23 +110,24 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
         setTitle(R.string.service_gui_CHATROOM_CREATE_JOIN);
         this.setContentView(R.layout.muc_room_create_dialog);
 
-        accountsSpinner = findViewById(R.id.jid_Accounts_Spinner);
-        initAccountSpinner();
-
         nicknameField = findViewById(R.id.NickName_Edit);
-        subjectField = findViewById(R.id.chatRoom_Subject_Edit);
-        subjectField.setText("");
-        findViewById(R.id.subject_clear).setOnClickListener(v -> subjectField.setText(""));
-
         passwordField = findViewById(R.id.passwordField);
         CheckBox showPasswordCB = findViewById(R.id.show_password);
         showPasswordCB.setOnCheckedChangeListener((buttonView, isChecked)
                 -> ViewUtil.showPassword(passwordField, isChecked));
         mSavePasswordCheckBox = findViewById(R.id.store_password);
 
+        subjectField = findViewById(R.id.chatRoom_Subject_Edit);
+        subjectField.setText("");
+        findViewById(R.id.subject_clear).setOnClickListener(v -> subjectField.setText(""));
+
         chatRoomComboBox = findViewById(R.id.chatRoom_Combo);
         chatRoomComboBox.setOnItemClickListener(this);
         new initComboBox().execute();
+
+        accountsSpinner = findViewById(R.id.jid_Accounts_Spinner);
+        // Init AccountSpinner only after initComboBox(), else onItemSelected() will get trigger.
+        initAccountSpinner();
 
         mJoinButton = findViewById(R.id.button_Join);
         mJoinButton.setOnClickListener(v -> {
@@ -134,8 +135,7 @@ public class ChatRoomCreateDialog extends Dialog implements OnItemSelectedListen
                 closeDialog();
         });
 
-        Button mCancelButton = findViewById(R.id.button_Cancel);
-        mCancelButton.setOnClickListener(v -> closeDialog());
+        findViewById(R.id.button_Cancel).setOnClickListener(v -> closeDialog());
         setCanceledOnTouchOutside(false);
     }
 

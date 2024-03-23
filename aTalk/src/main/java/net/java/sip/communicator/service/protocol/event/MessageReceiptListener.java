@@ -1,6 +1,6 @@
 /*
  * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ * Copyright 2014~2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.java.sip.communicator.service.protocol.event;
 
-package org.jivesoftware.smackx.avatar.useravatar;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jxmpp.jid.Jid;
 
-import java.io.IOException;
-
-/**
- * Interface for an AvatarRetriever.
- */
-public interface AvatarRetriever {
+public interface MessageReceiptListener
+{
     /**
-     * Retrieve the avatar.
+     * Callback invoked when a new receipt got received.
      *
-     * @return the avatar
-     *
-     * @throws IOException if an IO error occurs while retrieving the avatar
+     * @param fromJid the jid that send this receipt
+     * @param toJid the jid which received this receipt
+     * @param receiptId the message ID of the stanza which has been received.
+     * @param receipt the receipt
      */
-    byte[] getAvatar()
-            throws IOException;
+    void receiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt);
 }

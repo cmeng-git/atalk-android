@@ -2042,9 +2042,9 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
         private Date lsdMessageTime = null;
 
         /**
-         * The property to store the timestamp.
+         * The property to store the timestamp of the last received normal or delayed message.
          */
-        private static final String LAST_SEEN_DELAYED_MESSAGE_PROP = "lastSeenDelayedMessage";
+        private static final String LAST_RECEIVED_MESSAGE_TS = "lastSeenDelayedMessage";
 
         /**
          * Process a Message stanza.
@@ -2086,8 +2086,7 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 // skip it otherwise save it as last seen delayed message
                 if (lsdMessageTime == null) {
                     // initialise this from configuration
-                    String sTimestamp = ConfigurationUtils.getChatRoomProperty(mPPS, getName(),
-                            LAST_SEEN_DELAYED_MESSAGE_PROP);
+                    String sTimestamp = ConfigurationUtils.getChatRoomProperty(mPPS, getName(), LAST_RECEIVED_MESSAGE_TS);
 
                     try {
                         if (!TextUtils.isEmpty(sTimestamp))
@@ -2100,14 +2099,15 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 if (lsdMessageTime != null && !timeStamp.after(lsdMessageTime))
                     return;
 
-                // save it in configuration
-                ConfigurationUtils.updateChatRoomProperty(mPPS, getName(),
-                        LAST_SEEN_DELAYED_MESSAGE_PROP, String.valueOf(timeStamp.getTime()));
                 lsdMessageTime = timeStamp;
             }
             else {
                 timeStamp = new Date();
             }
+
+            // Save it in configuration for the last received message timeStamp (delayed or normal).
+            ConfigurationUtils.updateChatRoomProperty(mPPS, getName(),
+                    LAST_RECEIVED_MESSAGE_TS, String.valueOf(timeStamp.getTime()));
 
             // for delay message only
             Jid jabberID = message.getFrom();
@@ -2183,8 +2183,8 @@ public class ChatRoomJabberImpl extends AbstractChatRoom implements CaptchaDialo
                 return;
             }
 
-            // Check received message for sent message: either a delivery report or a message coming from the
-            // chaRoom server. Checking using nick OR jid in case user join with a different nick.
+            // Check received message for sent message: either a delivery report or a incoming message
+            // from the chaRoom server. Check using nick OR jid in case user join with a different nick.
             Timber.d("Received room message %s", message.toString());
             if (((getUserNickname() != null) && getUserNickname().equals(fromNick))
                     || ((jabberID != null) && jabberID.equals(getAccountId(member.getChatRoom())))) {

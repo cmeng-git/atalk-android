@@ -27,17 +27,9 @@ import org.atalk.persistance.EntityCapsCache;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.AndFilter;
-import org.jivesoftware.smack.filter.StanzaExtensionFilter;
-import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
-import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jxmpp.jid.Jid;
@@ -52,9 +44,6 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ServiceDiscoveryHelper {
-    private static final StanzaFilter PRESENCES_WITH_CAPS = new AndFilter(StanzaTypeFilter.PRESENCE,
-            new StanzaExtensionFilter(CapsExtension.ELEMENT, CapsExtension.NAMESPACE));
-
     /**
      * The {@link ServiceDiscoveryManager} supported in smack
      */
@@ -77,7 +66,6 @@ public class ServiceDiscoveryHelper {
      * Creates a new <code>ScServiceDiscoveryManager</code> wrapping the default discovery manager of
      * the specified <code>connection</code>.
      *
-     * @param parentProvider the parent provider that creates discovery manager.
      * @param connection Smack connection object that will be used by this instance to handle XMPPTCP connection.
      * @param featuresToRemove an array of <code>String</code>s representing the features to be removed from the
      * <code>ServiceDiscoveryManager</code> of the specified <code>connection</code> which is to be
@@ -86,9 +74,7 @@ public class ServiceDiscoveryHelper {
      * and to the <code>ServiceDiscoveryManager</code> of the specified <code>connection</code> which
      * is to be wrapped by the new instance
      */
-    public ServiceDiscoveryHelper(ProtocolProviderServiceJabberImpl parentProvider, XMPPConnection connection,
-            String[] featuresToRemove, String[] featuresToAdd) {
-        ProtocolProviderServiceJabberImpl mPPS = parentProvider;
+    public ServiceDiscoveryHelper(XMPPConnection connection, String[] featuresToRemove, String[] featuresToAdd) {
         mConnection = connection;
 
         // Init EntityCapsManager so it is ready to receive Entity Caps Info
@@ -117,9 +103,6 @@ public class ServiceDiscoveryHelper {
                 if (!mDiscoveryManager.includesFeature(featureToAdd))
                     mDiscoveryManager.addFeature(featureToAdd);
         }
-
-        // Listener for received cap packages and take necessary action
-        connection.addAsyncStanzaListener(new CapsStanzaListener(), PRESENCES_WITH_CAPS);
     }
 
     /**
@@ -141,7 +124,7 @@ public class ServiceDiscoveryHelper {
         } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
             Timber.e("DiscoveryManager.discoverInfo failed %s", e.getMessage());
         }
-        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
+        mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
         return discoverInfo;
     }
 
@@ -186,97 +169,5 @@ public class ServiceDiscoveryHelper {
     public static void refreshEntityCapsStore() {
         entityCapsPersistentCache.emptyCache();
         EntityCapsManager.clearMemoryCache();
-    }
-
-    // ======================= UserCapsNodeListener Implementation ==================================
-    /**
-     * Adds a specific <code>UserCapsNodeListener</code> to the list of <code>UserCapsNodeListener</code>s
-     * interested in events notifying about changes in the list of user caps nodes of the
-     * <code>EntityCapsManager</code>.
-     *
-     * @param listener the <code>UserCapsNodeListener</code> which is interested in events notifying about
-     * changes in the list of user caps nodes of this <code>EntityCapsManager</code>
-     */
-    public static void addUserCapsNodeListener(UserCapsNodeListener listener) {
-        if (listener == null)
-            throw new NullPointerException("listener");
-
-        synchronized (userCapsNodeListeners) {
-            if (!userCapsNodeListeners.contains(listener))
-                userCapsNodeListeners.add(listener);
-        }
-    }
-
-    /**
-     * Removes a specific <code>UserCapsNodeListener</code> from the list of
-     * <code>UserCapsNodeListener</code>s interested in events notifying about changes in the list of
-     * user caps nodes of this <code>EntityCapsManager</code>.
-     *
-     * @param listener the <code>UserCapsNodeListener</code> which is no longer interested in events notifying
-     * about changes in the list of user caps nodes of this <code>EntityCapsManager</code>
-     */
-    public static void removeUserCapsNodeListener(UserCapsNodeListener listener) {
-        if (listener != null) {
-            synchronized (userCapsNodeListeners) {
-                userCapsNodeListeners.remove(listener);
-            }
-        }
-    }
-
-    /**
-     * The {@link StanzaListener} that will be registering incoming caps.
-     */
-    private class CapsStanzaListener implements StanzaListener {
-        /**
-         * Handles incoming presence packets with CapsExtension and alert listeners
-         * that the specific user caps node may have changed.
-         *
-         * @param stanza the incoming presence <code>Packet</code> to be handled
-         *
-         * @see StanzaListener#processStanza(Stanza)
-         */
-        public void processStanza(Stanza stanza) {
-            // Check it the packet indicates that the user is online. We will use this
-            // information to decide if we're going to send the discover info request.
-            boolean online = (stanza instanceof Presence) && ((Presence) stanza).isAvailable();
-
-            CapsExtension capsExtension = CapsExtension.from(stanza);
-            Jid fromJid = stanza.getFrom();
-
-            if ((capsExtension != null) && online) {
-                /*
-                 * Before Version 1.4 of XEP-0115: Entity Capabilities, the 'ver' attribute was
-                 * generated differently and the 'hash' attribute was absent. The 'ver'
-                 * attribute in Version 1.3 represents the specific version of the client and
-                 * thus does not provide a way to validate the DiscoverInfo sent by the client.
-                 * If EntityCapsManager  'hash' attribute, it will assume the legacy format and
-                 * will not cache it because the DiscoverInfo to be received from the client
-                 * later on will not be trustworthy.
-                 */
-                UserCapsNodeNotify(fromJid, true);
-            }
-            else if (!online) {
-                UserCapsNodeNotify(fromJid, false);
-            }
-        }
-
-    }
-
-    /**
-     * Alert listener that entity caps node of a user may have changed.
-     *
-     * @param user the user (FullJid): Can either be account or contact
-     * @param online indicates if the user is online
-     */
-    private void UserCapsNodeNotify(Jid user, boolean online) {
-        if (user != null) {
-            // Fire userCapsNodeNotify.
-            UserCapsNodeListener[] listeners;
-            synchronized (userCapsNodeListeners) {
-                listeners = userCapsNodeListeners.toArray(new UserCapsNodeListener[0]);
-            }
-            for (UserCapsNodeListener listener : listeners)
-                listener.userCapsNodeNotify(user, online);
-        }
     }
 }

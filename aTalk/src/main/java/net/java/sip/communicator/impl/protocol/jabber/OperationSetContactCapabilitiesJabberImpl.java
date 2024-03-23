@@ -5,6 +5,11 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetContactCapabilities;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -22,17 +27,9 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 import org.jxmpp.jid.Jid;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import timber.log.Timber;
 
@@ -87,22 +84,18 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * The <code>discoveryManager</code> of {@link #parentProvider}.
-     */
-    private ServiceDiscoveryManager discoveryManager;
-
-    /**
      * Initializes a new <code>OperationSetContactCapabilitiesJabberImpl</code> instance which is to be
      * provided by a specific <code>ProtocolProviderServiceJabberImpl</code>.
      *
-     * @param parentProvider the <code>ProtocolProviderServiceJabberImpl</code> which will provide the new instance
+     * @param pps the <code>ProtocolProviderServiceJabberImpl</code> which will provide the new instance
      */
-    public OperationSetContactCapabilitiesJabberImpl(ProtocolProviderServiceJabberImpl parentProvider) {
-        super(parentProvider);
-        OperationSetPresence presenceOpSet = parentProvider.getOperationSet(OperationSetPresence.class);
-
-        if (presenceOpSet != null)
+    public OperationSetContactCapabilitiesJabberImpl(ProtocolProviderServiceJabberImpl pps) {
+        super(pps);
+        OperationSetPresence presenceOpSet = pps.getOperationSet(OperationSetPresence.class);
+        if (presenceOpSet != null) {
             presenceOpSet.addContactPresenceStatusListener(this);
+            ((OperationSetPersistentPresenceJabberImpl) presenceOpSet).addUserCapsNodeListener(this);
+        }
         setOperationSetChatStateFeatures(ConfigurationUtils.isSendChatStateNotifications());
     }
 
@@ -260,23 +253,6 @@ public class OperationSetContactCapabilitiesJabberImpl
     }
 
     /**
-     * Sets the <code>ServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of {@link #parentProvider}.
-     * Remove the existing one before replaced with the new request
-     *
-     * @param discManager the <code>ServiceDiscoveryManager</code> which is the <code>discoveryManager</code> of
-     * {@link #parentProvider}
-     */
-    void setDiscoveryManager(ServiceDiscoveryManager discManager) {
-        if ((discManager != null) && (discManager != discoveryManager)) {
-            if (discoveryManager != null)
-                ServiceDiscoveryHelper.removeUserCapsNodeListener(this);
-
-            discoveryManager = discManager;
-            ServiceDiscoveryHelper.addUserCapsNodeListener(this);
-        }
-    }
-
-    /**
      * Notifies this listener that an <code>EntityCapsManager</code> has added a record for a specific
      * user about the caps node the user has.
      *
@@ -291,7 +267,6 @@ public class OperationSetContactCapabilitiesJabberImpl
          * user because we report all changes.
          */
         OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
-
         if (opsetPresence != null) {
             Contact contact = opsetPresence.findContactByJid(user);
 
@@ -326,30 +301,6 @@ public class OperationSetContactCapabilitiesJabberImpl
     public void contactPresenceStatusChanged(ContactPresenceStatusChangeEvent evt) {
         if (evt.getNewStatus().getStatus() < PresenceStatus.ONLINE_THRESHOLD) {
             userCapsNodeNotify(evt.getJid(), false);
-        }
-    }
-
-    /**
-     * Fires event that contact capabilities has changed.
-     *
-     * @param user the user Jid to search for its contact.
-     */
-    public void fireContactCapabilitiesChanged(Jid user) {
-        OperationSetPresence opsetPresence = parentProvider.getOperationSet(OperationSetPresence.class);
-
-        if (opsetPresence != null) {
-            Contact contact = opsetPresence.findContactByJid(user);
-
-            // this called by received discovery info for particular jid so we use its online and
-            // opSets for this particular jid
-            boolean online = false;
-            Presence presence = Roster.getInstanceFor(parentProvider.getConnection()).getPresence(user.asBareJid());
-            if (presence != null)
-                online = presence.isAvailable();
-
-            if (contact != null) {
-                fireContactCapabilitiesEvent(contact, user, getSupportedOperationSets(user, online));
-            }
         }
     }
 }

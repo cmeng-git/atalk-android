@@ -19,6 +19,16 @@ package org.jivesoftware.smackx.avatar;
 import android.text.TextUtils;
 import android.util.LruCache;
 
+import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
@@ -28,19 +38,12 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.avatar.cache.AvatarCacheFile;
 import org.jivesoftware.smackx.avatar.cache.AvatarCacheMemory;
 import org.jivesoftware.smackx.avatar.cache.JidToHashCacheFile;
+import org.jivesoftware.smackx.avatar.listener.AvatarChangeListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.io.File;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import timber.log.Timber;
 
@@ -49,14 +52,18 @@ import timber.log.Timber;
  * XEP-0153: vCard-Based Avatar protocol Implementation
  * XEP-0084: User Avatar protocol Implementation
  */
-public class AvatarManager extends Manager
-{
+public class AvatarManager extends Manager {
     /**
      * The logger.
      */
     private static final Logger LOGGER = Logger.getLogger(AvatarManager.class.getName());
 
     protected static final int JPEG_QUALITY = 100;
+
+    /*
+     * Listeners to be informed if there is new avatar updated.
+     */
+    private final Set<AvatarChangeListener> mListeners = new CopyOnWriteArraySet<>();
 
     /**
      * Map of avatarHash" to Avatar byte data
@@ -74,8 +81,7 @@ public class AvatarManager extends Manager
      * 2. "" ==> user has no photo specified (not use with XEP-0084 enabled)
      * 3. {avatar Hash} ==> photo in cache and/or persistent storage
      * <p>
-     * Note: Server stores only one copy of VCard Info (avatar) for each jid irrespective of its
-     * resources.
+     * Note: Server stores only one copy of VCard Info (avatar) for each jid irrespective of its resources.
      */
     private static final LruCache<BareJid, String> cacheJidToAvatarId = new LruCache<>(1000);
 
@@ -102,7 +108,7 @@ public class AvatarManager extends Manager
     /**
      * The registered account (bareJid) for this connection (must not be static).
      */
-    protected BareJid mAccount;
+    protected EntityBareJid mAccount;
 
     /**
      * Flag indicates if XEP-0084 User Avatar is enabled. When true, vCardTempXUpdate should not
@@ -112,8 +118,7 @@ public class AvatarManager extends Manager
 
     protected XMPPConnection mConnection;
 
-    public static synchronized AvatarManager getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized AvatarManager getInstanceFor(XMPPConnection connection) {
         AvatarManager avatarManager = instances.get(connection);
         if (avatarManager == null) {
             avatarManager = new AvatarManager(connection);
@@ -126,17 +131,14 @@ public class AvatarManager extends Manager
      *
      * @param connection the registered account XMPP connection
      */
-    protected AvatarManager(XMPPConnection connection)
-    {
+    protected AvatarManager(XMPPConnection connection) {
         super(connection);
         mConnection = connection;
         instances.put(connection, this);
 
-        connection.addConnectionListener(new ConnectionListener()
-        {
+        connection.addConnectionListener(new ConnectionListener() {
             @Override
-            public void connected(XMPPConnection connection)
-            {
+            public void connected(XMPPConnection connection) {
                 mConnection = connection;
             }
 
@@ -144,9 +146,8 @@ public class AvatarManager extends Manager
              * Upon user authentication, get the account for the connection.
              */
             @Override
-            public void authenticated(XMPPConnection connection, boolean resumed)
-            {
-                mAccount = connection.getUser().asBareJid();
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                mAccount = connection.getUser().asEntityBareJid();
             }
         });
     }
@@ -157,8 +158,7 @@ public class AvatarManager extends Manager
      *
      * @param autoDownload true to enable auto download of avatars (photo image)
      */
-    public static void setAutoDownload(boolean autoDownload)
-    {
+    public static void setAutoDownload(boolean autoDownload) {
         mAutoDownload = autoDownload;
     }
 
@@ -168,8 +168,7 @@ public class AvatarManager extends Manager
      *
      * @param userAvatarMode true (default) to enable XEP-0054 User Avatar Mode
      */
-    public static void setUserAvatar(boolean userAvatarMode)
-    {
+    public static void setUserAvatar(boolean userAvatarMode) {
         isUserAvatarEnable = userAvatarMode;
     }
 
@@ -178,8 +177,7 @@ public class AvatarManager extends Manager
      *
      * @param storeDir the file directory which will store the avatars
      */
-    public static void setPersistentCache(File storeDir)
-    {
+    public static void setPersistentCache(File storeDir) {
         if (storeDir != null) {
             persistentJidToHashIndex = new JidToHashCacheFile(storeDir);
             persistentAvatarCache = new AvatarCacheFile(storeDir);
@@ -192,8 +190,7 @@ public class AvatarManager extends Manager
      * @param avatarId The avatarId, i.e SHA-1 Hash of the avatarImage.
      * @param avatarImage Byte[] value of avatar image data.
      */
-    protected static boolean addAvatarImageByAvatarId(String avatarId, byte[] avatarImage)
-    {
+    protected static boolean addAvatarImageByAvatarId(String avatarId, byte[] avatarImage) {
         if (!TextUtils.isEmpty(avatarId) && isAvatarNew(null, avatarId)) {
             cacheAvatar.addAvatarByHash(avatarId, avatarImage);
             if (persistentAvatarCache != null)
@@ -207,12 +204,12 @@ public class AvatarManager extends Manager
      * Calculate the avatarId and save its image to cache
      *
      * @param avatarImage Byte[] value of avatar image data.
-     * @return <code>avatarId</code> i.e SHA-1 Hash of the avatarImage. Return "" when avatar is empty
+     *
+     * @return <code>avatarId</code> i.e SHA-1 Hash of the avatarImage. Return null when avatar is empty
      */
-    protected static String addAvatarImage(byte[] avatarImage)
-    {
+    protected static String addAvatarImage(byte[] avatarImage) {
         if (avatarImage.length == 0)
-            return "";
+            return null;
 
         String avatarId = getAvatarHash(avatarImage);
         if (!TextUtils.isEmpty(avatarId)) {
@@ -225,10 +222,10 @@ public class AvatarManager extends Manager
      * Get an avatar image from the cache with the given avatarId
      *
      * @param avatarId the id of the avatar (Hash)
+     *
      * @return the avatar or null if it cannot be retrieved from the cache or file
      */
-    public static byte[] getAvatarImageByHash(String avatarId)
-    {
+    public static byte[] getAvatarImageByHash(String avatarId) {
         if (avatarId == null)
             return null;
 
@@ -251,50 +248,24 @@ public class AvatarManager extends Manager
      * AvatarManager does not have any information.
      *
      * @param jid the user (BareJid)
+     *
      * @return the byte[] avatarImage (can be zero byte) with found avatarId, otherwise null
      */
-    public static byte[] getAvatarImageByJid(BareJid jid)
-    {
+    public static byte[] getAvatarImageByJid(BareJid jid) {
         String avatarId = getAvatarHashByJid(jid);
         LOGGER.log(Level.FINE, "Fetching avatar from local storage for: (" + jid + ") => " + avatarId);
 
         return (avatarId == null) ? null : getAvatarImageByHash(avatarId);
     }
 
-
-    /**
-     * Calculate the avatarId and save its image to cache on condition is forced or none is found.
-     * The method is created for aTalk external access
-     *
-     * @param userId the bareJid of the avatarImage
-     * @param avatarImage Byte[] value of avatar image data.
-     * @param force override existing even if it exists
-     * @return return true is success
-     */
-    public static boolean addAvatarImage(BareJid userId, byte[] avatarImage, boolean force)
-    {
-        if ((userId == null) || (avatarImage.length == 0))
-            return false;
-
-        String avatarId = getAvatarHash(avatarImage);
-        if (force || getAvatarImageByHash(avatarId).length == 0) {
-            if (!TextUtils.isEmpty(avatarId)) {
-                addAvatarImageByAvatarId(avatarId, avatarImage);
-                addJidToAvatarHashIndex(userId, avatarId);
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Get the avatarHash for jid
      *
      * @param jid the bareJid
+     *
      * @return the avatarHash for the jid or null
      */
-    public static String getAvatarHashByJid(BareJid jid)
-    {
+    public static String getAvatarHashByJid(BareJid jid) {
         String hash = cacheJidToAvatarId.get(jid);
         if ((hash == null) && (persistentJidToHashIndex != null)) {
             hash = persistentJidToHashIndex.getHashForJid(jid);
@@ -311,8 +282,7 @@ public class AvatarManager extends Manager
      * @param userId the bareJid
      * @param avatarHash the avatar Hash cannot be empty
      */
-    protected static void addJidToAvatarHashIndex(BareJid userId, String avatarHash)
-    {
+    protected static void addJidToAvatarHashIndex(BareJid userId, String avatarHash) {
         // Create an index hash for the jid
         if (!TextUtils.isEmpty(avatarHash)) {
             cacheJidToAvatarId.put(userId, avatarHash);
@@ -328,8 +298,7 @@ public class AvatarManager extends Manager
      *
      * @param jid the user (BareJid)
      */
-    public static void purgeAvatarImageByJid(BareJid jid)
-    {
+    public static void purgeAvatarImageByJid(BareJid jid) {
         String avatarId = getAvatarHashByJid(jid);
         LOGGER.log(Level.INFO, "Purge avatar from store for: (" + jid + ") => " + avatarId);
 
@@ -351,10 +320,10 @@ public class AvatarManager extends Manager
      * i.e. must be in persistentAvatarCache if enabled; otherwise search in cacheAvatar
      *
      * @param avatarId the id of the avatar (Hash)
+     *
      * @return <code>true</code> if avatarId is avatarId is new. <code>false</code> otherwise
      */
-    protected static boolean isAvatarNew(BareJid jid, String avatarId)
-    {
+    protected static boolean isAvatarNew(BareJid jid, String avatarId) {
         boolean isFound;
         // If jid is given, then check for Jid2Hash is not broken
         if ((jid != null) && getAvatarHashByJid(jid) == null)
@@ -374,10 +343,10 @@ public class AvatarManager extends Manager
      *
      * @param userId the known owner of the avatarHash
      * @param avatarHash the id of the avatar (Hash)
+     *
      * @return <code>true</code> if avatarHash is owned by more than one user. <code>false</code> otherwise
      */
-    protected boolean isHashMultipleOwner(BareJid userId, String avatarHash)
-    {
+    protected boolean isHashMultipleOwner(BareJid userId, String avatarHash) {
         Roster roster = Roster.getInstanceFor(mConnection);
         Set<RosterEntry> rosterEntries = roster.getEntries();
         for (RosterEntry rosterEntry : rosterEntries) {
@@ -399,11 +368,11 @@ public class AvatarManager extends Manager
      * rosterFileName is mimic as BareJid so as to use common persistent storage
      *
      * @param account the roster information belong to this account
+     *
      * @see #clearPersistentStorage(BareJid)
      */
     public void saveAccountRoster(BareJid account)
-            throws XmppStringprepException
-    {
+            throws XmppStringprepException {
         if ((account != null) && (persistentJidToHashIndex != null)) {
             BareJid rosterFileName = JidCreate.bareFrom(account + "_roster");
 
@@ -432,8 +401,7 @@ public class AvatarManager extends Manager
      * @param account all the avatar information belong to this account are to be purged
      */
     public static void clearPersistentStorage(BareJid account)
-            throws XmppStringprepException
-    {
+            throws XmppStringprepException {
         if ((account != null) && (persistentJidToHashIndex != null)) {
             BareJid rosterFileName = JidCreate.bareFrom(account + "_roster");
             String rosterContacts = persistentJidToHashIndex.getHashForJid(rosterFileName);
@@ -446,7 +414,7 @@ public class AvatarManager extends Manager
                     String imageHash = getAvatarHashByJid(contactJid);
 
                     // May purge multipleOwner's avatar info - leave them as it???
-                    if (!TextUtils.isEmpty(imageHash)){ // && isHashMultipleOwner(contactJid, imageHash))
+                    if (!TextUtils.isEmpty(imageHash)) { // && isHashMultipleOwner(contactJid, imageHash))
                         persistentJidToHashIndex.purgeItemFor(contactJid);
                         if (persistentAvatarCache != null)
                             persistentAvatarCache.purgeItemFor(imageHash);
@@ -476,8 +444,7 @@ public class AvatarManager extends Manager
      * - to cleanup and refresh VCard fetching
      * - Persistent storage option has been disabled by user
      */
-    public static void clearPersistentStorage()
-    {
+    public static void clearPersistentStorage() {
         if (persistentJidToHashIndex != null)
             persistentJidToHashIndex.emptyCache();
         if (persistentAvatarCache != null)
@@ -489,11 +456,11 @@ public class AvatarManager extends Manager
      * parameter.
      *
      * @param imageData The image to getHashForJid the hexadecimal representation of the SHA-1 hash.
+     *
      * @return The SHA-1 hash hexadecimal representation of the image. Null if the image is null or
      * if the SHA1 is not recognized as a valid algorithm.
      */
-    protected static String getAvatarHash(byte[] imageData)
-    {
+    protected static String getAvatarHash(byte[] imageData) {
         byte[] imageHash = null;
         String avatarHash = null;
 
@@ -518,11 +485,11 @@ public class AvatarManager extends Manager
      *
      * @param imageBytes The avatar image and must not be null
      * @param updateVcardTemp <code>true</code> to setAvatarHash() if new
+     *
      * @return "false" if the new avatar image is the same as the current one. "true" if this
      * presence extension has been updated with the new avatar image.
      */
-    public boolean updateVCardAvatarHash(byte[] imageBytes, boolean updateVcardTemp)
-    {
+    public boolean updateVCardAvatarHash(byte[] imageBytes, boolean updateVcardTemp) {
         if (imageBytes == null)
             return false;
 
@@ -547,5 +514,36 @@ public class AvatarManager extends Manager
             }
         }
         return isImageUpdated;
+    }
+
+    /**
+     * Fire the listeners if there is a change in the avatarHash.
+     *
+     * @param from the jid of the contact
+     * @param oldAvatarId the old avatar Id.
+     * @param newAvatarId the new avatar Id
+     */
+    protected void fireListeners(EntityBareJid from, String oldAvatarId, String newAvatarId) {
+        // Timber.e("fireListeners userAvator: %s; %s => %s", from, oldAvatarId, newAvatarId);
+        for (AvatarChangeListener l : mListeners)
+            l.onAvatarChange(from, oldAvatarId, newAvatarId);
+    }
+
+    /**
+     * Add an AvatarChangeListener.
+     *
+     * @param listener the AvatarChangeListener to add
+     */
+    public void addAvatarChangeListener(AvatarChangeListener listener) {
+        mListeners.add(listener);
+    }
+
+    /**
+     * Remove an AvatarChangeListener.
+     *
+     * @param listener the AvatarChangeListener to remove
+     */
+    public void removeAvatarChangeListener(AvatarChangeListener listener) {
+        mListeners.remove(listener);
     }
 }

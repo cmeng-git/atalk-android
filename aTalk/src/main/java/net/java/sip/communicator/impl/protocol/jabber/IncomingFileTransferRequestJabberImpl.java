@@ -251,7 +251,6 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
         final BoBManager bobManager = BoBManager.getInstanceFor(connection);
         thumbnailCollector.submit(() -> {
             try {
-                connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
                 thumbnail = bobManager.requestBoB(remoteJid, cid).getContent();
             } catch (SmackException.NotLoggedInException
                     | SmackException.NoResponseException
@@ -260,7 +259,6 @@ public class IncomingFileTransferRequestJabberImpl implements IncomingFileTransf
                     | InterruptedException e) {
                 Timber.e("Error in requesting for thumbnail: %s", e.getMessage());
             } finally {
-                connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
                 // Notify the global listener that a request has arrived.
                 fileTransferOpSet.fireFileTransferRequest(IncomingFileTransferRequestJabberImpl.this);
             }

@@ -7,6 +7,11 @@ package net.java.sip.communicator.impl.protocol.jabber;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.RegistrationState;
@@ -17,11 +22,6 @@ import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeL
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Handles all the logic about mobile indicator for contacts. Has to modes, the first is searching
@@ -35,26 +35,6 @@ import java.util.Map;
  */
 public class MobileIndicator implements RegistrationStateChangeListener, UserCapsNodeListener {
     /**
-     * The parent provider.
-     */
-    private final ProtocolProviderServiceJabberImpl parentProvider;
-
-    /**
-     * Whether we are using the default method for checking for mobile indicator.
-     */
-    private boolean isCapsMobileIndicator = true;
-
-    /**
-     * The strings that we will check.
-     */
-    private final String[] checkStrings;
-
-    /**
-     * A reference to the ServerStoredContactListImpl instance.
-     */
-    private final ServerStoredContactListJabberImpl ssclCallback;
-
-    /**
      * The account property to activate the mode for checking the resource names, the strings to
      * check whether a resource starts with can be entered separated by comas.
      */
@@ -67,30 +47,49 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     private static final String MOBILE_INDICATOR_CAPS_ACC_PROP = "MOBILE_INDICATOR_CAPS";
 
     /**
+     * An instance of OperationSetPersistentPresenceJabberImpl; must get initiated before user Authenticated.
+     */
+    private final OperationSetPersistentPresenceJabberImpl opSetPersPresence;
+
+    /**
+     * A reference to the ServerStoredContactListImpl instance.
+     */
+    private final ServerStoredContactListJabberImpl ssclCallback;
+
+    /**
+     * Whether we are using the default method for checking for mobile indicator.
+     */
+    private boolean isCapsMobileIndicator = true;
+
+    /**
+     * The strings that we will check.
+     */
+    private final String[] checkStrings;
+
+    /**
      * Construct Mobile indicator.
      *
-     * @param parentProvider the parent provider.
+     * @param pps the parent provider.
+     * @param opspPresence OperationSetPersistentPresenceJabberImpl required when addUserCapsNodeListener()
      * @param ssclCallback the callback for the contact list to obtain contacts.
      */
-    public MobileIndicator(ProtocolProviderServiceJabberImpl parentProvider,
+    public MobileIndicator(ProtocolProviderServiceJabberImpl pps, OperationSetPersistentPresenceJabberImpl opspPresence,
             ServerStoredContactListJabberImpl ssclCallback) {
-        this.parentProvider = parentProvider;
+        opSetPersPresence = opspPresence;
         this.ssclCallback = ssclCallback;
 
-        String indicatorResource
-                = parentProvider.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_RESOURCE_ACC_PROP);
+        String indicatorResource = pps.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_RESOURCE_ACC_PROP);
         if (!TextUtils.isEmpty(indicatorResource)) {
             isCapsMobileIndicator = false;
             checkStrings = indicatorResource.split(",");
         }
         else {
-            String indicatorCaps
-                    = parentProvider.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_CAPS_ACC_PROP);
+            String indicatorCaps = pps.getAccountID().getAccountProperties().get(MOBILE_INDICATOR_CAPS_ACC_PROP);
             if (TextUtils.isEmpty(indicatorCaps)) {
                 indicatorCaps = "mobile, portable, android";
             }
             checkStrings = indicatorCaps.split(",");
-            this.parentProvider.addRegistrationStateChangeListener(this);
+            pps.addRegistrationStateChangeListener(this);
         }
     }
 
@@ -186,13 +185,13 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
     @Override
     public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         if (evt.getNewState() == RegistrationState.REGISTERED) {
-            ServiceDiscoveryHelper.addUserCapsNodeListener(this);
+            opSetPersPresence.addUserCapsNodeListener(this);
         }
         else if ((evt.getNewState() == RegistrationState.CONNECTION_FAILED
                 || evt.getNewState() == RegistrationState.AUTHENTICATION_FAILED
                 || evt.getNewState() == RegistrationState.UNREGISTERED)
-                && this.parentProvider.getDiscoveryManager() != null) {
-            ServiceDiscoveryHelper.removeUserCapsNodeListener(this);
+                && opSetPersPresence != null) {
+            opSetPersPresence.removeUserCapsNodeListener(this);
         }
     }
 
@@ -203,8 +202,7 @@ public class MobileIndicator implements RegistrationStateChangeListener, UserCap
      * @param online indicates if the user for which we're notified is online
      */
     @Override
-    public void userCapsNodeNotify(Jid user, boolean online)
-    {
+    public void userCapsNodeNotify(Jid user, boolean online) {
         updateMobileIndicatorUsingCaps(user);
     }
 

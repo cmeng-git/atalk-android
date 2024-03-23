@@ -6,6 +6,9 @@
 
 package org.atalk.android.gui.chat.conference;
 
+import java.io.File;
+import java.io.IOException;
+
 import net.java.sip.communicator.service.protocol.ChatRoom;
 import net.java.sip.communicator.service.protocol.FileTransfer;
 import net.java.sip.communicator.service.protocol.IMessage;
@@ -32,9 +35,6 @@ import org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.io.File;
-import java.io.IOException;
-
 import timber.log.Timber;
 
 /**
@@ -53,7 +53,6 @@ public class ConferenceChatTransport implements ChatTransport {
      * override contact disco#info no XEP-0085 feature advertised.
      */
     private static boolean isChatStateSupported = false;
-
     private final ProtocolProviderService mPPS;
     private HttpFileUploadManager httpFileUploadManager;
 
@@ -201,7 +200,8 @@ public class ConferenceChatTransport implements ChatTransport {
         if (IMessage.ENCRYPTION_OMEMO == (encType & IMessage.ENCRYPTION_OMEMO)) {
             OmemoManager omemoManager = OmemoManager.getInstanceFor(mPPS.getConnection());
             chatRoom.sendMessage(message, omemoManager);
-        } else {
+        }
+        else {
             chatRoom.sendMessage(message);
         }
     }
@@ -261,6 +261,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @param xferCon and instance of #FileSendConversation
      *
      * @return the HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -302,6 +303,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @param xferCon and instance of #FileSendConversation
      *
      * @return the HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
@@ -322,6 +324,7 @@ public class ConferenceChatTransport implements ChatTransport {
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
@@ -334,7 +337,8 @@ public class ConferenceChatTransport implements ChatTransport {
                 if (ChatFragment.MSGTYPE_OMEMO == chatType) {
                     encType = IMessage.ENCRYPTION_OMEMO;
                     url = httpFileUploadManager.uploadFileEncrypted(file, xferCon);
-                } else {
+                }
+                else {
                     url = httpFileUploadManager.uploadFile(file, xferCon);
                 }
                 xferCon.setStatus(FileTransferStatusChangeEvent.IN_PROGRESS, chatRoom, encType, "HTTP File Upload");
@@ -342,7 +346,8 @@ public class ConferenceChatTransport implements ChatTransport {
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException | IOException e) {
                 throw new OperationNotSupportedException(e.getMessage());
             }
-        } else
+        }
+        else
             throw new OperationNotSupportedException(aTalkApp.getResString(R.string.service_gui_FILE_TRANSFER_NOT_SUPPORTED));
     }
 

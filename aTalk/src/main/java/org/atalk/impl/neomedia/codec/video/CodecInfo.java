@@ -77,12 +77,12 @@ public abstract class CodecInfo
             }
         }
 
-        Timber.i("H264 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, true));
-        Timber.i("H264 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, false));
-        Timber.i("VP8 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, true));
-        Timber.i("VP8 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, false));
-        Timber.i("VP9 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP9, true));
-        Timber.i("VP9 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP9, false));
+        // Timber.i("H264 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, true));
+        // Timber.i("H264 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_H264, false));
+        // Timber.i("VP8 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, true));
+        // Timber.i("VP8 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP8, false));
+        // Timber.i("VP9 encoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP9, true));
+        // Timber.i("VP9 decoder info: %s", getCodecForType(MEDIA_CODEC_TYPE_VP9, false));
     }
 
     /**

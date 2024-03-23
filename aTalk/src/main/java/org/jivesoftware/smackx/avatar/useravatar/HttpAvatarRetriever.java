@@ -17,15 +17,15 @@
 
 package org.jivesoftware.smackx.avatar.useravatar;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
  * An AvatarRetriever which retrieve the avatar over HTTP.
  */
-public class HttpAvatarRetriever implements AvatarRetriever
-{
-
+public class HttpAvatarRetriever implements AvatarRetriever {
     private URL mUrl;
     private String mUrlString;
 
@@ -34,8 +34,7 @@ public class HttpAvatarRetriever implements AvatarRetriever
      *
      * @param url the url of the avatar to download.
      */
-    public HttpAvatarRetriever(final URL url)
-    {
+    public HttpAvatarRetriever(final URL url) {
         mUrl = url;
     }
 
@@ -44,15 +43,13 @@ public class HttpAvatarRetriever implements AvatarRetriever
      *
      * @param url the url of the avatar to download.
      */
-    public HttpAvatarRetriever(final String url)
-    {
+    public HttpAvatarRetriever(final String url) {
         mUrlString = url;
     }
 
     @Override
     public byte[] getAvatar()
-            throws IOException
-    {
+            throws IOException {
         if (mUrl == null)
             mUrl = new URL(mUrlString);
         InputStream in = mUrl.openStream();
@@ -70,5 +67,4 @@ public class HttpAvatarRetriever implements AvatarRetriever
         }
         return os.toByteArray();
     }
-
 }

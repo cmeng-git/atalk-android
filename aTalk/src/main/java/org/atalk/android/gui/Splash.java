@@ -33,18 +33,15 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class Splash extends BaseActivity
-{
+public class Splash extends BaseActivity {
     private static boolean mFirstRun = true;
-    private ProgressBar mActionBarProgress;
 
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.splash);
-        mActionBarProgress = findViewById(R.id.actionbar_progress);
-        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
+        ProgressBar mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
         // Starts fade in animation
         ImageView myImageView = findViewById(R.id.loadingImage);
@@ -54,12 +51,13 @@ public class Splash extends BaseActivity
 
         new Handler().postDelayed(() -> {
             Timber.d("End of Splash screen Timer");
+            mProgressBar.clearAnimation();
+            myImageView.clearAnimation();
             finish();
         }, 800);
     }
 
-    public static boolean isFirstRun()
-    {
+    public static boolean isFirstRun() {
         return mFirstRun;
     }
 }

@@ -8,6 +8,14 @@ package org.atalk.android.gui.chat;
 import android.content.Context;
 import android.net.Uri;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Set;
+
+import javax.net.ssl.SSLHandshakeException;
+
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetFileTransferJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OutgoingFileOfferJingleImpl;
 import net.java.sip.communicator.service.protocol.Contact;
@@ -28,9 +36,9 @@ import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusCha
 import net.java.sip.communicator.service.protocol.event.ContactPresenceStatusListener;
 import net.java.sip.communicator.service.protocol.event.FileTransferStatusChangeEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceiptListener;
 import net.java.sip.communicator.util.ConfigurationUtils;
 
-import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
@@ -61,14 +69,6 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.Set;
-
-import javax.net.ssl.SSLHandshakeException;
-
 import timber.log.Timber;
 
 /**
@@ -95,6 +95,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * The associated protocol provider service for the <code>Contact</code>.
      */
     private final ProtocolProviderService mPPS;
+    private final OperationSetBasicInstantMessaging imOpSet;
+    private final OperationSetSmsMessaging smsOpSet;
+    private final OperationSetContactCapabilities capOpSet;
 
     private HttpFileUploadManager httpFileUploadManager;
     private JingleFileTransferManager jingleFTManager;
@@ -164,7 +167,11 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         this.mContact = contact;
         this.mContactResource = contactResource;
         this.isDisplayResourceOnly = isDisplayResourceOnly;
+
         mPPS = contact.getProtocolProvider();
+        imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
+        smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
+        capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         ftOpSet = (OperationSetFileTransferJabberImpl) mPPS.getOperationSet(OperationSetFileTransfer.class);
 
         presenceOpSet = mPPS.getOperationSet(OperationSetPresence.class);
@@ -234,10 +241,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     private void checkImCaps() {
         if ((ConfigurationUtils.getChatDefaultFontFamily() != null)
                 && (ConfigurationUtils.getChatDefaultFontSize() > 0)) {
-            OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-
-            if (imOpSet != null)
-                imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML, mContact);
+            imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML, mContact);
         }
     }
 
@@ -329,7 +333,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      */
     public boolean allowsInstantMessage() {
         // First try to ask the capabilities operation set if such is available.
-        OperationSetContactCapabilities capOpSet = mPPS.getOperationSet(OperationSetContactCapabilities.class);
         if (capOpSet != null) {
             if (mContact.getJid().asEntityBareJidIfPossible() == null) {
                 isChatStateSupported = false;
@@ -338,8 +341,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             return capOpSet.getOperationSet(mContact, OperationSetBasicInstantMessaging.class) != null;
         }
         else
-            return mPPS.getOperationSet(OperationSetBasicInstantMessaging.class) != null;
-
+            return imOpSet != null;
     }
 
     /**
@@ -394,12 +396,9 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * User SHOULD explicitly discover whether the Contact supports the protocol or negotiate the
      * use of chat state notifications with the Contact (e.g., via XEP-0155 Stanza Session Negotiation).
      *
-     * @return {@code true} if this chat transport supports chat state
-     * notifications, otherwise returns {@code false}.
+     * @return {@code true} if this chat transport supports chat state notifications, otherwise returns {@code false}.
      */
     public boolean allowsChatStateNotifications() {
-        // Object tnOpSet = mPPS.getOperationSet(OperationSetChatStateNotifications.class);
-        // return ((tnOpSet != null) && isChatStateSupported);
         return isChatStateSupported;
 
     }
@@ -436,7 +435,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
             return;
         }
 
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
         // Strip HTML flag if ENCODE_HTML not supported by the operation
         if (!imOpSet.isContentTypeSupported(IMessage.ENCODE_HTML))
             encType = encType & IMessage.FLAG_MODE_MASK;
@@ -488,8 +486,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
     public boolean isContentTypeSupported(int mimeType) {
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        return (imOpSet != null) && imOpSet.isContentTypeSupported(mimeType);
+        return imOpSet.isContentTypeSupported(mimeType);
     }
 
     /**
@@ -519,7 +516,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         if (!allowsSmsMessage())
             return false;
 
-        OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
         return smsOpSet.askForNumber(mContact);
     }
 
@@ -570,6 +566,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     public Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -602,6 +599,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     public Object sendFile(File file, int chatType, FileSendConversation xferCon)
@@ -617,6 +615,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     private Object sendFile(File file, boolean isMultimediaMessage, int chatType, FileSendConversation xferCon)
@@ -635,7 +634,6 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
         }
 
         if (isMultimediaMessage) {
-            OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
             if (smsOpSet == null)
                 return null;
             return smsOpSet.sendMultimediaFile(mContact, file);
@@ -664,6 +662,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     private Object getFileTransferTransport(File file, int chatType, FileSendConversation xferCon)
@@ -700,6 +699,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return <code>OutgoingFileOfferController</code> or HTTPFileUpload object to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     private OutgoingFileOfferJingleImpl jingleFileSend(File file, int chatType, FileSendConversation xferCon)
@@ -803,6 +803,7 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if anything goes wrong
      */
     private Object httpFileUpload(File file, int chatType, FileSendConversation xferCon)
@@ -856,60 +857,47 @@ public class MetaContactChatTransport implements ChatTransport, ContactPresenceS
     }
 
     /**
-     * Adds an SMS message listener to this chat transport.
+     * Adds a SMS message listener to this chat transport, if it supports sms messaging.
      *
      * @param l The message listener to add.
      */
     public void addSmsMessageListener(MessageListener l) {
-        // If this chat transport does not support sms messaging we do nothing here.
-        if (!allowsSmsMessage())
-            return;
-
-        OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-        smsOpSet.addMessageListener(l);
+        if (allowsSmsMessage())
+            smsOpSet.addMessageListener(l);
     }
 
     /**
-     * Adds an instant message listener to this chat transport.
-     * Special case for DomainJid to display received messages from server
+     * Adds an instant message listener to this chat transport, if it supports instant messaging;
+     * Or if it is a DomainJid, Special case for DomainJid to display received messages from server
      *
      * @param l The message listener to add.
      */
+    @Override
     public void addInstantMessageListener(MessageListener l) {
-        // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
-        if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.addMessageListener(l);
+        if (allowsInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
+            imOpSet.addMessageListener(l);
     }
 
     /**
-     * Removes the given sms message listener from this chat transport.
+     * Removes the given sms message listener from this chat transport, if it supports sms messaging.
      *
      * @param l The message listener to remove.
      */
+    @Override
     public void removeSmsMessageListener(MessageListener l) {
-        // If this chat transport does not support sms messaging we do nothing here.
-        if (!allowsSmsMessage())
-            return;
-
-        OperationSetSmsMessaging smsOpSet = mPPS.getOperationSet(OperationSetSmsMessaging.class);
-        smsOpSet.removeMessageListener(l);
+        if (allowsSmsMessage())
+            smsOpSet.removeMessageListener(l);
     }
 
     /**
-     * Removes the instant message listener from this chat transport.
+     * Removes the instant message listener from this chat transport, it supports instant messaging; or is a DomainJid
      *
      * @param l The message listener to remove.
      */
+    @Override
     public void removeInstantMessageListener(MessageListener l) {
-        // Skip if this chat transport does not support instant messaging; except if it is a DomainJid
-        if (!allowsInstantMessage() && !(mContact.getJid() instanceof DomainBareJid))
-            return;
-
-        OperationSetBasicInstantMessaging imOpSet = mPPS.getOperationSet(OperationSetBasicInstantMessaging.class);
-        imOpSet.removeMessageListener(l);
+        if (allowsInstantMessage() || (mContact.getJid() instanceof DomainBareJid))
+            imOpSet.removeMessageListener(l);
     }
 
     /**

@@ -6,6 +6,8 @@
 
 package org.atalk.android.gui.chat;
 
+import java.io.File;
+
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
@@ -13,8 +15,6 @@ import net.java.sip.communicator.service.protocol.event.MessageListener;
 import org.atalk.android.gui.chat.filetransfer.FileSendConversation;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jxmpp.jid.EntityBareJid;
-
-import java.io.File;
 
 /**
  * The <code>ChatTransport</code> is an abstraction of the transport method used when sending messages,
@@ -24,8 +24,7 @@ import java.io.File;
  * @author Yana Stamcheva
  * @author Eng Chong Meng
  */
-public interface ChatTransport
-{
+public interface ChatTransport {
     /**
      * Returns the descriptor object of this ChatTransport.
      *
@@ -128,6 +127,7 @@ public interface ChatTransport
      *
      * @param message The message to send.
      * @param encType See IMessage for definition of encType e.g. Encryption, encode & remoteOnly
+     *
      * @throws Exception if the send doesn't succeed
      */
     void sendInstantMessage(String message, int encType)
@@ -147,6 +147,7 @@ public interface ChatTransport
      * Determines whether this chat transport supports the supplied content type
      *
      * @param mimeType the mime type we want to check
+     *
      * @return <code>true</code> if the chat transport supports it and <code>false</code> otherwise.
      */
     boolean isContentTypeSupported(int mimeType);
@@ -163,6 +164,7 @@ public interface ChatTransport
      *
      * @param phoneNumber the phone number to which to send the message
      * @param message The message to send.
+     *
      * @throws Exception if the send doesn't succeed
      */
     void sendSmsMessage(String phoneNumber, String message)
@@ -172,6 +174,7 @@ public interface ChatTransport
      * Sends the given SMS message through this chat transport, leaving the transport to choose the destination.
      *
      * @param message The message to send.
+     *
      * @throws Exception if the send doesn't succeed
      */
     void sendSmsMessage(String message)
@@ -182,6 +185,7 @@ public interface ChatTransport
      * leaving the transport to choose the destination.
      *
      * @param file the file to send
+     *
      * @throws Exception if the send doesn't succeed
      */
     Object sendMultimediaFile(File file)
@@ -196,6 +200,7 @@ public interface ChatTransport
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if the send doesn't succeed
      */
     Object sendSticker(File file, int chatType, FileSendConversation xferCon)
@@ -209,6 +214,7 @@ public interface ChatTransport
      * @param xferCon an instance of FileSendConversation
      *
      * @return the <code>FileTransfer</code> or HTTPFileUpload object charged to transfer the given <code>file</code>.
+     *
      * @throws Exception if the send doesn't succeed
      */
     Object sendFile(File file, int chatType, FileSendConversation xferCon)

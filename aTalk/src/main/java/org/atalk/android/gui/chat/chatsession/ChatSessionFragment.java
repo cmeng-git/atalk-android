@@ -207,7 +207,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
 
         private ChatSessionAdapter(LayoutInflater inflater) {
             mInflater = inflater;
-
             new InitChatRoomWrapper().execute();
             new getChatSessionRecords(new Date()).execute();
         }

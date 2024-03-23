@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.gui.About;
 import org.atalk.persistance.ServerPersistentStoresRefreshDialog;
@@ -31,6 +32,9 @@ public abstract class ExitMenuActivity extends OSGiActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.exit_menu, menu);
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            menu.findItem(R.id.menu_exit).setVisible(true);
+        }
         return true;
     }
 

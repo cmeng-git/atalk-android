@@ -5,10 +5,6 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.service.protocol.Contact;
-import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -16,23 +12,25 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.OperationSetServerStoredContactInfo;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+
 import timber.log.Timber;
 
 /**
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class OperationSetServerStoredContactInfoJabberImpl implements OperationSetServerStoredContactInfo
-{
-    private InfoRetriever infoRetriever;
+public class OperationSetServerStoredContactInfoJabberImpl implements OperationSetServerStoredContactInfo {
+    private final InfoRetriever infoRetriever;
 
     /**
      * If we got several listeners for the same contact lets retrieve once but deliver result to all.
      */
     private final Hashtable<String, List<DetailsResponseListener>> listenersForDetails = new Hashtable<>();
 
-    protected OperationSetServerStoredContactInfoJabberImpl(InfoRetriever infoRetriever)
-    {
+    protected OperationSetServerStoredContactInfoJabberImpl(InfoRetriever infoRetriever) {
         this.infoRetriever = infoRetriever;
     }
 
@@ -41,8 +39,7 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      *
      * @return the info retriever.
      */
-    InfoRetriever getInfoRetriever()
-    {
+    InfoRetriever getInfoRetriever() {
         return infoRetriever;
     }
 
@@ -53,15 +50,15 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      *
      * @param contact Contact
      * @param detailClass Class
+     *
      * @return Iterator
      */
-    public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Contact contact, Class<T> detailClass)
-    {
+    public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Contact contact, Class<T> detailClass) {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl)) {
             return new LinkedList<T>().iterator();
         }
 
-        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asBareJid());
+        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asEntityBareJidIfPossible());
         List<T> result = new LinkedList<>();
 
         if (details == null)
@@ -82,14 +79,14 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      *
      * @param contact Contact
      * @param detailClass Class
+     *
      * @return Iterator
      */
-    public Iterator<GenericDetail> getDetails(Contact contact, Class<? extends GenericDetail> detailClass)
-    {
+    public Iterator<GenericDetail> getDetails(Contact contact, Class<? extends GenericDetail> detailClass) {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl))
             return new LinkedList<GenericDetail>().iterator();
 
-        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asBareJid());
+        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asEntityBareJidIfPossible());
         List<GenericDetail> result = new LinkedList<>();
 
         if (details == null)
@@ -106,14 +103,14 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      * request the full info for the given uin waits and return this details
      *
      * @param contact The requester Contact
+     *
      * @return Iterator
      */
-    public Iterator<GenericDetail> getAllDetailsForContact(Contact contact)
-    {
+    public Iterator<GenericDetail> getAllDetailsForContact(Contact contact) {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl))
             return Collections.emptyIterator();
 
-        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asBareJid());
+        List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asEntityBareJidIfPossible());
 
         if (details == null)
             return Collections.emptyIterator();
@@ -127,10 +124,10 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      * login to retrieve any new update from an online contact
      *
      * @param contact the specified contact or account
+     *
      * @return Iterator over all details existing for the specified contact.
      */
-    public Iterator<GenericDetail> requestAllDetailsForContact(final Contact contact, DetailsResponseListener listener)
-    {
+    public Iterator<GenericDetail> requestAllDetailsForContact(final Contact contact, DetailsResponseListener listener) {
         if (!(contact instanceof ContactJabberImpl)) {
             return null;
         }
@@ -154,7 +151,7 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
         }
 
         new Thread(() -> {
-            List<GenericDetail> result = infoRetriever.retrieveDetails(contact.getJid().asBareJid());
+            List<GenericDetail> result = infoRetriever.retrieveDetails(contact.getJid().asEntityBareJidIfPossible());
 
             List<DetailsResponseListener> listeners;
             synchronized (listenersForDetails) {
@@ -181,10 +178,10 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      * Checks whether a contact is a private messaging contact for chat rooms.
      *
      * @param contact the contact to check.
+     *
      * @return <code>true</code> if contact is private messaging contact for chat room.
      */
-    private boolean isPrivateMessagingContact(Contact contact)
-    {
+    private boolean isPrivateMessagingContact(Contact contact) {
         if (contact instanceof VolatileContactJabberImpl)
             return ((VolatileContactJabberImpl) contact).isPrivateMessagingContact();
         return false;

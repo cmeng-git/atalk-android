@@ -1,6 +1,6 @@
 /*
  * aTalk, android VoIP and Instant Messaging client
- * Copyright 2014 Eng Chong Meng
+ * Copyright 2014~2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,17 @@
  * limitations under the License.
  */
 
-package org.jivesoftware.smackx.avatar.vcardavatar.listener;
+package org.jivesoftware.smackx.avatar.listener;
 
-import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.EntityBareJid;
 
-/**
- * A listener for avatar changes event.
- *
- * @author Eng Chong Meng
- */
-public interface VCardAvatarListener
-{
+public interface AvatarChangeListener {
     /**
      * Event which is fired when a contact change avatar.
      *
-     * @param from the contact fullJid who changes his avatar
-     * @param avatarId the new avatar id, may be null if the contact set no avatar
-     * @param vCardInfo the VCard info, may be empty if the no VCard is retrieved
+     * @param from the contact EntityBareJid who change his avatar.
+     * @param olAvatarId the old avatar id, may be null.
+     * @param newAvatarId the new avatar id, may be null if the contact set no avatar.
      */
-    void onAvatarChange(Jid from, String avatarId, VCard vCardInfo);
+    void onAvatarChange(EntityBareJid from, String olAvatarId, String newAvatarId);
 }

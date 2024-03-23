@@ -239,10 +239,9 @@ public class ActionBarStatusFragment extends OSGiFragment
             // Proceed only if mOnOffLine has been initialized
             if (mOnOffLine != null) {
                 boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(mStatus);
-                int itemId = isOffline
-                        ? R.string.service_gui_SIGN_IN
-                        : R.string.service_gui_SIGN_OUT;
+                int itemId = isOffline ? R.string.service_gui_SIGN_IN : R.string.service_gui_SIGN_OUT;
                 mOnOffLine.setTitle(itemId);
+                mOnOffLine.setVisible(isOffline);
             }
         });
     }

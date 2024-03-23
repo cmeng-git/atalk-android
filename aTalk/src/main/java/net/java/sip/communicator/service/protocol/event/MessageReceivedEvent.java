@@ -124,8 +124,6 @@ public class MessageReceivedEvent extends EventObject {
      * @param contactResource the <code>ContactResource</code>, from which this message was sent
      * @param sender the fullJid from which this message was sent
      * @param timestamp the exact date when the event occurred.
-     * @param eventType the type of message event that this instance represents (one of the
-     * XXX_MESSAGE_RECEIVED static fields).
      * @param isPrivateMessaging indicates whether the this is private messaging event or not.
      * @param privateContactRoom the chat room associated with the contact.
      */

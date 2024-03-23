@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.util.Hashtable;
+
 import net.java.sip.communicator.service.credentialsstorage.CredentialsStorageService;
 import net.java.sip.communicator.service.globaldisplaydetails.GlobalDisplayDetailsService;
 import net.java.sip.communicator.service.googlecontacts.GoogleContactsService;
@@ -26,8 +28,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
-import java.util.Hashtable;
-
 /**
  * Loads the Jabber provider factory and registers it with service in the OSGI bundle context.
  *
@@ -37,8 +37,7 @@ import java.util.Hashtable;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class JabberActivator implements BundleActivator
-{
+public class JabberActivator implements BundleActivator {
     /**
      * Service reference for the currently valid Jabber provider factory.
      */
@@ -119,13 +118,13 @@ public class JabberActivator implements BundleActivator
      * activities necessary to start this bundle.
      *
      * @param context The execution context of the bundle being started.
+     *
      * @throws Exception If this method throws an exception, this bundle is marked as stopped and the
      * Framework will remove this bundle's listeners, unregister all services registered by
      * this bundle, and release all services used by this bundle.
      */
     public void start(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         JabberActivator.bundleContext = context;
 
         Hashtable<String, String> hashtable = new Hashtable<>();
@@ -149,8 +148,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return ConfigurationService a currently valid implementation of the configuration service.
      */
-    public static ConfigurationService getConfigurationService()
-    {
+    public static ConfigurationService getConfigurationService() {
         if (configurationService == null) {
             configurationService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         }
@@ -162,8 +160,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return a reference to the BundleContext instance that we were started witn.
      */
-    public static BundleContext getBundleContext()
-    {
+    public static BundleContext getBundleContext() {
         return bundleContext;
     }
 
@@ -173,8 +170,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to the <code>ProtocolProviderFactoryJabberImpl</code> instance that we have
      * registered from this package.
      */
-    public static ProtocolProviderFactoryJabberImpl getProtocolProviderFactory()
-    {
+    public static ProtocolProviderFactoryJabberImpl getProtocolProviderFactory() {
         return jabberProviderFactory;
     }
 
@@ -183,13 +179,13 @@ public class JabberActivator implements BundleActivator
      * activities necessary to stop the bundle.
      *
      * @param context The execution context of the bundle being stopped.
+     *
      * @throws Exception If this method throws an exception, the bundle is still marked as stopped, and the
      * Framework will remove the bundle's listeners, unregister all services registered by
      * the bundle, and release all services used by the bundle.
      */
     public void stop(BundleContext context)
-            throws Exception
-    {
+            throws Exception {
         jabberProviderFactory.stop();
         jabberPpFactoryServReg.unregister();
 
@@ -210,8 +206,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to a UIService implementation currently registered in the bundle context
      * or null if no such implementation was found.
      */
-    public static UIService getUIService()
-    {
+    public static UIService getUIService() {
         if (uiService == null) {
             ServiceReference uiServiceReference = bundleContext.getServiceReference(UIService.class.getName());
             uiService = (UIService) bundleContext.getService(uiServiceReference);
@@ -226,8 +221,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to the ResourceManagementService implementation currently registered in
      * the bundle context or <code>null</code> if no such implementation was found.
      */
-    public static ResourceManagementService getResources()
-    {
+    public static ResourceManagementService getResources() {
         if (resourcesService == null)
             resourcesService = ResourceManagementServiceUtils.getService(bundleContext);
         return resourcesService;
@@ -240,8 +234,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to a {@link MediaService} implementation currently registered in the
      * bundle context or null if no such implementation was found.
      */
-    public static MediaService getMediaService()
-    {
+    public static MediaService getMediaService() {
         if (mediaService == null) {
             ServiceReference mediaServiceReference = bundleContext.getServiceReference(MediaService.class.getName());
             mediaService = (MediaService) bundleContext.getService(mediaServiceReference);
@@ -255,8 +248,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return a currently valid implementation of the NetworkAddressManagerService .
      */
-    public static NetworkAddressManagerService getNetworkAddressManagerService()
-    {
+    public static NetworkAddressManagerService getNetworkAddressManagerService() {
         if (networkAddressManagerService == null) {
             ServiceReference confReference
                     = bundleContext.getServiceReference(NetworkAddressManagerService.class.getName());
@@ -271,8 +263,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return a currently valid implementation of the CredentialsStorageService
      */
-    public static CredentialsStorageService getCredentialsStorageService()
-    {
+    public static CredentialsStorageService getCredentialsStorageService() {
         if (credentialsService == null) {
             ServiceReference confReference = bundleContext.getServiceReference(CredentialsStorageService.class.getName());
             credentialsService = (CredentialsStorageService) bundleContext.getService(confReference);
@@ -286,8 +277,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return a currently valid implementation of the <code>HIDService</code>
      */
-    public static HIDService getHIDService()
-    {
+    public static HIDService getHIDService() {
         if (hidService == null) {
             ServiceReference hidReference = bundleContext.getServiceReference(HIDService.class.getName());
             if (hidReference == null)
@@ -304,8 +294,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to a GoogleContactsService implementation currently registered in the
      * bundle context or null if no such implementation was found.
      */
-    public static GoogleContactsService getGoogleService()
-    {
+    public static GoogleContactsService getGoogleService() {
         if (googleService == null) {
             googleService = ServiceUtils.getService(bundleContext, GoogleContactsService.class);
         }
@@ -319,8 +308,7 @@ public class JabberActivator implements BundleActivator
      * @return a reference to a VersionService implementation currently registered in the bundle
      * context or null if no such implementation was found.
      */
-    public static VersionService getVersionService()
-    {
+    public static VersionService getVersionService() {
         if (versionService == null) {
             ServiceReference versionServiceReference = bundleContext.getServiceReference(VersionService.class.getName());
             versionService = (VersionService) bundleContext.getService(versionServiceReference);
@@ -333,8 +321,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return returns the PhoneNumberI18nService.
      */
-    public static PhoneNumberI18nService getPhoneNumberI18nService()
-    {
+    public static PhoneNumberI18nService getPhoneNumberI18nService() {
         if (phoneNumberI18nService == null) {
             phoneNumberI18nService = ServiceUtils.getService(bundleContext, PhoneNumberI18nService.class);
         }
@@ -346,8 +333,7 @@ public class JabberActivator implements BundleActivator
      *
      * @return the <code>GlobalDisplayDetailsService</code> obtained from the bundle context
      */
-    public static GlobalDisplayDetailsService getGlobalDisplayDetailsService()
-    {
+    public static GlobalDisplayDetailsService getGlobalDisplayDetailsService() {
         if (globalDisplayDetailsService == null) {
             globalDisplayDetailsService = ServiceUtils.getService(bundleContext, GlobalDisplayDetailsService.class);
         }

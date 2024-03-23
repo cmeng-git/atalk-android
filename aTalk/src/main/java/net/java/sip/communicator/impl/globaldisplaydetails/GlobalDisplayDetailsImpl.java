@@ -30,6 +30,7 @@ import net.java.sip.communicator.util.account.AccountUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,7 +76,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
     /**
      * The provisioned display name.
      */
-    private String provisionedDisplayName;
+    private final String provisionedDisplayName;
 
     /**
      * The global avatar.
@@ -91,8 +92,8 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      * Creates an instance of <code>GlobalDisplayDetailsImpl</code>.
      */
     public GlobalDisplayDetailsImpl() {
-        provisionedDisplayName
-                = GlobalDisplayDetailsActivator.getConfigurationService().getString(GLOBAL_DISPLAY_NAME_PROP, null);
+        provisionedDisplayName = GlobalDisplayDetailsActivator.getConfigurationService()
+                .getString(GLOBAL_DISPLAY_NAME_PROP, null);
 
         for (ProtocolProviderService protocolProviderService : AccountUtils.getRegisteredProviders()) {
             protocolProviderService.addRegistrationStateChangeListener(this);
@@ -110,7 +111,7 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         // assume first registered provider if null;
         if (pps == null) {
             Collection<ProtocolProviderService> providers = AccountUtils.getRegisteredProviders();
-            if ((providers == null) || (providers.size() == 0))
+            if (providers.size() == 0)
                 return "";
             pps = ((List<ProtocolProviderService>) providers).get(0);
         }
@@ -144,7 +145,6 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
                 return null;
             pps = ((List<ProtocolProviderService>) providers).get(0);
         }
-
         BareJid userJid = pps.getAccountID().getEntityBareJid();
         return AvatarManager.getAvatarImageByJid(userJid);
     }
@@ -234,14 +234,11 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
      */
     public void avatarChanged(AvatarEvent event) {
         globalAvatar = event.getNewAvatar();
+
         // If there is no avatar image set, then displays the default one.
         if (globalAvatar == null) {
             globalAvatar = GlobalDisplayDetailsActivator.getResources().getImageInBytes(DEFAULT_PERSONAL_PHOTO);
         }
-
-        // AvatarCacheUtils.cacheAvatar(event.getSourceProvider(), globalAvatar);
-        BareJid userId = event.getSourceProvider().getAccountID().getEntityBareJid();
-        AvatarManager.addAvatarImage(userId, globalAvatar, false);
         fireGlobalAvatarEvent(globalAvatar);
     }
 
@@ -263,7 +260,6 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
             ProtocolProviderService protocolProvider = evt.getProvider();
             OperationSetServerStoredAccountInfo accountInfoOpSet
                     = protocolProvider.getOperationSet(OperationSetServerStoredAccountInfo.class);
-
             new UpdateAccountInfo(evt.getProvider(), accountInfoOpSet, true).start();
         }
     }
@@ -275,26 +271,26 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
         /**
          * The protocol provider.
          */
-        private ProtocolProviderService protocolProvider;
+        private final ProtocolProviderService protocolProvider;
 
         /**
          * The account info operation set to query.
          */
-        private OperationSetServerStoredAccountInfo accountInfoOpSet;
+        private final OperationSetServerStoredAccountInfo accountInfoOpSet;
 
         /**
          * Indicates if the display name and avatar should be updated from this provider even if
          * they already have values.
          */
-        private boolean isUpdate;
+        private final boolean isUpdate;
 
         /**
          * Constructs with provider and opSet to use.
          *
          * @param protocolProvider the provider.
          * @param accountInfoOpSet the opSet.
-         * @param isUpdate indicates if the display name and avatar should be updated from this provider even
-         * if they already have values.
+         * @param isUpdate indicates if the display name and avatar should be updated
+         * from this provider even if they already have values.
          */
         UpdateAccountInfo(ProtocolProviderService protocolProvider,
                 OperationSetServerStoredAccountInfo accountInfoOpSet, boolean isUpdate) {
@@ -305,17 +301,10 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
 
         @Override
         public void run() {
-            // globalAvatar = AvatarCacheUtils.getCachedAvatar(protocolProvider);
-            BareJid userId = protocolProvider.getAccountID().getEntityBareJid();
+            EntityBareJid userId = protocolProvider.getAccountID().getEntityBareJid();
             globalAvatar = AvatarManager.getAvatarImageByJid(userId);
-            if ((isUpdate) || (globalAvatar == null)) {
-                byte[] accountImage = AccountInfoUtils.getImage(accountInfoOpSet);
-                if ((accountImage != null) && (accountImage.length > 0)) {
-                    globalAvatar = accountImage;
-                    // AvatarCacheUtils.cacheAvatar(protocolProvider, globalAvatar);
-                    AvatarManager.addAvatarImage(userId, globalAvatar, false);
-                }
-                else {
+            if (isUpdate || (globalAvatar == null)) {
+                if (globalAvatar == null) {
                     globalAvatar = new byte[0];
                 }
                 fireGlobalAvatarEvent(globalAvatar);
@@ -327,23 +316,18 @@ public class GlobalDisplayDetailsImpl implements GlobalDisplayDetailsService,
 
             if (currentFirstName == null) {
                 String firstName = AccountInfoUtils.getFirstName(accountInfoOpSet);
-
                 if (StringUtils.isNotEmpty(firstName)) {
                     currentFirstName = firstName;
                 }
             }
-
             if (currentLastName == null) {
                 String lastName = AccountInfoUtils.getLastName(accountInfoOpSet);
-
                 if (StringUtils.isNotEmpty(lastName)) {
                     currentLastName = lastName;
                 }
             }
-
             if (currentFirstName == null && currentLastName == null) {
                 String displayName = AccountInfoUtils.getDisplayName(accountInfoOpSet);
-
                 if (displayName != null)
                     currentDisplayName = displayName;
             }

@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.avatar.useravatar.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Implementation for the XEP-0084: User Avatar Extension Element for <pubsub/> "metadata node" i.e.
@@ -33,8 +33,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class AvatarMetadata implements ExtensionElement
-{
+public class AvatarMetadata implements ExtensionElement {
     /**
      * The logger.
      */
@@ -59,15 +58,14 @@ public class AvatarMetadata implements ExtensionElement
      */
     public static final String ELEMENT = "metadata";
 
-    private List<Info> mInfo = new LinkedList<Info>();
+    private final List<Info> mInfo = new LinkedList<>();
 
     /**
      * Get the metadata information.
      *
      * @return a list of information
      */
-    public List<Info> getInfo()
-    {
+    public List<Info> getInfo() {
         return mInfo;
     }
 
@@ -76,26 +74,22 @@ public class AvatarMetadata implements ExtensionElement
      *
      * @param info the metadata information to add
      */
-    public void addInfo(Info info)
-    {
+    public void addInfo(Info info) {
         mInfo.add(info);
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
-    {
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         for (Info info : mInfo) {
@@ -108,8 +102,7 @@ public class AvatarMetadata implements ExtensionElement
     /**
      * A metadata information element.
      */
-    public static class Info
-    {
+    public static class Info {
         /**
          * This info extension element name.
          */
@@ -137,8 +130,7 @@ public class AvatarMetadata implements ExtensionElement
          * @param type the MIME type of the avatar
          * @param bytes the size of the avatar in bytes
          */
-        public Info(final String id, final String type, final int bytes)
-        {
+        public Info(final String id, final String type, final int bytes) {
             mId = id;
             mType = type;
             mBytes = bytes;
@@ -149,8 +141,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the size
          */
-        public int getBytes()
-        {
+        public int getBytes() {
             return mBytes;
         }
 
@@ -159,8 +150,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param bytes the size
          */
-        public void setBytes(int bytes)
-        {
+        public void setBytes(int bytes) {
             this.mBytes = bytes;
         }
 
@@ -169,8 +159,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the width
          */
-        public int getWidth()
-        {
+        public int getWidth() {
             return mWidth;
         }
 
@@ -179,8 +168,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param width the width
          */
-        public void setWidth(int width)
-        {
+        public void setWidth(int width) {
             this.mWidth = width;
         }
 
@@ -189,8 +177,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the height
          */
-        public int getHeight()
-        {
+        public int getHeight() {
             return mHeight;
         }
 
@@ -199,8 +186,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param height the height
          */
-        public void setHeight(int height)
-        {
+        public void setHeight(int height) {
             this.mHeight = height;
         }
 
@@ -209,8 +195,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the id
          */
-        public String getId()
-        {
+        public String getId() {
             return mId;
         }
 
@@ -219,8 +204,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param id the id
          */
-        public void setId(String id)
-        {
+        public void setId(String id) {
             this.mId = id;
         }
 
@@ -229,8 +213,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the type, null if no type is present
          */
-        public String getType()
-        {
+        public String getType() {
             return mType;
         }
 
@@ -239,8 +222,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param type the type
          */
-        public void setType(String type)
-        {
+        public void setType(String type) {
             this.mType = type;
         }
 
@@ -249,8 +231,7 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @return the url, null if no url is present
          */
-        public String getUrl()
-        {
+        public String getUrl() {
             return mUrl;
         }
 
@@ -259,27 +240,18 @@ public class AvatarMetadata implements ExtensionElement
          *
          * @param url the url
          */
-        public void setUrl(String url)
-        {
+        public void setUrl(String url) {
             this.mUrl = url;
         }
 
         /**
          * Return this information as an xml element.
-         * <p>
-         * &lt;info
-         * id='111f4b3c50d7b0df729d299bc6f8e9ef9066971f'
-         * type='image/png'
-         * bytes='6345'
-         * width='64'
-         * height='64'
-         * url='http://avatars.example.org/happy.gif'
-         * /&gt;
+         * &lt;info id='9cf...3b59' type='image/png' bytes='12835' width='108' height='108'
+         * url='http://avatars.example.org/happy.gif' /&gt;
          *
          * @return an xml element representing this information
          */
-        public CharSequence toXML(XmlEnvironment xmlEnvironment)
-        {
+        public CharSequence toXML(XmlEnvironment xmlEnvironment) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(ELEMENT_INFO);
             xml.attribute(ATTR_ID, mId);

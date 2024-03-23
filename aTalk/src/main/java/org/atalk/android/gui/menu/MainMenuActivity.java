@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SearchView;
@@ -41,6 +42,7 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
+import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
@@ -167,10 +169,10 @@ public class MainMenuActivity extends ExitMenuActivity implements ServiceListene
         mShowHideOffline.setTitle(itemId);
 
         mOnOffLine = menu.findItem(R.id.sign_in_off);
-        itemId = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this))
-                ? R.string.service_gui_SIGN_IN
-                : R.string.service_gui_SIGN_OUT;
+        boolean isOffline = GlobalStatusEnum.OFFLINE_STATUS.equals(ActionBarUtil.getStatus(this));
+        itemId = isOffline ? R.string.service_gui_SIGN_IN : R.string.service_gui_SIGN_OUT;
         mOnOffLine.setTitle(itemId);
+        mOnOffLine.setVisible(isOffline);
 
         // Adds exit option from super class
         super.onCreateOptionsMenu(menu);

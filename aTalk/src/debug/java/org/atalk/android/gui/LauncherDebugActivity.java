@@ -50,7 +50,8 @@ public class LauncherDebugActivity extends OSGiActivity
      * Intent instance that will be called once OSGi startup is finished.
      */
     private Intent restoreIntent;
-
+    private ProgressBar mProgressBar;
+    private ImageView myImageView;
     private boolean startOnReboot = false;
 
     @Override
@@ -83,13 +84,20 @@ public class LauncherDebugActivity extends OSGiActivity
         if (restoreIntent != null)
             stateText.setText(R.string.service_gui_RESTORING);
 
-        ProgressBar mActionBarProgress = findViewById(R.id.actionbar_progress);
-        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
 
         // Starts fade in animation
-        ImageView myImageView = findViewById(R.id.loadingImage);
+        myImageView = findViewById(R.id.loadingImage);
         Animation myFadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
         myImageView.startAnimation(myFadeInAnimation);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mProgressBar.clearAnimation();
+        myImageView.clearAnimation();
     }
 
     @Override

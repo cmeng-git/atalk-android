@@ -19,25 +19,35 @@ package org.jivesoftware.smackx.avatar.vcardavatar;
 
 import android.text.TextUtils;
 
-import org.jivesoftware.smack.*;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.filter.*;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.avatar.vcardavatar.packet.VCardTempXUpdate;
-import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
-import org.jxmpp.jid.*;
+import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import timber.log.Timber;
 
 /**
  * This class deals with the avatar data in XEP-0054: vcard-temp
@@ -47,8 +57,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class VCardAvatarManager extends AvatarManager
-{
+public class VCardAvatarManager extends AvatarManager {
     /**
      * The logger.
      */
@@ -64,46 +73,46 @@ public class VCardAvatarManager extends AvatarManager
      */
     private static final String NAMESPACE = VCardTempXUpdate.NAMESPACE;
 
-    private static Map<XMPPConnection, VCardAvatarManager> instances = new WeakHashMap<>();
-
-    /**
-     * Listeners to be informed if there is a new avatar updated.
-     */
-    private final List<VCardAvatarListener> mListeners = new LinkedList<>();
-
-    /**
-     * The VCard info for this user.
-     */
-    private VCard mVCard = null;
+    private static final Map<XMPPConnection, VCardAvatarManager> instances = new WeakHashMap<>();
 
     /**
      * The VCardManager associated with the VCardAvatarManager.
      */
     private final VCardManager vCardMgr;
 
-    private final MultiUserChatManager mucManager;
+    // Currently in process of the contact#avatarId
+    private String ipContactHash = null;
+
+    /*
+     * Disable processing of presence with phone value == null; due to ejabberd error i.e.:
+     * ejabberd sends presence's, 'photo' element with no hash value, after user publishes a new avatar.
+     * https://github.com/processone/ejabberd/issues/4182.
+     * Need to re-enable when most ejabberd server has updated with the fix from ejabberd.
+     *
+     * This seems do not happen if it is preceded with avatar publish via XEP-0084 User Avatar.
+     */
+    private final boolean noPhotoProcess = false;
 
     /**
      * Creates a filter to only listen to presence stanza with the element name "x" and the
      * namespace "vcard-temp:x:update".
      */
-    private static final StanzaFilter PRESENCES_WITH_VCARD
+    private static final StanzaFilter PRESENCES_WITH_VCARD_TEMP
             = new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(ELEMENT, NAMESPACE));
 
-//    /**
-//     * Creates a filter to only listen to presence stanza with the element name "x" but without the
-//     * namespace "vcard-temp:x:update".
-//     * cmeng (20190298) - ejabberd will auto add - so remove
-//     */
-//    private static final StanzaFilter PRESENCES_WITHOUT_VCARD
-//            = new AndFilter(PresenceTypeFilter.AVAILABLE, new NotFilter(new StanzaExtensionFilter(ELEMENT, NAMESPACE)));
+    /*
+     * Creates a filter to only listen to presence stanza with the element name "x" but without the
+     * namespace "vcard-temp:x:update".
+     * cmeng (20190298) - ejabberd will auto add with vcard_temp_update
+     */
+    // private static final StanzaFilter PRESENCES_WITHOUT_VCARD_TEMP
+    //        = new AndFilter(PresenceTypeFilter.AVAILABLE, new NotFilter(new StanzaExtensionFilter(ELEMENT, NAMESPACE)));
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(VCardAvatarManager::getInstanceFor);
     }
 
-    public static synchronized VCardAvatarManager getInstanceFor(XMPPConnection connection)
-    {
+    public static synchronized VCardAvatarManager getInstanceFor(XMPPConnection connection) {
         VCardAvatarManager vCardAvatarManager = instances.get(connection);
         if (vCardAvatarManager == null) {
             vCardAvatarManager = new VCardAvatarManager(connection);
@@ -112,20 +121,17 @@ public class VCardAvatarManager extends AvatarManager
     }
 
     /**
-     * Create an UserAvatarManager.
+     * Create an VCardAvatarManager.
      *
      * @param connection the registered account XMPP connection
      */
-    private VCardAvatarManager(XMPPConnection connection)
-    {
+    private VCardAvatarManager(XMPPConnection connection) {
         super(connection);
-        mucManager = MultiUserChatManager.getInstanceFor(connection);
         vCardMgr = VCardManager.getInstanceFor(connection);
         vCardTempXUpdate = new VCardTempXUpdate(null);
         instances.put(connection, this);
 
-        connection.addConnectionListener(new ConnectionListener()
-        {
+        connection.addConnectionListener(new ConnectionListener() {
             /**
              * Upon user authentication, update account avatarHash so it is ready for
              * x-extension inclusion in <presence/> sending.
@@ -136,8 +142,7 @@ public class VCardAvatarManager extends AvatarManager
              * @see VCardTempXUpdate#setAvatarHash(String)
              */
             @Override
-            public void authenticated(XMPPConnection connection, boolean resumed)
-            {
+            public void authenticated(XMPPConnection connection, boolean resumed) {
                 // if (!isUserAvatarEnable && (persistentJidToHashIndex != null)) {
                 if (persistentJidToHashIndex != null) {
                     String hash = getAvatarHashByJid(mAccount);
@@ -149,15 +154,15 @@ public class VCardAvatarManager extends AvatarManager
 
         /*
          * The Presence stanza interceptor with type=available to insert VCardTempXUpdate element
-         * cmeng (20190298) - ejabberd will auto add - so remove
+         * cmeng (20190298) - ejabberd will auto add with vcard_temp_update
          */
-        // connection.addStanzaInterceptor(this, PRESENCES_WITHOUT_VCARD);
+        // connection.addAsyncStanzaListener(this::processPresenceStanza, PRESENCES_WITHOUT_VCARD_TEMP);
 
         /*
          * Listen for remote presence stanzas with the vCardTemp:x:update extension. If we
          * receive such a stanza, process the stanza and acts if necessary
          */
-        connection.addAsyncStanzaListener(this::processContactPhotoPresence, PRESENCES_WITH_VCARD);
+        connection.addAsyncStanzaListener(this::processContactPhotoPresence, PRESENCES_WITH_VCARD_TEMP);
     }
 
     /**
@@ -167,43 +172,33 @@ public class VCardAvatarManager extends AvatarManager
      * Do not cache avatarId in persistent store if VCard does not have <PHOTO/>#photoBinval item.
      * We may never get the updated VCard info if contact client does not support XEP-0153 protocol
      *
-     * @param userId The bareJid of the user. Load VCard of the current user if null.
+     * @param from The bareJid of the user. Load VCard of the current user if null.
+     *
      * @return VCard if the download was successful otherwise null is returned
      */
-    public VCard downloadVCard(BareJid userId)
-    {
-        if (userId == null)
-            userId = mAccount;
+    public VCard downloadVCard(EntityBareJid from) {
+        if (from == null)
+            from = mAccount;
 
+        VCard vCard = null;
         try {
-            mVCard = vCardMgr.loadVCard(userId.asEntityBareJidIfPossible());
+            vCard = vCardMgr.loadVCard(from);
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException
-                | SmackException.NotConnectedException | InterruptedException e) {
-            LOGGER.log(Level.WARNING, "Error while downloading VCard for: '" + userId + "'. " + e.getMessage());
+                 | SmackException.NotConnectedException | InterruptedException e) {
+            LOGGER.log(Level.WARNING, "Error while downloading VCard for: '" + from + "'. " + e.getMessage());
         }
 
-        if (mVCard != null) {
-            String currentAvatarHash = getAvatarHashByJid(userId);
-
-            String avatarHash = "";  // default to no photo specified
-            byte[] avatarImage = mVCard.getAvatar();
-            // Proceed only if vCard has photo specified. XEP-0084 will handle later on
+        // Proceed only if vCard not null, and has photo specified. Fall back to XEP-0084: User Avatar to handle.
+        if (vCard != null) {
+            byte[] avatarImage = vCard.getAvatar();
             if ((avatarImage != null) && (avatarImage.length > 0)) {
+                String oldAvatarId = getAvatarHashByJid(from);
+
                 // save if new image to persistent cache and get its avatarHash
-                avatarHash = addAvatarImage(avatarImage);
-                if (!avatarHash.equals(currentAvatarHash)) {
-                    /*
-                     * set <presence/> avatarHash if the userId is the registered account for this
-                     * connection @see VCardTempXUpdate#mAvatarHash
-                     */
-                    // if (!isUserAvatarEnable && (mAccount != null) && mAccount.equals(userId)) {
-                    if ((mAccount != null) && mAccount.equals(userId)) {
-                        vCardTempXUpdate.setAvatarHash(avatarHash);
-                    }
-
+                String newAvatarId = addAvatarImage(avatarImage);
+                if (!newAvatarId.equals(oldAvatarId)) {
                     // add an index hash for the jid
-                    addJidToAvatarHashIndex(userId, avatarHash);
-
+                    addJidToAvatarHashIndex(from, newAvatarId);
                     /*
                      * Purge old avatar item from the persistent storage if:
                      * - Current avatar hash is not empty i.e. "" => a newly received avatar
@@ -211,14 +206,23 @@ public class VCardAvatarManager extends AvatarManager
                      * - skip if currentAvatarHash.equals(avatarId)
                      *	   => cache and persistent not sync (pre-checked)
                      */
-                    if (!TextUtils.isEmpty(currentAvatarHash)
-                            && !isHashMultipleOwner(userId, currentAvatarHash))
-                        persistentAvatarCache.purgeItemFor(currentAvatarHash);
+                    if (!TextUtils.isEmpty(oldAvatarId)
+                            && !isHashMultipleOwner(from, oldAvatarId))
+                        persistentAvatarCache.purgeItemFor(oldAvatarId);
+
+                    /*
+                     * set <presence/> avatarHash if the userId is the registered account for this
+                     * connection @see VCardTempXUpdate#mAvatarHash
+                     */
+                    // if (!isUserAvatarEnable && (mAccount != null) && mAccount.equals(userId)) {
+                    if ((mAccount != null) && mAccount.isParentOf(from)) {
+                        vCardTempXUpdate.setAvatarHash(newAvatarId);
+                    }
                 }
+                LOGGER.log(Level.INFO, "Downloaded vcard info for: " + from + "; Hash = " + newAvatarId);
             }
-            LOGGER.log(Level.INFO, "Downloaded vcard info for: " + userId + "; Hash = " + avatarHash);
         }
-        return mVCard;
+        return vCard;
     }
 
     /**
@@ -230,8 +234,7 @@ public class VCardAvatarManager extends AvatarManager
      * @throws NotConnectedException if there was no connection to the server.
      */
     public boolean saveVCard(VCard vCard)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
-    {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         boolean isImageUpdated = false;
         if (vCard != null) {
             isImageUpdated = updateVCardAvatarHash(vCard.getAvatar(), true);
@@ -244,79 +247,87 @@ public class VCardAvatarManager extends AvatarManager
 
     /**
      * Parses a contact presence stanza with the element name "x" and the namespace
-     * "vcard-temp:x:update". If new avatarHash received, Download if autoDownload is
-     * enabled and/or fireListeners registered with this event if change detected.
-     *
+     * "vcard-temp:x:update". If new photo id received, download if autoDownload is
+     * enabled, and fireListeners registered listener with this event.
      * Note: to attributes is missing from <presence/> send from old jabber server
      *
-     * @param stanza The stanza received to parse.
+     * @param stanza The stanza received for parse.
      */
-    private void processContactPhotoPresence(Stanza stanza)
-    {
-        // Do not process if received own <presence/> from server or from system service entity
+    private void processContactPhotoPresence(Stanza stanza) {
+        // Do not process <presence/> sent by chatRoom participant
         Jid jidFrom = stanza.getFrom();
-        // if (!jidFrom.isEntityFullJid() || (mAccount != null && mAccount.isParentOf(jidFrom))) {
-        if (!jidFrom.isEntityFullJid() || jidFrom.equals(stanza.getTo())) {
+        if (stanza.getExtension(MUCUser.class) != null) {
+            LOGGER.log(Level.INFO, "Skip process avatar for chatRoom participant: "
+                    + stanza.getStanzaId() + " => " + jidFrom);
             return;
         }
 
-        // Do not process <presence/>s send by chatRoom participants
-        MUCUser mucUser = stanza.getExtension(MUCUser.class);
-        if (mucUser != null) {
-            LOGGER.log(Level.INFO, "Skip process avatar: " + stanza.getStanzaId() + " => " + jidFrom);
-            return;
-        }
+        EntityBareJid from = jidFrom.asEntityBareJidIfPossible();
+        // Retrieves the user current avatarHash
+        String oldAvatarId = getAvatarHashByJid(from);
 
-        // Get the stanza extension which contains the photo tag; ignore if from MUCUser.
-        VCardTempXUpdate vCardXExtension = stanza.getExtension(VCardTempXUpdate.class);
-        if (vCardXExtension != null) {
-            // Retrieves the user current avatarHash
-            String currentAvatarHash = getAvatarHashByJid(jidFrom.asBareJid());
+        /*
+         * Get the stanza extension which contains the photo element.
+         * https://xmpp.org/extensions/xep-0153.html
+         * Retrieved avatarHash info may contains [null | "" | "{avatarHash}"
+         * no <photo/> element => null; not ready
+         * <photo/> element without text => ""; no photo
+         * {avatarHash} => <photo>avatarHash</photo>
+         */
+        VCardTempXUpdate vCardTemp = stanza.getExtension(VCardTempXUpdate.class);
+        String newAvatarId = vCardTemp.getAvatarHash();
+        // Timber.d("Received vcard-temp: %s %s '%s'", from, oldAvatarId, newAvatarId);
 
+        /* acts if only avatarId is received. null => client not ready so no action */
+        if (!TextUtils.isEmpty(newAvatarId) && isAvatarNew(from, newAvatarId)) {
             /*
-             * Retrieved avatarHash info may contains [null | "" | "{avatarHash}"
-             * null => no <photo/>
-             * "" => <photo/>
-             * {avatarHash} => <photo>avatarHash</photo>
+             * If autoDownload is enabled, download VCard and it will also update all
+             * relevant avatar information if download is successful
              */
-            String avatarHash = vCardXExtension.getAvatarHash();
-
-            /* acts if only new avatarHash is received. null => client not ready so no action*/
-            if ((avatarHash != null) && isAvatarNew(jidFrom.asBareJid(), avatarHash)) {
-                /*
-                 * If autoDownload is enabled, download VCard and it will also update all
-                 * relevant avatar information if download is successful
-                 */
-                if (mAutoDownload) {
-                    mVCard = downloadVCard(jidFrom.asBareJid());
-
-                    if ((mVCard != null) && (mVCard.getAvatar() != null)) {
-                        LOGGER.log(Level.INFO, "Presence with new avatarHash received (old => new) from: "
-                                + jidFrom + "\n" + currentAvatarHash + "\n" + avatarHash);
-                        fireListeners(jidFrom, avatarHash);
-                    }
-                    else {
-                        LOGGER.warning("vCard contains no avatar information!");
-                    }
+            if (mAutoDownload) {
+                // Filtered all repeated request on user login (x4 requests on aTalk).
+                String newKey = from.toString() + '#' + newAvatarId;
+                if (newKey.equals(ipContactHash)) {
+                    Timber.w("VCard download request repeated: %s", newKey);
+                    return;
                 }
                 else {
-                    // Invalid mVcard on new avatarHash received
-                    mVCard = null;
+                    ipContactHash = newKey;
+                }
+
+                VCard vCard = downloadVCard(from);
+                if ((vCard != null) && (vCard.getAvatar() != null)) {
+                    LOGGER.log(Level.INFO, "Presence with new avatarId received (old => new) from: "
+                            + jidFrom + "\n" + oldAvatarId + "\n" + newAvatarId);
+                    fireListeners(from, oldAvatarId, newAvatarId);
+                }
+                else {
+                    LOGGER.warning("vCard contains no avatar information!");
                 }
             }
+        }
+
+        // i.e. photo element without avatar id specified. null => not ready so not process
+        else if (newAvatarId != null && newAvatarId.length() == 0 && getAvatarHashByJid(from) != null) {
+            if (noPhotoProcess) {
+                purgeAvatarImageByJid(from);
+                fireListeners(from, oldAvatarId, null);
+            }
+            LOGGER.log(Level.WARNING, "Disable process vcard-temp for photo without hash; send by ejabberd server"
+                    + "on vcard update.\nThis causes aTalk user/contact to purge and display no avatar");
+
         }
     }
 
     /* ===================================================================================== */
 
-//    /**
-//     * Intercepts sent presence packets in order to add VCardTempXUpdate extension.
-//     * cmeng (20190298) - ejabberd will auto add - so remove
-//     *
-//     * @param stanza The sent presence packet.
-//     */
-//    @Override
-//    public void processStanza(Stanza stanza)
+    /*
+     * Intercepts sent presence packets in order to add VCardTempXUpdate extension.
+     * cmeng (20190298) - ejabberd will auto add with vcard_temp_update
+     *
+     * @param stanza The sent presence packet.
+     */
+//    private void processPresenceStanza(Stanza stanza)
 //    {
 //        // Do not add an elementExtension without hash value
 //        if (vCardTempXUpdate.getAvatarHash() != null) {
@@ -326,40 +337,4 @@ public class VCardAvatarManager extends AvatarManager
 //            LOGGER.warning("New Stanza EE after add: " + stanza.toXML(XmlEnvironment.EMPTY) + "\n"  + stanza.getExtensions());
 //        }
 //    }
-
-    /* ===================================================================================== */
-
-    /**
-     * Fire the listeners if there is a change in the avatarHash, and the auto downloaded VCard
-     * info if any; otherwise null vCard is sent to the listeners
-     *
-     * @param from the full jid of the contact sending the <presence/> stanza
-     * @param avatarId the new avatar id can be "" or {avatarHash}
-     */
-    private void fireListeners(Jid from, String avatarId)
-    {
-        for (VCardAvatarListener l : mListeners)
-            l.onAvatarChange(from, avatarId, mVCard);
-    }
-
-    /**
-     * Add an VCardAvatarListener that will be informed if there is change in the avatarHash.
-     *
-     * @param listener the VCardAvatarListener to add
-     */
-    public void addVCardAvatarChangeListener(VCardAvatarListener listener)
-    {
-        if (!mListeners.contains(listener))
-            mListeners.add(listener);
-    }
-
-    /**
-     * Remove an VCardAvatarListener.
-     *
-     * @param listener the VCardAvatarListener to remove
-     */
-    public void removeVCardAvatarChangeListener(VCardAvatarListener listener)
-    {
-        mListeners.remove(listener);
-    }
 }

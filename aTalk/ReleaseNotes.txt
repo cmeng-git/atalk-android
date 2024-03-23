@@ -1,5 +1,42 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.0.0 (400000)
+Release Date:   03/23/2024
+Author:         cmeng
+- Fix duplication of chat messages received via delayed delivery in group chat;
+  Happen if user rejoins group chat after logout/login; last sent message timestamp not save in configuration
+- Fix duplicate display of incoming delayed messages in contact chat session; happen if mam messages are received before delayed messages
+- Fix incoming delayed encrypted messages out of timestamp order display. Process times vary for encrypted messages.
+  Must sort msgCache before its use.
+- If user goes offline after messages sent to an offline buddy; Upon messages received by buddy,
+  the receipt status of these messages are not updated in chat UI when user goes online again.
+  Move ReceiptReceivedListener implementation out of ChatFragment, and into MessageHistoryServiceImpl with callback.
+  This ensure the ReceiptReceivedListener are ready upon user login.
+- UserAvatar migrates to use PepEventListener, and ensure proper handling of avatar removal pubsub#event.
+  * also avoid retrieve image byte and pass as parameter in function call.
+- Update VCardAvatarManager to check and skip repeated request from multiple (x4) user presence's received.
+- User new avatar update are published via XEP-0084, and XEP-0153; ejabberd
+  responses to the later with vcard-temp and no photo hash, causing aTalk to remove the avatar.
+  * Disable VCardAvatarManager process of vcard-temp with no photo hash; use only 'XEP-0084: User Avatar' pubsub#event.
+  * Problem reported and fixed by ejabberd: https://github.com/processone/ejabberd/issues/4182
+    ejabberd sends presence's, photo element with no hash value, after user publishes a new avatar #4182
+- Fix avatar changes received via XEP-0153/XEP-0084 are not updated to the contact/user until user next re-login;
+  also user (added as contact entity) avatar does not get updated.
+- Merged both UserAvatarListener and VcardAvatarListener into one AvatarChangeListener for more efficient handling of avatar changes.
+- ContactJabberImpl introduces new retrieveIfNecessary in getAvatar(boolean) on dynamic request,
+  separately it from retrieveOnStart which should be set on user login.
+- userCapsNodeNotify() should be handled for each protocolProvider, to support multiple user accounts setup.
+- Skip OperationSetPersistentPresenceJabberImpl#publishPresenceStatus(), if user selected the same 'Presence Status'.
+- Fix duplicate sending of the initial <presence/> stanza by smack ServiceDiscoveryManager.
+- Move ServiceDiscoveryHelper#userCapsNodeNotify() into OperationSetPersistentPresenceJabberImpl,
+  tagged to Roster#presenceChanged() callback for process improvement.
+- ChatRoomCreateDialog: initAccountSpinner() only after initComboBox(); else onItemSelected() will trigger
+  initComboBox() and second network access duplication;
+- Remove main menu 'Sign out' and 'Exit' options to prevent user unintentionally unregister himself from server;
+  e.g. unable to receive incoming call.
+- SmackConfiguration.setDefaultReplyTimeout(10000);
+
+=========================================================================
 Version:        3.4.0 (304000)
 Release Date:   02/29/2024
 Author:         cmeng

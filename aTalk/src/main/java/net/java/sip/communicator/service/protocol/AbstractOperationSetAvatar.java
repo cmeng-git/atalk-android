@@ -5,15 +5,15 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
-import net.java.sip.communicator.service.protocol.event.AvatarEvent;
-import net.java.sip.communicator.service.protocol.event.AvatarListener;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.event.AvatarEvent;
+import net.java.sip.communicator.service.protocol.event.AvatarListener;
 
 import timber.log.Timber;
 
@@ -25,8 +25,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderService>
-        implements OperationSetAvatar
-{
+        implements OperationSetAvatar {
     /**
      * The maximum avatar width. Zero mean no maximum
      */
@@ -56,8 +55,7 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
 
     protected AbstractOperationSetAvatar(T parentProvider,
             OperationSetServerStoredAccountInfo accountInfoOpSet, int maxWidth, int maxHeight,
-            int maxSize)
-    {
+            int maxSize) {
         this.parentProvider = parentProvider;
         this.accountInfoOpSet = accountInfoOpSet;
 
@@ -66,28 +64,29 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
         this.maxSize = maxSize;
     }
 
-    public int getMaxWidth()
-    {
+    public int getMaxWidth() {
         return this.maxWidth;
     }
 
-    public int getMaxHeight()
-    {
+    public int getMaxHeight() {
         return this.maxHeight;
     }
 
-    public int getMaxSize()
-    {
+    public int getMaxSize() {
         return this.maxSize;
     }
 
-    public byte[] getAvatar()
-    {
+    public byte[] getAvatar() {
         return AccountInfoUtils.getImage(this.accountInfoOpSet);
     }
 
-    public void setAvatar(byte[] avatar)
-    {
+    /**
+     * Update account avatar and publish the changes to server.
+     * Use fireAvatarChanged() if caller only want to update user avatar.
+     *
+     * @param avatar image bytes of the new avatar
+     */
+    public void setAvatar(byte[] avatar) {
         ImageDetail oldDetail = null;
         ImageDetail newDetail = new ImageDetail("avatar", avatar);
 
@@ -106,23 +105,19 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
         } catch (OperationFailedException e) {
             Timber.w(e, "Unable to set new avatar");
         }
-
         fireAvatarChanged(avatar);
     }
 
-    public void addAvatarListener(AvatarListener listener)
-    {
+    public void addAvatarListener(AvatarListener listener) {
         synchronized (this.avatarListeners) {
             if (!this.avatarListeners.contains(listener))
                 this.avatarListeners.add(listener);
         }
     }
 
-    public void removeAvatarListener(AvatarListener listener)
-    {
+    public void removeAvatarListener(AvatarListener listener) {
         synchronized (this.avatarListeners) {
-            if (this.avatarListeners.contains(listener))
-                this.avatarListeners.remove(listener);
+            this.avatarListeners.remove(listener);
         }
     }
 
@@ -131,8 +126,7 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
      *
      * @param newAvatar the new avatar
      */
-    protected void fireAvatarChanged(byte[] newAvatar)
-    {
+    public void fireAvatarChanged(byte[] newAvatar) {
         Collection<AvatarListener> listeners;
         synchronized (this.avatarListeners) {
             listeners = new ArrayList<>(this.avatarListeners);
@@ -140,7 +134,6 @@ public abstract class AbstractOperationSetAvatar<T extends ProtocolProviderServi
 
         if (!listeners.isEmpty()) {
             AvatarEvent event = new AvatarEvent(this, parentProvider, newAvatar);
-
             for (AvatarListener l : listeners)
                 l.avatarChanged(event);
         }

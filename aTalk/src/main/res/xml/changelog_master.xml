@@ -6,9 +6,28 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="3.4.0 (02/29/2024)" versioncode="304000">
+    <release version="4.0.0 (03/23/2024)" versioncode="400000">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
-        <change>Fix AndroidOmemoService#initOmemoDevice always failed with NoResponseException due to asynchronous execution even with setReplyTimeout = 15s</change>
+        <change>Fix duplicate display of the group chat messages sent previously; happens if user logout and rejoin muc after login</change>
+        <change>Fix duplicate display of incoming delayed messages in contact chat session; happen if mam messages are received before delayed messages</change>
+        <change>Fix incoming delayed encrypted messages display out of timestamp order; arise due to process times vary for encrypted messages</change>
+        <change>If user goes offline after messages sent to an offline buddy; Upon messages received by buddy, the receipt status of these messages are not updated</change>
+        <change>UserAvatar migrates to use PepEventListener, and ensure proper handling of avatar removal pubsub#event</change>
+        <change>Update VCardAvatarManager to check and skip repeated request from multiple (x4) user presence's received</change>
+        <change>Fix avatar changes published via XEP-0084 and 'XEP-0153; ejabberd responses to the later with vcard-temp and no photo hash, causing aTalk to remove the avatar</change>
+        <change>Fix avatar changes received via XEP-0153/XEP-0084 are not updated to the contact/user until user next re-login</change>
+        <change>Merged both UserAvatar and VcardAvatar Listeners into one AvatarChangeListener for more efficient handling of avatar changes</change>
+        <change>Need to handle the userCapsNodeNotify for each protocolProvider, to support multiple user accounts setup</change>
+        <change>Skip publish presence status, if user selected the same 'Presence Status' in action bar menu</change>
+        <change>Fix duplicate sending of the initial presence stanza by smack ServiceDiscoveryManager</change>
+        <change>Reorder ChatRoomCreateDialog: initAccountSpinner only after initComboBox to avoid unnecessary network access</change>
+        <change>Remove main menu 'Sign out' and 'Exit' options, to prevent user unregisters himself from the server unintentionally</change>
+        <change>Set Smack configuration 'Default Reply Timeout' to 10s, minimize NoResponse Exception from slow network communications</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="3.4.0 (02/29/2024)" versioncode="304000">
+        <change>Fix AndroidOmemoService #initOmemoDevice always failed with NoResponseException due to asynchronous execution even with setReplyTimeout = 15s</change>
         <change>Fix smack OmemoManager handle of Pubsub#event in PepEventListener has NoResponseException; end in endless loop and smack crashes</change>
         <change>Set aTalk minSdkVersion to API-24; diminish support in android libraries for older API's</change>
         <change>Remove all the new created volatile contacts on exit 'Show Block List', else deleted contacts reappear in contactList</change>

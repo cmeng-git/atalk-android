@@ -5,11 +5,11 @@
  */
 package net.java.sip.communicator.service.protocol;
 
+import java.util.Collection;
+
 import net.java.sip.communicator.service.protocol.event.ContactResourceListener;
 
 import org.jxmpp.jid.Jid;
-
-import java.util.Collection;
 
 /**
  * This class represents the notion of a Contact or Buddy, that is widely used in instant messaging
@@ -20,8 +20,7 @@ import java.util.Collection;
  * @author Emil Ivov
  * @author Eng Chong Meng
  */
-public interface Contact
-{
+public interface Contact {
     String TABLE_NAME = "contacts";
     String CONTACT_UUID = "contactUuid";
     String PROTOCOL_PROVIDER = "protocolProvider";
@@ -72,9 +71,11 @@ public interface Contact
      * Returns a byte array containing an image (most often a photo or an avatar) that the contact
      * uses as a representation.
      *
+     * @param retrieveIfNecessary try to retrieve the avatar from server if true.
+     *
      * @return byte[] an image representing the contact.
      */
-    byte[] getImage();
+    byte[] getImage(boolean retrieveIfNecessary);
 
     /**
      * Returns the status of the contact as per the last status update we've received for it. Note
@@ -88,12 +89,14 @@ public interface Contact
 
     /**
      * Set the lastActivity of the contact
+     *
      * @param dateTime Date of the contact last online
      */
     void setLastActiveTime(long dateTime);
 
     /**
      * Get the contact last activityTime
+     *
      * @return contact last activityTime
      */
     long getLastActiveTime();

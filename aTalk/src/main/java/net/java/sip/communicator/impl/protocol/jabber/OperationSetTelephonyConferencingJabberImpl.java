@@ -381,7 +381,6 @@ public class OperationSetTelephonyConferencingJabberImpl
             super(CoinIQ.ELEMENT, CoinIQ.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.async);
         }
 
-        // public void processStanza(Stanza packet) {
         @Override
         public IQ handleIQRequest(IQ iq)
         {

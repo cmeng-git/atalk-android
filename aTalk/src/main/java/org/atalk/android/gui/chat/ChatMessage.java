@@ -5,20 +5,19 @@
  */
 package org.atalk.android.gui.chat;
 
+import java.util.Date;
+
 import net.java.sip.communicator.impl.protocol.jabber.HttpFileDownloadJabberImpl;
 import net.java.sip.communicator.service.filehistory.FileRecord;
 import net.java.sip.communicator.service.protocol.IncomingFileTransferRequest;
 import net.java.sip.communicator.service.protocol.OperationSetFileTransfer;
-
-import java.util.Date;
 
 /**
  * The <code>ChatMessage</code> interface is used to display a chat message.
  *
  * @author Eng Chong Meng
  */
-public interface ChatMessage
-{
+public interface ChatMessage {
     // <a href="...">...</a>; <font ...>
     String HTML_MARKUP = "(?s).*?<[A-Za-z]+.*?>.*?</[A-Za-z]+>.*?";
 
@@ -186,14 +185,13 @@ public interface ChatMessage
 
     /**
      * The display name of the message sender.
-     *
      * Returns the string Id of the message sender.
      * Actual value is pending on message type i.e.:
      * a. userId: swordfish@atalk.org
      * b. contactId: leopard@atalk.org
      * c. chatRoom: conference@atalk.org
      * d. nickName: leopard
-     *
+     * <p>
      * Exception as recipient:
      * contactId: ChatMessage.MESSAGE_FILE_TRANSFER_SEND & ChatMessage.MESSAGE_STICKER_SEND:
      *
@@ -297,6 +295,7 @@ public interface ChatMessage
      * is a replacement for this message.
      *
      * @param nextMsg the next message to check
+     *
      * @return <code>true</code> if the given message is a consecutive or replacement message, <code>false</code> - otherwise
      */
     boolean isConsecutiveMessage(ChatMessage nextMsg);
@@ -307,6 +306,7 @@ public interface ChatMessage
      *
      * @param consecutiveMessage the next message to merge with <code>this</code> instance
      * (it must be consecutive in terms of <code>isConsecutiveMessage</code> method).
+     *
      * @return merge operation result that should be used instead of this <code>ChatMessage</code> instance.
      */
     ChatMessage mergeMessage(ChatMessage consecutiveMessage);

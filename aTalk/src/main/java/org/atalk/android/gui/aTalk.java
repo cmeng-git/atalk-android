@@ -78,7 +78,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     public final static int CRL_FRAGMENT = 1;
     public final static int CHAT_SESSION_FRAGMENT = 2;
     public final static int CALL_HISTORY_FRAGMENT = 3;
-    // public final static int WP_FRAGMENT = 4;
 
     // android Permission Request Code
     public static final int PRC_CAMERA = 2000;

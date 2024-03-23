@@ -1215,7 +1215,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     repairBrokenSessionWithPreKeyMessage(managerGuard, device);
                 }
             } catch (CorruptedOmemoKeyException | CryptoFailedException e) {
-                LOGGER.log(Level.WARNING, "Could not decrypt incoming message: ", e);
+                LOGGER.log(Level.WARNING, "Could not decrypt incoming message for " + stanza.getStanzaId() + "; ", e);
             }
 
             // Upload fresh bundle.

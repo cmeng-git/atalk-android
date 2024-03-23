@@ -40,7 +40,7 @@
         android:text="@string/service_gui_WAITING" />
 
     <ProgressBar
-        android:id="@+id/actionbar_progress"
+        android:id="@+id/progressBar"
         style="?android:attr/indeterminateProgressStyle"
         android:layout_marginTop="@dimen/between_padding"
         android:layout_width="48dp"

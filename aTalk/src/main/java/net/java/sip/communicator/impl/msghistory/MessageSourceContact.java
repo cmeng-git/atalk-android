@@ -180,7 +180,7 @@ public class MessageSourceContact extends DataObject
             this.address = contact.getAddress();
             this.updateDisplayName();
             this.ppService = contact.getProtocolProvider();
-            this.image = contact.getImage();
+            this.image = contact.getImage(false);
             this.status = contact.getPresenceStatus();
             this.messageContent = e.getSourceMessage().getContent();
             this.timestamp = e.getTimestamp();
@@ -192,7 +192,7 @@ public class MessageSourceContact extends DataObject
             this.address = contact.getAddress();
             this.updateDisplayName();
             this.ppService = contact.getProtocolProvider();
-            this.image = contact.getImage();
+            this.image = contact.getImage(false);
             this.status = contact.getPresenceStatus();
             this.messageContent = e.getSourceMessage().getContent();
             this.timestamp = e.getTimestamp();

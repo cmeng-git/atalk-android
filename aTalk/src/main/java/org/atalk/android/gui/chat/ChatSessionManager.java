@@ -9,9 +9,19 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.contactlist.MclStorageManager;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.gui.Chat;
 import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
 import net.java.sip.communicator.service.gui.event.ChatListener;
@@ -31,15 +41,6 @@ import org.atalk.android.gui.chat.conference.AdHocChatRoomWrapper;
 import org.atalk.android.gui.chat.conference.AdHocConferenceChatSession;
 import org.atalk.android.gui.chat.conference.ConferenceChatSession;
 import org.atalk.android.gui.chatroomslist.AdHocChatRoomList;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -392,14 +393,17 @@ public class ChatSessionManager {
     // public synchronized static ChatPanel findChatForContact(Contact contact, boolean createIfNotExists)
     public synchronized static ChatPanel createChatForContact(Contact contact) {
         ChatPanel newChat;
-        MetaContact metaContact;
+        MetaContact metaContact = null;
 
         if (contact == null) {
             Timber.e("Failed to obtain chat instance for null contact");
             return null;
         }
         else {
-            metaContact = AndroidGUIActivator.getContactListService().findMetaContactByContact(contact);
+            MetaContactListService mcls = AndroidGUIActivator.getContactListService();
+            if (mcls != null)
+                metaContact = mcls.findMetaContactByContact(contact);
+
             if (metaContact == null) {
                 Timber.w("No meta contact found for %s", contact);
                 return null;

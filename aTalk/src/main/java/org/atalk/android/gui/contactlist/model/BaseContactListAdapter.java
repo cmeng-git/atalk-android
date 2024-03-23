@@ -30,10 +30,14 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
+import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
@@ -192,10 +196,26 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
 
         if (contactView != null) {
             ImageView avatarView = contactView.findViewById(R.id.avatarIcon);
-
-            if (avatarView != null)
+            if (avatarView != null) {
+                BareJid jid = ((MetaContact) contactImpl).getDefaultContact().getJid().asBareJid();
+                Timber.d("Update Avatar for: %s %s", jid, UserAvatarManager.getAvatarHashByJid(jid));
                 setAvatar(avatarView, getContactRenderer(groupIndex).getAvatarImage(contactImpl));
+            }
         }
+    }
+
+    /**
+     * Sets the avatar icon of the action bar.
+     *
+     * @param avatarView the avatar image view
+     */
+    private void setAvatar(ImageView avatarView, Drawable avatarImage)
+    {
+        if (avatarImage == null) {
+            avatarImage = ResourcesCompat.getDrawable(aTalkApp.getAppResources(),
+                    R.drawable.contact_avatar, null);
+        }
+        avatarView.setImageDrawable(avatarImage);
     }
 
     /**
@@ -604,20 +624,6 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
             }
         }
         return false;
-    }
-
-    /**
-     * Sets the avatar icon of the action bar.
-     *
-     * @param avatarView the avatar image view
-     */
-    private void setAvatar(ImageView avatarView, Drawable avatarImage)
-    {
-        if (avatarImage == null) {
-            avatarImage = ResourcesCompat.getDrawable(aTalkApp.getAppResources(),
-                    R.drawable.contact_avatar, null);
-        }
-        avatarView.setImageDrawable(avatarImage);
     }
 
     private static class ContactViewHolder

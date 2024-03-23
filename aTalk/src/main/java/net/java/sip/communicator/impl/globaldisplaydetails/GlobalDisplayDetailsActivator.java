@@ -72,13 +72,10 @@ public class GlobalDisplayDetailsActivator implements BundleActivator, ServiceLi
 
         displayDetailsImpl = new GlobalDisplayDetailsImpl();
         globalStatusService = new GlobalStatusServiceImpl();
-
         bundleContext.addServiceListener(this);
-
         handleAlreadyRegisteredProviders();
 
         bundleContext.registerService(GlobalDisplayDetailsService.class.getName(), displayDetailsImpl, null);
-
         bundleContext.registerService(GlobalStatusService.class.getName(), globalStatusService, null);
     }
 

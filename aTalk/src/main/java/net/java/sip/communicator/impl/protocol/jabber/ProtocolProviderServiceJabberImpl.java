@@ -11,6 +11,35 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.text.TextUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
 import net.java.sip.communicator.impl.certificate.CertificateServiceImpl;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
@@ -228,35 +257,6 @@ import org.minidns.record.SRV;
 import org.osgi.framework.ServiceReference;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-
 import timber.log.Timber;
 
 /**
@@ -377,8 +377,23 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private static final String IS_CALLING_DISABLED = "protocol.jabber.CALLING_DISABLED";
 
     /**
-     * Smack packet maximum reply timeout - Smack will immediately return on a reply or until a timeout
-     * before issues exception. Need this to take care for some servers' response on some packages
+     * Smack packet reply timeout - Smack will immediately return on a reply, or until the set reply timeout
+     * before issues exception. aTalk Smack packet default reply timeout is set to 10s starting v3.4.1.
+     * Some server takes ~8sec to response on disco#info request
+     * File transfer e.g. IBB across server can take more than 5 seconds
+     * Note: Android console FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206)
+     * when server is not responding; UI may get hold for the set value.
+     */
+    public static final int SMACK_DEFAULT_REPLY_TIMEOUT = 10000;  // 10 seconds
+
+    /*
+     * Must implemented in OmemoManager and OmemoService directory due to Async.go()
+     * <a href="https://discourse.igniterealtime.org/t/smack-4-4-7-xmppconnection-setreplytimeout-value-is-not-guaranteed-when-the-stanza-is-sent-asynchronously/93636">...</a>
+     */
+    // public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
+
+    /**
+     * This is to take care for some servers' response on some packages
      * e.g. disco#info (30 seconds). Also on some slow client e.g. Samsung SII takes up to 30
      * Sec to response to sasl authentication challenge on first login
      */
@@ -386,20 +401,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
     // vCard save takes about 29 seconds on Note 8
     public static final int SMACK_REPLY_EXTENDED_TIMEOUT_40 = 40000;  // 40 seconds
-
-    // Some server takes ~8sec to response due to disco#info request (default timer = 5seconds)
-    // File transfer e.g. IBB across server can take more than 5 seconds
-    public static final int SMACK_REPLY_EXTENDED_TIMEOUT_10 = 10000;  // 10 seconds
-
-    // Must implemented in OmemoManager and OmemoService directory due to Async.go()
-    // public static final int SMACK_REPLY_OMEMO_INIT_TIMEOUT = 15000;  // 15 seconds
-
-    /**
-     * aTalk Smack packet reply default timeout - use Smack default instead of 10s (starting v2.1.8).
-     * Too many FFR on ANR at smack.StanzaCollector.nextResult (StanzaCollector.java:206) when server is not responding.
-     * - change the xmppConnect replyTimeout to smack default of 5 seconds under normal operation.
-     */
-    public static final int SMACK_REPLY_TIMEOUT_DEFAULT = SmackConfiguration.getDefaultReplyTimeout();
 
     public static final int DEFAULT_PORT = 5222;
 
@@ -505,8 +506,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
     private static final Map<Long, String> mAuthIds = new HashMap<>();
 
     /**
-     * The <code>OperationSetContactCapabilities</code> of this <code>ProtocolProviderService</code> which
-     * is the service-public counterpart of {@link #discoveryManager}.
+     * The <code>OperationSetContactCapabilities</code> of this <code>ProtocolProviderService</code>
      */
     private OperationSetContactCapabilitiesJabberImpl opsetContactCapabilities;
 
@@ -876,7 +876,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             } finally {
                 // Reset to Smack default on login process completion
                 if ((mConnection != null) && resetSmackTimer)
-                    mConnection.setReplyTimeout(SMACK_REPLY_TIMEOUT_DEFAULT);
+                    mConnection.setReplyTimeout(SMACK_DEFAULT_REPLY_TIMEOUT);
                 resetSmackTimer = true;
             }
         }
@@ -990,14 +990,15 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * @param loginStrategy the login strategy to use
      *
      * @return return the state how to continue the connect process.
+     *
      * @throws XMPPException & SmackException if we cannot connect for some reason
      */
     private ConnectState connectAndLogin(String userName, JabberLoginStrategy loginStrategy)
             throws XMPPException, SmackException {
-        ConnectionConfiguration.Builder<?, ?> config = loginStrategy.getConnectionConfigurationBuilder();
 
         // Set XmppDomain to serviceName - default for no server-overridden and Bosh connection.
         DomainBareJid serviceName = mAccountID.getXmppDomain();
+        ConnectionConfiguration.Builder<?, ?> config = loginStrategy.getConnectionConfigurationBuilder();
         config.setXmppDomain(serviceName);
         config.setResource(mResource);
         config.setProxyInfo(proxy);
@@ -1730,17 +1731,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             httpAuthorizationRequestManager.removeIncomingListener(this);
         }
 
-        try {
-            /*
-             * The discoveryManager is exposed as service-public by the OperationSetContactCapabilities of this
-             * ProtocolProviderService. No longer expose it because it's going away.
-             */
-            if (opsetContactCapabilities != null)
-                opsetContactCapabilities.setDiscoveryManager(null);
-        } finally {
-            if (discoveryManager != null) {
-                discoveryManager = null;
-            }
+        if (discoveryManager != null) {
+            discoveryManager = null;
         }
     }
 
@@ -2111,15 +2103,8 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         String[] featuresToRemove = new String[]{"http://jabber.org/protocol/commands"};
         String[] featuresToAdd = supportedFeatures.toArray(new String[0]);
 
-        scHelper = new ServiceDiscoveryHelper(this, mConnection, featuresToRemove,featuresToAdd);
+        scHelper = new ServiceDiscoveryHelper(mConnection, featuresToRemove, featuresToAdd);
         discoveryManager = ServiceDiscoveryManager.getInstanceFor(mConnection);
-
-        /*
-         * Expose the discoveryManager as service-public through the
-         * OperationSetContactCapabilities of this ProtocolProviderService.
-         */
-        if (opsetContactCapabilities != null)
-            opsetContactCapabilities.setDiscoveryManager(discoveryManager);
     }
 
     /**
@@ -2130,22 +2115,19 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * method {@link #initialize(EntityBareJid, JabberAccountID)}
      */
     private void initSmackDefaultSettings() {
-        int omemoReplyTimeout = 10000; // increase smack default timeout to 10 seconds
-
         /*
          * 	init Avatar to support persistent storage for both XEP-0153 and XEP-0084
          */
         initAvatarStore();
 
         /*
-         * XEP-0153: vCard-Based Avatars - We will handle download of VCard on our own when there is an avatar update
+         * Enable auto download when there is an avatar update for both:
+         * XEP-0084: User Avatars and XEP-0153: vCard-Based Avatars.
          */
-        VCardAvatarManager.setAutoDownload(false);
+        AvatarManager.setAutoDownload(true);
 
-        /*
-         * XEP-0084: User Avatars - Enable auto download when there is an avatar update
-         */
-        UserAvatarManager.setAutoDownload(true);
+        // Enable XEP-0054 User Avatar mode to disable avatar photo update via <presence/><photo/>
+        AvatarManager.setUserAvatar(true);
 
         /*
          * The CapsExtension node value to advertise in <presence/>.
@@ -2183,7 +2165,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
         PingManager.setDefaultPingInterval(defaultPingInterval);
 
         // cmeng - to take care of slow device S3=7s (N3=4.5S) and heavy loaded server.
-        SmackConfiguration.setDefaultReplyTimeout(omemoReplyTimeout);
+        SmackConfiguration.setDefaultReplyTimeout(SMACK_DEFAULT_REPLY_TIMEOUT);
 
         // Enable smack debug message printing
         SmackConfiguration.DEBUG = true;
@@ -2220,9 +2202,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
         // setup Dane provider
         MiniDnsDane.setup();
-
-        // Enable XEP-0054 User Avatar mode to disable avatar photo update via <presence/><photo/>
-        AvatarManager.setUserAvatar(true);
 
         // uncomment if XMPP Server cannot support supports SCRAMSHA1Mechanism
         // SASLAuthentication.unregisterSASLMechanism(SCRAMSHA1Mechanism.class.getName());
@@ -2365,7 +2344,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
             InfoRetriever infoRetriever = new InfoRetriever(this, screenName);
             OperationSetPersistentPresenceJabberImpl persistentPresence
                     = new OperationSetPersistentPresenceJabberImpl(this, infoRetriever);
-
             addSupportedOperationSet(OperationSetPersistentPresence.class, persistentPresence);
 
             // register it once again for those that simply need presence
@@ -2405,7 +2383,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             OperationSetServerStoredAccountInfo accountInfo
                     = new OperationSetServerStoredAccountInfoJabberImpl(this, infoRetriever, screenName);
-
             addSupportedOperationSet(OperationSetServerStoredAccountInfo.class, accountInfo);
 
             // Initialize avatar operation set
@@ -2472,8 +2449,6 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
 
             // OperationSetContactCapabilities
             opsetContactCapabilities = new OperationSetContactCapabilitiesJabberImpl(this);
-            if (discoveryManager != null)
-                opsetContactCapabilities.setDiscoveryManager(discoveryManager);
             addSupportedOperationSet(OperationSetContactCapabilities.class, opsetContactCapabilities);
 
             OperationSetChangePassword opsetChangePassword = new OperationSetChangePasswordJabberImpl(this);
@@ -2624,6 +2599,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      *
      * @return if the specified <code>ex</code> signals that attempted authentication is
      * known' otherwise <code>SecurityAuthority.REASON_UNKNOWN</code> is returned.
+     *
      * @see SecurityAuthority#REASON_UNKNOWN
      */
     private int checkLoginFailMode(Exception ex) {
@@ -2948,6 +2924,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Build our own EntityJid if user is offline. May not be fully compliant
      *
      * @return the Jabber EntityFullJid
+     *
      * @see AbstractXMPPConnection #user
      */
     @Override
@@ -2973,6 +2950,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * access our jabber server.
      *
      * @return the <code>InetAddress</code> that is most likely to be to be used as a next hop when contacting our server.
+     *
      * @throws IllegalArgumentException if we don't have a valid server.
      */
     public InetAddress getNextHop()
@@ -3264,6 +3242,7 @@ public class ProtocolProviderServiceJabberImpl extends AbstractProtocolProviderS
      * Retrieve the XMPP connection socket used by the protocolProvider (by reflection)
      *
      * @return the socket which is used for this connection.
+     *
      * @see XMPPTCPConnection#socket
      */
     public Socket getSocket() {

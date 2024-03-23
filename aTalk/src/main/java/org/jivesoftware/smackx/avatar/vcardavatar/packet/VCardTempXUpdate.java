@@ -17,14 +17,14 @@
 
 package org.jivesoftware.smackx.avatar.vcardavatar.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Implements the presence extension corresponding to element name "x" and namespace
@@ -33,8 +33,7 @@ import javax.xml.namespace.QName;
  *
  * @author Eng Chong Meng
  */
-public class VCardTempXUpdate implements ExtensionElement
-{
+public class VCardTempXUpdate implements ExtensionElement {
     /**
      * The <code>Logger</code> used by the <code>VCardTempXUpdatePresenceExtension</code> class and its
      * instances for logging output.
@@ -60,7 +59,6 @@ public class VCardTempXUpdate implements ExtensionElement
 
     /**
      * The SHA-1 hash in hexadecimal representation of the avatar image.
-     *
      * mAvatarHash value definition for <photo/> element generation
      * 1. mAvatarHash == null => client is not yet ready to advertise an image
      * 2. mAvatarHash.length() == 0 => vCard with an empty BINVAL i.e. No  photo
@@ -68,15 +66,14 @@ public class VCardTempXUpdate implements ExtensionElement
      *
      * @see #toXML(XmlEnvironment) update <x xmlns='vcard-temp:x:update'/> element generation
      */
-    private String mAvatarHash = null;
+    private String mAvatarHash;
 
     /**
      * Create an AvatarData.
      *
      * @param avatarHash the data of the photo avatar
      */
-    public VCardTempXUpdate(String avatarHash)
-    {
+    public VCardTempXUpdate(String avatarHash) {
         mAvatarHash = avatarHash;
     }
 
@@ -84,11 +81,11 @@ public class VCardTempXUpdate implements ExtensionElement
      * Updates the mAvatarHash used by extension.
      *
      * @param avatarHash The new avatarHash to be used. null => client is not ready, so just ignore.
+     *
      * @return "false" if the new avatarHash is the same as the current one. "true" if this
      * extension has been updated with the new avatarHash.
      */
-    public boolean setAvatarHash(String avatarHash)
-    {
+    public boolean setAvatarHash(String avatarHash) {
         boolean isNewHash = false;
         if ((avatarHash != null) && !avatarHash.equals(mAvatarHash)) {
             LOGGER.log(Level.INFO, "Account avatar hash updated with (old => new): " + "\n"
@@ -104,8 +101,7 @@ public class VCardTempXUpdate implements ExtensionElement
      *
      * @return the current avatarHash.
      */
-    public String getAvatarHash()
-    {
+    public String getAvatarHash() {
         return mAvatarHash;
     }
 
@@ -114,8 +110,7 @@ public class VCardTempXUpdate implements ExtensionElement
      *
      * @return the element name.
      */
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
@@ -124,13 +119,13 @@ public class VCardTempXUpdate implements ExtensionElement
      *
      * @return the namespace.
      */
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
     /**
      * Returns the XML representation of the ExtensionElement.
+     * Currently not used, it is handled by ejabberd server automatically.
      *
      * @return the packet extension as XML.
      * <p>
@@ -146,11 +141,11 @@ public class VCardTempXUpdate implements ExtensionElement
      * => client is not yet ready to advertise an image
      * 3. empty <photo/> element => vCard with an empty BINVAL i.e. No photo
      * 4. <photo>{avatarHash}</photo> => contains the VCard <PHOTO/> image Hash value
+     *
      * @see #mAvatarHash defination
      */
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
-    {
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.optElement(ELEMENT_PHOTO, mAvatarHash);

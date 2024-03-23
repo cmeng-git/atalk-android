@@ -50,7 +50,6 @@ import org.jivesoftware.smackx.avatar.AvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -66,7 +65,6 @@ import java.util.List;
 import java.util.Vector;
 
 import timber.log.Timber;
-
 
 /**
  * This class encapsulates the Roster class. Once created, it will register itself as a listener to
@@ -125,13 +123,19 @@ public class ServerStoredContactListJabberImpl
     /**
      * Retrieve contact information.
      */
-    private InfoRetriever infoRetriever;
+    private final InfoRetriever infoRetriever;
 
     /*
-     * Disable info Retrieval on first login even when local cache is empty
+     * Disable info Retrieval on user first login even when local cache is empty; use XEP-0084 for update.
      * cmeng: 20190212seems ejabberd will send VCardTempXUpdate with photo attr in <presence/>
+     * 20240319: https://github.com/processone/ejabberd/issues/4182 has fixed the issue.
      */
     private boolean infoRetrieveOnStart = false;
+
+    /*
+     * Dynamic request to retrieve avatar from server if necessary.
+     */
+    private boolean retrieveIfNecessary = false;
 
     /**
      * Whether roster has been requested and dispatched.
@@ -806,7 +810,7 @@ public class ServerStoredContactListJabberImpl
             e.printStackTrace();
         } finally {
             // Reset to default
-            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
         }
     }
 
@@ -1121,12 +1125,13 @@ public class ServerStoredContactListJabberImpl
      * @param contact ContactJabberImpl
      * @see ImageRetriever#contactsForUpdate
      */
-    protected void addContactForImageUpdate(ContactJabberImpl contact)
+    protected void addContactForImageUpdate(ContactJabberImpl contact, boolean retrieveIfNecessary)
     {
         if (contact instanceof VolatileContactJabberImpl
                 && ((VolatileContactJabberImpl) contact).isPrivateMessagingContact())
             return;
 
+        this.retrieveIfNecessary = retrieveIfNecessary;
         if (imageRetriever == null) {
             imageRetriever = new ImageRetriever();
             imageRetriever.start();
@@ -1513,18 +1518,26 @@ public class ServerStoredContactListJabberImpl
                     }
 
                     for (ContactJabberImpl contact : copyContactsForUpdate) {
-                        byte[] imgBytes = getAvatar(contact);
+                        EntityBareJid userJid = contact.getJid().asEntityBareJidIfPossible();
+                        String oldAvatarId = VCardAvatarManager.getAvatarHashByJid(userJid);
+                        byte[] imgBytes = getAvatar(userJid);
                         if (imgBytes != null) {
-                            byte[] oldImage = contact.getImage(false);
-
                             contact.setImage(imgBytes);
+                            String newAvatarId = VCardAvatarManager.getAvatarHashByJid(userJid);
                             parentOperationSet.fireContactPropertyChangeEvent(contact,
-                                    ContactPropertyChangeEvent.PROPERTY_IMAGE, oldImage, imgBytes);
+                                    ContactPropertyChangeEvent.PROPERTY_IMAGE, oldAvatarId, newAvatarId);
                         }
-                        else
+                        else {
                             // set an empty image data so it would not be queried again
                             contact.setImage(new byte[0]);
+                            if (oldAvatarId != null) {
+                                parentOperationSet.fireContactPropertyChangeEvent(contact,
+                                        ContactPropertyChangeEvent.PROPERTY_IMAGE, oldAvatarId, null);
+                            }
+                        }
                     }
+                    if (contactsForUpdate.isEmpty())
+                        retrieveIfNecessary = false;
                 }
             } catch (InterruptedException ex) {
                 Timber.e(ex, "ImageRetriever error waiting will stop now!");
@@ -1560,20 +1573,18 @@ public class ServerStoredContactListJabberImpl
         }
 
         /**
-         * Retrieves the avatar. Use image from persistent storage if found. Otherwise proceed to
-         * load avatar from VCard.
+         * Retrieves the avatar for the specified userJid. Use image from persistent storage if found.
+         * Otherwise proceed to load avatar from VCard, in case where contact does not support XEP-0084;
+         * XEP-0084 is not used as it is a pubsub#event and should has been sent by server on login.
          *
-         * @param contact the contact.
+         * @param userJid user EntityBareJid contact.
          * @return the contact avatar.
          */
-        private byte[] getAvatar(ContactJabberImpl contact)
+        private byte[] getAvatar(EntityBareJid userJid)
         {
-            BareJid userJid = contact.getJid().asBareJid();
-            String userId = userJid.toString();
             byte[] result = VCardAvatarManager.getAvatarImageByJid(userJid);
-
-            if ((result == null) && infoRetrieveOnStart) {
-                Timber.i("Proceed to getAvatar for: %s", userId);
+            if ((result == null) && (retrieveIfNecessary || infoRetrieveOnStart)) {
+                Timber.i("Proceed to getAvatar for: %s %s", retrieveIfNecessary, userJid);
                 try {
                     Iterator<ServerStoredDetails.GenericDetail> iter
                             = infoRetriever.getDetails(userJid, ServerStoredDetails.ImageDetail.class);
@@ -1583,15 +1594,12 @@ public class ServerStoredContactListJabberImpl
                         result = imgDetail.getBytes();
                     }
                 } catch (Exception ex) {
-                    Timber.d(ex, "Cannot load image for contact %s: %s", contact, ex.getMessage());
+                    Timber.d(ex, "Cannot load image for contact %s: %s", userJid, ex.getMessage());
                 }
                 if (result == null) {
-                    result = searchForCustomAvatar(userId);
+                    result = searchForCustomAvatar(userJid.toString());
                 }
             }
-            if (result == null) // return no photo if null
-                result = new byte[0];
-
             return result;
         }
     }
@@ -1604,15 +1612,14 @@ public class ServerStoredContactListJabberImpl
     private byte[] searchForCustomAvatar(String address)
     {
         try {
-            ServiceReference[] refs
-                    = JabberActivator.bundleContext.getServiceReferences(CustomAvatarService.class.getName(), null);
+            ServiceReference<?>[] refs = JabberActivator.bundleContext
+                    .getServiceReferences(CustomAvatarService.class.getName(), null);
 
             if (refs == null)
                 return null;
 
-            for (ServiceReference r : refs) {
-                CustomAvatarService avatarService = (CustomAvatarService) JabberActivator.bundleContext.getService(r);
-
+            for (ServiceReference<?> ref : refs) {
+                CustomAvatarService avatarService = (CustomAvatarService) JabberActivator.bundleContext.getService(ref);
                 byte[] res = avatarService.getAvatar(address);
                 if (res != null)
                     return res;

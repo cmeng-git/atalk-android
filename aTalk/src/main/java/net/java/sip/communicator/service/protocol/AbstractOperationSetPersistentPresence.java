@@ -143,8 +143,9 @@ public abstract class AbstractOperationSetPersistentPresence<T extends ProtocolP
 
         // Timber.w("Dispatching contact status change for %s: %s => %s listeners\n%s",
         //         jid, newValue.getStatusName(), listeners.size(), listeners);
-        for (ContactPresenceStatusListener listener : listeners)
+        for (ContactPresenceStatusListener listener : listeners) {
             listener.contactPresenceStatusChanged(evt);
+        }
     }
 
     /**

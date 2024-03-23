@@ -72,7 +72,7 @@ public class InfoRetriever
     /**
      * A callback to the Jabber provider that created us.
      */
-    private ProtocolProviderServiceJabberImpl jabberProvider;
+    private final ProtocolProviderServiceJabberImpl jabberProvider;
 
     // A linked list between contact/user and his details retrieved so far
     private final Map<BareJid, List<GenericDetail>> retrievedDetails = new Hashtable<>();
@@ -97,7 +97,7 @@ public class InfoRetriever
      * @param detailClass Class
      * @return Iterator
      */
-    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(BareJid uin, Class<T> detailClass)
+    <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(EntityBareJid uin, Class<T> detailClass)
     {
         List<GenericDetail> details = getUserDetails(uin);
         List<T> result = new LinkedList<>();
@@ -118,7 +118,7 @@ public class InfoRetriever
      * @param detailClass Class
      * @return Iterator
      */
-    Iterator<GenericDetail> getDetails(BareJid uin, Class<? extends GenericDetail> detailClass)
+    Iterator<GenericDetail> getDetails(EntityBareJid uin, Class<? extends GenericDetail> detailClass)
     {
         List<GenericDetail> details = getUserDetails(uin);
         List<GenericDetail> result = new LinkedList<>();
@@ -152,7 +152,7 @@ public class InfoRetriever
      * @param bareJid String
      * @return Vector the details
      */
-    List<GenericDetail> getUserDetails(BareJid bareJid)
+    List<GenericDetail> getUserDetails(EntityBareJid bareJid)
     {
         List<GenericDetail> result = getCachedUserDetails(bareJid);
         if (result == null) {
@@ -170,10 +170,9 @@ public class InfoRetriever
      * @param bareJid the address to search for.
      * @return the details or empty list.
      */
-    protected synchronized List<GenericDetail> retrieveDetails(BareJid bareJid)
+    protected synchronized List<GenericDetail> retrieveDetails(EntityBareJid bareJid)
     {
-        Timber.w(new Exception("Retrieve Details (testing debug info: ignore): " + bareJid.toString()));
-
+        Timber.w(new Exception("Retrieve Details (Testing debug info: ignore): " + bareJid));
         List<GenericDetail> result = new LinkedList<>();
         XMPPConnection connection = jabberProvider.getConnection();
         if (connection == null || !connection.isAuthenticated())
@@ -187,7 +186,7 @@ public class InfoRetriever
         VCard card = vCardAvatarManager.downloadVCard(bareJid);
 
         // Reset back to aTalk default
-        // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_PACKET_REPLY_TIMEOUT_10);
+        // connection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
 
         // cmeng - vCard can be null due to smack request response timeout (2017/11/29)
         // return an empty list if VCard fetching from server failed

@@ -28,7 +28,11 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentTransaction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.service.muc.ChatRoomWrapper;
@@ -47,9 +51,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.bookmarks.BookmarkManager;
 import org.jxmpp.jid.EntityBareJid;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -58,8 +59,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
-        implements View.OnClickListener, View.OnLongClickListener, ChatRoomBookmarkDialog.OnFinishedCallback
-{
+        implements View.OnClickListener, View.OnLongClickListener, ChatRoomBookmarkDialog.OnFinishedCallback {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
      * it's accessed from the main thread.
@@ -81,17 +81,16 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     /**
      * A map reference of ChatRoomWrapper to ChatRoomViewHolder for the unread message count update
      */
-    private Map<ChatRoomWrapper, ChatRoomViewHolder> crwViewHolder = new HashMap<>();
+    private final Map<ChatRoomWrapper, ChatRoomViewHolder> crwViewHolder = new HashMap<>();
 
-    private LayoutInflater mInflater;
+    private final LayoutInflater mInflater;
 
     /**
      * Creates the chatRoom list adapter.
      *
      * @param crlFragment the parent <code>ChatRoomListFragment</code>
      */
-    public BaseChatRoomListAdapter(ChatRoomListFragment crlFragment)
-    {
+    public BaseChatRoomListAdapter(ChatRoomListFragment crlFragment) {
         // cmeng - must use this mInflater as crlFragment may not always attached to FragmentManager
         mInflater = LayoutInflater.from(aTalkApp.getInstance());
         chatRoomListFragment = crlFragment;
@@ -114,6 +113,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * Returns the <code>UIChatRoomRenderer</code> for chatRoom of group at given <code>groupIndex</code>.
      *
      * @param groupIndex index of the chatRoomWrapper group.
+     *
      * @return the <code>UIChatRoomRenderer</code> for chatRoom of group at given <code>groupIndex</code>.
      */
     protected abstract UIChatRoomRenderer getChatRoomRenderer(int groupIndex);
@@ -122,6 +122,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * Returns the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      *
      * @param groupPosition index of the chatRoom group.
+     *
      * @return the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      */
     protected abstract UIGroupRenderer getGroupRenderer(int groupPosition);
@@ -129,16 +130,14 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     /**
      * Releases all resources used by this instance.
      */
-    public void dispose()
-    {
+    public void dispose() {
         notifyDataSetInvalidated();
     }
 
     /**
      * Expands all contained groups.
      */
-    public void expandAllGroups()
-    {
+    public void expandAllGroups() {
         // Expand group view only when chatRoomListView is in focus (UI mode) - not null
         // cmeng - do not use isFocused() - may not in sync with actual
         uiHandler.post(() -> {
@@ -160,8 +159,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     /**
      * Refreshes the view with expands group and invalid view.
      */
-    public void invalidateViews()
-    {
+    public void invalidateViews() {
         if (chatRoomListView != null) {
             chatRoomListFragment.runOnUiThread(chatRoomListView::invalidateViews);
         }
@@ -173,8 +171,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param groupIndex the index of the group to update
      * @param chatRoomIndex the index of the chatRoomWrapper to update
      */
-    protected void updateDisplayName(final int groupIndex, final int chatRoomIndex)
-    {
+    protected void updateDisplayName(final int groupIndex, final int chatRoomIndex) {
         int firstIndex = chatRoomListView.getFirstVisiblePosition();
         View chatRoomView = chatRoomListView.getChildAt(getListIndex(groupIndex, chatRoomIndex) - firstIndex);
 
@@ -191,8 +188,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param chatRoomIndex the index of the chatRoom to update
      * @param chatRoomWrapper ChatRoomWrapper implementation object instance
      */
-    protected void updateChatRoomIcon(final int groupIndex, final int chatRoomIndex, final Object chatRoomWrapper)
-    {
+    protected void updateChatRoomIcon(final int groupIndex, final int chatRoomIndex, final Object chatRoomWrapper) {
         int firstIndex = chatRoomListView.getFirstVisiblePosition();
         View chatRoomView = chatRoomListView.getChildAt(getListIndex(groupIndex, chatRoomIndex) - firstIndex);
 
@@ -207,11 +203,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * Updates the chatRoomWrapper unread message count.
      * Hide widget if (count == 0)
      *
-     * @param groupIndex the index of the group to update
-     * @param chatRoomIndex the index of the chatRoomWrapper to update
+     * @param chatRoomWrapper ChatRoomWrapper implementation object instanc
+     * @param count unread count for chatRoomWrapper to update
      */
-    public void updateUnreadCount(final ChatRoomWrapper chatRoomWrapper, final int count)
-    {
+    public void updateUnreadCount(final ChatRoomWrapper chatRoomWrapper, final int count) {
         ChatRoomViewHolder chatRoomViewHolder = crwViewHolder.get(chatRoomWrapper);
         if (chatRoomViewHolder == null)
             return;
@@ -230,10 +225,10 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      *
      * @param groupIndex the index of the group
      * @param chatRoomIndex the index of the child chatRoom
+     *
      * @return an int representing the flat list index for the given <code>groupIndex</code> and <code>chatRoomIndex</code>
      */
-    public int getListIndex(int groupIndex, int chatRoomIndex)
-    {
+    public int getListIndex(int groupIndex, int chatRoomIndex) {
         int lastIndex = chatRoomListView.getLastVisiblePosition();
 
         for (int i = 0; i <= lastIndex; i++) {
@@ -254,11 +249,11 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
+     *
      * @return the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
-    public long getChildId(int groupPosition, int childPosition)
-    {
+    public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
@@ -273,8 +268,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      */
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
-            View convertView, ViewGroup parent)
-    {
+            View convertView, ViewGroup parent) {
         // Keeps reference to avoid future findViewById()
         ChatRoomViewHolder chatRoomViewHolder;
         Object child = getChild(groupPosition, childPosition);
@@ -362,8 +356,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param parent the parent view group
      */
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
-    {
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         // Keeps reference to avoid future findViewById()
         GroupViewHolder groupViewHolder;
 
@@ -397,8 +390,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param groupPosition the index of the group, which identifier we're looking for
      */
     @Override
-    public long getGroupId(int groupPosition)
-    {
+    public long getGroupId(int groupPosition) {
         return groupPosition;
     }
 
@@ -406,8 +398,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      *
      */
     @Override
-    public boolean hasStableIds()
-    {
+    public boolean hasStableIds() {
         return true;
     }
 
@@ -415,8 +406,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * Indicates that all children are selectable.
      */
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition)
-    {
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 
@@ -424,8 +414,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * We keep one instance of view click listener to avoid unnecessary allocations.
      * Clicked positions are obtained from the view holder.
      */
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         Object object = view.getTag();
         if (object instanceof ChatRoomViewHolder) {
             mViewHolder = (ChatRoomViewHolder) view.getTag();
@@ -465,7 +454,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
                                 bookmarkManager.removeBookmarkedConference(entityBareJid);
                             }
                         } catch (SmackException.NoResponseException | SmackException.NotConnectedException
-                                | XMPPException.XMPPErrorException | InterruptedException e) {
+                                 | XMPPException.XMPPErrorException | InterruptedException e) {
                             Timber.w("Failed to update Bookmarks: %s", e.getMessage());
                         }
                     }
@@ -489,8 +478,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public boolean onLongClick(View view)
-    {
+    public boolean onLongClick(View view) {
         Object chatRoomWrapper = view.getTag();
         if (chatRoomWrapper instanceof ChatRoomWrapper) {
             chatRoomListFragment.showPopupMenu(view, (ChatRoomWrapper) chatRoomWrapper);
@@ -503,8 +491,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * update bookmark check on dialog close
      */
     @Override
-    public void onCloseDialog()
-    {
+    public void onCloseDialog() {
         // retain current state unless change by user in dialog
         ChatRoomWrapper chatRoomWrapper
                 = (ChatRoomWrapper) getChild(mViewHolder.groupPosition, mViewHolder.childPosition);
@@ -518,16 +505,14 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
      * @param roomIconView the room Icon image view
      * @param roomImage the room Icon image view
      */
-    private void setRoomIcon(ImageView roomIconView, Drawable roomImage)
-    {
+    private void setRoomIcon(ImageView roomIconView, Drawable roomImage) {
         if (roomImage == null) {
-            roomImage = aTalkApp.getAppResources().getDrawable(R.drawable.ic_chatroom);
+            roomImage = ResourcesCompat.getDrawable(aTalkApp.getAppResources(), R.drawable.ic_chatroom, null);
         }
         roomIconView.setImageDrawable(roomImage);
     }
 
-    private static class ChatRoomViewHolder
-    {
+    private static class ChatRoomViewHolder {
         TextView roomName;
         TextView statusMessage;
         ImageView roomIcon;
@@ -538,8 +523,7 @@ public abstract class BaseChatRoomListAdapter extends BaseExpandableListAdapter
         int childPosition;
     }
 
-    private static class GroupViewHolder
-    {
+    private static class GroupViewHolder {
         ImageView indicator;
         TextView ppsUserId;
     }

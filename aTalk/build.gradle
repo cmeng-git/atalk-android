@@ -58,8 +58,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 304000
-        versionName "3.4.0"
+        versionCode 400000
+        versionName "4.0.0"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -444,6 +444,8 @@ dependencies {
 
         // Add support for chatStat in conference room
         classDelete 'org.jivesoftware.smackx.chatstates.ChatStateManager**'
+        // Stop duplicate <presence/> sending if Configuration.isSendPresence() is false
+        classDelete 'org.jivesoftware.smackx.disco.ServiceDiscoveryManager**'
 
         classDelete 'org.jivesoftware.smackx.jingle.JingleManager**'
         classDelete 'org.jivesoftware.smackx.jingle.JingleUtil**'

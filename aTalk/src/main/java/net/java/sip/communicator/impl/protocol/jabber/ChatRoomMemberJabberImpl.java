@@ -109,7 +109,7 @@ public class ChatRoomMemberJabberImpl implements ChatRoomMember
             // If we found the mContact we set also its avatar.
             mContact = presenceOpSet.findContactByJid(jabberJid);
             if (mContact != null) {
-                this.avatar = mContact.getImage();
+                this.avatar = mContact.getImage(false);
             }
         }
         // just query the server muc member for role, the value is set if present

@@ -34,10 +34,12 @@ import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
@@ -84,6 +86,7 @@ import net.java.sip.communicator.service.protocol.event.LocalUserChatRoomPresenc
 import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
 import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
 import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceiptListener;
 import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 import net.java.sip.communicator.util.UtilActivator;
 import net.java.sip.communicator.util.account.AccountUtils;
@@ -161,6 +164,9 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
     private BundleContext bundleContext = null;
     private HistoryService historyService = null;
     private final Object syncRoot_HistoryService = new Object();
+
+    protected final Set<MessageReceiptListener> messageReceiptListeners = new LinkedHashSet<>();
+
     private final Hashtable<MessageHistorySearchProgressListener, HistorySearchProgressListener> progressListeners
             = new Hashtable<>();
     private ConfigurationService configService;
@@ -379,6 +385,24 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             this.historyService = historyService;
             Timber.d("New history service registered.");
         }
+    }
+
+    /**
+     * Adds a message receipt listener to this MessageHistoryServiceImpl.
+     *
+     * @param listener The message receipt listener to add.
+     */
+    public void addMessageReceiptListener(MessageReceiptListener listener) {
+        messageReceiptListeners.add(listener);
+    }
+
+    /**
+     * Remove a message receipt listener to this MessageHistoryServiceImpl.
+     *
+     * @param listener The message receipt listener to remove.
+     */
+    public void removeMessageReceiptListener(MessageReceiptListener listener) {
+        messageReceiptListeners.remove(listener);
     }
 
     /**
@@ -762,13 +786,15 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
      *
      * @param sessionUuid the chat sessions record id to which to save the timestamp
      * @param date last mam message timestamp
+     *
+     * @return a value of 0 means there is no chatSession record associated with this sessionUuid
      */
-    public void setMamDate(String sessionUuid, Date date) {
+    public int setMamDate(String sessionUuid, Date date) {
         contentValues.clear();
         contentValues.put(ChatSession.MAM_DATE, Long.toString(date.getTime() + 10));
         String[] args = {sessionUuid};
 
-        mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
+        return mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.SESSION_UUID + "=?", args);
     }
 
     public void saveMamIfNotExit(OmemoManager omemoManager, ChatPanel chatPanel, List<Forwarded<Message>> forwardedList) {
@@ -804,6 +830,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             if (TextUtils.isEmpty(msgId)) {
                 continue;
             }
+            // mam messages always sent as <delay/>
             timeStamp = forwarded.getDelayInformation().getStamp();
 
             String[] args = {msgId, chatId};
@@ -812,6 +839,7 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
             int msgCount = cursor.getCount();
             cursor.close();
 
+            // Proceed only if mam message is not found in database.
             if (msgCount == 0) {
                 IMessage iMessage = null;
 
@@ -1477,6 +1505,10 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
         contentValues.clear();
         contentValues.put(ChatMessage.READ, ChatMessage.MESSAGE_DELIVERY_RECEIPT);
         mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.SERVER_MSG_ID + "=?", args);
+
+        for (MessageReceiptListener l : messageReceiptListeners) {
+            l.receiptReceived(fromJid, toJid, receiptId, receipt);
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////////
@@ -2715,6 +2747,53 @@ public class MessageHistoryServiceImpl implements MessageHistoryService,
                     loadRecentMessages();
                 }
             }
+        }
+    }
+
+    // 20240312: ??? Note10 swordfish:swan chatSession#sessionUuid is difference from chatSession.getChatId
+    // Need cleanup if need to use.
+    public void dbChatSessionRepairIfError(ChatSession chatSession) {
+        String chatId = chatSession.getChatId();
+        MetaContact metaContact = (MetaContact) chatSession.getDescriptor();
+        Contact contact = metaContact.getDefaultContact();
+        String sessionUuid = getSessionUuidByJid(contact);
+
+        // Proceed to repair
+        if (!chatId.equals(sessionUuid)) {
+            AccountID accountUid = chatSession.getCurrentChatTransport().getProtocolProvider().getAccountID();
+            String accountUuid = accountUid.getAccountUuid();
+
+            // update chatSession Uuid
+            String[] args = {accountUuid, contact.getAddress()};
+            contentValues.clear();
+            contentValues.put(ChatSession.SESSION_UUID, chatId);
+            // From field crash on java.lang.IllegalArgumentException? HWKSA-M, Android 9
+            int rows = mDB.update(ChatSession.TABLE_NAME, contentValues, ChatSession.ACCOUNT_UUID
+                    + "=? AND " + ChatSession.ENTITY_JID + "=?", args);
+
+            String[] columns = {ChatMessage.UUID};
+            args = new String[]{sessionUuid, contact.getAddress()};
+            Cursor cursor = mDB.query(ChatMessage.TABLE_NAME, columns, ChatMessage.SESSION_UUID
+                    + "=? AND " + ChatMessage.ENTITY_JID + "=?", args, null, null, ORDER_ASC);
+
+            List<String> results = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                results.add(cursor.getString(0));
+            }
+
+            // not working, conflict in reference column
+//            for (String uuid : results) {
+//                args = new String[]{uuid};
+//                contentValues.clear();
+//                contentValues.put(ChatMessage.SESSION_UUID, chatId);
+//                int rows = mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.UUID + "=?", args);
+//                break;
+//            }
+//            args = new String[]{sessionUuid, contact.getAddress()};
+//            contentValues.clear();
+//            contentValues.put(ChatMessage.SESSION_UUID, chatId);
+//            rows = mDB.update(ChatMessage.TABLE_NAME, contentValues, ChatMessage.SESSION_UUID
+//                    + "=? AND " + ChatMessage.ENTITY_JID + "=?", args);
         }
     }
 }

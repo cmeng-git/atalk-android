@@ -43,26 +43,23 @@
 */
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
 
-import java.io.IOException;
-
 /**
  * A PacketExtensionProvider to parse the Avatar data.
  * XML namespace urn:xmpp:avatar:data
- *
  * <data xmlns='urn:xmpp:avatar:data'>qANQR1DBwU4DX7jmYZnncm...</data>
  */
-public class AvatarDataProvider extends ExtensionElementProvider
-{
+public class AvatarDataProvider extends ExtensionElementProvider {
     @Override
     public AvatarData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+            throws IOException, XmlPullParserException {
         String data = null;
         if (AvatarData.ELEMENT.equals(parser.getName())) {
             data = parser.nextText();
@@ -70,7 +67,7 @@ public class AvatarDataProvider extends ExtensionElementProvider
 
         return new AvatarData(data);
 
-          // cmeng - not working
+        // cmeng - not working
 //        outerloop: while (true) {
 //            int eventType = parser.next();
 //            switch (eventType) {

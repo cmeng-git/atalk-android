@@ -8,6 +8,14 @@ package net.java.sip.communicator.impl.protocol.jabber;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 import net.java.sip.communicator.service.protocol.AbstractOperationSetServerStoredAccountInfo;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.ServerStoredDetails;
@@ -47,14 +55,7 @@ import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import org.jxmpp.jid.EntityBareJid;
 
 import timber.log.Timber;
 
@@ -67,17 +68,16 @@ import timber.log.Timber;
  * @author Hristo Terezov
  * @author Eng Chong Meng
  */
-public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOperationSetServerStoredAccountInfo
-{
+public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOperationSetServerStoredAccountInfo {
     /**
      * The info retriever.
      */
-    private InfoRetriever infoRetriever;
+    private final InfoRetriever infoRetriever;
 
     /**
      * The jabber provider that created us.
      */
-    private ProtocolProviderServiceJabberImpl jabberProvider;
+    private final ProtocolProviderServiceJabberImpl jabberProvider;
 
     /**
      * List of all supported <code>ServerStoredDetails</code> for this implementation.
@@ -112,11 +112,10 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
     /**
      * Our account UIN.
      */
-    private BareJid uin;
+    private final EntityBareJid uin;
 
     protected OperationSetServerStoredAccountInfoJabberImpl(
-            ProtocolProviderServiceJabberImpl jabberProvider, InfoRetriever infoRetriever, BareJid uin)
-    {
+            ProtocolProviderServiceJabberImpl jabberProvider, InfoRetriever infoRetriever, EntityBareJid uin) {
         this.infoRetriever = infoRetriever;
         this.jabberProvider = jabberProvider;
         this.uin = uin;
@@ -131,11 +130,11 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * @param detailClass one of the detail classes defined in the ServerStoredDetails class, indicating the
      * kind of details we're interested in.
      * <p>
+     *
      * @return a java.util.Iterator over all details that are instances or descendants of the
      * specified class.
      */
-    public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Class<T> detailClass)
-    {
+    public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Class<T> detailClass) {
         return (assertConnected()) ? infoRetriever.getDetailsAndDescendants(uin, detailClass) : null;
     }
 
@@ -151,10 +150,10 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * @param detailClass one of the detail classes defined in the ServerStoredDetails class, indicating the
      * kind of details we're interested in.
      * <p>
+     *
      * @return a java.util.Iterator over all details of specified class.
      */
-    public Iterator<GenericDetail> getDetails(Class<? extends GenericDetail> detailClass)
-    {
+    public Iterator<GenericDetail> getDetails(Class<? extends GenericDetail> detailClass) {
         return (assertConnected()) ? infoRetriever.getDetails(uin, detailClass) : null;
     }
 
@@ -164,16 +163,14 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @return a java.util.Iterator over all details currently set our account.
      */
-    public Iterator<GenericDetail> getAllAvailableDetails()
-    {
+    public Iterator<GenericDetail> getAllAvailableDetails() {
         return (assertConnected()) ? infoRetriever.getUserDetails(uin).iterator() : null;
     }
 
     /**
      * Clear all details for account when it logoff; to allow refresh on next login
      */
-    public void clearDetails()
-    {
+    public void clearDetails() {
         infoRetriever.clearUserDetails(uin);
     }
 
@@ -185,8 +182,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @return a java.util.Iterator over all detail classes supported by the implementation.
      */
-    public Iterator<Class<? extends GenericDetail>> getSupportedDetailTypes()
-    {
+    public Iterator<Class<? extends GenericDetail>> getSupportedDetailTypes() {
         return supportedTypes.iterator();
     }
 
@@ -199,10 +195,10 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @param detailClass the class the support for which we'd like to determine.
      * <p>
+     *
      * @return true if the underlying implementation supports setting details of this type and false otherwise.
      */
-    public boolean isDetailClassSupported(Class<? extends GenericDetail> detailClass)
-    {
+    public boolean isDetailClassSupported(Class<? extends GenericDetail> detailClass) {
         return supportedTypes.contains(detailClass);
     }
 
@@ -213,10 +209,10 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @param detailClass the class whose max instance number we'd like to find out.
      * <p>
+     *
      * @return int the maximum number of detail instances.
      */
-    public int getMaxDetailInstances(Class<? extends GenericDetail> detailClass)
-    {
+    public int getMaxDetailInstances(Class<? extends GenericDetail> detailClass) {
         return 1;
     }
 
@@ -231,6 +227,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @param detail the detail that we'd like registered on the server.
      * <p>
+     *
      * @throws IllegalArgumentException if such a detail already exists and its max instances number has been attained or if
      * the underlying implementation does not support setting details of the corresponding
      * class.
@@ -238,8 +235,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * to the maximum number of supported instances (@see #getMaxDetailInstances())
      */
     public void addDetail(ServerStoredDetails.GenericDetail detail)
-            throws IllegalArgumentException, ArrayIndexOutOfBoundsException
-    {
+            throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (!isDetailClassSupported(detail.getClass())) {
             throw new IllegalArgumentException("implementation does not support such details " + detail.getClass());
         }
@@ -263,10 +259,10 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * <p>
      *
      * @param detail the detail to remove
+     *
      * @return true if the specified detail existed and was successfully removed and false otherwise.
      */
-    public boolean removeDetail(ServerStoredDetails.GenericDetail detail)
-    {
+    public boolean removeDetail(ServerStoredDetails.GenericDetail detail) {
         return infoRetriever.getCachedUserDetails(uin).remove(detail);
     }
 
@@ -278,14 +274,15 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      *
      * @param currentDetailValue the detail value we'd like to replace.
      * @param newDetailValue the value of the detail that we'd like to replace currentDetailValue with.
+     *
      * @return true if the operation was a success or false if currentDetailValue did not
      * previously exist (in this case an additional call to addDetail is required).
+     *
      * @throws ClassCastException if newDetailValue is not an instance of the same class as currentDetailValue.
      */
     public boolean replaceDetail(ServerStoredDetails.GenericDetail currentDetailValue,
             ServerStoredDetails.GenericDetail newDetailValue)
-            throws ClassCastException
-    {
+            throws ClassCastException {
         if (!newDetailValue.getClass().equals(currentDetailValue.getClass())) {
             throw new ClassCastException("New value to be replaced is not as the current one");
         }
@@ -321,8 +318,7 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * @throws OperationFailedException with code Network Failure if putting the new values back online has failed.
      */
     public void save()
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         if (!assertConnected())
             return;
 
@@ -334,24 +330,29 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
         xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_40);
 
         List<GenericDetail> details = infoRetriever.getUserDetails(uin);
-        VCard vCard = new VCard();
+        VCard vCard = new VCard(); // XEP-0153 vCard-Based Avatars
         for (GenericDetail detail : details) {
             if (detail instanceof ImageDetail) {
-                // disable XEP-0153 vcard <photo/> hash; instead publish avatar via XEP-0084
-                // vCard.removeAvatar(); // cmeng - need to keep to support old client (XEP-0054)
+                // disable 'XEP-0153 vCard-Based Avatars' vcard <photo/> hash;
+                // instead publish avatar via 'XEP-0084: User Avatar'
                 byte[] avatar = ((ImageDetail) detail).getBytes();
                 if ((avatar != null) && (avatar.length > 0)) {
-                    vCard.setAvatar(avatar); // for XEP-0054
                     Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-                    userAvatarManager.publishAvatar(bitmap);
+                    if (!userAvatarManager.publishAvatar(bitmap)) {
+                        Timber.w("Publish avatar failed for: %s", xmppConnection.getUser());
+                    }
+                    vCard.setAvatar(avatar); // for XEP-0153
                 }
                 else {
-                    // vCard.removeAvatar(); cause crash in Smack 4.2.1-beta2-snapshot muc setup
-                    vCard.setAvatar(new byte[0]);  // for XEP-0054
-                    userAvatarManager.disableAvatarPublishing();
+                    if (!userAvatarManager.disableAvatarPublishing()) { // for XEP-0054
+                        Timber.w("Publish avatar disable failed for: %s", xmppConnection.getUser());
+                    }
+                    // cmeng - keep to support old client (XEP-0153), but crashes in Smack 4.2.1-beta2-snapshot muc setup
+                    // vCard.setAvatar(new byte[0]);  // for XEP-0153
+                    vCard.setAvatar((byte[]) null);  // for XEP-0153
                 }
                 fireServerStoredDetailsChangeEvent(jabberProvider,
-                        ServerStoredDetailsChangeEvent.DETAIL_ADDED, null, detail);
+                        ServerStoredDetailsChangeEvent.DETAIL_REPLACED, null, detail);
             }
             else if (detail.getClass().equals(FirstNameDetail.class)) {
                 vCard.setFirstName((String) detail.getDetailValue());
@@ -432,12 +433,12 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
                 // need to send new <presence/> ?
             }
         } catch (XMPPException | NoResponseException | NotConnectedException
-                | InterruptedException e) {
+                 | InterruptedException e) {
             Timber.e(e, "Error loading/saving vcard");
             throw new OperationFailedException("Error loading/saving vcard: ", 1, e);
         } finally {
             // Reset to default
-            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
+            xmppConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_DEFAULT_REPLY_TIMEOUT);
         }
     }
 
@@ -446,22 +447,20 @@ public class OperationSetServerStoredAccountInfoJabberImpl extends AbstractOpera
      * <p>
      *
      * @param detailClass the class whose edition we'd like to determine if it's possible
+     *
      * @return true if the underlying implementation supports edition of this type of detail and false otherwise.
      */
-    public boolean isDetailClassEditable(Class<? extends GenericDetail> detailClass)
-    {
+    public boolean isDetailClassEditable(Class<? extends GenericDetail> detailClass) {
         return isDetailClassSupported(detailClass);
     }
 
     /**
      * Utility method throwing an exception if the jabber stack is not properly initialized.
-     *
      * cmeng - never throw exception else it crashes the application.
      * throw java.lang.IllegalStateException if the underlying jabber stack is not registered and
      * initialized.
      */
-    private boolean assertConnected()
-    {
+    private boolean assertConnected() {
         if (((jabberProvider == null) || !jabberProvider.isRegistered())) {
             Timber.w(aTalkApp.getResString(R.string.service_gui_NETOWRK_ASSERTION_ERROR));
             return false;

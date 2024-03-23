@@ -16,6 +16,14 @@ package net.java.sip.communicator.impl.contactlist;
 
 import androidx.annotation.NonNull;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.java.sip.communicator.impl.protocol.jabber.ProtocolProviderServiceJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -31,21 +39,12 @@ import net.java.sip.communicator.util.DataObject;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smackx.avatar.AvatarManager;
-import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 import timber.log.Timber;
 
@@ -86,7 +85,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     /**
      * An id uniquely identifying the meta contact in this contact list.
      */
-    private final String uid;
+    private final String mcUid;
 
     /**
      * Returns a human readable string used by the UI to display the contact.
@@ -135,7 +134,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      */
     MetaContactImpl() {
         // create the uid
-        this.uid = String.valueOf(System.currentTimeMillis()) + hashCode();
+        this.mcUid = String.valueOf(System.currentTimeMillis()) + hashCode();
         this.details = new JSONObject();
     }
 
@@ -147,7 +146,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      * @param details the already stored details for the contact.
      */
     MetaContactImpl(String metaUID, JSONObject details) {
-        this.uid = metaUID;
+        this.mcUid = metaUID;
         this.details = details;
     }
 
@@ -162,7 +161,6 @@ public class MetaContactImpl extends DataObject implements MetaContact {
 
     /**
      * Returns a Contact, encapsulated by this MetaContact and coming from the specified ProtocolProviderService.
-     *
      * In order to prevent problems with concurrency, the <code>Iterator</code>
      * returned by this method is not be over the actual list of contacts but over a copy of that list.
      *
@@ -239,7 +237,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      * In order to prevent problems with concurrency, the <code>Iterator</code> returned by
      * this method is not be over the actual list of contacts but over a copy of that list.
      *
-     * @param parentProtoGroup
+     * @param parentProtoGroup ContactGroup of this contact
      *
      * @return an Iterator over all <code>Contact</code>s encapsulated in this
      * <code>MetaContact</code> and belonging to the specified proto ContactGroup.
@@ -310,7 +308,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     /**
      * Returns a <code>java.util.Iterator</code> over all protocol specific <code>Contacts</code>
      * encapsulated by this <code>MetaContact</code>.
-     *
+     * <p>
      * In order to prevent problems with concurrency, the <code>Iterator</code> returned by
      * this method is not over the actual list of contacts but over a copy of that list.
      *
@@ -461,7 +459,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      * @return a String uniquely identifying this meta contact.
      */
     public String getMetaUID() {
-        return uid;
+        return mcUid;
     }
 
     /**
@@ -486,9 +484,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      * Compares this meta contact with the specified object for order.  Returns
      * a negative integer, zero, or a positive integer as this meta contact is
      * less than, equal to, or greater than the specified object.
-     *
+     * <p>
      * The result of this method is calculated the following way:
-     *
      * (contactsOnline - o.contactsOnline) * 1 000 000 <br>
      * + getDisplayName().compareTo(o.getDisplayName()) * 100 000
      * + getMetaUID().compareTo(o.getMetaUID())<br>
@@ -564,7 +561,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      */
     private byte[] queryProtoContactAvatar(Contact contact) {
         try {
-            byte[] contactImage = contact.getImage();
+            byte[] contactImage = contact.getImage(false);
 
             if ((contactImage != null) && (contactImage.length > 0))
                 return contactImage;
@@ -1013,7 +1010,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
     }
 
     /**
-     * Stores avatar bytes in the given <code>Contact</code>.
+     * Stores avatar bytes for the given <code>Contact</code>.
      *
      * @param protoContact The contact in which we store the avatar.
      * @param avatarBytes The avatar image bytes.
@@ -1023,8 +1020,8 @@ public class MetaContactImpl extends DataObject implements MetaContact {
         this.avatarFileCacheAlreadyQueried = true;
 
         // AvatarCacheUtils.cacheAvatar(protoContact, avatarBytes);
-        BareJid userId = protoContact.getJid().asBareJid();
-        AvatarManager.addAvatarImage(userId, avatarBytes, false);
+        // BareJid userId = protoContact.getJid().asBareJid();
+        // AvatarManager.addAvatarImage(userId, avatarBytes, false);
     }
 
     /**
@@ -1174,6 +1171,6 @@ public class MetaContactImpl extends DataObject implements MetaContact {
          * parentGroupModLock being unique among the MetaContactImpl instances, uid is fine
          * because it is also supposed to be unique in the same way.
          */
-        return uid;
+        return mcUid;
     }
 }

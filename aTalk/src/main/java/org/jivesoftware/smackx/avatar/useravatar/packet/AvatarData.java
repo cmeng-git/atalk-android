@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.avatar.useravatar.packet;
 
+import java.util.logging.Logger;
+
 import net.iharder.Base64;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.logging.Logger;
 
 /**
  * Implementation for the XEP-0084: User Avatar Extension Element for <pubsub/> "data node" i.e.
@@ -33,8 +33,7 @@ import java.util.logging.Logger;
  *
  * @author Eng Chong Meng
  */
-public class AvatarData implements ExtensionElement
-{
+public class AvatarData implements ExtensionElement {
     /**
      * The logger.
      */
@@ -50,15 +49,14 @@ public class AvatarData implements ExtensionElement
      */
     public static final String ELEMENT = "data";
 
-    private String mData;
+    private final String mData;
 
     /**
      * Create an AvatarData.
      *
      * @param base64 the data of the avatar as a base64 string
      */
-    public AvatarData(final String base64)
-    {
+    public AvatarData(final String base64) {
         mData = base64;
     }
 
@@ -67,8 +65,7 @@ public class AvatarData implements ExtensionElement
      *
      * @param data the data of the avatar
      */
-    public AvatarData(final byte[] data)
-    {
+    public AvatarData(final byte[] data) {
         mData = Base64.encodeBytes(data);
     }
 
@@ -77,8 +74,7 @@ public class AvatarData implements ExtensionElement
      *
      * @return a base64 string.
      */
-    public String getBase64()
-    {
+    public String getBase64() {
         return mData;
     }
 
@@ -87,26 +83,22 @@ public class AvatarData implements ExtensionElement
      *
      * @return the decoded data
      */
-    public byte[] getData()
-    {
+    public byte[] getData() {
         return Base64.decode(mData);
     }
 
     @Override
-    public String getElementName()
-    {
+    public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace()
-    {
+    public String getNamespace() {
         return NAMESPACE;
     }
 
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment)
-    {
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
         xml.append(mData);

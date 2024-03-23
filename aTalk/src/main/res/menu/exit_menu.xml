@@ -9,7 +9,8 @@
         android:id="@+id/about"
         android:icon="?attr/iconActionAbout"
         android:title="@string/About_action" />
-    <item android:id="@+id/menu_exit"
-          android:title="@string/service_gui_EXIT">
-    </item>
+    <item
+        android:id="@+id/menu_exit"
+        android:title="@string/service_gui_EXIT"
+        android:visible="false" />
 </menu>

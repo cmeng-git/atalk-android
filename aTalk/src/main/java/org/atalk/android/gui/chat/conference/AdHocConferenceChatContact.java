@@ -41,7 +41,7 @@ public class AdHocConferenceChatContact extends ChatContact<Contact>
     @Override
     protected byte[] getAvatarBytes()
     {
-        return descriptor.getImage();
+        return descriptor.getImage(false);
     }
 
     /**

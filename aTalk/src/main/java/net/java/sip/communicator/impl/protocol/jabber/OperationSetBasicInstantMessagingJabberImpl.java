@@ -11,6 +11,16 @@ import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EventObject;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
 import net.java.sip.communicator.service.msghistory.MessageHistoryService;
@@ -37,8 +47,8 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.chat.ChatMessage;
 import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.XhtmlUtil;
-import org.atalk.impl.timberlog.TimberLog;
 import org.atalk.crypto.omemo.OmemoAuthenticateDialog;
+import org.atalk.impl.timberlog.TimberLog;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -92,16 +102,6 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EventObject;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import timber.log.Timber;
 
@@ -339,7 +339,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      * Returns the threadID that the party with the specified <code>address</code> contacted us from or
      * <code>new ThreadID</code> if <code>null</code> and <code>generateNewIfNoExist</code> is true; otherwise
      * <code>null</code> if we don't have a jid for the specified <code>address</code> yet.
-     *
+     * <p>
      * The method would also purge all entries that haven't seen any activity (i.e. no one has
      * tried to get or remap it) for a delay longer than <code>JID_INACTIVITY_TIMEOUT</code>.
      *
@@ -806,6 +806,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
      *
      * @param message the message that we need to handle.
      */
+    @Override
     public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
         // Leave handling of omemo messages to onOmemoMessageReceived()
         if ((message == null) || message.hasExtension(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL))
@@ -815,6 +816,7 @@ public class OperationSetBasicInstantMessagingJabberImpl extends AbstractOperati
         if (Message.Type.groupchat == message.getType())
             return;
 
+        // Check for empty msgBody, and can be receipt status
         String msgBody = message.getBody();
         if (msgBody == null)
             return;

@@ -43,6 +43,8 @@
 */
 package org.jivesoftware.smackx.avatar.useravatar.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -50,18 +52,14 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata;
 import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata.Info;
 
-import java.io.IOException;
-
 /**
  * A PacketExtensionProvider to parse the Avatar metadata.
  * XML namespace urn:xmpp:avatar:metadata
  */
-public class AvatarMetadataProvider extends ExtensionElementProvider
-{
+public class AvatarMetadataProvider extends ExtensionElementProvider {
     @Override
     public AvatarMetadata parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException
-    {
+            throws IOException, XmlPullParserException {
         AvatarMetadata metadata = new AvatarMetadata();
         outerloop:
         while (true) {

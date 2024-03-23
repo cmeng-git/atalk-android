@@ -5,6 +5,8 @@
  */
 package net.java.sip.communicator.impl.globaldisplaydetails;
 
+import java.util.Collection;
+
 import net.java.sip.communicator.service.gui.UIService;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetPresence;
@@ -24,8 +26,6 @@ import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.service.configuration.ConfigurationService;
 
-import java.util.Collection;
-
 import timber.log.Timber;
 
 /**
@@ -39,15 +39,13 @@ import timber.log.Timber;
  * @author Damian Minkov
  * @author Eng Chong Meng
  */
-public class GlobalStatusServiceImpl implements GlobalStatusService, RegistrationStateChangeListener
-{
+public class GlobalStatusServiceImpl implements GlobalStatusService, RegistrationStateChangeListener {
     /**
      * Handles newly added providers.
      *
      * @param pps the protocolProviderService
      */
-    void handleProviderAdded(ProtocolProviderService pps)
-    {
+    void handleProviderAdded(ProtocolProviderService pps) {
         pps.addRegistrationStateChangeListener(this);
         if (pps.isRegistered()) {
             handleProviderRegistered(pps, false);
@@ -59,8 +57,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      *
      * @param pps the Protocol Service Provider.
      */
-    void handleProviderRemoved(ProtocolProviderService pps)
-    {
+    void handleProviderRemoved(ProtocolProviderService pps) {
         pps.removeRegistrationStateChangeListener(this);
     }
 
@@ -69,8 +66,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      *
      * @return the current global presence status
      */
-    public PresenceStatus getGlobalPresenceStatus()
-    {
+    public PresenceStatus getGlobalPresenceStatus() {
         int status = PresenceStatus.OFFLINE;
         Collection<ProtocolProviderService> pProviders = AccountUtils.getRegisteredProviders();
         // If we don't have registered providers we return offline status.
@@ -107,10 +103,10 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * but this is only for convenience.
      *
      * @param status the status to which the item should correspond
+     *
      * @return the <code>GlobalStatusEnum</code> corresponding to the given status
      */
-    private PresenceStatus getPresenceStatus(int status)
-    {
+    private PresenceStatus getPresenceStatus(int status) {
         if (status < PresenceStatus.ONLINE_THRESHOLD) {
             return GlobalStatusEnum.OFFLINE;
         }
@@ -139,10 +135,10 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * provider.
      *
      * @param protocolProvider the protocol provider
+     *
      * @return the last status that was stored in the configuration for the given protocol provider
      */
-    public PresenceStatus getLastPresenceStatus(ProtocolProviderService protocolProvider)
-    {
+    public PresenceStatus getLastPresenceStatus(ProtocolProviderService protocolProvider) {
         String lastStatus = getLastStatusString(protocolProvider);
         PresenceStatus status = null;
 
@@ -196,10 +192,10 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * Returns the last contact status saved in the configuration.
      *
      * @param protocolProvider the protocol provider to which the status corresponds
+     *
      * @return the last contact status saved in the configuration.
      */
-    public String getLastStatusString(ProtocolProviderService protocolProvider)
-    {
+    public String getLastStatusString(ProtocolProviderService protocolProvider) {
         // find the last contact status saved in the configuration.
         String lastStatus = null;
 
@@ -217,8 +213,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * @param protocolProvider the protocol provider to which we change the status.
      * @param status the status to publish.
      */
-    public void publishStatus(ProtocolProviderService protocolProvider, PresenceStatus status)
-    {
+    public void publishStatus(ProtocolProviderService protocolProvider, PresenceStatus status) {
         publishStatusInternal(protocolProvider, status, false);
     }
 
@@ -232,8 +227,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * (means it has connection failed soon after firing registered).
      */
     @Override
-    public void publishStatus(ProtocolProviderService protocolProvider, PresenceStatus status, boolean state)
-    {
+    public void publishStatus(ProtocolProviderService protocolProvider, PresenceStatus status, boolean state) {
         publishStatusInternal(protocolProvider, status, state);
     }
 
@@ -249,8 +243,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * (means it has connection failed soon after firing registered).
      */
     private void publishStatusInternal(ProtocolProviderService protocolProvider, PresenceStatus status,
-            boolean dueToRegistrationStateChanged)
-    {
+            boolean dueToRegistrationStateChanged) {
         OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
         LoginManager loginManager = null;
         UIService uiService = GlobalDisplayDetailsActivator.getUIService();
@@ -301,8 +294,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      *
      * @param globalStatus account status indicator on action bar
      */
-    public void publishStatus(GlobalStatusEnum globalStatus)
-    {
+    public void publishStatus(GlobalStatusEnum globalStatus) {
         String itemName = globalStatus.getStatusName();
         LoginManager loginManager = GlobalDisplayDetailsActivator.getUIService().getLoginManager();
 
@@ -408,9 +400,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * @param floorStatusValue the min status value.
      * @param ceilStatusValue the max status value.
      */
-    private void publishStatus(ProtocolProviderService protocolProvider, int floorStatusValue,
-            int ceilStatusValue)
-    {
+    private void publishStatus(ProtocolProviderService protocolProvider, int floorStatusValue, int ceilStatusValue) {
         if (protocolProvider.isRegistered()) {
             PresenceStatus status = getPresenceStatus(protocolProvider, floorStatusValue, ceilStatusValue);
             if (status != null) {
@@ -422,8 +412,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
     }
 
     private PresenceStatus getPresenceStatus(ProtocolProviderService protocolProvider, int floorStatusValue,
-            int ceilStatusValue)
-    {
+            int ceilStatusValue) {
         OperationSetPresence presence = protocolProvider.getOperationSet(OperationSetPresence.class);
         if (presence == null)
             return null;
@@ -455,8 +444,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * @param protocolProvider the protocol provider to save status information for
      * @param statusName the name of the status to save
      */
-    private void saveStatusInformation(ProtocolProviderService protocolProvider, String statusName)
-    {
+    private void saveStatusInformation(ProtocolProviderService protocolProvider, String statusName) {
         ConfigurationService configService = GlobalDisplayDetailsActivator.getConfigurationService();
 
         String accountUuid = protocolProvider.getAccountID().getAccountUuid();
@@ -472,8 +460,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      * @param evt a <code>RegistrationStateChangeEvent</code> which describes the
      */
     @Override
-    public void registrationStateChanged(RegistrationStateChangeEvent evt)
-    {
+    public void registrationStateChanged(RegistrationStateChangeEvent evt) {
         if (evt.getNewState().equals(RegistrationState.REGISTERED))
             handleProviderRegistered(evt.getProvider(), true);
     }
@@ -484,8 +471,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
      *
      * @param pps the provider
      */
-    private void handleProviderRegistered(ProtocolProviderService pps, boolean dueToRegistrationStateChanged)
-    {
+    private void handleProviderRegistered(ProtocolProviderService pps, boolean dueToRegistrationStateChanged) {
         PresenceStatus status = getLastPresenceStatus(pps);
         if (status == null) {
             // lets publish just online
@@ -500,8 +486,7 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
     /**
      * Publishes the given status to the given presence operation set.
      */
-    private class PublishPresenceStatusThread extends Thread
-    {
+    private class PublishPresenceStatusThread extends Thread {
         private ProtocolProviderService protocolProvider;
         private PresenceStatus status;
         private OperationSetPresence presence;
@@ -513,16 +498,14 @@ public class GlobalStatusServiceImpl implements GlobalStatusService, Registratio
          * @param status the status to publish
          */
         public PublishPresenceStatusThread(ProtocolProviderService protocolProvider,
-                OperationSetPresence presence, PresenceStatus status)
-        {
+                OperationSetPresence presence, PresenceStatus status) {
             this.protocolProvider = protocolProvider;
             this.presence = presence;
             this.status = status;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             try {
                 presence.publishPresenceStatus(status, "");
             } catch (IllegalArgumentException | IllegalStateException e1) {

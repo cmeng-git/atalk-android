@@ -236,7 +236,7 @@ public class NotificationManager implements CallChangeListener, CallListener, Ca
             if (uiService != null)
                 chatPanel = uiService.getChat(contact);
 
-            contactIcon = contact.getImage();
+            contactIcon = contact.getImage(false);
             if (contactIcon == null) {
                 contactIcon = AndroidImageUtil.getImageBytes(aTalkApp.getInstance(), R.drawable.person_photo);
             }

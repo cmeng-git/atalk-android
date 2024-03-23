@@ -5,6 +5,17 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
+
 import net.java.sip.communicator.service.protocol.AbstractOperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ChatRoom;
@@ -77,17 +88,6 @@ import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -168,6 +168,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param roomProperties properties specifying how the room should be created.
      *
      * @return ChatRoom the chat room that we've just created.
+     *
      * @throws OperationFailedException if the room couldn't be created for some reason (e.g. room already exists; user
      * already joined to an existent room or user has no permissions to create a chat room).
      * @throws OperationNotSupportedException if chat room creation is not supported by this server
@@ -195,25 +196,22 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 return findRoom(entityBareJid);
             }
 
-            // proceed to create the room is none is found
+            // proceed to create the room if none is found
             chatRoom = chatRoomCache.get(entityBareJid);
 
             // check room on server using getRoomInfo() if exist, throw exception otherwise - slow response from server
 //            if ((chatRoom == null) && (mMucMgr != null)) {
 //                try {
 //                    // some server takes ~8sec to response  due to disco#info request (default timer = 5seconds)
-//                    mConnection.setReplyTimeout(10000);
 //                    RoomInfo info = mMucMgr.getRoomInfo(entityBareJid);
 //                    Timber.d("Chat Room Info = Persistent:%s; MemberOnly:%s; PasswordProtected:%s",
 //                            info.isPersistent(), info.isMembersOnly(), info.isPasswordProtected());
 //
 //                    MultiUserChat muc = mMucMgr.getMultiUserChat(entityBareJid);
-//                    mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
 //
 //                    return createLocalChatRoomInstance(muc);
 //                } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException e) {
 //                    Timber.w("Chat Room not found on server: %s", e.getMessage());
-//                    mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
 //                }
 //            }
         }
@@ -223,7 +221,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
             chatRoom = createLocalChatRoomInstance(muc);
 
             // some server takes ~8sec to response  due to disco#info request (default timer = 5seconds)
-            mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_EXTENDED_TIMEOUT_10);
             MucCreateConfigFormHandle mucFormHandler = null;
             try {
                 // XMPPError not-authorized - if it is an existing server room on third party server
@@ -236,14 +233,13 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 // throw new OperationFailedException("Failed to create chat room", OperationFailedException.GENERAL_ERROR, ex);
                 Timber.e("Failed to assigned owner %s", ex.getMessage());
             }
-            mConnection.setReplyTimeout(ProtocolProviderServiceJabberImpl.SMACK_REPLY_TIMEOUT_DEFAULT);
 
             // Proceed only if we have acquired the owner privilege to change room properties
             if (mucFormHandler != null) {
                 try {
                     boolean isPrivate = (roomProperties != null) && Boolean.TRUE.equals(roomProperties.get(ChatRoom.IS_PRIVATE));
                     if (isPrivate) {
-                        /**
+                        /*
                          * @see Form#getFillableForm()
                          * @see FillableForm#setAnswer(String, int)
                          */
@@ -302,6 +298,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param roomName the name of the <code>ChatRoom</code> that we're looking for.
      *
      * @return the <code>ChatRoom</code> named <code>roomName</code>
+     *
      * @throws OperationFailedException if an error occurs while trying to discover the room on the server.
      * @throws OperationNotSupportedException if the server does not support multi user chat
      */
@@ -384,6 +381,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      *
      * @return a <code>java.util.List</code> of the name <code>String</code>s for chat rooms that are
      * currently available on the server that this protocol provider is connected to.
+     *
      * @throws OperationFailedException if we failed retrieving this list from the server.
      * @throws OperationNotSupportedException if the server does not support multi user chat
      */
@@ -482,6 +480,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      *
      * @return the canonical name of the room (which might be equal to roomName in case it was
      * already in a canonical format).
+     *
      * @throws OperationFailedException if we fail retrieving the conference service name
      */
     private EntityBareJid getCanonicalRoomName(String roomName)
@@ -535,6 +534,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
      * @param chatRoomMember the member we're looking for
      *
      * @return a list of all currently joined chat rooms
+     *
      * @throws OperationFailedException if the operation fails
      * @throws OperationNotSupportedException if the operation is not supported
      */
@@ -578,7 +578,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
     private class SmackInvitationListener implements InvitationListener {
         /**
          * Called when the an invitation to join a MUC room is received.
-         *
          * If the room is password-protected, the invitee will receive a password to use to join
          * the room. If the room is members-only, then the invitee may be added to the member list.
          *
@@ -679,7 +678,6 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 }
             }
         }
-
     }
 
     /**
@@ -774,7 +772,7 @@ public class OperationSetMultiUserChatJabberImpl extends AbstractOperationSetMul
                 ChatRoomMemberJabberImpl member = chatRoom.findMemberForNickName(nick);
                 if (member != null) {
                     member.setContact(contact);
-                    member.setAvatar(contact.getImage());
+                    member.setAvatar(contact.getImage(false));
                 }
             }
         }

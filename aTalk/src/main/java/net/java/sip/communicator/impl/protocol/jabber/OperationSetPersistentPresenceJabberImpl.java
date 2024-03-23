@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import net.java.sip.communicator.impl.protocol.jabber.caps.UserCapsNodeListener;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactListService;
 import net.java.sip.communicator.service.protocol.AbstractOperationSetPersistentPresence;
@@ -28,19 +30,20 @@ import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactGroup;
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.OperationFailedException;
+import net.java.sip.communicator.service.protocol.OperationSetAvatar;
 import net.java.sip.communicator.service.protocol.OperationSetMultiUserChat;
 import net.java.sip.communicator.service.protocol.OperationSetServerStoredAccountInfo;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
 import net.java.sip.communicator.service.protocol.ProtocolProviderFactory;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 import net.java.sip.communicator.service.protocol.RegistrationState;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.GenericDetail;
-import net.java.sip.communicator.service.protocol.ServerStoredDetails.ImageDetail;
+import net.java.sip.communicator.service.protocol.ServerStoredDetails;
 import net.java.sip.communicator.service.protocol.event.ContactBlockingStatusListener;
 import net.java.sip.communicator.service.protocol.event.ContactPropertyChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ContactResourceEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeEvent;
 import net.java.sip.communicator.service.protocol.event.RegistrationStateChangeListener;
+import net.java.sip.communicator.service.protocol.event.ServerStoredDetailsChangeEvent;
 import net.java.sip.communicator.service.protocol.event.ServerStoredGroupListener;
 import net.java.sip.communicator.service.protocol.jabberconstants.JabberStatusEnum;
 import net.java.sip.communicator.util.ConfigurationUtils;
@@ -62,15 +65,14 @@ import org.jivesoftware.smack.roster.RosterLoadedListener;
 import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.roster.SubscribeListener;
 import org.jivesoftware.smackx.avatar.AvatarManager;
+import org.jivesoftware.smackx.avatar.listener.AvatarChangeListener;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
-import org.jivesoftware.smackx.avatar.useravatar.listener.UserAvatarListener;
-import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarMetadata;
 import org.jivesoftware.smackx.avatar.vcardavatar.VCardAvatarManager;
-import org.jivesoftware.smackx.avatar.vcardavatar.listener.VCardAvatarListener;
 import org.jivesoftware.smackx.blocking.AllJidsUnblockedListener;
 import org.jivesoftware.smackx.blocking.BlockingCommandManager;
 import org.jivesoftware.smackx.blocking.JidsBlockedListener;
 import org.jivesoftware.smackx.blocking.JidsUnblockedListener;
+import org.jivesoftware.smackx.caps.packet.CapsExtension;
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
@@ -97,7 +99,7 @@ import timber.log.Timber;
  */
 public class OperationSetPersistentPresenceJabberImpl
         extends AbstractOperationSetPersistentPresence<ProtocolProviderServiceJabberImpl>
-        implements VCardAvatarListener, UserAvatarListener, SubscribeListener, PresenceEventListener,
+        implements AvatarChangeListener, SubscribeListener, PresenceEventListener,
         JidsBlockedListener, JidsUnblockedListener, AllJidsUnblockedListener {
     /**
      * Contains our current status message. Note that this field would only be changed once the
@@ -177,6 +179,12 @@ public class OperationSetPersistentPresenceJabberImpl
     private final MobileIndicator mobileIndicator;
 
     /**
+     * The list of <code>UserCapsNodeListener</code>s interested in events notifying about
+     * possible changes in the list of user caps nodes of this <code>EntityCapsManager</code>.
+     */
+    private final List<UserCapsNodeListener> userCapsNodeListeners = new LinkedList<>();
+
+    /**
      * The last sent presence to server, contains the status, the resource and its priority.
      */
     private Presence currentPresence = null;
@@ -189,7 +197,7 @@ public class OperationSetPersistentPresenceJabberImpl
     /**
      * Handles and retrieves all info of our contacts or account info from the downloaded vcard.
      *
-     * @see InfoRetriever#retrieveDetails(BareJid contactAddress)
+     * @see InfoRetriever#retrieveDetails(EntityBareJid userId)
      */
     private final InfoRetriever mInfoRetriever;
 
@@ -210,7 +218,8 @@ public class OperationSetPersistentPresenceJabberImpl
         // Timber.e("OperationSetPersistentPresenceJabberImpl: %s %s", pps, infoRetriever);
         mInfoRetriever = infoRetriever;
         ssContactList = new ServerStoredContactListJabberImpl(this, pps, infoRetriever);
-        mobileIndicator = new MobileIndicator(pps, ssContactList);
+        ssContactList.setRetrieveOnStart(infoRetrieveOnStart);
+        mobileIndicator = new MobileIndicator(pps, this, ssContactList);
         currentStatus = pps.getJabberStatusEnum().getStatus(JabberStatusEnum.OFFLINE);
         initializePriorities();
         pps.addRegistrationStateChangeListener(new RegistrationStateListener());
@@ -553,6 +562,12 @@ public class OperationSetPersistentPresenceJabberImpl
             clearLocalContactResources();
         }
         else {
+            // Skip sending the same presence stanza on user selection.
+            if (currentStatus.equals(status)) {
+                Timber.w("Skip same PresenceStatus stanza sending: %s", status.getStatusName());
+                return;
+            }
+
             XMPPConnection connection = mPPS.getConnection();
             PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
                     .ofType(Presence.Type.available)
@@ -569,13 +584,22 @@ public class OperationSetPersistentPresenceJabberImpl
             else
                 presenceBuilder.setStatus(statusMessage);
 
+            /*
+             * cmeng 20240316: not necessary, as first <presence/> is sent to server and
+             * ejabberd server will add VCardTempXUpdate to all entities whom subscribed to presence.
+             * - Add VCardTempXUpdate to first <presence/> stanza send
+             *
+             // BareJid bareJid = connection.getUser().asBareJid();
+             // String avatarHash = AvatarManager.getAvatarHashByJid(bareJid);
+             // presenceBuilder.addExtension(new VCardTempXUpdate(avatarHash));
+            */
             currentPresence = presenceBuilder.build();
             try {
-                // Timber.e("Sending presence status");
                 connection.sendStanza(currentPresence);
             } catch (NotConnectedException | InterruptedException e) {
                 Timber.e(e, "Could not send new presence status");
             }
+
             if (localContact != null)
                 updateResource(localContact, mPPS.getOurJid(), currentPresence);
         }
@@ -594,6 +618,7 @@ public class OperationSetPersistentPresenceJabberImpl
      * @param contactJid the jid of the contact whose status we're interested in.
      *
      * @return the <code>PresenceStatus</code> of the contact with the specified <code>contactIdentifier</code>
+     *
      * @throws IllegalArgumentException if the specified <code>contactIdentifier</code> does not identify a contact
      * known to the underlying protocol provider
      * @throws IllegalStateException if the underlying protocol provider is not registered/signed on a public service
@@ -916,13 +941,13 @@ public class OperationSetPersistentPresenceJabberImpl
                 if (vCardAvatarManager == null) {
                     /* Add avatar change listener to handle contacts' avatar changes via XEP-0153*/
                     vCardAvatarManager = VCardAvatarManager.getInstanceFor(xmppConnection);
-                    vCardAvatarManager.addVCardAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
+                    vCardAvatarManager.addAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
                 }
 
                 if (userAvatarManager == null) {
                     /* Add avatar change listener to handle contacts' avatar changes via XEP-0084 */
                     userAvatarManager = UserAvatarManager.getInstanceFor(xmppConnection);
-                    userAvatarManager.addAvatarListener(OperationSetPersistentPresenceJabberImpl.this);
+                    userAvatarManager.addAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
                 }
 
                 // Add Blocking Command Handler
@@ -987,7 +1012,7 @@ public class OperationSetPersistentPresenceJabberImpl
 
                 if (xmppConnection != null) {
                     // Remove all subscription listeners upon de-registration; seems never get executed.
-                    Timber.d("Remove SubscribeListener, PresenceEventListener and BlockedListener? %s", xmppConnection != null);
+                    Timber.d("Remove SubscribeListener, PresenceEventListener and BlockedListener");
 
                     if (mRoster != null) {
                         mRoster.removeSubscribeListener(OperationSetPersistentPresenceJabberImpl.this);
@@ -997,8 +1022,8 @@ public class OperationSetPersistentPresenceJabberImpl
 
                     // vCardAvatarManager can be null for unRegistered account
                     if (vCardAvatarManager != null) {
-                        vCardAvatarManager.removeVCardAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
-                        userAvatarManager.removeAvatarListener(OperationSetPersistentPresenceJabberImpl.this);
+                        vCardAvatarManager.removeAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
+                        userAvatarManager.removeAvatarChangeListener(OperationSetPersistentPresenceJabberImpl.this);
                     }
 
                     if (blockingCommandManager != null) {
@@ -1349,8 +1374,73 @@ public class OperationSetPersistentPresenceJabberImpl
 
                 Timber.d("Smack presence update for: %s - %s", presence.getFrom(), presence.getType());
                 updateContactStatus(sourceContact, presence.getFrom(), jabberStatusToPresenceStatus(currentPresence, mPPS));
+                userCapCheck(presence);
             } catch (IllegalStateException | IllegalArgumentException ex) {
                 Timber.e(ex, "Failed changing status");
+            }
+        }
+    }
+
+    // ======================= Contacts userCap handler ==================================
+    private void userCapCheck(Presence presence) {
+        if (presence.hasExtension(CapsExtension.QNAME)) {
+            boolean isOnline = presence.isAvailable();
+            Timber.d("userCapCheck notify for: %s %s", isOnline, presence.getFrom());
+            userCapsNodeNotify(presence.getFrom(), isOnline);
+        }
+    }
+
+    // ========== UserCapsNodeListener Implementation  ========== //
+
+    /**
+     * Alert listener that entity caps node of a user may have changed.
+     *
+     * @param user the user (FullJid): Can either be account or contact
+     * @param online indicates if the user is online
+     */
+    public void userCapsNodeNotify(Jid user, boolean online) {
+        if (user != null) {
+            // Fire userCapsNodeNotify.
+            UserCapsNodeListener[] listeners;
+            synchronized (userCapsNodeListeners) {
+                listeners = userCapsNodeListeners.toArray(new UserCapsNodeListener[0]);
+            }
+
+            for (UserCapsNodeListener listener : listeners)
+                listener.userCapsNodeNotify(user, online);
+        }
+    }
+
+    /**
+     * Adds a specific <code>UserCapsNodeListener</code> to the list of <code>UserCapsNodeListener</code>s
+     * interested in events notifying about changes in the list of user caps nodes of the
+     * <code>EntityCapsManager</code>.
+     *
+     * @param listener the <code>UserCapsNodeListener</code> which is interested in events notifying about
+     * changes in the list of user caps nodes of this <code>EntityCapsManager</code>
+     */
+    public void addUserCapsNodeListener(UserCapsNodeListener listener) {
+        if (listener == null)
+            throw new NullPointerException("listener");
+
+        synchronized (userCapsNodeListeners) {
+            if (!userCapsNodeListeners.contains(listener))
+                userCapsNodeListeners.add(listener);
+        }
+    }
+
+    /**
+     * Removes a specific <code>UserCapsNodeListener</code> from the list of
+     * <code>UserCapsNodeListener</code>s interested in events notifying about changes in the list of
+     * user caps nodes of this <code>EntityCapsManager</code>.
+     *
+     * @param listener the <code>UserCapsNodeListener</code> which is no longer interested in events notifying
+     * about changes in the list of user caps nodes of this <code>EntityCapsManager</code>
+     */
+    public void removeUserCapsNodeListener(UserCapsNodeListener listener) {
+        if (listener != null) {
+            synchronized (userCapsNodeListeners) {
+                userCapsNodeListeners.remove(listener);
             }
         }
     }
@@ -1717,120 +1807,42 @@ public class OperationSetPersistentPresenceJabberImpl
 //	}
 
     /**
-     * Event is fired when a contact change avatar via XEP-0153: vCard-Based Avatars protocol.
-     * onAvatarChange event is triggered if a change in the VCard Avatar is detected via
-     * <present/> in its update <x xmlns='vcard-temp:x:update'/><photo/> element imageHash value.
-     * A new SHA-1 avatar contained in the photo tag represents a new avatar for this contact.
-     *
-     * @param userID The contact of the sent <presence/> stanza.
-     * @param avatarHash The new photo image Hash value contains ["" | "{avatarHash}].
-     * avatarHash == "" indicates that the contact does not have avatar specified.
-     * avatarHash can be used to retrieve photo image from cache if auto downloaded
-     * @param vCardInfo The contact VCard info - can contain null.
-     */
-    @Override
-    public void onAvatarChange(Jid userID, String avatarHash, VCard vCardInfo) {
-        /*
-         * Retrieves the contact ID that aTalk currently managed concerning the peer that has
-         * send this presence stanza with avatar update.
-         */
-        ContactJabberImpl sourceContact = ssContactList.findContactById(userID);
-
-        /*
-         * If this contact is not yet in our contact list, then there is no need to manage this avatar update.
-         */
-        if (sourceContact == null) {
-            return;
-        }
-        byte[] currentAvatar = sourceContact.getImage(false);
-
-        /*
-         * If vCardInfo is not null, vCardAvatarManager has already loaded the new image;
-         * we can just retrieve from the vCardInfo if any. Otherwise try to get it from cache or
-         * persistent store before we download on our own .
-         * Note: newAvatar will have byte[0] when avatarHash == ""
-         *
-         * @see VCardAvatarManager#getAvatarImageByHash(String)
-         */
-        byte[] newAvatar;
-        if (vCardInfo != null) {
-            newAvatar = vCardInfo.getAvatar();
-        }
-        else {
-            /*
-             * Try to fetch from the cache/persistent before we proceed to download on our own.
-             * Download via {@link InfoRetriever#retrieveDetails(BareJid)} method as it may have
-             * other updated VCard info of interest that we would like to update the contact's
-             * retrieveDetails
-             */
-            newAvatar = VCardAvatarManager.getAvatarImageByHash(avatarHash);
-            if (newAvatar == null) {
-                List<GenericDetail> details = mInfoRetriever.retrieveDetails(userID.asBareJid());
-                for (GenericDetail detail : details) {
-                    if (detail instanceof ImageDetail) {
-                        newAvatar = ((ImageDetail) detail).getBytes();
-                        break;
-                    }
-                }
-            }
-        }
-        if (newAvatar == null)
-            newAvatar = new byte[0];
-
-        // Sets the new avatar image for the contact.
-        sourceContact.setImage(newAvatar);
-
-        // Fires a property change event to update the contact list.
-        this.fireContactPropertyChangeEvent(sourceContact,
-                ContactPropertyChangeEvent.PROPERTY_IMAGE, currentAvatar, newAvatar);
-    }
-
-    /*
      * Event is fired when a contact change avatar via XEP-0084: User Avatar protocol.
      *
      * @param from the contact EntityBareJid who change his avatar
-     * @param avatarId the new avatar id, may be null if the contact set no avatar
+     * @param oldAvatarId The old avatar Id - can contain null.
+     * @param newAvatarId the new avatar id, may be null if the contact set no avatar
      * The new photo image Hash value contains ["" | "{avatarHash}].
      * avatarHash == "" indicates that the contact does not have avatar specified.
      * avatarHash can be used to retrieve photo image from cache if auto downloaded
-     * @param avatarInfo the metadata info of the userAvatar, may be empty if the contact set no avatar
      */
-    public void onAvatarChange(EntityBareJid from, String avatarId, List<AvatarMetadata.Info> avatarInfo) {
+    @Override
+    public void onAvatarChange(EntityBareJid from, String oldAvatarId, String newAvatarId) {
         /*
-         * Retrieves the contact ID that aTalk currently managed concerning the peer that has
-         * send this presence stanza with avatar update.
+         * Retrieves the contact ID that aTalk currently managed concerning the peer that
+         * has send this presence stanza with avatar update. If this contact is not yet
+         * in our contact list, then there is no need to manage this avatar update.
          */
         ContactJabberImpl sourceContact = ssContactList.findContactById(from);
-
-        /*
-         * If this contact is not yet in our contact list, then there is no need to manage this avatar update.
-         */
         if (sourceContact == null) {
             return;
         }
 
-        byte[] currentAvatar = sourceContact.getImage(false);
-
-        /*
-         * Try to retrieve from the cache/persistent before we proceed to download on our own via
-         * {@link UserAvatarManager#downloadAvatar(EntityBareJid, String, AvatarMetadata.Info)}
-         */
-        byte[] newAvatar = AvatarManager.getAvatarImageByHash(avatarId);
-        if (newAvatar == null) {
-            AvatarMetadata.Info info = userAvatarManager.selectAvatar(avatarInfo);
-            if (userAvatarManager.downloadAvatar(from, avatarId, info)) {
-                newAvatar = AvatarManager.getAvatarImageByHash(avatarId);
-            }
-        }
-        if (newAvatar == null)
-            newAvatar = new byte[0];
-
         // Sets the new avatar image for the contact.
+        byte[] newAvatar = AvatarManager.getAvatarImageByJid(from);
         sourceContact.setImage(newAvatar);
 
         // Fires a property change event to update the contact list.
         this.fireContactPropertyChangeEvent(sourceContact,
-                ContactPropertyChangeEvent.PROPERTY_IMAGE, currentAvatar, newAvatar);
+                ContactPropertyChangeEvent.PROPERTY_IMAGE, oldAvatarId, newAvatarId);
+
+        // Fires a property change event to update the user avatar.
+        if (from.isParentOf(mPPS.getOurJid())) {
+            OperationSetAvatar opsAvatar = mPPS.getOperationSet(OperationSetAvatar.class);
+            opsAvatar.fireAvatarChanged(newAvatar);
+            // this is proceed to request info from server unnecessary.
+            // opsAvatar.setAvatar(newAvatar);
+        }
     }
 
     /**

@@ -18,6 +18,15 @@ package org.atalk.crypto.omemo;
 
 import android.util.LruCache;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
 
@@ -52,15 +61,6 @@ import org.whispersystems.libsignal.IdentityKeyPair;
 import org.whispersystems.libsignal.state.PreKeyRecord;
 import org.whispersystems.libsignal.state.SessionRecord;
 import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeMap;
 
 import timber.log.Timber;
 
@@ -415,12 +415,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
     /**
      * Store the public identityKey of the device.
-     *
      * If new device, initialize its fingerprint trust status basing on:
      * - found no previously manually verified fingerprints for the contact AND
      * - pending user option BlindTrustBeforeVerification.
      * Otherwise, just set its status to active and update lastActivation to current.
-     *
+     * <p>
      * Daniel Gultsch wrote a nice article about BTBV. Basically BTBV works as follows:
      * When a new key k is received for a Jid J, then k is only considered automatically trusted,
      * when there is no other key n of J, which has been manually trusted (verified). As soon as
@@ -537,10 +536,8 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
 
         /**
          * setTrust an OmemoIdentity to the specified trust state.
-         *
          * In aTalk, will only be set to Trust.VERIFIED on user manual verification.
          * Trust.TRUSTED state is used only for Blind trusted before verification
-         *
          * Distrust an OmemoIdentity. This involved marking the key as distrusted or undecided if previously is null
          */
         @Override
@@ -862,7 +859,7 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
      * 2. Remove all inactive devices associated table data if any;
      * 3. Refresh devicelist on the server with own device and cached active devices
      * 4. Clean up any omemo orphan data
-     *
+     * <p>
      * Remove the associated local database include the followings:
      * a. preKeyPairs
      * b. signed preKeys
@@ -882,8 +879,11 @@ public class SQLiteOmemoStore extends SignalOmemoStore {
                 OmemoCachedDeviceList deviceList = mDB.loadCachedDeviceList(userJid);
                 Timber.d("Purge inactive devices associated data for: %s %s", userJid, deviceList.getInactiveDevices());
 
-                // remove the local inactive devices from identities table and all their associated data if any
-                for (int deviceId : deviceList.getInactiveDevices()) {
+                // remove the local inactive devices from identities table and all their associated data if any;
+                // add deviceId -1 to the list, found this on swan during testing???
+                Set<Integer> inactiveDevices =  deviceList.getInactiveDevices();
+                inactiveDevices.add(-1);
+                for (int deviceId : inactiveDevices) {
                     userDevice = new OmemoDevice(userJid, deviceId);
                     purgeOwnDeviceKeys(userDevice);
                 }

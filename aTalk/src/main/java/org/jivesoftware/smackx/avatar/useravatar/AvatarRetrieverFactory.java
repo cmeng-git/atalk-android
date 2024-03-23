@@ -24,13 +24,11 @@ import org.jxmpp.jid.EntityBareJid;
 /**
  * A factory for AvatarRetriever.
  */
-public final class AvatarRetrieverFactory
-{
+public final class AvatarRetrieverFactory {
     /**
      * Private constructor.
      */
-    private AvatarRetrieverFactory()
-    {
+    private AvatarRetrieverFactory() {
     }
 
     /**
@@ -39,10 +37,10 @@ public final class AvatarRetrieverFactory
      * @param con the connection
      * @param from the user which own the avatar
      * @param info the metadata information of the avatar to retrieve
+     *
      * @return an AvatarRetriever null if none can retrieve this avatar
      */
-    public static AvatarRetriever getRetriever(XMPPConnection con, EntityBareJid from, Info info)
-    {
+    public static AvatarRetriever getRetriever(XMPPConnection con, EntityBareJid from, Info info) {
         String url = info.getUrl();
         if (url != null) {
             return new HttpAvatarRetriever(url);

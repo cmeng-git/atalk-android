@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub, 2020 Florian Schmaus, 2022 Eng Chong Meng
+ * Copyright 2017 Paul Schaub, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

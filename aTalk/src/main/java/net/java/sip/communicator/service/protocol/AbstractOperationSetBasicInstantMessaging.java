@@ -5,11 +5,6 @@
  */
 package net.java.sip.communicator.service.protocol;
 
-import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
-import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
-import net.java.sip.communicator.service.protocol.event.MessageListener;
-import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
@@ -17,6 +12,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
+import net.java.sip.communicator.service.protocol.event.MessageDeliveredEvent;
+import net.java.sip.communicator.service.protocol.event.MessageDeliveryFailedEvent;
+import net.java.sip.communicator.service.protocol.event.MessageListener;
+import net.java.sip.communicator.service.protocol.event.MessageReceivedEvent;
 
 import timber.log.Timber;
 
@@ -27,8 +27,7 @@ import timber.log.Timber;
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
  */
-public abstract class AbstractOperationSetBasicInstantMessaging implements OperationSetBasicInstantMessaging
-{
+public abstract class AbstractOperationSetBasicInstantMessaging implements OperationSetBasicInstantMessaging {
     /**
      * A list of listeners registered for message events.
      */
@@ -40,8 +39,8 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param listener the <code>MessageListener</code> to register.
      */
-    public void addMessageListener(MessageListener listener)
-    {
+    @Override
+    public void addMessageListener(MessageListener listener) {
         synchronized (messageListeners) {
             if (!messageListeners.contains(listener)) {
                 messageListeners.add(listener);
@@ -55,8 +54,8 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param listener the <code>MessageListener</code> to unregister.
      */
-    public void removeMessageListener(MessageListener listener)
-    {
+    @Override
+    public void removeMessageListener(MessageListener listener) {
         synchronized (messageListeners) {
             messageListeners.remove(listener);
         }
@@ -68,10 +67,10 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * @param content content value
      * @param encType the MIME-type for <code>content</code>
      * @param subject a <code>String</code> subject or <code>null</code> for now subject.
+     *
      * @return the newly created message.
      */
-    public IMessage createMessage(byte[] content, int encType, String subject)
-    {
+    public IMessage createMessage(byte[] content, int encType, String subject) {
         String contentAsString;
         contentAsString = new String(content);
         return createMessage(contentAsString, encType, subject);
@@ -82,10 +81,10 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * content type and encoding.
      *
      * @param messageText the string content of the message.
+     *
      * @return IMessage the newly created message
      */
-    public IMessage createMessage(String messageText)
-    {
+    public IMessage createMessage(String messageText) {
         return createMessage(messageText, IMessage.ENCODE_PLAIN, null);
     }
 
@@ -99,15 +98,14 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * @param messageText the string content of the message.
      * @param encType the mime and encryption type for the <code>content</code>
      * @param messageUID the unique identifier of this message.
+     *
      * @return IMessage the newly created message
      */
-    public IMessage createMessageWithUID(String messageText, int encType, String messageUID)
-    {
+    public IMessage createMessageWithUID(String messageText, int encType, String messageUID) {
         return createMessage(messageText);
     }
 
-    protected enum MessageEventType
-    {
+    protected enum MessageEventType {
         None, MessageDelivered, MessageReceived, MessageDeliveryFailed, MessageDeliveryPending,
     }
 
@@ -116,8 +114,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param evt the <code>EventObject</code> that we'd like delivered to all registered message listeners.
      */
-    protected void fireMessageEvent(EventObject evt)
-    {
+    protected void fireMessageEvent(EventObject evt) {
         Collection<MessageListener> listeners;
         synchronized (this.messageListeners) {
             listeners = new ArrayList<>(this.messageListeners);
@@ -173,10 +170,10 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * Messages pending delivery to be transformed.
      *
      * @param evt the message delivery event
+     *
      * @return returns message delivery events
      */
-    protected MessageDeliveredEvent[] messageDeliveryPendingTransform(final MessageDeliveredEvent evt)
-    {
+    protected MessageDeliveredEvent[] messageDeliveryPendingTransform(final MessageDeliveredEvent evt) {
         EventObject[] transformed = messageTransform(evt, MessageEventType.MessageDeliveryPending);
 
         final int size = transformed.length;
@@ -190,26 +187,24 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param evt the source event to transform
      * @param eventType the event type of the source event
+     *
      * @return returns the resulting (transformed) events, if any. (I.e. an array of 0 or more size containing events.)
      */
-    private EventObject[] messageTransform(final EventObject evt, final MessageEventType eventType)
-    {
+    private EventObject[] messageTransform(final EventObject evt, final MessageEventType eventType) {
         if (evt == null) {
             return new EventObject[0];
         }
         ProtocolProviderService protocolProvider;
         switch (eventType) {
             case MessageDelivered:
-                protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
-                break;
-            case MessageDeliveryFailed:
-                protocolProvider = ((MessageDeliveryFailedEvent) evt).getDestinationContact().getProtocolProvider();
-                break;
             case MessageDeliveryPending:
                 protocolProvider = ((MessageDeliveredEvent) evt).getContact().getProtocolProvider();
                 break;
             case MessageReceived:
                 protocolProvider = ((MessageReceivedEvent) evt).getSourceContact().getProtocolProvider();
+                break;
+            case MessageDeliveryFailed:
+                protocolProvider = ((MessageDeliveryFailedEvent) evt).getDestinationContact().getProtocolProvider();
                 break;
             default:
                 return new EventObject[]{evt};
@@ -282,10 +277,10 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @param mimeType the mime type we want to check
      * @param contact contact which is checked for supported encType
+     *
      * @return <code>true</code> if the contact supports it and <code>false</code> otherwise.
      */
-    public boolean isContentTypeSupported(int mimeType, Contact contact)
-    {
+    public boolean isContentTypeSupported(int mimeType, Contact contact) {
         // by default we support default mime type, for other mime-types method must be overridden
         return (IMessage.ENCODE_PLAIN == mimeType);
     }
@@ -298,8 +293,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      * @param toResource the resource to which the message should be send
      * @param message the <code>IMessage</code> to send.
      */
-    public void sendInstantMessage(Contact to, ContactResource toResource, IMessage message)
-    {
+    public void sendInstantMessage(Contact to, ContactResource toResource, IMessage message) {
         sendInstantMessage(to, message);
     }
 
@@ -308,8 +302,7 @@ public abstract class AbstractOperationSetBasicInstantMessaging implements Opera
      *
      * @return The inactivity timeout in milliseconds. Or -1 if undefined
      */
-    public long getInactivityTimeout()
-    {
+    public long getInactivityTimeout() {
         return -1;
     }
 }

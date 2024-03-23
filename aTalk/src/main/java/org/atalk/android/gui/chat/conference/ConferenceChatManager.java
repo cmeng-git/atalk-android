@@ -13,6 +13,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomJabberImpl;
 import net.java.sip.communicator.plugin.notificationwiring.NotificationManager;
@@ -72,15 +79,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Vector;
-import java.util.concurrent.ExecutionException;
-
 import timber.log.Timber;
-
 
 /**
  * The <code>ConferenceChatManager</code> is the one that manages both chat room and ad-hoc chat rooms invitations.
@@ -94,8 +93,7 @@ import timber.log.Timber;
 public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomInvitationListener,
         AdHocChatRoomMessageListener, AdHocChatRoomInvitationListener,
         LocalUserChatRoomPresenceListener, LocalUserAdHocChatRoomPresenceListener,
-        ServiceListener, ChatRoomLocalUserRoleListener
-{
+        ServiceListener, ChatRoomLocalUserRoleListener {
     /**
      * The list of ad-hoc chat rooms.
      */
@@ -111,15 +109,12 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     /**
      * Creates an instance of <code>ConferenceChatManager</code>.
      */
-    public ConferenceChatManager()
-    {
+    public ConferenceChatManager() {
         multiUserChatManager = this;
         // Loads the chat rooms list in a separate thread.
-        new Thread()
-        {
+        new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 adHocChatRoomList.loadList();
             }
         }.start();
@@ -131,13 +126,11 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @return all chat room providers currently contained in the ad-hoc chat room list.
      */
-    public AdHocChatRoomList getAdHocChatRoomList()
-    {
+    public AdHocChatRoomList getAdHocChatRoomList() {
         return adHocChatRoomList;
     }
 
-    public void invitationReceived(ChatRoomInvitationReceivedEvent evt)
-    {
+    public void invitationReceived(ChatRoomInvitationReceivedEvent evt) {
         final OperationSetMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
         final ChatRoomInvitation invitation = evt.getInvitation();
 
@@ -184,8 +177,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param evt the <code>ChatRoomMessageDeliveredEvent</code> that notified us that the message was
      * delivered to its destination
      */
-    public void messageDelivered(ChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(ChatRoomMessageDeliveredEvent evt) {
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
         Timber.log(TimberLog.FINER, "MESSAGE DELIVERED to chat room: %s", sourceChatRoom.getName());
 
@@ -208,8 +200,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>ChatRoomMessageReceivedEvent</code> that notified us that a message has been received
      */
-    public void messageReceived(ChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(ChatRoomMessageReceivedEvent evt) {
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();
         ChatRoomMember sourceMember = evt.getSourceChatRoomMember();
         int messageType = evt.getEventType();
@@ -288,8 +279,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>ChatRoomMessageDeliveryFailedEvent</code> that notified us of a delivery failure
      */
-    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(ChatRoomMessageDeliveryFailedEvent evt) {
         /*
          * FIXME ChatRoomMessageDeliveryFailedEvent#getSource() is not a IMessage instance at the
          * time of this writing and the attempt "(IMessage) evt.getSource()" seems to be to
@@ -366,8 +356,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>LocalUserAdHocChatRoomPresenceChangeEvent</code> that notified us of a presence change
      */
-    public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserAdHocPresenceChanged(LocalUserAdHocChatRoomPresenceChangeEvent evt) {
         AdHocChatRoom sourceAdHocChatRoom = evt.getAdHocChatRoom();
         AdHocChatRoomWrapper adHocChatRoomWrapper
                 = adHocChatRoomList.findChatRoomWrapperFromAdHocChatRoom(sourceAdHocChatRoom);
@@ -413,8 +402,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>LocalUserChatRoomPresenceChangeEvent</code> that notified us
      */
-    public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt)
-    {
+    public void localUserPresenceChanged(final LocalUserChatRoomPresenceChangeEvent evt) {
         ChatRoom sourceChatRoom = evt.getChatRoom();
         ChatRoomWrapper chatRoomWrapper = MUCActivator.getMUCService().findChatRoomWrapperFromChatRoom(sourceChatRoom);
 
@@ -499,11 +487,11 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param invitation the invitation to accept
      * @param multiUserChatOpSet the operation set for chat conferencing
+     *
      * @throws OperationFailedException if the accept fails
      */
     public void acceptInvitation(AdHocChatRoomInvitation invitation, OperationSetAdHocMultiUserChat multiUserChatOpSet)
-            throws OperationFailedException
-    {
+            throws OperationFailedException {
         AdHocChatRoom chatRoom = invitation.getTargetAdHocChatRoom();
         chatRoom.join();
     }
@@ -516,8 +504,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param reason the reason for the rejection
      */
     public void rejectInvitation(OperationSetAdHocMultiUserChat multiUserChatAdHocOpSet,
-            AdHocChatRoomInvitation invitation, String reason)
-    {
+            AdHocChatRoomInvitation invitation, String reason) {
         multiUserChatAdHocOpSet.rejectInvitation(invitation, reason);
     }
 
@@ -528,11 +515,11 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param protocolProvider the parent protocol provider.
      * @param contacts the contacts invited when creating the chat room.
      * @param reason the reason for this invitation
+     *
      * @return the <code>AdHocChatRoomWrapper</code> corresponding to the created ad hoc chat room
      */
     public AdHocChatRoomWrapper createAdHocChatRoom(ProtocolProviderService protocolProvider,
-            Collection<String> contacts, String reason)
-    {
+            Collection<String> contacts, String reason) {
         AdHocChatRoomWrapper chatRoomWrapper = null;
         OperationSetAdHocMultiUserChat groupChatOpSet = protocolProvider
                 .getOperationSet(OperationSetAdHocMultiUserChat.class);
@@ -568,8 +555,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoomWrapper chatRoom Wrapper
      */
-    public void joinChatRoom(AdHocChatRoomWrapper chatRoomWrapper)
-    {
+    public void joinChatRoom(AdHocChatRoomWrapper chatRoomWrapper) {
         AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
 
         if (chatRoom == null) {
@@ -585,8 +571,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoomWrapper the chat room to remove.
      */
-    public void removeChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
+    public void removeChatRoom(ChatRoomWrapper chatRoomWrapper) {
         ChatRoom chatRoom = chatRoomWrapper.getChatRoom();
         if (chatRoom != null)
             leaveChatRoom(chatRoomWrapper);
@@ -601,8 +586,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoom the chat room to join
      */
-    public void joinChatRoom(AdHocChatRoom chatRoom)
-    {
+    public void joinChatRoom(AdHocChatRoom chatRoom) {
         AdHocChatRoomWrapper chatRoomWrapper = adHocChatRoomList.findChatRoomWrapperFromAdHocChatRoom(chatRoom);
 
         if (chatRoomWrapper == null) {
@@ -624,8 +608,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoomWrapper the <code>ChatRoom</code> to leave.
      */
-    public void leaveChatRoom(ChatRoomWrapper chatRoomWrapper)
-    {
+    public void leaveChatRoom(ChatRoomWrapper chatRoomWrapper) {
         ChatRoomWrapper leavedRoomWrapped = MUCActivator.getMUCService().leaveChatRoom(chatRoomWrapper);
         if (leavedRoomWrapped != null) {
             // AndroidGUIActivator.getUIService().closeChatRoomWindow(leavedRoomWrapped);
@@ -637,8 +620,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoomWrapper the <code>ChatRoom</code> to leave.
      */
-    public void leaveChatRoom(AdHocChatRoomWrapper chatRoomWrapper)
-    {
+    public void leaveChatRoom(AdHocChatRoomWrapper chatRoomWrapper) {
         AdHocChatRoom chatRoom = chatRoomWrapper.getAdHocChatRoom();
 
         if (chatRoom != null) {
@@ -656,8 +638,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param l the listener to add.
      */
-    public void addAdHocChatRoomListChangeListener(AdHocChatRoomListChangeListener l)
-    {
+    public void addAdHocChatRoomListChangeListener(AdHocChatRoomListChangeListener l) {
         synchronized (adHoclistChangeListeners) {
             adHoclistChangeListeners.add(l);
         }
@@ -668,8 +649,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param l the listener to remove.
      */
-    public void removeAdHocChatRoomListChangeListener(AdHocChatRoomListChangeListener l)
-    {
+    public void removeAdHocChatRoomListChangeListener(AdHocChatRoomListChangeListener l) {
         synchronized (adHoclistChangeListeners) {
             adHoclistChangeListeners.remove(l);
         }
@@ -682,8 +662,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      * @param eventID the identifier of the event
      */
     private void fireAdHocChatRoomListChangedEvent(AdHocChatRoomWrapper adHocChatRoomWrapper,
-            int eventID)
-    {
+            int eventID) {
         AdHocChatRoomListChangeEvent evt = new AdHocChatRoomListChangeEvent(adHocChatRoomWrapper, eventID);
         for (AdHocChatRoomListChangeListener l : adHoclistChangeListeners) {
             l.contentChanged(evt);
@@ -695,8 +674,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param chatRoomWrapper the ad-hoc chat room wrapper for which we search a chat to close.
      */
-    private void closeAdHocChatRoom(AdHocChatRoomWrapper chatRoomWrapper)
-    {
+    private void closeAdHocChatRoom(AdHocChatRoomWrapper chatRoomWrapper) {
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(chatRoomWrapper, false);
         if (chatPanel != null) {
             // ChatSessionManager.closeChat(chatPanel);
@@ -710,8 +688,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param event The event to handle.
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to know
         int eType = event.getServiceReference().getBundle().getState();
         if (eType == Bundle.STOPPING)
@@ -741,8 +718,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     /**
      * Joins an ad-hoc chat room in an asynchronous way.
      */
-    private static class JoinAdHocChatRoomTask extends AsyncTask<Void, Void, String>
-    {
+    private static class JoinAdHocChatRoomTask extends AsyncTask<Void, Void, String> {
         private static final String SUCCESS = "Success";
         private static final String AUTHENTICATION_FAILED = "AuthenticationFailed";
         private static final String REGISTRATION_REQUIRED = "RegistrationRequired";
@@ -751,8 +727,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
         private static final String UNKNOWN_ERROR = "UnknownError";
         private final AdHocChatRoomWrapper adHocChatRoomWrapper;
 
-        JoinAdHocChatRoomTask(AdHocChatRoomWrapper chatRoomWrapper)
-        {
+        JoinAdHocChatRoomTask(AdHocChatRoomWrapper chatRoomWrapper) {
             this.adHocChatRoomWrapper = chatRoomWrapper;
         }
 
@@ -761,8 +736,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
          * {@link AsyncTask #doInBackground(Void... params)} to perform all asynchronous tasks.
          */
         @Override
-        protected String doInBackground(Void... params)
-        {
+        protected String doInBackground(Void... params) {
             AdHocChatRoom chatRoom = adHocChatRoomWrapper.getAdHocChatRoom();
 
             try {
@@ -791,8 +765,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
          * UI changes after the ad-hoc chat room join task has finished.
          */
         @Override
-        protected void onPostExecute(String result)
-        {
+        protected void onPostExecute(String result) {
             String returnCode = null;
             try {
                 returnCode = get();
@@ -828,8 +801,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>AdHocChatRoomInvitationReceivedEvent</code> that notified us
      */
-    public void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt)
-    {
+    public void invitationReceived(AdHocChatRoomInvitationReceivedEvent evt) {
         // Timber.i("Invitation received: %s", evt.toString());
         final OperationSetAdHocMultiUserChat multiUserChatOpSet = evt.getSourceOperationSet();
         final AdHocChatRoomInvitation invitationAdHoc = evt.getInvitation();
@@ -851,8 +823,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>AdHocChatRoomMessageDeliveredEvent</code> that notified us
      */
-    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt)
-    {
+    public void messageDelivered(AdHocChatRoomMessageDeliveredEvent evt) {
         AdHocChatRoom sourceChatRoom = (AdHocChatRoom) evt.getSource();
         // Timber.i("Message delivered to ad-hoc chat room: %s", sourceChatRoom.getName());
         ChatPanel chatPanel = ChatSessionManager.getMultiChat(sourceChatRoom, false);
@@ -879,8 +850,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>AdHocChatRoomMessageDeliveryFailedEvent</code> that notified us
      */
-    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt)
-    {
+    public void messageDeliveryFailed(AdHocChatRoomMessageDeliveryFailedEvent evt) {
         AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
         IMessage sourceMessage = evt.getMessage();
         Contact destParticipant = evt.getDestinationParticipant();
@@ -923,8 +893,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
      *
      * @param evt the <code>AdHocChatRoomMessageReceivedEvent</code> that notified us
      */
-    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt)
-    {
+    public void messageReceived(AdHocChatRoomMessageReceivedEvent evt) {
         AdHocChatRoom sourceChatRoom = evt.getSourceChatRoom();
         String sourceParticipant = evt.getSourceChatRoomParticipant().getAddress();
 
@@ -940,8 +909,7 @@ public class ConferenceChatManager implements ChatRoomMessageListener, ChatRoomI
     }
 
     @Override
-    public void localUserRoleChanged(ChatRoomLocalUserRoleChangeEvent evt)
-    {
+    public void localUserRoleChanged(ChatRoomLocalUserRoleChangeEvent evt) {
         if (evt.isInitial())
             return;
         ChatRoom sourceChatRoom = evt.getSourceChatRoom();

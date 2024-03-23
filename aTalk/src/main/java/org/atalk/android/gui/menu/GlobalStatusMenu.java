@@ -23,6 +23,12 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
+import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.OperationSetPresence;
 import net.java.sip.communicator.service.protocol.PresenceStatus;
@@ -45,21 +51,14 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 public class GlobalStatusMenu extends OSGiActivity
-        implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener
-{
-    private FragmentActivity mActivity;
-    private LayoutInflater mInflater;
-    private PopupWindow mWindow;
-    private WindowManager mWindowManager;
+        implements OnDismissListener, ServiceListener, ProviderPresenceStatusListener {
+    private final FragmentActivity mActivity;
+    private final LayoutInflater mInflater;
+    private final PopupWindow mWindow;
+    private final WindowManager mWindowManager;
     private View mRootView;
     private Drawable mBackground = null;
 
@@ -75,10 +74,10 @@ public class GlobalStatusMenu extends OSGiActivity
     private OnDismissListener mDismissListener;
     private int rootWidth = 0;
 
-    private GlobalStatusService globalStatus;
+    private final GlobalStatusService globalStatus;
 
-    private List<ActionMenuItem> actionItems = new ArrayList<>();
-    private static Map<ProtocolProviderService, View> accountSpinner = new HashMap<>();
+    private final List<ActionMenuItem> actionItems = new ArrayList<>();
+    private static final Map<ProtocolProviderService, View> accountSpinner = new HashMap<>();
 
     private static final int ANIM_GROW_FROM_LEFT = 1;
     private static final int ANIM_GROW_FROM_RIGHT = 2;
@@ -86,8 +85,7 @@ public class GlobalStatusMenu extends OSGiActivity
     public static final int ANIM_REFLECT = 4;
     private static final int ANIM_AUTO = 5;
 
-    public GlobalStatusMenu(FragmentActivity activity)
-    {
+    public GlobalStatusMenu(FragmentActivity activity) {
         mActivity = activity;
         mWindow = new PopupWindow(activity);
         mWindow.setTouchInterceptor((v, event) -> {
@@ -120,18 +118,17 @@ public class GlobalStatusMenu extends OSGiActivity
      * Get action item at an index
      *
      * @param index Index of item (position from callback)
+     *
      * @return Action Item at the position
      */
-    private ActionMenuItem getActionItem(int index)
-    {
+    private ActionMenuItem getActionItem(int index) {
         return actionItems.get(index);
     }
 
     /**
      * On dismiss
      */
-    public void onDismiss()
-    {
+    public void onDismiss() {
         if (!mDidAction && mDismissListener != null) {
             mDismissListener.onDismiss();
         }
@@ -142,8 +139,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param id Layout resource id
      */
-    private void setRootViewId(int id)
-    {
+    private void setRootViewId(int id) {
         mRootView = mInflater.inflate(id, null);
         mTrack = mRootView.findViewById(R.id.tracks);
 
@@ -154,7 +150,6 @@ public class GlobalStatusMenu extends OSGiActivity
 
         // This was previously defined on show() method, moved here to prevent force close
         // that occurred when tapping fastly on a view to show quick action dialog.
-        // Thank to zammbi (github.com/zammbi)
         mRootView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         setContentView(mRootView);
     }
@@ -164,8 +159,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param listener Listener
      */
-    public void setOnActionItemClickListener(OnActionItemClickListener listener)
-    {
+    public void setOnActionItemClickListener(OnActionItemClickListener listener) {
         mItemClickListener = listener;
     }
 
@@ -174,23 +168,20 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param mAnimStyle animation style, default is set to ANIM_AUTO
      */
-    public void setAnimStyle(int mAnimStyle)
-    {
+    public void setAnimStyle(int mAnimStyle) {
         this.mAnimStyle = mAnimStyle;
     }
 
     /**
      * On show
      */
-    private void onShow()
-    {
+    private void onShow() {
     }
 
     /**
      * On pre show
      */
-    private void preShow()
-    {
+    private void preShow() {
         if (mRootView == null)
             throw new IllegalStateException("setContentView was not called with a view to display.");
 
@@ -213,8 +204,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param background Background drawable
      */
-    public void setBackgroundDrawable(Drawable background)
-    {
+    public void setBackgroundDrawable(Drawable background) {
         mBackground = background;
     }
 
@@ -223,8 +213,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param root Root view
      */
-    public void setContentView(View root)
-    {
+    public void setContentView(View root) {
         mRootView = root;
         mWindow.setContentView(root);
     }
@@ -234,8 +223,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param layoutResID Resource id
      */
-    public void setContentView(int layoutResID)
-    {
+    public void setContentView(int layoutResID) {
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setContentView(inflater.inflate(layoutResID, null));
     }
@@ -244,32 +232,28 @@ public class GlobalStatusMenu extends OSGiActivity
      * Set listener for window dismissed. This listener will only be fired if the quick action
      * dialog is dismissed by clicking outside the dialog or clicking on sticky item.
      */
-    public void setOnDismissListener(GlobalStatusMenu.OnDismissListener listener)
-    {
+    public void setOnDismissListener(GlobalStatusMenu.OnDismissListener listener) {
         mDismissListener = listener;
     }
 
     /**
      * Dismiss the popup window.
      */
-    public void dismiss()
-    {
+    public void dismiss() {
         mWindow.dismiss();
     }
 
     /**
      * Listener for item click
      */
-    public interface OnActionItemClickListener
-    {
+    public interface OnActionItemClickListener {
         void onItemClick(GlobalStatusMenu source, int pos, int actionId);
     }
 
     /**
      * Listener for window dismiss
      */
-    public interface OnDismissListener
-    {
+    public interface OnDismissListener {
         void onDismiss();
     }
 
@@ -278,8 +262,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param action {@link ActionMenuItem}
      */
-    public void addActionItem(ActionMenuItem action)
-    {
+    public void addActionItem(ActionMenuItem action) {
         actionItems.add(action);
         String title = action.getTitle();
         Drawable icon = action.getIcon();
@@ -323,8 +306,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param action {@link ActionMenuItem}
      */
-    public void addActionItem(ActionMenuItem action, final ProtocolProviderService pps)
-    {
+    public void addActionItem(ActionMenuItem action, final ProtocolProviderService pps) {
         actionItems.add(action);
         String title = action.getTitle();
         Drawable icon = action.getIcon();
@@ -361,10 +343,8 @@ public class GlobalStatusMenu extends OSGiActivity
         statusSpinner.setSelection(presenceStatuses.indexOf(offline), false);
 
         // Setup adapter listener for onItemSelected
-        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
+        statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 final PresenceStatus selectedStatus = (PresenceStatus) statusSpinner.getSelectedItem();
                 final String statusMessage = selectedStatus.getStatusName();
 
@@ -385,8 +365,7 @@ public class GlobalStatusMenu extends OSGiActivity
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+            public void onNothingSelected(AdapterView<?> parent) {
                 // Should not happen in single selection mode
             }
         });
@@ -405,8 +384,7 @@ public class GlobalStatusMenu extends OSGiActivity
     /**
      * Show quick action popup. Popup is automatically positioned, on top or bottom of anchor view.
      */
-    public void show(View anchor)
-    {
+    public void show(View anchor) {
         preShow();
         int xPos, yPos, arrowPos;
         mDidAction = false;
@@ -426,7 +404,7 @@ public class GlobalStatusMenu extends OSGiActivity
         // automatically get X coord of popup (top left)
         if ((anchorRect.left + rootWidth) > screenSize.x) {
             xPos = anchorRect.left - (rootWidth - anchor.getWidth());
-            xPos = (xPos < 0) ? 0 : xPos;
+            xPos = Math.max(xPos, 0);
             arrowPos = anchorRect.centerX() - xPos;
 
         }
@@ -471,8 +449,7 @@ public class GlobalStatusMenu extends OSGiActivity
      * @param onTop flag to indicate where the popup should be displayed. Set TRUE if displayed on top of anchor
      * view and vice versa
      */
-    private void setAnimationStyle(int screenWidth, int requestedX, boolean onTop)
-    {
+    private void setAnimationStyle(int screenWidth, int requestedX, boolean onTop) {
         int arrowPos = requestedX - mArrowUp.getMeasuredWidth() / 2;
 
         switch (mAnimStyle) {
@@ -508,8 +485,7 @@ public class GlobalStatusMenu extends OSGiActivity
      * @param whichArrow arrow type resource id
      * @param requestedX distance from left screen
      */
-    private void showArrow(int whichArrow, int requestedX)
-    {
+    private void showArrow(int whichArrow, int requestedX) {
         final View showArrow = (whichArrow == R.id.arrow_up) ? mArrowUp : mArrowDown;
         final View hideArrow = (whichArrow == R.id.arrow_up) ? mArrowDown : mArrowUp;
 
@@ -521,8 +497,7 @@ public class GlobalStatusMenu extends OSGiActivity
     }
 
     @Override
-    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
-    {
+    public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt) {
         ProtocolProviderService pps = evt.getProvider();
         // Timber.w("### PPS presence status change: " + pps + " => " + evt.getNewStatus());
 
@@ -541,8 +516,7 @@ public class GlobalStatusMenu extends OSGiActivity
     }
 
     @Override
-    public void providerStatusMessageChanged(PropertyChangeEvent evt)
-    {
+    public void providerStatusMessageChanged(PropertyChangeEvent evt) {
         // Timber.w("### PPS Status message change: " + evt.getSource() + " => " + evt.getNewValue());
     }
 
@@ -552,8 +526,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param event The <code>ServiceEvent</code> object.
      */
-    public void serviceChanged(ServiceEvent event)
-    {
+    public void serviceChanged(ServiceEvent event) {
         // if the event is caused by a bundle being stopped, we don't want to know
         ServiceReference serviceRef = event.getServiceReference();
         if (serviceRef.getBundle().getState() == Bundle.STOPPING)
@@ -587,8 +560,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param pps new provider to be added to the status menu
      */
-    private void addMenuItemPPS(ProtocolProviderService pps)
-    {
+    private void addMenuItemPPS(ProtocolProviderService pps) {
         if ((!accountSpinner.containsKey(pps))) {
             // Timber.w("## ProtocolServiceProvider Added: " + pps);
             AccountID accountId = pps.getAccountID();
@@ -608,8 +580,7 @@ public class GlobalStatusMenu extends OSGiActivity
      *
      * @param pps provider to be removed
      */
-    private void removeMenuItemPPS(ProtocolProviderService pps)
-    {
+    private void removeMenuItemPPS(ProtocolProviderService pps) {
         if (accountSpinner.containsKey(pps)) {
             OperationSetPresence presenceOpSet = pps.getOperationSet(OperationSetPresence.class);
             presenceOpSet.removeProviderPresenceStatusListener(this);

@@ -323,7 +323,7 @@ public class AndroidCallListener implements CallListener, CallChangeListener {
         Map<String, Object> extras = new HashMap<>();
         extras.put(NotificationData.POPUP_MESSAGE_HANDLER_TAG_EXTRA, contact);
 
-        byte[] contactIcon = contact.getImage();
+        byte[] contactIcon = contact.getImage(false);
         String message = contact.getDisplayName() + " " + GuiUtils.formatDateTime(new Date());
 
         notificationService.fireNotification(NotificationManager.MISSED_CALL, SystrayService.MISSED_CALL_MESSAGE_TYPE,

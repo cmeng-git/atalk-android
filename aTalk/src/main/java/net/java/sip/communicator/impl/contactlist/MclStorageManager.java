@@ -271,12 +271,11 @@ public class MclStorageManager implements MetaContactListListener
 
     /**
      * Creates a <code>MetaContactGroup</code> and its decedents
-     *
      * A metaGroup may contain:
      * a. proto-groups
      * b. subGroups (can repeat a, b and c etc)
      * c. child-contacts
-     *
+     * <p>
      * Except the rootGroup, all decedents are linked to its parent with "parent-proto-group-uid"
      * Except for rootGroup, all decedents must be owned by a specific account uuid.
      * Note: the rootGroup is created when a virgin database is first generated.
@@ -1033,7 +1032,7 @@ public class MclStorageManager implements MetaContactListListener
     /**
      * Get the metaUuid for the given accountUuid and contactJid; start Chat session in muc.
      *
-     * @param accountUuid the protocol user AccountUuid 
+     * @param accountUuid the protocol user AccountUuid
      * @param contactJid ContactJid associated with the user account
      *
      * @return the metaUuid for start ChatActivity

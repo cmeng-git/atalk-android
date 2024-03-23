@@ -36,7 +36,7 @@ public class MetaContactAvatarUpdateEvent extends MetaContactPropertyChangeEvent
      * @param oldAvatar the new avatar just of this meta contact.
      * @param newAvatar the old avatar that just got replaced or <code>null</code>.
      */
-    public MetaContactAvatarUpdateEvent(MetaContact source, byte[] oldAvatar, byte[] newAvatar)
+    public MetaContactAvatarUpdateEvent(MetaContact source, String oldAvatar, String newAvatar)
     {
         super(source, META_CONTACT_AVATAR_UPDATE, oldAvatar, newAvatar);
     }

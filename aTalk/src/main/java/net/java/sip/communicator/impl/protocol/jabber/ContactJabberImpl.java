@@ -219,19 +219,18 @@ public class ContactJabberImpl extends AbstractContact {
      */
     public byte[] getImage(boolean retrieveIfNecessary) {
         if ((image == null) && retrieveIfNecessary)
-            ssclCallback.addContactForImageUpdate(this);
+            ssclCallback.addContactForImageUpdate(this, true);
         return image;
     }
 
     /**
      * Retrieve avatar from server and update the contact avatar image
-     * For user manual download by long click on the avatar
+     * For user manual download by long click on the avatar if true
      *
-     * @param retrieveOnStart force to download from server if avatar is null
+     * @param retrieveIfNecessary force to retrieve avatar from server if it is null
      */
-    public void getAvatar(boolean retrieveOnStart) {
-        ssclCallback.setRetrieveOnStart(retrieveOnStart);
-        ssclCallback.addContactForImageUpdate(this);
+    public void getAvatar(boolean retrieveIfNecessary) {
+        ssclCallback.addContactForImageUpdate(this, retrieveIfNecessary );
     }
 
     /**

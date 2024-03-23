@@ -677,7 +677,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
      * @param evt the <code>MetaContactEvent</code> that notified us
      */
     public void childContactsReordered(MetaContactGroupEvent evt) {
-        Timber.d("CHILD CONTACTS REORDERED: %s", evt.getSourceMetaContactGroup());
+        // Timber.d("Child contacts reordered");
         uiHandler.post(() -> {
             MetaContactGroup group = evt.getSourceMetaContactGroup();
             int origGroupIndex = originalGroups.indexOf(group);
@@ -954,7 +954,7 @@ public class MetaContactListAdapter extends BaseContactListAdapter
             if (connection == null)
                 continue;
 
-            Timber.e("addContactStatusListener: %s", pps);
+            // Timber.e("addContactStatusListener: %s", pps);
             OperationSetPresence opSetPresence = pps.getOperationSet(OperationSetPresence.class);
             if (opSetPresence != null) {
                 this.opSetPresence.add(opSetPresence);

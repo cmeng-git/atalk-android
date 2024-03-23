@@ -357,7 +357,7 @@ public class FileHistoryServiceImpl implements FileHistoryService, ServiceListen
     }
 
     /**
-     * Permanently removes locally stored chatRoom message messages (need cleanup - not used)
+     * Permanently removes locally stored chatRoom messages (need cleanup - not used)
      */
     public void eraseLocallyStoredHistory() {
         String[] args = {String.valueOf(ChatSession.MODE_MULTI)};

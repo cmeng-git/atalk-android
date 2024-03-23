@@ -17,27 +17,34 @@
 
 package org.jivesoftware.smackx.avatar.useravatar;
 
-import org.jivesoftware.smack.*;
-import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
-import org.jivesoftware.smackx.pubsub.*;
-import org.jxmpp.jid.BareJid;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smackx.avatar.useravatar.packet.AvatarData;
+import org.jivesoftware.smackx.pubsub.Item;
+import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.PayloadItem;
+import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubManager;
+import org.jxmpp.jid.BareJid;
 
 /**
  * An AvatarRetriever which retrieve the avatar over the XMPP connection.
  */
-public class XmppAvatarRetriever implements AvatarRetriever
-{
+public class XmppAvatarRetriever implements AvatarRetriever {
     /**
      * The logger.
      */
     private static final Logger LOGGER = Logger.getLogger(XmppAvatarRetriever.class.getName());
 
     private PubSubManager mPubSubManager;
-    private String mId;
+    private final String mId;
 
     /**
      * Create an XmppAvatarRetriever.
@@ -46,23 +53,21 @@ public class XmppAvatarRetriever implements AvatarRetriever
      * @param toAddress the contact from which we retrieve the avatar
      * @param id the id of the avatar to retrieve
      */
-    public XmppAvatarRetriever(XMPPConnection conn, BareJid toAddress, String id)
-    {
+    public XmppAvatarRetriever(XMPPConnection conn, BareJid toAddress, String id) {
         mPubSubManager = PubSubManager.getInstanceFor(conn, toAddress);
         mId = id;
     }
 
     @Override
-    public byte[] getAvatar()
-    {
+    public byte[] getAvatar() {
         List<Item> items = new ArrayList<>();
         try {
             LeafNode node = mPubSubManager.getLeafNode(AvatarData.NAMESPACE);
             items = node.getItems(Collections.singletonList(mId));
         } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException
-                | SmackException.NotConnectedException | InterruptedException
-                | PubSubException.NotAPubSubNodeException
-                | PubSubException.NotALeafNodeException e) {
+                 | SmackException.NotConnectedException | InterruptedException
+                 | PubSubException.NotAPubSubNodeException
+                 | PubSubException.NotALeafNodeException e) {
             LOGGER.log(Level.WARNING, "Error while retrieving avatar data: " + e.getMessage());
         }
 

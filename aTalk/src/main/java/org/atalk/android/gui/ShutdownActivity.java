@@ -7,6 +7,7 @@ package org.atalk.android.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,11 +24,11 @@ import org.atalk.service.osgi.OSGiService;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ShutdownActivity extends OSGiActivity
-{
+public class ShutdownActivity extends OSGiActivity {
+    private ProgressBar mProgressBar;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!OSGiService.hasStarted()) {
             startActivity(new Intent(this, LauncherActivity.class));
@@ -47,7 +48,14 @@ public class ShutdownActivity extends OSGiActivity
         TextView shutDown = findViewById(R.id.stateInfo);
         shutDown.setText(R.string.service_gui_SHUTDOWN_IN_PROGRESS);
 
-        ProgressBar mActionBarProgress = findViewById(R.id.actionbar_progress);
-        mActionBarProgress.setVisibility(ProgressBar.VISIBLE);
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProgressBar != null)
+            mProgressBar.clearAnimation();
     }
 }
