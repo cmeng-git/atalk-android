@@ -110,7 +110,7 @@ public class ConferenceChatSession extends ChatSession implements ChatRoomMember
     }
 
     /**
-     * Returns the chat identifier.
+     * Returns the chatRoom identifier.
      *
      * @return the chat identifier
      */

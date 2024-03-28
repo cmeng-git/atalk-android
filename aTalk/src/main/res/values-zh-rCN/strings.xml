@@ -154,7 +154,6 @@
     <string name="service_gui_CALL_ERROR">远程方返回错误：%1$s</string>
     <string name="service_gui_CALL_FAILED">调用失败</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">通话记录</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">删除的通话记录数：%1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">您确定要删除日期之前的所有通话记录：%1$s？</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">没有选择要删除的记录</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">您确定要删除所有选定的通话记录吗？</string>
@@ -407,6 +406,7 @@
     <string name="service_gui_HISTORY_ERASE_ALL">删除所有联系人聊天记录</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">您确定要删除 %1$s 的所有选定短信吗？</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">您确定要删除所有实体的所有短信吗？</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">删除的历史记录数量：%1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">删除 %1$s 的本地存储短信时出错。</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">从我的手机中删除媒体</string>
     <string name="service_gui_HISTORY_WARNING">在线时关闭并打开此聊天会话以查看 MAM 和离线短信</string>

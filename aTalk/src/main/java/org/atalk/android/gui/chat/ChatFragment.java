@@ -854,6 +854,7 @@ public class ChatFragment extends OSGiFragment implements ChatSessionManager.Cur
                         }
                     }
                     // Timber.d("Transfer file message delete msgUid: %s; files: %s", msgUidDel, msgFilesDel);
+                    mChatActivity.setEraseMode(EntityListHelper.SINGLE_ENTITY);
                     EntityListHelper.eraseEntityChatHistory(mChatActivity,
                             chatPanel.getChatSession().getDescriptor(), msgUidDel, msgFilesDel);
                     mode.finish();

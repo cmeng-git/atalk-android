@@ -128,7 +128,7 @@ public class JabberAccountID extends AccountID
     {
         if (userId != null) {
             this.mUserID = userId;
-            this.accountUID = getProtocolName() + ":" + mUserID;
+            this.accountUid = getProtocolName() + ":" + mUserID;
             mAccountProperties.put(USER_ID, userId);
             try {
                 userBareJid = JidCreate.entityBareFrom(userId);

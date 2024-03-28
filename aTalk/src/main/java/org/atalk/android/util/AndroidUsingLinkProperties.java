@@ -17,23 +17,21 @@
 package org.atalk.android.util;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.RouteInfo;
-import android.os.Build;
-
-import org.minidns.DnsClient;
-import org.minidns.dnsserverlookup.AbstractDnsServerLookupMechanism;
-import org.minidns.dnsserverlookup.AndroidUsingExec;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.minidns.DnsClient;
+import org.minidns.dnsserverlookup.AbstractDnsServerLookupMechanism;
+import org.minidns.dnsserverlookup.AndroidUsingExec;
 
 /**
  * A DNS server lookup mechanism using Android's Link Properties method available on Android API 21 or higher.

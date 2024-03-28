@@ -459,7 +459,7 @@ public class MetaContactChatSession extends ChatSession
     }
 
     /**
-     * Returns the chat identifier.
+     * Returns the chat identifier i.e. metaContact UID.
      *
      * @return the chat identifier
      */

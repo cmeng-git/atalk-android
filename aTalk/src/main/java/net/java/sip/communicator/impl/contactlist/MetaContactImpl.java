@@ -285,7 +285,7 @@ public class MetaContactImpl extends DataObject implements MetaContact {
      */
     public Contact getContact(String contactAddress, String accountID) {
         for (Contact contact : protoContacts) {
-            if (contact.getProtocolProvider().getAccountID().getAccountUniqueID().equals(accountID)
+            if (contact.getProtocolProvider().getAccountID().getAccountUid().equals(accountID)
                     && contact.getAddress().equals(contactAddress))
                 return contact;
         }

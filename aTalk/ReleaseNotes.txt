@@ -1,5 +1,17 @@
 Project aTalk-Android Release Notes
 =========================================================================
+Version:        4.0.1 (400010)
+Release Date:   03/28/2024
+Author:         cmeng
+- Removal of a contact shall purge all its associated history messages, call records and its sessionUuid.
+  Otherwise recreate same contact will inherited old sessionUuid and history messages, causing mamQuery problem.
+- Improve 'Recent conversations' interface to disable multi-item selection; and allow purge of orphan chat session.
+- Add support to delete history messages based on sessionUuid i.e. no associated contact or chatRoom.
+- EntityListHelper history record delete will return the actual deleted records count, for display to user.
+- Change EntityListHelp to support FragmentActivity caller i.e. onTaskComplete callback to its caller directly.
+- ChatPanel#mamQuery must use actual sessionUuid from DB; and it may not be the same as mChatId.
+
+=========================================================================
 Version:        4.0.0 (400000)
 Release Date:   03/23/2024
 Author:         cmeng
@@ -34,7 +46,7 @@ Author:         cmeng
   initComboBox() and second network access duplication;
 - Remove main menu 'Sign out' and 'Exit' options to prevent user unintentionally unregister himself from server;
   e.g. unable to receive incoming call.
-- SmackConfiguration.setDefaultReplyTimeout(10000);
+- SmackConfiguration.setDefaultReplyTimeout to 10000 ms.
 
 =========================================================================
 Version:        3.4.0 (304000)

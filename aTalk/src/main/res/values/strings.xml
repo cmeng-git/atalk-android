@@ -155,7 +155,6 @@
     <string name="service_gui_CALL_ERROR">Remote party returns an error: %1$s</string>
     <string name="service_gui_CALL_FAILED">Call failed</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Call History</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">No of call history records deleted: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Are you sure you want to purge all call records before the date: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">None record selected for delete</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Are you sure you want to purge all selected call records?</string>
@@ -408,9 +407,11 @@
     <string name="service_gui_HISTORY_ERASE_ALL">Erase all contacts chat history</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Are you sure you want to purge all selected messages for %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Are you sure you want to purge all messages for all the entities?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Number of history records deleted: %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error removing locally stored messages for %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Delete media from my phone</string>
     <string name="service_gui_HISTORY_WARNING">Close and open this chat session to view MAM and Offline messages when online</string>
+
 
     <string name="service_gui_CHATROOM_ALTERNATE_VENUE">Alternate Venue:</string>
     <string name="service_gui_CHATROOM_ALTERNATE_ADDRESS">You can continue the conversation in the following chat room: %1$s</string>

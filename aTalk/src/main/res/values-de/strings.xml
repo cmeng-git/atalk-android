@@ -155,7 +155,6 @@
     <string name="service_gui_CALL_ERROR">Der entfernte Teilnehmer gibt einen Fehler zurück: %1$s</string>
     <string name="service_gui_CALL_FAILED">Gescheiteter Anruf</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Anrufverlauf</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Anzahl der gelöschten Anrufverlaufsdatensätze: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Möchten Sie wirklich alle Anrufdatensätze vor dem Datum löschen?: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Kein Datensatz zum Löschen ausgewählt</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Möchten Sie wirklich alle ausgewählten Anrufdatensätze löschen?</string>
@@ -405,6 +404,7 @@
 	<string name="service_gui_HISTORY_ERASE_ALL">Alle Chatverlaufe löschen</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Möchten Sie wirklich alle ausgewählten Nachrichten für %1$s löschen?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Willst du wirklich alle Nachrichten von allen Kontakten Entitäten?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Anzahl der gelöschten Verlaufsdatensätze: %1$s</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Fehler beim Löschen der Nachrichten von %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Löschen Sie Medien von meinem Telefon</string>
     <string name="service_gui_HISTORY_WARNING">Schließen und öffnen Sie diese Chatsitzung, um MAM- und Offline-Nachrichten anzuzeigen, wenn Sie online sind</string>

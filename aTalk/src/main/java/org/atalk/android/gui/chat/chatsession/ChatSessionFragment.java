@@ -21,19 +21,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,7 +37,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +79,6 @@ import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
-import org.atalk.crypto.CryptoFragment;
 import org.atalk.service.osgi.OSGiActivity;
 import org.atalk.service.osgi.OSGiFragment;
 import org.jetbrains.annotations.NotNull;
@@ -102,8 +96,8 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatSessionFragment extends OSGiFragment implements View.OnClickListener,
-        ContactPresenceStatusListener, ChatRoomListChangeListener, EntityListHelper.TaskCompleted {
+public class ChatSessionFragment extends OSGiFragment implements View.OnClickListener, View.OnLongClickListener,
+        EntityListHelper.TaskCompleteListener, ContactPresenceStatusListener, ChatRoomListChangeListener {
     /**
      * bit-7 of the ChatSession#STATUS is to hide session from UI if set
      *
@@ -188,13 +182,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         chatSessionListView = contentView.findViewById(R.id.chat_sessionListView);
         chatSessionAdapter = new ChatSessionAdapter(inflater);
         chatSessionListView.setAdapter(chatSessionAdapter);
-
-        chatSessionListView.setOnItemClickListener(listItemClickListener);
-
-        // Using the contextual action mode with multi-selection
-        chatSessionListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        chatSessionListView.setMultiChoiceModeListener(mMultiChoiceListener);
-
         return contentView;
     }
 
@@ -299,17 +286,13 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             else {
                 chatRecordViewHolder = (ChatRecordViewHolder) convertView.getTag();
             }
+
             chatRecordViewHolder.childPosition = position;
             chatRecordViewHolder.sessionUuid = chatSessionRecord.getSessionUuid();
-
-            // Must init child Tag here as reused convertView may not necessary contains the correct reference
-            View chatSessionView = convertView.findViewById(R.id.chatSessionView);
-            chatSessionView.setTag(chatRecordViewHolder);
-
-            // setOnClickListener interfere with setMultiChoiceModeListener; use AdapterView.OnItemClickListener()
-            // chatSessionView.setOnClickListener(ChatSessionFragment.this);
-
             crViewHolderMap.put(chatSessionRecord.getEntityId(), chatRecordViewHolder);
+
+            convertView.setOnClickListener(ChatSessionFragment.this);
+            convertView.setOnLongClickListener(ChatSessionFragment.this);
 
             int unreadCount = 0;
             MetaContact metaContact = null;
@@ -336,7 +319,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             }
 
             updateUnreadCount(entityId, unreadCount);
-
             chatRecordViewHolder.callButton.setVisibility(isShowCallBtn(metaContact) ? View.VISIBLE : View.GONE);
             chatRecordViewHolder.callVideoButton.setVisibility(isShowVideoCallBtn(metaContact) ? View.VISIBLE : View.GONE);
 
@@ -369,7 +351,7 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
                 for (ProtocolProviderService pps : providers) {
                     if ((pps.getConnection() != null) && pps.getConnection().isAuthenticated()) {
                         addContactStatusListener(pps);
-                        String userUid = pps.getAccountID().getAccountUniqueID();
+                        String userUid = pps.getAccountID().getAccountUid();
 
                         csRecordPPS = mMHS.findSessionByEndDate(userUid, mEndDate);
                         if (csRecordPPS.size() != 0)
@@ -524,8 +506,9 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     }
 
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
-        if (result > 0) {
+    public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        if (msgCount > 0) {
             chatSessionAdapter.new getChatSessionRecords(new Date()).execute();
         }
     }
@@ -565,12 +548,6 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
             return null;
         }
     }
-
-    /**
-     * Use OnItemClickListener to startChat; otherwise onClickListener interfere with MultiChoiceModeListener
-     */
-    private AdapterView.OnItemClickListener listItemClickListener = (parent, view, position, id)
-            -> onClick(view.findViewById(R.id.chatSessionView));
 
     @Override
     public void onClick(View view) {
@@ -635,6 +612,78 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         }
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        ChatRecordViewHolder viewHolder;
+        ChatSessionRecord chatSessionRecord;
+
+        Object object = view.getTag();
+        if (object instanceof ChatRecordViewHolder) {
+            viewHolder = (ChatRecordViewHolder) object;
+            int childPos = viewHolder.childPosition;
+            chatSessionRecord = sessionRecords.get(childPos);
+            if (chatSessionRecord != null)
+                showPopupMenu(view, chatSessionRecord);
+        }
+        return true;
+    }
+
+    /**
+     * Inflates chatSession Item popup menu.
+     * Avoid using android contextMenu (in fragment) - truncated menu list
+     *
+     * @param holderView click view.
+     * @param chatSessionRecord an instance of ChatSessionRecord for this view.
+     */
+    public void showPopupMenu(View holderView, ChatSessionRecord chatSessionRecord) {
+        PopupMenu popup = new PopupMenu(mContext, holderView);
+        Menu menu = popup.getMenu();
+        popup.getMenuInflater().inflate(R.menu.session_ctx_menu, menu);
+        popup.setOnMenuItemClickListener(new PopupMenuItemClick(chatSessionRecord));
+
+        if (ChatSession.MODE_SINGLE == chatSessionRecord.getChatMode())
+            menu.findItem(R.id.erase_contact_chat_history).setVisible(true);
+        else
+            menu.findItem(R.id.erase_chatroom_history).setVisible(true);
+        popup.show();
+    }
+
+    /**
+     * Interface responsible for receiving menu item click events if the items
+     * themselves do not have individual item click listeners.
+     */
+    private class PopupMenuItemClick implements PopupMenu.OnMenuItemClickListener {
+        private ChatSessionRecord mSessionRecord;
+
+        PopupMenuItemClick(ChatSessionRecord sessionRecord) {
+            mSessionRecord = sessionRecord;
+        }
+
+        /**
+         * This method will be invoked when a menu item is clicked if the item
+         * itself did not already handle the event.
+         *
+         * @param item the menu item that was clicked
+         *
+         * @return {@code true} if the event was handled, {@code false} otherwise
+         */
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.erase_contact_chat_history:
+                case R.id.erase_chatroom_history:
+                    EntityListHelper.eraseEntityChatHistory(ChatSessionFragment.this, mSessionRecord, null, null);
+                    return true;
+
+                case R.id.ctx_menu_exit:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+    }
+
     /**
      * cmeng: when metaContact is owned by two different user accounts, the first launched chatSession
      * will take predominant over subsequent metaContact chat session launches by another account
@@ -659,14 +708,14 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
     /**
      * Starts the chat activity for the given metaContact.
      *
-     * @param descriptor <code>MetaContact</code> for which chat activity will be started.
+     * @param sessionRecords <code>MetaContact</code> for which chat activity will be started.
      */
-    private void startChatActivity(Object descriptor) {
-        Intent chatIntent = ChatSessionManager.getChatIntent(descriptor);
+    private void startChatActivity(Object sessionRecords) {
+        Intent chatIntent = ChatSessionManager.getChatIntent(sessionRecords);
         try {
             startActivity(chatIntent);
         } catch (Exception ex) {
-            Timber.w("Failed to start chat with %s: %s", descriptor, ex.getMessage());
+            Timber.w("Failed to start chat with %s: %s", sessionRecords, ex.getMessage());
         }
     }
 
@@ -723,144 +772,13 @@ public class ChatSessionFragment extends OSGiFragment implements View.OnClickLis
         mContext.startActivity(chatIntent);
     }
 
-    /**
-     * ActionMode with multi-selection implementation for chatListView
-     */
-    private final AbsListView.MultiChoiceModeListener mMultiChoiceListener = new AbsListView.MultiChoiceModeListener() {
-        int cPos;
-        int headerCount;
-        int checkListSize;
-
-        SparseBooleanArray checkedList;
-
-        @Override
-        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            // Here you can do something when items are selected/de-selected
-            checkedList = chatSessionListView.getCheckedItemPositions();
-            checkListSize = checkedList.size();
-            int checkedItemCount = chatSessionListView.getCheckedItemCount();
-
-            // Position must be aligned to the number of header views included
-            cPos = position - headerCount;
-
-            mode.invalidate();
-            chatSessionListView.setSelection(position);
-            mode.setTitle(String.valueOf(checkedItemCount));
-        }
-
-        // Called when the user selects a menu item. On action picked, close the CAB i.e. mode.finish();
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int cType;
-            ChatSessionRecord sessionRecord;
-
-            switch (item.getItemId()) {
-                case R.id.cr_select_all:
-                    int size = chatSessionAdapter.getCount();
-                    if (size < 2)
-                        return true;
-
-                    for (int i = 0; i < size; i++) {
-                        cPos = i + headerCount;
-                        checkedList.put(cPos, true);
-                        chatSessionListView.setSelection(cPos);
-                    }
-                    checkListSize = size;
-                    mode.invalidate();
-                    mode.setTitle(String.valueOf(size));
-                    return true;
-
-                case R.id.cr_delete:
-                    // List of records with sessionUuids in chatSessionAdapter to be deleted.
-                    List<String> sessionUuidDel = new ArrayList<>();
-
-                    for (int i = 0; i < checkListSize; i++) {
-                        if (checkedList.valueAt(i)) {
-                            cPos = checkedList.keyAt(i) - headerCount;
-                            cType = chatSessionAdapter.getItemViewType(cPos);
-                            if (cType == chatSessionAdapter.CHAT_SESSION_RECORD) {
-                                sessionRecord = (ChatSessionRecord) chatSessionAdapter.getItem(cPos);
-                                if (sessionRecord != null) {
-                                    String sessionUuid = sessionRecord.getSessionUuid();
-                                    sessionUuidDel.add(sessionUuid);
-
-                                    /*
-                                     * Hide the session record if it is still a valid session record
-                                     * otherwise purge both the session record and its associated messages from DB
-                                     */
-                                    String entityJid = sessionRecord.getEntityId();
-                                    if (mMetaContacts.containsKey(entityJid)
-                                            || chatRoomWrapperList.containsKey(entityJid)) {
-                                        mMHS.setSessionChatType(sessionUuid, sessionRecord.getChatType() | SESSION_HIDDEN);
-                                        Timber.d("Hide chatSession for entityJid: %s (%s)", entityJid, sessionUuid);
-                                    }
-                                    else {
-                                        int msgCount = mMHS.getMessageCountForSessionUuid(sessionUuid);
-                                        mMHS.purgeLocallyStoredHistory(Collections.singletonList(sessionUuid), true);
-                                        Timber.w("Purged (%s) messages for invalid entityJid: %s (%s)",
-                                                msgCount, entityJid, sessionUuid);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!sessionUuidDel.isEmpty()) {
-                        // Must do this inorder for notifyDataSetChanged to have effect;
-                        // Also outside the checkListSize loop so it does not affect the cPos for record fetch.
-                        for (String sessionUuid : sessionUuidDel) {
-                            chatSessionAdapter.removeItem(sessionUuid);
-                        }
-
-                        // reset the value so CryptoFragment reload and re-init chatType when use open the chatSession again
-                        CryptoFragment.resetEncryptionChoice(null);
-                        chatSessionAdapter.notifyDataSetChanged();
-                    }
-                    mode.finish();
-                    return true;
-
-                default:
-                    return false;
-            }
-        }
-
-        // Called when the action mActionMode is created; startActionMode() was called
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Inflate the menu for the CAB
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.call_history_menu, menu);
-            headerCount = chatSessionListView.getHeaderViewsCount();
-            menu.findItem(R.id.cr_delete_older).setVisible(false);
-            return true;
-        }
-
-        // Called each time the action mActionMode is shown. Always called after onCreateActionMode,
-        // but may be called multiple times if the mActionMode is invalidated.
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            // Here you can perform updates to the CAB due to an invalidate() request
-            // Return false if nothing is done.
-            return false;
-        }
-
-        // Called when the user exits the action mActionMode
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            // Here you can make any necessary updates to the activity when
-            // the CAB is removed. By default, selected items are deselected/unchecked.
-            ActionMode mActionMode = null;
-        }
-    };
-
     private static class ChatRecordViewHolder {
         ImageView avatar;
         ImageView chatType;
         ImageView callButton;
         ImageView callVideoButton;
-
         TextView entityJId;
         TextView chatMessage;
-
         int childPosition;
         String sessionUuid;
         UnreadCountCustomView unreadCount;

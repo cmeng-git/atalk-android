@@ -155,7 +155,6 @@
     <string name="service_gui_CALL_FAILED">Hovor zlyhal</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Naozaj chcete vymazať všetky záznamy hovorov pred dátumom?: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">História hovorov</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">počet vymazaných záznamov histórie hovorov: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Na odstránenie nebol vybratý žiadny záznam</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Ali ste prepričani, da želite očistiti vse izbrane zapise klicev?</string>
     <string name="service_gui_CALL_INCOMING">Prichádzajúci hovor: %1$s</string>
@@ -406,6 +405,7 @@
     <string name="service_gui_HISTORY_ERASE_ALL">Vymazať históriu rozhovorov všetkých kontaktov</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Naozaj chcete vymazať všetky vybraté správy pre %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Naozaj chcete vymazať všetky správy od všetkých entity?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Počet odstránených záznamov histórie: %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Chyba pri odstraňovaní lokálne uložených správ pre %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Odstrániť médiá z môjho telefónu</string>
     <string name="service_gui_HISTORY_WARNING">Zatvorte a otvorte túto reláciu rozhovoru, aby ste si mohli prezerať správy MAM a offline, keď ste online</string>

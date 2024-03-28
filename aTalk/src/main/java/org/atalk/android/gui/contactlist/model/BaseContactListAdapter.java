@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 import androidx.core.content.res.ResourcesCompat;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.protocol.jabber.ContactJabberImpl;
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
@@ -30,19 +33,14 @@ import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.call.AndroidCallUtil;
 import org.atalk.android.gui.call.telephony.TelephonyFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
-import org.atalk.android.gui.util.AndroidImageUtil;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.ViewUtil;
 import org.atalk.android.gui.widgets.UnreadCountCustomView;
 import org.atalk.service.osgi.OSGiActivity;
-import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.avatar.useravatar.UserAvatarManager;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import timber.log.Timber;
 
@@ -54,8 +52,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
-        implements View.OnClickListener, View.OnLongClickListener
-{
+        implements View.OnClickListener, View.OnLongClickListener {
     /**
      * UI thread handler used to call all operations that access data model. This guarantees that
      * it's accessed from the main thread.
@@ -94,8 +91,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param clFragment the parent <code>ContactListFragment</code>
      * @param mainContactList call buttons and other options are only enable when it is the main Contact List view
      */
-    public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList)
-    {
+    public BaseContactListAdapter(ContactListFragment clFragment, boolean mainContactList) {
         // cmeng - must use this mInflater as clFragment may not always attached to FragmentManager e.g. muc invite dialog
         mInflater = LayoutInflater.from(aTalkApp.getInstance());
         contactListFragment = clFragment;
@@ -119,6 +115,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Returns the <code>UIContactRenderer</code> for contacts of group at given <code>groupIndex</code>.
      *
      * @param groupIndex index of the contact group.
+     *
      * @return the <code>UIContactRenderer</code> for contact of group at given <code>groupIndex</code>.
      */
     protected abstract UIContactRenderer getContactRenderer(int groupIndex);
@@ -127,6 +124,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Returns the <code>UIGroupRenderer</code> for group at given <code>groupPosition</code>.
      *
      * @param groupPosition index of the contact group.
+     *
      * @return the <code>UIContactRenderer</code> for group at given <code>groupPosition</code>.
      */
     protected abstract UIGroupRenderer getGroupRenderer(int groupPosition);
@@ -134,16 +132,14 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     /**
      * Releases all resources used by this instance.
      */
-    public void dispose()
-    {
+    public void dispose() {
         notifyDataSetInvalidated();
     }
 
     /**
      * Expands all contained groups.
      */
-    public void expandAllGroups()
-    {
+    public void expandAllGroups() {
         // Expand group view only when contactListView is in focus (UI mode)
         // cmeng - do not use isFocused() - may not in sync with actual
         uiHandler.post(() -> {
@@ -158,8 +154,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
     /**
      * Refreshes the view with expands group and invalid view.
      */
-    public void invalidateViews()
-    {
+    public void invalidateViews() {
         if (contactListView != null) {
             contactListFragment.runOnUiThread(contactListView::invalidateViews);
         }
@@ -171,8 +166,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param groupIndex the index of the group to update
      * @param contactIndex the index of the contact to update
      */
-    protected void updateDisplayName(final int groupIndex, final int contactIndex)
-    {
+    protected void updateDisplayName(final int groupIndex, final int contactIndex) {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
@@ -189,8 +183,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param contactIndex the index of the contact to update
      * @param contactImpl contact implementation object instance
      */
-    protected void updateAvatar(final int groupIndex, final int contactIndex, final Object contactImpl)
-    {
+    protected void updateAvatar(final int groupIndex, final int contactIndex, final Object contactImpl) {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
@@ -209,8 +202,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      *
      * @param avatarView the avatar image view
      */
-    private void setAvatar(ImageView avatarView, Drawable avatarImage)
-    {
+    private void setAvatar(ImageView avatarView, Drawable avatarImage) {
         if (avatarImage == null) {
             avatarImage = ResourcesCompat.getDrawable(aTalkApp.getAppResources(),
                     R.drawable.contact_avatar, null);
@@ -225,8 +217,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param contactIndex the index of the contact to update
      * @param contactImpl contact implementation object instance
      */
-    protected void updateStatus(final int groupIndex, final int contactIndex, Object contactImpl)
-    {
+    protected void updateStatus(final int groupIndex, final int contactIndex, Object contactImpl) {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
@@ -241,8 +232,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         }
     }
 
-    protected void updateBlockStatus(final int groupIndex, final int contactIndex, Contact contact)
-    {
+    protected void updateBlockStatus(final int groupIndex, final int contactIndex, Contact contact) {
         int firstIndex = contactListView.getFirstVisiblePosition();
         View contactView = contactListView.getChildAt(getListIndex(groupIndex, contactIndex) - firstIndex);
 
@@ -265,8 +255,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param metaContact MetaContact object
      * @param count unread message count
      */
-    public void updateUnreadCount(final MetaContact metaContact, final int count)
-    {
+    public void updateUnreadCount(final MetaContact metaContact, final int count) {
         ContactViewHolder contactViewHolder = mContactViewHolder.get(metaContact);
         if (contactViewHolder == null)
             return;
@@ -285,10 +274,10 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      *
      * @param groupIndex the index of the group
      * @param contactIndex the index of the contact
+     *
      * @return an int representing the flat list index for the given <code>groupIndex</code> and <code>contactIndex</code>
      */
-    public int getListIndex(int groupIndex, int contactIndex)
-    {
+    public int getListIndex(int groupIndex, int contactIndex) {
         int lastIndex = contactListView.getLastVisiblePosition();
 
         for (int i = 0; i <= lastIndex; i++) {
@@ -309,11 +298,11 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      *
      * @param groupPosition the index of the group
      * @param childPosition the index of the child
+     *
      * @return the identifier of the child contained on the given <code>groupPosition</code> and <code>childPosition</code>
      */
     @Override
-    public long getChildId(int groupPosition, int childPosition)
-    {
+    public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
@@ -328,8 +317,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      */
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
-            View convertView, ViewGroup parent)
-    {
+            View convertView, ViewGroup parent) {
         // Keeps reference to avoid future findViewById()
         ContactViewHolder contactViewHolder;
         Object child = getChild(groupPosition, childPosition);
@@ -457,8 +445,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param parent the parent view group
      */
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
-    {
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         // Keeps reference to avoid future findViewById()
         GroupViewHolder groupViewHolder;
         Object group = getGroup(groupPosition);
@@ -495,8 +482,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * @param groupPosition the index of the group, which identifier we're looking for
      */
     @Override
-    public long getGroupId(int groupPosition)
-    {
+    public long getGroupId(int groupPosition) {
         return groupPosition;
     }
 
@@ -504,8 +490,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      *
      */
     @Override
-    public boolean hasStableIds()
-    {
+    public boolean hasStableIds() {
         return true;
     }
 
@@ -513,8 +498,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Indicates that all children are selectable.
      */
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition)
-    {
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 
@@ -522,8 +506,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * We keep one instance of view click listener to avoid unnecessary allocations.
      * Clicked positions are obtained from the view holder.
      */
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         ContactViewHolder viewHolder = null;
 
         // Use by media call button activation
@@ -583,8 +566,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
      * Retrieve the contact avatar from server when user longClick on the avatar in contact list.
      * Clicked position/contact is derived from the view holder group/child positions.
      */
-    public boolean onLongClick(View view)
-    {
+    public boolean onLongClick(View view) {
         Object clicked = view.getTag();
 
         // proceed to retrieve avatar for the clicked contact
@@ -626,8 +608,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         return false;
     }
 
-    private static class ContactViewHolder
-    {
+    private static class ContactViewHolder {
         TextView displayName;
         TextView statusMessage;
         ImageView avatarView;
@@ -642,8 +623,7 @@ public abstract class BaseContactListAdapter extends BaseExpandableListAdapter
         int childPosition;
     }
 
-    private static class GroupViewHolder
-    {
+    private static class GroupViewHolder {
         ImageView indicator;
         TextView groupName;
     }

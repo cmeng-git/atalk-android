@@ -24,6 +24,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.java.sip.communicator.service.contactlist.MetaContact;
 import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.contactlist.event.MetaContactAvatarUpdateEvent;
@@ -44,12 +50,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.BundleContext;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -65,8 +65,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class MclStorageManager implements MetaContactListListener
-{
+public class MclStorageManager implements MetaContactListListener {
     public static final String JABBER = "Jabber";
 
     /**
@@ -93,8 +92,7 @@ public class MclStorageManager implements MetaContactListListener
      * @param mclServiceImpl a reference to the currently valid instance of the <code>MetaContactListServiceImpl</code>
      * that we could use to pass parsed contacts and contact groups.
      */
-    void start(BundleContext bc, MetaContactListServiceImpl mclServiceImpl)
-    {
+    void start(BundleContext bc, MetaContactListServiceImpl mclServiceImpl) {
         this.mclServiceImpl = mclServiceImpl;
         mDB = DatabaseBackend.getWritableDB();
         mclServiceImpl.addMetaContactListListener(this);
@@ -108,8 +106,7 @@ public class MclStorageManager implements MetaContactListListener
      * @param accountUuid the identifier of the account whose contacts we're interested in.
      * @param accountUid a String identifier prefix with e.g. "jabber:" followed by BareJid.
      */
-    void extractContactsForAccount(String accountUuid, String accountUid)
-    {
+    void extractContactsForAccount(String accountUuid, String accountUid) {
         // we don't want to receive meta contact events triggered by ourselves, so we stop
         // listening. It is possible but very unlikely that other events, not triggered by us are
         // received while we're off the channel.
@@ -123,8 +120,7 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     // #TODO: Rename of ROOT_PROTO_GROUP_UID to "Contacts" in v2.4.0 (20200817); need to remove on later version
-    public static void mcg_patch()
-    {
+    public static void mcg_patch() {
         // Remove table row: ContactGroup.ROOT_GROUP_UID in Table metaContactGroup
         String[] args = new String[]{ContactGroup.ROOT_GROUP_UID};
         mDB.delete(MetaContactGroup.TABLE_NAME, MetaContactGroup.MC_GROUP_UID + "=?", args);
@@ -144,8 +140,7 @@ public class MclStorageManager implements MetaContactListListener
     }
 
     // For data base garbage clean-up during testing
-    private void mcg_clean()
-    {
+    private void mcg_clean() {
         String[] Ids = new String[]{"83"};
         for (String Id : Ids) {
             String[] args = new String[]{Id};
@@ -158,7 +153,7 @@ public class MclStorageManager implements MetaContactListListener
      * Parses <code>RootMetaContactGroup</code> and all of its proto-groups, subgroups, and
      * child-contacts creating corresponding instances through <code>mclServiceImpl</code> as
      * children of each <code>parentGroup</code>
-     *
+     * <p>
      * RootMetaContactGroup: starting point where all the group we're parsing.
      * parentGroup:　the <code>MetaContactGroupImpl</code> where we should be creating children.
      * parentProtoGroups a Map containing all proto groups that could be parents of any groups
@@ -168,8 +163,7 @@ public class MclStorageManager implements MetaContactListListener
      * @param accountUuid a String identifier i.e. prefix with "acc" of the account whose contacts we're interested in.
      * @param accountUid a String identifier prefix with e.g. "jabber:" followed by BareJid.
      */
-    private void processGroupContact(String accountUuid, String accountUid)
-    {
+    private void processGroupContact(String accountUuid, String accountUid) {
         // This map stores all proto groups that we find in the meta group table
         Map<String, ContactGroup> protoGroupsMap = new Hashtable<>();
         Map<String, MetaContactGroupImpl> metaGroupMap = new Hashtable<>();
@@ -271,6 +265,7 @@ public class MclStorageManager implements MetaContactListListener
 
     /**
      * Creates a <code>MetaContactGroup</code> and its decedents
+     * <p>
      * A metaGroup may contain:
      * a. proto-groups
      * b. subGroups (can repeat a, b and c etc)
@@ -282,8 +277,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param mcGroup the MetaContactGroup that the new entry is to be created
      */
-    private void createMetaContactGroupEntry(MetaContactGroup mcGroup)
-    {
+    private void createMetaContactGroupEntry(MetaContactGroup mcGroup) {
         Iterator<ContactGroup> protoGroups = mcGroup.getContactGroups();
         while (protoGroups.hasNext()) {
             ContactGroup protoGroup = protoGroups.next();
@@ -311,8 +305,7 @@ public class MclStorageManager implements MetaContactListListener
      * @param protoGroup the {@code ContactGroup} which is to be created for
      * @param metaGroup the parent of the protoGroup
      */
-    private void createProtoContactGroupEntry(ContactGroup protoGroup, MetaContactGroup metaGroup)
-    {
+    private void createProtoContactGroupEntry(ContactGroup protoGroup, MetaContactGroup metaGroup) {
         // Do not create root group i.e. "Contacts", check of groupName == "Contacts"
         if (ContactGroup.ROOT_GROUP_NAME.equals(metaGroup.getGroupName())) {
             Timber.w("Not allowed! Root group creation: %s", metaGroup.getGroupName());
@@ -354,8 +347,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param metaContact the MetaContact that the new entry is to be created for
      */
-    private void createMetaContactEntry(MetaContact metaContact)
-    {
+    private void createMetaContactEntry(MetaContact metaContact) {
         ContentValues contentValues = new ContentValues();
         mcValues.clear();
 
@@ -414,8 +406,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    public void metaContactGroupAdded(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupAdded(MetaContactGroupEvent evt) {
         // create metaContactGroup entry only if it is not null and has a parent associated with it
         MetaContactGroup mcGroup = evt.getSourceMetaContactGroup();
         if ((mcGroup == null) || (mcGroup.getParentMetaContactGroup() == null)) {
@@ -433,8 +424,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    public void metaContactGroupModified(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupModified(MetaContactGroupEvent evt) {
         // ignore modification of non-persistent metaContactGroup
         MetaContactGroup mcGroup = evt.getSourceMetaContactGroup();
         if (!mcGroup.isPersistent())
@@ -479,8 +469,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactGroupEvent containing the corresponding contact
      */
-    public void metaContactGroupRemoved(MetaContactGroupEvent evt)
-    {
+    public void metaContactGroupRemoved(MetaContactGroupEvent evt) {
         // ignore removal of non-persistent metaContactGroup
         MetaContactGroupImpl mcGroup = (MetaContactGroupImpl) evt.getSourceMetaContactGroup();
         if (!mcGroup.isPersistent())
@@ -504,8 +493,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    private void contactGroupAddedToMetaGroup(MetaContactGroupEvent evt)
-    {
+    private void contactGroupAddedToMetaGroup(MetaContactGroupEvent evt) {
         ContactGroup protoGroup = evt.getSourceProtoGroup();
         MetaContactGroupImpl mcGroupImpl = (MetaContactGroupImpl) evt.getSourceMetaContactGroup();
         createProtoContactGroupEntry(protoGroup, mcGroupImpl);
@@ -521,10 +509,10 @@ public class MclStorageManager implements MetaContactListListener
      * each time one of them is renamed.
      *
      * @param evt the MetaContactListEvent containing the corresponding contactGroup and other info.
+     *
      * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider(MetaContactGroupImpl, ContactGroup)
      */
-    private void contactGroupRenamedInMetaGroup(MetaContactGroupEvent evt)
-    {
+    private void contactGroupRenamedInMetaGroup(MetaContactGroupEvent evt) {
         MetaContactGroup mcGroup = evt.getSourceMetaContactGroup();
         String mcGroupUid = mcGroup.getMetaUID();
         String newProtoGroupUid = evt.getSourceProtoGroup().getUID();
@@ -563,10 +551,10 @@ public class MclStorageManager implements MetaContactListListener
      * call for contactGroup removal.
      *
      * @param evt the MetaContactListEvent containing the corresponding contactGroup and other info.
+     *
      * @see MetaContactListServiceImpl#locallyRemoveAllContactsForProvider(MetaContactGroupImpl, ContactGroup)
      */
-    private void contactGroupRemovedFromMetaGroup(MetaContactGroupEvent evt)
-    {
+    private void contactGroupRemovedFromMetaGroup(MetaContactGroupEvent evt) {
         // Ignore if the group was created as an encapsulator of a non persistent proto group
         ContactGroup protoGroup = evt.getSourceProtoGroup();
         if ((protoGroup == null) || !protoGroup.isPersistent())
@@ -608,8 +596,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    public void metaContactAdded(MetaContactEvent evt)
-    {
+    public void metaContactAdded(MetaContactEvent evt) {
         // if the parent group is not persistent, do not do anything
         if (!evt.getParentGroup().isPersistent())
             return;
@@ -623,8 +610,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactListEvent containing the corresponding contact
      */
-    public void metaContactRenamed(MetaContactRenamedEvent evt)
-    {
+    public void metaContactRenamed(MetaContactRenamedEvent evt) {
         MetaContactImpl metaContactImpl = (MetaContactImpl) evt.getSourceMetaContact();
         String metaContactUid = metaContactImpl.getMetaUID();
         String contactJid = findMetaContactEntry(metaContactUid);
@@ -670,8 +656,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactModifiedEvent containing the corresponding contact
      */
-    public void metaContactModified(MetaContactModifiedEvent evt)
-    {
+    public void metaContactModified(MetaContactModifiedEvent evt) {
         String metaContactUid = evt.getSourceMetaContact().getMetaUID();
         String contactJid = findMetaContactEntry(metaContactUid);
 
@@ -756,8 +741,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactMovedEvent containing the reference move information
      */
-    public void metaContactMoved(MetaContactMovedEvent evt)
-    {
+    public void metaContactMoved(MetaContactMovedEvent evt) {
         MetaContact metaContact = evt.getSourceMetaContact();
         String metaContactUid = metaContact.getMetaUID();
 
@@ -792,8 +776,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the MetaContactEvent containing the corresponding metaContact
      */
-    public void metaContactRemoved(MetaContactEvent evt)
-    {
+    public void metaContactRemoved(MetaContactEvent evt) {
         // ignore removal of metaContact of non-persistent parentGroup
         if (!evt.getParentGroup().isPersistent())
             return;
@@ -826,8 +809,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
-    public void protoContactAdded(ProtoContactEvent evt)
-    {
+    public void protoContactAdded(ProtoContactEvent evt) {
         MetaContact metaContact = evt.getParent();
         String mcUid = metaContact.getMetaUID();
         Contact contact = evt.getProtoContact();
@@ -884,8 +866,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the ProtoContactEvent containing the corresponding contact
      */
-    public void protoContactRenamed(ProtoContactEvent evt)
-    {
+    public void protoContactRenamed(ProtoContactEvent evt) {
         // Just logged in an internal err if rename contact not found
         Contact contact = evt.getProtoContact();
         if ((contact == null) || (findContactEntry(JABBER, contact.getAddress()) == null)) {
@@ -915,8 +896,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the ProtoContactEvent containing the corresponding contact
      */
-    public void protoContactModified(ProtoContactEvent evt)
-    {
+    public void protoContactModified(ProtoContactEvent evt) {
         MetaContact metaContact = evt.getParent();
         String metaContactUid = metaContact.getMetaUID();
         String contactJid = findMetaContactEntry(metaContactUid);
@@ -947,8 +927,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt a reference to the <code>ProtoContactMovedEvent</code> instance.
      */
-    public void protoContactMoved(ProtoContactEvent evt)
-    {
+    public void protoContactMoved(ProtoContactEvent evt) {
         String oldMcUid = evt.getOldParent().getMetaUID();
         String contactJid = evt.getProtoContact().getAddress();
 
@@ -982,8 +961,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt a reference to the corresponding <code>ProtoContactEvent</code>
      */
-    public void protoContactRemoved(ProtoContactEvent evt)
-    {
+    public void protoContactRemoved(ProtoContactEvent evt) {
         String mcUid = evt.getParent().getMetaUID();
         String contactJid = evt.getProtoContact().getAddress();
 
@@ -1011,11 +989,11 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param protocolProvider the protocol provider of contact whose UUID we are looking for.
      * @param jid the jid String of the contact whose UUID we are looking for.
+     *
      * @return the contact UUID corresponding to the contact with the specified protocol provider
      * and Jid or null if no such contact was found in the contact table.
      */
-    private String findContactEntry(String protocolProvider, String jid)
-    {
+    private String findContactEntry(String protocolProvider, String jid) {
         String[] columns = {Contact.CONTACT_UUID};
         String[] args = {protocolProvider, jid};
         Cursor cursor = mDB.query(Contact.TABLE_NAME, columns, Contact.PROTOCOL_PROVIDER
@@ -1042,9 +1020,9 @@ public class MclStorageManager implements MetaContactListListener
         String[] columns = {MetaContactGroup.MC_UID};
         String[] args = {accountUuid, contactJid};
 
-         Cursor cursor = mDB.query(TBL_CHILD_CONTACTS, columns,
-                 MetaContactGroup.ACCOUNT_UUID + "=? AND " + MetaContactGroup.CONTACT_JID + "=?",
-                    args, null, null, null);
+        Cursor cursor = mDB.query(TBL_CHILD_CONTACTS, columns,
+                MetaContactGroup.ACCOUNT_UUID + "=? AND " + MetaContactGroup.CONTACT_JID + "=?",
+                args, null, null, null);
 
         String metaUuid = null;
         while (cursor.moveToNext()) {
@@ -1059,10 +1037,10 @@ public class MclStorageManager implements MetaContactListListener
      * metaContact Uuid if given i.e. non-null)
      *
      * @param contactJid the contact Jid we are looking for.
+     *
      * @return the number of entry with the given contactJid.
      */
-    private int findProtoContactEntry(String mcUid, String contactJid)
-    {
+    private int findProtoContactEntry(String mcUid, String contactJid) {
         Cursor cursor;
         String[] args = {contactJid};
 
@@ -1087,11 +1065,11 @@ public class MclStorageManager implements MetaContactListListener
      * However current aTalk implementation is that metaContact has only single contactJid entry.
      *
      * @param metaContactUID the UID String of the metaContact whose contactJid we are looking for.
+     *
      * @return the contactJid corresponding to the metaContact with the specified UID or null if no
      * such metaContactUid entry was found in the metaContactGroup table.
      */
-    private String findMetaContactEntry(String metaContactUID)
-    {
+    private String findMetaContactEntry(String metaContactUID) {
         String[] columns = {MetaContactGroup.CONTACT_JID};
         String[] args = {metaContactUID};
         Cursor cursor = mDB.query(TBL_CHILD_CONTACTS, columns,
@@ -1110,11 +1088,11 @@ public class MclStorageManager implements MetaContactListListener
      * uid or null if no found.
      *
      * @param metaContactGroupUID the metaContactGroup UID whose groupName we are looking for.
+     *
      * @return the metaContact GroupName corresponding to the metaContactGroup with the
      * specified UID or null if no such group was found in the metaContactGroup table.
      */
-    private String findMetaContactGroupEntry(String metaContactGroupUID)
-    {
+    private String findMetaContactGroupEntry(String metaContactGroupUID) {
         String[] columns = {MetaContactGroup.MC_GROUP_NAME};
         String[] args = {metaContactGroupUID};
         Cursor cursor = mDB.query(MetaContactGroup.TABLE_NAME, columns,
@@ -1131,14 +1109,12 @@ public class MclStorageManager implements MetaContactListListener
     /**
      * Contains details parsed out of the database, necessary for creating unresolved contacts.
      */
-    static class StoredProtoContactDescriptor
-    {
+    static class StoredProtoContactDescriptor {
         String contactAddress;
         String persistentData;
         ContactGroup parentProtoGroup;
 
-        StoredProtoContactDescriptor(String contactAddress, String persistentData, ContactGroup parentProtoGroup)
-        {
+        StoredProtoContactDescriptor(String contactAddress, String persistentData, ContactGroup parentProtoGroup) {
             this.contactAddress = contactAddress;
             this.persistentData = persistentData;
             this.parentProtoGroup = parentProtoGroup;
@@ -1151,8 +1127,7 @@ public class MclStorageManager implements MetaContactListListener
          */
         @NonNull
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "StoredProtocolContactDescriptor[ " + " contactAddress=" + contactAddress
                     + " persistentData=" + persistentData + " parentProtoGroup="
                     + ((parentProtoGroup == null) ? "" : parentProtoGroup.getGroupName()) + "]";
@@ -1165,12 +1140,12 @@ public class MclStorageManager implements MetaContactListListener
          * @param contactAddress the address of the contact whose descriptor we are looking for.
          * @param list the <code>List</code> of <code>StoredProtoContactDescriptor</code> that we are supposed to
          * search for <code>contactAddress</code>
+         *
          * @return a <code>StoredProtoContactDescriptor</code> corresponding to
          * <code>contactAddress</code> or <code>null</code> if no such descriptor exists.
          */
         private static StoredProtoContactDescriptor findContactInList(String contactAddress,
-                List<StoredProtoContactDescriptor> list)
-        {
+                List<StoredProtoContactDescriptor> list) {
             if (list != null && list.size() > 0) {
                 for (StoredProtoContactDescriptor desc : list) {
                     if (desc.contactAddress.equals(contactAddress))
@@ -1186,8 +1161,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the <code>MetaContactGroupEvent</code> containing details of this event.
      */
-    public void childContactsReordered(MetaContactGroupEvent evt)
-    {
+    public void childContactsReordered(MetaContactGroupEvent evt) {
         // ignore - not interested in such kind of events
     }
 
@@ -1196,8 +1170,7 @@ public class MclStorageManager implements MetaContactListListener
      *
      * @param evt the <code>MetaContactAvatarUpdateEvent</code> containing details of this event
      */
-    public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt)
-    {
+    public void metaContactAvatarUpdated(MetaContactAvatarUpdateEvent evt) {
         // TODO Store MetaContact avatar.
     }
 }

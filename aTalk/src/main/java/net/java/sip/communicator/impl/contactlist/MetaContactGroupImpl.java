@@ -484,7 +484,7 @@ public class MetaContactGroupImpl implements MetaContactGroup
         while (encapsulatedGroups.hasNext()) {
             ContactGroup group = encapsulatedGroups.next();
 
-            if (group.getProtocolProvider().getAccountID().getAccountUniqueID()
+            if (group.getProtocolProvider().getAccountID().getAccountUid()
                     .equals(accountID)) {
                 protoGroups.add(group);
             }

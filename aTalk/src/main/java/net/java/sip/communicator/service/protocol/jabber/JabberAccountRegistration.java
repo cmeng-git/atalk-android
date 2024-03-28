@@ -111,7 +111,8 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
      *
      * @return UID of edited account e.g. jabber:user@example.com.
      */
-    public String getAccountUniqueID()
+    @Override
+    public String getAccountUid()
     {
         return editedAccUID;
     }
@@ -305,7 +306,7 @@ public class JabberAccountRegistration extends JabberAccountID implements Serial
         String password = ProtocolProviderFactory
                 .getProtocolProviderFactory(bundleContext, ProtocolNames.JABBER).loadPassword(account);
         setUserID(account.getUserID());
-        editedAccUID = account.getAccountUniqueID();
+        editedAccUID = account.getAccountUid();
         setPassword(password);
         // rememberPassword = (password != null);
         rememberPassword = account.isPasswordPersistent();

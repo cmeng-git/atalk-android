@@ -1487,7 +1487,7 @@ public class ConfigurationUtils {
         for (ProtocolProviderFactory providerFactory : UtilActivator.getProtocolProviderFactories().values()) {
             for (AccountID accountId : providerFactory.getRegisteredAccounts()) {
                 // We're interested only in the savedAccountId
-                if (!accountId.getAccountUniqueID().equals(savedAccountId))
+                if (!accountId.getAccountUid().equals(savedAccountId))
                     continue;
 
                 ServiceReference<ProtocolProviderService> serRef = providerFactory.getProviderForAccount(accountId);
@@ -1998,7 +1998,7 @@ public class ConfigurationUtils {
     public static void setLastCallConferenceProvider(ProtocolProviderService protocolProvider) {
         lastCallConferenceProvider = protocolProvider;
         mConfigService.setProperty("gui.call.lastCallConferenceProvider",
-                protocolProvider.getAccountID().getAccountUniqueID());
+                protocolProvider.getAccountID().getAccountUid());
     }
 
     /**
@@ -2160,7 +2160,7 @@ public class ConfigurationUtils {
      */
     public static void saveChatRoom(ProtocolProviderService protocolProvider, String oldChatRoomId, String newChatRoomId) {
         String[] columns = {ChatSession.SESSION_UUID};
-        String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
+        String accountUid = protocolProvider.getAccountID().getAccountUid();
         String[] args = {accountUid, oldChatRoomId};
 
         Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns, ChatSession.ACCOUNT_UID
@@ -2202,7 +2202,7 @@ public class ConfigurationUtils {
      * @param chatRoomId the identifier of the chat room to remove
      */
     public static void removeChatRoom(ProtocolProviderService protocolProvider, String chatRoomId) {
-        String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
+        String accountUid = protocolProvider.getAccountID().getAccountUid();
         String[] args = {accountUid, chatRoomId};
 
         mDB.delete(ChatSession.TABLE_NAME, ChatSession.ACCOUNT_UID + "=? AND "
@@ -2253,7 +2253,7 @@ public class ConfigurationUtils {
             Timber.w("ChatRoom property update failed: %s: %s", chatRoomId, property);
         }
 
-        String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
+        String accountUid = protocolProvider.getAccountID().getAccountUid();
         String[] args = {accountUid, chatRoomId};
         contentValues.clear();
         contentValues.put(ChatSession.ATTRIBUTES, attributes.toString());
@@ -2297,7 +2297,7 @@ public class ConfigurationUtils {
             mDB = DatabaseBackend.getWritableDB();
 
         String[] columns = {ChatSession.ATTRIBUTES};
-        String accountUid = protocolProvider.getAccountID().getAccountUniqueID();
+        String accountUid = protocolProvider.getAccountID().getAccountUid();
         String[] args = {accountUid, chatRoomId};
 
         Cursor cursor = mDB.query(ChatSession.TABLE_NAME, columns, ChatSession.ACCOUNT_UID

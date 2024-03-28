@@ -71,7 +71,8 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickListener {
+public class ChatRoomListFragment extends OSGiFragment
+        implements OnGroupClickListener, EntityListHelper.TaskCompleteListener {
     /**
      * Search options menu items.
      */
@@ -121,6 +122,8 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
      * Contact list scroll top position.
      */
     private static int scrollTopPosition;
+
+    private int eraseMode = -1;
 
     private Context mContext = null;
 
@@ -326,12 +329,12 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
 
         // Checks if close chat option should be visible for this chatRoom
         boolean closeChatVisible = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID()) != null;
-        menu.findItem(R.id.close_chatroom).setVisible(closeChatVisible);
+        menu.findItem(R.id.close_current_chat).setVisible(closeChatVisible);
 
         // Close all chats option should be visible if chatList is not empty
         List<Chat> chatList = ChatSessionManager.getActiveChats();
         boolean visible = ((chatList.size() > 1) || ((chatList.size() == 1) && !closeChatVisible));
-        menu.findItem(R.id.close_all_chatrooms).setVisible(visible);
+        menu.findItem(R.id.close_all_active_chats).setVisible(visible);
 
         // may not want to offer erase all chatRooms chat history
         menu.findItem(R.id.erase_all_chatroom_history).setVisible(false);
@@ -367,22 +370,24 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
                     ChatSessionManager.getMultiChat(mClickedChatRoom, true).updateChatTtsOption();
                     return true;
 
-                case R.id.close_chatroom:
+                case R.id.close_current_chat:
                     if (chatPanel != null)
                         onCloseChat(chatPanel);
                     return true;
 
-                case R.id.close_all_chatrooms:
+                case R.id.close_all_active_chats:
                     onCloseAllChats();
                     return true;
 
                 case R.id.erase_chatroom_history:
-                    EntityListHelper.eraseEntityChatHistory(mContext, mClickedChatRoom, null, null);
+                    eraseMode = EntityListHelper.SINGLE_ENTITY;
+                    EntityListHelper.eraseEntityChatHistory(ChatRoomListFragment.this, mClickedChatRoom, null, null);
                     return true;
 
                 case R.id.erase_all_chatroom_history:
-                    // This opton is currently being disabled - not offer to user
-                    EntityListHelper.eraseAllEntityHistory(mContext);
+                    // This option is currently being disabled - not offer to user
+                    eraseMode = EntityListHelper.ALL_ENTITY;
+                    EntityListHelper.eraseAllEntityHistory(ChatRoomListFragment.this);
                     return true;
 
                 case R.id.destroy_chatroom:
@@ -423,6 +428,24 @@ public class ChatRoomListFragment extends OSGiFragment implements OnGroupClickLi
         ChatSessionManager.removeAllActiveChats();
         if (chatRoomListAdapter != null)
             chatRoomListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
+            ChatPanel chatPanel = ChatSessionManager.getActiveChat(mClickedChatRoom.getChatRoomID());
+            if (chatPanel != null) {
+                onCloseChat(chatPanel);
+            }
+        }
+        else if (EntityListHelper.ALL_ENTITY == eraseMode) {
+            onCloseAllChats();
+        }
+        else { // failed
+            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR, mClickedChatRoom.getChatRoomID());
+            aTalkApp.showToastMessage(errMsg);
+        }
     }
 
     /**

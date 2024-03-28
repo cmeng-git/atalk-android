@@ -112,7 +112,7 @@ import timber.log.Timber;
  * organization name, job title, about me, home/work email, home/work phone.
  * <p>
  * The {@link #mAccount} is retrieved from the {@link Intent} extra by it's
- * {@link AccountID#getAccountUniqueID()}
+ * {@link AccountID#getAccountUid()}
  *
  * @author Pawel Domas
  * @author Eng Chong Meng

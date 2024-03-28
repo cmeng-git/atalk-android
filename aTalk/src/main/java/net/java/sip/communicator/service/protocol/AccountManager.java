@@ -280,7 +280,7 @@ public class AccountManager
                 for (String accountUID : accounts.keySet()) {
                     if (uid.equals(accounts.get(accountUID))) {
                         for (AccountID acc : storedAccounts) {
-                            if (acc.getAccountUniqueID().equals(accountUID)) {
+                            if (acc.getAccountUid().equals(accountUID)) {
                                 return acc;
                             }
                         }
@@ -471,7 +471,7 @@ public class AccountManager
 
         // Check to check if this is an existing stored account; else need to create the new
         // account in table before storing other account Properties
-        String accountUid = accountID.getAccountUniqueID();
+        String accountUid = accountID.getAccountUid();
         String accountUuid = getStoredAccountUUID(factory, accountUid);
         if (accountUuid == null) {
             accountUuid = accountID.getAccountUuid();
@@ -573,7 +573,7 @@ public class AccountManager
             factory = ProtocolProviderActivator.getProtocolProviderFactory(accountID.getProtocolName());
         }
         // null means account has been removed.
-        return (getStoredAccountUUID(factory, accountID.getAccountUniqueID()) == null);
+        return (getStoredAccountUUID(factory, accountID.getAccountUid()) == null);
     }
 
     /**

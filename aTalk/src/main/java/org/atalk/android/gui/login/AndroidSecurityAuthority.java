@@ -141,7 +141,7 @@ public class AndroidSecurityAuthority implements SecurityAuthority
                         boolean ibRegistration = ViewUtil.isCompoundChecked(dialogContent, R.id.ib_registration);
 
                         if (!userNameLastEdited.equals(userNameEntered)) {
-                            int msgCount = checkPurgedMsgCount(accountID.getAccountUniqueID(), userNameEntered);
+                            int msgCount = checkPurgedMsgCount(accountID.getAccountUid(), userNameEntered);
                             if (msgCount < 0) {
                                 userNameLastEdited = userName;
                                 ViewUtil.setTextViewValue(dialogContent, R.id.reason_field,

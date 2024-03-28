@@ -223,7 +223,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
             if (cachedRecentMessages.isEmpty()) {
                 // there is no cached history for this, let's check and load it not from cache, but do a local search
                 Collection<EventObject> res = messageHistoryService.findRecentMessagesPerContact(numberOfMessages,
-                        provider.getAccountID().getAccountUniqueID(), null, isSMSEnabled);
+                        provider.getAccountID().getAccountUid(), null, isSMSEnabled);
 
                 List<ComparableEvtObj> newMsc = new ArrayList<>();
                 processEventObjects(res, newMsc, isStatusChanged);
@@ -365,7 +365,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
     private List<ComparableEvtObj> getCachedRecentMessages(ProtocolProviderService provider, boolean isStatusChanged)
     {
         Collection<EventObject> res;
-        String accountId = provider.getAccountID().getAccountUniqueID();
+        String accountId = provider.getAccountID().getAccountUid();
         List<String> recentMessagesContactIDs = getRecentContactIDs(accountId,
                 (recentMessages.size() < numberOfMessages) ? null : oldestRecentMessage);
 
@@ -553,7 +553,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
 
         Date date = new Date();
         String uuid = String.valueOf(date.getTime()) + Math.abs(date.hashCode());
-        String accountUid = msc.getProtocolProviderService().getAccountID().getAccountUniqueID();
+        String accountUid = msc.getProtocolProviderService().getAccountID().getAccountUid();
 
         contentValues.clear();
         contentValues.put(UUID, uuid);
@@ -574,7 +574,7 @@ public class MessageSourceService extends MetaContactListAdapter implements Cont
         contentValues.put(TIME_STAMP, msg.getTimestamp().getTime());
         contentValues.put(VERSION, RECENT_MSGS_VER);
 
-        String accountUid = msg.getProtocolProviderService().getAccountID().getAccountUniqueID();
+        String accountUid = msg.getProtocolProviderService().getAccountID().getAccountUid();
         String entityJid = msg.getContactAddress();
         String[] args = {accountUid, entityJid};
 

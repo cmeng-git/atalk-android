@@ -26,11 +26,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.OperationSetVideoBridge;
@@ -42,7 +44,6 @@ import net.java.sip.communicator.service.protocol.globalstatus.GlobalStatusServi
 import net.java.sip.communicator.util.ConfigurationUtils;
 import net.java.sip.communicator.util.account.AccountUtils;
 
-import org.atalk.android.BuildConfig;
 import org.atalk.android.R;
 import org.atalk.android.gui.AndroidGUIActivator;
 import org.atalk.android.gui.aTalk;
@@ -53,8 +54,8 @@ import org.atalk.android.gui.chat.conference.ConferenceCallInviteDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomBookmarksDialog;
 import org.atalk.android.gui.chatroomslist.ChatRoomCreateDialog;
 import org.atalk.android.gui.contactlist.AddContactActivity;
-import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.ContactBlockListActivity;
+import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.contactlist.model.MetaContactListAdapter;
 import org.atalk.android.gui.settings.SettingsActivity;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
@@ -64,13 +65,9 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The main options menu. Every <code>Activity</code> that desires to have the general options menu
  * shown have to extend this class.
- *
  * The <code>MainMenuActivity</code> is an <code>OSGiActivity</code>.
  *
  * @author Eng Chong Meng

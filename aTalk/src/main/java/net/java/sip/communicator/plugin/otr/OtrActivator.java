@@ -119,7 +119,7 @@ public class OtrActivator extends AbstractServiceDependentActivator implements S
 
         for (ProtocolProviderFactory providerFactory : providerFactoriesMap.values()) {
             for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-                if (accountID.getAccountUniqueID().equals(uid))
+                if (accountID.getAccountUid().equals(uid))
                     return accountID;
             }
         }

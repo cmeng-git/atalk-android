@@ -90,7 +90,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class CallHistoryFragment extends OSGiFragment
-        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleted,
+        implements View.OnClickListener, ContactPresenceStatusListener, EntityListHelper.TaskCompleteListener,
         DatePicker.OnDateChangedListener, TimePicker.OnTimeChangedListener {
     /**
      * A map of <contact, MetaContact>
@@ -295,7 +295,7 @@ public class CallHistoryFragment extends OSGiFragment
                     if ((pps.getConnection() != null) && pps.getConnection().isAuthenticated()) {
                         addContactStatusListener(pps);
                         AccountID accountId = pps.getAccountID();
-                        String userUuId = accountId.getAccountUniqueID();
+                        String userUuId = accountId.getAccountUid();
 
                         callRecordPPS = CHS.findByEndDate(userUuId, mEndDate);
                         if (callRecordPPS.size() != 0)
@@ -419,9 +419,9 @@ public class CallHistoryFragment extends OSGiFragment
     }
 
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
-        aTalkApp.showToastMessage(R.string.service_gui_CALL_HISTORY_REMOVE_COUNT, result);
-        if (result > 0) {
+    public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        if (msgCount > 0) {
             callHistoryAdapter.new getCallRecords(new Date()).execute();
         }
     }

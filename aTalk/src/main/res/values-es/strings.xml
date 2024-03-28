@@ -158,7 +158,6 @@
     <string name="service_gui_CALL_ERROR">La parte remota devuelve un error: %1$s</string>
     <string name="service_gui_CALL_FAILED">Llamada fallida</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de Llamadas</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">número de registros del historial de llamadas eliminados: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas antes de la fecha: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ningún registro seleccionado para eliminar</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">¿Está seguro de que desea purgar todos los registros de llamadas seleccionados?</string>
@@ -410,6 +409,7 @@
     <string name="service_gui_HISTORY_ERASE_ALL">Borrar el historial de chat de todos los contactos</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">¿Está seguro de que desea purgar todos los mensajes seleccionados para %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">¿Seguro que se quiere borrar todos los mensajes de todos los entidades?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Número de registros del historial eliminados: %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Error al eliminar mensajes almacenados localmente de %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Eliminar medios de mi teléfono</string>
     <string name="service_gui_HISTORY_WARNING">Cierre y abra esta sesión de chat para ver mensajes MAM y sin conexión cuando esté en línea</string>

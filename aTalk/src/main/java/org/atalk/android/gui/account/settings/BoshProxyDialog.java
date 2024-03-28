@@ -97,7 +97,7 @@ public class BoshProxyDialog extends Dialog implements OnItemSelectedListener, T
         mContext = context;
 
         this.jbrReg = jbrReg;
-        String editedAccUID = jbrReg.getAccountUniqueID();
+        String editedAccUID = jbrReg.getAccountUid();
         AccountManager accManager = ProtocolProviderActivator.getAccountManager();
         ProtocolProviderFactory factory = JabberAccountRegistrationActivator.getJabberProtocolProviderFactory();
         mAccountUuid = accManager.getStoredAccountUUID(factory, editedAccUID);

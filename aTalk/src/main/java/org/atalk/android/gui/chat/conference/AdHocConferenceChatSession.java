@@ -87,7 +87,7 @@ public class AdHocConferenceChatSession extends ChatSession implements AdHocChat
     }
 
     /**
-     * Returns the chat identifier.
+     * Returns the AdHoc chatRoom identifier.
      *
      * @return the chat identifier
      */

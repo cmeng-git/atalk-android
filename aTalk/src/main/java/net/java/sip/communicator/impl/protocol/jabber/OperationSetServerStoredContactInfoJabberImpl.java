@@ -55,15 +55,14 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      */
     public <T extends GenericDetail> Iterator<T> getDetailsAndDescendants(Contact contact, Class<T> detailClass) {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl)) {
-            return new LinkedList<T>().iterator();
+            return Collections.emptyIterator();
         }
 
         List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asEntityBareJidIfPossible());
-        List<T> result = new LinkedList<>();
-
         if (details == null)
-            return result.iterator();
+            return Collections.emptyIterator();
 
+        List<T> result = new LinkedList<>();
         for (GenericDetail item : details) {
             if (detailClass.isInstance(item)) {
                 @SuppressWarnings("unchecked")
@@ -84,14 +83,13 @@ public class OperationSetServerStoredContactInfoJabberImpl implements OperationS
      */
     public Iterator<GenericDetail> getDetails(Contact contact, Class<? extends GenericDetail> detailClass) {
         if (isPrivateMessagingContact(contact) || !(contact instanceof ContactJabberImpl))
-            return new LinkedList<GenericDetail>().iterator();
+            return Collections.emptyIterator();
 
         List<GenericDetail> details = infoRetriever.getUserDetails(contact.getJid().asEntityBareJidIfPossible());
-        List<GenericDetail> result = new LinkedList<>();
-
         if (details == null)
-            return result.iterator();
+            return Collections.emptyIterator();
 
+        List<GenericDetail> result = new LinkedList<>();
         for (GenericDetail item : details)
             if (detailClass.equals(item.getClass()))
                 result.add(item);

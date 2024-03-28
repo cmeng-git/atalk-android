@@ -6,8 +6,17 @@
      They are automatically updated with "ant bump-version".
 -->
 <changelog>
-    <release version="4.0.0 (03/23/2024)" versioncode="400000">
+    <release version="4.0.1 (03/28/2024)" versioncode="400010">
         <change>Please read &lt;a href='https://cmeng-git.github.io/atalk/faq.html#ui_01'&gt;aTalk UI design &amp; Implementation&lt;/a&gt; before using aTalk</change>
+        <change>Removal of a contact shall purge all its associated history messages, call records and its sessionUuid</change>
+        <change>Update 'Recent conversations' interface to disable multi-item selection; and allow purge of orphan chat session</change>
+        <change>Add support to delete history messages based on sessionUuid i.e. no associated contact or chatRoom</change>
+        <change>EntityListHelper history record delete will return the actual deleted records count for display to user.</change>
+        <change>ChatPanel#mamQuery must use actual sessionUuid from DB; and it may not be the same as mChatId</change>
+        <change>Bug fixes and enhancements</change>
+    </release>
+
+    <release version="4.0.0 (03/23/2024)" versioncode="400000">
         <change>Fix duplicate display of the group chat messages sent previously; happens if user logout and rejoin muc after login</change>
         <change>Fix duplicate display of incoming delayed messages in contact chat session; happen if mam messages are received before delayed messages</change>
         <change>Fix incoming delayed encrypted messages display out of timestamp order; arise due to process times vary for encrypted messages</change>

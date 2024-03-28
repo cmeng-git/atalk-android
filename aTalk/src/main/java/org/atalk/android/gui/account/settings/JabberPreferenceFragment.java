@@ -352,7 +352,7 @@ public class JabberPreferenceFragment extends AccountPreferenceFragment
     {
         final String userName = shPrefs.getString(P_KEY_USER_ID, null);
         if (!TextUtils.isEmpty(userName) && userName.contains("@")) {
-            String editedAccUid = jbrReg.getAccountUniqueID();
+            String editedAccUid = jbrReg.getAccountUid();
             if (userNameEdited.equals(userName)) {
                 jbrReg.setUserID(userName);
                 userNameLastEdited = userName;

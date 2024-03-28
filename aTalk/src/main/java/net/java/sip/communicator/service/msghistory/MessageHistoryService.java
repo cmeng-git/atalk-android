@@ -328,17 +328,17 @@ public interface MessageHistoryService
      * Permanently removes all locally stored message history for the specified chatMode.
      * @param chatMode i.e. ChatSession.MODE_SINGLE or ChatSession.MODE_MULTI
      */
-    void eraseLocallyStoredChatHistory(int chatMode);
+    int eraseLocallyStoredChatHistory(int chatMode);
 
     /**
      * Permanently removes locally stored message history for the metaContact.
      */
-    void eraseLocallyStoredChatHistory(MetaContact metaContact, List<String> messageUUIDs);
+    int eraseLocallyStoredChatHistory(MetaContact metaContact, List<String> messageUUIDs);
 
     /**
      * Permanently removes locally stored message history for the chatRoom.
      */
-    void eraseLocallyStoredChatHistory(ChatRoom room, List<String> messageUUIDs);
+    int eraseLocallyStoredChatHistory(ChatRoom room, List<String> messageUUIDs);
 
     /**
      * Fetch the attached file paths for all the messages of the specified descriptor.

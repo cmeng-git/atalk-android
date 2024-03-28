@@ -155,7 +155,6 @@
     <string name="service_gui_CALL_ERROR">Pesta jarak jauh mengembalikan kesalahan: %1$s</string>
     <string name="service_gui_CALL_FAILED">Panggilan gagal</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Riwayat Panggilan</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Jumlah catatan riwayat panggilan dihapus: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Anda yakin ingin menghapus semua catatan panggilan sebelum tanggal tersebut: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Tidak ada catatan yang dipilih untuk dihapus</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Anda yakin ingin menghapus semua catatan panggilan yang dipilih?</string>
@@ -407,6 +406,7 @@
     <string name="service_gui_HISTORY_ERASE_ALL">Hapus semua riwayat obrolan kontak</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Anda yakin ingin menghapus semua pesan yang dipilih selama %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Anda yakin ingin menghapus semua pesan untuk semua entitas?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Jumlah catatan sejarah yang dihapus: %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Kesalahan menghapus pesan yang disimpan secara lokal untuk %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Hapus media dari ponsel saya</string>
     <string name="service_gui_HISTORY_WARNING">Tutup dan buka sesi obrolan ini untuk melihat pesan MAM dan Offline saat online</string>

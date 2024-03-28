@@ -58,8 +58,8 @@ android {
         namespace 'org.atalk.android'
         applicationId "org.atalk.android"
 
-        versionCode 400000
-        versionName "4.0.0"
+        versionCode 400010
+        versionName "4.0.1"
 
         minSdkVersion rootProject.minSdk
         targetSdkVersion rootProject.compileSdk
@@ -437,7 +437,7 @@ dependencies {
         }
 
         // Take care <streamhost/> host attribute tagged with zoneId
-        classDelete  'org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream**'
+        classDelete 'org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream**'
 
         // Do not send <close/> on an already closed InBandBytestream session
         classDelete 'org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession**'

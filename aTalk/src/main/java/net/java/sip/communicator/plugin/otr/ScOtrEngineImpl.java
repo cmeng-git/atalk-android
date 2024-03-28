@@ -258,7 +258,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
         ProtocolProviderService pps = otrContact.contact.getProtocolProvider();
         String resourceName = otrContact.resource != null
                 ? "/" + otrContact.resource.getResourceName() : "";
-        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUniqueID(),
+        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUid(),
                 otrContact.contact.getAddress() + resourceName, pps.getProtocolName());
 
         synchronized (contactsMap) {
@@ -333,7 +333,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     public OtrPolicy getContactPolicy(Contact contact)
     {
         ProtocolProviderService pps = contact.getProtocolProvider();
-        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUniqueID(),
+        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUid(),
                 contact.getAddress(), pps.getProtocolName());
         int policy = this.configurator.getPropertyInt(sessionID + CONTACT_POLICY, -1);
         if (policy < 0)
@@ -485,7 +485,7 @@ public class ScOtrEngineImpl implements ScOtrEngine, ChatLinkClickedListener, Se
     public void setContactPolicy(Contact contact, OtrPolicy policy)
     {
         ProtocolProviderService pps = contact.getProtocolProvider();
-        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUniqueID(),
+        SessionID sessionID = new SessionID(pps.getAccountID().getAccountUid(),
                 contact.getAddress(), pps.getProtocolName());
         String propertyID = sessionID + CONTACT_POLICY;
         if (policy == null)

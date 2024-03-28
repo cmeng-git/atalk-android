@@ -57,7 +57,7 @@ public class AccountUtils
     {
         Collection<AccountID> allAccounts = getStoredAccounts();
         for (AccountID account : allAccounts) {
-            if (account.getAccountUniqueID().equals(accountUID))
+            if (account.getAccountUid().equals(accountUID))
                 return account;
         }
         return null;

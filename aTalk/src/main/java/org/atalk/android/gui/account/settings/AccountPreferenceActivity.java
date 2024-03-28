@@ -57,7 +57,7 @@ public class AccountPreferenceActivity extends OSGiActivity
      */
     public static Intent getIntent(Context ctx, AccountID accountID) {
         Intent intent = new Intent(ctx, AccountPreferenceActivity.class);
-        intent.putExtra(EXTRA_USER_ID, accountID.getAccountUniqueID());
+        intent.putExtra(EXTRA_USER_ID, accountID.getAccountUid());
         return intent;
     }
 

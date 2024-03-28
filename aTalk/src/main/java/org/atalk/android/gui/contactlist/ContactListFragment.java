@@ -73,7 +73,8 @@ import timber.log.Timber;
  * @author Pawel Domas
  * @author Eng Chong Meng
  */
-public class ContactListFragment extends OSGiFragment implements OnGroupClickListener {
+public class ContactListFragment extends OSGiFragment
+        implements OnGroupClickListener, EntityListHelper.TaskCompleteListener {
     /**
      * Search options menu items.
      */
@@ -124,6 +125,7 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     private static int scrollTopPosition;
 
+    private int eraseMode = -1;
     private Context mContext = null;
 
     /**
@@ -131,7 +133,6 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
      */
     public ContactListFragment() {
         super();
-        // This fragment will create options menu.
         setHasOptionsMenu(true);
     }
 
@@ -437,11 +438,13 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
 
                 case R.id.erase_contact_chat_history:
-                    EntityListHelper.eraseEntityChatHistory(getContext(), mClickedContact, null, null);
+                    eraseMode = EntityListHelper.SINGLE_ENTITY;
+                    EntityListHelper.eraseEntityChatHistory(ContactListFragment.this, mClickedContact, null, null);
                     return true;
 
                 case R.id.erase_all_contact_chat_history:
-                    EntityListHelper.eraseAllEntityHistory(getContext());
+                    eraseMode = EntityListHelper.ALL_ENTITY;
+                    EntityListHelper.eraseAllEntityHistory(ContactListFragment.this);
                     return true;
 
                 case R.id.contact_tts_enable:
@@ -476,7 +479,8 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
                     return true;
 
                 case R.id.remove_contact:
-                    EntityListHelper.removeEntity(mContext, mClickedContact, chatPanel);
+                    eraseMode = EntityListHelper.SINGLE_ENTITY;
+                    EntityListHelper.removeEntity(ContactListFragment.this, mClickedContact, chatPanel);
                     return true;
 
                 case R.id.move_contact:
@@ -533,6 +537,24 @@ public class ContactListFragment extends OSGiFragment implements OnGroupClickLis
         ChatSessionManager.removeAllActiveChats();
         if (contactListAdapter != null)
             contactListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
+            ChatPanel clickedChat = ChatSessionManager.getActiveChat(mClickedContact);
+            if (clickedChat != null) {
+                onCloseChat(clickedChat);
+            }
+        }
+        else if (EntityListHelper.ALL_ENTITY == eraseMode) {
+            onCloseAllChats();
+        }
+        else { // failed
+            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR, mClickedContact.getDisplayName());
+            aTalkApp.showToastMessage(errMsg);
+        }
     }
 
     /**

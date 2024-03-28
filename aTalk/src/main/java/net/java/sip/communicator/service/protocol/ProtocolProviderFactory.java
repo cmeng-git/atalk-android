@@ -824,7 +824,7 @@ public abstract class ProtocolProviderFactory
         String accountUuid = accountID.getAccountUuid();
         if (accountUuid == null) {
             throw new IllegalArgumentException("No previous records found for account ID: "
-                    + accountID.getAccountUniqueID());
+                    + accountID.getAccountUid());
         }
 
         CredentialsStorageService credentialsStorage
@@ -874,7 +874,7 @@ public abstract class ProtocolProviderFactory
         String accountUuid = accountID.getAccountUuid();
         if (accountUuid == null) {
             throw new IllegalArgumentException("No previous records found for account ID: "
-                    + accountID.getAccountUniqueID());
+                    + accountID.getAccountUid());
         }
         configurationService.setProperty(accountUuid + "." + DNSSEC_MODE, dnssecMode);
 
@@ -1111,7 +1111,7 @@ public abstract class ProtocolProviderFactory
             String accountUID = configurationService.getString(accountRootPropertyName + "." + ACCOUNT_UID);
             // node idpropname
 
-            if (accountID.getAccountUniqueID().equals(accountUID)) {
+            if (accountID.getAccountUid().equals(accountUID)) {
                 return accountRootPropertyName;
             }
         }

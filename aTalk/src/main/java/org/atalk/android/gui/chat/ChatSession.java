@@ -16,19 +16,19 @@
  */
 package org.atalk.android.gui.chat;
 
-import net.java.sip.communicator.service.msghistory.MessageHistoryService;
-import net.java.sip.communicator.service.protocol.AccountID;
-import net.java.sip.communicator.service.protocol.OperationSet;
-
-import org.jivesoftware.smackx.muc.MultiUserChat;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import net.java.sip.communicator.service.msghistory.MessageHistoryService;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.OperationSet;
+
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.json.JSONObject;
 
 /**
  * @author Yana Stamcheva
@@ -42,7 +42,7 @@ public abstract class ChatSession {
     public static final String ACCOUNT_UID = "accountUid";  // AccountUID
     public static final String ENTITY_JID = "entityJid";    // entityJid for contact or chatRoom
     public static final String CREATED = "created";         // time stamp
-    public static final String STATUS = "status";           // see ChatFragment#chatType (MSGTYPE_)
+    public static final String STATUS = "status";           // see ChatFragment#chatType (MSGTYPE_) | SESSION_HIDDEN Bit
     public static final String MODE = "mode";               // muc = 1
     public static final String MAM_DATE = "mamDate";        // mam last access date
     public static final String ATTRIBUTES = "attributes";   // see below ATTR_*
@@ -67,10 +67,7 @@ public abstract class ChatSession {
     public static final int MODE_MULTI = 1;
     public static final int MODE_NPE = 2;    // non-persistent entity
 
-    // The last access date to the server mam records
-    private Date mamDate;
     private JSONObject attributes = new JSONObject();
-
     private static ChatSession chatSession;
     public final ArrayList<ChatMessageImpl> messages = new ArrayList<>();
     private AccountID accountId = null;
@@ -112,20 +109,14 @@ public abstract class ChatSession {
     public abstract Object getDescriptor();
 
     /**
-     * Returns the chat identifier i.e. SessionUuid in DB; uniquely identify this chat session.
-     * The mSessionUuid is linked to all the chatMessages of this chatSession in the database
+     * Returns the chat identifier that uniquely identify this chat session; use as a key
+     * in ChatSessionManager.activeChats map to retrieve the corresponding chatPanel.
+     * The key is unique either be MetaContactID, ChatRoomID or AdHocChatRoomID
+     * e.g. mcUID: 1567990106229240922678;  ChatRoomID: chatroom@conference.example.org
      *
      * @return the chat identifier i.e. SessionUuid of the chat
      */
     public abstract String getChatId();
-
-    public Date getMamDate() {
-        return mamDate;
-    }
-
-    public void setMamDate(Date date) {
-        mamDate = date;
-    }
 
     /**
      * Returns the persistable address of the contact from the session.
@@ -173,6 +164,7 @@ public abstract class ChatSession {
      * Returns a list of all <code>ChatTransport</code>s contained in this session supporting the given <code>opSetClass</code>.
      *
      * @param opSetClass the <code>OperationSet</code> class we're looking for
+     *
      * @return a list of all <code>ChatTransport</code>s contained in this session supporting the given <code>opSetClass</code>
      */
     public List<ChatTransport> getTransportsForOperationSet(
@@ -213,6 +205,7 @@ public abstract class ChatSession {
      * Returns a collection of the last N number of history messages given by count.
      *
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     public abstract Collection<Object> getHistory(int count);
@@ -222,6 +215,7 @@ public abstract class ChatSession {
      *
      * @param date The date up to which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     public abstract Collection<Object> getHistoryBeforeDate(Date date, int count);
@@ -231,6 +225,7 @@ public abstract class ChatSession {
      *
      * @param date The date from which we're looking for messages.
      * @param count The number of messages from history to return.
+     *
      * @return a collection of the last N number of messages given by count.
      */
     public abstract Collection<Object> getHistoryAfterDate(Date date, int count);
@@ -273,6 +268,7 @@ public abstract class ChatSession {
      *
      * @param descriptor The descriptor of the chat transport we're looking for.
      * @param resourceName The entityBareJid of the resource if any, null otherwise
+     *
      * @return The ChatTransport corresponding to the given descriptor.
      */
     public ChatTransport findChatTransportForDescriptor(Object descriptor, String resourceName) {

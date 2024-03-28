@@ -47,7 +47,7 @@ import timber.log.Timber;
  * <p>
  * Every instance of the <code>ProtocolProviderService</code>, created through the
  * ProtocolProviderFactory is assigned an AccountID instance, that uniquely represents it and whose
- * string representation (obtained through the getAccountUniqueID() method) can be used for
+ * string representation (obtained through the getAccountUid() method) can be used for
  * identification of persistently stored account details.
  * <p>
  * Account id's are guaranteed to be different for different accounts and in the same time are bound
@@ -132,13 +132,13 @@ public class AccountID
      * A String uniquely identifying the user for this particular account with prefix "acc", and
      * is used as link in the account properties retrieval
      */
-    private final String uuid;
+    private final String accountUuid;
 
     /**
      * A String uniquely identifying this account, that can also be used for storing and
      * unambiguously retrieving details concerning it. e.g. jabber:abc123@example.org
      */
-    protected String accountUID;
+    protected String accountUid;
 
     /**
      * A String uniquely identifying the user for this particular account. e.g. abc123@example.org
@@ -183,8 +183,8 @@ public class AccountID
         mAccountProperties = new HashMap<>(accountProperties);
         this.serviceName = serviceName;
 
-        this.uuid = accountProperties.get(ProtocolProviderFactory.ACCOUNT_UUID);
-        this.accountUID = accountProperties.get(ProtocolProviderFactory.ACCOUNT_UID);
+        this.accountUuid = accountProperties.get(ProtocolProviderFactory.ACCOUNT_UUID);
+        this.accountUid = accountProperties.get(ProtocolProviderFactory.ACCOUNT_UID);
 
         JSONObject tmp = new JSONObject();
         String strKeys = accountProperties.get(ProtocolProviderFactory.KEYS);
@@ -196,7 +196,7 @@ public class AccountID
             }
         }
         mKeys = tmp;
-        Timber.d("### Set Account UUID to: %s: %s for %s", uuid, accountUID, userID);
+        Timber.d("### Set Account UUID to: %s: %s for %s", accountUuid, accountUid, userID);
     }
 
     /**
@@ -232,7 +232,7 @@ public class AccountID
      */
     public String getAccountUuid()
     {
-        return this.uuid;
+        return this.accountUuid;
     }
 
     /**
@@ -334,9 +334,9 @@ public class AccountID
      *
      * @return String
      */
-    public String getAccountUniqueID()
+    public String getAccountUid()
     {
-        return accountUID;
+        return accountUid;
     }
 
     /**
@@ -422,7 +422,7 @@ public class AccountID
             // for later retrieval
             ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
             if (configService != null) {
-                value = configService.getString(uuid + "." + property);
+                value = configService.getString(accountUuid + "." + property);
                 if (StringUtils.isNotEmpty(value)) {
                     putAccountProperty(key.toString(), value);
                 }
@@ -445,7 +445,7 @@ public class AccountID
      */
     public void storeAccountProperty(String key, Object property)
     {
-        String accPropertyName = uuid + "." + key;
+        String accPropertyName = accountUuid + "." + key;
         ConfigurationService configService = ProtocolProviderActivator.getConfigurationService();
         if (configService != null) {
             if (property != null)
@@ -499,7 +499,7 @@ public class AccountID
     @Override
     public int hashCode()
     {
-        return (accountUID == null) ? 0 : accountUID.hashCode();
+        return (accountUid == null) ? 0 : accountUid.hashCode();
     }
 
     /**
@@ -515,11 +515,11 @@ public class AccountID
     public boolean equals(Object obj)
     {
         return (this == obj) || (obj != null) && getClass().isInstance(obj)
-                && accountUID.equals(((AccountID) obj).accountUID);
+                && accountUid.equals(((AccountID) obj).accountUid);
     }
 
     /**
-     * Returns a string representation of this account id (same as calling getAccountUniqueID()).
+     * Returns a string representation of this account id (same as calling getAccountUid()).
      *
      * @return a string representation of this account id.
      */
@@ -527,7 +527,7 @@ public class AccountID
     @Override
     public String toString()
     {
-        return getAccountUniqueID();
+        return getAccountUid();
     }
 
     /**
@@ -1538,7 +1538,7 @@ public class AccountID
         values.put(ACCOUNT_UUID, getAccountUuid());
         values.put(PROTOCOL, protocolName);
         values.put(USER_ID, mUserID);
-        values.put(ACCOUNT_UID, accountUID);
+        values.put(ACCOUNT_UID, accountUid);
         synchronized (mKeys) {
             values.put(KEYS, mKeys.toString());
         }

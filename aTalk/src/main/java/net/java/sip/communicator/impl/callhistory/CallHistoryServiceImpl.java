@@ -20,6 +20,20 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.Vector;
+
 import net.java.sip.communicator.impl.history.HistoryQueryImpl;
 import net.java.sip.communicator.service.callhistory.CallHistoryQuery;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
@@ -57,20 +71,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-
-import java.io.IOException;
-import java.io.StreamTokenizer;
-import java.io.StringReader;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.Vector;
 
 import timber.log.Timber;
 
@@ -193,7 +193,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         if (serviceEvent.getType() == ServiceEvent.REGISTERED) {
             Timber.d("Handling registration of a new Protocol Provider.");
             this.handleProviderAdded((ProtocolProviderService) sService);
-        } else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
+        }
+        else if (serviceEvent.getType() == ServiceEvent.UNREGISTERING) {
             this.handleProviderRemoved((ProtocolProviderService) sService);
         }
     }
@@ -210,7 +211,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         OperationSetBasicTelephony<?> opSetTelephony = provider.getOperationSet(OperationSetBasicTelephony.class);
         if (opSetTelephony != null) {
             opSetTelephony.addCallListener(this);
-        } else {
+        }
+        else {
             Timber.log(TimberLog.FINER, "Service did not have a basic telephony op. set.");
         }
     }
@@ -596,14 +598,16 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
 
             if (i < callPeerStart.size()) {
                 callPeerStartValue = new Date(Long.parseLong(callPeerStart.get(i)));
-            } else {
+            }
+            else {
                 callPeerStartValue = result.getStartTime();
                 Timber.i("Call history start time list different from ids list.");
             }
 
             if (i < callPeerEnd.size()) {
                 callPeerEndValue = new Date(Long.parseLong(callPeerEnd.get(i)));
-            } else {
+            }
+            else {
                 callPeerEndValue = result.getEndTime();
                 Timber.i("Call history end time list different from ids list.");
             }
@@ -752,7 +756,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         }
 
         String Uuid = callRecord.getCallUuid();
-        String accountUid = callRecord.getSourceCall().getProtocolProvider().getAccountID().getAccountUniqueID();
+        String accountUid = callRecord.getSourceCall().getProtocolProvider().getAccountID().getAccountUid();
         Long timeStamp = new Date().getTime();
 
         contentValues.clear();
@@ -1060,7 +1064,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      * A wrapper around HistorySearchProgressListener that fires events for CallHistorySearchProgressListener
      */
     private class SearchProgressWrapper implements HistorySearchProgressListener {
-        private CallHistorySearchProgressListener listener;
+        private final CallHistorySearchProgressListener listener;
         int contactCount = 0;
         int currentContactCount = 0;
         int currentProgress = 0;
@@ -1095,7 +1099,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                 // there will be looses in currentProgress due to the division
                 if (currentContactCount == contactCount)
                     currentProgress = CallHistorySearchProgressListener.PROGRESS_MAXIMUM_VALUE;
-            } else
+            }
+            else
                 lastHistoryProgress = historyProgress;
             return currentProgress;
         }
@@ -1169,7 +1174,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
                             writeRecord = false;
                         }
                     }
-                } else
+                }
+                else
                     callRecord.setEndTime(new Date());
 
                 if (writeRecord) {
@@ -1195,7 +1201,7 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         if (ppsRefs != null) {
             for (ProtocolProviderFactory providerFactory : ppsRefs.values()) {
                 for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
-                    if (accountID.getAccountUniqueID().equals(accountUID)) {
+                    if (accountID.getAccountUid().equals(accountUID)) {
                         ServiceReference<ProtocolProviderService> serRef
                                 = providerFactory.getProviderForAccount(accountID);
                         return CallHistoryActivator.bundleContext.getService(serRef);
@@ -1206,10 +1212,24 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
         return null;
     }
 
+    @Override
+    public void eraseLocallyStoredCallHistory(MetaContact metaContact) {
+        Iterator<Contact> contacts = metaContact.getContacts();
+        while (contacts.hasNext()) {
+            Contact contact = contacts.next();
+            String accountUid = contact.getProtocolProvider().getAccountID().getAccountUid();
+
+            String[] args = {accountUid, contact.getAddress()};
+            mDB.delete(CallHistoryService.TABLE_NAME, CallHistoryService.ACCOUNT_UID + "=? AND "
+                    + CallHistoryService.ENTITY_JID + "=?", args);
+        }
+    }
+
     /**
      * Permanently removes all locally stored call history.
      */
-    public void eraseLocallyStoredHistory(List<String> callUUIDs) {
+    @Override
+    public void eraseLocallyStoredCallHistory(List<String> callUUIDs) {
         for (String uuid : callUUIDs) {
             String[] args = {uuid};
             mDB.delete(CallHistoryService.TABLE_NAME, CallHistoryService.UUID + "=?", args);
@@ -1221,7 +1241,8 @@ public class CallHistoryServiceImpl implements CallHistoryService, CallListener,
      *
      * @return number of call records deleted
      */
-    public int eraseLocallyStoredHistoryBefore(Date endDate) {
+    @Override
+    public int eraseLocallyStoredCallHistoryBefore(Date endDate) {
         String endTimeStamp = String.valueOf(endDate.getTime());
         String[] args = {endTimeStamp};
         return mDB.delete(CallHistoryService.TABLE_NAME, CallHistoryService.CALL_START + "<=?", args);

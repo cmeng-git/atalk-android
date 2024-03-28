@@ -79,7 +79,7 @@ public class AdHocChatRoomList
         AdHocChatRoomProviderWrapper chatRoomProvider = new AdHocChatRoomProviderWrapper(pps);
         providersList.add(chatRoomProvider);
 
-        String accountUid = pps.getAccountID().getAccountUniqueID();
+        String accountUid = pps.getAccountID().getAccountUid();
         String[] args = {accountUid, String.valueOf(ChatSession.MODE_MULTI)};
         String[] columns = {ChatSession.ENTITY_JID};
 
@@ -117,7 +117,7 @@ public class AdHocChatRoomList
         providersList.remove(adHocChatRoomProvider);
 
         AccountID accountID = adHocChatRoomProvider.getProtocolProvider().getAccountID();
-        String accountUid = accountID.getAccountUniqueID();
+        String accountUid = accountID.getAccountUid();
         String[] args = {accountUid, String.valueOf(ChatSession.MODE_MULTI)};
 
         mDB.delete(ChatSession.TABLE_NAME, ChatSession.ACCOUNT_UID + "=? AND "

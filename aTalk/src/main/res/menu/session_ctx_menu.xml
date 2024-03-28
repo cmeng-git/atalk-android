@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/erase_contact_chat_history"
+        android:title="@string/service_gui_HISTORY_ERASE_PER_CONTACT"
+        android:visible="false" />
+    <item
+        android:id="@+id/erase_chatroom_history"
+        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER"
+        android:visible="false" />
+    <item
+        android:id="@+id/ctx_menu_exit"
+        android:title="@android:string/cancel" />
+</menu>

@@ -151,7 +151,11 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     private ChatSession mChatSession;
 
-    // Chat identifier is the same as SessionUuid in DB; uniquely identify this chat session.
+    /**
+     * Chat identifier uniquely identify this chat session.
+     * The Id either be MetaContactID, ChatRoomID or AdHocChatRoomID
+     * e.g. mcUID: 1567990106229240922678;  ChatRoomID: chatroom@conference.example.org
+     */
     private String mChatId;
 
     /**
@@ -618,26 +622,29 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
      */
     private boolean mamQuery(Object descriptor) {
         if (!getProtocolProvider().isRegistered()) {
-            // aTalkApp.showToastMessage(R.string.service_gui_HISTORY_WARNING);
             return false;
         }
 
         XMPPConnection connection = getProtocolProvider().getConnection();
         MamManager mamManager;
         Jid jid;
+        String sessionUuid;
         if (descriptor instanceof ChatRoom) {
             jid = ((ChatRoom) descriptor).getIdentifier();
             mamManager = MamManager.getInstanceFor(((ChatRoom) descriptor).getMultiUserChat());
+            sessionUuid = mMHS.getSessionUuidByJid((ChatRoom) descriptor);
         }
         else {
-            jid = ((MetaContact) descriptor).getDefaultContact().getJid().asBareJid();
+            Contact contact = ((MetaContact) descriptor).getDefaultContact();
+            jid = contact.getJid().asBareJid();
             mamManager = MamManager.getInstanceFor(connection, null);
+            sessionUuid = mMHS.getSessionUuidByJid(contact);
         }
 
         // Retrieve the mamData from the last message received in this chatSession
         MessageHistoryServiceImpl mMHS = MessageHistoryActivator.getMessageHistoryService();
-        Date lmrDate = mMHS.getLastMessageDateForSessionUuid(mChatId);
-        Date mamDate = mMHS.getMamDate(mChatId);
+        Date lmrDate = mMHS.getLastMessageDateForSessionUuid(sessionUuid);
+        Date mamDate = mMHS.getMamDate(sessionUuid);
 
         if ((lmrDate != null) && (mamDate != null) && mamDate.before(lmrDate)) {
             mamDate = lmrDate;
@@ -648,11 +655,8 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
             c.set(Calendar.DAY_OF_MONTH, -7);
             mamDate = c.getTime();
         }
-        // set mamDate to a valid date in chatSession record, create new if none is found.
-        if (mMHS.setMamDate(mChatId, mamDate) == 0) {
-            mMHS.getSessionUuidByJid(((MetaContact) descriptor).getDefaultContact());
-            mMHS.setMamDate(mChatId, mamDate);
-        }
+        // set mamDate to a valid date in chatSession record.
+        mMHS.setMamDate(sessionUuid, mamDate);
 
         try {
             if (mamManager.isSupported()) {
@@ -680,7 +684,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
         }
 
         // Update to last processed mam message
-        mamDate = mMHS.getMamDate(mChatId);
+        mamDate = mMHS.getMamDate(sessionUuid);
         mamDateTS = mamDate.getTime();
         return true;
     }
@@ -940,7 +944,7 @@ public class ChatPanel implements Chat, MessageListener, MessageReceiptListener 
 
     /**
      * Send an outgoing file message to chatFragment for it to start the file send process
-     * The recipient can be contact or .
+     * The recipient can be contact or chatRoom
      *
      * @param filePath as message content of the file to be sent
      * @param messageType indicate which File transfer message is for

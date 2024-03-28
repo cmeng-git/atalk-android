@@ -29,6 +29,7 @@ import java.util.List;
 
 import net.java.sip.communicator.impl.callhistory.CallHistoryActivator;
 import net.java.sip.communicator.impl.msghistory.MessageHistoryActivator;
+import net.java.sip.communicator.impl.msghistory.MessageHistoryServiceImpl;
 import net.java.sip.communicator.impl.protocol.jabber.OperationSetPersistentPresenceJabberImpl;
 import net.java.sip.communicator.service.callhistory.CallHistoryService;
 import net.java.sip.communicator.service.contactlist.MetaContact;
@@ -42,10 +43,10 @@ import net.java.sip.communicator.service.protocol.Contact;
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.AndroidGUIActivator;
-import org.atalk.android.gui.call.CallHistoryFragment;
 import org.atalk.android.gui.chat.ChatPanel;
 import org.atalk.android.gui.chat.ChatSession;
 import org.atalk.android.gui.chat.ChatSessionManager;
+import org.atalk.android.gui.chat.chatsession.ChatSessionRecord;
 import org.atalk.android.gui.dialogs.CustomDialogCbox;
 import org.atalk.android.gui.dialogs.DialogActivity;
 import org.jivesoftware.smack.XMPPConnection;
@@ -62,10 +63,8 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class EntityListHelper {
-    // History erase return result ZERO_ENTITY => error
-    public static final int ZERO_ENTITY = 0;
-    public static final int CURRENT_ENTITY = 1;
-    public static final int ALL_ENTITIES = 2;
+    public static final int SINGLE_ENTITY = 1;
+    public static final int ALL_ENTITY = 2;
 
     /**
      * Set the contact blocking status with option apply to all contacts on domain
@@ -131,15 +130,16 @@ public class EntityListHelper {
      *
      * @param metaContact the contact to be removed from the list.
      */
-    public static void removeEntity(Context context, final MetaContact metaContact, final ChatPanel chatPanel) {
+    public static void removeEntity(TaskCompleteListener caller, final MetaContact metaContact, final ChatPanel chatPanel) {
         String message;
         String title;
 
+        Context context = aTalkApp.getInstance();
         title = context.getString(R.string.service_gui_REMOVE_CONTACT);
         Contact contact = metaContact.getDefaultContact();
         Jid contactJid = contact.getJid();
 
-		// Allow both contact or DomainBareJid to be remove		
+        // Allow both contact or DomainBareJid to be remove
         if (contactJid != null) {
             Jid userJid = contact.getProtocolProvider().getAccountID().getEntityBareJid();
             message = context.getString(R.string.service_gui_REMOVE_CONTACT_TEXT, userJid, contactJid);
@@ -153,7 +153,7 @@ public class EntityListHelper {
                 context.getString(R.string.service_gui_REMOVE), new DialogActivity.DialogListener() {
                     @Override
                     public boolean onConfirmClicked(DialogActivity dialog) {
-                        doRemoveContact(context, metaContact);
+                        doRemoveContact(caller, metaContact);
                         if (chatPanel != null) {
                             ChatSessionManager.removeActiveChat(chatPanel);
                         }
@@ -172,14 +172,18 @@ public class EntityListHelper {
      *
      * @param metaContact the metaContact to be removed
      */
-    private static void doRemoveContact(final Context ctx, final MetaContact metaContact) {
+    private static void doRemoveContact(final TaskCompleteListener caller, final MetaContact metaContact) {
         // Prevent NetworkOnMainThreadException
         new Thread(() -> {
             MetaContactListService metaContactListService = AndroidGUIActivator.getContactListService();
+            CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
             try {
+                new doEraseEntityChatHistory(caller, null, null, true).execute(metaContact);
+                CHS.eraseLocallyStoredCallHistory(metaContact);
                 metaContactListService.removeMetaContact(metaContact);
             } catch (Exception ex) {
-                DialogActivity.showDialog(ctx, ctx.getString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
+                DialogActivity.showDialog(aTalkApp.getGlobalContext(),
+                        aTalkApp.getResString(R.string.service_gui_REMOVE_CONTACT), ex.getMessage());
             }
         }).start();
     }
@@ -227,26 +231,29 @@ public class EntityListHelper {
     // ----------------- Erase History for metaContact or ChatRoom----------------------- //
 
     /**
-     * Erase chat history for either MetaContact or ChatRoomWrapper
+     * Erase chat history for either MetaContact, ChatRoomWrapper or ChatSessionRecord.
      *
-     * @param caller the context to callback with result
-     * @param desc descriptor either MetaContact or ChatRoomWrapper
+     * @param caller the listener to callback with result.
+     * @param obj descriptor either MetaContact, ChatRoomWrapper or ChatSessionRecord.
      * @param msgUUIDs list of message UID to be deleted. null to delete all for the specified desc
      */
-    public static void eraseEntityChatHistory(final Context caller, final Object desc, final List<String> msgUUIDs,
-            final List<File> msgFiles) {
+    public static void eraseEntityChatHistory(final TaskCompleteListener caller, final Object obj,
+            final List<String> msgUUIDs, final List<File> msgFiles) {
         String entityJid;
-        if (desc instanceof MetaContact)
-            entityJid = ((MetaContact) desc).getDisplayName();
-        else if (desc instanceof ChatRoomWrapper)
-            entityJid = XmppStringUtils.parseLocalpart(((ChatRoomWrapper) desc).getChatRoomID());
+        if (obj instanceof MetaContact)
+            entityJid = ((MetaContact) obj).getDisplayName();
+        else if (obj instanceof ChatRoomWrapper)
+            entityJid = XmppStringUtils.parseLocalpart(((ChatRoomWrapper) obj).getChatRoomID());
+        else if (obj instanceof ChatSessionRecord) {
+            entityJid = ((ChatSessionRecord) obj).getEntityId();
+        }
         else
             return;
 
-        String title = caller.getString(R.string.service_gui_HISTORY_CONTACT, entityJid);
-        String message = caller.getString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid);
-        String cbMessage = caller.getString(R.string.service_gui_HISTORY_REMOVE_MEDIA);
-        String btnText = caller.getString(R.string.service_gui_PURGE);
+        String title = aTalkApp.getResString(R.string.service_gui_HISTORY_CONTACT, entityJid);
+        String message = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING, entityJid);
+        String cbMessage = aTalkApp.getResString(R.string.service_gui_HISTORY_REMOVE_MEDIA);
+        String btnText = aTalkApp.getResString(R.string.service_gui_PURGE);
 
         Bundle args = new Bundle();
         args.putString(CustomDialogCbox.ARG_MESSAGE, message);
@@ -260,9 +267,11 @@ public class EntityListHelper {
                     public boolean onConfirmClicked(DialogActivity dialog) {
                         CheckBox cbMediaDelete = dialog.findViewById(R.id.cb_option);
                         boolean mediaDelete = cbMediaDelete.isChecked();
-
-                        // EntityListHelper mErase = new EntityListHelper();
-                        new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete).execute(desc);
+                        if (obj instanceof ChatSessionRecord)
+                            new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete)
+                                    .execute(((ChatSessionRecord) obj).getSessionUuid());
+                        else
+                            new doEraseEntityChatHistory(caller, msgUUIDs, msgFiles, mediaDelete).execute(obj);
                         return true;
                     }
 
@@ -278,13 +287,13 @@ public class EntityListHelper {
      * Note: if the sender deletes the media content immediately after sending, only the tmp copy is deleted
      */
     private static class doEraseEntityChatHistory extends AsyncTask<Object, Void, Integer> {
-        private final TaskCompleted mCallback;
+        private final TaskCompleteListener mCallback;
         private final boolean isPurgeMediaFile;
         private final List<String> msgUUIDs;
         private List<File> msgFiles;
 
-        private doEraseEntityChatHistory(Context context, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia) {
-            this.mCallback = (TaskCompleted) context;
+        private doEraseEntityChatHistory(TaskCompleteListener caller, List<String> msgUUIDs, List<File> msgFiles, boolean purgeMedia) {
+            this.mCallback = caller;
             this.msgUUIDs = msgUUIDs;
             this.msgFiles = msgFiles;
             this.isPurgeMediaFile = purgeMedia;
@@ -296,9 +305,10 @@ public class EntityListHelper {
 
         @Override
         protected Integer doInBackground(Object... mDescriptor) {
+            int msgCount = 0;
             Object desc = mDescriptor[0];
-            if ((desc instanceof MetaContact) || (desc instanceof ChatRoomWrapper)) {
-                MessageHistoryService mhs = MessageHistoryActivator.getMessageHistoryService();
+            if ((desc instanceof MetaContact) || (desc instanceof ChatRoomWrapper) || desc instanceof String) {
+                MessageHistoryServiceImpl mhs = MessageHistoryActivator.getMessageHistoryService();
                 if (isPurgeMediaFile) {
                     // null => delete all local saved files; then construct locally
                     if (msgFiles == null) {
@@ -318,23 +328,23 @@ public class EntityListHelper {
 
                 if (desc instanceof MetaContact) {
                     MetaContact metaContact = (MetaContact) desc;
-                    mhs.eraseLocallyStoredChatHistory(metaContact, msgUUIDs);
+                    msgCount = mhs.eraseLocallyStoredChatHistory(metaContact, msgUUIDs);
+                }
+                else if (desc instanceof ChatRoomWrapper) {
+                    ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
+                    msgCount = mhs.eraseLocallyStoredChatHistory(chatRoom, msgUUIDs);
                 }
                 else {
-                    ChatRoom chatRoom = ((ChatRoomWrapper) desc).getChatRoom();
-                    mhs.eraseLocallyStoredChatHistory(chatRoom, msgUUIDs);
+                    String sessionUuid = (String) desc;
+                    msgCount = mhs.purgeLocallyStoredHistory(Collections.singletonList(sessionUuid), true);
                 }
             }
-            else {
-                return ZERO_ENTITY;
-            }
-            return CURRENT_ENTITY;
+            return msgCount;
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
-            // Return result and deleted msgUuUIDs to caller
-            mCallback.onTaskComplete(result, msgUUIDs);
+        protected void onPostExecute(Integer msgCount) {
+            mCallback.onTaskComplete(msgCount, msgUUIDs);
         }
 
         @Override
@@ -347,9 +357,9 @@ public class EntityListHelper {
     /**
      * Erase all the local stored chat history for all the entities i.e. MetaContacts or ChatRoomWrappers.
      *
-     * @param callback the callback.
+     * @param caller to which to return results.
      */
-    public static void eraseAllEntityHistory(final Context callback) {
+    public static void eraseAllEntityHistory(final TaskCompleteListener caller) {
         Context ctx = aTalkApp.getInstance();
         String title = ctx.getString(R.string.service_gui_HISTORY);
         String message = ctx.getString(R.string.service_gui_HISTORY_REMOVE_ALL_WARNING);
@@ -362,7 +372,7 @@ public class EntityListHelper {
                         boolean mediaDelete = cbMediaDelete.isChecked();
 
                         // EntityListHelper mErase = new EntityListHelper();
-                        new doEraseAllEntityHistory(callback, mediaDelete).execute();
+                        new doEraseAllEntityHistory(caller, mediaDelete).execute();
                         return true;
                     }
 
@@ -375,10 +385,10 @@ public class EntityListHelper {
 
     private static class doEraseAllEntityHistory extends AsyncTask<Void, Void, Integer> {
         private final boolean isPurgeMediaFile;
-        private final TaskCompleted mCallback;
+        private final TaskCompleteListener mCallback;
 
-        private doEraseAllEntityHistory(Context context, boolean purgeMedia) {
-            this.mCallback = (TaskCompleted) context;
+        private doEraseAllEntityHistory(TaskCompleteListener caller, boolean purgeMedia) {
+            this.mCallback = caller;
             this.isPurgeMediaFile = purgeMedia;
         }
 
@@ -398,15 +408,14 @@ public class EntityListHelper {
                         Timber.w("Failed to delete the file: %s", msgFile);
                 }
             }
-            mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_SINGLE);
-            mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_MULTI);
-            return ALL_ENTITIES;
+            int msgCount = mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_SINGLE);
+            msgCount += mhs.eraseLocallyStoredChatHistory(ChatSession.MODE_MULTI);
+            return msgCount;
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
-            // Return result to caller
-            mCallback.onTaskComplete(result, null);
+        protected void onPostExecute(Integer msgCount) {
+            mCallback.onTaskComplete(msgCount, null);
         }
 
         @Override
@@ -417,14 +426,14 @@ public class EntityListHelper {
     // ----------------- Erase Call History ----------------------- //
 
     /**
-     * Erase local store call history
+     * Erase local store call history.
      *
-     * @param caller the context
+     * @param caller to which to return the results.
      * @param callUUIDs list of call record UID to be deleted. null to delete all for the specified desc
      */
-    public static void eraseEntityCallHistory(final CallHistoryFragment caller, final List<String> callUUIDs) {
+    public static void eraseEntityCallHistory(TaskCompleteListener caller, List<String> callUUIDs) {
         // Displays the call history delete dialog and waits for user
-        DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
+        DialogActivity.showConfirmDialog(aTalkApp.getGlobalContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
                 R.string.service_gui_CALL_HISTORY_REMOVE_WARNING, R.string.service_gui_PURGE,
                 new DialogActivity.DialogListener() {
 
@@ -440,22 +449,7 @@ public class EntityListHelper {
         );
     }
 
-    public static void eraseEntityCallHistory(final CallHistoryFragment caller, final Date endDate) {
-        // Displays the call history delete dialog and waits for user
-//        DialogActivity.showConfirmDialog(caller.getContext(), R.string.service_gui_CALL_HISTORY_GROUP_NAME,
-//                R.string.service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING, R.string.service_gui_PURGE,
-//                new DialogActivity.DialogListener() {
-//
-//                    public boolean onConfirmClicked(DialogActivity dialog) {
-//                        new doEraseEntityCallHistory(caller, null, endDate).execute();
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public void onDialogCancelled(DialogActivity dialog) {
-//                    }
-//                }, endDate
-//        );
+    public static void eraseEntityCallHistory(TaskCompleteListener caller, Date endDate) {
         new doEraseEntityCallHistory(caller, null, endDate).execute();
     }
 
@@ -464,18 +458,18 @@ public class EntityListHelper {
      * Purge all history messages for the descriptor if messageUUIDs is null
      */
     private static class doEraseEntityCallHistory extends AsyncTask<Void, Void, Integer> {
-        private final TaskCompleted mCallback;
+        private final TaskCompleteListener mCallback;
         private final List<String> callUUIDs;
         private final Date mEndDate;
 
         /**
          * To delete call history based on given parameters either callUUIDs or endDate
          *
-         * @param caller the caller i.e. CallHistoryFragment.this
+         * @param caller i.e. CallHistoryFragment.this to which to return the results.
          * @param callUUIDs list of callUuids to be deleted OR;
          * @param endDate records on and before the given endDate toe be deleted
          */
-        private doEraseEntityCallHistory(CallHistoryFragment caller, List<String> callUUIDs, Date endDate) {
+        private doEraseEntityCallHistory(TaskCompleteListener caller, List<String> callUUIDs, Date endDate) {
             this.mCallback = caller;
             this.callUUIDs = callUUIDs;
             this.mEndDate = endDate;
@@ -490,19 +484,19 @@ public class EntityListHelper {
             CallHistoryService CHS = CallHistoryActivator.getCallHistoryService();
 
             if (mEndDate == null) {
-                CHS.eraseLocallyStoredHistory(callUUIDs);
+                CHS.eraseLocallyStoredCallHistory(callUUIDs);
                 return callUUIDs.size();
             }
             else {
-                return CHS.eraseLocallyStoredHistoryBefore(mEndDate);
+                return CHS.eraseLocallyStoredCallHistoryBefore(mEndDate);
             }
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
-            // Return result to caller
+        protected void onPostExecute(Integer msgCount) {
+            // Return msgCount to caller
             if (mCallback != null)
-                mCallback.onTaskComplete(result, callUUIDs);
+                mCallback.onTaskComplete(msgCount, callUUIDs);
         }
 
         @Override
@@ -510,8 +504,13 @@ public class EntityListHelper {
         }
     }
 
-    public interface TaskCompleted {
-        // Define data you like to return from AsyncTask
-        void onTaskComplete(Integer result, List<String> deletedUUIDs);
+    public interface TaskCompleteListener {
+        /**
+         * Return the deleted messages Count and deleted messageUuid list.
+         *
+         * @param msgCount deleted message count.
+         * @param deletedUUIDs deleted message uuid.
+         */
+        void onTaskComplete(int msgCount, List<String> deletedUUIDs);
     }
 }

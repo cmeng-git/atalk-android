@@ -211,7 +211,7 @@ public class ScOtrKeyManagerImpl implements ScOtrKeyManager
 		if (account == null)
 			return null;
 
-		String accountID = account.getAccountUniqueID();
+		String accountID = account.getAccountUid();
 		// Load Private Key.
 		byte[] b64PrivKey = this.configurator.getPropertyBytes(accountID + PRIVATE_KEY);
 		if (b64PrivKey == null)
@@ -251,7 +251,7 @@ public class ScOtrKeyManagerImpl implements ScOtrKeyManager
 		if (account == null)
 			return;
 
-		String accountID = account.getAccountUniqueID();
+		String accountID = account.getAccountUid();
 		KeyPair keyPair;
 		try {
 			keyPair = KeyPairGenerator.getInstance("DSA").genKeyPair();

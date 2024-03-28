@@ -154,7 +154,6 @@
     <string name="service_gui_CALL_ERROR">Удаленная сторона возвращает ошибку: %1$s</string>
     <string name="service_gui_CALL_FAILED">Не удалось выполнить вызов</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Журнал вызовов</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Нет удаленных записей истории звонков: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Вы уверены, что хотите очистить все записи звонков до даты: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Ни одна запись не выбрана для удаления</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Вы уверены, что хотите удалить все выбранные записи вызовов?</string>
@@ -406,6 +405,7 @@
 	<string name="service_gui_HISTORY_ERASE_ALL">Удалить все истории чатов контактов</string>
 	<string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Вы уверены, что хотите удалить все выбранные сообщения для %1$s?</string>
 	<string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Вы действительно хотите очистить все сообщения для всех юридические лица?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Количество удаленных записей истории: %1$s</string>
 	<string name="service_gui_HISTORY_REMOVE_ERROR">Ошибка удаления локально сохраненных сообщений для %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Удалить медиа с моего телефона</string>
     <string name="service_gui_HISTORY_WARNING">Закройте и откройте этот сеанс чата, чтобы просмотреть сообщения MAM и Offline в онлайн-режиме.</string>

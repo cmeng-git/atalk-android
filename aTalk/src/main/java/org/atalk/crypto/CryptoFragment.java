@@ -246,8 +246,8 @@ public class CryptoFragment extends OSGiFragment
                     mItem.setChecked(true);
                 }
                 return true;
+
             case R.id.encryption_none:
-                // if ((mChatType != MSGTYPE_NORMAL) && (mChatType != MSGTYPE_MUC_NORMAL)) {
                 if (mDescriptor instanceof Contact)
                     mChatType = ChatFragment.MSGTYPE_NORMAL;
                 else
@@ -255,8 +255,8 @@ public class CryptoFragment extends OSGiFragment
                 hasChange = true;
                 doHandleOtrPressed(false);
                 doHandleOmemoPressed(false);
-                //}
                 break;
+
             case R.id.encryption_omemo:
                 if (!activeChat.isOmemoChat())
                     mChatType = MSGTYPE_OMEMO;

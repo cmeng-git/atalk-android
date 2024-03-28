@@ -16,6 +16,8 @@
  */
 package org.atalk.android.gui.chat.chatsession;
 
+import org.atalk.android.gui.chat.ChatFragment;
+import org.atalk.android.gui.chat.ChatSession;
 import org.jxmpp.jid.EntityBareJid;
 
 import java.util.Date;
@@ -63,11 +65,15 @@ public class ChatSessionRecord {
     protected Date mamDate;
 
     /**
-     * Creates Call Record
+     * Creates ChatSession Record
      *
-     * @param direction String
-     * @param startTime Date
-     * @param endTime Date
+     * @param sessionUuid Unique session Uuid for contact of the accountUid
+     * @param accountUid user account Uid e.g. jabber.xxx@ipserver.com
+     * @param entityBareJid contact bare jid
+     * @param chatMode single or multi mode
+     * @param chatType ChatFragment MSTYPE
+     * @param createTime session record creation time
+     * @param mamDate last mamQuery update date
      */
     public ChatSessionRecord(String sessionUuid, String accountUid, EntityBareJid entityBareJid, int chatMode, int chatType, Date createTime, Date mamDate) {
         this.sessionUuid = sessionUuid;

@@ -41,13 +41,12 @@ public interface CallHistoryService
     String CALL_START = "callStart";        // callStart TimeStamp
     String CALL_END = "callEnd";            // callEnd TimeStamp
     String DIRECTION = "direction";         // dir
-
-    String ENTITY_JID = "entityJid";        // callParticipantName
+    String ENTITY_FULL_JID = "entityFullJid";       // callParticipantIDs
     String ENTITY_CALL_START = "entityCallStart";   // callParticipantStart
     String ENTITY_CALL_END = "entityCallEnd";       // callParticipantEnd
     String ENTITY_CALL_STATE = "entityCallState";   // callParticipantStates
     String CALL_END_REASON = "callEndReason";
-    String ENTITY_FULL_JID = "entityFullJid";       // callParticipantIDs
+    String ENTITY_JID = "entityJid";        // callParticipantName
     String SEC_ENTITY_ID = "secEntityID";   //secondaryCallParticipantIDs
 
     /**
@@ -171,13 +170,15 @@ public interface CallHistoryService
      */
     void removeCallHistoryRecordListener(CallHistoryPeerRecordListener listener);
 
+    void eraseLocallyStoredCallHistory(MetaContact metaContact);
+
     /**
      * Permanently removes all locally stored call history.
      */
-    void eraseLocallyStoredHistory(List<String> callUUIDs);
+    void eraseLocallyStoredCallHistory(List<String> callUUIDs);
 
     /**
      * Permanently removes all locally stored call history before and on the given date
      */
-    int eraseLocallyStoredHistoryBefore(Date endDate);
+    int eraseLocallyStoredCallHistoryBefore(Date endDate);
 }

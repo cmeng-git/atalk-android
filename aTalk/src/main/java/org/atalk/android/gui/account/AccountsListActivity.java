@@ -244,7 +244,7 @@ public class AccountsListActivity extends OSGiActivity
     {
         Intent statusIntent = new Intent(this, AccountInfoPresenceActivity.class);
         statusIntent.putExtra(AccountInfoPresenceActivity.INTENT_ACCOUNT_ID,
-                account.getAccountID().getAccountUniqueID());
+                account.getAccountID().getAccountUid());
         startActivity(statusIntent);
     }
 

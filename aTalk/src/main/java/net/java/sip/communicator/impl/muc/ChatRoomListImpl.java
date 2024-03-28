@@ -224,7 +224,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
             if ((accountManager != null)
                     && (!accountManager.getStoredAccounts().contains(accountID))) {
 
-                String accountUid = accountID.getAccountUniqueID();
+                String accountUid = accountID.getAccountUid();
                 String[] args = {accountUid, String.valueOf(ChatSession.MODE_MULTI)};
 
                 mDB.delete(ChatSession.TABLE_NAME, ChatSession.ACCOUNT_UID + "=? AND "
@@ -492,7 +492,7 @@ public class ChatRoomListImpl implements RegistrationStateChangeListener, Servic
     {
         List<String> chatRooms = new ArrayList<>(0);
 
-        String accountUid = pps.getAccountID().getAccountUniqueID();
+        String accountUid = pps.getAccountID().getAccountUid();
         String[] args = {accountUid, String.valueOf(ChatSession.MODE_MULTI)};
         String[] columns = {ChatSession.ENTITY_JID};
         String ORDER_ASC = ChatSession.ENTITY_JID + " ASC";

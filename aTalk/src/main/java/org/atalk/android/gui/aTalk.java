@@ -20,7 +20,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -37,23 +36,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import net.java.sip.communicator.service.contactlist.MetaContact;
 
 import org.atalk.android.R;
 import org.atalk.android.aTalkApp;
 import org.atalk.android.gui.actionbar.ActionBarStatusFragment;
 import org.atalk.android.gui.call.CallHistoryFragment;
-import org.atalk.android.gui.chat.ChatPanel;
-import org.atalk.android.gui.chat.ChatSessionManager;
 import org.atalk.android.gui.chat.chatsession.ChatSessionFragment;
 import org.atalk.android.gui.chatroomslist.ChatRoomListFragment;
 import org.atalk.android.gui.contactlist.ContactListFragment;
 import org.atalk.android.gui.menu.MainMenuActivity;
 import org.atalk.android.gui.util.DepthPageTransformer;
-import org.atalk.android.gui.util.EntityListHelper;
 import org.atalk.android.gui.webview.WebViewFragment;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.BundleContext;
@@ -66,7 +59,7 @@ import timber.log.Timber;
  *
  * @author Eng Chong Meng
  */
-public class aTalk extends MainMenuActivity implements EntityListHelper.TaskCompleted {
+public class aTalk extends MainMenuActivity {
     /**
      * A map reference to find the FragmentPagerAdapter's fragmentTag (String) by a given position (Integer)
      */
@@ -94,6 +87,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
      * The main pager view fragment containing the contact List
      */
     private ContactListFragment contactListFragment = null;
+
+    private ChatSessionFragment chatSessionFragment = null;
 
     /**
      * Variable caches instance state stored for example on rotate event to prevent from
@@ -278,31 +273,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
     }
 
     /**
-     * Handler for contactListFragment chatSessions on completed execution of
-     *
-     * @see EntityListHelper#eraseEntityChatHistory(Context, Object, List, List)
-     * @see EntityListHelper#eraseAllEntityHistory(Context)
-     */
-    @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
-        if (result == EntityListHelper.CURRENT_ENTITY) {
-            MetaContact clickedContact = contactListFragment.getClickedContact();
-            ChatPanel clickedChat = ChatSessionManager.getActiveChat(clickedContact);
-            if (clickedChat != null) {
-                contactListFragment.onCloseChat(clickedChat);
-            }
-        }
-        else if (result == EntityListHelper.ALL_ENTITIES) {
-            contactListFragment.onCloseAllChats();
-        }
-        else { // failed
-            String errMsg = getString(R.string.service_gui_HISTORY_REMOVE_ERROR,
-                    contactListFragment.getClickedContact().getDisplayName());
-            aTalkApp.showToastMessage(errMsg);
-        }
-    }
-
-    /**
      * A simple pager adapter that represents 3 Screen Slide PageFragment objects, in sequence.
      */
     private class MainPagerAdapter extends FragmentPagerAdapter {
@@ -324,7 +294,8 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
                     return new ChatRoomListFragment();
 
                 case CHAT_SESSION_FRAGMENT:
-                    return new ChatSessionFragment();
+                    chatSessionFragment = new ChatSessionFragment();
+                    return chatSessionFragment;
 
                 case CALL_HISTORY_FRAGMENT:
                     return new CallHistoryFragment();
@@ -358,7 +329,6 @@ public class aTalk extends MainMenuActivity implements EntityListHelper.TaskComp
         public int getCount() {
             return NUM_PAGES;
         }
-
     }
 
     /**

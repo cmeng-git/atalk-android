@@ -155,7 +155,6 @@
     <string name="service_gui_CALL_ERROR">A parte remota retorna um erro: %1$s</string>
     <string name="service_gui_CALL_FAILED">Ligação falhou</string>
     <string name="service_gui_CALL_HISTORY_GROUP_NAME">Histórico de ligações</string>
-    <string name="service_gui_CALL_HISTORY_REMOVE_COUNT">Número de registros do histórico de chamadas excluídos: %1$s</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_BEFORE_DATE_WARNING">Tem certeza de que deseja limpar todos os registros de chamadas antes da data: %1$s?</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_NONE">Nenhum registro selecionado para exclusão</string>
     <string name="service_gui_CALL_HISTORY_REMOVE_WARNING">Tem certeza de que quer excluir todos os registros de ligações selecionadas?</string>
@@ -407,6 +406,7 @@
     <string name="service_gui_HISTORY_ERASE_ALL">Excluir histórico de conversa para todos os contatos</string>
     <string name="service_gui_HISTORY_REMOVE_PER_CONTACT_WARNING">Tem certeza de que deseja limpar todas as mensagens selecionadas para %1$s?</string>
     <string name="service_gui_HISTORY_REMOVE_ALL_WARNING">Tem certeza de que quer excluir todas as mensagens de todos?</string>
+    <string name="service_gui_HISTORY_REMOVE_COUNT">Número de registros do histórico excluídos: %1$s</string>
     <string name="service_gui_HISTORY_REMOVE_ERROR">Falha ao excluir mensagens armazenadas localmente para %1$s.</string>
     <string name="service_gui_HISTORY_REMOVE_MEDIA">Excluir mídia do meu aparelho</string>
     <string name="service_gui_HISTORY_WARNING">Feche e abra esta sessão de bate-papo para visualizar MAM e mensagens off-line quando estiver on-line</string>

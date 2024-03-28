@@ -38,6 +38,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import net.java.sip.communicator.impl.muc.ChatRoomWrapperImpl;
 import net.java.sip.communicator.impl.muc.MUCActivator;
 import net.java.sip.communicator.impl.protocol.jabber.ChatRoomMemberJabberImpl;
@@ -75,7 +86,6 @@ import org.atalk.android.gui.share.Attachment;
 import org.atalk.android.gui.share.MediaPreviewAdapter;
 import org.atalk.android.gui.util.AndroidUtils;
 import org.atalk.android.gui.util.EntityListHelper;
-import org.atalk.android.gui.util.EntityListHelper.TaskCompleted;
 import org.atalk.android.plugin.audioservice.AudioBgService;
 import org.atalk.android.plugin.geolocation.GeoLocationActivity;
 import org.atalk.android.plugin.mediaplayer.MediaExoPlayerFragment;
@@ -94,17 +104,6 @@ import org.json.JSONObject;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import timber.log.Timber;
 
 /**
@@ -115,7 +114,7 @@ import timber.log.Timber;
  * @author Eng Chong Meng
  */
 public class ChatActivity extends OSGiActivity
-        implements OnPageChangeListener, TaskCompleted, GeoLocationActivity.LocationListener,
+        implements OnPageChangeListener, EntityListHelper.TaskCompleteListener, GeoLocationActivity.LocationListener,
         ChatRoomConfiguration.ChatRoomConfigListener, LocalUserChatRoomPresenceListener {
     private static final int REQUEST_CODE_OPEN_FILE = 105;
     private static final int REQUEST_CODE_SHARE_WITH = 200;
@@ -188,7 +187,7 @@ public class ChatActivity extends OSGiActivity
     private int currentChatMode;
     // Not implemented currently
     private int mCurrentChatType;
-
+    private int eraseMode = -1;
     private ChatPanel selectedChatPanel;
     private static Contact mRecipient;
 
@@ -607,6 +606,7 @@ public class ChatActivity extends OSGiActivity
                 return true;
 
             case R.id.erase_chat_history:
+                eraseMode = EntityListHelper.SINGLE_ENTITY;
                 EntityListHelper.eraseEntityChatHistory(this, descriptor, null, null);
                 return true;
 
@@ -740,13 +740,18 @@ public class ChatActivity extends OSGiActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void setEraseMode(int mode) {
+        eraseMode = mode;
+    }
+
     @Override
-    public void onTaskComplete(Integer result, List<String> deletedUUIDs) {
-        if (result == EntityListHelper.CURRENT_ENTITY) {
+    public void onTaskComplete(int msgCount, List<String> deletedUUIDs) {
+        aTalkApp.showToastMessage(R.string.service_gui_HISTORY_REMOVE_COUNT, msgCount);
+        if (EntityListHelper.SINGLE_ENTITY == eraseMode) {
             chatPagerAdapter.getCurrentChatFragment().onClearCurrentEntityChatHistory(deletedUUIDs);
         }
-        else if (result == EntityListHelper.ALL_ENTITIES) {
-            onOptionsItemSelected(this.mMenu.findItem(R.id.close_all_chatrooms));
+        else if (EntityListHelper.ALL_ENTITY == eraseMode) {
+            onOptionsItemSelected(mMenu.findItem(R.id.close_all_active_chats));
             // selectedSession.msgListeners.notifyDataSetChanged(); // all registered contact chart
         }
         else {

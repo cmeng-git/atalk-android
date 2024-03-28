@@ -1,41 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/chatroom_tts_enable"
-        android:title="@string/service_gui_TTS_ENABLE">
-    </item>
+        android:title="@string/service_gui_TTS_ENABLE" />
     <item
-        android:id="@+id/close_chatroom"
-        android:title="@string/service_gui_CLOSE_CHAT">
-    </item>
+        android:id="@+id/close_current_chat"
+        android:title="@string/service_gui_CLOSE_CHAT" />
     <item
-        android:id="@+id/close_all_chatrooms"
-        android:title="@string/service_gui_CLOSE_ALL_CHATS">
-    </item>
+        android:id="@+id/close_all_active_chats"
+        android:title="@string/service_gui_CLOSE_ALL_CHATS" />
     <item
         android:id="@+id/erase_chatroom_history"
-        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER">
-    </item>
+        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_PER" />
     <item
         android:id="@+id/erase_all_chatroom_history"
-        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_ALL">
-    </item>
+        android:title="@string/service_gui_CHATROOM_HISTORY_ERASE_ALL" />
     <item
         android:id="@+id/destroy_chatroom"
-        android:title="@string/service_gui_CHATROOM_DESTROY">
-    </item>
+        android:title="@string/service_gui_CHATROOM_DESTROY" />
     <item
         android:id="@+id/send_chatroom_file"
         android:title="@string/service_gui_FILE_ATTACHMENT"
-        android:visible="false">
-    </item>
+        android:visible="false" />
     <item
         android:id="@+id/chatroom_info"
         android:title="@string/service_gui_CHATROOM_INFO"
-        android:visible="true">
-    </item>
+        android:visible="true" />
     <item
         android:id="@+id/chatroom_ctx_menu_exit"
-        android:title="@android:string/cancel">
-    </item>
+        android:title="@android:string/cancel" />
 </menu>

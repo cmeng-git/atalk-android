@@ -1409,7 +1409,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
      * @param provider the ProtocolProviderService that we've just detected.
      */
     private synchronized void handleProviderAdded(ProtocolProviderService provider) {
-        String accountUid = provider.getAccountID().getAccountUniqueID();
+        String accountUid = provider.getAccountID().getAccountUid();
         String accountUuid = provider.getAccountID().getAccountUuid();
 
         Timber.d("Adding protocol provider %s", accountUid);
@@ -1457,7 +1457,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
         Timber.d("Removing protocol provider %s", pps);
 
         AccountID accountID = pps.getAccountID();
-        mCurrentlyInstalledProviders.remove(accountID.getAccountUniqueID());
+        mCurrentlyInstalledProviders.remove(accountID.getAccountUid());
 
         // Check if the capabilities operation set is available for this contact and remove
         // previously added listeners.
@@ -1685,7 +1685,7 @@ public class MetaContactListServiceImpl implements MetaContactListService, Servi
             }
 
             if (sourceFactory != null && mCurrentlyInstalledProviders.containsKey(
-                    pps.getAccountID().getAccountUniqueID())) {
+                    pps.getAccountID().getAccountUid())) {
                 Timber.d("Modifying an existing installed account: %s", accountID);
                 // the account is already installed and this event is coming from a modification.
                 // we don't return here as the account is removed and added again and we must
